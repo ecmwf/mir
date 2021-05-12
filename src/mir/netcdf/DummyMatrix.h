@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_DummyMatrix_h
-#define mir_netcdf_DummyMatrix_h
+#pragma once
 
 #include "mir/netcdf/Matrix.h"
 
@@ -30,19 +29,16 @@ namespace netcdf {
 class DummyMatrix : public Matrix {
 public:
     DummyMatrix(const Variable&);
-    virtual ~DummyMatrix();
+    ~DummyMatrix() override;
 
 private:
     Matrix* other_;
 
     // Methods
 
-    virtual void print(std::ostream& out) const;
+    void print(std::ostream&) const override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

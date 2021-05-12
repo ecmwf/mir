@@ -10,19 +10,17 @@
  */
 
 
-#ifndef mir_search_tree_TreeMappedFile_h
-#define mir_search_tree_TreeMappedFile_h
+#pragma once
 
 #include <unistd.h>
 
 #include <fstream>
 
-#include "eckit/log/Log.h"
 #include "eckit/os/Semaphore.h"
 #include "eckit/runtime/Main.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/search/tree/TreeMapped.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -37,24 +35,24 @@ protected:
     eckit::PathName real_;
     eckit::Semaphore lock_;  // Must be after real
 
-    virtual bool ready() const { return path_ == real_; }
+    bool ready() const override { return path_ == real_; }
 
-    virtual void commit() { eckit::PathName::rename(path_, real_); }
+    void commit() override { eckit::PathName::rename(path_, real_); }
 
-    virtual void print(std::ostream& out) const {
+    void print(std::ostream& out) const override {
         out << "TreeMappedFile["
                "path="
             << path_ << ",ready?" << ready() << "]";
     }
 
-    virtual void lock() {
+    void lock() override {
         eckit::AutoUmask umask(0);
 
         eckit::PathName path = lockFile(real_);
 
-        eckit::Log::debug<LibMir>() << "Wait for lock " << path << std::endl;
+        Log::debug() << "Wait for lock " << path << std::endl;
         lock_.lock();
-        eckit::Log::debug<LibMir>() << "Got lock " << path << std::endl;
+        Log::debug() << "Got lock " << path << std::endl;
 
 
         std::string hostname = eckit::Main::hostname();
@@ -63,10 +61,10 @@ protected:
         os << hostname << " " << ::getpid() << std::endl;
     }
 
-    virtual void unlock() {
+    void unlock() override {
         eckit::PathName path = lockFile(real_);
 
-        eckit::Log::debug<LibMir>() << "Unlock " << path << std::endl;
+        Log::debug() << "Unlock " << path << std::endl;
         std::ofstream os(path.asString().c_str());
         os << std::endl;
         lock_.unlock();
@@ -84,7 +82,7 @@ public:
         lockFile(real_).touch();
 
         if (ready()) {
-            eckit::Log::debug<LibMir>() << "Loading " << *this << std::endl;
+            Log::debug() << "Loading " << *this << std::endl;
         }
     }
 };
@@ -93,6 +91,3 @@ public:
 }  // namespace tree
 }  // namespace search
 }  // namespace mir
-
-
-#endif

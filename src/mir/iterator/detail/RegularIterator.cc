@@ -10,9 +10,9 @@
  */
 
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/iterator/detail/RegularIterator.h"
+
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

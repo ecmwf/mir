@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_latlon_LatLon_h
-#define mir_repres_latlon_LatLon_h
+#pragma once
 
 #include "mir/repres/Gridded.h"
 #include "mir/util/Increments.h"
@@ -35,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~LatLon();
+    ~LatLon() override;
 
     // -- Convertors
     // None
@@ -78,24 +77,24 @@ protected:
 
     // -- Overridden methods
 
-    virtual void fill(grib_info&) const;
+    void fill(grib_info&) const override;
 
-    virtual void fill(api::MIRJob&) const;
+    void fill(api::MIRJob&) const override;
 
-    virtual void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
-    virtual void makeName(std::ostream&) const;
+    void makeName(std::ostream&) const override;
 
-    virtual bool sameAs(const Representation& other) const;
+    bool sameAs(const Representation&) const override;
 
-    virtual bool isPeriodicWestEast() const;
-    virtual bool includesNorthPole() const;
-    virtual bool includesSouthPole() const;
+    bool isPeriodicWestEast() const override;
+    bool includesNorthPole() const override;
+    bool includesSouthPole() const override;
 
-    virtual size_t numberOfPoints() const;
-    virtual bool getLongestElementDiagonal(double&) const;
+    size_t numberOfPoints() const override;
+    bool getLongestElementDiagonal(double&) const override;
 
-    virtual Representation* globalise(data::MIRField&) const;
+    Representation* globalise(data::MIRField&) const override;
 
     // -- Class members
 
@@ -135,17 +134,17 @@ private:
 
     // -- Overridden methods
 
-    virtual void fill(util::MeshGeneratorParameters&) const;
+    void fill(util::MeshGeneratorParameters&) const override;
 
-    virtual size_t frame(MIRValuesVector& values, size_t size, double missingValue, bool estimate = false) const;
+    size_t frame(MIRValuesVector& values, size_t size, double missingValue, bool estimate = false) const override;
 
-    virtual void reorder(long scanningMode, MIRValuesVector& values) const;
+    void reorder(long scanningMode, MIRValuesVector& values) const override;
 
-    virtual void validate(const MIRValuesVector&) const;
+    void validate(const MIRValuesVector&) const override;
 
-    virtual const LatLon* croppedRepresentation(const util::BoundingBox&) const;
+    const LatLon* croppedRepresentation(const util::BoundingBox&) const override;
 
-    virtual bool extendBoundingBoxOnIntersect() const;
+    bool extendBoundingBoxOnIntersect() const override;
 
     // -- Class members
     // None
@@ -154,15 +153,10 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const LatLon& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace latlon
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

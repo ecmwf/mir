@@ -10,12 +10,11 @@
  */
 
 
-#ifndef mir_action_interpolate_Gridded2Points_h
-#define mir_action_interpolate_Gridded2Points_h
-
-#include "mir/action/interpolate/Gridded2UnrotatedGrid.h"
+#pragma once
 
 #include <vector>
+
+#include "mir/action/interpolate/Gridded2UnrotatedGrid.h"
 
 
 namespace mir {
@@ -34,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gridded2Points();
+    ~Gridded2Points() override;
 
     // -- Convertors
     // None
@@ -64,8 +63,8 @@ protected:
     // -- Overridden methods
 
     // From Gridded2GriddedInterpolation
-    virtual bool sameAs(const Action&) const;
-    virtual void print(std::ostream&) const;
+    bool sameAs(const Action&) const override;
+    void print(std::ostream&) const override;
 
     // -- Class members
     // None
@@ -85,10 +84,10 @@ private:
     // -- Overridden methods
 
     // From Action
-    virtual const char* name() const;
+    const char* name() const override;
 
     // From Gridded2GriddedInterpolation
-    virtual const repres::Representation* outputRepresentation() const;
+    const repres::Representation* outputRepresentation() const override;
 
     // -- Class members
     // None
@@ -104,6 +103,3 @@ private:
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-
-
-#endif

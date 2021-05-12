@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_MergeCoordinateStep_h
-#define mir_netcdf_MergeCoordinateStep_h
+#pragma once
 
 #include "mir/netcdf/Step.h"
 
@@ -30,7 +29,6 @@ namespace netcdf {
 class MergeCoordinateStep : public Step {
 public:
     MergeCoordinateStep(Variable& out, const Variable& in);
-    ~MergeCoordinateStep();
 
 private:
     // Members
@@ -39,14 +37,11 @@ private:
     const Variable& in_;
 
     // -- Methods
-    virtual void print(std::ostream& out) const;
-    virtual int rank() const;
-    virtual void execute(MergePlan& plan);
+    void print(std::ostream&) const override;
+    int rank() const override;
+    void execute(MergePlan&) override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

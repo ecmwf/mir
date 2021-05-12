@@ -14,16 +14,16 @@
 
 #include <string>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/linalg/Vector.h"
-#include "eckit/log/TraceTimer.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/search/PointSearch.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Trace.h"
 
 
 namespace mir {
@@ -57,12 +57,8 @@ bool PseudoLaplace::sameAs(const Method& other) const {
 
 void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& in,
                              const repres::Representation& out) const {
-    using eckit::geometry::XX;
-    using eckit::geometry::YY;
-    using eckit::geometry::ZZ;
-
-    eckit::Log::debug<LibMir>() << "PseudoLaplace::assemble (input: " << in << ", output: " << out << ")" << std::endl;
-    eckit::TraceTimer<LibMir> timer("PseudoLaplace::assemble");
+    Log::debug() << "PseudoLaplace::assemble (input: " << in << ", output: " << out << ")" << std::endl;
+    trace::Timer timer("PseudoLaplace::assemble");
 
 
     search::PointSearch sptree(parametrisation_, in);
@@ -114,9 +110,9 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
         for (size_t j = 0; j < npts; ++j) {
             Point3 np = closest[j].point();
 
-            const double dx = np[XX] - p[XX];
-            const double dy = np[YY] - p[YY];
-            const double dz = np[ZZ] - p[ZZ];
+            const double dx = np[XYZCOORDS::XX] - p[XYZCOORDS::XX];
+            const double dy = np[XYZCOORDS::YY] - p[XYZCOORDS::YY];
+            const double dz = np[XYZCOORDS::ZZ] - p[XYZCOORDS::ZZ];
 
             Ixx += dx * dx;
             Ixy += dx * dy;
@@ -162,7 +158,6 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
 
     // fill-in sparse matrix
     W.setFromTriplets(weights_triplets);
-    eckit::Log::debug<LibMir>() << "NearestLSM fill-in sparse matrix " << timer.elapsed() << std::endl;
 }
 
 

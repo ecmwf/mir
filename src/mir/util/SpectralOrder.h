@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_SpectralOrder_h
-#define mir_util_SpectralOrder_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -44,8 +43,8 @@ public:
 
     // -- Methods
 
-    virtual long getTruncationFromGaussianNumber(const long&) const;
-    virtual long getGaussianNumberFromTruncation(const long&) const;
+    virtual long getTruncationFromGaussianNumber(long) const;
+    virtual long getGaussianNumberFromTruncation(long) const;
     virtual void print(std::ostream&) const = 0;
 
     // -- Overridden methods
@@ -117,7 +116,7 @@ public:
 
 template <class T>
 class SpectralOrderBuilder : public SpectralOrderFactory {
-    virtual SpectralOrder* make() { return new T(); }
+    SpectralOrder* make() override { return new T(); }
 
 public:
     SpectralOrderBuilder(const std::string& name) : SpectralOrderFactory(name) {}
@@ -126,6 +125,3 @@ public:
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

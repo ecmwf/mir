@@ -14,19 +14,18 @@
 
 #include <algorithm>
 #include <cctype>
-#include <iostream>
 #include <map>
+#include <ostream>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/lsm/GribFileMaskFromMIR.h"
 #include "mir/lsm/MappedMask.h"
 #include "mir/lsm/TenMinutesMask.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -46,13 +45,13 @@ static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_7("O640", "~mir/share/m
 static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_8("O1280", "~mir/share/mir/masks/lsm.O1280.grib");
 
 
-static pthread_once_t once                         = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex                   = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex          = nullptr;
 static std::map<std::string, NamedMaskFactory*>* m = nullptr;
 
 
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, NamedMaskFactory*>();
 }
 
@@ -65,9 +64,6 @@ static std::string sane(const std::string& insane) {
 
 
 NamedLSM::NamedLSM(const std::string& name) : LSMSelection(name) {}
-
-
-NamedLSM::~NamedLSM() = default;
 
 
 void NamedLSM::print(std::ostream& out) const {
@@ -88,11 +84,11 @@ std::string NamedLSM::cacheKey(const param::MIRParametrisation& param, const rep
 
 
 NamedMaskFactory::NamedMaskFactory(const std::string& name, const std::string& path) : name_(sane(name)), path_(path) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name_) != m->end()) {
-        throw eckit::SeriousBug("NamedMaskFactory: duplicate '" + name + "'");
+        throw exception::SeriousBug("NamedMaskFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name_) == m->end());
@@ -101,7 +97,7 @@ NamedMaskFactory::NamedMaskFactory(const std::string& name, const std::string& p
 
 
 NamedMaskFactory::~NamedMaskFactory() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     m->erase(name_);
 }
@@ -109,18 +105,18 @@ NamedMaskFactory::~NamedMaskFactory() {
 
 Mask* NamedMaskFactory::build(const param::MIRParametrisation& param, const repres::Representation& representation,
                               const std::string& which) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     std::string name;
     param.get("lsm-named-" + which, name) || param.get("lsm-named", name);
     name = sane(name);
 
-    eckit::Log::debug<LibMir>() << "NamedMaskFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "NamedMaskFactory: looking for '" << name << "'" << std::endl;
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "NamedMaskFactory: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("NamedMaskFactory: unknown '" + name + "'");
+        list(Log::error() << "NamedMaskFactory: unknown '" << name << "', choices are: ");
+        throw exception::SeriousBug("NamedMaskFactory: unknown '" + name + "'");
     }
 
     return j->second->make(param, representation, which);
@@ -129,18 +125,18 @@ Mask* NamedMaskFactory::build(const param::MIRParametrisation& param, const repr
 
 std::string NamedMaskFactory::cacheKey(const param::MIRParametrisation& param,
                                        const repres::Representation& representation, const std::string& which) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     std::string name;
     param.get("lsm-named-" + which, name) || param.get("lsm-named", name);
     name = sane(name);
 
-    eckit::Log::debug<LibMir>() << "NamedMaskFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "NamedMaskFactory: looking for '" << name << "'" << std::endl;
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "NamedMaskFactory: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("NamedMaskFactory: unknown '" + name + "'");
+        list(Log::error() << "NamedMaskFactory: unknown '" << name << "', choices are: ");
+        throw exception::SeriousBug("NamedMaskFactory: unknown '" + name + "'");
     }
 
     eckit::MD5 md5;
@@ -150,8 +146,8 @@ std::string NamedMaskFactory::cacheKey(const param::MIRParametrisation& param,
 
 
 void NamedMaskFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

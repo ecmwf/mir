@@ -17,14 +17,12 @@
 #include "mir/netcdf/Type.h"
 #include "mir/netcdf/Variable.h"
 
-#include <iostream>
+#include <ostream>
 
 namespace mir {
 namespace netcdf {
 
 MergeCoordinateStep::MergeCoordinateStep(Variable& out, const Variable& in) : out_(out), in_(in) {}
-
-MergeCoordinateStep::~MergeCoordinateStep() = default;
 
 int MergeCoordinateStep::rank() const {
     return 4;
@@ -49,7 +47,7 @@ void MergeCoordinateStep::execute(MergePlan& /*plan*/) {
         return;
     }
 
-    eckit::Log::info() << "MergeCoordinateStep::execute() " << out_ << ", Output variable cube:" << out_.cube() << std::endl;
+    Log::info() << "MergeCoordinateStep::execute() " << out_ << ", Output variable cube:" << out_.cube() << std::endl;
 
     // Resize dimensions
 

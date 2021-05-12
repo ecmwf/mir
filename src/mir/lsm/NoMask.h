@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_lsm_NoMask_h
-#define mir_lsm_NoMask_h
+#pragma once
 
 #include "mir/lsm/Mask.h"
 
@@ -22,22 +21,19 @@ namespace lsm {
 
 class NoMask : public Mask {
 
-    bool active() const;
+    bool active() const override;
 
-    bool cacheable() const;
+    bool cacheable() const override;
 
-    void hash(eckit::MD5&) const;
+    void hash(eckit::MD5&) const override;
 
-    const std::vector<bool>& mask() const;
+    const std::vector<bool>& mask() const override;
 
-    void print(std::ostream& out) const;
+    void print(std::ostream&) const override;
 
-    std::string cacheName() const;
+    std::string cacheName() const override;
 };
 
 
 }  // namespace lsm
 }  // namespace mir
-
-
-#endif

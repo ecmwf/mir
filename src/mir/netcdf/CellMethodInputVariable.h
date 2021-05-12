@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_CellMethodInputVariable_h
-#define mir_netcdf_CellMethodInputVariable_h
+#pragma once
 
 #include "mir/netcdf/InputVariable.h"
 
@@ -23,23 +22,20 @@ namespace netcdf {
 class CellMethodInputVariable : public InputVariable {
 public:
     CellMethodInputVariable(Dataset& owner, const std::string& name, int id, const std::vector<Dimension*>& dimensions);
-    virtual ~CellMethodInputVariable();
+    ~CellMethodInputVariable() override;
 
 private:
     // From InputVariable
 
     Variable* makeOutputVariable(Dataset& owner, const std::string& name,
-                                 const std::vector<Dimension*>& dimensions) const;
+                                 const std::vector<Dimension*>& dimensions) const override;
 
     // From variable
 
-    virtual void print(std::ostream&) const;
-    const char* kind() const;
+    void print(std::ostream&) const override;
+    const char* kind() const override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

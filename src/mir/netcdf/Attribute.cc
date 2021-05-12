@@ -12,11 +12,13 @@
 
 #include "mir/netcdf/Attribute.h"
 
+#include <ostream>
+
 #include "mir/netcdf/Endowed.h"
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/Value.h"
+#include "mir/util/Log.h"
 
-#include <iostream>
 
 namespace mir {
 namespace netcdf {
@@ -56,22 +58,22 @@ const Value& Attribute::value() const {
 }
 
 void Attribute::invalidate() {
-    eckit::Log::info() << __func__ << " " << *this << std::endl;
+    Log::info() << __func__ << " " << *this << std::endl;
     NOTIMP;
 }
 
 void Attribute::merge(const Attribute&) {
-    eckit::Log::info() << __func__ << " " << *this << std::endl;
+    Log::info() << __func__ << " " << *this << std::endl;
     NOTIMP;
 }
 
 void Attribute::clone(Endowed&) const {
-    eckit::Log::info() << __func__ << " " << *this << std::endl;
+    Log::info() << __func__ << " " << *this << std::endl;
     NOTIMP;
 }
 
 void Attribute::create(int) const {
-    eckit::Log::info() << __func__ << " " << *this << std::endl;
+    Log::info() << __func__ << " " << *this << std::endl;
     NOTIMP;
 }
 

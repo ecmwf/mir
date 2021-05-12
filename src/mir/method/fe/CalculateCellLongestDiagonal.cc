@@ -15,12 +15,13 @@
 #include <algorithm>
 #include <utility>
 
-#include "eckit/exception/Exceptions.h"
-
-#include "atlas/array/MakeView.h"
-#include "atlas/mesh.h"
+#include "atlas/array.h"
 #include "atlas/runtime/Trace.h"
-#include "atlas/util/Earth.h"
+
+#include "mir/util/Atlas.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -32,8 +33,9 @@ CalculateCellLongestDiagonal::CalculateCellLongestDiagonal(std::string name, boo
     name_(std::move(name)), force_recompute_(force_recompute) {}
 
 
-double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh) const {
-    using namespace atlas;
+double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh, bool include_virtual_points) const {
+    using atlas::idx_t;
+    using atlas::PointXYZ;
 
     bool recompute = force_recompute_ || !mesh.metadata().has(name_);
 
@@ -42,13 +44,13 @@ double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh) const {
         ASSERT(mesh.generated());
 
         auto& nodes       = mesh.nodes();
-        const auto coords = array::make_view<double, 2>(nodes.field("xyz"));
+        const auto coords = atlas::array::make_view<double, 2>(nodes.field("xyz"));
         auto nbRealPts    = nodes.metadata().has("NbRealPts") ? nodes.metadata().get<idx_t>("NbRealPts") : nodes.size();
 
 
         // distance, up to Earth radius
         double d          = 0.;
-        const double dMax = util::Earth::radius();
+        const double dMax = atlas::util::Earth::radius();
 
 
         // assumes:
@@ -74,10 +76,10 @@ double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh) const {
                 for (idx_t nj = ni + 1; nj < nb_cols; ++nj) {
                     auto j = connectivity(e, nj);
 
-                    if (i < nbRealPts && j < nbRealPts) {
+                    if (include_virtual_points || (i < nbRealPts && j < nbRealPts)) {
                         d = std::max(d, util::Earth::distance(P[ni], P[nj]));
                         if (d > dMax) {
-                            eckit::Log::warning() << "CalculateCellLongestDiagonal: limited to maximum " << dMax << "m";
+                            Log::warning() << "CalculateCellLongestDiagonal: limited to maximum " << dMax << "m";
                             return dMax;
                         }
                     }

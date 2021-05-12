@@ -10,8 +10,7 @@
  */
 
 
-#ifndef CheckerBoard_H
-#define CheckerBoard_H
+#pragma once
 
 #include "mir/action/plan/Action.h"
 
@@ -28,16 +27,18 @@ public:
     // -- Constructors
 
     CheckerBoard(const param::MIRParametrisation&);
+    CheckerBoard(const CheckerBoard&) = delete;
 
     // -- Destructor
 
-    virtual ~CheckerBoard();  // Change to virtual if base class
+    ~CheckerBoard() override;
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    CheckerBoard& operator=(const CheckerBoard&) = delete;
 
     // -- Methods
     // None
@@ -45,7 +46,7 @@ public:
     // -- Overridden methods
     // None
 
-    virtual void execute(context::Context& ctx) const;
+    void execute(context::Context&) const override;
 
     // -- Class members
     // None
@@ -59,7 +60,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -71,20 +72,16 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    CheckerBoard(const CheckerBoard&);
-    CheckerBoard& operator=(const CheckerBoard&);
-
     // -- Members
+    // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const;
-    virtual const char* name() const;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
 
     // -- Class members
     // None
@@ -93,12 +90,9 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const CheckerBoard& p)
-    //	{ p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace action
 }  // namespace mir
-#endif

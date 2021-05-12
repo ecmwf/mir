@@ -12,14 +12,10 @@
 
 #include <memory>
 
-#include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
 
-#include "mir/config/LibMir.h"
+#include "mir/util/Log.h"
 #include "mir/util/SpectralOrder.h"
-
-
-using namespace eckit::testing;
 
 
 namespace mir {
@@ -28,7 +24,8 @@ namespace unit {
 
 
 CASE("test_spectral_order") {
-    using namespace util;
+    using util::SpectralOrder;
+    using util::SpectralOrderFactory;
 
     // Cases from hsh2gg.F
 
@@ -73,10 +70,10 @@ CASE("test_spectral_order") {
         long N = order1->getGaussianNumberFromTruncation(Tref);
         long T = order1->getTruncationFromGaussianNumber(Nref);
 
-        eckit::Log::debug<LibMir>() << "N(T=" << T << ")|linear = " << N << ", expecting N=" << Nref << std::endl;
+        Log::debug() << "N(T=" << T << ")|linear = " << N << ", expecting N=" << Nref << std::endl;
         EXPECT(N == Nref);
 
-        eckit::Log::debug<LibMir>() << "T(N=" << N << ")|linear = " << T << ", expecting T=" << Tref << std::endl;
+        Log::debug() << "T(N=" << N << ")|linear = " << T << ", expecting T=" << Tref << std::endl;
         EXPECT(T == Tref);
     }
 
@@ -89,10 +86,10 @@ CASE("test_spectral_order") {
         long N = order2->getGaussianNumberFromTruncation(Tref);
         long T = order2->getTruncationFromGaussianNumber(Nref);
 
-        eckit::Log::debug<LibMir>() << "N(T=" << T << ")|quadratic = " << N << ", expecting N=" << Nref << std::endl;
+        Log::debug() << "N(T=" << T << ")|quadratic = " << N << ", expecting N=" << Nref << std::endl;
         EXPECT(N == Nref);
 
-        eckit::Log::debug<LibMir>() << "T(N=" << N << ")|quadratic = " << T << ", expecting T=" << Tref << std::endl;
+        Log::debug() << "T(N=" << N << ")|quadratic = " << T << ", expecting T=" << Tref << std::endl;
         EXPECT(T == Tref);
     }
 
@@ -105,10 +102,10 @@ CASE("test_spectral_order") {
         long N = order3->getGaussianNumberFromTruncation(Tref);
         long T = order3->getTruncationFromGaussianNumber(Nref);
 
-        eckit::Log::debug<LibMir>() << "N(T=" << T << ")|cubic = " << N << ", expecting N=" << Nref << std::endl;
+        Log::debug() << "N(T=" << T << ")|cubic = " << N << ", expecting N=" << Nref << std::endl;
         EXPECT(N == Nref);
 
-        eckit::Log::debug<LibMir>() << "T(N=" << N << ")|cubic = " << T << ", expecting T=" << Tref << std::endl;
+        Log::debug() << "T(N=" << N << ")|cubic = " << T << ", expecting T=" << Tref << std::endl;
         EXPECT(T == Tref);
     }
 
@@ -132,5 +129,5 @@ CASE("test_spectral_order") {
 
 
 int main(int argc, char** argv) {
-    return run_tests(argc, argv, false);
+    return eckit::testing::run_tests(argc, argv, false);
 }

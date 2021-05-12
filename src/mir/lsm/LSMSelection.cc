@@ -14,29 +14,27 @@
 
 #include <map>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
-
-#include "mir/config/LibMir.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
 namespace lsm {
 
 
-static pthread_once_t once                     = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex               = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex      = nullptr;
 static std::map<std::string, LSMSelection*>* m = nullptr;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, LSMSelection*>();
 }
 
 
 LSMSelection::LSMSelection(const std::string& name) : name_(name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(name) == m->end());
     (*m)[name] = this;
@@ -44,8 +42,7 @@ LSMSelection::LSMSelection(const std::string& name) : name_(name) {
 
 
 LSMSelection::~LSMSelection() {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(name_) != m->end());
     m->erase(name_);
@@ -53,8 +50,8 @@ LSMSelection::~LSMSelection() {
 
 
 void LSMSelection::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {
@@ -65,15 +62,15 @@ void LSMSelection::list(std::ostream& out) {
 
 
 const LSMSelection& LSMSelection::lookup(const std::string& name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-    eckit::Log::debug<LibMir>() << "LSMSelection: looking for '" << name << "'" << std::endl;
+    Log::debug() << "LSMSelection: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "LSMSelection: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("LSMSelection: unknown '" + name + "'");
+        list(Log::error() << "LSMSelection: unknown '" << name << "', choices are: ");
+        throw exception::SeriousBug("LSMSelection: unknown '" + name + "'");
     }
 
     return *(j->second);

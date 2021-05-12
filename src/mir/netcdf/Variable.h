@@ -10,15 +10,14 @@
  */
 
 
-#ifndef mir_netcdf_Variable_h
-#define mir_netcdf_Variable_h
+#pragma once
 
-#include <iostream>
+#include <ostream>
 #include <string>
 #include <vector>
 
-#include "mir/data/MIRValuesVector.h"
 #include "mir/netcdf/Endowed.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -39,7 +38,7 @@ namespace netcdf {
 class Variable : public Endowed {
 public:
     Variable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions);
-    virtual ~Variable();
+    ~Variable() override;
 
     // -- Methods
 
@@ -65,8 +64,8 @@ public:
     virtual void merge(const Variable&, MergePlan&);
 
     // From Endowed
-    virtual const std::string& name() const;
-    virtual const std::string& path() const;
+    const std::string& name() const override;
+    const std::string& path() const override;
 
     Matrix* matrix() const;
 
@@ -109,9 +108,9 @@ public:
     template <class T>
     T getAttributeValue(const std::string& name) const {
         T result;
-        // eckit::Log::info() << "getAttributeValue ==> " << name << std::endl;
+        // Log::info() << "getAttributeValue ==> " << name << std::endl;
         getAttribute(name, result);
-        // eckit::Log::info() << "getAttributeValue <== " << result << std::endl;
+        // Log::info() << "getAttributeValue <== " << result << std::endl;
         return result;
     }
 
@@ -141,7 +140,7 @@ private:
     void getAttribute(const std::string& name, std::string& value) const;
     void getAttribute(const std::string& name, double& value) const;
 
-    virtual void print(std::ostream& s) const = 0;
+    virtual void print(std::ostream&) const = 0;
 
     // -- Friends
     //
@@ -154,6 +153,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

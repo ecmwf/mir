@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_DummyInputVariable_h
-#define mir_netcdf_DummyInputVariable_h
+#pragma once
 
 #include "mir/netcdf/Variable.h"
 
@@ -23,7 +22,7 @@ namespace netcdf {
 class DummyInputVariable : public Variable {
 public:
     DummyInputVariable(Dataset& owner, const Variable& parent);
-    virtual ~DummyInputVariable();
+    ~DummyInputVariable() override;
 
 protected:
     const Variable& parent_;
@@ -32,22 +31,19 @@ protected:
 
     virtual Variable* makeOutputVariable(Dataset& owner, const std::string& name,
                                          const std::vector<Dimension*>& dimensions) const;
-    virtual bool dummy() const;
-    virtual bool sameAsDummy(const Variable&) const;
-    virtual const std::string& ncname() const;
+    bool dummy() const override;
+    bool sameAsDummy(const Variable&) const override;
+    const std::string& ncname() const override;
 
     // From variable
 
-    virtual void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
     // From Endowed
 
-    virtual int varid() const;
+    int varid() const override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

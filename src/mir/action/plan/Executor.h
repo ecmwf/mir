@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_plan_Executor_h
-#define mir_action_plan_Executor_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -38,7 +37,8 @@ public:
     // None
 
     // -- Constructors
-    // None
+
+    Executor(const Executor&) = delete;
 
     // -- Destructor
     // None
@@ -47,7 +47,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    Executor& operator=(const Executor&) = delete;
 
     // -- Methods
 
@@ -64,7 +65,7 @@ public:
     // -- Class methods
 
     static const Executor& lookup(const param::MIRParametrisation&);
-    static void list(std::ostream&);
+    static void list(std::ostream&, bool full = false);
 
 protected:
     Executor(const std::string&);
@@ -88,10 +89,6 @@ protected:
     // None
 
 private:
-    // No copy allowed
-    Executor(const Executor&);
-    Executor& operator=(const Executor&);
-
     // -- Members
     // None
 
@@ -118,6 +115,3 @@ private:
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

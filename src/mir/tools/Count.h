@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_tools_Count_h
-#define mir_tools_Count_h
+#pragma once
 
 #include <iosfwd>
 #include <set>
@@ -65,8 +64,8 @@ public:
     void print(std::ostream&) const;
     void json(eckit::JSON&, bool enclose = true) const;
 
-    void countOnNamedGrid(std::string grid);
-    void countOnGridIncrements(std::vector<double> grid);
+    void countOnNamedGrid(const std::string& grid);
+    void countOnGridIncrements(const std::vector<double>& grid);
     void countOnRepresentation(const repres::Representation&);
 
     // -- Overridden methods
@@ -122,6 +121,3 @@ private:
 
 }  // namespace tools
 }  // namespace mir
-
-
-#endif

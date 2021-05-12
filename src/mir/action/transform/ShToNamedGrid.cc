@@ -12,14 +12,13 @@
 
 #include "mir/action/transform/ShToNamedGrid.h"
 
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
 
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -30,7 +29,6 @@ namespace transform {
 template <class Invtrans>
 ShToNamedGrid<Invtrans>::ShToNamedGrid(const param::MIRParametrisation& parametrisation) :
     ShToGridded(parametrisation) {
-
     ASSERT(parametrisation_.userParametrisation().get("grid", grid_));
 }
 

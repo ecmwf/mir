@@ -11,8 +11,10 @@
 
 
 #include "mir/util/FormulaString.h"
-#include <iostream>
-#include "eckit/exception/Exceptions.h"
+
+#include <ostream>
+
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

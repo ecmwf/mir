@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_caching_LegendreCache_h
-#define mir_caching_LegendreCache_h
+#pragma once
 
 #include "eckit/container/CacheManager.h"
 
@@ -41,6 +40,3 @@ public:  // methods
 
 }  // namespace caching
 }  // namespace mir
-
-
-#endif

@@ -13,13 +13,12 @@
 #include "mir/output/RawOutput.h"
 
 #include <cstring>
-#include <istream>
-
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
 
 #include "mir/action/context/Context.h"
-#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -27,9 +26,6 @@ namespace output {
 
 
 RawOutput::RawOutput(double* values, size_t count) : values_(values), count_(count), size_(0) {}
-
-
-RawOutput::~RawOutput() = default;
 
 
 bool RawOutput::sameAs(const MIROutput& other) const {
@@ -65,7 +61,7 @@ size_t RawOutput::save(const param::MIRParametrisation& /*param*/, context::Cont
     ASSERT(field.dimensions() == 1);
     const MIRValuesVector& values = field.values(0);
 
-    eckit::Log::debug<LibMir>() << "RawOutput::save values: " << values.size() << ", user: " << count_ << std::endl;
+    Log::debug() << "RawOutput::save values: " << values.size() << ", user: " << count_ << std::endl;
 
     size_ = values.size();
     ASSERT(size_ <= count_);

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_GregorianDateCodec_h
-#define mir_netcdf_GregorianDateCodec_h
+#pragma once
 
 #include <string>
 
@@ -27,7 +26,7 @@ namespace netcdf {
 class GregorianCalendar : public Calendar {
 public:
     GregorianCalendar(const Variable&);
-    virtual ~GregorianCalendar();
+    ~GregorianCalendar() override;
 
 private:
     eckit::DateTime reference_;
@@ -39,32 +38,29 @@ private:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
     template <class T>
     void _decode(std::vector<T>& v) const;
 
-    virtual void decode(std::vector<double>&) const;
-    virtual void decode(std::vector<float>&) const;
-    virtual void decode(std::vector<long>&) const;
-    virtual void decode(std::vector<short>&) const;
-    virtual void decode(std::vector<unsigned char>&) const;
-    virtual void decode(std::vector<long long>&) const;
+    void decode(std::vector<double>&) const override;
+    void decode(std::vector<float>&) const override;
+    void decode(std::vector<long>&) const override;
+    void decode(std::vector<short>&) const override;
+    void decode(std::vector<unsigned char>&) const override;
+    void decode(std::vector<long long>&) const override;
 
-    virtual void encode(std::vector<double>&) const;
-    virtual void encode(std::vector<float>&) const;
-    virtual void encode(std::vector<long>&) const;
-    virtual void encode(std::vector<short>&) const;
-    virtual void encode(std::vector<unsigned char>&) const;
-    virtual void encode(std::vector<long long>&) const;
+    void encode(std::vector<double>&) const override;
+    void encode(std::vector<float>&) const override;
+    void encode(std::vector<long>&) const override;
+    void encode(std::vector<short>&) const override;
+    void encode(std::vector<unsigned char>&) const override;
+    void encode(std::vector<long long>&) const override;
 
-    virtual void addAttributes(Variable&) const;
-    virtual void updateAttributes(int nc, int varid, const std::string& path);
+    void addAttributes(Variable&) const override;
+    void updateAttributes(int nc, int varid, const std::string& path) override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

@@ -10,15 +10,16 @@
  */
 
 
-#ifndef mir_action_ThreadExecutor_h
-#define mir_action_ThreadExecutor_h
+#pragma once
 
 #include <iosfwd>
 
 #include "mir/action/plan/Executor.h"
 
+
 namespace mir {
 namespace action {
+
 
 class ThreadExecutor : public Executor {
 public:
@@ -28,16 +29,17 @@ public:
     // -- Constructors
 
     ThreadExecutor(const std::string& name);
+    ThreadExecutor(const ThreadExecutor&) = delete;
 
     // -- Destructor
-
-    ~ThreadExecutor();  // Change to virtual if base class
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    ThreadExecutor& operator=(const ThreadExecutor&) = delete;
 
     // -- Methods
     // None
@@ -57,7 +59,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -69,10 +71,6 @@ protected:
     // None
 
 private:
-    // No copy allowed
-    ThreadExecutor(const ThreadExecutor&);
-    ThreadExecutor& operator=(const ThreadExecutor&);
-
     // -- Members
     // None
 
@@ -81,9 +79,9 @@ private:
 
     // -- Overridden methods
 
-    virtual void execute(context::Context&, const ActionNode& node) const;
-    virtual void wait() const;
-    virtual void parametrisation(const param::MIRParametrisation&);
+    void execute(context::Context&, const ActionNode& node) const override;
+    void wait() const override;
+    void parametrisation(const param::MIRParametrisation&) override;
 
     // -- Class members
     // None
@@ -98,6 +96,3 @@ private:
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

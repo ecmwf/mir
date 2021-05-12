@@ -13,16 +13,15 @@
 #include "mir/action/misc/CheckerBoard.h"
 
 #include <algorithm>
-#include <iostream>
 #include <memory>
-
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -51,11 +50,8 @@ void CheckerBoard::execute(context::Context& ctx) const {
     bool normalize = false;
     parametrisation_.get("0-1", normalize);
 
-    std::vector<long> frequencies;
-    if (!parametrisation_.get("frequencies", frequencies)) {
-        frequencies.push_back(16);
-        frequencies.push_back(8);
-    }
+    std::vector<size_t> frequencies{16, 8};
+    parametrisation_.get("frequencies", frequencies);
 
     bool hasMissing     = field.hasMissing();
     double missingValue = field.missingValue();
@@ -87,11 +83,8 @@ void CheckerBoard::execute(context::Context& ctx) const {
             }
         }
 
-        auto we = size_t(frequencies[0]);
-        auto ns = size_t(frequencies[1]);
-
-        double dwe = Longitude::GLOBE.value() / we;
-        double dns = Latitude::GLOBE.value() / ns;
+        auto we = Longitude::GLOBE.value() / double(frequencies[0]);
+        auto ns = Latitude::GLOBE.value() / double(frequencies[1]);
 
         if (normalize) {
             maxvalue = 1;
@@ -105,8 +98,8 @@ void CheckerBoard::execute(context::Context& ctx) const {
         std::map<std::pair<size_t, size_t>, size_t> boxes;
 
         size_t b = 0;
-        for (size_t r = 0; r < we; r++) {
-            for (size_t c = 0; c < ns; c++) {
+        for (size_t r = 0; r < frequencies[0]; r++) {
+            for (size_t c = 0; c < frequencies[1]; c++) {
                 boxes[std::make_pair(r, c)] = b;
                 b++;
                 b %= v.size();
@@ -126,8 +119,8 @@ void CheckerBoard::execute(context::Context& ctx) const {
             Latitude lat  = Latitude::NORTH_POLE - p.lat();
             Longitude lon = p.lon().normalise(Longitude::GREENWICH);
 
-            auto c = size_t(lat.value() / dns);
-            auto r = size_t(lon.value() / dwe);
+            auto c = size_t(lat.value() / ns);
+            auto r = size_t(lon.value() / we);
 
             if (!hasMissing || values[j] != missingValue) {
                 values[j] = boxes[std::make_pair(r, c)];

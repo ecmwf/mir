@@ -10,15 +10,14 @@
  */
 
 
-#ifndef mir_input_GeoPointsFileInput_h
-#define mir_input_GeoPointsFileInput_h
+#pragma once
 
 #include <algorithm>  // FIXME: temporary, for pgen/src/pgen/data/WeatherParameter.cc using std::sort
 #include <iosfwd>
 
-#include "mir/data/MIRValuesVector.h"
 #include "mir/input/MIRInput.h"
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -36,7 +35,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GeoPointsFileInput();  // Change to virtual if base class
+    ~GeoPointsFileInput() override;
 
     // -- Convertors
     // None
@@ -104,14 +103,14 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    virtual void print(std::ostream&) const;  // Change to virtual if base class
-    virtual bool sameAs(const MIRInput& other) const;
+    void print(std::ostream&) const override;
+    bool sameAs(const MIRInput&) const override;
 
-    virtual const param::MIRParametrisation& parametrisation(size_t which) const;
-    virtual data::MIRField field() const;
+    const param::MIRParametrisation& parametrisation(size_t which) const override;
+    data::MIRField field() const override;
 
-    virtual bool next();
-    virtual size_t dimensions() const;
+    bool next() override;
+    size_t dimensions() const override;
 
     // -- Class members
     // None
@@ -120,14 +119,9 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const GeoPointsFileInput& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

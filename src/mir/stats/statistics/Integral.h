@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_stats_statistics_Integral_h
-#define mir_stats_statistics_Integral_h
+#pragma once
 
 #include "mir/stats/Statistics.h"
 
@@ -66,8 +65,8 @@ private:
 
     // -- Overridden methods
 
-    void execute(const data::MIRField&);
-    void print(std::ostream&) const;
+    void execute(const data::MIRField&) override;
+    void print(std::ostream&) const override;
 
     // -- Class members
     // None
@@ -83,6 +82,3 @@ private:
 }  // namespace statistics
 }  // namespace stats
 }  // namespace mir
-
-
-#endif

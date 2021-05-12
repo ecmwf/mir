@@ -12,27 +12,32 @@
 
 #include "mir/action/misc/AreaCropper.h"
 
-#include <iostream>
+#include <ostream>
+#include <sstream>
 #include <vector>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/caching/CroppingCache.h"
 #include "mir/caching/InMemoryCache.h"
-#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/Assert.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
 namespace action {
+
+
+constexpr size_t CAPACITY = 256 * 1024 * 1024;
+static caching::InMemoryCache<caching::CroppingCacheEntry> cache("mirArea", CAPACITY, 0,
+                                                                 "$MIR_AREA_CACHE_MEMORY_FOOTPRINT");
 
 
 struct LL {
@@ -48,11 +53,6 @@ struct LL {
         return lat_ > other.lat_;
     }
 };
-
-
-static eckit::Mutex local_mutex;
-static caching::InMemoryCache<caching::CroppingCacheEntry> cache("mirArea", 256 * 1024 * 1024, 0,
-                                                                 "$MIR_AREA_CACHE_MEMORY_FOOTPRINT");
 
 
 AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation) : Action(parametrisation), caching_(true) {
@@ -93,7 +93,7 @@ void AreaCropper::crop(const repres::Representation& repres, util::BoundingBox& 
     while (iter->next()) {
         const auto& point = iter->pointUnrotated();
 
-        // eckit::Log::debug<LibMir>() << point << " ====> " << bbox.contains(point) << std::endl;
+        // Log::debug() << point << " ====> " << bbox.contains(point) << std::endl;
 
         if (bbox.contains(point)) {
             const Latitude& lat = point.lat();
@@ -129,7 +129,7 @@ void AreaCropper::crop(const repres::Representation& repres, util::BoundingBox& 
     if (m.empty()) {
         std::ostringstream oss;
         oss << "Cropping " << repres << " to " << bbox << " returns no points";
-        throw eckit::UserError(oss.str());
+        throw exception::UserError(oss.str());
     }
 
     mapping.clear();
@@ -165,7 +165,7 @@ util::BoundingBox AreaCropper::outputBoundingBox() const {
 static void createCroppingCacheEntry(caching::CroppingCacheEntry& c, const repres::Representation* representation,
                                      const util::BoundingBox& bbox) {
 
-    eckit::Log::debug<LibMir>() << "Creating cropping cache entry for " << bbox << std::endl;
+    Log::debug() << "Creating cropping cache entry for " << bbox << std::endl;
     c.bbox_ = bbox;
     c.mapping_.clear();
     AreaCropper::crop(*representation, c.bbox_, c.mapping_);
@@ -175,7 +175,8 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c, const repre
 static const caching::CroppingCacheEntry& getMapping(const std::string& key,
                                                      const repres::Representation* representation,
                                                      const util::BoundingBox& bbox, bool caching) {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    static util::recursive_mutex local_mutex;
+    util::lock_guard<util::recursive_mutex> lock(local_mutex);
 
     auto a = cache.find(key);
     if (a != cache.end()) {
@@ -260,19 +261,19 @@ void AreaCropper::execute(context::Context& ctx) const {
         }
 
         repres::RepresentationHandle cropped(representation->croppedRepresentation(c.bbox_));
-        // eckit::Log::debug<LibMir>() << *cropped << std::endl;
+        // Log::debug() << *cropped << std::endl;
 
         if (result.empty()) {
             std::ostringstream oss;
             oss << "AreaCropper: failed to crop " << *representation << " with bbox " << c.bbox_
                 << " cropped=" << *cropped;
-            throw eckit::UserError(oss.str());
+            throw exception::UserError(oss.str());
         }
 
         cropped->validate(result);
 
         field.representation(cropped);
-        field.update(result, i, field.hasMissing());
+        field.update(result, i);
     }
 }
 

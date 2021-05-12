@@ -10,13 +10,13 @@
  */
 
 
-#ifndef mir_key_grid_GridPattern_h
-#define mir_key_grid_GridPattern_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
 
-#include "eckit/utils/Regex.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/util/Regex.h"
 
 
 namespace mir {
@@ -53,7 +53,10 @@ public:
     void operator=(const GridPattern&) = delete;
 
     // -- Methods
-    // None
+
+    static void list(std::ostream&);
+    static std::string match(const std::string& name, const param::MIRParametrisation&);
+    static const Grid* lookup(const std::string& name);
 
     // -- Overridden methods
     // None
@@ -62,10 +65,7 @@ public:
     // None
 
     // -- Class methods
-
-    static bool match(const std::string&);
-    static const Grid& lookup(const std::string&);
-    static void list(std::ostream&);
+    // None
 
 protected:
     GridPattern(const std::string&);
@@ -73,12 +73,14 @@ protected:
 
     // -- Members
 
-    eckit::Regex pattern_;
+    const std::string pattern_;
+    const util::Regex regex_;
 
     // -- Methods
 
-    virtual const Grid* make(const std::string&) const = 0;
-    virtual void print(std::ostream&) const            = 0;
+    virtual void print(std::ostream&) const                                                        = 0;
+    virtual const Grid* make(const std::string&) const                                             = 0;
+    virtual std::string canonical(const std::string& name, const param::MIRParametrisation&) const = 0;
 
     // -- Overridden methods
     // None
@@ -117,6 +119,3 @@ private:
 }  // namespace grid
 }  // namespace key
 }  // namespace mir
-
-
-#endif

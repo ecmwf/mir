@@ -10,10 +10,10 @@
  */
 
 
-#ifndef mir_netcdf_Reshape_h
-#define mir_netcdf_Reshape_h
+#pragma once
 
 #include "eckit/memory/Counted.h"
+
 #include "mir/netcdf/HyperCube.h"
 
 
@@ -27,10 +27,10 @@ public:
 
     size_t operator()(size_t) const;
 
-    bool merge(const Reshape& other);
+    bool merge(const Reshape&);
 
 protected:
-    ~Reshape();
+    ~Reshape() override;
 
 private:
     // -- Members
@@ -57,6 +57,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

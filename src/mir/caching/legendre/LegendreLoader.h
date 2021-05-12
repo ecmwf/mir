@@ -10,15 +10,21 @@
  */
 
 
-#ifndef mir_caching_legendre_LegendreLoader_h
-#define mir_caching_legendre_LegendreLoader_h
+#pragma once
 
 #include <iosfwd>
 
 #include "eckit/filesystem/PathName.h"
 
-#include "mir/api/Atlas.h"
+#include "mir/util/Atlas.h"
+#include "mir/util/Types.h"
 
+
+namespace atlas {
+namespace trans {
+class LegendreCache;
+}
+}  // namespace atlas
 
 namespace mir {
 namespace param {
@@ -45,11 +51,7 @@ public:
     virtual size_t size() const         = 0;
     virtual bool inSharedMemory() const = 0;
 
-    atlas::trans::LegendreCache transCache() { return atlas::trans::LegendreCache(address(), size()); }
-
-    static eckit::Channel& log();
-    static eckit::Channel& info();
-    static eckit::Channel& warn();
+    atlas::trans::LegendreCache transCache();
 
 protected:
     const param::MIRParametrisation& parametrisation_;
@@ -87,11 +89,11 @@ public:
 template <class T>
 class LegendreLoaderBuilder : public LegendreLoaderFactory {
 
-    virtual LegendreLoader* make(const param::MIRParametrisation& param, const eckit::PathName& path) {
+    LegendreLoader* make(const param::MIRParametrisation& param, const eckit::PathName& path) override {
         return new T(param, path);
     }
 
-    virtual bool shared() const { return T::shared(); }
+    bool shared() const override { return T::shared(); }
 
 public:
     LegendreLoaderBuilder(const std::string& name) : LegendreLoaderFactory(name) {}
@@ -101,6 +103,3 @@ public:
 }  // namespace legendre
 }  // namespace caching
 }  // namespace mir
-
-
-#endif

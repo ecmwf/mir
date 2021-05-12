@@ -12,12 +12,14 @@
 
 #include <netcdf.h>
 
-#include <algorithm>
-#include <cstring>
-#include <iostream>
-#include <vector>
+#include <sstream>
 
 #include "mir/netcdf/Type.h"
+
+#include <algorithm>
+#include <cstring>
+#include <ostream>
+#include <vector>
 
 #include "mir/netcdf/Codec.h"
 #include "mir/netcdf/Dimension.h"
@@ -28,6 +30,8 @@
 #include "mir/netcdf/UpdateCoordinateStep.h"
 #include "mir/netcdf/ValueT.h"
 #include "mir/netcdf/Variable.h"
+#include "mir/util/Log.h"
+
 
 namespace mir {
 namespace netcdf {
@@ -48,48 +52,48 @@ Type& Type::lookup(int type) {
     ASSERT(type >= 0 && type <= NC_MAX_ATOMIC_TYPE);
 
     if (types_[type] == nullptr) {
-        eckit::Log::error() << "Type::lookup " << type << " is unknown: ";
+        Log::error() << "Type::lookup " << type << " is unknown: ";
 
         switch (type) {
 
             case NC_BYTE:
-                eckit::Log::error() << "NC_BYTE" << std::endl;
+                Log::error() << "NC_BYTE" << std::endl;
                 break;
             case NC_UBYTE:
-                eckit::Log::error() << "NC_UBYTE" << std::endl;
+                Log::error() << "NC_UBYTE" << std::endl;
                 break;
             case NC_CHAR:
-                eckit::Log::error() << "NC_CHAR" << std::endl;
+                Log::error() << "NC_CHAR" << std::endl;
                 break;
             case NC_SHORT:
-                eckit::Log::error() << "NC_SHORT" << std::endl;
+                Log::error() << "NC_SHORT" << std::endl;
                 break;
             case NC_USHORT:
-                eckit::Log::error() << "NC_USHORT" << std::endl;
+                Log::error() << "NC_USHORT" << std::endl;
                 break;
             case NC_INT:
-                eckit::Log::error() << "NC_INT" << std::endl;
+                Log::error() << "NC_INT" << std::endl;
                 break;
             case NC_UINT:
-                eckit::Log::error() << "NC_UINT" << std::endl;
+                Log::error() << "NC_UINT" << std::endl;
                 break;
             case NC_INT64:
-                eckit::Log::error() << "NC_INT64" << std::endl;
+                Log::error() << "NC_INT64" << std::endl;
                 break;
             case NC_UINT64:
-                eckit::Log::error() << "NC_UINT64" << std::endl;
+                Log::error() << "NC_UINT64" << std::endl;
                 break;
             case NC_FLOAT:
-                eckit::Log::error() << "NC_FLOAT" << std::endl;
+                Log::error() << "NC_FLOAT" << std::endl;
                 break;
             case NC_DOUBLE:
-                eckit::Log::error() << "NC_DOUBLE" << std::endl;
+                Log::error() << "NC_DOUBLE" << std::endl;
                 break;
             case NC_STRING:
-                eckit::Log::error() << "NC_STRING" << std::endl;
+                Log::error() << "NC_STRING" << std::endl;
                 break;
             default:
-                eckit::Log::error() << "????" << std::endl;
+                Log::error() << "????" << std::endl;
         }
     }
 
@@ -130,17 +134,17 @@ Type& Type::lookup(Type& type1, Type& type2) {
         if (k != s2.end()) {
 
             if (type1 != type2) {
-                eckit::Log::info() << "Common super-type for " << type1 << " and " << type2 << " is " << lookup(*j)
-                                   << std::endl;
+                Log::info() << "Common super-type for " << type1 << " and " << type2 << " is " << lookup(*j)
+                            << std::endl;
             }
 
             return lookup(*j);
         }
     }
 
-    std::stringstream s;
+    std::ostringstream s;
     s << "Cannot find a common super-type to " << type1 << " and " << type2;
-    throw MergeError(s.str());
+    throw exception::MergeError(s.str());
 }
 
 
@@ -164,18 +168,17 @@ class TypeT : public Type {
 
 public:
     TypeT(int code, const std::string& name, const std::string& dump, int super) : Type(code, name, dump, super) {}
-    virtual ~TypeT() = default;
 
 private:
-    virtual Value* attributeValue(int nc, int id, const char* name, size_t len, const std::string& path);
+    Value* attributeValue(int nc, int id, const char* name, size_t len, const std::string& path) override;
 
-    virtual bool coordinateOutputVariableMerge(Variable& out, const Variable& in, MergePlan& plan);
-    virtual bool cellMethodOutputVariableMerge(Variable& out, const Variable& in, MergePlan& plan);
-    virtual void save(const Matrix&, int nc, int varid, const std::string& path) const;
+    bool coordinateOutputVariableMerge(Variable& out, const Variable& in, MergePlan& plan) override;
+    bool cellMethodOutputVariableMerge(Variable& out, const Variable& in, MergePlan& plan) override;
+    void save(const Matrix&, int nc, int varid, const std::string& path) const override;
 
-    virtual void print(std::ostream& out) const;
-    virtual void dump(std::ostream& out, const Matrix&) const;
-    virtual void printValues(std::ostream& out, const Matrix&) const;
+    void print(std::ostream& out) const override;
+    void dump(std::ostream& out, const Matrix&) const override;
+    void printValues(std::ostream& out, const Matrix&) const override;
 };
 
 template <class T>
@@ -227,7 +230,7 @@ template <>
 bool TypeT<std::string>::cellMethodOutputVariableMerge(Variable& /*out*/, const Variable& /*in*/, MergePlan& /*plan*/) {
     std::ostringstream os;
     os << "TypeT<std::string>::cellMethodOutputVariableMerge() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
@@ -243,8 +246,8 @@ bool TypeT<T>::cellMethodOutputVariableMerge(Variable& out, const Variable& in, 
 template <class T, class Q>
 static void save_values(const Matrix& matrix, int nc, int varid, const std::string& path, Q put) {
 
-    // eckit::Log::info() << "Save " << matrix << std::endl;
-    // matrix.dumpTree(eckit::Log::info(), 0);
+    // Log::info() << "Save " << matrix << std::endl;
+    // matrix.dumpTree(Log::info(), 0);
     Codec* codec = matrix.codec();
     if (codec) {
         std::vector<T> values = matrix.values<T>();
@@ -266,7 +269,7 @@ template <>
 void TypeT<std::string>::save(const Matrix&, int /*nc*/, int /*varid*/, const std::string& /*path*/) const {
     std::ostringstream os;
     os << "TypeT<std::string>::save() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
@@ -308,7 +311,7 @@ void TypeT<short>::save(const Matrix& m, int out, int varid, const std::string& 
 
 template <>
 bool TypeT<std::string>::coordinateOutputVariableMerge(Variable& /*out*/, const Variable& /*in*/, MergePlan& /*plan*/) {
-    eckit::Log::info() << __func__ << " " << *this << std::endl;
+    Log::info() << __func__ << " " << *this << std::endl;
     NOTIMP;
 }
 

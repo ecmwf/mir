@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_gauss_reduced_Octahedral_h
-#define mir_repres_gauss_reduced_Octahedral_h
+#pragma once
 
 #include "mir/repres/gauss/reduced/Reduced.h"
 #include "mir/util/BoundingBox.h"
@@ -34,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Octahedral();  // Change to virtual if base class
+    ~Octahedral() override;
 
     // -- Convertors
     // None
@@ -62,11 +61,11 @@ protected:
     // None
 
     // -- Overridden methods
-    virtual void fill(grib_info&) const;
-    virtual void fill(api::MIRJob&) const;
-    virtual atlas::Grid atlasGrid() const;
-    virtual void makeName(std::ostream&) const;
-    virtual bool sameAs(const Representation& other) const;
+    void fill(grib_info&) const override;
+    void fill(api::MIRJob&) const override;
+    atlas::Grid atlasGrid() const override;
+    void makeName(std::ostream&) const override;
+    bool sameAs(const Representation&) const override;
 
     // -- Class members
     // None
@@ -83,7 +82,7 @@ private:
 
     // -- Overridden methods
 
-    virtual void fill(util::MeshGeneratorParameters&) const;
+    void fill(util::MeshGeneratorParameters&) const override;
 
     // -- Class members
     // None
@@ -92,9 +91,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const Octahedral& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
@@ -102,6 +99,3 @@ private:
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

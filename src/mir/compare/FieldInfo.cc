@@ -12,7 +12,7 @@
 
 #include "mir/compare/FieldInfo.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/log/JSON.h"
 

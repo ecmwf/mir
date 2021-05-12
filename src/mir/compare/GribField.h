@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_compare_GribField_h
-#define mir_compare_GribField_h
+#pragma once
 
 #include <iosfwd>
 #include <map>
@@ -81,30 +80,30 @@ private:
     bool sameParam(const GribField&) const;
     bool sameNumberOfPoints(const GribField&) const;
 
-    bool match(const std::string&, const std::string&) const;
+    bool match(const std::string&, const std::string&) const override;
 
-    size_t numberOfPoints() const;
+    size_t numberOfPoints() const override;
 
-    const std::string& format() const;
-    bool canCompareFieldValues() const;
+    const std::string& format() const override;
+    bool canCompareFieldValues() const override;
 
-    std::ostream& printGrid(std::ostream&) const;
+    std::ostream& printGrid(std::ostream&) const override;
 
 public:
-    static void addOptions(std::vector<eckit::option::Option*>& options);
-    static void setOptions(const eckit::option::CmdArgs& args);
+    static void addOptions(std::vector<eckit::option::Option*>&);
+    static void setOptions(const eckit::option::CmdArgs&);
 
 private:
-    // virtual bool equal_to(const GribField&) const;
-    virtual bool wrapped() const;
-    virtual bool less_than(const FieldBase&) const;
-    virtual void whiteListEntries(std::ostream&) const;
-    virtual size_t differences(const FieldBase&) const;
-    virtual std::ostream& printDifference(std::ostream&, const FieldBase&) const;
-    virtual void compareExtra(std::ostream&, const FieldBase&) const;
-    virtual bool same(const FieldBase&) const;
-    virtual bool match(const FieldBase&) const;
-    virtual void json(eckit::JSON&) const;
+    // bool equal_to(const GribField&) const override ;
+    bool wrapped() const override;
+    bool less_than(const FieldBase&) const override;
+    void whiteListEntries(std::ostream&) const override;
+    size_t differences(const FieldBase&) const override;
+    std::ostream& printDifference(std::ostream&, const FieldBase&) const override;
+    void compareExtra(std::ostream&, const FieldBase&) const override;
+    bool same(const FieldBase&) const override;
+    bool match(const FieldBase&) const override;
+    void json(eckit::JSON&) const override;
 
     std::map<std::string, std::string> values_;
 
@@ -142,7 +141,7 @@ private:
     bool hasMissing_;
 
 private:
-    void print(std::ostream& out) const;
+    void print(std::ostream&) const override;
 
     static void setGrid(GribField&, grib_handle*);
     static void setArea(GribField&, grib_handle*);
@@ -151,5 +150,3 @@ private:
 
 }  // namespace compare
 }  // namespace mir
-
-#endif

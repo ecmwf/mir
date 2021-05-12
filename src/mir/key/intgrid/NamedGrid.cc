@@ -12,7 +12,7 @@
 
 #include "mir/key/intgrid/NamedGrid.h"
 
-#include "eckit/exception/Exceptions.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

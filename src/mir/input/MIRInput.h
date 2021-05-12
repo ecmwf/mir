@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_MIRInput_h
-#define mir_input_MIRInput_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -68,7 +67,7 @@ public:
     virtual grib_handle* gribHandle(size_t which = 0) const;
     virtual void setAuxiliaryInformation(const std::string&);
     virtual size_t copy(double* values, size_t size) const;
-    virtual bool sameAs(const MIRInput& other) const = 0;
+    virtual bool sameAs(const MIRInput&) const = 0;
 
     // -- Overridden methods
     // None
@@ -142,7 +141,7 @@ public:
 
 template <class T>
 class MIRInputBuilder : public MIRInputFactory {
-    virtual MIRInput* make(const std::string& path) { return new T(path); }
+    MIRInput* make(const std::string& path) override { return new T(path); }
 
 public:
     MIRInputBuilder(unsigned long magic) : MIRInputFactory(magic) {}
@@ -151,6 +150,3 @@ public:
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

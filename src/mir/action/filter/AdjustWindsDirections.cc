@@ -12,14 +12,14 @@
 
 #include "mir/action/filter/AdjustWindsDirections.h"
 
-#include <iostream>
+#include <ostream>
 #include <vector>
 
 #include "mir/action/context/Context.h"
 #include "mir/data/CartesianVector2DField.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/util/Assert.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

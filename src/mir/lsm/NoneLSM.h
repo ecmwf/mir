@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_lsm_NoneLSM_h
-#define mir_lsm_NoneLSM_h
+#pragma once
 
 #include "mir/lsm/LSMSelection.h"
 
@@ -30,8 +29,7 @@ public:
     NoneLSM(const std::string& name);
 
     // -- Destructor
-
-    virtual ~NoneLSM();
+    // None
 
     // -- Convertors
     // None
@@ -58,7 +56,7 @@ protected:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -84,11 +82,11 @@ private:
 
     // -- Class methods
 
-    virtual Mask* create(const param::MIRParametrisation&, const repres::Representation&,
-                         const std::string& which) const;
+    Mask* create(const param::MIRParametrisation&, const repres::Representation&,
+                 const std::string& which) const override;
 
-    virtual std::string cacheKey(const param::MIRParametrisation&, const repres::Representation&,
-                                 const std::string& which) const;
+    std::string cacheKey(const param::MIRParametrisation&, const repres::Representation&,
+                         const std::string& which) const override;
 
     virtual std::string cacheName() const;
 
@@ -99,6 +97,3 @@ private:
 
 }  // namespace lsm
 }  // namespace mir
-
-
-#endif

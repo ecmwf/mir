@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_output_RawOutput_h
-#define mir_output_RawOutput_h
+#pragma once
 
 #include "mir/output/MIROutput.h"
 
@@ -30,8 +29,7 @@ public:
     RawOutput(double* values, size_t count);
 
     // -- Destructor
-
-    ~RawOutput();  // Change to virtual if base class
+    // None
 
     // -- Convertors
     // None
@@ -81,12 +79,12 @@ private:
     // -- Overridden methods
 
     // From MIROutput
-    virtual size_t copy(const param::MIRParametrisation&, context::Context&);  // No interpolation performed
-    virtual size_t save(const param::MIRParametrisation&, context::Context&);
-    virtual bool sameAs(const MIROutput&) const;
-    virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const;
-    virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const;
-    virtual void print(std::ostream&) const;
+    size_t copy(const param::MIRParametrisation&, context::Context&) override;  // No interpolation performed
+    size_t save(const param::MIRParametrisation&, context::Context&) override;
+    bool sameAs(const MIROutput&) const override;
+    bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const override;
+    bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const override;
+    void print(std::ostream&) const override;
 
     // -- Class members
     // None
@@ -95,14 +93,9 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const RawOutput& p)
-    // { p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace output
 }  // namespace mir
-
-
-#endif

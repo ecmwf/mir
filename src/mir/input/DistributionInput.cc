@@ -13,12 +13,11 @@
 #include "mir/input/DistributionInput.h"
 
 #include <algorithm>
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
 
 #include "mir/param/MIRParametrisation.h"
 #include "mir/stats/Distribution.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -46,7 +45,7 @@ void DistributionInput::print(std::ostream& out) const {
 }
 
 
-data::MIRValuesVector DistributionInput::fill(size_t n) const {
+MIRValuesVector DistributionInput::fill(size_t n) const {
     auto& dis = *distribution_;
 
     MIRValuesVector values(n);

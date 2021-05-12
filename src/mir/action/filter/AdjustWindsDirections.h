@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_AdjustWindsDirections_h
-#define mir_action_AdjustWindsDirections_h
+#pragma once
 
 #include "mir/action/plan/Action.h"
 #include "mir/util/Rotation.h"
@@ -32,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~AdjustWindsDirections();  // Change to virtual if base class
+    ~AdjustWindsDirections() override;
 
     // -- Convertors
     // None
@@ -58,7 +57,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -79,9 +78,9 @@ private:
 
     // -- Overridden methods
 
-    virtual void execute(context::Context& ctx) const;
-    virtual bool sameAs(const Action& other) const;
-    virtual const char* name() const;
+    void execute(context::Context&) const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
 
     // -- Class members
     // None
@@ -90,14 +89,9 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const AdjustWinds& p)
-    //	{ p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

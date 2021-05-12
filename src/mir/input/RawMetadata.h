@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_RawMetadata_h
-#define mir_input_RawMetadata_h
+#pragma once
 
 #include <string>
 #include <vector>
@@ -116,6 +115,3 @@ private:
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

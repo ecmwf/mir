@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_search_tree_TreeMappedAnonymousMemory_h
-#define mir_search_tree_TreeMappedAnonymousMemory_h
+#pragma once
 
 #include "mir/search/tree/TreeMapped.h"
 
@@ -23,11 +22,11 @@ namespace tree {
 
 class TreeMappedAnonymousMemory : public TreeMapped {
 
-    virtual bool ready() const { return false; }
+    bool ready() const override { return false; }
 
-    virtual void commit() {}
+    void commit() override {}
 
-    virtual void print(std::ostream& out) const { out << "TreeMappedAnonymousMemory[]"; }
+    void print(std::ostream& out) const override { out << "TreeMappedAnonymousMemory[]"; }
 
 public:
     TreeMappedAnonymousMemory(const repres::Representation&, const param::MIRParametrisation&);
@@ -37,6 +36,3 @@ public:
 }  // namespace tree
 }  // namespace search
 }  // namespace mir
-
-
-#endif

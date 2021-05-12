@@ -10,15 +10,14 @@
  */
 
 
-#ifndef mir_repres_Representation_h
-#define mir_repres_Representation_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
 
 #include "eckit/memory/Counted.h"
 
-#include "mir/data/MIRValuesVector.h"
+#include "mir/util/Types.h"
 
 
 struct grib_info;
@@ -120,10 +119,6 @@ public:
 
     virtual void reorder(long scanningMode, MIRValuesVector&) const;
 
-    virtual void setComplexPacking(grib_info&) const;
-    virtual void setSimplePacking(grib_info&) const;
-    virtual void setGivenPacking(grib_info&) const;
-
     virtual std::vector<util::GridBox> gridBoxes() const;
 
     virtual std::string factory() const;  // Return factory name
@@ -140,7 +135,7 @@ public:
 protected:
     // -- Destructor
 
-    virtual ~Representation();
+    ~Representation() override;
 
     // -- Members
     // None
@@ -226,7 +221,7 @@ public:
 
 template <class T>
 class RepresentationBuilder : public RepresentationFactory {
-    virtual Representation* make(const param::MIRParametrisation& param) { return new T(param); }
+    Representation* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     RepresentationBuilder(const std::string& name) : RepresentationFactory(name) {}
@@ -235,6 +230,3 @@ public:
 
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

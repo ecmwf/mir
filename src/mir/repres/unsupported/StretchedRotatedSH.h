@@ -10,8 +10,7 @@
  */
 
 
-#ifndef StretchedRotatedSH_H
-#define StretchedRotatedSH_H
+#pragma once
 
 #include "mir/repres/Gridded.h"
 
@@ -28,18 +27,20 @@ public:
     // -- Constructors
 
     StretchedRotatedSH(const param::MIRParametrisation&);
+    StretchedRotatedSH(const StretchedRotatedSH&) = delete;
 
     // -- Destructor
-
-    virtual ~StretchedRotatedSH();  // Change to virtual if base class
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    StretchedRotatedSH& operator=(const StretchedRotatedSH&) = delete;
 
     // -- Methods
+    // // None
 
     // -- Overridden methods
     // None
@@ -56,7 +57,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -68,23 +69,14 @@ protected:
     // None
 
 private:
-    StretchedRotatedSH();
-
-    // No copy allowed
-
-    StretchedRotatedSH(const StretchedRotatedSH&);
-    StretchedRotatedSH& operator=(const StretchedRotatedSH&);
-
     // -- Members
-
+    // None
 
     // -- Methods
     // None
 
-
     // -- Overridden methods
-
-    virtual void fill(grib_info&) const;
+    // None
 
     // -- Class members
     // None
@@ -93,12 +85,9 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const StretchedRotatedSH& p)
-    //	{ p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace repres
 }  // namespace mir
-#endif

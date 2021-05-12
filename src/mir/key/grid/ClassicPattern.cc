@@ -12,11 +12,12 @@
 
 #include "mir/key/grid/ClassicPattern.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/utils/Translator.h"
 
 #include "mir/key/grid/NamedClassic.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -40,7 +41,13 @@ const Grid* ClassicPattern::make(const std::string& name) const {
 }
 
 
-static ClassicPattern pattern("^[nN][1-9][0-9]*$");
+std::string ClassicPattern::canonical(const std::string& name, const param::MIRParametrisation&) const {
+    ASSERT(name.size() > 1);
+    return "N" + name.substr(1);
+}
+
+
+static ClassicPattern __pattern("^[nN][1-9][0-9]*$");
 
 
 }  // namespace grid

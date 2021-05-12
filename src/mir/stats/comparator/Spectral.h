@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_stats_comparator_Spectral_h
-#define mir_stats_comparator_Spectral_h
+#pragma once
 
 #include "mir/stats/Comparator.h"
 
@@ -35,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Spectral();
+    ~Spectral() override;
 
     // -- Convertors
     // None
@@ -73,8 +72,8 @@ private:
 
     // -- Overridden methods
 
-    std::string execute(const data::MIRField&, const data::MIRField&);
-    void print(std::ostream&) const;
+    std::string execute(const data::MIRField&, const data::MIRField&) override;
+    void print(std::ostream&) const override;
 
     // -- Class members
     // None
@@ -90,6 +89,3 @@ private:
 }  // namespace comparator
 }  // namespace stats
 }  // namespace mir
-
-
-#endif

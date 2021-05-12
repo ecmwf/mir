@@ -3,4 +3,4 @@ param=vo_d,level=1000
 # mir
 --vod2uv --truncation=1023 --intgrid=none --grid=O400 --dont-compress-plan
 # plan
-ShTruncate[truncation=1023]|ShToNamedGrid[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<vod2uv>,grid=O400]|Save[output=...]
+ShTruncate[truncation=1023]|ShToNamedGrid[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<vod2uv>,grid=O400]|Save[packing=simple,output=...]

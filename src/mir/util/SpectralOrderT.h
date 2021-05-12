@@ -10,13 +10,11 @@
  */
 
 
-#ifndef mir_util_SpectralOrderT_h
-#define mir_util_SpectralOrderT_h
+#pragma once
 
 #include <cmath>
 
-#include "eckit/exception/Exceptions.h"
-
+#include "mir/util/Exceptions.h"
 #include "mir/util/SpectralOrder.h"
 
 
@@ -46,16 +44,16 @@ public:
     // None
 
     // -- Overridden methods
-    long getTruncationFromGaussianNumber(const long& N) const {
+    long getTruncationFromGaussianNumber(long N) const override {
         ASSERT(N);
 
-        long T = long(ceil(4. / double(ORDER + 1) * N) - 1);
+        long T = long(ceil(4. / double(ORDER + 1) * double(N)) - 1);
         ASSERT(T);
 
         return T;
     }
 
-    long getGaussianNumberFromTruncation(const long& T) const {
+    long getGaussianNumberFromTruncation(long T) const override {
         ASSERT(T);
 
         long N = long(double(T + 1) * double(ORDER + 1) / 4.);
@@ -64,7 +62,7 @@ public:
         return N;
     }
 
-    void print(std::ostream& out) const { out << "SpectralOrderT<ORDER=" << ORDER << ">[]"; }
+    void print(std::ostream& out) const override { out << "SpectralOrderT<ORDER=" << ORDER << ">[]"; }
 
     // -- Class members
     // None
@@ -111,6 +109,3 @@ private:
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

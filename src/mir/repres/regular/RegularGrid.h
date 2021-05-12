@@ -10,12 +10,11 @@
  */
 
 
-#ifndef mir_repres_regular_RegularGrid_h
-#define mir_repres_regular_RegularGrid_h
-
-#include "mir/api/Atlas.h"
+#pragma once
 
 #include "mir/repres/Gridded.h"
+#include "mir/util/Atlas.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -41,7 +40,7 @@ public:
 
     // -- Destructor
 
-    virtual ~RegularGrid();
+    ~RegularGrid() override;
 
     // -- Convertors
     // None
@@ -62,10 +61,6 @@ public:
     // None
 
 protected:
-    // -- Types
-
-    using LLCOORDS = eckit::geometry::LLCOORDS;
-
     // -- Members
 
     ::atlas::RegularGrid grid_;
@@ -80,23 +75,23 @@ protected:
     // -- Overridden methods
 
     // from Representation
-    virtual bool sameAs(const Representation&) const;
+    bool sameAs(const Representation&) const override;
 
-    virtual bool includesNorthPole() const;
-    virtual bool includesSouthPole() const;
-    virtual bool isPeriodicWestEast() const;
+    bool includesNorthPole() const override;
+    bool includesSouthPole() const override;
+    bool isPeriodicWestEast() const override;
 
-    virtual void fill(grib_info&) const;
-    virtual void fill(util::MeshGeneratorParameters&) const;
-    virtual void reorder(long scanningMode, MIRValuesVector&) const;
-    virtual void validate(const MIRValuesVector&) const;
-    virtual void makeName(std::ostream&) const;
-    virtual void print(std::ostream&) const;
-    virtual bool extendBoundingBoxOnIntersect() const;
+    void fill(grib_info&) const override;
+    void fill(util::MeshGeneratorParameters&) const override;
+    void reorder(long scanningMode, MIRValuesVector&) const override;
+    void validate(const MIRValuesVector&) const override;
+    void makeName(std::ostream&) const override;
+    void print(std::ostream&) const override;
+    bool extendBoundingBoxOnIntersect() const override;
 
-    virtual ::atlas::Grid atlasGrid() const;
-    virtual Iterator* iterator() const;
-    virtual size_t numberOfPoints() const;
+    ::atlas::Grid atlasGrid() const override;
+    Iterator* iterator() const override;
+    size_t numberOfPoints() const override;
 
     // -- Class members
     // None
@@ -121,6 +116,3 @@ private:
 }  // namespace regular
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

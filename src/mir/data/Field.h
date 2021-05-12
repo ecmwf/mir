@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_data_Field_h
-#define mir_data_Field_h
+#pragma once
 
 #include <iosfwd>
 #include <map>
@@ -19,7 +18,7 @@
 
 #include "eckit/memory/Counted.h"
 
-#include "mir/data/MIRValuesVector.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -47,12 +46,11 @@ public:
     // -- Constructors
 
     Field(const param::MIRParametrisation&, bool hasMissing = false, double missingValue = 0);
-
     Field(const repres::Representation*, bool hasMissing = false, double missingValue = 0);
 
     // -- Destructor
 
-    ~Field();  // Change to virtual if base class
+    ~Field() override;
 
     // -- Convertors
     // None
@@ -72,7 +70,7 @@ public:
     const repres::Representation* representation() const;
 
     /// @warning Takes ownership of the vector
-    void update(MIRValuesVector&, size_t which, bool recomputeHasMissing = false);
+    void update(MIRValuesVector&, size_t which);
 
     const MIRValuesVector& values(size_t which) const;
     MIRValuesVector& direct(size_t which);  // Non-const version for direct update (Filter)
@@ -112,7 +110,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const;
 
     // -- Overridden methods
     // None
@@ -124,9 +122,13 @@ protected:
     // None
 
 private:
-    // No copy allowed (except with "clone")
-    Field(const Field&);
-    Field& operator=(const Field&);
+    // -- Constructors
+
+    Field(const Field&);  // (use clone to copy)
+
+    // -- Operators
+
+    Field& operator=(const Field&);  // (use clone to copy)
 
     // -- Members
 
@@ -141,6 +143,7 @@ private:
     mutable bool hasMissing_;
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -162,6 +165,3 @@ private:
 
 }  // namespace data
 }  // namespace mir
-
-
-#endif

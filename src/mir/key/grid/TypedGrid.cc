@@ -12,11 +12,9 @@
 
 #include "mir/key/grid/TypedGrid.h"
 
-#include <iostream>
+#include <ostream>
 #include <sstream>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
 #include "eckit/utils/StringTools.h"
 
 #include "mir/key/grid/GridPattern.h"
@@ -24,6 +22,8 @@
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/repres/regular/Lambert.h"
 #include "mir/repres/regular/LambertAzimuthalEqualArea.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -36,6 +36,9 @@ TypedGrid::TypedGrid(const std::string& key, const std::set<std::string>& requir
     Grid(key, typed_t), requiredKeys_(requiredKeys), optionalKeys_(optionalKeys) {
     requiredKeys_.insert("gridType");
 }
+
+
+TypedGrid::~TypedGrid() = default;
 
 
 void TypedGrid::print(std::ostream& out) const {
@@ -59,10 +62,10 @@ void TypedGrid::print(std::ostream& out) const {
 void TypedGrid::parametrisation(const std::string& grid, param::SimpleParametrisation& param) const {
     // set a new parametrisation containing only required or optional keys
     param::SimpleParametrisation p;
-    for (auto kv_str : eckit::StringTools::split(";", grid)) {
+    for (auto& kv_str : eckit::StringTools::split(";", grid)) {
         auto kv = eckit::StringTools::split("=", kv_str);
         if (kv.size() != 2) {
-            throw eckit::UserError("Gridded2TypedGrid: invalid key=value pair, got '" + kv_str + "'");
+            throw exception::UserError("Gridded2TypedGrid: invalid key=value pair, got '" + kv_str + "'");
         }
 
         auto& key   = kv[0];
@@ -84,14 +87,7 @@ size_t TypedGrid::gaussianNumber() const {
     parametrisation(key_, param);
 
     long N;
-    if (param.get("gaussianNumber", N)) {
-        ASSERT(N >= 0);
-        return size_t(N);
-    }
-
-    N = 64;
-    eckit::Log::warning() << "TypedGrid::gaussianNumber: setting N=" << N << " (hardcoded!)" << std::endl;
-    return N;
+    return param.get("gaussianNumber", N) && N > 0 ? size_t(N) : default_gaussian_number();
 }
 
 
@@ -109,8 +105,8 @@ void TypedGrid::checkRequiredKeys(const param::MIRParametrisation& param) const 
     if (!missingKeys.empty()) {
         std::ostringstream msg;
         msg << *this << ": required keys are missing: " << missingKeys;
-        eckit::Log::error() << msg.str() << std::endl;
-        throw eckit::UserError(msg.str());
+        Log::error() << msg.str() << std::endl;
+        throw exception::UserError(msg.str());
     }
 }
 
@@ -119,7 +115,7 @@ template <typename Repres>
 struct TypedGeneric final : public TypedGrid {
     using TypedGrid::TypedGrid;
 
-    const repres::Representation* representation(const param::MIRParametrisation& param) const {
+    const repres::Representation* representation(const param::MIRParametrisation& param) const override {
         // check for missing keys, set return representation
         checkRequiredKeys(param);
         return new Repres(param);
@@ -137,6 +133,11 @@ struct TypedGenericPattern final : public GridPattern {
     TypedGenericPattern& operator=(const TypedGenericPattern&) = delete;
 
     const Grid* make(const std::string& name) const override { return new TYPE(name, requiredKeys_, optionalKeys_); }
+
+    std::string canonical(const std::string& name, const param::MIRParametrisation&) const override {
+        // FIXME not implemented
+        return name;
+    }
 
     void print(std::ostream& out) const override {
         out << "TypedGenericPattern[pattern=" << pattern_ << ",requiredKeys=[";

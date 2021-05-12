@@ -12,11 +12,12 @@
 
 #include "mir/netcdf/OutputAttribute.h"
 
+#include <ostream>
+
 #include "mir/netcdf/Endowed.h"
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/Value.h"
-
-#include <iostream>
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -51,12 +52,12 @@ void OutputAttribute::clone(Endowed& owner) const {
 void OutputAttribute::merge(const Attribute& other) {
     if (!value_->sameAs(other.value())) {
         if (valid_) {
-            eckit::Log::warning() << "WARNING: dropping attribute " << fullName() << std::endl;
+            Log::warning() << "WARNING: dropping attribute " << fullName() << std::endl;
             valid_ = false;
 
             for (size_t i = 0; dont_drop[i] != nullptr; ++i) {
                 if (name_ == dont_drop[i]) {
-                    throw MergeError("Attempt to drop attribute " + name_);
+                    throw exception::MergeError("Attempt to drop attribute " + name_);
                 }
             }
         }

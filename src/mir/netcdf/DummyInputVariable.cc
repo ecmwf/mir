@@ -12,11 +12,12 @@
 
 #include "mir/netcdf/DummyInputVariable.h"
 
+#include <ostream>
+
 #include "mir/netcdf/Attribute.h"
 #include "mir/netcdf/DummyMatrix.h"
 #include "mir/netcdf/Exceptions.h"
-
-#include <iostream>
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -25,7 +26,7 @@ namespace netcdf {
 
 DummyInputVariable::DummyInputVariable(Dataset& owner, const Variable& parent) :
     Variable(owner, parent.name(), parent.dimensions()), parent_(parent) {
-    eckit::Log::info() << "DummmyInputVariable " << parent_ << std::endl;
+    Log::info() << "DummmyInputVariable " << parent_ << std::endl;
     setMatrix(new DummyMatrix(parent));
 
     for (auto& j : parent.attributes()) {

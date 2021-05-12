@@ -13,6 +13,7 @@
 #include <memory>
 
 #include "eckit/option/CmdArgs.h"
+#include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
 
 #include "mir/data/MIRField.h"
@@ -22,25 +23,29 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
-class MIRGridInfo : public mir::tools::MIRTool {
-private:
-    void execute(const eckit::option::CmdArgs&);
-    void usage(const std::string& tool) const;
+using namespace mir;
 
-public:
+
+struct MIRGridInfo : tools::MIRTool {
     MIRGridInfo(int argc, char** argv) : MIRTool(argc, argv) {
-        options_.push_back(new eckit::option::VectorOption<double>("grid", "West-East & South-North increments", 2));
-        options_.push_back(new eckit::option::SimpleOption<std::string>("gridname", "grid name"));
-        options_.push_back(new eckit::option::VectorOption<double>("area", "North/West/South/East", 4));
+        using namespace eckit::option;
+
+        options_.push_back(new VectorOption<double>("grid", "West-East & South-North increments", 2));
+        options_.push_back(new SimpleOption<std::string>("gridname", "grid name"));
+        options_.push_back(new VectorOption<double>("area", "North/West/South/East", 4));
     }
+
+    void usage(const std::string& tool) const override {
+        Log::info() << tool << " --area=n/w/s/e --gridname=name|--grid=we/sn" << std::endl;
+    }
+
+    void execute(const eckit::option::CmdArgs&) override;
 };
 
-
-void MIRGridInfo::usage(const std::string& tool) const {
-    eckit::Log::info() << tool << " --area=n/w/s/e --gridname=name|--grid=we/sn" << std::endl;
-}
 
 template <class T>
 struct Sorter {
@@ -73,9 +78,7 @@ struct Sorter {
 
 
 void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
-
-    using namespace mir;
-    auto& log = eckit::Log::info();
+    auto& log = Log::info();
 
     if (args.count() > 0) {
         const param::ConfigurationWrapper args_wrap(args);
@@ -97,11 +100,10 @@ void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
     }
 
     std::string gridname;
-    repres::RepresentationHandle rep(args.has("grid")
-                                         ? new repres::latlon::RegularLL(util::Increments(value[0], value[1]))
-                                         : args.get("gridname", gridname)
-                                               ? key::grid::Grid::lookup(gridname).representation()
-                                               : throw eckit::UserError("'grid' or 'gridname' should be provided"));
+    repres::RepresentationHandle rep(
+        args.has("grid")                 ? new repres::latlon::RegularLL(util::Increments(value[0], value[1]))
+        : args.get("gridname", gridname) ? key::grid::Grid::lookup(gridname).representation()
+                                         : throw exception::UserError("'grid' or 'gridname' should be provided"));
     ASSERT(rep);
 
     std::unique_ptr<repres::Iterator> iterator(rep->iterator());
@@ -126,12 +128,12 @@ void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
         s.push(point.lat());
 
         w.push(point.lon());
-        w.push(point.lon() + 360);
-        w.push(point.lon() - 360);
+        w.push(point.lon() + Longitude::GLOBE);
+        w.push(point.lon() - Longitude::GLOBE);
 
         e.push(point.lon());
-        e.push(point.lon() + 360);
-        e.push(point.lon() - 360);
+        e.push(point.lon() + Longitude::GLOBE);
+        e.push(point.lon() - Longitude::GLOBE);
     }
 
     log << "north " << n.above_ << ' ' << n.ref_ << ' ' << n.below_ << ' ' << n.dabove_ << ' ' << n.dbelow_

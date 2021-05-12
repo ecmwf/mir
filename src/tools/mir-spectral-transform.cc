@@ -13,20 +13,14 @@
 #include <algorithm>
 #include <memory>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
-#include "eckit/log/ResourceUsage.h"
-#include "eckit/log/Seconds.h"
-#include "eckit/log/Timer.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/Separator.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/api/Atlas.h"
 #include "mir/data/MIRField.h"
-#include "mir/data/MIRValuesVector.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/input/MultiScalarInput.h"
 #include "mir/key/grid/Grid.h"
@@ -42,47 +36,21 @@
 #include "mir/repres/other/UnstructuredGrid.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/util/Pretty.h"
 #include "mir/util/Rotation.h"
+#include "mir/util/Trace.h"
+#include "mir/util/Types.h"
 #include "mir/util/Wind.h"
 
 
 using namespace mir;
 
 
-class MIRSpectralTransform : public mir::tools::MIRTool {
-private:
-    void execute(const eckit::option::CmdArgs&);
-
-    int minimumPositionalArguments() const { return 2; }
-
-    void usage(const std::string& tool) const {
-        eckit::Log::info() << "\n"
-                              "Usage: "
-                           << tool
-                           << " --grid=WE/SN|--gridname=<namedgrid>|--griddef=<path> [--key1=value [--key2=value "
-                              "[...]]] input.grib output.grib"
-                              "\n"
-                              "Examples: "
-                              "\n"
-                              "  % "
-                           << tool
-                           << " --grid=1/1 --area=90/-180/-90/179 in out"
-                              "\n"
-                              "  % "
-                           << tool
-                           << " --gridname=O32 --validate=false in out"
-                              "\n"
-                              "  % "
-                           << tool << " --griddef=weather-params.pts in out" << std::endl;
-    }
-
-public:
+struct MIRSpectralTransform : tools::MIRTool {
     MIRSpectralTransform(int argc, char** argv) : MIRTool(argc, argv) {
-        using eckit::option::Separator;
-        using eckit::option::SimpleOption;
-        using eckit::option::VectorOption;
+        using namespace eckit::option;
 
         options_.push_back(new Separator("Output grid (mandatory one option)"));
         options_.push_back(
@@ -116,6 +84,31 @@ public:
         options_.push_back(new SimpleOption<bool>("caching", "MIR: caching (default true)"));
         options_.push_back(new SimpleOption<bool>("validate", "MIR: validate results (default false)"));
     }
+
+    int minimumPositionalArguments() const override { return 2; }
+
+    void usage(const std::string& tool) const override {
+        Log::info() << "\n"
+                       "Usage: "
+                    << tool
+                    << " --grid=WE/SN|--gridname=<namedgrid>|--griddef=<path> [--key1=value [--key2=value "
+                       "[...]]] input.grib output.grib"
+                       "\n"
+                       "Examples: "
+                       "\n"
+                       "  % "
+                    << tool
+                    << " --grid=1/1 --area=90/-180/-90/179 in out"
+                       "\n"
+                       "  % "
+                    << tool
+                    << " --gridname=O32 --validate=false in out"
+                       "\n"
+                       "  % "
+                    << tool << " --griddef=weather-params.pts in out" << std::endl;
+    }
+
+    void execute(const eckit::option::CmdArgs&) override;
 };
 
 const repres::Representation* output_representation(std::ostream& log,
@@ -166,7 +159,7 @@ const repres::Representation* output_representation(std::ostream& log,
         return key::grid::Grid::lookup(gridname).representation();
     }
 
-    throw eckit::UserError("MIRSpectralTransform: could not create output representation");
+    throw exception::UserError("MIRSpectralTransform: could not create output representation");
 }
 
 atlas::Grid output_grid(const param::MIRParametrisation& parametrisation,
@@ -190,7 +183,7 @@ atlas::Grid output_grid(const param::MIRParametrisation& parametrisation,
 }
 
 void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
-    eckit::ResourceUsage usage("MIRSpectralTransform");
+    trace::ResourceUsage usage("MIRSpectralTransform");
 
     // Setup options
     static param::DefaultParametrisation defaults;
@@ -206,17 +199,17 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
     const size_t multiScalar = args.getUnsigned("multi-scalar", 1);
     if (multiScalar < 1) {
-        throw eckit::UserError("Option 'multi-scalar' has to be greater than or equal to one");
+        throw exception::UserError("Option 'multi-scalar' has to be greater than or equal to one");
     }
 
     size_t multiTransform = args.getUnsigned("multi-transform", multiScalar);
     if (multiTransform < 1 || multiTransform > multiScalar) {
-        throw eckit::UserError("Option 'multi-transform' has to be in range [1, " + std::to_string(multiScalar) +
-                               "] ('multi-scalar')");
+        throw exception::UserError("Option 'multi-transform' has to be in range [1, " + std::to_string(multiScalar) +
+                                   "] ('multi-scalar')");
     }
 
     if ((args.has("grid") ? 1 : 0) + (args.has("gridname") ? 1 : 0) + (args.has("griddef") ? 1 : 0) != 1) {
-        throw eckit::UserError("Output description is required: either 'grid', 'gridname' or 'griddef'");
+        throw exception::UserError("Output description is required: either 'grid', 'gridname' or 'griddef'");
     }
 
     // Setup output (file)
@@ -248,9 +241,9 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     util::MIRStatistics statistics;
 
     {
-        auto& log = eckit::Log::info();
+        auto& log = Log::info();
 
-        eckit::Timer total_timer("Total time");
+        trace::Timer total_timer("Total time");
 
         const std::string what(vod2uv ? "vo/d field pair" : "field");
 
@@ -276,7 +269,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
             // Cesàro summation filtering
             if (cesaro) {
-                eckit::Timer timer("time on Cesàro summation filtering", log);
+                trace::Timer timer("time on Cesàro summation filtering", log);
 
                 std::vector<double> filter(T + 1);
                 {
@@ -332,14 +325,14 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                     F = std::min(multiTransform, multiScalar - numberOfFieldPairsProcessed);
                     ASSERT(F > 0);
 
-                    log << "MIRSpectralTransform: transforming " << Pretty(int(F), what) << "..." << std::endl;
+                    log << "MIRSpectralTransform: transforming " << Log::Pretty(int(F), what) << "..." << std::endl;
 
                     // set input working area
                     // spectral coefficients are "interlaced", avoid copies if transforming only one field pair)
                     MIRValuesVector input_vo;
                     MIRValuesVector input_d;
                     if (F > 1) {
-                        eckit::Timer timer("time on interlacing spectra", log);
+                        trace::Timer timer("time on interlacing spectra", log);
                         input_vo.resize(F * N * 2);
                         input_d.resize(F * N * 2);
 
@@ -358,7 +351,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
                     // inverse transform
                     {
-                        eckit::Timer timer("time on invtrans", log);
+                        trace::Timer timer("time on invtrans", log);
                         const size_t which = numberOfFieldPairsProcessed * 2;
                         trans.invtrans(int(F), F > 1 ? input_vo.data() : field.values(which + 0).data(),
                                        F > 1 ? input_d.data() : field.values(which + 1).data(), out.data(),
@@ -368,7 +361,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                     // set field values, forcing u/v paramId (copies are necessary since fields are paired)
                     // Note: transformed u and v fields are contiguous, we save them in alternate order
                     {
-                        eckit::Timer timer("time on copying grid-point values", log);
+                        trace::Timer timer("time on copying grid-point values", log);
 
                         auto u = paramIdu;
                         auto v = paramIdv;
@@ -403,13 +396,13 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                     F = std::min(multiTransform, multiScalar - numberOfFieldsProcessed);
                     ASSERT(F > 0);
 
-                    log << "MIRSpectralTransform: transforming " << Pretty(int(F), what) << "..." << std::endl;
+                    log << "MIRSpectralTransform: transforming " << Log::Pretty(int(F), what) << "..." << std::endl;
 
                     // set input working area
                     // spectral coefficients are "interlaced", avoid copies if transforming only one field)
                     MIRValuesVector in;
                     if (F > 1) {
-                        eckit::Timer timer("time on interlacing spectra", log);
+                        trace::Timer timer("time on interlacing spectra", log);
                         in.resize(F * N * 2);
 
                         for (size_t f = 0; f < F; ++f) {
@@ -424,14 +417,14 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
                     // inverse transform
                     {
-                        eckit::Timer timer("time on invtrans", log);
+                        trace::Timer timer("time on invtrans", log);
                         trans.invtrans(int(F), F > 1 ? in.data() : field.values(numberOfFieldsProcessed).data(),
                                        out.data(), atlas::option::global());
                     }
 
                     // set field values (again, avoid copies for one field only)
                     if (F > 1) {
-                        eckit::Timer timer("time on copying grid-point values", log);
+                        trace::Timer timer("time on copying grid-point values", log);
 
                         auto here = out.cbegin();
                         for (size_t f = 0; f < F; ++f) {
@@ -450,7 +443,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
             // set field representation
             field.representation(outputRepresentation);
             if (validate) {
-                eckit::Timer timer("time on validate", log);
+                trace::Timer timer("time on validate", log);
                 field.validate();
             }
 
@@ -460,8 +453,8 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
         statistics.report(log);
 
-        log << Pretty(int(i * multiScalar), what) << " in " << eckit::Seconds(total_timer.elapsed())
-            << ", rate: " << double(i) / double(total_timer.elapsed()) << " " << what << "/s" << std::endl;
+        log << Log::Pretty(int(i * multiScalar), what) << " in " << total_timer.elapsedSeconds()
+            << ", rate: " << double(i) / total_timer.elapsed() << " " << what << "/s" << std::endl;
     }
 }
 

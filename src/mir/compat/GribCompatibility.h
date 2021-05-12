@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_compat_GribCompatibility_h
-#define mir_compat_GribCompatibility_h
+#pragma once
 
 #include <iosfwd>
 #include <map>
@@ -57,7 +56,7 @@ public:
 
     static const GribCompatibility& lookup(const std::string&);
 
-    static void list(std::ostream& out);
+    static void list(std::ostream&);
 
 protected:
     GribCompatibility(const std::string&);
@@ -77,6 +76,3 @@ private:
 
 }  // namespace compat
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_latlon_RotatedLL_h
-#define mir_repres_latlon_RotatedLL_h
+#pragma once
 
 #include "mir/repres/latlon/LatLon.h"
 #include "mir/util/Rotation.h"
@@ -35,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~RotatedLL();
+    ~RotatedLL() override;
 
     // -- Convertors
     // None
@@ -64,20 +63,20 @@ private:
     // None
 
     // -- Overridden methods
-    Iterator* iterator() const;
-    void print(std::ostream&) const;  // Change to virtual if base class
+    Iterator* iterator() const override;
+    void print(std::ostream&) const override;
 
-    atlas::Grid atlasGrid() const;
+    atlas::Grid atlasGrid() const override;
 
-    void fill(grib_info&) const;
-    void fill(api::MIRJob&) const;
+    void fill(grib_info&) const override;
+    void fill(api::MIRJob&) const override;
 
-    void makeName(std::ostream&) const;
-    bool sameAs(const Representation&) const;
+    void makeName(std::ostream&) const override;
+    bool sameAs(const Representation&) const override;
 
     // From Representation
-    const RotatedLL* croppedRepresentation(const util::BoundingBox&) const;
-    std::string factory() const;
+    const RotatedLL* croppedRepresentation(const util::BoundingBox&) const override;
+    std::string factory() const override;
 
     // -- Class members
     // None
@@ -86,15 +85,10 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const RegularLL& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace latlon
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

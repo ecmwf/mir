@@ -12,7 +12,7 @@
 
 #include "mir/method/nonlinear/NoNonLinear.h"
 
-#include <iostream>
+#include <ostream>
 #include <sstream>
 
 #include "eckit/utils/MD5.h"
@@ -26,8 +26,8 @@ namespace nonlinear {
 NoNonLinear::NoNonLinear(const param::MIRParametrisation& param) : NonLinear(param) {}
 
 
-bool NoNonLinear::treatment(NonLinear::Matrix&, NonLinear::WeightMatrix&, NonLinear::Matrix&,
-                            const mir::data::MIRValuesVector&, const double&) const {
+bool NoNonLinear::treatment(MethodWeighted::Matrix&, MethodWeighted::WeightMatrix&, MethodWeighted::Matrix&,
+                            const MIRValuesVector&, const double&) const {
     // no non-linear treatment
     return false;
 }

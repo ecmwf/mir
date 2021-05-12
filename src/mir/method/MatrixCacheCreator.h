@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_MatrixCacheCreator_H
-#define mir_method_MatrixCacheCreator_H
+#pragma once
 
 #include "mir/caching/WeightCache.h"
 
@@ -43,7 +42,7 @@ namespace method {
 
 class MatrixCacheCreator : public caching::WeightCache::CacheContentCreator {
 
-    virtual void create(const eckit::PathName& path, WeightMatrix& W, bool& saved);
+    void create(const eckit::PathName& path, WeightMatrix& W, bool& saved) override;
 
 public:
     MatrixCacheCreator(const MethodWeighted& owner, context::Context&, const repres::Representation& in,
@@ -65,6 +64,3 @@ private:
 
 }  // namespace method
 }  // namespace mir
-
-
-#endif

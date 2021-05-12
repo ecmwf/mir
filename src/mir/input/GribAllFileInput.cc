@@ -12,14 +12,14 @@
 
 #include "mir/input/GribAllFileInput.h"
 
-#include <iostream>
+#include <ostream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/io/Buffer.h"
 #include "eckit/io/StdFile.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 
 
@@ -90,7 +90,7 @@ data::MIRField GribAllFileInput::field() const {
 bool GribAllFileInput::next() {
     if (count_ == 0) {
         for (auto& j : inputs_) {
-            // eckit::Log::info() << *(*j) << std::endl;
+            // Log::info() << *(*j) << std::endl;
             ASSERT(j->next());
         }
         return true;

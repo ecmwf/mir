@@ -1,0 +1,8 @@
+# mars
+packingType=grid_simple.grib2
+# mir
+--packing=ieee --accuracy=32
+# grib_get assertions
+packingType=grid_ieee
+edition=2
+precision=1

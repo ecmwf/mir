@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_calcl_FormulaAction_h
-#define mir_action_calcl_FormulaAction_h
+#pragma once
 
 #include <map>
 #include <memory>
@@ -38,16 +37,18 @@ public:
     // -- Constructors
 
     FormulaAction(const param::MIRParametrisation&);
+    FormulaAction(const FormulaAction&) = delete;
 
     // -- Destructor
 
-    virtual ~FormulaAction();  // Change to virtual if base class
+    ~FormulaAction() override;
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    FormulaAction& operator=(const FormulaAction&) = delete;
 
     // -- Methods
     // None
@@ -67,7 +68,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -79,11 +80,6 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    FormulaAction(const FormulaAction&);
-    FormulaAction& operator=(const FormulaAction&);
-
     // -- Members
 
     std::unique_ptr<util::Formula> formula_;
@@ -94,9 +90,9 @@ private:
 
     // -- Overridden methods
 
-    virtual void execute(context::Context& ctx) const;
-    virtual bool sameAs(const Action& other) const;
-    virtual const char* name() const;
+    void execute(context::Context&) const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
 
     // -- Class members
     // None
@@ -105,12 +101,9 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const FormulaAction& p)
-    //	{ p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace action
 }  // namespace mir
-#endif

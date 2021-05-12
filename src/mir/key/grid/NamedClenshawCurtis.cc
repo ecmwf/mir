@@ -18,14 +18,12 @@
 #include "eckit/utils/Translator.h"
 
 #include "mir/repres/other/ClenshawCurtis.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
 namespace key {
 namespace grid {
-
-
-NamedClenshawCurtis::~NamedClenshawCurtis() = default;
 
 
 NamedClenshawCurtis::NamedClenshawCurtis(const std::string& name) : NamedGrid(name) {}

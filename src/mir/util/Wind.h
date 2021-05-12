@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_Wind_h
-#define mir_util_Wind_h
+#pragma once
 
 #include <cstddef>
 
@@ -103,6 +102,3 @@ private:
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

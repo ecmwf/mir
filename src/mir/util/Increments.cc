@@ -12,12 +12,14 @@
 
 #include "mir/util/Increments.h"
 
-#include <iostream>
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
+
 #include "eckit/types/Fraction.h"
+
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/BoundingBox.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 
 
@@ -58,9 +60,6 @@ Increments::Increments(const LongitudeIncrement& west_east, const LatitudeIncrem
     west_east_(west_east), south_north_(south_north) {
     check(*this);
 }
-
-
-Increments::~Increments() = default;
 
 
 bool Increments::operator==(const Increments& other) const {

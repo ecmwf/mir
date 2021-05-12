@@ -10,12 +10,12 @@
  */
 
 
-#ifndef mir_method_ProxyMethod_h
-#define mir_method_ProxyMethod_h
+#pragma once
 
-#include "mir/api/Atlas.h"
 #include "mir/method/Cropping.h"
 #include "mir/method/Method.h"
+#include "mir/util/Atlas.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -62,7 +62,7 @@ protected:
 
     // -- Destructor
 
-    virtual ~ProxyMethod() = default;
+    virtual ~ProxyMethod() override;
 
     // -- Members
     // None
@@ -93,15 +93,15 @@ private:
     // -- Overridden methods
 
     // From Method
-    virtual void hash(eckit::MD5&) const;
-    virtual int version() const;
-    virtual void execute(context::Context&, const repres::Representation& in, const repres::Representation& out) const;
-    virtual bool sameAs(const Method&) const;
-    virtual bool canCrop() const;
-    virtual void setCropping(const util::BoundingBox&);
-    virtual bool hasCropping() const;
-    virtual const util::BoundingBox& getCropping() const;
-    virtual void print(std::ostream&) const;
+    void hash(eckit::MD5&) const override;
+    int version() const override;
+    void execute(context::Context&, const repres::Representation& in, const repres::Representation& out) const override;
+    bool sameAs(const Method&) const override;
+    bool canCrop() const override;
+    void setCropping(const util::BoundingBox&) override;
+    bool hasCropping() const override;
+    const util::BoundingBox& getCropping() const override;
+    void print(std::ostream&) const override;
 
     // -- Class members
     // None
@@ -116,6 +116,3 @@ private:
 
 }  // namespace method
 }  // namespace mir
-
-
-#endif

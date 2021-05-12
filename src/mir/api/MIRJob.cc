@@ -12,16 +12,16 @@
 
 #include "mir/api/MIRJob.h"
 
-#include <iostream>
+#include <ostream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/utils/Tokenizer.h"
 
 #include "mir/action/plan/Job.h"
-#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -55,7 +55,7 @@ void MIRJob::estimate(input::MIRInput& input, output::MIROutput& output, MIREsti
 
 
 void MIRJob::print(std::ostream& out) const {
-    if (eckit::format(out) == eckit::Log::applicationFormat) {
+    if (eckit::format(out) == Log::applicationFormat) {
         out << "mir";
         SimpleParametrisation::print(out);
         out << " in.grib out.grib";
@@ -84,7 +84,7 @@ MIRJob& MIRJob::set(const std::string& args) {
         }
 
         if (nameValue[0].find("--") != 0) {
-            throw eckit::UserError("MIRJob::set: invalid parameter '" + a + "'");
+            throw exception::UserError("MIRJob::set: invalid parameter '" + a + "'");
         }
 
         set(nameValue[0].substr(2), nameValue[1]);
@@ -102,7 +102,7 @@ static const std::map<std::string, std::string> aliases{
 static const std::string& resolveAliases(const std::string& name) {
     auto j = aliases.find(name);
     if (j != aliases.end()) {
-        eckit::Log::debug<LibMir>() << "MIRJob: changing [" << name << "] to [" << j->second << "]" << std::endl;
+        Log::debug() << "MIRJob: changing [" << name << "] to [" << j->second << "]" << std::endl;
         return j->second;
     }
     return name;
@@ -117,7 +117,7 @@ static const T& resolveAliases(const std::string& /*name*/, const T& value) {
 
 MIRJob& MIRJob::clear(const std::string& name) {
     auto& rName = resolveAliases(name);
-    eckit::Log::debug<LibMir>() << "MIRJob: clear '" << rName << "'" << std::endl;
+    Log::debug() << "MIRJob: clear '" << rName << "'" << std::endl;
     SimpleParametrisation::clear(rName);
     return *this;
 }
@@ -125,7 +125,7 @@ MIRJob& MIRJob::clear(const std::string& name) {
 
 template <class T>
 MIRJob& MIRJob::_setScalar(const std::string& name, const T& value) {
-    eckit::Log::debug<LibMir>() << "MIRJob: set '" << name << "'='" << value << "'" << std::endl;
+    Log::debug() << "MIRJob: set '" << name << "'='" << value << "'" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
 }
@@ -133,7 +133,7 @@ MIRJob& MIRJob::_setScalar(const std::string& name, const T& value) {
 
 template <class T>
 MIRJob& MIRJob::_setVector(const std::string& name, const T& value, size_t outputCount) {
-    eckit::Channel& out = eckit::Log::debug<LibMir>();
+    auto& out = Log::debug();
 
     out << "MIRJob: set '" << name << "'='";
     const char* sep = "";
@@ -271,7 +271,7 @@ MIRJob& MIRJob::representationFrom(const input::MIRInput& input) {
     const repres::Representation* repres = field.representation();
     ASSERT(repres);
 
-    // eckit::Log::debug<LibMir>() << "Copy from " << *repres << std::endl;
+    // Log::debug() << "Copy from " << *repres << std::endl;
     repres->fill(*this);
 
     return *this;
@@ -280,7 +280,7 @@ MIRJob& MIRJob::representationFrom(const input::MIRInput& input) {
 
 void MIRJob::mirToolCall(std::ostream& out) const {
     auto fmt = eckit::format(out);
-    out << eckit::setformat(eckit::Log::applicationFormat) << *this << eckit::setformat(fmt);
+    out << eckit::setformat(Log::applicationFormat) << *this << eckit::setformat(fmt);
 }
 
 

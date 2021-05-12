@@ -12,15 +12,14 @@
 
 #include "mir/key/grid/RegularLL.h"
 
-#include <iostream>
+#include <ostream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/types/Fraction.h"
 #include "eckit/utils/StringTools.h"
 #include "eckit/utils/Translator.h"
 
-#include "mir/util/Assert.h"
-#include "mir/util/Increments.h"
+#include "mir/repres/latlon/RegularLL.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -31,19 +30,29 @@ namespace grid {
 RegularLL::RegularLL(const std::string& key) : Grid(key, regular_ll_t) {}
 
 
-size_t RegularLL::gaussianNumber() const {
+util::Increments RegularLL::increments() const {
     auto grid_str = eckit::StringTools::split("/", key_);
     ASSERT_KEYWORD_GRID_SIZE(grid_str.size());
 
     eckit::Translator<std::string, double> cvt;
     double grid_v[2] = {cvt(grid_str[0]), cvt(grid_str[1])};
 
-    util::Increments increments(grid_v[0], grid_v[1]);
-    eckit::Fraction r = Latitude::GLOBE.fraction() / increments.south_north().latitude().fraction();
-    auto N            = long(r.integralPart() / 2);
+    return util::Increments(grid_v[0], grid_v[1]);
+}
+
+
+size_t RegularLL::gaussianNumber() const {
+    auto inc = increments();
+    auto r   = Latitude::GLOBE.fraction() / inc.south_north().latitude().fraction();
+    auto N   = long(r.integralPart() / 2);
 
     ASSERT(N >= 0);
-    return N;
+    return size_t(N);
+}
+
+
+const repres::Representation* RegularLL::representation() const {
+    return new repres::latlon::RegularLL(increments());
 }
 
 

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_gauss_regular_Regular_h
-#define mir_repres_gauss_regular_Regular_h
+#pragma once
 
 #include "mir/repres/gauss/Gaussian.h"
 
@@ -34,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Regular();  // Change to virtual if base class
+    ~Regular() override;
 
     // -- Convertors
     // None
@@ -70,15 +69,15 @@ protected:
 
     // -- Overridden methods
 
-    virtual void fill(grib_info&) const;
-    virtual void fill(api::MIRJob&) const;
-    virtual bool sameAs(const Representation&) const;
-    virtual atlas::Grid atlasGrid() const;
-    virtual void makeName(std::ostream&) const;
-    virtual util::BoundingBox extendBoundingBox(const util::BoundingBox&) const;
+    void fill(grib_info&) const override;
+    void fill(api::MIRJob&) const override;
+    bool sameAs(const Representation&) const override;
+    atlas::Grid atlasGrid() const override;
+    void makeName(std::ostream&) const override;
+    util::BoundingBox extendBoundingBox(const util::BoundingBox&) const override;
 
     // from Representation
-    virtual bool isPeriodicWestEast() const;
+    bool isPeriodicWestEast() const override;
 
     // -- Class members
     // None
@@ -98,9 +97,9 @@ private:
 
     // -- Overridden methods
 
-    virtual size_t frame(MIRValuesVector&, size_t size, double missingValue, bool estimate = false) const;
-    virtual size_t numberOfPoints() const;
-    virtual bool getLongestElementDiagonal(double&) const;
+    size_t frame(MIRValuesVector&, size_t size, double missingValue, bool estimate = false) const override;
+    size_t numberOfPoints() const override;
+    bool getLongestElementDiagonal(double&) const override;
 
     // -- Class members
     // None
@@ -109,9 +108,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const Regular& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
@@ -119,6 +116,3 @@ private:
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

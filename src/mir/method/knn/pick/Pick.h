@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_knn_pick_Pick_h
-#define mir_method_knn_pick_Pick_h
+#pragma once
 
 #include <iosfwd>
 
@@ -41,7 +40,7 @@ public:
 
     virtual void pick(const search::PointSearch&, const Point3&, neighbours_t&) const = 0;
     virtual size_t n() const                                                          = 0;
-    virtual bool sameAs(const Pick& other) const                                      = 0;
+    virtual bool sameAs(const Pick&) const                                            = 0;
     virtual void hash(eckit::MD5&) const                                              = 0;
 
 private:
@@ -74,7 +73,7 @@ public:
 
 template <class T>
 class PickBuilder : public PickFactory {
-    virtual Pick* make(const param::MIRParametrisation& param) { return new T(param); }
+    Pick* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     PickBuilder(const std::string& name) : PickFactory(name) {}
@@ -85,6 +84,3 @@ public:
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-
-
-#endif

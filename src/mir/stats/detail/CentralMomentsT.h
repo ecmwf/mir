@@ -10,16 +10,13 @@
  */
 
 
-#ifndef mir_stats_detail_CentralMomentsT_h
-#define mir_stats_detail_CentralMomentsT_h
+#pragma once
 
 #include <cmath>
 #include <complex>
 #include <cstddef>
 #include <limits>
 #include <ostream>
-
-#include "mir/stats/ValueStatistics.h"
 
 
 namespace mir {
@@ -39,7 +36,7 @@ namespace detail {
  * http://mathworld.wolfram.com/Kurtosis.html
  */
 template <typename T>
-struct CentralMomentsT : ValueStatistics {
+struct CentralMomentsT {
 private:
     T M1_;
     T M2_;
@@ -114,6 +111,3 @@ public:
 }  // namespace detail
 }  // namespace stats
 }  // namespace mir
-
-
-#endif

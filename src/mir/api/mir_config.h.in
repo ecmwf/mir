@@ -1,11 +1,10 @@
-#ifndef mir_config_h
-#define mir_config_h
+#pragma once
 
 #include "mir/mir_ecbuild_config.h"
 
 #include "mir/api/mir_version.h"
 
+#cmakedefine mir_HAVE_ATLAS
 #cmakedefine mir_HAVE_NETCDF
 #cmakedefine mir_HAVE_PNG
 
-#endif  // mir_config_h

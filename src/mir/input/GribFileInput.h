@@ -10,10 +10,10 @@
  */
 
 
-#ifndef mir_input_GribFileInput_h
-#define mir_input_GribFileInput_h
+#pragma once
 
 #include "eckit/filesystem/PathName.h"
+
 #include "mir/input/GribStreamInput.h"
 
 
@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    ~GribFileInput();
+    ~GribFileInput() override;
 
     // -- Convertors
     // None
@@ -82,11 +82,11 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    virtual void print(std::ostream&) const;
-    virtual bool sameAs(const MIRInput& other) const;
+    void print(std::ostream&) const override;
+    bool sameAs(const MIRInput&) const override;
 
     // From GribInput
-    virtual eckit::DataHandle& dataHandle();
+    eckit::DataHandle& dataHandle() override;
 
     // -- Class members
     // None
@@ -95,14 +95,9 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const GribFileInput& p)
-    // { p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

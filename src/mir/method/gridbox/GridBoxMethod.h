@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_gridbox_GridBoxMethod_h
-#define mir_method_gridbox_GridBoxMethod_h
+#pragma once
 
 #include "mir/method/MethodWeighted.h"
 
@@ -35,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GridBoxMethod();
+    ~GridBoxMethod() override;
 
     // -- Convertors
     // None
@@ -81,13 +80,13 @@ private:
     // -- Overridden methods
 
     // From MethodWeighted
-    void hash(eckit::MD5&) const;
+    void hash(eckit::MD5&) const override;
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
-                  const repres::Representation& out) const;
-    bool sameAs(const Method&) const;
-    void print(std::ostream&) const;
-    bool validateMatrixWeights() const;
-    const char* name() const;
+                  const repres::Representation& out) const override;
+    bool sameAs(const Method&) const override;
+    void print(std::ostream&) const override;
+    bool validateMatrixWeights() const override;
+    const char* name() const override;
 
     // -- Class members
     // None
@@ -103,6 +102,3 @@ private:
 }  // namespace gridbox
 }  // namespace method
 }  // namespace mir
-
-
-#endif

@@ -11,3 +11,4 @@ suite/check.def
 suite/combinations.pyc
 suite/requests
 .nfs*
+.vscode/

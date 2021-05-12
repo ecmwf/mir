@@ -10,14 +10,11 @@
  */
 
 
-#ifndef mir_stats_detail_PNorms_h
-#define mir_stats_detail_PNorms_h
+#pragma once
 
 #include <algorithm>
 #include <cmath>
 #include <ostream>
-
-#include "mir/stats/ValueStatistics.h"
 
 
 namespace mir {
@@ -31,7 +28,7 @@ namespace detail {
  * @see https://en.wikipedia.org/wiki/Minkowski_distance
  */
 template <typename T>
-struct PNormsT : ValueStatistics {
+struct PNormsT {
 private:
     T normL1_;
     T sumSquares_;
@@ -75,6 +72,3 @@ public:
 }  // namespace detail
 }  // namespace stats
 }  // namespace mir
-
-
-#endif

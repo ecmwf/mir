@@ -14,11 +14,9 @@
 
 #include <map>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
-
-#include "mir/config/LibMir.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -26,11 +24,11 @@ namespace method {
 namespace nonlinear {
 
 
-static eckit::Mutex* local_mutex                   = nullptr;
+static util::recursive_mutex* local_mutex          = nullptr;
 static std::map<std::string, NonLinearFactory*>* m = nullptr;
-static pthread_once_t once                         = PTHREAD_ONCE_INIT;
+static util::once_flag once;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, NonLinearFactory*>();
 }
 
@@ -38,7 +36,7 @@ static void init() {
 NonLinear::NonLinear(const param::MIRParametrisation&) {}
 
 
-bool NonLinear::canIntroduceMissingValues() const {
+bool NonLinear::modifiesMatrix() const {
     return false;
 }
 
@@ -47,33 +45,34 @@ NonLinear::~NonLinear() = default;
 
 
 NonLinearFactory::NonLinearFactory(const std::string& name) : name_(name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) == m->end()) {
         (*m)[name] = this;
         return;
     }
-    throw eckit::SeriousBug("NonLinearFactory: duplicated NonLinear '" + name + "'");
+    throw exception::SeriousBug("NonLinearFactory: duplicated NonLinear '" + name + "'");
 }
 
 
 NonLinearFactory::~NonLinearFactory() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
+
     m->erase(name_);
 }
 
 
 const NonLinear* NonLinearFactory::build(const std::string& name, const param::MIRParametrisation& param) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-    eckit::Log::debug<LibMir>() << "NonLinearFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "NonLinearFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "No NonLinearFactory '" << name << "', choices are:\n");
-        throw eckit::SeriousBug("No NonLinearFactory '" + name + "'");
+        list(Log::error() << "NonLinearFactory: unknown '" << name << "', choices are:\n");
+        throw exception::SeriousBug("NonLinearFactory: unknown '" + name + "'");
     }
 
     return j->second->make(param);
@@ -81,8 +80,8 @@ const NonLinear* NonLinearFactory::build(const std::string& name, const param::M
 
 
 void NonLinearFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (auto& j : *m) {

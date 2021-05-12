@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_transform_ShTruncate_h
-#define mir_action_transform_ShTruncate_h
+#pragma once
 
 #include "mir/action/plan/Action.h"
 
@@ -32,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ShTruncate();  // Change to virtual if base class
+    ~ShTruncate() override;
 
     // -- Convertors
     // None
@@ -58,7 +57,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -79,13 +78,13 @@ private:
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action&) const;
+    bool sameAs(const Action&) const override;
 
-    virtual void execute(context::Context&) const;
+    void execute(context::Context&) const override;
 
-    virtual const char* name() const;
+    const char* name() const override;
 
-    virtual void estimate(context::Context&, api::MIREstimation& estimation) const;
+    void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Class members
     // None
@@ -94,15 +93,10 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const Sh2ShTransform& p)
-    //	{ p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-
-
-#endif

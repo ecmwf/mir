@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_param_ConfigurationWrapper_h
-#define mir_param_ConfigurationWrapper_h
+#pragma once
 
 #include "mir/param/MIRParametrisation.h"
 
@@ -31,26 +30,26 @@ public:  // methods
     ConfigurationWrapper(const eckit::Configuration&);
 
     // From MIRParametrisation
-    const MIRParametrisation& userParametrisation() const;
-    const MIRParametrisation& fieldParametrisation() const;
+    const MIRParametrisation& userParametrisation() const override;
+    const MIRParametrisation& fieldParametrisation() const override;
 
-    bool has(const std::string& name) const;
+    bool has(const std::string& name) const override;
 
-    bool get(const std::string& name, std::string& value) const;
-    bool get(const std::string& name, bool& value) const;
-    bool get(const std::string& name, int& value) const;
-    bool get(const std::string& name, long& value) const;
-    bool get(const std::string& name, float& value) const;
-    bool get(const std::string& name, double& value) const;
+    bool get(const std::string& name, std::string& value) const override;
+    bool get(const std::string& name, bool& value) const override;
+    bool get(const std::string& name, int& value) const override;
+    bool get(const std::string& name, long& value) const override;
+    bool get(const std::string& name, float& value) const override;
+    bool get(const std::string& name, double& value) const override;
 
-    bool get(const std::string& name, std::vector<int>& value) const;
-    bool get(const std::string& name, std::vector<long>& value) const;
-    bool get(const std::string& name, std::vector<float>& value) const;
-    bool get(const std::string& name, std::vector<double>& value) const;
-    bool get(const std::string& name, std::vector<std::string>& value) const;
+    bool get(const std::string& name, std::vector<int>& value) const override;
+    bool get(const std::string& name, std::vector<long>& value) const override;
+    bool get(const std::string& name, std::vector<float>& value) const override;
+    bool get(const std::string& name, std::vector<double>& value) const override;
+    bool get(const std::string& name, std::vector<std::string>& value) const override;
 
 protected:  // methods
-    virtual void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
 private:  // members
     // Store a reference to the configuration, so that the wrapper can mimic a MIRParametrisation
@@ -60,6 +59,3 @@ private:  // members
 
 }  // namespace param
 }  // namespace mir
-
-
-#endif

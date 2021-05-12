@@ -16,10 +16,9 @@
 #include <cmath>
 #include <limits>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -45,9 +44,6 @@ SimplePackingEntropy::SimplePackingEntropy(const param::MIRParametrisation& para
 
     ASSERT(bucketCount_ > 0);
 }
-
-
-SimplePackingEntropy::~SimplePackingEntropy() = default;
 
 
 void SimplePackingEntropy::reset() {
@@ -89,9 +85,8 @@ void SimplePackingEntropy::execute(const data::MIRField& field) {
     ASSERT(count() != missing());
 
     // set/fill buckets and compute entropy
-    std::vector<size_t> buckets(bucketCount_);
-    scale_ = (bucketCount_ - 1) / (_max - _min);
-    buckets.assign(bucketCount_, 0);
+    scale_ = double(bucketCount_ - 1) / (_max - _min);
+    std::vector<size_t> buckets(bucketCount_, 0);
 
     const auto N               = double(count());
     const double one_over_log2 = 1. / M_LN2;

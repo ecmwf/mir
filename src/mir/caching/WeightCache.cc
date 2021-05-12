@@ -12,12 +12,15 @@
 
 #include "mir/caching/WeightCache.h"
 
-#include "eckit/log/Bytes.h"
+#include <sstream>
 
 #include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/config/LibMir.h"
 #include "mir/method/WeightMatrix.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Trace.h"
 
 
 namespace mir {
@@ -57,17 +60,17 @@ const char* WeightCacheTraits::extension() {
 
 
 void WeightCacheTraits::save(const eckit::CacheManagerBase&, const value_type& W, const eckit::PathName& path) {
-    eckit::Log::debug<LibMir>() << "Inserting weights in cache : " << path << "" << std::endl;
-    eckit::TraceTimer<LibMir> timer("Saving weights to cache");
+    Log::debug() << "Inserting weights in cache : " << path << "" << std::endl;
+    trace::Timer timer("Saving weights to cache");
 
     static size_t matrixMaxFootprint = eckit::Resource<size_t>("$MIR_MATRIX_MAX_FOOTPRINT", 0);
     if (matrixMaxFootprint > 0) {
         size_t size = W.footprint();
         if (size > matrixMaxFootprint) {
             std::ostringstream oss;
-            oss << "WeightCacheTraits::save: matrix too large " << size << " (" << eckit::Bytes(size)
-                << "), maximum is " << eckit::Bytes(matrixMaxFootprint);
-            throw eckit::UserError(oss.str());
+            oss << "WeightCacheTraits::save: matrix too large " << size << " (" << Log::Bytes(size) << "), maximum is "
+                << Log::Bytes(matrixMaxFootprint);
+            throw exception::UserError(oss.str());
         }
     }
 
@@ -76,8 +79,7 @@ void WeightCacheTraits::save(const eckit::CacheManagerBase&, const value_type& W
 
 
 void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type& w, const eckit::PathName& path) {
-
-    eckit::TraceTimer<LibMir> timer("Loading weights from cache");
+    trace::Timer timer("Loading weights from cache");
 
     value_type tmp(matrix::MatrixLoaderFactory::build(manager.loader(), path));
     w.swap(tmp);

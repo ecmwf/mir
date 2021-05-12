@@ -10,8 +10,7 @@
  */
 
 
-#ifndef AzimuthRange_H
-#define AzimuthRange_H
+#pragma once
 
 #include "mir/repres/Gridded.h"
 
@@ -28,18 +27,20 @@ public:
     // -- Constructors
 
     AzimuthRange(const param::MIRParametrisation&);
+    AzimuthRange(const AzimuthRange&) = delete;
 
     // -- Destructor
-
-    virtual ~AzimuthRange();  // Change to virtual if base class
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    AzimuthRange& operator=(const AzimuthRange&) = delete;
 
     // -- Methods
+    // // None
 
     // -- Overridden methods
     // None
@@ -56,7 +57,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -68,23 +69,14 @@ protected:
     // None
 
 private:
-    AzimuthRange();
-
-    // No copy allowed
-
-    AzimuthRange(const AzimuthRange&);
-    AzimuthRange& operator=(const AzimuthRange&);
-
     // -- Members
-
+    // None
 
     // -- Methods
     // None
 
-
     // -- Overridden methods
-
-    virtual void fill(grib_info&) const;
+    // None
 
     // -- Class members
     // None
@@ -93,12 +85,9 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const AzimuthRange& p)
-    //	{ p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace repres
 }  // namespace mir
-#endif

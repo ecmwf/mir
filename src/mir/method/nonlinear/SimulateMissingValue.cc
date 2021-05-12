@@ -12,16 +12,14 @@
 
 #include "mir/method/nonlinear/SimulateMissingValue.h"
 
-#include <iostream>
+#include <ostream>
 #include <sstream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/data/MIRValuesVector.h"
-#include "mir/method/WeightMatrix.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -35,8 +33,8 @@ SimulateMissingValue::SimulateMissingValue(const param::MIRParametrisation& para
 }
 
 
-bool SimulateMissingValue::treatment(NonLinear::Matrix&, NonLinear::WeightMatrix& W, NonLinear::Matrix&,
-                                     const data::MIRValuesVector& values, const double& /*ignored*/) const {
+bool SimulateMissingValue::treatment(MethodWeighted::Matrix&, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix&,
+                                     const MIRValuesVector& values, const double& /*ignored*/) const {
     using eckit::types::is_approximately_equal;
 
     auto missingValue = [this](double value) { return is_approximately_equal(value, missingValue_, epsilon_); };
@@ -126,7 +124,7 @@ void SimulateMissingValue::hash(eckit::MD5& h) const {
 }
 
 
-bool SimulateMissingValue::canIntroduceMissingValues() const {
+bool SimulateMissingValue::modifiesMatrix() const {
     return true;
 }
 

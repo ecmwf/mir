@@ -10,16 +10,14 @@
  */
 
 
-#ifndef mir_data_MIRField_h
-#define mir_data_MIRField_h
+#pragma once
 
 #include <iosfwd>
 #include <map>
 #include <string>
 
-#include "eckit/thread/Mutex.h"
-
-#include "mir/data/MIRValuesVector.h"
+#include "mir/util/Mutex.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -48,13 +46,13 @@ public:
     // -- Constructors
 
     /// @note not in Field
-    MIRField(const MIRField& other);
+    MIRField(const MIRField&);
     MIRField(const param::MIRParametrisation&, bool hasMissing = false, double missingValue = 0);
     MIRField(const repres::Representation*, bool hasMissing = false, double missingValue = 0);
 
     // -- Destructor
 
-    ~MIRField();  // Change to virtual if base class
+    ~MIRField();
 
     // -- Convertors
     // None
@@ -62,7 +60,7 @@ public:
     // -- Operators
 
     /// @note not in Field
-    MIRField& operator=(const MIRField& other);
+    MIRField& operator=(const MIRField&);
 
     // -- Methods
 
@@ -76,7 +74,7 @@ public:
     const repres::Representation* representation() const;
 
     /// @warning Takes ownership of the vector
-    void update(MIRValuesVector&, size_t which, bool recomputeHasMissing = false);
+    void update(MIRValuesVector&, size_t which);
 
     const MIRValuesVector& values(size_t which) const;
     MIRValuesVector& direct(size_t which);  // Non-const version for direct update (Filter)
@@ -113,7 +111,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const;
 
     // -- Overridden methods
     // None
@@ -127,7 +125,7 @@ protected:
 private:
     // -- Members
 
-    mutable eckit::Mutex mutex_;
+    mutable util::recursive_mutex mutex_;
     Field* field_;
 
     // -- Methods
@@ -173,7 +171,7 @@ public:
 
 template <class T>
 class FieldBuilder : public FieldFactory {
-    virtual MIRField* make(const param::MIRParametrisation& param, bool hasMissing, double missingValue) {
+    MIRField* make(const param::MIRParametrisation& param, bool hasMissing, double missingValue) override {
         return new T(param, hasMissing, missingValue);
     }
 
@@ -184,6 +182,3 @@ public:
 
 }  // namespace data
 }  // namespace mir
-
-
-#endif

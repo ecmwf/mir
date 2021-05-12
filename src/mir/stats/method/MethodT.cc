@@ -56,7 +56,7 @@ void MethodT<STATS>::mean(data::MIRField& field) const {
     ASSERT(field.dimensions() == 1);
     ASSERT(field.values(0).size() == size());
 
-    data::MIRValuesVector statistics(field.values(0).size());
+    MIRValuesVector statistics(field.values(0).size());
     auto v = statistics.begin();
 
     for (auto& s : *this) {
@@ -65,7 +65,7 @@ void MethodT<STATS>::mean(data::MIRField& field) const {
         value       = stat == stat ? stat : missingValue;
     }
 
-    field.update(statistics, 0, true);
+    field.update(statistics, 0);
 }
 
 
@@ -76,7 +76,7 @@ void MethodT<STATS>::variance(data::MIRField& field) const {
     ASSERT(field.dimensions() == 1);
     ASSERT(field.values(0).size() == size());
 
-    data::MIRValuesVector statistics(field.values(0).size());
+    MIRValuesVector statistics(field.values(0).size());
     auto v = statistics.begin();
 
     for (auto& s : *this) {
@@ -84,7 +84,7 @@ void MethodT<STATS>::variance(data::MIRField& field) const {
         *v        = stat == stat ? stat : missingValue;
     }
 
-    field.update(statistics, 0, true);
+    field.update(statistics, 0);
 }
 
 
@@ -95,7 +95,7 @@ void MethodT<STATS>::stddev(data::MIRField& field) const {
     ASSERT(field.dimensions() == 1);
     ASSERT(field.values(0).size() == size());
 
-    data::MIRValuesVector statistics(field.values(0).size());
+    MIRValuesVector statistics(field.values(0).size());
     auto v = statistics.begin();
 
     for (auto& s : *this) {
@@ -103,7 +103,7 @@ void MethodT<STATS>::stddev(data::MIRField& field) const {
         *v        = stat == stat ? stat : missingValue;
     }
 
-    field.update(statistics, 0, true);
+    field.update(statistics, 0);
 }
 
 

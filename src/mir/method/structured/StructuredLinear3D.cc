@@ -16,8 +16,6 @@
 #include <numeric>
 #include <vector>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "atlas/interpolation/element/Triag3D.h"
@@ -25,10 +23,12 @@
 #include "atlas/util/Earth.h"
 #include "atlas/util/Point.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/Pretty.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Trace.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -81,8 +81,8 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
     Latitude min_lat;
     Latitude max_lat;
     getRepresentationPoints(in, icoords, min_lat, max_lat);
-    eckit::Log::debug<LibMir>() << "StructureLinear::assemble latitude (min,max) = (" << min_lat << ", " << max_lat
-                                << ")" << std::endl;
+    Log::debug() << "StructureLinear::assemble latitude (min,max) = (" << min_lat << ", " << max_lat << ")"
+                 << std::endl;
 
     // fill sparse matrix using triplets (reserve assuming all-triangle interpolations)
     triplet_vector_t triplets;
@@ -91,7 +91,7 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
 
     // interpolate each output point in turn
     {
-        Pretty::ProgressTimer progress("Interpolating", nbOutputPoints, {"point"}, eckit::Log::debug<LibMir>());
+        trace::ProgressTimer progress("Interpolating", nbOutputPoints, {"point"}, Log::debug());
         std::unique_ptr<repres::Iterator> it(out.iterator());
         size_t ip = 0;
 
@@ -189,7 +189,7 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
                     ++w;
                     tri = Triag3D(qp[T[w][0]].data(), qp[T[w][1]].data(), qp[T[w][2]].data());
                     if (!(inter = tri.intersects(ray, edgeEpsilon))) {
-                        throw eckit::UserError("Cannot determine an intersecting triangle (consider", Here());
+                        throw exception::UserError("Cannot determine an intersecting triangle (consider", Here());
                     }
                 }
                 ASSERT(inter);

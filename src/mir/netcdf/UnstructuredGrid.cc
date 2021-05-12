@@ -15,10 +15,9 @@
 #include <cmath>
 #include <ostream>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/netcdf/Dimension.h"
 #include "mir/netcdf/Variable.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -54,7 +53,7 @@ void UnstructuredGrid::print(std::ostream& s) const {
 
 
 bool UnstructuredGrid::has(const std::string& name) const {
-    // eckit::Log::info() << "has " << name << std::endl;
+    // Log::info() << "has " << name << std::endl;
 
     // Note: only "gridded" is supported
     return (name == "gridded");
@@ -62,7 +61,7 @@ bool UnstructuredGrid::has(const std::string& name) const {
 
 
 bool UnstructuredGrid::get(const std::string& name, std::vector<double>& values) const {
-    // eckit::Log::info() << "get " << name << std::endl;
+    // Log::info() << "get " << name << std::endl;
 
     if (name == "latitudes") {
         values = latitudes_;
@@ -79,22 +78,22 @@ bool UnstructuredGrid::get(const std::string& name, std::vector<double>& values)
 
 
 bool UnstructuredGrid::get(const std::string& /*name*/, long& /*value*/) const {
-    // eckit::Log::info() << "get " << name << std::endl;
+    // Log::info() << "get " << name << std::endl;
 
-    // eckit::Log::info() << "UnstructuredGrid::get " << name << " failed" << std::endl;
+    // Log::info() << "UnstructuredGrid::get " << name << " failed" << std::endl;
 
     return false;
 }
 
 
 bool UnstructuredGrid::get(const std::string& name, std::string& value) const {
-    // eckit::Log::info() << "get " << name << std::endl;
+    // Log::info() << "get " << name << std::endl;
     if (name == "gridType") {
         value = "unstructured_grid";
         return true;
     }
 
-    // eckit::Log::info() << "UnstructuredGrid::get " << name << " failed" << std::endl;
+    // Log::info() << "UnstructuredGrid::get " << name << " failed" << std::endl;
 
 
     return false;
@@ -123,7 +122,7 @@ bool UnstructuredGrid::get(const std::string& name, double& value) const {
         return true;
     }
 
-    // eckit::Log::info() << "UnstructuredGrid::get " << name << " failed" << std::endl;
+    // Log::info() << "UnstructuredGrid::get " << name << " failed" << std::endl;
 
     return false;
 }

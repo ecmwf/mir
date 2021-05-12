@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_intgrid_Intgrid_h
-#define mir_key_intgrid_Intgrid_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -121,7 +120,7 @@ public:
 
 template <class T>
 class IntgridBuilder : public IntgridFactory {
-    virtual Intgrid* make(const param::MIRParametrisation& parametrisation, long targetGaussianN) {
+    Intgrid* make(const param::MIRParametrisation& parametrisation, long targetGaussianN) override {
         return new T(parametrisation, targetGaussianN);
     }
 
@@ -133,6 +132,3 @@ public:
 }  // namespace intgrid
 }  // namespace key
 }  // namespace mir
-
-
-#endif

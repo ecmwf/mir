@@ -13,12 +13,13 @@
 #include "mir/util/GridBox.h"
 
 #include <algorithm>
-#include <iostream>
+#include <ostream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
 
-#include "mir/api/Atlas.h"
+#include "mir/util/Atlas.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Types.h"
 
 
 static constexpr double GLOBE      = 360.;
@@ -48,12 +49,12 @@ GridBox::GridBox(double north, double west, double south, double east) :
 
 
 double GridBox::area() const {
-    return atlas::util::Earth::area({west_, north_}, {east_, south_});
+    return util::Earth::area({west_, north_}, {east_, south_});
 }
 
 
 double GridBox::diagonal() const {
-    return atlas::util::Earth::distance({west_, north_}, {east_, south_});
+    return util::Earth::distance({west_, north_}, {east_, south_});
 }
 
 

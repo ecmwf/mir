@@ -10,10 +10,10 @@
  */
 
 
-#ifndef mir_util_Increments_h
-#define mir_util_Increments_h
+#pragma once
 
 #include <iosfwd>
+
 #include "mir/util/LatitudeIncrement.h"
 #include "mir/util/LongitudeIncrement.h"
 
@@ -53,7 +53,7 @@ public:
 
     // -- Destructor
 
-    ~Increments();
+    ~Increments() = default;
 
     // -- Convertors
     // None
@@ -143,6 +143,3 @@ private:
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

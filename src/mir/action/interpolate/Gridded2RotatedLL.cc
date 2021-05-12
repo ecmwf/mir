@@ -12,13 +12,13 @@
 
 #include "mir/action/interpolate/Gridded2RotatedLL.h"
 
-#include <iostream>
+#include <ostream>
 #include <vector>
 
-#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/latlon/RotatedLL.h"
-#include "mir/util/Assert.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -44,14 +44,14 @@ Gridded2RotatedLL::Gridded2RotatedLL(const param::MIRParametrisation& parametris
 
     repres::latlon::LatLon::globaliseBoundingBox(bbox_, increments_, reference_);
 
-    eckit::Log::debug<LibMir>() << "Gridded2RotatedLL: globalise:"
-                                << "\n\t" << increments_ << "\n\t" << bbox_
-                                << "\n\t"
-                                   "shifted in latitude? "
-                                << increments_.isLatitudeShifted(bbox_)
-                                << "\n\t"
-                                   "shifted in longitude? "
-                                << increments_.isLongitudeShifted(bbox_) << std::endl;
+    Log::debug() << "Gridded2RotatedLL: globalise:"
+                 << "\n\t" << increments_ << "\n\t" << bbox_
+                 << "\n\t"
+                    "shifted in latitude? "
+                 << increments_.isLatitudeShifted(bbox_)
+                 << "\n\t"
+                    "shifted in longitude? "
+                 << increments_.isLongitudeShifted(bbox_) << std::endl;
 }
 
 

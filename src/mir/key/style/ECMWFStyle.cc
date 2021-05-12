@@ -12,19 +12,16 @@
 
 #include "mir/key/style/ECMWFStyle.h"
 
-#include <iostream>
 #include <memory>
+#include <ostream>
 #include <string>
 #include <vector>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
 #include "eckit/utils/StringTools.h"
 
 #include "mir/action/io/Copy.h"
 #include "mir/action/io/Save.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/config/LibMir.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/key/resol/Resol.h"
 #include "mir/output/MIROutput.h"
@@ -32,6 +29,8 @@
 #include "mir/param/SameParametrisation.h"
 #include "mir/repres/latlon/LatLon.h"
 #include "mir/util/DeprecatedFunctionality.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -63,8 +62,9 @@ static MIRStyleBuilder<ECMWFStyle> __style("ecmwf");
 static MIRStyleBuilder<DeprecatedStyle> __deprecated_style("dissemination");
 
 
-static std::string target_gridded_from_parametrisation(const param::MIRParametrisation& user,
-                                                       const param::MIRParametrisation& field, bool checkRotation) {
+static std::string target_gridded_from_parametrisation(const param::MIRParametrisation& param, bool checkRotation) {
+    auto& user  = param.userParametrisation();
+    auto& field = param.fieldParametrisation();
     std::unique_ptr<const param::MIRParametrisation> same(new param::SameParametrisation(user, field, true));
 
     std::vector<double> rotation;
@@ -76,8 +76,8 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
 
 
     std::string grid;
-    if (user.get("grid", grid)) {
-        auto& g = grid::Grid::lookup(grid);
+    if (grid::Grid::get("grid", grid, param)) {
+        auto& g = grid::Grid::lookup(grid, field);
 
         if (g.isRegularLL()) {
             std::vector<double> grid_v;
@@ -88,8 +88,9 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
         }
 
         if (g.isNamed()) {
-            forced = forced || !field.has("gridded_named");
-            return forced || !same->get("grid", grid) ? prefix + "namedgrid" : "";
+            std::string field_grid;
+            field.has("gridded_named") && field.get("grid", field_grid);
+            return forced || grid != field_grid ? prefix + "namedgrid" : "";
         }
 
         ASSERT(g.isTyped());
@@ -118,17 +119,18 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
 
     if (user.has("griddef")) {
         if (user.has("rotation")) {
-            throw eckit::UserError("ECMWFStyle: option 'rotation' is incompatible with 'griddef'");
+            throw exception::UserError("ECMWFStyle: option 'rotation' is incompatible with 'griddef'");
         }
         return "griddef";
     }
 
     if (user.has("latitudes") || user.has("longitudes")) {
         if (user.has("latitudes") != user.has("longitudes")) {
-            throw eckit::UserError("ECMWFStyle: options 'latitudes' and 'longitudes' have to be provided together");
+            throw exception::UserError("ECMWFStyle: options 'latitudes' and 'longitudes' have to be provided together");
         }
         if (user.has("rotation")) {
-            throw eckit::UserError("ECMWFStyle: option 'rotation' is incompatible with 'latitudes' and 'longitudes'");
+            throw exception::UserError(
+                "ECMWFStyle: option 'rotation' is incompatible with 'latitudes' and 'longitudes'");
         }
         return "points";
     }
@@ -139,7 +141,7 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
         }
     }
 
-    eckit::Log::debug<LibMir>() << "ECMWFStyle: did not determine target from parametrisation" << std::endl;
+    Log::debug() << "ECMWFStyle: did not determine target from parametrisation" << std::endl;
     return "";
 }
 
@@ -190,29 +192,28 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
 
 
 void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
-    auto& user  = parametrisation_.userParametrisation();
-    auto& field = parametrisation_.fieldParametrisation();
+    auto& user = parametrisation_.userParametrisation();
 
     add_formula(plan, user, {"spectral", "raw"});
 
     resol::Resol resol(parametrisation_, false);
 
     long uv       = 0;
-    bool uv_input = field.get("is_wind_component_uv", uv) && (uv != 0);
+    bool uv_input = parametrisation_.fieldParametrisation().get("is_wind_component_uv", uv) && (uv != 0);
 
     bool rotation = user.has("rotation");
     bool vod2uv   = option(user, "vod2uv", false);
     bool uv2uv    = option(user, "uv2uv", false) || uv_input;  // where "MIR knowledge of winds" is hardcoded
 
     if (vod2uv && uv_input) {
-        throw eckit::UserError("ECMWFStyle: option 'vod2uv' is incompatible with input U/V");
+        throw exception::UserError("ECMWFStyle: option 'vod2uv' is incompatible with input U/V");
     }
 
     if (resol.resultIsSpectral()) {
         resol.prepare(plan);
     }
 
-    auto target = target_gridded_from_parametrisation(user, field, false);
+    auto target = target_gridded_from_parametrisation(parametrisation_, false);
     if (!target.empty()) {
         if (resol.resultIsSpectral()) {
 
@@ -251,7 +252,7 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
     auto& user = parametrisation_.userParametrisation();
 
     resol::Resol resol(parametrisation_, true);
-    eckit::Log::debug<LibMir>() << "ECMWFStyle: resol=" << resol << std::endl;
+    Log::debug() << "ECMWFStyle: resol=" << resol << std::endl;
 
     // the runtime parametrisation above is needed to satisfy this assertion
     ASSERT(resol.resultIsSpectral());
@@ -267,21 +268,20 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
 
 
 void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
-    auto& user  = parametrisation_.userParametrisation();
-    auto& field = parametrisation_.fieldParametrisation();
+    auto& user = parametrisation_.userParametrisation();
 
     bool rotation = user.has("rotation");
     bool vod2uv   = option(user, "vod2uv", false);
     bool uv2uv    = option(user, "uv2uv", false);
 
     if (vod2uv) {
-        eckit::Log::error() << "ECMWFStyle: option 'vod2uv' does not support gridded input" << std::endl;
+        Log::error() << "ECMWFStyle: option 'vod2uv' does not support gridded input" << std::endl;
         ASSERT(!vod2uv);
     }
 
     add_formula(plan, user, {"gridded", "raw"});
 
-    auto target = target_gridded_from_parametrisation(user, field, rotation);
+    auto target = target_gridded_from_parametrisation(parametrisation_, rotation);
     if (!target.empty()) {
         plan.add("interpolate.grid2" + target);
 
@@ -421,7 +421,7 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outpu
 
         std::string nabla;
         if (user.get("nabla", nabla)) {
-            for (auto operation : eckit::StringTools::split("/", nabla)) {
+            for (const auto& operation : eckit::StringTools::split("/", nabla)) {
                 plan.add("filter." + operation);
             }
         }

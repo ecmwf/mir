@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_api_MIREstimation_h
-#define mir_api_MIREstimation_h
+#pragma once
 
 #include <cstddef>
 #include <string>
@@ -43,6 +42,3 @@ public:
 
 }  // namespace api
 }  // namespace mir
-
-
-#endif

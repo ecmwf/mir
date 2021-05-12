@@ -12,7 +12,7 @@
 
 #include "mir/util/Domain.h"
 
-#include <iostream>
+#include <ostream>
 
 
 namespace mir {
@@ -29,8 +29,8 @@ bool Domain::includesPoleSouth() const {
 }
 
 
-Domain::operator RectangularDomain() const {
-    return RectangularDomain({{west().value(), east().value()}}, {{south().value(), north().value()}});
+Domain::operator atlas::RectangularDomain() const {
+    return atlas::RectangularDomain({west().value(), east().value()}, {south().value(), north().value()});
 }
 
 

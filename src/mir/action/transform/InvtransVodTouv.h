@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_transform_InvtransVodTouv_h
-#define mir_action_transform_InvtransVodTouv_h
+#pragma once
 
 #include "mir/action/transform/ShToGridded.h"
 
@@ -92,6 +91,3 @@ private:
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-
-
-#endif

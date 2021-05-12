@@ -13,16 +13,15 @@
 #include "mir/key/grid/Grid.h"
 
 #include <map>
+#include <sstream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/parser/YAMLParser.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/grid/NamedFromFile.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -30,11 +29,11 @@ namespace key {
 namespace grid {
 
 
-static std::map<std::string, Grid*>* m = nullptr;
-static pthread_once_t once             = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex       = nullptr;
+static util::once_flag once;
+static std::map<std::string, Grid*>* m    = nullptr;
+static util::recursive_mutex* local_mutex = nullptr;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, Grid*>();
 }
 
@@ -49,7 +48,7 @@ static void read_configuration_files() {
     // Read config file, attaching new Grid's grids to parametrisations
     eckit::PathName path("~mir/etc/mir/grids.yaml");
     if (path.exists()) {
-        eckit::Log::debug<LibMir>() << "Grid: reading from '" << path << "'" << std::endl;
+        Log::debug() << "Grid: reading from '" << path << "'" << std::endl;
 
         eckit::ValueMap grids = eckit::YAMLParser::decodeFile(path);
         for (const auto& g : grids) {
@@ -60,31 +59,29 @@ static void read_configuration_files() {
 
             for (const auto& p : eckit::ValueMap(g.second)) {
                 // value type checking prevents lossy conversions (eg. string > double > string > double)
-                p.second.isDouble()
-                    ? ng->set(p.first, p.second.as<double>())
-                    : p.second.isNumber() ? ng->set(p.first, p.second.as<long long>())
-                                          : p.second.isBool() ? ng->set(p.first, p.second.as<bool>())
-                                                              : ng->set(p.first, p.second.as<std::string>());
+                p.second.isDouble()   ? ng->set(p.first, p.second.as<double>())
+                : p.second.isNumber() ? ng->set(p.first, p.second.as<long long>())
+                : p.second.isBool()   ? ng->set(p.first, p.second.as<bool>())
+                                      : ng->set(p.first, p.second.as<std::string>());
             }
 
-            eckit::Log::debug<LibMir>() << ng << std::endl;
+            Log::debug() << static_cast<const Grid&>(*ng) << std::endl;
         }
     }
 }
 
 
 Grid::Grid(const std::string& key, grid_t gridType) : key_(key), gridType_(gridType) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
-    ASSERT(m->find(key) == m->end());
-    (*m)[key] = this;
+    ASSERT(m->insert({key, this}).second);
 }
 
 
 Grid::~Grid() {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(m->find(key_) != m->end());
     m->erase(key_);
@@ -92,8 +89,8 @@ Grid::~Grid() {
 
 
 void Grid::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     auto sep = "";
     for (auto& j : *m) {
@@ -107,45 +104,69 @@ void Grid::list(std::ostream& out) {
 const repres::Representation* Grid::representation() const {
     std::ostringstream os;
     os << "Grid::representation() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 const repres::Representation* Grid::representation(const util::Rotation&) const {
     std::ostringstream os;
     os << "Grid::representation(Rotation&) not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 const repres::Representation* Grid::representation(const param::MIRParametrisation&) const {
     std::ostringstream os;
     os << "Grid::representation(MIRParametrisation&) not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Grid::parametrisation(const std::string&, param::SimpleParametrisation&) const {
     std::ostringstream os;
     os << "Grid::parametrisation() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 size_t Grid::gaussianNumber() const {
     std::ostringstream os;
     os << "Grid::gaussianNumber() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
-const Grid& Grid::lookup(const std::string& key) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+bool Grid::get(const std::string& key, std::string& value, const param::MIRParametrisation& param) {
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     read_configuration_files();
 
-    eckit::Log::debug<LibMir>() << "Grid: looking for '" << key << "'" << std::endl;
+    std::string grid;
+    if (!param.userParametrisation().get(key, grid)) {
+        return false;
+    }
+
+    // Look for specific key matches
+    auto find = m->find(grid);
+    if (find != m->end()) {
+        value = find->first;
+        return true;
+    }
+
+    // Look for pattern matchings
+    value = GridPattern::match(grid, param);
+    return !value.empty();
+}
+
+
+const Grid& Grid::lookup(const std::string& key, const param::MIRParametrisation& param) {
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
+
+    read_configuration_files();
+
+    Log::debug() << "Grid: looking for '" << key << "'" << std::endl;
 
     // Look for specific key matches
     auto j = m->find(key);
@@ -155,28 +176,15 @@ const Grid& Grid::lookup(const std::string& key) {
 
     // Look for pattern matchings
     // This will automatically add the new Grid to the map
-    if (GridPattern::match(key)) {
-        return GridPattern::lookup(key);
+    auto match = GridPattern::match(key, param);
+    if (!match.empty()) {
+        auto gp = GridPattern::lookup(match);
+        ASSERT(gp != nullptr);
+        return *gp;
     }
 
-    list(eckit::Log::error() << "No Grid '" << key << "', choices are:\n");
-    throw eckit::SeriousBug("No Grid '" + key + "'");
-}
-
-
-bool Grid::known(const std::string& key) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-
-    read_configuration_files();
-
-    // Look for specific key matches
-    if (m->find(key) != m->end()) {
-        return true;
-    }
-
-    // Look for pattern matchings
-    return GridPattern::match(key);
+    list(Log::error() << "Grid: unknown '" << key << "', choices are:\n");
+    throw exception::SeriousBug("Grid: unknown '" + key + "'");
 }
 
 

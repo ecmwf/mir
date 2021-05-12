@@ -10,14 +10,10 @@
  */
 
 
-#include <iostream>
 #include <memory>
+#include <ostream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/linalg/LinearAlgebra.h"
-#include "eckit/log/ResourceUsage.h"
-#include "eckit/log/Seconds.h"
-#include "eckit/log/Timer.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/Separator.h"
@@ -27,36 +23,41 @@
 #include "mir/action/filter/NablaFilter.h"
 #include "mir/action/plan/Executor.h"
 #include "mir/api/MIRJob.h"
-#include "mir/api/mir_config.h"
-#include "mir/caching/legendre/LegendreLoader.h"
 #include "mir/caching/matrix/MatrixLoader.h"
-#include "mir/config/LibMir.h"
 #include "mir/data/Space.h"
 #include "mir/input/ArtificialInput.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/input/VectorInput.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/intgrid/Intgrid.h"
+#include "mir/key/packing/Packing.h"
 #include "mir/key/style/MIRStyle.h"
 #include "mir/key/truncation/Truncation.h"
 #include "mir/lsm/LSMSelection.h"
 #include "mir/lsm/NamedLSM.h"
 #include "mir/method/Method.h"
-#include "mir/method/fe/FiniteElement.h"
 #include "mir/method/knn/distance/DistanceWeighting.h"
 #include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
 #include "mir/method/knn/pick/Pick.h"
 #include "mir/method/nonlinear/NonLinear.h"
 #include "mir/output/MIROutput.h"
-#include "mir/packing/Packer.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/search/Tree.h"
 #include "mir/stats/Distribution.h"
+#include "mir/stats/Field.h"
 #include "mir/stats/Statistics.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/util/Pretty.h"
 #include "mir/util/SpectralOrder.h"
+#include "mir/util/Trace.h"
+#include "mir/util/Types.h"
+
+#if defined mir_HAVE_ATLAS
+#include "mir/caching/legendre/LegendreLoader.h"
+#include "mir/method/fe/FiniteElement.h"
+#endif
 
 #if defined(mir_HAVE_PNG)
 #include "mir/output/PNGOutput.h"
@@ -66,24 +67,9 @@
 using namespace mir;
 
 
-class MIR : public mir::tools::MIRTool {
-private:
-    void execute(const eckit::option::CmdArgs&);
-
-    void usage(const std::string& tool) const;
-
-    int minimumPositionalArguments() const { return 2; }
-
-    void process(const api::MIRJob&, input::MIRInput&, output::MIROutput&, const std::string&);
-
-    void only(const api::MIRJob&, input::MIRInput&, output::MIROutput&, size_t);
-
-public:
+struct MIR : tools::MIRTool {
     MIR(int argc, char** argv) : MIRTool(argc, argv) {
-        using eckit::option::FactoryOption;
-        using eckit::option::Separator;
-        using eckit::option::SimpleOption;
-        using eckit::option::VectorOption;
+        using namespace eckit::option;
 
         //==============================================
         options_.push_back(new Separator("Spectral transforms"));
@@ -126,12 +112,22 @@ public:
             new FactoryOption<method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
 
         options_.push_back(
+            new FactoryOption<stats::FieldFactory>("interpolation-statistics", "Statistics interpolation method"));
+
+        options_.push_back(
             new SimpleOption<bool>("interpolation-matrix-free", "Matrix-free interpolation (proxy methods)"));
 
+#if defined(mir_HAVE_ATLAS)
         options_.push_back(new FactoryOption<method::fe::FiniteElementFactory>("l2-projection-input-method",
-                                                                               "L2 Projection FEM method for input"));
+                                                                               "L2 Projection FE method for input"));
         options_.push_back(new FactoryOption<method::fe::FiniteElementFactory>("l2-projection-output-method",
-                                                                               "L2 Projection FEM method for output"));
+                                                                               "L2 Projection FE method for output"));
+        options_.push_back(new SimpleOption<bool>("finite-element-validate-mesh",
+                                                  "FE method check mesh quadrilaterals validity (default false)"));
+        options_.push_back(
+            new SimpleOption<bool>("finite-element-missing-value-on-projection-fail",
+                                   "FE method sets missing value when interpolation isn't possible (default true)"));
+#endif
 
         options_.push_back(new FactoryOption<method::nonlinear::NonLinearFactory>(
             "non-linear",
@@ -179,6 +175,7 @@ public:
             "backend", "Linear algebra backend (default '" + eckit::linalg::LinearAlgebra::backend().name() + "')"));
         options_.push_back(new FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
 
+#if defined(mir_HAVE_ATLAS)
         for (const std::string& which : {"input", "output"}) {
             options_.push_back(
                 new SimpleOption<std::string>(which + "-mesh-generator", "Mesh generator for " + which + " grid"));
@@ -209,6 +206,21 @@ public:
             options_.push_back(new SimpleOption<bool>(which + "-mesh-generator-force-include-south-pole",
                                                       "Generate including South pole on " + which + " mesh"));
         }
+#endif
+
+        options_.push_back(
+            new SimpleOption<double>("counter-upper-limit", "Statistics count values below lower limit"));
+        options_.push_back(
+            new SimpleOption<double>("counter-lower-limit", "Statistics count values above upper limit"));
+
+        options_.push_back(new SimpleOption<bool>(
+            "mode-disambiguate-max", "Statistics mode disambiguate with maximum (default, otherwise minimum)"));
+        options_.push_back(new VectorOption<double>("mode-boolean-min",
+                                                    "Statistics mode boolean threshold min <= value (default 0.5)", 0));
+        options_.push_back(
+            new VectorOption<double>("mode-real-min", "Statistics mode bin ranges min <= value (default 0.5)", 0));
+        options_.push_back(
+            new VectorOption<double>("mode-real-values", "Statistics mode bin ranges value (default 0/1)", 0));
 
         //==============================================
         options_.push_back(new Separator("Filtering"));
@@ -271,7 +283,7 @@ public:
         //==============================================
         options_.push_back(new Separator("GRIB Output"));
         options_.push_back(new SimpleOption<size_t>("accuracy", "Number of bits per value"));
-        options_.push_back(new FactoryOption<packing::PackerFactory>("packing", "GRIB packing method"));
+        options_.push_back(new FactoryOption<key::packing::PackingFactory>("packing", "GRIB packing method"));
         options_.push_back(new SimpleOption<size_t>("edition", "GRIB edition number"));
 
         options_.push_back(new SimpleOption<bool>("delete-local-definition", "Remove GRIB local extension"));
@@ -298,6 +310,7 @@ public:
             "input", "Additional information to decribe input (such as latitudes, longitudes, coordinates) in YAML"));
         options_.push_back(new SimpleOption<size_t>("precision", "Statistics methods output precision"));
         options_.push_back(new SimpleOption<double>("constant", "Set input to constant value"));
+        options_.push_back(new SimpleOption<std::string>("output", "Output options"));
         options_.push_back(new FactoryOption<action::Executor>("executor", "Select whether threads are used or not"));
         options_.push_back(new SimpleOption<std::string>("plan", "String containing a plan definition"));
         options_.push_back(new SimpleOption<eckit::PathName>("plan-script", "File containing a plan definition"));
@@ -306,12 +319,14 @@ public:
         options_.push_back(new Separator("Caching"));
         options_.push_back(new FactoryOption<caching::matrix::MatrixLoaderFactory>(
             "matrix-loader", "Select how to load matrices in memory"));
+#if defined(mir_HAVE_ATLAS)
         options_.push_back(new FactoryOption<caching::legendre::LegendreLoaderFactory>(
             "legendre-loader", "Select how to load Legendre coefficients in memory"));
+#endif
 
         //==============================================
         // Only show these options if debug channel is active
-        if (eckit::Log::debug<LibMir>()) {
+        if (Log::debug()) {
             options_.push_back(new Separator("Debugging"));
             options_.push_back(new SimpleOption<bool>(
                 "dryrun", "Only read data from source, no interpolation done or output produced"));
@@ -335,36 +350,43 @@ public:
 #endif
         }
     }
+
+    int minimumPositionalArguments() const override { return 2; }
+
+    void usage(const std::string& tool) const override {
+        Log::info() << "\n"
+                       "Usage: "
+                    << tool
+                    << " [--key1=value [--key2=value [...]]] input.grib output.grib"
+                       "\n"
+                       "Examples: "
+                       "\n"
+                       "  % "
+                    << tool
+                    << " --grid=2/2 --area=90/-8/12/80 input.grib output.grib"
+                       "\n"
+                       "  % "
+                    << tool
+                    << " --reduced=80 input.grib output.grib"
+                       "\n"
+                       "  % "
+                    << tool
+                    << " --regular=80 input.grib output.grib"
+                       "\n"
+                       "  % "
+                    << tool << " --truncation=63 input.grib output.grib" << std::endl;
+    }
+
+    void execute(const eckit::option::CmdArgs&) override;
+
+    void process(const api::MIRJob&, input::MIRInput&, output::MIROutput&, const std::string&);
+
+    void only(const api::MIRJob&, input::MIRInput&, output::MIROutput&, size_t);
 };
 
 
-void MIR::usage(const std::string& tool) const {
-    eckit::Log::info() << "\n"
-                          "Usage: "
-                       << tool
-                       << " [--key1=value [--key2=value [...]]] input.grib output.grib"
-                          "\n"
-                          "Examples: "
-                          "\n"
-                          "  % "
-                       << tool
-                       << " --grid=2/2 --area=90/-8/12/80 input.grib output.grib"
-                          "\n"
-                          "  % "
-                       << tool
-                       << " --reduced=80 input.grib output.grib"
-                          "\n"
-                          "  % "
-                       << tool
-                       << " --regular=80 input.grib output.grib"
-                          "\n"
-                          "  % "
-                       << tool << " --truncation=63 input.grib output.grib" << std::endl;
-}
-
-
 void MIR::execute(const eckit::option::CmdArgs& args) {
-    eckit::ResourceUsage usage("mir");
+    trace::ResourceUsage usage("mir");
     const param::ConfigurationWrapper args_wrap(args);
 
     // If we want to control the backend in MARS/PRODGEN, we can move that to MIRJob
@@ -427,44 +449,42 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
 
 
 void MIR::process(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output, const std::string& what) {
-    eckit::Timer timer("Total time");
+    trace::Timer timer("Total time");
 
     util::MIRStatistics statistics;
-    eckit::Log::debug<LibMir>() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend."
-                                << std::endl;
+    Log::debug() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;
 
     size_t i = 0;
     while (input.next()) {
-        eckit::Log::debug<LibMir>() << "============> " << what << ": " << (++i) << std::endl;
+        Log::debug() << "============> " << what << ": " << (++i) << std::endl;
         job.execute(input, output, statistics);
     }
 
-    statistics.report(eckit::Log::info());
+    statistics.report(Log::info());
 
-    eckit::Log::info() << Pretty(i, what) << " in " << eckit::Seconds(timer.elapsed())
-                       << ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
+    Log::info() << Log::Pretty(i, what) << " in " << timer.elapsedSeconds() << ", rate: " << double(i) / timer.elapsed()
+                << " " << what << "/s" << std::endl;
 }
 
 
 void MIR::only(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output, size_t paramId) {
-    eckit::Timer timer("Total time");
+    trace::Timer timer("Total time");
 
     std::string what = "field";
 
     util::MIRStatistics statistics;
-    eckit::Log::debug<LibMir>() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend."
-                                << std::endl;
+    Log::debug() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;
 
     size_t i = 0;
     while (input.only(paramId)) {
-        eckit::Log::debug<LibMir>() << "============> paramId: " << paramId << ": " << (++i) << std::endl;
+        Log::debug() << "============> paramId: " << paramId << ": " << (++i) << std::endl;
         job.execute(input, output, statistics);
     }
 
-    statistics.report(eckit::Log::info());
+    statistics.report(Log::info());
 
-    eckit::Log::info() << Pretty(i, what) << " in " << eckit::Seconds(timer.elapsed())
-                       << ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
+    Log::info() << Log::Pretty(i, what) << " in " << timer.elapsedSeconds() << ", rate: " << double(i) / timer.elapsed()
+                << " " << what << "/s" << std::endl;
 }
 
 

@@ -10,16 +10,15 @@
  */
 
 
-#ifndef mir_caching_InMemoryCache_h
-#define mir_caching_InMemoryCache_h
+#pragma once
 
 #include <memory>
 
 #include "eckit/config/Resource.h"
-#include "eckit/thread/Mutex.h"
 
 #include "mir/caching/InMemoryCacheBase.h"
 #include "mir/caching/InMemoryCacheStatistics.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -35,16 +34,16 @@ public:  // methods
     explicit InMemoryCache(const std::string& name, size_t memory_capacity, size_t shared_capacity,
                            const char* variable);
 
-    ~InMemoryCache();
+    ~InMemoryCache() override;
 
     iterator find(const std::string& key) const;
     T& insert(const std::string& key, T*);
     T& operator[](const std::string& key);
 
-    iterator end() const { return 0; }
+    iterator end() const { return nullptr; }
 
     void footprint(const std::string& key, const InMemoryCacheUsage&);
-    const std::string& name() const;
+    const std::string& name() const override;
 
     void reserve(size_t size, bool inSharedMemory);
     void reserve(const InMemoryCacheUsage&);
@@ -58,28 +57,30 @@ private:
     void purge();
     T& create(const std::string& key);
 
-    virtual InMemoryCacheUsage footprint() const;
-    virtual InMemoryCacheUsage capacity() const;
-    virtual InMemoryCacheUsage purge(const InMemoryCacheUsage&, bool force = false);
+    InMemoryCacheUsage footprint() const override;
+    InMemoryCacheUsage capacity() const override;
+    InMemoryCacheUsage purge(const InMemoryCacheUsage&, bool force = false) override;
 
     std::string name_;
     eckit::Resource<InMemoryCacheUsage> capacity_;
-
     size_t users_;
-
     mutable InMemoryCacheStatistics statistics_;
-    mutable eckit::Mutex mutex_;
     mutable std::map<std::string, InMemoryCacheUsage> keys_;
+    mutable util::recursive_mutex mutex_;
 
     struct Entry {
-
         std::unique_ptr<T> ptr_;
         size_t hits_;
         double last_;
         double insert_;
         InMemoryCacheUsage footprint_;
 
-        Entry(T* ptr) : ptr_(ptr), hits_(1), last_(::time(0)), insert_(::time(0)), footprint_(size_t(1), size_t(0)) {}
+        Entry(T* ptr) :
+            ptr_(ptr),
+            hits_(1),
+            last_(double(::time(nullptr))),
+            insert_(double(::time(nullptr))),
+            footprint_(size_t(1), size_t(0)) {}
     };
 
     std::map<std::string, Entry*> cache_;
@@ -109,6 +110,3 @@ public:
 
 
 #include "mir/caching/InMemoryCache.cc"
-
-
-#endif

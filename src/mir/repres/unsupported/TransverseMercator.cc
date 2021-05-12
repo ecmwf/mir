@@ -12,9 +12,7 @@
 
 #include "mir/repres/unsupported/TransverseMercator.h"
 
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
 
 
 namespace mir {
@@ -24,24 +22,13 @@ namespace repres {
 TransverseMercator::TransverseMercator(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
-TransverseMercator::TransverseMercator() = default;
-
-
-TransverseMercator::~TransverseMercator() = default;
-
-
 void TransverseMercator::print(std::ostream& out) const {
     out << "TransverseMercator["
         << "]";
 }
 
 
-void TransverseMercator::fill(grib_info& /*info*/) const {
-    NOTIMP;
-}
-
-
-static RepresentationBuilder<TransverseMercator> transverseMercator("transverse_mercator");
+static RepresentationBuilder<TransverseMercator> __repres("transverse_mercator");
 
 
 }  // namespace repres

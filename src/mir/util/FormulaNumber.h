@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_FormulaNumber_h
-#define mir_util_FormulaNumber_h
+#pragma once
 
 #include "mir/util/Formula.h"
 
@@ -23,13 +22,13 @@ namespace util {
 class FormulaNumber : public Formula {
 public:
     FormulaNumber(const param::MIRParametrisation& parametrisation, double value);
-    virtual ~FormulaNumber();
+    ~FormulaNumber() override;
 
 private:
-    virtual void print(std::ostream&) const;
-    virtual void execute(context::Context&) const;
-    virtual bool sameAs(const Action&) const;
-    virtual const char* name() const;
+    void print(std::ostream&) const override;
+    void execute(context::Context&) const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
 
 private:  // members
     double value_;
@@ -38,6 +37,3 @@ private:  // members
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

@@ -10,13 +10,12 @@
  */
 
 
-#include <iostream>
-
-#include "eckit/log/Log.h"
+#include <ostream>
 
 #include "mir/action/plan/Action.h"
 #include "mir/action/plan/ActionNode.h"
 #include "mir/action/plan/Executor.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -35,7 +34,7 @@ void ActionNode::print(std::ostream& out) const {
 
 
 void ActionNode::execute(context::Context& ctx, const Executor& executor) const {
-    // eckit::Log::info() << " BEFORE -----> " << action_  << "  " << field << std::endl;
+    // Log::info() << " BEFORE -----> " << action_  << "  " << field << std::endl;
     bool ok = false;
     try {
         action_.perform(ctx);
@@ -43,7 +42,7 @@ void ActionNode::execute(context::Context& ctx, const Executor& executor) const 
     }
     catch (std::exception& e) {
 
-        eckit::Log::error() << e.what() << " while executing " << action_ << std::endl;
+        Log::error() << e.what() << " while executing " << action_ << std::endl;
 
         bool rethrow = true;
         notifyFailure(e, action_, watcher_, rethrow);
@@ -51,7 +50,7 @@ void ActionNode::execute(context::Context& ctx, const Executor& executor) const 
             throw;
         }
     }
-    // eckit::Log::info() << " AFTER -----> " << action_  << "  " << field << std::endl;
+    // Log::info() << " AFTER -----> " << action_  << "  " << field << std::endl;
 
     if (ok) {
         graph_.execute(ctx, executor);

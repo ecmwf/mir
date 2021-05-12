@@ -13,13 +13,13 @@
 #include "mir/netcdf/Curvilinear.h"
 
 #include <cmath>
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
 
 #include "mir/netcdf/Dimension.h"
 #include "mir/netcdf/HyperCube.h"
 #include "mir/netcdf/Variable.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -55,7 +55,7 @@ void Curvilinear::print(std::ostream& s) const {
 
 
 bool Curvilinear::has(const std::string& name) const {
-    // eckit::Log::info() << "has " << name << std::endl;
+    // Log::info() << "has " << name << std::endl;
 
     // Note: only "gridded" is supported
     return (name == "gridded");
@@ -63,7 +63,7 @@ bool Curvilinear::has(const std::string& name) const {
 
 
 bool Curvilinear::get(const std::string& name, std::vector<double>& values) const {
-    // eckit::Log::info() << "get " << name << std::endl;
+    // Log::info() << "get " << name << std::endl;
 
     if (name == "latitudes") {
         values = latitudes_;
@@ -80,22 +80,22 @@ bool Curvilinear::get(const std::string& name, std::vector<double>& values) cons
 
 
 bool Curvilinear::get(const std::string& /*name*/, long& /*value*/) const {
-    // eckit::Log::info() << "get " << name << std::endl;
+    // Log::info() << "get " << name << std::endl;
 
-    // eckit::Log::info() << "Curvilinear::get " << name << " failed" << std::endl;
+    // Log::info() << "Curvilinear::get " << name << " failed" << std::endl;
 
     return false;
 }
 
 
 bool Curvilinear::get(const std::string& name, std::string& value) const {
-    // eckit::Log::info() << "get " << name << std::endl;
+    // Log::info() << "get " << name << std::endl;
     if (name == "gridType") {
         value = "unstructured_grid";
         return true;
     }
 
-    // eckit::Log::info() << "Curvilinear::get " << name << " failed" << std::endl;
+    // Log::info() << "Curvilinear::get " << name << " failed" << std::endl;
 
 
     return false;
@@ -125,7 +125,7 @@ bool Curvilinear::get(const std::string& name, double& value) const {
     }
 
 
-    // eckit::Log::info() << "Curvilinear::get " << name << " failed" << std::endl;
+    // Log::info() << "Curvilinear::get " << name << " failed" << std::endl;
 
 
     return false;
@@ -196,7 +196,7 @@ GridSpec* Curvilinear::guess(const Variable& variable, const Variable& latitudes
         (x2, y2) --------------- (x3, y3)
     */
 
-    eckit::Log::info() << "Curvilinear " << index.ni_ << " " << index.nj_ << std::endl;
+    Log::info() << "Curvilinear " << index.ni_ << " " << index.nj_ << std::endl;
 
     double s = 0.;
     for (size_t i = 0; i < index.ni_ - 1; i++) {
@@ -221,26 +221,26 @@ GridSpec* Curvilinear::guess(const Variable& variable, const Variable& latitudes
 
 
             if (i == 0 && j == 0) {
-                eckit::Log::info() << "First " << t1 << "  " << t2 << std::endl;
-                eckit::Log::info() << x1 << "/" << y1 << " ================ " << x4 << "/" << y4 << std::endl;
-                eckit::Log::info() << x2 << "/" << y2 << " ================ " << x3 << "/" << y3 << std::endl;
+                Log::info() << "First " << t1 << "  " << t2 << std::endl;
+                Log::info() << x1 << "/" << y1 << " ================ " << x4 << "/" << y4 << std::endl;
+                Log::info() << x2 << "/" << y2 << " ================ " << x3 << "/" << y3 << std::endl;
                 s = sign(t1 != 0. ? t1 : t2);
             }
 
             if (sign(t1) != s) {
-                eckit::Log::info() << "Sign of " << t1 << " is not " << s << std::endl;
+                Log::info() << "Sign of " << t1 << " is not " << s << std::endl;
                 return nullptr;
             }
 
             if (sign(t2) != s) {
-                eckit::Log::info() << "Sign of " << t2 << " is not " << s << std::endl;
+                Log::info() << "Sign of " << t2 << " is not " << s << std::endl;
                 return nullptr;
             }
 
             // double t3 = x1 * y2 - x2 * y1 + x2 * y4 - x4 * y2 + x4 * y1 - x1 * y4;
             // double t4 = * y3 - x3 * y2 + x3 * y4 - x4 * y3 + x4 * y2 - x2 * y4;
 
-            // eckit::Log::info() << a << std::endl;
+            // Log::info() << a << std::endl;
         }
     }
 

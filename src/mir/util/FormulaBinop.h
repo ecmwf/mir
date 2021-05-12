@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_FormulaBinop_h
-#define mir_util_FormulaBinop_h
+#pragma once
 
 #include <string>
 
@@ -27,15 +26,12 @@ public:
     FormulaBinop(const param::MIRParametrisation& parametrisation, const std::string& name, Formula* arg1,
                  Formula* arg2);
 
-    virtual ~FormulaBinop();
+    ~FormulaBinop() override;
 
 private:
-    virtual void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 };
 
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

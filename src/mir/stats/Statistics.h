@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_stats_Statistics_h
-#define mir_stats_Statistics_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -130,7 +129,7 @@ public:
 template <class T>
 class StatisticsBuilder : public StatisticsFactory {
 private:
-    Statistics* make(const param::MIRParametrisation& param) { return new T(param); }
+    Statistics* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     StatisticsBuilder(const std::string& name) : StatisticsFactory(name) {}
@@ -139,6 +138,3 @@ public:
 
 }  // namespace stats
 }  // namespace mir
-
-
-#endif

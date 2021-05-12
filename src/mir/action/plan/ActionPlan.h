@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_plan_ActionPlan_h
-#define mir_action_plan_ActionPlan_h
+#pragma once
 
 #include <string>
 #include <vector>
@@ -74,13 +73,13 @@ public:
     void add(Action*);
     void add(const std::string& name, param::MIRParametrisation*);
 
-    void execute(context::Context& ctx) const;
+    void execute(context::Context&) const;
     void dump(std::ostream&) const;
     void custom(std::ostream&) const;
     void compress();
     bool ended() const;
 
-    void estimate(context::Context& ctx, api::MIREstimation&) const;
+    void estimate(context::Context&, api::MIREstimation&) const;
 
     const Action& action(size_t) const;
 
@@ -156,6 +155,3 @@ private:
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

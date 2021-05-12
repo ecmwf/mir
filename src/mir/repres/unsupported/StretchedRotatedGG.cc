@@ -12,9 +12,7 @@
 
 #include "mir/repres/unsupported/StretchedRotatedGG.h"
 
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
 
 
 namespace mir {
@@ -24,24 +22,13 @@ namespace repres {
 StretchedRotatedGG::StretchedRotatedGG(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
-StretchedRotatedGG::StretchedRotatedGG() = default;
-
-
-StretchedRotatedGG::~StretchedRotatedGG() = default;
-
-
 void StretchedRotatedGG::print(std::ostream& out) const {
     out << "StretchedRotatedGG["
         << "]";
 }
 
 
-void StretchedRotatedGG::fill(grib_info& /*info*/) const {
-    NOTIMP;
-}
-
-
-static RepresentationBuilder<StretchedRotatedGG> stretchedRotatedGG("stretched_rotated_gg");
+static RepresentationBuilder<StretchedRotatedGG> __repres("stretched_rotated_gg");
 
 
 }  // namespace repres

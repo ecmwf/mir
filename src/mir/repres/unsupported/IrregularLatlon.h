@@ -10,8 +10,7 @@
  */
 
 
-#ifndef IrregularLatlon_H
-#define IrregularLatlon_H
+#pragma once
 
 #include "mir/repres/Gridded.h"
 
@@ -31,7 +30,7 @@ public:
 
     // -- Destructor
 
-    virtual ~IrregularLatlon();  // Change to virtual if base class
+    ~IrregularLatlon() override;
 
     // -- Convertors
     // None
@@ -56,7 +55,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -88,21 +87,21 @@ private:
 
     // -- Overridden methods
 
-    virtual size_t numberOfPoints() const;
-    virtual bool getLongestElementDiagonal(double&) const;
-    virtual void validate(const MIRValuesVector&) const;
+    size_t numberOfPoints() const override;
+    bool getLongestElementDiagonal(double&) const override;
+    void validate(const MIRValuesVector&) const override;
 
-    virtual void fill(grib_info&) const;
-    virtual void fill(util::MeshGeneratorParameters&) const;
+    void fill(grib_info&) const override;
+    void fill(util::MeshGeneratorParameters&) const override;
 
-    virtual void makeName(std::ostream&) const;
-    virtual bool sameAs(const Representation&) const;
-    virtual atlas::Grid atlasGrid() const;
-    virtual util::Domain domain() const;
-    virtual Iterator* iterator() const;
-    virtual bool isPeriodicWestEast() const;
-    virtual bool includesNorthPole() const;
-    virtual bool includesSouthPole() const;
+    void makeName(std::ostream&) const override;
+    bool sameAs(const Representation&) const override;
+    atlas::Grid atlasGrid() const override;
+    util::Domain domain() const override;
+    Iterator* iterator() const override;
+    bool isPeriodicWestEast() const override;
+    bool includesNorthPole() const override;
+    bool includesSouthPole() const override;
 
     // -- Class members
     // None
@@ -111,14 +110,9 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const IrregularLatlon& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

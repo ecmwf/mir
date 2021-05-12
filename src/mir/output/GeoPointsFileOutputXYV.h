@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_output_GeoPointsFileOutputXYV_h
-#define mir_output_GeoPointsFileOutputXYV_h
+#pragma once
 
 #include "mir/output/GeoPointsFileOutput.h"
 
@@ -60,8 +59,8 @@ protected:
     // -- Overridden methods
 
     // From MIROutput
-    virtual size_t copy(const param::MIRParametrisation&, context::Context&);
-    virtual size_t save(const param::MIRParametrisation&, context::Context&);
+    virtual size_t copy(const param::MIRParametrisation&, context::Context&) override;
+    virtual size_t save(const param::MIRParametrisation&, context::Context&) override;
 
     // -- Class members
     // None
@@ -87,14 +86,9 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const GeoPointsFileOutputXYV& p)
-    // { p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace output
 }  // namespace mir
-
-
-#endif

@@ -23,7 +23,7 @@ namespace util {
 static std::set<eckit::Hash::digest_t> known_messages;
 
 
-DeprecatedFunctionality::DeprecatedFunctionality(const std::string& msg, std::ostream& out) {
+DeprecatedFunctionality::DeprecatedFunctionality(const std::string& msg, Log::Channel& out) {
 
     // only log DeprecatedFunctionality messages once
     const eckit::Hash::digest_t digest = eckit::MD5(msg).digest();
@@ -33,7 +33,7 @@ DeprecatedFunctionality::DeprecatedFunctionality(const std::string& msg, std::os
 }
 
 
-void DeprecatedFunctionality::message(const std::string& msg, std::ostream& out) {
+void DeprecatedFunctionality::message(const std::string& msg, Log::Channel& out) {
     out << "DeprecatedFunctionality: " << msg << std::endl;
 }
 

@@ -13,6 +13,7 @@
 #include "mir/key/style/CustomStyle.h"
 
 #include <fstream>
+#include <ostream>
 #include <sstream>
 
 #include "mir/action/io/Copy.h"
@@ -20,6 +21,7 @@
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/PlanParser.h"
 
 
@@ -64,13 +66,13 @@ void CustomStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outp
     if (parametrisation_.get("plan-script", s)) {
         std::ifstream in(s);
         if (!in) {
-            throw eckit::CantOpenFile(s);
+            throw exception::CantOpenFile(s);
         }
         parse(in, plan, parametrisation_, input, output);
         return;
     }
 
-    throw eckit::UserError("CustomStyle: no plan specified");
+    throw exception::UserError("CustomStyle: no plan specified");
 }
 
 

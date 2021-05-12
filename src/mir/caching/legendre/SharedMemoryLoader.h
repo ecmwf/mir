@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_caching_legendre_SharedMemoryLoader_h
-#define mir_caching_legendre_SharedMemoryLoader_h
+#pragma once
 
 #include "mir/caching/legendre/LegendreLoader.h"
 
@@ -25,7 +24,7 @@ class SharedMemoryLoader : public LegendreLoader {
 public:
     SharedMemoryLoader(const param::MIRParametrisation&, const eckit::PathName&);
 
-    virtual ~SharedMemoryLoader();
+    ~SharedMemoryLoader() override;
 
     static void loadSharedMemory(const eckit::PathName&);
     static void unloadSharedMemory(const eckit::PathName&);
@@ -33,12 +32,12 @@ public:
     static bool shared();
 
 protected:
-    virtual void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
 private:
-    virtual const void* address() const;
-    virtual size_t size() const;
-    virtual bool inSharedMemory() const;
+    const void* address() const override;
+    size_t size() const override;
+    bool inSharedMemory() const override;
 
     void* address_;
     size_t size_;
@@ -49,6 +48,3 @@ private:
 }  // namespace legendre
 }  // namespace caching
 }  // namespace mir
-
-
-#endif

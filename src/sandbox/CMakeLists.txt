@@ -1,11 +1,7 @@
 
-foreach(tool IN ITEMS
-        grids
-        lsm)
-    if(HAVE_BUILD_TOOLS)
-        ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir)
-    else()
-        ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir NOINSTALL)
-    endif()
-endforeach()
+ecbuild_add_executable(TARGET lsm SOURCES lsm.cc LIBS mir ${mir_INSTALL_TOOLS})
+
+if(mir_HAVE_ATLAS)
+    ecbuild_add_executable(TARGET grids SOURCES grids.cc LIBS mir ${mir_INSTALL_TOOLS})
+endif()
 

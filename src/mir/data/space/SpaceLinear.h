@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_data_dimension_SpaceLinear_h
-#define mir_data_dimension_SpaceLinear_h
+#pragma once
 
 #include "mir/data/Space.h"
 
@@ -44,9 +43,8 @@ public:
 
     // -- Overridden methods
 
-    void linearise(const Space::Matrix&, Space::Matrix&, double missingValue) const;
-
-    void unlinearise(const Space::Matrix&, Space::Matrix&, double missingValue) const;
+    void linearise(const Space::Matrix&, Space::Matrix&, double missingValue) const override;
+    void unlinearise(const Space::Matrix&, Space::Matrix&, double missingValue) const override;
 
     // -- Class members
     // None
@@ -81,6 +79,3 @@ private:
 }  // namespace space
 }  // namespace data
 }  // namespace mir
-
-
-#endif

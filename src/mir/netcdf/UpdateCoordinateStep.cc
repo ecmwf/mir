@@ -12,6 +12,8 @@
 
 #include "mir/netcdf/UpdateCoordinateStep.h"
 
+#include <ostream>
+
 #include "mir/netcdf/Dataset.h"
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/MergeCoordinateStep.h"
@@ -19,14 +21,11 @@
 #include "mir/netcdf/ReshapeVariableStep.h"
 #include "mir/netcdf/Variable.h"
 
-#include <iostream>
 
 namespace mir {
 namespace netcdf {
 
 UpdateCoordinateStep::UpdateCoordinateStep(Variable& out, const Variable& in) : out_(out), in_(in) {}
-
-UpdateCoordinateStep::~UpdateCoordinateStep() = default;
 
 int UpdateCoordinateStep::rank() const {
     return 1;
@@ -43,11 +42,11 @@ void UpdateCoordinateStep::execute(MergePlan& /*plan*/) {
     const std::vector<Dimension *> &dims = out_.dimensions();
     ASSERT(dims.size() == 1);
 
-    eckit::Log::info() << *this << std::endl;
+    Log::info() << *this << std::endl;
 
     std::vector<Variable *> v = plan.field().variablesForDimension(*dims[0]);
     for (std::vector<Variable *>::iterator j = v.begin(); j != v.end(); ++j) {
-        eckit::Log::info() << "Affects: " << **j << std::endl;
+        Log::info() << "Affects: " << **j << std::endl;
         (*j)->mustMerge(true);
         plan.add(new ReshapeVariableStep(**j, *dims[0], growth_));
     }

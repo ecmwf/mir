@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_lsm_GribFileMaskFromMIR_h
-#define mir_lsm_GribFileMaskFromMIR_h
+#pragma once
 
 #include "mir/lsm/GribFileMask.h"
 
@@ -29,13 +28,10 @@ public:
 private:
     std::string name_;
 
-    virtual bool cacheable() const;
-    virtual std::string cacheName() const;
+    bool cacheable() const override;
+    std::string cacheName() const override;
 };
 
 
 }  // namespace lsm
 }  // namespace mir
-
-
-#endif

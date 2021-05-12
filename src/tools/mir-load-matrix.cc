@@ -12,13 +12,11 @@
 
 #include <fstream>
 #include <ios>
-#include <iostream>
 #include <limits>
+#include <ostream>
 #include <sstream>
 #include <string>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Bytes.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/SimpleOption.h"
@@ -26,56 +24,54 @@
 
 #include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/caching/matrix/SharedMemoryLoader.h"
-#include "mir/config/LibMir.h"
 #include "mir/method/WeightMatrix.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
-class MIRLoadMatrix : public mir::tools::MIRTool {
+using namespace mir;
 
-    // -- Overridden methods
 
-    void execute(const eckit::option::CmdArgs&);
+struct MIRLoadMatrix : tools::MIRTool {
+    MIRLoadMatrix(int argc, char** argv) : MIRTool(argc, argv) {
+        using namespace eckit::option;
 
-    void usage(const std::string& tool) const {
-        eckit::Log::info() << "\n"
-                           << "Usage: " << tool << " [--load] [--unload] [--dump=path] <path>" << std::endl;
-    }
-
-    int minimumPositionalArguments() const { return 1; }
-
-public:
-    // -- Constructors
-
-    MIRLoadMatrix(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {
-        options_.push_back(new eckit::option::SimpleOption<bool>(
-            "load", "Load file into memory. If file is already loaded, does nothing."));
-        options_.push_back(new eckit::option::SimpleOption<bool>(
+        options_.push_back(
+            new SimpleOption<bool>("load", "Load file into memory. If file is already loaded, does nothing."));
+        options_.push_back(new SimpleOption<bool>(
             "unload",
             "Unload file from memory. If file is not loaded, or loader does not employ shmem, does nothing."));
-        options_.push_back(
-            new eckit::option::SimpleOption<bool>("wait", "After load/unload, wait for user input before exiting."));
-        options_.push_back(new eckit::option::FactoryOption<mir::caching::matrix::MatrixLoaderFactory>(
+        options_.push_back(new SimpleOption<bool>("wait", "After load/unload, wait for user input before exiting."));
+        options_.push_back(new FactoryOption<caching::matrix::MatrixLoaderFactory>(
             "matrix-loader", "Select how to load matrices in memory"));
 
-        options_.push_back(new eckit::option::SimpleOption<eckit::PathName>("dump", "Matrix dump (needs --load)"));
-        options_.push_back(new eckit::option::SimpleOption<eckit::PathName>(
+        options_.push_back(new SimpleOption<eckit::PathName>("dump", "Matrix dump (needs --load)"));
+        options_.push_back(new SimpleOption<eckit::PathName>(
             "write-csr", "Write matrix as CSR (needs --load, writes nna, nnz, ia, ja, a in 0-based indexing)"));
-        options_.push_back(new eckit::option::SimpleOption<eckit::PathName>(
+        options_.push_back(new SimpleOption<eckit::PathName>(
             "write-mm", "Write matrix as MatrixMarket (needs --load, output in 1-based indexing)"));
-        options_.push_back(
-            new eckit::option::SimpleOption<eckit::PathName>("write-dense", "Write dense matrix (needs --load)"));
+        options_.push_back(new SimpleOption<eckit::PathName>("write-dense", "Write dense matrix (needs --load)"));
     }
+
+    int minimumPositionalArguments() const override { return 1; }
+
+    void usage(const std::string& tool) const override {
+        Log::info() << "\n"
+                    << "Usage: " << tool << " [--load] [--unload] [--dump=path] <path>" << std::endl;
+    }
+
+    void execute(const eckit::option::CmdArgs&) override;
 };
 
 
-void display(eckit::Channel& out, mir::caching::matrix::MatrixLoader* loader, const std::string& path) {
+void display(Log::Channel& out, caching::matrix::MatrixLoader* loader, const std::string& path) {
     ASSERT(loader);
 
     // clang-format off
     out << "\n" "path:\t'" << path << "'"
-        << "\n" "size:\t" << eckit::Bytes(loader->size())
+        << "\n" "size:\t" << Log::Bytes(loader->size())
         << "\n" "address:\t" << std::hex << loader->address() << std::dec
         << "\n" "inSharedMemory:\t" << std::boolalpha << loader->inSharedMemory() << std::noboolalpha
         << std::endl;
@@ -84,13 +80,13 @@ void display(eckit::Channel& out, mir::caching::matrix::MatrixLoader* loader, co
 
 
 void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
-    using namespace mir::caching::matrix;
-    using mir::method::WeightMatrix;
+    using caching::matrix::SharedMemoryLoader;
+    using method::WeightMatrix;
 
-    eckit::Log::debug<mir::LibMir>().setStream(std::cerr);
-    eckit::Log::info().setStream(std::cerr);
+    Log::debug().setStream(std::cerr);
+    Log::info().setStream(std::cerr);
 
-    const mir::param::ConfigurationWrapper param(args);
+    const param::ConfigurationWrapper param(args);
 
     bool load   = false;
     bool unload = false;
@@ -109,23 +105,23 @@ void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
         for (const std::string& path : args) {
 
             if (!load) {
-                eckit::Log::info() << "---"
-                                      "\n"
-                                      "unloadSharedMemory"
-                                   << std::endl;
+                Log::info() << "---"
+                               "\n"
+                               "unloadSharedMemory"
+                            << std::endl;
                 SharedMemoryLoader::unloadSharedMemory(path);
                 continue;
             }
 
             // matrix construction transfers ownership from loader
-            eckit::Log::info() << "---"
-                                  "\n"
-                                  "load"
-                               << std::endl;
+            Log::info() << "---"
+                           "\n"
+                           "load"
+                        << std::endl;
 
-            auto loader = MatrixLoaderFactory::build(matrixLoader, path);
+            auto loader = caching::matrix::MatrixLoaderFactory::build(matrixLoader, path);
             WeightMatrix W(loader);
-            display(eckit::Log::info(), loader, path);
+            display(Log::info(), loader, path);
 
             if (!written) {
                 std::string s;
@@ -136,14 +132,14 @@ void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
                     eckit::PathName file(s);
                     std::ofstream out(file.asString().c_str());
                     if (!out) {
-                        throw eckit::CantOpenFile(file);
+                        throw exception::CantOpenFile(file);
                     }
 
                     W.dump(out);
 
                     out.close();
                     if (out.bad()) {
-                        throw eckit::WriteError(file);
+                        throw exception::WriteError(file);
                     }
                 }
 
@@ -153,7 +149,7 @@ void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
                     eckit::PathName file(s);
                     std::ofstream out(file.asString().c_str());
                     if (!out) {
-                        throw eckit::CantOpenFile(file);
+                        throw exception::CantOpenFile(file);
                     }
 
                     out.precision(std::numeric_limits<double>::digits10);
@@ -186,7 +182,7 @@ void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
 
                     out.close();
                     if (out.bad()) {
-                        throw eckit::WriteError(file);
+                        throw exception::WriteError(file);
                     }
                 }
 
@@ -196,7 +192,7 @@ void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
                     eckit::PathName file(s);
                     std::ofstream out(file.asString().c_str());
                     if (!out) {
-                        throw eckit::CantOpenFile(file);
+                        throw exception::CantOpenFile(file);
                     }
 
                     out.precision(std::numeric_limits<double>::digits10);
@@ -211,7 +207,7 @@ void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
 
                     out.close();
                     if (out.bad()) {
-                        throw eckit::WriteError(file);
+                        throw exception::WriteError(file);
                     }
                 }
 
@@ -221,7 +217,7 @@ void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
                     eckit::PathName file(s);
                     std::ofstream out(file.asString().c_str());
                     if (!out) {
-                        throw eckit::CantOpenFile(file);
+                        throw exception::CantOpenFile(file);
                     }
 
                     std::ostringstream str;
@@ -248,7 +244,7 @@ void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
 
                     out.close();
                     if (out.bad()) {
-                        throw eckit::WriteError(file);
+                        throw exception::WriteError(file);
                     }
                 }
             }
@@ -256,19 +252,19 @@ void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
             if (unload) {
                 auto shmLoader = dynamic_cast<SharedMemoryLoader*>(loader);
                 if (shmLoader != nullptr) {
-                    eckit::Log::info() << "---"
-                                          "\n"
-                                          "unload"
-                                       << std::endl;
+                    Log::info() << "---"
+                                   "\n"
+                                   "unload"
+                                << std::endl;
                     SharedMemoryLoader::unloadSharedMemory(path);
-                    display(eckit::Log::info(), loader, path);
+                    display(Log::info(), loader, path);
                 }
             }
         }
     }
 
     if (wait) {
-        eckit::Log::info() << "Press enter/return to continue..." << std::endl;
+        Log::info() << "Press enter/return to continue..." << std::endl;
         std::cin.get();
     }
 }

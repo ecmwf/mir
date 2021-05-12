@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_knn_KNearestNeighbours_h
-#define mir_method_knn_KNearestNeighbours_h
+#pragma once
 
 #include <memory>
 
@@ -41,25 +40,23 @@ class KNearestNeighbours : public MethodWeighted {
 public:
     explicit KNearestNeighbours(const param::MIRParametrisation&);
 
-    virtual ~KNearestNeighbours();
+    ~KNearestNeighbours() override;
 
-    virtual void hash(eckit::MD5&) const;
+    void hash(eckit::MD5&) const override;
 
 protected:
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
                   const repres::Representation& out, const pick::Pick& pick, const distance::DistanceWeighting&) const;
 
-    virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
-                          const repres::Representation& out) const;
+    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                  const repres::Representation& out) const override;
 
-    virtual bool sameAs(const Method& other) const = 0;
+    bool sameAs(const Method&) const override = 0;
 
 private:
-    virtual void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
-    virtual bool canIntroduceMissingValues() const;
-
-    virtual const char* name() const = 0;
+    const char* name() const override = 0;
 
     virtual const pick::Pick& pick() const                               = 0;
     virtual const distance::DistanceWeighting& distanceWeighting() const = 0;
@@ -69,6 +66,3 @@ private:
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-
-
-#endif

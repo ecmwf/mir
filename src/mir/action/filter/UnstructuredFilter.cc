@@ -12,11 +12,9 @@
 
 #include "mir/action/filter/UnstructuredFilter.h"
 
-#include <iostream>
 #include <memory>
+#include <ostream>
 #include <vector>
-
-#include "eckit/exception/Exceptions.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/api/MIREstimation.h"
@@ -24,6 +22,8 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/other/UnstructuredGrid.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -45,10 +45,9 @@ void UnstructuredFilter::print(std::ostream& out) const {
 
 
 void UnstructuredFilter::execute(context::Context& ctx) const {
-    using LLCOORDS = eckit::geometry::LLCOORDS;
-
-    data::MIRField& field = ctx.field();
+    auto& field = ctx.field();
     repres::RepresentationHandle repres(field.representation());
+
     size_t N = repres->numberOfPoints();
     ASSERT(N);
 

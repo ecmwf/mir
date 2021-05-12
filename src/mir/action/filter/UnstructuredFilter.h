@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_UnstructuredFilter_h
-#define mir_action_UnstructuredFilter_h
+#pragma once
 
 #include "mir/action/plan/Action.h"
 
@@ -31,7 +30,7 @@ public:
 
     // -- Destructor
 
-    virtual ~UnstructuredFilter();
+    ~UnstructuredFilter() override;
 
     // -- Convertors
     // None
@@ -57,7 +56,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -77,10 +76,10 @@ private:
 
     // -- Overridden methods
 
-    virtual void execute(context::Context&) const;
-    virtual bool sameAs(const Action&) const;
-    virtual const char* name() const;
-    virtual void estimate(context::Context&, api::MIREstimation&) const;
+    void execute(context::Context&) const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
+    void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Class members
     // None
@@ -95,6 +94,3 @@ private:
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

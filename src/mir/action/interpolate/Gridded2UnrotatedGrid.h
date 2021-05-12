@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_interpolate_Gridded2UnrotatedGrid_h
-#define mir_action_interpolate_Gridded2UnrotatedGrid_h
+#pragma once
 
 #include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
 
@@ -32,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gridded2UnrotatedGrid();
+    ~Gridded2UnrotatedGrid() override;
 
     // -- Convertors
     // None
@@ -78,7 +77,7 @@ private:
     // -- Overridden methods
 
     // From Gridded2GriddedInterpolation
-    virtual util::BoundingBox outputBoundingBox() const;
+    util::BoundingBox outputBoundingBox() const override;
 
     // -- Class members
     // None
@@ -94,6 +93,3 @@ private:
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-
-
-#endif

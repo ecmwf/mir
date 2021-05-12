@@ -10,11 +10,11 @@
  */
 
 
-#ifndef mir_util_DeprecatedFunctionality_h
-#define mir_util_DeprecatedFunctionality_h
+#pragma once
 
 #include <string>
-#include "eckit/log/Log.h"
+
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -22,15 +22,12 @@ namespace util {
 
 
 struct DeprecatedFunctionality {
-    DeprecatedFunctionality(const std::string& msg, std::ostream& = eckit::Log::warning());
+    DeprecatedFunctionality(const std::string& msg, Log::Channel& = Log::warning());
 
 private:
-    static void message(const std::string& msg, std::ostream& = eckit::Log::warning());
+    static void message(const std::string& msg, Log::Channel& = Log::warning());
 };
 
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

@@ -17,21 +17,19 @@
 #include <sstream>
 #include <vector>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
-#include "eckit/log/ResourceUsage.h"
-#include "eckit/log/TraceTimer.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/search/PointSearch.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/GridBox.h"
-#include "mir/util/Pretty.h"
+#include "mir/util/Log.h"
+#include "mir/util/Trace.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -42,7 +40,7 @@ namespace gridbox {
 GridBoxMethod::GridBoxMethod(const param::MIRParametrisation& parametrisation) : MethodWeighted(parametrisation) {
     if (parametrisation.userParametrisation().has("rotation") ||
         parametrisation.fieldParametrisation().has("rotation")) {
-        throw eckit::UserError("GridBoxMethod: rotated input/output not supported");
+        throw exception::UserError("GridBoxMethod: rotated input/output not supported");
     }
 }
 
@@ -58,19 +56,19 @@ bool GridBoxMethod::sameAs(const Method& other) const {
 
 void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& in,
                              const repres::Representation& out) const {
-    eckit::Channel& log = eckit::Log::debug<LibMir>();
+    auto& log = Log::debug();
     log << "GridBoxMethod::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
 
     if (!in.domain().contains(out.domain())) {
         std::ostringstream msg;
         msg << "GridBoxMethod: input must contain output (input:" << in.domain() << ", output:" << out.domain() << ")";
-        throw eckit::UserError(msg.str());
+        throw exception::UserError(msg.str());
     }
 
-    const Pretty::Plural gridBoxes("grid box", "grid boxes");
-    log << "GridBoxMethod: intersect " << Pretty(out.numberOfPoints()) << " from "
-        << Pretty(in.numberOfPoints(), gridBoxes) << std::endl;
+    const Log::Plural gridBoxes("grid box", "grid boxes");
+    log << "GridBoxMethod: intersect " << Log::Pretty(out.numberOfPoints()) << " from "
+        << Log::Pretty(in.numberOfPoints(), gridBoxes) << std::endl;
 
 
     // init structure used to fill in sparse matrix
@@ -107,13 +105,12 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     // set input k-d tree for grid boxes indices
     std::unique_ptr<search::PointSearch> tree;
     {
-        eckit::ResourceUsage usage("GridBoxMethod::assemble create k-d tree", log);
-        eckit::TraceTimer<LibMir> timer("k-d tree: create");
+        trace::ResourceUsage usage("GridBoxMethod::assemble create k-d tree", log);
         tree.reset(new search::PointSearch(parametrisation_, in));
     }
 
     {
-        Pretty::ProgressTimer progress("Intersecting", outBoxes.size(), gridBoxes, log);
+        trace::ProgressTimer progress("Intersecting", outBoxes.size(), gridBoxes, log);
 
         const std::unique_ptr<repres::Iterator> it(out.iterator());
         size_t i = 0;
@@ -169,11 +166,11 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
             ++i;
         }
     }
-    log << "Intersected " << Pretty(weights_triplets.size(), gridBoxes) << std::endl;
+    log << "Intersected " << Log::Pretty(weights_triplets.size(), gridBoxes) << std::endl;
 
     if (nbFailures > 0) {
-        auto& warning = eckit::Log::warning();
-        warning << "Failed to intersect " << Pretty(nbFailures, gridBoxes) << ":";
+        auto& warning = Log::warning();
+        warning << "Failed to intersect " << Log::Pretty(nbFailures, gridBoxes) << ":";
         size_t count = 0;
         for (const auto& f : failures) {
             warning << "\n\tpoint " << f.first << " " << f.second;
@@ -198,8 +195,7 @@ void GridBoxMethod::hash(eckit::MD5& md5) const {
 
 
 void GridBoxMethod::print(std::ostream& out) const {
-    out << "GridBoxMethod["
-        << "name=" << name() << ",";
+    out << "GridBoxMethod[name=" << name() << ",";
     MethodWeighted::print(out);
     out << "]";
 }

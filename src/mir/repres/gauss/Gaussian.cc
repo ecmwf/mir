@@ -14,32 +14,31 @@
 
 #include <algorithm>
 #include <cmath>
+#include <map>
 
-#include "eckit/log/Log.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
 #include "eckit/types/FloatCompare.h"
 
-#include "mir/api/Atlas.h"
-#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Angles.h"
-#include "mir/util/Assert.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/MeshGeneratorParameters.h"
-#include "mir/util/Pretty.h"
+#include "mir/util/Mutex.h"
+#include "mir/util/Trace.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
 namespace repres {
 
 
-static pthread_once_t once                        = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex                  = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex         = nullptr;
 static std::map<size_t, std::vector<double> >* ml = nullptr;
 static std::map<size_t, std::vector<double> >* mw = nullptr;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new util::recursive_mutex();
     ml          = new std::map<size_t, std::vector<double> >();
     mw          = new std::map<size_t, std::vector<double> >();
 }
@@ -72,16 +71,6 @@ bool Gaussian::sameAs(const Representation& other) const {
 }
 
 
-Iterator* Gaussian::unrotatedIterator(gauss::GaussianIterator::ni_type Ni) const {
-    return new gauss::GaussianIterator(latitudes(), bbox_, N_, std::move(Ni));
-}
-
-
-Iterator* Gaussian::rotatedIterator(gauss::GaussianIterator::ni_type Ni, const util::Rotation& rotation) const {
-    return new gauss::GaussianIterator(latitudes(), bbox_, N_, std::move(Ni), rotation);
-}
-
-
 bool Gaussian::includesNorthPole() const {
     return bbox_.north() >= latitudes().front();
 }
@@ -95,8 +84,8 @@ bool Gaussian::includesSouthPole() const {
 void Gaussian::validate(const MIRValuesVector& values) const {
     const size_t count = numberOfPoints();
 
-    eckit::Log::debug<LibMir>() << "Gaussian::validate checked " << Pretty(values.size(), {"value"})
-                                << ", iterator counts " << Pretty(count) << " (" << domain() << ")." << std::endl;
+    Log::debug() << "Gaussian::validate checked " << Log::Pretty(values.size(), {"value"}) << ", iterator counts "
+                 << Log::Pretty(count) << " (" << domain() << ")." << std::endl;
 
     ASSERT_VALUES_SIZE_EQ_ITERATOR_COUNT("Gaussian", values.size(), count);
 }
@@ -231,13 +220,13 @@ void Gaussian::fill(api::MIRJob& job) const {
 
 
 const std::vector<double>& Gaussian::latitudes(size_t N) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(N);
     auto j = ml->find(N);
     if (j == ml->end()) {
-        eckit::Timer timer("Gaussian latitudes " + std::to_string(N), eckit::Log::debug<LibMir>());
+        trace::Timer timer("Gaussian latitudes " + std::to_string(N), Log::debug());
 
         // calculate latitudes and insert in known-N-latitudes map
         std::vector<double> latitudes(N * 2);
@@ -259,13 +248,13 @@ const std::vector<double>& Gaussian::latitudes(size_t N) {
 
 
 const std::vector<double>& Gaussian::weights(size_t N) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(N);
     auto j = mw->find(N);
     if (j == mw->end()) {
-        eckit::Timer timer("Gaussian quadrature weights " + std::to_string(N), eckit::Log::debug<LibMir>());
+        trace::Timer timer("Gaussian quadrature weights " + std::to_string(N), Log::debug());
 
         // calculate quadrature weights and insert in known-N-weights map
         // FIXME: innefficient interface, latitudes are discarded

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_other_None_h
-#define mir_repres_other_None_h
+#pragma once
 
 #include "mir/repres/Representation.h"
 
@@ -34,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~None();
+    ~None() override;
 
     // -- Convertors
     // None
@@ -65,7 +64,7 @@ protected:
     // -- Overridden methods
 
     // from Representation
-    void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
     // -- Class members
     // None
@@ -97,6 +96,3 @@ private:
 }  // namespace other
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

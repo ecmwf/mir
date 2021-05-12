@@ -17,12 +17,10 @@
 #include <utility>
 #include <vector>
 
-#include "eckit/log/Log.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
 
-#include "mir/api/Atlas.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/param/ConfigurationWrapper.h"
@@ -32,23 +30,21 @@
 #include "mir/search/PointSearch.h"
 #include "mir/stats/detail/Counter.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Atlas.h"
 #include "mir/util/Grib.h"
+#include "mir/util/Log.h"
 
 
-using neighbours_t = std::vector<mir::search::PointSearch::PointValueType>;
+using namespace mir;
+using coord_t      = std::vector<double>;
+using neighbours_t = std::vector<search::PointSearch::PointValueType>;
 using prec_t       = decltype(std::cout.precision());
 
 
-class MIRGetData : public mir::tools::MIRTool {
-private:
-    void execute(const eckit::option::CmdArgs&);
-    void usage(const std::string& tool) const;
-    int minimumPositionalArguments() const { return 1; }
+struct MIRGetData : tools::MIRTool {
+    MIRGetData(int argc, char** argv) : MIRTool(argc, argv) {
+        using namespace eckit::option;
 
-public:
-    MIRGetData(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {
-        using eckit::option::SimpleOption;
-        using eckit::option::VectorOption;
         options_.push_back(new SimpleOption<bool>("diff-atlas", "compare to Atlas coordinates, default false"));
         options_.push_back(new SimpleOption<bool>("diff-ecc", "compare to ecCodes coordinates, default false"));
         options_.push_back(new SimpleOption<double>("tolerance-lat", "Latitude tolerance (absolute), default 0."));
@@ -58,25 +54,25 @@ public:
             new SimpleOption<size_t>("nclosest", "Number of points close to given latitude/longitude, default 1"));
         options_.push_back(new SimpleOption<prec_t>("precision", "Output precision"));
     }
+
+    int minimumPositionalArguments() const override { return 1; }
+
+    void usage(const std::string& tool) const override {
+        Log::info() << "\nPrint a latitude, longitude, data values list."
+                       "\n"
+                       "\nUsage: "
+                    << tool
+                    << " [--diff-atlas=[true|false]] [--diff-ecc=[true|false]] file.grib [file.grib [...]]"
+                       "\nExamples:"
+                       "\n  % "
+                    << tool
+                    << " 1.grib"
+                       "\n  % "
+                    << tool << " --diff-atlas 1.grib 2.grib 3.grib" << std::endl;
+    }
+
+    void execute(const eckit::option::CmdArgs&) override;
 };
-
-
-void MIRGetData::usage(const std::string& tool) const {
-    eckit::Log::info() << "\nPrint a latitude, longitude, data values list."
-                          "\n"
-                          "\nUsage: "
-                       << tool
-                       << " [--diff-atlas=[true|false]] [--diff-ecc=[true|false]] file.grib [file.grib [...]]"
-                          "\nExamples:"
-                          "\n  % "
-                       << tool
-                       << " 1.grib"
-                          "\n  % "
-                       << tool << " --diff-atlas 1.grib 2.grib 3.grib" << std::endl;
-}
-
-
-using coord_t = std::vector<double>;
 
 
 struct Coordinates {
@@ -99,8 +95,8 @@ struct Coordinates {
 
 
 struct CoordinatesFromRepresentation : Coordinates {
-    CoordinatesFromRepresentation(const mir::repres::Representation& rep) : Coordinates("mir") {
-        std::unique_ptr<mir::repres::Iterator> it(rep.iterator());
+    CoordinatesFromRepresentation(const repres::Representation& rep) : Coordinates("mir") {
+        std::unique_ptr<repres::Iterator> it(rep.iterator());
 
         const size_t N(rep.numberOfPoints());
         lats_.assign(N, std::numeric_limits<double>::signaling_NaN());
@@ -114,8 +110,8 @@ struct CoordinatesFromRepresentation : Coordinates {
             ++n;
         }
     }
-    const coord_t& latitudes() const { return lats_; }
-    const coord_t& longitudes() const { return lons_; }
+    const coord_t& latitudes() const override { return lats_; }
+    const coord_t& longitudes() const override { return lons_; }
 
 private:
     coord_t lats_;
@@ -150,8 +146,8 @@ struct CoordinatesFromGRIB : Coordinates {
 
         codes_grib_iterator_delete(it);
     }
-    const coord_t& latitudes() const { return lats_; }
-    const coord_t& longitudes() const { return lons_; }
+    const coord_t& latitudes() const override { return lats_; }
+    const coord_t& longitudes() const override { return lons_; }
 
 private:
     coord_t lats_;
@@ -161,21 +157,24 @@ private:
 
 struct CoordinatesFromAtlas : Coordinates {
     CoordinatesFromAtlas(const atlas::Grid& grid) : Coordinates("atlas") {
-
+#if defined(mir_HAVE_ATLAS)
         auto N = size_t(grid.size());
         lats_.assign(N, std::numeric_limits<double>::signaling_NaN());
         lons_.assign(N, std::numeric_limits<double>::signaling_NaN());
 
         size_t n = 0;
-        for (const atlas::Grid::PointLonLat p : grid.lonlat()) {
+        for (auto p : grid.lonlat()) {
             ASSERT(n < N);
             lats_[n] = p.lat();
             lons_[n] = p.lon();
             ++n;
         }
+#else
+        NOTIMP;
+#endif
     }
-    const coord_t& latitudes() const { return lats_; }
-    const coord_t& longitudes() const { return lons_; }
+    const coord_t& latitudes() const override { return lats_; }
+    const coord_t& longitudes() const override { return lons_; }
 
 private:
     coord_t lats_;
@@ -183,7 +182,7 @@ private:
 };
 
 
-size_t diff(eckit::Channel& log, double toleranceLat, double toleranceLon, const Coordinates& coord1,
+size_t diff(Log::Channel& out, double toleranceLat, double toleranceLon, const Coordinates& coord1,
             const Coordinates& coord2) {
 
     ASSERT(coord1.size() == coord2.size());
@@ -194,14 +193,13 @@ size_t diff(eckit::Channel& log, double toleranceLat, double toleranceLon, const
     const coord_t& lat2 = coord2.latitudes();
     const coord_t& lon2 = coord2.longitudes();
 
-    mir::param::SimpleParametrisation empty;
+    param::SimpleParametrisation empty;
 
-    mir::stats::detail::Counter statsLat(empty);
-    mir::stats::detail::Counter statsLon(empty);
+    stats::detail::Counter statsLat(empty);
+    stats::detail::Counter statsLon(empty);
 
     auto showPointAt = [&](std::ostream& out, size_t n) -> std::ostream& {
-        return out << "\n\t@[0]=" << n << '\t' << mir::Point2(lat1[n], lon1[n]) << '\t'
-                   << mir::Point2(lat2[n], lon2[n]);
+        return out << "\n\t@[0]=" << n << '\t' << Point2(lat1[n], lon1[n]) << '\t' << Point2(lat2[n], lon2[n]);
     };
 
     auto showCoordMinMax = [&](std::ostream& out, const std::string& name, const coord_t& c) -> std::ostream& {
@@ -212,40 +210,40 @@ size_t diff(eckit::Channel& log, double toleranceLat, double toleranceLon, const
 
     size_t Ndiff = 0;
     for (size_t n = 0; n < N; ++n) {
-        double dlat = mir::Latitude(lat1[n]).distance(lat2[n]).value();
-        double dlon = mir::LongitudeDouble(lon1[n]).distance(lon2[n]).value();
+        double dlat = Latitude(lat1[n]).distance(lat2[n]).value();
+        double dlon = LongitudeDouble(lon1[n]).distance(lon2[n]).value();
 
         statsLat.count(dlat);
         statsLon.count(dlon);
 
         if (dlat > toleranceLat || dlon > toleranceLon) {
             ++Ndiff;
-            showPointAt(log, n);
+            showPointAt(out, n);
         }
     }
 
-    log << "\n|" << coord1.name() << " - " << coord2.name() << "|: #Δ = " << Ndiff << " of " << N;
+    out << "\n|" << coord1.name() << " - " << coord2.name() << "|: #Δ = " << Ndiff << " of " << N;
 
     if (Ndiff > 0) {
         if (statsLat.max() > toleranceLat) {
-            showPointAt(log, statsLat.maxIndex() - 1) << " <- max(|Δlat|) = " << statsLat.max();
-            showCoordMinMax(log, coord1.name() + " latitude", coord1.latitudes());
-            showCoordMinMax(log, coord2.name() + " latitude", coord2.latitudes());
+            showPointAt(out, statsLat.maxIndex() - 1) << " <- max(|Δlat|) = " << statsLat.max();
+            showCoordMinMax(out, coord1.name() + " latitude", coord1.latitudes());
+            showCoordMinMax(out, coord2.name() + " latitude", coord2.latitudes());
         }
         if (statsLon.max() > toleranceLon) {
-            showPointAt(log, statsLon.maxIndex() - 1) << " <- max(|Δlon|) = " << statsLon.max();
-            showCoordMinMax(log, coord1.name() + " longitude", coord1.longitudes());
-            showCoordMinMax(log, coord2.name() + " longitude", coord2.longitudes());
+            showPointAt(out, statsLon.maxIndex() - 1) << " <- max(|Δlon|) = " << statsLon.max();
+            showCoordMinMax(out, coord1.name() + " longitude", coord1.longitudes());
+            showCoordMinMax(out, coord2.name() + " longitude", coord2.longitudes());
         }
     }
-    log << std::endl;
+    out << std::endl;
 
     return Ndiff;
 }
 
 
-const neighbours_t& getNeighbours(const mir::Point2& p, size_t n, const mir::repres::Representation& rep,
-                                  const mir::param::MIRParametrisation& param) {
+const neighbours_t& getNeighbours(Point2 p, size_t n, const repres::Representation& rep,
+                                  const param::MIRParametrisation& param) {
     static std::map<std::string, neighbours_t> cache;
 
     auto& key   = rep.uniqueName();
@@ -254,10 +252,10 @@ const neighbours_t& getNeighbours(const mir::Point2& p, size_t n, const mir::rep
         return cached->second;
     }
 
-    mir::search::PointSearch::PointType pt;
-    atlas::util::Earth::convertSphericalToCartesian(p, pt);
+    search::PointSearch::PointType pt;
+    util::Earth::convertSphericalToCartesian(p, pt);
 
-    mir::search::PointSearch sptree(param, rep);
+    search::PointSearch sptree(param, rep);
 
     neighbours_t closest;
     sptree.closestNPoints(pt, n, closest);
@@ -268,16 +266,12 @@ const neighbours_t& getNeighbours(const mir::Point2& p, size_t n, const mir::rep
 
 
 void MIRGetData::execute(const eckit::option::CmdArgs& args) {
-    using mir::Point2;
-    using mir::Point3;
-    using mir::repres::Iterator;
-
-    auto& log = eckit::Log::info();
+    auto& log = Log::info();
 
     prec_t precision;
     auto old = args.get("precision", precision) ? log.precision(precision) : log.precision();
 
-    const mir::param::ConfigurationWrapper args_wrap(args);
+    const param::ConfigurationWrapper args_wrap(args);
 
     bool ecc = false;
     args.get("diff-ecc", ecc);
@@ -312,23 +306,23 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
     }
 
     for (size_t a = 0; a < args.count(); ++a) {
-        mir::input::GribFileInput grib(args(a));
-        const mir::input::MIRInput& input = grib;
+        input::GribFileInput grib(args(a));
+        const input::MIRInput& input = grib;
 
 
         size_t count = 0;
         while (grib.next()) {
             log << "\n'" << args(a) << "' #" << ++count << std::endl;
 
-            mir::data::MIRField field = input.field();
+            data::MIRField field = input.field();
             ASSERT(field.dimensions() == 1);
 
             auto& values = field.values(0);
 
-            mir::repres::RepresentationHandle rep(field.representation());
+            repres::RepresentationHandle rep(field.representation());
 
             if (!atlas && !ecc && (nclosest == 0)) {
-                std::unique_ptr<Iterator> it(rep->iterator());
+                std::unique_ptr<repres::Iterator> it(rep->iterator());
                 for (const double& v : values) {
                     ASSERT(it->next());
                     const Point2& P(**it);
@@ -350,9 +344,10 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                     Point2 q(crd->longitudes()[i], crd->latitudes()[i]);
                     ASSERT(i < values.size());
 
+                    constexpr double THOUSAND = 1000;
                     log << "- " << c++ << " -"
                         << " index=" << i << " latitude=" << q[1] << " longitude=" << q[0]
-                        << " distance=" << atlas::util::Earth::distance(p, q) / 1000. << " (km)"
+                        << " distance=" << util::Earth::distance(p, q) / THOUSAND << " (km)"
                         << " value=" << values[i] << std::endl;
                 }
             }
@@ -369,7 +364,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
             }
 
             if (err) {
-                throw eckit::UserError("Comparison failed");
+                throw exception::UserError("Comparison failed");
             }
         }
     }

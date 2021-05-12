@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_DummyVariable_h
-#define mir_netcdf_DummyVariable_h
+#pragma once
 
 #include "mir/netcdf/Variable.h"
 
@@ -23,7 +22,7 @@ namespace netcdf {
 class DummyVariable : public Variable {
 public:
     DummyVariable(const Variable& parent);
-    virtual ~DummyVariable();
+    ~DummyVariable() override;
 
 protected:
     const Variable& parent_;
@@ -37,7 +36,7 @@ protected:
 
     // From variable
 
-    virtual void print(std::ostream& s) const;
+    void print(std::ostream&) const override;
 
     // From Endowed
 
@@ -47,6 +46,3 @@ protected:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

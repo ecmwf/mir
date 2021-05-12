@@ -17,8 +17,9 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/MultiHandle.h"
-#include "eckit/log/Log.h"
 #include "eckit/serialisation/Stream.h"
+
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -69,7 +70,7 @@ void MultiFile::save() const {
         mh += p.fileHandle();
     }
     std::unique_ptr<eckit::DataHandle> h(out.fileHandle());
-    eckit::Log::info() << "Save " << mh << " into " << (*h) << std::endl;
+    Log::info() << "Save " << mh << " into " << (*h) << std::endl;
     mh.saveInto(*h);
 }
 
@@ -89,7 +90,7 @@ void MultiFile::save(const std::string& path, off_t offset, size_t length, size_
     std::unique_ptr<eckit::DataHandle> ih(in.partHandle(offset, length));
     std::unique_ptr<eckit::DataHandle> oh(out.fileHandle());
 
-    eckit::Log::info() << "Save " << (*ih) << " into " << (*oh) << std::endl;
+    Log::info() << "Save " << (*ih) << " into " << (*oh) << std::endl;
     ih->saveInto(*oh);
 }
 
@@ -140,7 +141,7 @@ eckit::Length MultiFile::length() const {
                 length_ += p.size();
             }
             catch (std::exception& e) {
-                eckit::Log::error() << e.what() << std::endl;
+                Log::error() << e.what() << std::endl;
             }
         }
     }

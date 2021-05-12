@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_Method_h
-#define mir_method_Method_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -57,7 +56,7 @@ public:
     virtual void execute(context::Context&, const repres::Representation& in,
                          const repres::Representation& out) const = 0;
 
-    virtual bool sameAs(const Method& other) const = 0;
+    virtual bool sameAs(const Method&) const = 0;
 
     // For optimising plan
     virtual bool canCrop() const                         = 0;
@@ -91,13 +90,13 @@ protected:
 
 public:
     static void list(std::ostream&);
-    static Method* build(const std::string&, const param::MIRParametrisation&);
+    static Method* build(std::string& names, const param::MIRParametrisation&);
 };
 
 
 template <class T>
 class MethodBuilder : public MethodFactory {
-    virtual Method* make(const param::MIRParametrisation& param) { return new T(param); }
+    Method* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     MethodBuilder(const std::string& name) : MethodFactory(name) {}
@@ -106,6 +105,3 @@ public:
 
 }  // namespace method
 }  // namespace mir
-
-
-#endif

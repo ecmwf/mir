@@ -12,11 +12,14 @@
 
 #include "mir/lsm/FileLSM.h"
 
-#include <iostream>
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
+#include <sstream>
+
 #include "eckit/utils/MD5.h"
+
 #include "mir/lsm/GribFileMaskFromUser.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -27,9 +30,6 @@ static FileLSM __lsm_selection("file");
 
 
 FileLSM::FileLSM(const std::string& name) : LSMSelection(name) {}
-
-
-FileLSM::~FileLSM() = default;
 
 
 void FileLSM::print(std::ostream& out) const {
@@ -47,7 +47,7 @@ std::string FileLSM::path(const param::MIRParametrisation& param, const std::str
 
     std::ostringstream os;
     os << *this << ": no path specified";
-    throw eckit::UserError(os.str());
+    throw exception::UserError(os.str());
 }
 
 

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_plan_Action_h
-#define mir_action_plan_Action_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -77,7 +76,7 @@ public:
     virtual bool canCrop() const;
     virtual util::BoundingBox outputBoundingBox() const;
 
-    virtual void estimate(context::Context&, api::MIREstimation& estimation) const;
+    virtual void estimate(context::Context&, api::MIREstimation&) const;
 
     // -- Overridden methods
     // None
@@ -85,10 +84,8 @@ public:
     // -- Class members
     // Helper function for estimate()
 
-    static void estimateNumberOfGridPoints(context::Context& ctx, api::MIREstimation& estimation,
-                                           const repres::Representation&);
-    static void estimateMissingValues(context::Context& ctx, api::MIREstimation& estimation,
-                                      const repres::Representation&);
+    static void estimateNumberOfGridPoints(context::Context&, api::MIREstimation&, const repres::Representation&);
+    static void estimateMissingValues(context::Context&, api::MIREstimation&, const repres::Representation&);
 
     // -- Class methods
     // None
@@ -139,7 +136,6 @@ private:
 
 
 class ActionFactory {
-
     std::string name_;
 
     virtual Action* make(const param::MIRParametrisation&) = 0;
@@ -161,7 +157,7 @@ public:
 
 template <class T>
 class ActionBuilder : public ActionFactory {
-    virtual Action* make(const param::MIRParametrisation& param) { return new T(param); }
+    Action* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     ActionBuilder(const std::string& name) : ActionFactory(name) {}
@@ -170,6 +166,3 @@ public:
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

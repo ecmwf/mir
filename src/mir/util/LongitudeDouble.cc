@@ -13,7 +13,7 @@
 #include "mir/util/LongitudeDouble.h"
 
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/serialisation/Stream.h"
 #include "eckit/types/FloatCompare.h"

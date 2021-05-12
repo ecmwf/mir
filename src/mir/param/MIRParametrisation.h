@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_param_MIRParametrisation_h
-#define mir_param_MIRParametrisation_h
+#pragma once
 
 #include <iosfwd>
 
@@ -34,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~MIRParametrisation();
+    ~MIRParametrisation() override;
 
     // -- Convertors
     // None
@@ -51,25 +50,25 @@ public:
     // -- Overridden methods
 
     // From eckit::Parametrisation
-    virtual bool has(const std::string& name) const = 0;
+    bool has(const std::string& name) const override = 0;
 
-    virtual bool get(const std::string& name, std::string& value) const = 0;
-    virtual bool get(const std::string& name, bool& value) const        = 0;
-    virtual bool get(const std::string& name, int& value) const         = 0;
-    virtual bool get(const std::string& name, long& value) const        = 0;
-    virtual bool get(const std::string& name, float& value) const       = 0;
-    virtual bool get(const std::string& name, double& value) const      = 0;
+    bool get(const std::string& name, std::string& value) const override = 0;
+    bool get(const std::string& name, bool& value) const override        = 0;
+    bool get(const std::string& name, int& value) const override         = 0;
+    bool get(const std::string& name, long& value) const override        = 0;
+    bool get(const std::string& name, float& value) const override       = 0;
+    bool get(const std::string& name, double& value) const override      = 0;
 
-    virtual bool get(const std::string& name, std::vector<int>& value) const         = 0;
-    virtual bool get(const std::string& name, std::vector<long>& value) const        = 0;
-    virtual bool get(const std::string& name, std::vector<float>& value) const       = 0;
-    virtual bool get(const std::string& name, std::vector<double>& value) const      = 0;
-    virtual bool get(const std::string& name, std::vector<std::string>& value) const = 0;
+    bool get(const std::string& name, std::vector<int>& value) const override         = 0;
+    bool get(const std::string& name, std::vector<long>& value) const override        = 0;
+    bool get(const std::string& name, std::vector<float>& value) const override       = 0;
+    bool get(const std::string& name, std::vector<double>& value) const override      = 0;
+    bool get(const std::string& name, std::vector<std::string>& value) const override = 0;
 
-    virtual bool get(const std::string& name, size_t& value) const;
-    virtual bool get(const std::string& name, std::vector<size_t>& value) const;
-    virtual bool get(const std::string& name, long long& value) const;
-    virtual bool get(const std::string& name, std::vector<long long>& value) const;
+    bool get(const std::string& name, size_t& value) const override;
+    bool get(const std::string& name, std::vector<size_t>& value) const override;
+    bool get(const std::string& name, long long& value) const override;
+    bool get(const std::string& name, std::vector<long long>& value) const override;
 
     // -- Class members
     // None
@@ -83,7 +82,7 @@ protected:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const = 0;  // Change to virtual if base class
+    virtual void print(std::ostream&) const = 0;
 
     // -- Overridden methods
     // None
@@ -121,6 +120,3 @@ private:
 
 }  // namespace param
 }  // namespace mir
-
-
-#endif

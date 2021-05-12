@@ -11,24 +11,23 @@
 
 
 #include <cmath>
-#include <iostream>
 #include <memory>
+#include <ostream>
 #include <string>
 #include <utility>
 #include <vector>
 
-#include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Increments.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -40,7 +39,7 @@ using eckit::Fraction;
 using util::BoundingBox;
 using util::Increments;
 
-static auto& log = eckit::Log::info();
+static auto& log = Log::info();
 
 
 #define EXPECTV(a)                                \

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_MergeDataStep_h
-#define mir_netcdf_MergeDataStep_h
+#pragma once
 
 #include "mir/netcdf/Step.h"
 
@@ -30,7 +29,6 @@ namespace netcdf {
 class MergeDataStep : public Step {
 public:
     MergeDataStep(Variable& out, const Variable& in);
-    ~MergeDataStep();
 
 private:
     // Members
@@ -39,14 +37,11 @@ private:
     const Variable& in_;
 
     // -- Methods
-    virtual void print(std::ostream& out) const;
-    virtual int rank() const;
-    virtual void execute(MergePlan& plan);
+    void print(std::ostream&) const override;
+    int rank() const override;
+    void execute(MergePlan&) override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_style_ECMWFStyle_h
-#define mir_key_style_ECMWFStyle_h
+#pragma once
 
 #include "mir/key/style/MIRStyle.h"
 
@@ -32,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ECMWFStyle();
+    ~ECMWFStyle() override;
 
     // -- Convertors
     // None
@@ -66,7 +65,7 @@ protected:
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
     // -- Class members
     // None
@@ -83,7 +82,7 @@ private:
 
     // -- Overridden methods
 
-    void prepare(action::ActionPlan&, input::MIRInput&, output::MIROutput&) const;
+    void prepare(action::ActionPlan&, input::MIRInput&, output::MIROutput&) const override;
 
     // -- Class members
     // None
@@ -92,15 +91,10 @@ private:
     // None
 
     // -- Friends
-
-    // friend std::ostream& operator<<(std::ostream& s, const ECMWFStyle& p)
-    // { p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace style
 }  // namespace key
 }  // namespace mir
-
-
-#endif

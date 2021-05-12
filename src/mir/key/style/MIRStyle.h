@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_style_MIRStyle_h
-#define mir_style_MIRStyle_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -134,7 +133,7 @@ public:
 
 template <class T>
 class MIRStyleBuilder : public MIRStyleFactory {
-    virtual MIRStyle* make(const param::MIRParametrisation& param) { return new T(param); }
+    MIRStyle* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     MIRStyleBuilder(const std::string& name) : MIRStyleFactory(name) {}
@@ -144,6 +143,3 @@ public:
 }  // namespace style
 }  // namespace key
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_output_VectorOutput_h
-#define mir_output_VectorOutput_h
+#pragma once
 
 #include "mir/output/MIROutput.h"
 
@@ -31,7 +30,7 @@ public:
 
     // -- Destructor
 
-    virtual ~VectorOutput();  // Change to virtual if base class
+    ~VectorOutput() override;
 
     // -- Convertors
     // None
@@ -45,9 +44,9 @@ public:
     // -- Overridden methods
 
     // From MIROutput
-    virtual size_t copy(const param::MIRParametrisation&, context::Context&);  // No interpolation performed
-    virtual size_t save(const param::MIRParametrisation&, context::Context&);
-    virtual size_t set(const param::MIRParametrisation&, context::Context&);
+    size_t copy(const param::MIRParametrisation&, context::Context&) override;  // No interpolation performed
+    size_t save(const param::MIRParametrisation&, context::Context&) override;
+    size_t set(const param::MIRParametrisation&, context::Context&) override;
 
     // -- Class members
     // None
@@ -83,11 +82,11 @@ private:
     // -- Overridden methods
 
     // From MIROutput
-    virtual bool sameAs(const MIROutput&) const;
-    virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const;
-    virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const;
-    virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&);
-    virtual void print(std::ostream&) const;
+    bool sameAs(const MIROutput&) const override;
+    bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const override;
+    bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const override;
+    void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) override;
+    void print(std::ostream&) const override;
 
     // -- Class members
     // None
@@ -96,14 +95,9 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const VectorOutput& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace output
 }  // namespace mir
-
-
-#endif

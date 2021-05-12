@@ -10,18 +10,18 @@
  */
 
 
-#include <iostream>
 #include <memory>
+#include <ostream>
 
-#include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
 #include "eckit/types/FloatCompare.h"
 
-#include "mir/api/Atlas.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Log.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -33,7 +33,7 @@ using Handle = repres::RepresentationHandle;
 
 
 CASE("Test number of points representation <=> grid") {
-    auto& log = eckit::Log::info();
+    auto& log = Log::info();
 
     using key::grid::Grid;
     using repres::latlon::RegularLL;
@@ -41,7 +41,7 @@ CASE("Test number of points representation <=> grid") {
 
     Handle representations[] = {
         new RegularLL(util::Increments(1., 1.)),
-        new RegularLL(util::Increments(1., 1.), util::BoundingBox(90, 0, 90, 360)),
+        new RegularLL(util::Increments(1., 1.), util::BoundingBox()),
         Grid::lookup("O16").representation(),
         Grid::lookup("O1280").representation(),
     };
@@ -60,7 +60,7 @@ CASE("Test number of points representation <=> grid") {
 
 
 CASE("Test number of points representation <=> cropped grid") {
-    auto& log = eckit::Log::info();
+    auto& log = Log::info();
 
     using repres::latlon::RegularLL;
 
@@ -102,7 +102,7 @@ CASE("Test number of points representation <=> cropped grid") {
 
 
 CASE("MIR-374") {
-    auto& log  = eckit::Log::info();
+    auto& log  = Log::info();
     auto old   = log.precision(16);
     double eps = 1.e-6;
 

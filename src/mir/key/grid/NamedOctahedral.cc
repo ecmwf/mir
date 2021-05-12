@@ -12,7 +12,7 @@
 
 #include "mir/key/grid/NamedOctahedral.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/repres/gauss/reduced/ReducedOctahedral.h"
 #include "mir/repres/gauss/reduced/RotatedOctahedral.h"
@@ -24,9 +24,6 @@ namespace grid {
 
 
 NamedOctahedral::NamedOctahedral(const std::string& name, size_t N) : NamedGrid(name), N_(N) {}
-
-
-NamedOctahedral::~NamedOctahedral() = default;
 
 
 void NamedOctahedral::print(std::ostream& out) const {

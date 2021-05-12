@@ -12,11 +12,12 @@
 
 #include "mir/key/grid/RegularPattern.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/utils/Translator.h"
 
 #include "mir/key/grid/NamedRegular.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -40,7 +41,13 @@ const Grid* RegularPattern::make(const std::string& name) const {
 }
 
 
-static RegularPattern pattern("^[fF][1-9][0-9]*$");
+std::string RegularPattern::canonical(const std::string& name, const param::MIRParametrisation&) const {
+    ASSERT(name.size() > 1);
+    return "F" + name.substr(1);
+}
+
+
+static RegularPattern __pattern("^[fF][1-9][0-9]*$");
 
 
 }  // namespace grid

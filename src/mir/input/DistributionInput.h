@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_DistributionInput_h
-#define mir_input_DistributionInput_h
+#pragma once
 
 #include "mir/input/ArtificialInput.h"
 
@@ -87,11 +86,11 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    virtual bool sameAs(const MIRInput&) const { return false; }
+    bool sameAs(const MIRInput&) const override { return false; }
 
     // From ArtificialInput
-    virtual void print(std::ostream&) const;
-    virtual data::MIRValuesVector fill(size_t) const;
+    void print(std::ostream&) const override;
+    MIRValuesVector fill(size_t) const override;
 
     // -- Class members
     // None
@@ -106,6 +105,3 @@ private:
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

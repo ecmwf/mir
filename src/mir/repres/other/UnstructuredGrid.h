@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_other_UnstructuredGrid_h
-#define mir_repres_other_UnstructuredGrid_h
+#pragma once
 
 #include <vector>
 
@@ -42,7 +41,7 @@ public:
 
     // -- Destructor
 
-    ~UnstructuredGrid();
+    ~UnstructuredGrid() override;
 
     // -- Convertors
     // None
@@ -74,8 +73,8 @@ protected:
     // -- Methods
 
     // From Representation
-    virtual bool extendBoundingBoxOnIntersect() const;
-    virtual void print(std::ostream&) const;
+    bool extendBoundingBoxOnIntersect() const override;
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -97,25 +96,25 @@ private:
 
     // -- Overridden methods
 
-    virtual void fill(grib_info&) const;
-    virtual void fill(api::MIRJob&) const;
-    virtual void fill(util::MeshGeneratorParameters&) const;
+    void fill(grib_info&) const override;
+    void fill(api::MIRJob&) const override;
+    void fill(util::MeshGeneratorParameters&) const override;
 
-    virtual atlas::Grid atlasGrid() const;
-    virtual void validate(const MIRValuesVector&) const;
+    atlas::Grid atlasGrid() const override;
+    void validate(const MIRValuesVector&) const override;
 
-    virtual util::Domain domain() const;
-    virtual Iterator* iterator() const;
-    virtual void makeName(std::ostream&) const;
-    virtual bool sameAs(const Representation&) const;
+    util::Domain domain() const override;
+    Iterator* iterator() const override;
+    void makeName(std::ostream&) const override;
+    bool sameAs(const Representation&) const override;
 
     // Domain operations
-    virtual bool isPeriodicWestEast() const;
-    virtual bool includesNorthPole() const;
-    virtual bool includesSouthPole() const;
+    bool isPeriodicWestEast() const override;
+    bool includesNorthPole() const override;
+    bool includesSouthPole() const override;
 
-    virtual size_t numberOfPoints() const;
-    virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const;
+    size_t numberOfPoints() const override;
+    const Gridded* croppedRepresentation(const util::BoundingBox&) const override;
 
     // -- Class members
     // None
@@ -124,15 +123,10 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const UnstructuredGrid& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace other
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

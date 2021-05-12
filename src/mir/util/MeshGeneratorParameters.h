@@ -10,13 +10,12 @@
  */
 
 
-#ifndef mir_util_MeshGeneratorParameters_h
-#define mir_util_MeshGeneratorParameters_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
 
-#include "mir/api/Atlas.h"
+#include "mir/util/Atlas.h"
 
 
 namespace mir {
@@ -41,12 +40,12 @@ public:
     // -- Constructors
 
     MeshGeneratorParameters();
-    MeshGeneratorParameters(const std::string& label, const param::MIRParametrisation&);
+    MeshGeneratorParameters(const param::MIRParametrisation&, const std::string& label = "");
     MeshGeneratorParameters(const MeshGeneratorParameters&) = default;
 
     // -- Destructor
 
-    virtual ~MeshGeneratorParameters() = default;
+    virtual ~MeshGeneratorParameters() override = default;
 
     // -- Convertors
     // None
@@ -69,8 +68,8 @@ public:
     // -- Methods
 
     bool sameAs(const MeshGeneratorParameters&) const;
-    void hash(eckit::Hash&) const;
-    void print(std::ostream&) const;
+    void hash(eckit::Hash&) const override;
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -124,6 +123,3 @@ private:
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

@@ -14,24 +14,23 @@
 
 #include <sstream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/parser/YAMLParser.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Once.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
 namespace stats {
 
 
-static pthread_once_t once                            = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex                      = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex             = nullptr;
 static std::map<std::string, DistributionFactory*>* m = nullptr;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, DistributionFactory*>();
 }
 
@@ -43,13 +42,13 @@ Distribution::~Distribution() = default;
 
 
 DistributionFactory::DistributionFactory(const std::string& name) : name_(name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
         std::ostringstream oss;
         oss << "DistributionFactory: duplicate '" << name << "'";
-        throw eckit::SeriousBug(oss.str());
+        throw exception::SeriousBug(oss.str());
     }
 
     (*m)[name] = this;
@@ -57,14 +56,15 @@ DistributionFactory::DistributionFactory(const std::string& name) : name_(name) 
 
 
 DistributionFactory::~DistributionFactory() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
+
     m->erase(name_);
 }
 
 
 Distribution* DistributionFactory::build(const std::string& name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     // parse <name>[{<yaml-arguments>}] (arguments are optional)
     auto braces = name.find('{');
@@ -77,18 +77,18 @@ Distribution* DistributionFactory::build(const std::string& name) {
     if (!yaml.empty()) {
         eckit::ValueMap map = eckit::YAMLParser::decodeString(yaml);
         for (const auto& kv : map) {
-            kv.second.isDouble() ? args.set(kv.first, kv.second.as<double>())
-                                 : kv.second.isNumber() ? args.set(kv.first, kv.second.as<long long>())
-                                                        : args.set(kv.first, kv.second.as<std::string>());
+            kv.second.isDouble()   ? args.set(kv.first, kv.second.as<double>())
+            : kv.second.isNumber() ? args.set(kv.first, kv.second.as<long long>())
+                                   : args.set(kv.first, kv.second.as<std::string>());
         }
     }
 
-    eckit::Log::debug<LibMir>() << "DistributionFactory: looking for '" << key << "'" << std::endl;
+    Log::debug() << "DistributionFactory: looking for '" << key << "'" << std::endl;
 
     auto j = m->find(key);
     if (j == m->end()) {
-        list(eckit::Log::error() << "DistributionFactory: unknown '" << key << "', choices are: ");
-        eckit::Log::warning() << std::endl;
+        list(Log::error() << "DistributionFactory: unknown '" << key << "', choices are: ");
+        Log::warning() << std::endl;
     }
 
     return j->second->make(args);
@@ -96,8 +96,8 @@ Distribution* DistributionFactory::build(const std::string& name) {
 
 
 void DistributionFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

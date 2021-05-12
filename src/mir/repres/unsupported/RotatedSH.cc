@@ -12,19 +12,14 @@
 
 #include "mir/repres/unsupported/RotatedSH.h"
 
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
 
 
 namespace mir {
 namespace repres {
 
 
-RotatedSH::RotatedSH(const param::MIRParametrisation& parametrisation) : SphericalHarmonics(parametrisation) {}
-
-
-RotatedSH::~RotatedSH() = default;
+RotatedSH::RotatedSH(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
 void RotatedSH::print(std::ostream& out) const {
@@ -33,22 +28,7 @@ void RotatedSH::print(std::ostream& out) const {
 }
 
 
-void RotatedSH::makeName(std::ostream& /*out*/) const {
-    NOTIMP;
-}
-
-
-bool RotatedSH::sameAs(const Representation& /*other*/) const {
-    NOTIMP;
-}
-
-
-void RotatedSH::fill(grib_info& /*info*/) const {
-    NOTIMP;
-}
-
-
-static RepresentationBuilder<RotatedSH> rotatedSH("rotated_sh");
+static RepresentationBuilder<RotatedSH> __repres("rotated_sh");
 
 
 }  // namespace repres

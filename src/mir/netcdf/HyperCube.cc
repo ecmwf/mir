@@ -22,8 +22,8 @@ static void addLoop2(int d, size_t which, size_t where, size_t count, size_t dep
     size_t k = 0;
     auto du  = size_t(d);
 
-    size_t muld  = mul[d];
-    size_t dimsd = dims[d];
+    size_t muld  = mul[du];
+    size_t dimsd = dims[du];
 
     for (size_t i = 0; i < dimsd; i++, k++) {
         if (which == du && i == where) {
@@ -56,7 +56,7 @@ HyperCube HyperCube::addToDimension(size_t which, size_t where, size_t howMuch, 
 
     Dimensions mul(dimensions_.size());
     size_t n = 1;
-    for (int i = mul.size() - 1; i >= 0; i--) {
+    for (int i = (mul.size()) - 1; i >= 0; i--) {
         auto iu = size_t(i);
         mul[iu] = n;
         n *= newdims[iu];
@@ -83,7 +83,7 @@ std::ostream& operator<<(std::ostream& out, const HyperCube& cube) {
 void HyperCube::coordinates(size_t index, Coordinates& result) const {
     ASSERT(result.size() == dimensions_.size());
 
-    for (int i = dimensions_.size() - 1; i >= 0; i--) {
+    for (int i = int(dimensions_.size()) - 1; i >= 0; i--) {
         auto iu    = size_t(i);
         result[iu] = (index % dimensions_[iu]);
         index /= dimensions_[iu];

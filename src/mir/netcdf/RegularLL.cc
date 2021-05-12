@@ -12,11 +12,10 @@
 
 #include "mir/netcdf/RegularLL.h"
 
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
 
 #include "mir/netcdf/Variable.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -60,7 +59,7 @@ void RegularLL::print(std::ostream& s) const {
 
 
 bool RegularLL::has(const std::string& name) const {
-    // eckit::Log::info() << "has " << name << std::endl;
+    // Log::info() << "has " << name << std::endl;
 
     // Note: only "gridded" is supported
     return (name == "gridded");
@@ -68,7 +67,7 @@ bool RegularLL::has(const std::string& name) const {
 
 
 bool RegularLL::get(const std::string& name, long& value) const {
-    // eckit::Log::info() << "get " << name << std::endl;
+    // Log::info() << "get " << name << std::endl;
 
     if (name == "Nj") {
         value = long(nj_);
@@ -80,20 +79,20 @@ bool RegularLL::get(const std::string& name, long& value) const {
         return true;
     }
 
-    // eckit::Log::info() << "RegularLL::get " << name << " failed" << std::endl;
+    // Log::info() << "RegularLL::get " << name << " failed" << std::endl;
 
     return false;
 }
 
 
 bool RegularLL::get(const std::string& name, std::string& value) const {
-    // eckit::Log::info() << "get " << name << std::endl;
+    // Log::info() << "get " << name << std::endl;
     if (name == "gridType") {
         value = "regular_ll";
         return true;
     }
 
-    // eckit::Log::info() << "RegularLL::get " << name << " failed" << std::endl;
+    // Log::info() << "RegularLL::get " << name << " failed" << std::endl;
 
     return false;
 }
@@ -136,7 +135,7 @@ bool RegularLL::get(const std::string& name, double& value) const {
         return true;
     }
 
-    // eckit::Log::info() << "RegularLL::get " << name << " failed" << std::endl;
+    // Log::info() << "RegularLL::get " << name << " failed" << std::endl;
 
 
     return false;

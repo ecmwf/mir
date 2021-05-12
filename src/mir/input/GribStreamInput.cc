@@ -13,12 +13,11 @@
 #include "mir/input/GribStreamInput.h"
 
 #include "eckit/config/Resource.h"
-#include "eckit/exception/Exceptions.h"
 #include "eckit/io/DataHandle.h"
-#include "eckit/log/Bytes.h"
 
-#include "mir/config/LibMir.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -26,7 +25,8 @@ namespace input {
 
 
 static size_t buffer_size() {
-    static size_t size = eckit::Resource<size_t>("$MIR_GRIB_INPUT_BUFFER_SIZE", 64 * 1024 * 1024);
+    constexpr size_t BUFFER_SIZE = 64 * 1024 * 1024;
+    static size_t size           = eckit::Resource<size_t>("$MIR_GRIB_INPUT_BUFFER_SIZE", BUFFER_SIZE);
     return size;
 }
 
@@ -83,8 +83,8 @@ bool GribStreamInput::next() {
         }
 
         if (e == CODES_BUFFER_TOO_SMALL) {
-            eckit::Log::debug<LibMir>() << "GribStreamInput::next() message is " << len << " bytes ("
-                                        << eckit::Bytes(len) << ")" << std::endl;
+            Log::debug() << "GribStreamInput::next() message is " << len << " bytes (" << Log::Bytes(len) << ")"
+                         << std::endl;
             GRIB_ERROR(e, "wmo_read_any_from_stream");
         }
 
@@ -107,11 +107,11 @@ bool GribStreamInput::next() {
 
 
     if (e == CODES_BUFFER_TOO_SMALL) {
-        eckit::Log::debug<LibMir>() << "GribStreamInput::next() message is " << len << " bytes (" << eckit::Bytes(len)
-                                    << ")" << std::endl;
-        eckit::Log::debug<LibMir>() << "Buffer size is " << buffer_.size() << " bytes (" << eckit::Bytes(buffer_.size())
-                                    << "), rerun with:" << std::endl;
-        eckit::Log::debug<LibMir>() << "env MIR_GRIB_INPUT_BUFFER_SIZE=" << len << std::endl;
+        Log::debug() << "GribStreamInput::next() message is " << len << " bytes (" << Log::Bytes(len) << ")"
+                     << std::endl;
+        Log::debug() << "Buffer size is " << buffer_.size() << " bytes (" << Log::Bytes(buffer_.size())
+                     << "), rerun with:" << std::endl;
+        Log::debug() << "env MIR_GRIB_INPUT_BUFFER_SIZE=" << len << std::endl;
         GRIB_ERROR(e, "wmo_read_any_from_stream");
     }
 

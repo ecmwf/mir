@@ -10,61 +10,54 @@
  */
 
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/io/StdFile.h"
-#include "eckit/log/Log.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
-class MIRMakeLSM : public mir::tools::MIRTool {
+using namespace mir;
 
-    // -- Overridden methods
 
-    void execute(const eckit::option::CmdArgs&);
+struct MIRMakeLSM : tools::MIRTool {
+    using MIRTool::MIRTool;
 
-    void usage(const std::string& tool) const;
+    int minimumPositionalArguments() const override { return 2; }
 
-    int minimumPositionalArguments() const { return 2; }
+    void usage(const std::string& tool) const override {
+        Log::info() << "\n"
+                    << "Usage: " << tool << " file.grib file.lsm" << std::endl;
+    }
 
-public:
-    // -- Constructors
-
-    MIRMakeLSM(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {}
+    void execute(const eckit::option::CmdArgs&) override;
 };
-
-
-void MIRMakeLSM::usage(const std::string& tool) const {
-    eckit::Log::info() << "\n"
-                       << "Usage: " << tool << " file.grib file.lsm" << std::endl;
-}
 
 
 void MIRMakeLSM::execute(const eckit::option::CmdArgs&) {
 
-    mir::input::GribFileInput file(argv(1));
+    input::GribFileInput file(argv(1));
 
     eckit::AutoStdFile out(argv(2), "w");
 
     while (file.next()) {
-        mir::input::MIRInput& input = file;
+        input::MIRInput& input = file;
 
-        const mir::param::MIRParametrisation& parametrisation = input.parametrisation();
+        auto& parametrisation = input.parametrisation();
 
         size_t Ni = 0;
         size_t Nj = 0;
 
-        ASSERT(parametrisation.get("Ni", Ni));
-        ASSERT(parametrisation.get("Nj", Nj));
+        ASSERT(parametrisation.get("Ni", Ni) && Ni > 0);
+        ASSERT(parametrisation.get("Nj", Nj) && Nj > 0);
 
-        eckit::Log::info() << "Ni=" << Ni << ", Nj=" << Nj << ", size=" << Ni * Nj << std::endl;
+        Log::info() << "Ni=" << Ni << ", Nj=" << Nj << ", size=" << Ni * Nj << std::endl;
         ASSERT(Ni == Nj * 2);
 
 
-        mir::data::MIRField field(input.field());
-
+        auto field(input.field());
         ASSERT(!field.hasMissing());
 
         unsigned char byte = 0;
@@ -87,7 +80,6 @@ void MIRMakeLSM::execute(const eckit::option::CmdArgs&) {
         // if (n) {
         //     byte <<= (8 - n);
         //     ASSERT(fwrite(&byte, 1, 1, out) == 1);
-
         // }
     }
 }

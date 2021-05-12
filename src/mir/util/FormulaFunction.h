@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_FormulaFunction_h
-#define mir_util_FormulaFunction_h
+#pragma once
 
 #include <string>
 #include <vector>
@@ -39,22 +38,19 @@ public:
     FormulaFunction(const param::MIRParametrisation& parametrisation, const std::string& name,
                     std::vector<Formula*>& args);
 
-    virtual ~FormulaFunction();
+    ~FormulaFunction() override;
 
 protected:  // members
     const Function& function_;
     std::vector<Formula*> args_;
 
 private:
-    virtual void print(std::ostream&) const;
-    virtual void execute(context::Context&) const;
-    virtual bool sameAs(const Action&) const;
-    virtual const char* name() const;
+    void print(std::ostream&) const override;
+    void execute(context::Context&) const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
 };
 
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

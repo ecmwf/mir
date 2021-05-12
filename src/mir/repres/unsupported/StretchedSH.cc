@@ -12,9 +12,7 @@
 
 #include "mir/repres/unsupported/StretchedSH.h"
 
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
 
 
 namespace mir {
@@ -24,24 +22,13 @@ namespace repres {
 StretchedSH::StretchedSH(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
-StretchedSH::StretchedSH() = default;
-
-
-StretchedSH::~StretchedSH() = default;
-
-
 void StretchedSH::print(std::ostream& out) const {
     out << "StretchedSH["
         << "]";
 }
 
 
-void StretchedSH::fill(grib_info& /*info*/) const {
-    NOTIMP;
-}
-
-
-static RepresentationBuilder<StretchedSH> stretchedSH("stretched_sh");
+static RepresentationBuilder<StretchedSH> __repres("stretched_sh");
 
 
 }  // namespace repres

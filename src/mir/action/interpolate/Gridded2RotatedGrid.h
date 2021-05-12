@@ -10,11 +10,9 @@
  */
 
 
-#ifndef mir_action_interpolate_Gridded2RotatedGrid_h
-#define mir_action_interpolate_Gridded2RotatedGrid_h
+#pragma once
 
 #include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
-
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Rotation.h"
 
@@ -35,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gridded2RotatedGrid();
+    ~Gridded2RotatedGrid() override;
 
     // -- Convertors
     // None
@@ -66,7 +64,7 @@ protected:
     // -- Overridden methods
 
     // From Gridded2GriddedInterpolation
-    virtual bool sameAs(const Action&) const;
+    bool sameAs(const Action&) const override;
 
     // -- Class members
     // None
@@ -86,7 +84,7 @@ private:
     // -- Overridden methods
 
     // From Gridded2GriddedInterpolation
-    virtual util::BoundingBox outputBoundingBox() const;
+    util::BoundingBox outputBoundingBox() const override;
 
     // -- Class members
     // None
@@ -102,6 +100,3 @@ private:
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-
-
-#endif

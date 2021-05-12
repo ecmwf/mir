@@ -10,12 +10,12 @@
  */
 
 
-#include <iostream>
-
-#include "mir/data/MIRField.h"
 #include "mir/input/EmptyInput.h"
 
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
+
+#include "mir/data/MIRField.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

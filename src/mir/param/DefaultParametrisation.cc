@@ -10,9 +10,9 @@
  */
 
 
-#include "mir/config/LibMir.h"
-
 #include "mir/param/DefaultParametrisation.h"
+
+#include "mir/config/LibMir.h"
 
 
 namespace mir {
@@ -23,7 +23,7 @@ DefaultParametrisation::DefaultParametrisation() {
     set("style", "ecmwf");
     set("executor", "simple");
 
-    set("interpolation", "linear");  // The word 'method' is used in grib
+    set("interpolation", "linear/k-nearest-neighbours");
     set("space", "1d.linear");
 
     bool caching = LibMir::caching();

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_gridbox_GridBoxAverage_h
-#define mir_method_gridbox_GridBoxAverage_h
+#pragma once
 
 #include "mir/method/gridbox/GridBoxMethod.h"
 
@@ -94,6 +93,3 @@ private:
 }  // namespace gridbox
 }  // namespace method
 }  // namespace mir
-
-
-#endif

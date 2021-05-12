@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_compare_FieldComparator_h
-#define mir_compare_FieldComparator_h
+#pragma once
 
 #include <string>
 #include <vector>
@@ -52,9 +51,9 @@ public:
 };
 
 class DefaultWhiteLister : public WhiteLister {
-    virtual bool whiteListed(const MultiFile&, const Field&) const { return false; }
-    virtual bool ignoreError(const MultiFile&, const Field&) const { return false; }
-    virtual ~DefaultWhiteLister();
+    bool whiteListed(const MultiFile&, const Field&) const override { return false; }
+    bool ignoreError(const MultiFile&, const Field&) const override { return false; }
+    ~DefaultWhiteLister() override;
 
 public:
     static const WhiteLister& instance();
@@ -76,7 +75,7 @@ public:  // methods
 
 
     size_t list(const std::string& path);
-    void json(eckit::JSON& json, const std::string& path);
+    void json(eckit::JSON&, const std::string& path);
 
     static void addOptions(std::vector<eckit::option::Option*>&);
 
@@ -142,6 +141,3 @@ private:
 
 }  // namespace compare
 }  // namespace mir
-
-
-#endif

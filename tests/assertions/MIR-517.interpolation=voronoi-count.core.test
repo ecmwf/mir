@@ -1,0 +1,16 @@
+# input
+tiny.grib
+# mir tool options
+--interpolation=voronoi-statistics --interpolation-statistics=count --grid=0.5/0.5
+# grib_get assertions
+Ni=3
+Nj=3
+values[0]=1
+values[1]=2
+values[2]=1
+values[3]=2
+values[4]=2
+values[5]=2
+values[6]=1
+values[7]=2
+values[8]=1

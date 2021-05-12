@@ -12,7 +12,9 @@
 
 #include "mir/key/grid/ORCAPattern.h"
 
-#include <iostream>
+#include <algorithm>
+#include <cctype>
+#include <ostream>
 
 #include "mir/key/grid/NamedORCA.h"
 
@@ -38,7 +40,25 @@ const Grid* ORCAPattern::make(const std::string& name) const {
 }
 
 
-static ORCAPattern pattern("^e?orca[0-9]+_[TUVWF]$");
+std::string ORCAPattern::canonical(const std::string& name, const param::MIRParametrisation& param) const {
+    auto n = name;
+    if (n.find('_') == std::string::npos) {
+        std::string arrangement = "T";  // arbitrary choice (to review)
+        param.get("orca-arrangement", arrangement);
+        n += "_" + arrangement;
+    }
+
+    std::transform(n.begin(), n.end(), n.begin(), ::toupper);
+    if (n.front() == 'E') {
+        n.front() = 'e';
+    }
+
+    return n;
+}
+
+
+static ORCAPattern __pattern1("^[eE]?[oO][rR][cC][aA][0-9]+$");
+static ORCAPattern __pattern2("^[eE]?[oO][rR][cC][aA][0-9]+_[tTuUvVwWfF]$");
 
 
 }  // namespace grid

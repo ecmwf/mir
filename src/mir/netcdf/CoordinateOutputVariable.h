@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_CoordinateOutputVariable_h
-#define mir_netcdf_CoordinateOutputVariable_h
+#pragma once
 
 #include "mir/netcdf/OutputVariable.h"
 
@@ -24,16 +23,13 @@ class CoordinateOutputVariable : public OutputVariable {
 public:
     CoordinateOutputVariable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions);
 
-    virtual ~CoordinateOutputVariable();
+    ~CoordinateOutputVariable() override;
 
 private:
-    virtual void merge(const Variable&, MergePlan& plan);
-    virtual void print(std::ostream&) const;
+    void merge(const Variable&, MergePlan&) override;
+    void print(std::ostream&) const override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

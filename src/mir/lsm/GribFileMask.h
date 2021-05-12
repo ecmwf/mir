@@ -10,12 +10,12 @@
  */
 
 
-#ifndef mir_lsm_GribFileMask_h
-#define mir_lsm_GribFileMask_h
+#pragma once
 
 #include <iosfwd>
 
 #include "eckit/filesystem/PathName.h"
+
 #include "mir/lsm/Mask.h"
 
 
@@ -44,8 +44,7 @@ public:
                  const std::string& which);
 
     // -- Destructor
-
-    ~GribFileMask();
+    // None
 
     // -- Convertors
     // None
@@ -74,10 +73,10 @@ protected:
 
     // -- Overridden methods
 
-    virtual bool active() const;
-    virtual bool cacheable() const = 0;
-    virtual void hash(eckit::MD5&) const;
-    virtual void print(std::ostream&) const;
+    bool active() const override;
+    bool cacheable() const override = 0;
+    void hash(eckit::MD5&) const override;
+    void print(std::ostream&) const override;
 
     // -- Class members
     // None
@@ -99,7 +98,7 @@ private:
 
     // -- Overridden methods
 
-    const std::vector<bool>& mask() const;
+    const std::vector<bool>& mask() const override;
 
     // -- Class members
     // None
@@ -114,6 +113,3 @@ private:
 
 }  // namespace lsm
 }  // namespace mir
-
-
-#endif

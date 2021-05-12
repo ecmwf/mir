@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_knn_distance_NoDistanceWeighting_h
-#define mir_method_knn_distance_NoDistanceWeighting_h
+#pragma once
 
 #include "mir/method/knn/distance/DistanceWeighting.h"
 
@@ -25,12 +24,12 @@ namespace distance {
 struct NoDistanceWeighting : DistanceWeighting {
     NoDistanceWeighting(const param::MIRParametrisation&);
     void operator()(size_t ip, const Point3& point, const std::vector<search::PointSearch::PointValueType>& neighbours,
-                    std::vector<WeightMatrix::Triplet>& triplets) const;
+                    std::vector<WeightMatrix::Triplet>& triplets) const override;
 
 private:
-    virtual bool sameAs(const DistanceWeighting&) const;
-    virtual void print(std::ostream&) const;
-    virtual void hash(eckit::MD5&) const;
+    bool sameAs(const DistanceWeighting&) const override;
+    void print(std::ostream&) const override;
+    void hash(eckit::MD5&) const override;
 };
 
 
@@ -38,6 +37,3 @@ private:
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-
-
-#endif

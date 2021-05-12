@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_caching_InMemoryCacheUsage_H
-#define mir_caching_InMemoryCacheUsage_H
+#pragma once
 
 #include <iosfwd>
 
@@ -78,6 +77,3 @@ private:
 
 }  // namespace caching
 }  // namespace mir
-
-
-#endif

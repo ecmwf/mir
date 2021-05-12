@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_data_dimension_Space2DVectorZonalMeridional_h
-#define mir_data_dimension_Space2DVectorZonalMeridional_h
+#pragma once
 
 #include "mir/data/space/SpaceLinear.h"
 
@@ -25,13 +24,10 @@ class Space2DVectorZonalMeridional : public SpaceLinear {
 
     // -- Overridden methods
 
-    size_t dimensions() const;
+    size_t dimensions() const override;
 };
 
 
 }  // namespace space
 }  // namespace data
 }  // namespace mir
-
-
-#endif

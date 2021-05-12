@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_DataInputVariable_h
-#define mir_netcdf_DataInputVariable_h
+#pragma once
 
 #include "mir/netcdf/InputVariable.h"
 
@@ -23,33 +22,30 @@ namespace netcdf {
 class DataInputVariable : public InputVariable {
 public:
     DataInputVariable(Dataset& owner, const std::string& name, int id, const std::vector<Dimension*>& dimensions);
-    virtual ~DataInputVariable();
+    ~DataInputVariable() override;
 
 private:
     std::vector<const Variable*> coordinates_;
     mutable std::string ncname_;
 
     Variable* makeOutputVariable(Dataset& owner, const std::string& name,
-                                 const std::vector<Dimension*>& dimensions) const;
-    virtual void print(std::ostream&) const;
-    virtual const std::string& ncname() const;
-    virtual void collectField(std::vector<Field*>&) const;
+                                 const std::vector<Dimension*>& dimensions) const override;
+    void print(std::ostream&) const override;
+    const std::string& ncname() const override;
+    void collectField(std::vector<Field*>&) const override;
 
-    virtual size_t count2DValues() const;
-    virtual void get2DValues(MIRValuesVector&, size_t i) const;
+    size_t count2DValues() const override;
+    void get2DValues(MIRValuesVector&, size_t i) const override;
 
     // Used during identtification
-    virtual void addCoordinateVariable(const Variable*);
-    virtual Variable* addMissingCoordinates();
-    const char* kind() const;
-    void dumpAttributes(std::ostream& s, const char* prefix) const;
+    void addCoordinateVariable(const Variable*) override;
+    Variable* addMissingCoordinates() override;
+    const char* kind() const override;
+    void dumpAttributes(std::ostream&, const char* prefix) const override;
 
-    virtual std::vector<std::string> coordinates() const;
+    std::vector<std::string> coordinates() const override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

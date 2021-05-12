@@ -12,9 +12,10 @@
 
 #include "mir/input/MultiScalarInput.h"
 
-#include <iostream>
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
+
 #include "mir/data/MIRField.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -116,9 +117,9 @@ bool MultiScalarInput::sameAs(const MIRInput& other) const {
 void MultiScalarInput::print(std::ostream& out) const {
     out << "MultiScalarInput[";
 
-    const char* sep = "";
+    auto sep = "";
     for (auto& c : components_) {
-        out << sep << c;
+        out << sep << *c;
         sep = ",";
     }
 

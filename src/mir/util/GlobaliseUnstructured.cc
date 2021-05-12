@@ -14,14 +14,13 @@
 
 #include <memory>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/key/grid/Grid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/other/UnstructuredGrid.h"
 #include "mir/search/PointSearch.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -34,8 +33,9 @@ GlobaliseUnstructured::GlobaliseUnstructured(const param::MIRParametrisation& pa
     globaliseGridname_ = "O16";
     parametrisation_.get("globalise-gridname", globaliseGridname_);
 
-    globaliseMissingRadius_ = 555975.;  // Earth great-circle distance of approx. 5 degree
-    parametrisation_.get("globalise-missing-radius", globaliseMissingRadius_);
+    // Earth great-circle distance of approx. 5 degree
+    constexpr double EARTH_GC_5DEG = 555975.;
+    parametrisation_.get("globalise-missing-radius", globaliseMissingRadius_ = EARTH_GC_5DEG);
 
     ASSERT(globaliseMissingRadius_ > 0.);
 }

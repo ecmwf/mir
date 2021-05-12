@@ -10,12 +10,11 @@
  */
 
 
-#ifndef mir_method_knn_distance_DistanceWeightingWithLSM_h
-#define mir_method_knn_distance_DistanceWeightingWithLSM_h
+#pragma once
 
 #include "mir/method/knn/distance/DistanceWeighting.h"
 
-#include "eckit/exception/Exceptions.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -36,17 +35,17 @@ struct DistanceWeightingWithLSM : DistanceWeighting {
     DistanceWeightingWithLSM(const param::MIRParametrisation&);
 
     void operator()(size_t, const Point3&, const std::vector<search::PointSearch::PointValueType>&,
-                    std::vector<WeightMatrix::Triplet>&) const {
-        throw eckit::SeriousBug("DistanceWeightingWithLSM: not to be used directly");
+                    std::vector<WeightMatrix::Triplet>&) const override {
+        throw exception::SeriousBug("DistanceWeightingWithLSM: not to be used directly");
     }
 
     const DistanceWeighting* distanceWeighting(const param::MIRParametrisation&, const lsm::LandSeaMasks& lsm) const;
 
 private:
     std::string method_;
-    virtual bool sameAs(const DistanceWeighting&) const;
-    virtual void print(std::ostream&) const;
-    virtual void hash(eckit::MD5&) const;
+    bool sameAs(const DistanceWeighting&) const override;
+    void print(std::ostream&) const override;
+    void hash(eckit::MD5&) const override;
 };
 
 
@@ -72,7 +71,7 @@ public:
 
 template <class T>
 class DistanceWeightingWithLSMBuilder : public DistanceWeightingWithLSMFactory {
-    virtual DistanceWeighting* make(const param::MIRParametrisation& param, const lsm::LandSeaMasks& lsm) {
+    DistanceWeighting* make(const param::MIRParametrisation& param, const lsm::LandSeaMasks& lsm) override {
         return new T(param, lsm);
     }
 
@@ -85,6 +84,3 @@ public:
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-
-
-#endif

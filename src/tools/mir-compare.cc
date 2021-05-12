@@ -10,39 +10,34 @@
  */
 
 
-#include "eckit/log/Log.h"
 #include "eckit/option/CmdArgs.h"
+
 #include "mir/compare/FieldComparator.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Log.h"
 
 
-class MIRCompare : public mir::tools::MIRTool {
-protected:
-    virtual void execute(const eckit::option::CmdArgs& args);
+using namespace mir;
 
-    virtual int numberOfPositionalArguments() const { return 2; }
 
-    virtual void usage(const std::string& tool) const;
+struct MIRCompare : tools::MIRTool {
+    MIRCompare(int argc, char** argv) : MIRTool(argc, argv) { compare::FieldComparator::addOptions(options_); }
 
-public:
-    MIRCompare(int argc, char** argv);
+    int numberOfPositionalArguments() const override { return 2; }
+
+    void usage(const std::string& tool) const override {
+        Log::info() << "\n"
+                    << "Usage: " << tool << " [options] file1 file2" << std::endl;
+    }
+
+    void execute(const eckit::option::CmdArgs&) override;
 };
 
-
-MIRCompare::MIRCompare(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {
-    mir::compare::FieldComparator::addOptions(options_);
-}
-
-
-void MIRCompare::usage(const std::string& tool) const {
-    eckit::Log::info() << "\n"
-                       << "Usage: " << tool << " [options] file1 file2" << std::endl;
-}
 
 void MIRCompare::execute(const eckit::option::CmdArgs& args) {
 
     // Straightforward two-file comparison
-    mir::compare::FieldComparator c(args);
+    compare::FieldComparator c(args);
 
     c.compare(args(0), args(1));
 }

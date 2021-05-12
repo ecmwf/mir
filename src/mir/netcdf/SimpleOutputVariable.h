@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_SimpleOutputVariable_h
-#define mir_netcdf_SimpleOutputVariable_h
+#pragma once
 
 #include "mir/netcdf/OutputVariable.h"
 
@@ -23,15 +22,12 @@ namespace netcdf {
 class SimpleOutputVariable : public OutputVariable {
 public:
     SimpleOutputVariable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions);
-    virtual ~SimpleOutputVariable();
+    ~SimpleOutputVariable() override;
 
 private:
-    virtual void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

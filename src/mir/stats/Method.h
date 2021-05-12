@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_stats_Method_h
-#define mir_stats_Method_h
+#pragma once
 
 #include <cstddef>
 #include <iosfwd>
@@ -135,7 +134,7 @@ public:
 template <class T>
 class MethodBuilder : public MethodFactory {
 private:
-    Method* make(const param::MIRParametrisation& param) { return new T(param); }
+    Method* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     MethodBuilder(const std::string& name) : MethodFactory(name) {}
@@ -144,6 +143,3 @@ public:
 
 }  // namespace stats
 }  // namespace mir
-
-
-#endif

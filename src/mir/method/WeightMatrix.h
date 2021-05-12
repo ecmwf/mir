@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_WeightMatrix_H
-#define mir_method_WeightMatrix_H
+#pragma once
 
 #include <iosfwd>
 #include <vector>
@@ -34,17 +33,13 @@ public:  // types
     using Size    = eckit::linalg::Size;
 
 public:  // methods
-    WeightMatrix(SparseMatrix::Allocator* alloc = nullptr);
+    WeightMatrix(SparseMatrix::Allocator* = nullptr);
 
     WeightMatrix(const eckit::PathName&);
 
     WeightMatrix(Size rows, Size cols);
 
     void setFromTriplets(const std::vector<Triplet>&);
-
-    void multiply(const Vector& values, Vector& result) const;
-
-    void multiply(const Matrix& values, Matrix& result) const;
 
     void cleanup(const double& pruneEpsilon = 0);
 
@@ -65,7 +60,7 @@ public:  // methods
     using SparseMatrix::iterator;
 
 private:  // members
-    void print(std::ostream& s) const;
+    void print(std::ostream&) const;
 
     friend std::ostream& operator<<(std::ostream& out, const WeightMatrix& m) {
         m.print(out);
@@ -76,6 +71,3 @@ private:  // members
 
 }  // namespace method
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_VectorInput_h
-#define mir_input_VectorInput_h
+#pragma once
 
 #include "mir/input/MIRInput.h"
 
@@ -38,7 +37,7 @@ public:
 
     // -- Destructor
 
-    virtual ~VectorInput();  // Change to virtual if base class
+    ~VectorInput() override;
 
     // -- Convertors
     // None
@@ -86,13 +85,13 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    virtual const param::MIRParametrisation& parametrisation(size_t which) const;
-    virtual data::MIRField field() const;
-    virtual bool next();
-    virtual bool sameAs(const MIRInput& other) const;
-    virtual void print(std::ostream& out) const;
-    virtual grib_handle* gribHandle(size_t which = 0) const;
-    virtual size_t dimensions() const;
+    const param::MIRParametrisation& parametrisation(size_t which) const override;
+    data::MIRField field() const override;
+    bool next() override;
+    bool sameAs(const MIRInput&) const override;
+    void print(std::ostream&) const override;
+    grib_handle* gribHandle(size_t which = 0) const override;
+    size_t dimensions() const override;
 
     // -- Class members
     // None
@@ -103,14 +102,8 @@ private:
     // -- Friends
 
     friend class output::VectorOutput;
-
-    // friend ostream& operator<<(ostream& s,const VectorInput& p)
-    //  { p.print(s); return s; }
 };
 
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

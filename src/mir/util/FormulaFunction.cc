@@ -10,7 +10,7 @@
  */
 
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/action/context/Context.h"
 #include "mir/util/FormulaFunction.h"

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_gauss_regular_RotatedGG_h
-#define mir_repres_gauss_regular_RotatedGG_h
+#pragma once
 
 #include "mir/repres/gauss/regular/Regular.h"
 #include "mir/util/Rotation.h"
@@ -36,7 +35,7 @@ public:
 
     // -- Destructor
 
-    virtual ~RotatedGG();  // Change to virtual if base class
+    ~RotatedGG() override;
 
     // -- Convertors
     // None
@@ -62,7 +61,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -82,15 +81,15 @@ private:
 
     // -- Overridden methods
 
-    virtual void fill(grib_info&) const;
-    virtual void fill(api::MIRJob&) const;
+    void fill(grib_info&) const override;
+    void fill(api::MIRJob&) const override;
 
-    virtual atlas::Grid atlasGrid() const;
-    virtual Iterator* iterator() const;
+    atlas::Grid atlasGrid() const override;
+    Iterator* iterator() const override;
 
-    virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const;
-    virtual void makeName(std::ostream&) const;
-    virtual bool sameAs(const Representation&) const;
+    const Gridded* croppedRepresentation(const util::BoundingBox&) const override;
+    void makeName(std::ostream&) const override;
+    bool sameAs(const Representation&) const override;
 
     // -- Class members
     // None
@@ -99,9 +98,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const RotatedGG& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
@@ -109,6 +106,3 @@ private:
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

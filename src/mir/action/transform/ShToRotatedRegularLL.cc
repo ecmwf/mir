@@ -12,13 +12,13 @@
 
 #include "mir/action/transform/ShToRotatedRegularLL.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/latlon/RotatedLL.h"
-#include "mir/util/Assert.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_filter_StatisticsFilter_h
-#define mir_action_filter_StatisticsFilter_h
+#pragma once
 
 #include "mir/action/plan/Action.h"
 
@@ -45,8 +44,7 @@ public:
     StatisticsFilter(const StatisticsFilter&) = delete;
 
     // -- Destructor
-
-    virtual ~StatisticsFilter() = default;
+    // None
 
     // -- Convertors
     // None
@@ -95,10 +93,10 @@ private:
     // -- Overridden methods
 
     // From Action
-    virtual bool sameAs(const Action&) const;
-    virtual const char* name() const;
-    void print(std::ostream&) const;
-    virtual void execute(context::Context&) const;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
+    void print(std::ostream&) const override;
+    void execute(context::Context&) const override;
 
     // -- Class members
     // None
@@ -114,6 +112,3 @@ private:
 }  // namespace filter
 }  // namespace action
 }  // namespace mir
-
-
-#endif

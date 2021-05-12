@@ -10,12 +10,11 @@
  */
 
 
-#ifndef mir_method_fe_FiniteElement_h
-#define mir_method_fe_FiniteElement_h
+#pragma once
 
-#include "mir/api/Atlas.h"
 #include "mir/method/MethodWeighted.h"
 #include "mir/util/MeshGeneratorParameters.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -37,7 +36,7 @@ public:
 
     // -- Destructor
 
-    virtual ~FiniteElement();
+    ~FiniteElement() override;
 
     // -- Convertors
     // None
@@ -81,6 +80,8 @@ private:
     // -- Members
 
     util::MeshGeneratorParameters meshGeneratorParams_;
+    bool validateMesh_;
+    bool missingValueOnProjectionFail_;
 
     // -- Methods
     // None
@@ -88,11 +89,11 @@ private:
     // -- Overridden methods
 
     // From MethodWeighted
-    void hash(eckit::MD5&) const;
+    void hash(eckit::MD5&) const override;
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
-                  const repres::Representation& out) const;
-    bool sameAs(const Method&) const;
-    void print(std::ostream&) const;
+                  const repres::Representation& out) const override;
+    bool sameAs(const Method&) const override;
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -112,28 +113,28 @@ private:
 class FiniteElementFactory : public MethodFactory {
     std::string name_;
     virtual FiniteElement* make(const param::MIRParametrisation&, const std::string& label) = 0;
-    virtual FiniteElement* make(const param::MIRParametrisation&)                           = 0;
+    FiniteElement* make(const param::MIRParametrisation&) override                          = 0;
 
     FiniteElementFactory(const FiniteElementFactory&) = delete;
     FiniteElementFactory& operator=(const FiniteElementFactory&) = delete;
 
 protected:
     FiniteElementFactory(const std::string&);
-    virtual ~FiniteElementFactory();
+    ~FiniteElementFactory() override;
 
 public:
     static void list(std::ostream&);
-    static FiniteElement* build(const std::string& method, const std::string& label, const param::MIRParametrisation&);
+    static FiniteElement* build(std::string& names, const std::string& label, const param::MIRParametrisation&);
 };
 
 
 template <class T>
 class FiniteElementBuilder : public FiniteElementFactory {
-    virtual FiniteElement* make(const param::MIRParametrisation& param, const std::string& label) {
+    FiniteElement* make(const param::MIRParametrisation& param, const std::string& label) override {
         return new T(param, label);
     }
 
-    virtual FiniteElement* make(const param::MIRParametrisation& param) { return new T(param); }
+    FiniteElement* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     FiniteElementBuilder(const std::string& name) : FiniteElementFactory(name) {}
@@ -143,6 +144,3 @@ public:
 }  // namespace fe
 }  // namespace method
 }  // namespace mir
-
-
-#endif

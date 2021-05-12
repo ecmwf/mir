@@ -12,12 +12,12 @@
 
 #include <cmath>
 #include <functional>
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
+#include <sstream>
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/FormulaBinop.h"
 #include "mir/util/Function.h"
 #include "mir/util/MIRStatistics.h"
@@ -45,7 +45,7 @@ class Unop : public Function {
 
     T op_;
 
-    virtual void print(std::ostream& s) const { s << name_; }
+    void print(std::ostream& s) const override { s << name_; }
 
     void field(context::Context& ctx, context::Context& ctx1) const {
         auto timing(ctx.statistics().calcTimer());
@@ -89,7 +89,7 @@ class Unop : public Function {
 
     void scalar(context::Context& ctx, context::Context& ctx1) const { ctx.scalar(op_(ctx1.scalar())); }
 
-    virtual void execute(context::Context& ctx) const {
+    void execute(context::Context& ctx) const override {
 
         context::Context a = ctx.pop();
 
@@ -117,7 +117,7 @@ class Binop : public Function {
 
     T op_;
 
-    virtual void print(std::ostream& s) const { s << name_; }
+    void print(std::ostream& s) const override { s << name_; }
 
     void fieldField(context::Context& ctx, context::Context& ctx1, context::Context& ctx2) const {
         auto timing(ctx.statistics().calcTimer());
@@ -250,7 +250,7 @@ class Binop : public Function {
         }
     }
 
-    virtual void execute(context::Context& ctx) const {
+    void execute(context::Context& ctx) const override {
         // ASSERT(ctx.size() == 2);
 
         context::Context ctx2 = ctx.pop();

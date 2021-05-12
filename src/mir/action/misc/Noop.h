@@ -10,8 +10,7 @@
  */
 
 
-#ifndef Noop_H
-#define Noop_H
+#pragma once
 
 #include "mir/action/plan/Action.h"
 
@@ -28,16 +27,18 @@ public:
     // -- Constructors
 
     Noop(const param::MIRParametrisation&);
+    Noop(const Noop&) = delete;
 
     // -- Destructor
 
-    virtual ~Noop();  // Change to virtual if base class
+    ~Noop() override;
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    Noop& operator=(const Noop&) = delete;
 
     // -- Methods
     // None
@@ -45,7 +46,7 @@ public:
     // -- Overridden methods
     // None
 
-    virtual void execute(context::Context& ctx) const;
+    void execute(context::Context&) const override;
 
     // -- Class members
     // None
@@ -59,7 +60,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -71,20 +72,16 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    Noop(const Noop&);
-    Noop& operator=(const Noop&);
-
     // -- Members
+    // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const;
-    virtual const char* name() const;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
 
     // -- Class members
     // None
@@ -93,12 +90,9 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const Noop& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace action
 }  // namespace mir
-#endif

@@ -12,9 +12,7 @@
 
 #include "mir/repres/unsupported/Albers.h"
 
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
 
 
 namespace mir {
@@ -24,24 +22,13 @@ namespace repres {
 Albers::Albers(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
-Albers::Albers() = default;
-
-
-Albers::~Albers() = default;
-
-
 void Albers::print(std::ostream& out) const {
     out << "Albers["
         << "]";
 }
 
 
-void Albers::fill(grib_info& /*info*/) const {
-    NOTIMP;
-}
-
-
-static RepresentationBuilder<Albers> albers("albers");
+static RepresentationBuilder<Albers> __repres("albers");
 
 
 }  // namespace repres

@@ -14,11 +14,9 @@
 
 #include <map>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
-
-#include "mir/config/LibMir.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -27,11 +25,11 @@ namespace knn {
 namespace pick {
 
 
-static eckit::Mutex* local_mutex              = nullptr;
+static util::recursive_mutex* local_mutex     = nullptr;
 static std::map<std::string, PickFactory*>* m = nullptr;
-static pthread_once_t once                    = PTHREAD_ONCE_INIT;
+static util::once_flag once;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, PickFactory*>();
 }
 
@@ -43,33 +41,34 @@ Pick::~Pick() = default;
 
 
 PickFactory::PickFactory(const std::string& name) : name_(name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) == m->end()) {
         (*m)[name] = this;
         return;
     }
-    throw eckit::SeriousBug("PickFactory: duplicated Pick '" + name + "'");
+    throw exception::SeriousBug("PickFactory: duplicated Pick '" + name + "'");
 }
 
 
 PickFactory::~PickFactory() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
+
     m->erase(name_);
 }
 
 
 const Pick* PickFactory::build(const std::string& name, const param::MIRParametrisation& param) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-    eckit::Log::debug<LibMir>() << "PickFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "PickFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "No PickFactory '" << name << "', choices are:\n");
-        throw eckit::SeriousBug("No PickFactory '" + name + "'");
+        list(Log::error() << "PickFactory: unknown '" << name << "', choices are:\n");
+        throw exception::SeriousBug("PickFactory: unknown '" + name + "'");
     }
 
     return j->second->make(param);
@@ -77,8 +76,8 @@ const Pick* PickFactory::build(const std::string& name, const param::MIRParametr
 
 
 void PickFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (auto& j : *m) {

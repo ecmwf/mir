@@ -10,18 +10,16 @@
  */
 
 
-#ifndef mir_key_grid_Grid_h
-#define mir_key_grid_Grid_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
 
+#include "mir/param/SimpleParametrisation.h"
+#include "mir/util/Mutex.h"
+
 
 namespace mir {
-namespace param {
-class MIRParametrisation;
-class SimpleParametrisation;
-}  // namespace param
 namespace repres {
 class Representation;
 }
@@ -60,11 +58,15 @@ public:
     virtual const repres::Representation* representation() const;
     virtual const repres::Representation* representation(const util::Rotation&) const;
     virtual const repres::Representation* representation(const param::MIRParametrisation&) const;
+
     virtual void parametrisation(const std::string& grid, param::SimpleParametrisation&) const;
     virtual size_t gaussianNumber() const;
 
-    static const Grid& lookup(const std::string& key);
-    static bool known(const std::string& key);
+    static size_t default_gaussian_number() { return 64; }
+    static bool get(const std::string& key, std::string& value, const param::MIRParametrisation&);
+    static const Grid& lookup(const std::string& key,
+                              const param::MIRParametrisation& = param::SimpleParametrisation());
+
     static void list(std::ostream&);
 
     bool isNamed() const { return gridType_ == named_t; }
@@ -119,6 +121,7 @@ private:
     // -- Members
 
     grid_t gridType_;
+    mutable util::recursive_mutex mutex_;
 
     // -- Methods
     // None
@@ -144,6 +147,3 @@ private:
 }  // namespace grid
 }  // namespace key
 }  // namespace mir
-
-
-#endif

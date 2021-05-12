@@ -10,14 +10,12 @@
  */
 
 
-#ifndef mir_repres_Iterator_h
-#define mir_repres_Iterator_h
+#pragma once
 
 #include <iosfwd>
 
-#include "mir/api/Atlas.h"
+#include "mir/util/Atlas.h"
 #include "mir/util/Rotation.h"
-#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -36,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Iterator();
+    ~Iterator() override;
 
     // -- Convertors
 
@@ -74,7 +72,7 @@ protected:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const  = 0;
+    void print(std::ostream&) const override = 0;
     virtual bool next(Latitude&, Longitude&) = 0;
 
     // -- Overridden methods
@@ -113,6 +111,3 @@ private:
 
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

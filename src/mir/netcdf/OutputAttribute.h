@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_OutputAttribute_h
-#define mir_netcdf_OutputAttribute_h
+#pragma once
 
 #include "mir/netcdf/Attribute.h"
 
@@ -23,7 +22,7 @@ namespace netcdf {
 class OutputAttribute : public Attribute {
 public:
     OutputAttribute(Endowed& owner, const std::string& name, Value* value);
-    virtual ~OutputAttribute();
+    ~OutputAttribute() override;
 
 private:
     // -- Members
@@ -31,16 +30,13 @@ private:
     bool valid_;
 
     // From Atttribute
-    virtual void create(int nc) const;
-    virtual void print(std::ostream& out) const;
-    virtual void clone(Endowed& owner) const;
-    virtual void merge(const Attribute&);
-    virtual void invalidate();
+    void create(int nc) const override;
+    void print(std::ostream&) const override;
+    void clone(Endowed& owner) const override;
+    void merge(const Attribute&) override;
+    void invalidate() override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

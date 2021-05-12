@@ -12,9 +12,7 @@
 
 #include "mir/repres/unsupported/EquatorialAzimuthalEquidistant.h"
 
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
 
 
 namespace mir {
@@ -24,25 +22,13 @@ namespace repres {
 EquatorialAzimuthalEquidistant::EquatorialAzimuthalEquidistant(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
-EquatorialAzimuthalEquidistant::EquatorialAzimuthalEquidistant() = default;
-
-
-EquatorialAzimuthalEquidistant::~EquatorialAzimuthalEquidistant() = default;
-
-
 void EquatorialAzimuthalEquidistant::print(std::ostream& out) const {
     out << "EquatorialAzimuthalEquidistant["
         << "]";
 }
 
 
-void EquatorialAzimuthalEquidistant::fill(grib_info& /*info*/) const {
-    NOTIMP;
-}
-
-
-static RepresentationBuilder<EquatorialAzimuthalEquidistant> equatorialAzimuthalEquidistant(
-    "equatorial_azimuthal_equidistant");
+static RepresentationBuilder<EquatorialAzimuthalEquidistant> __repres("equatorial_azimuthal_equidistant");
 
 
 }  // namespace repres

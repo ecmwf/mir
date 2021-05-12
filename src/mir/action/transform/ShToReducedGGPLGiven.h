@@ -10,10 +10,10 @@
  */
 
 
-#ifndef mir_action_transform_ShToReducedGGPLGiven_h
-#define mir_action_transform_ShToReducedGGPLGiven_h
+#pragma once
 
 #include <vector>
+
 #include "mir/action/transform/ShToGridded.h"
 
 
@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    ~ShToReducedGGPLGiven();  // Change to virtual if base class
+    ~ShToReducedGGPLGiven() override;
 
     // -- Convertors
     // None
@@ -64,11 +64,11 @@ private:
 
     // -- Overridden methods
 
-    bool sameAs(const Action&) const;
-    const char* name() const;
-    const repres::Representation* outputRepresentation() const;
-    void print(std::ostream&) const;
-    void sh2grid(data::MIRField& field, const atlas_trans_t& trans, const param::MIRParametrisation&) const;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
+    const repres::Representation* outputRepresentation() const override;
+    void print(std::ostream&) const override;
+    void sh2grid(data::MIRField& field, const atlas_trans_t& trans, const param::MIRParametrisation&) const override;
 
     // -- Class members
     // None
@@ -84,6 +84,3 @@ private:
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-
-
-#endif

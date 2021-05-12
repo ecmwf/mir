@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_Value_h
-#define mir_netcdf_Value_h
+#pragma once
 
 #include <string>
 #include <vector>
@@ -35,22 +34,23 @@ public:
 
     virtual void createAttribute(int nc, int varid, const std::string& name, const std::string& path) = 0;
     virtual Value* clone() const                                                                      = 0;
-    virtual void dump(std::ostream& out) const                                                        = 0;
+    virtual void dump(std::ostream&) const                                                            = 0;
 
-    virtual bool sameAs(const Value& other) const = 0;
-    virtual std::string asString() const          = 0;
+    virtual bool sameAs(const Value&) const = 0;
+    virtual std::string asString() const    = 0;
 
     virtual void fill(const std::vector<bool>& set, std::vector<double>& v)        = 0;
     virtual void fill(const std::vector<bool>& set, std::vector<short>& v)         = 0;
     virtual void fill(const std::vector<bool>& set, std::vector<unsigned char>& v) = 0;
+    virtual void fill(const std::vector<bool>& set, std::vector<long long>& v)     = 0;
     virtual void fill(const std::vector<bool>& set, std::vector<long>& v)          = 0;
-
-    virtual void fill(const std::vector<bool>& set, std::vector<float>& v)       = 0;
-    virtual void fill(const std::vector<bool>& set, std::vector<std::string>& v) = 0;
+    virtual void fill(const std::vector<bool>& set, std::vector<float>& v)         = 0;
+    virtual void fill(const std::vector<bool>& set, std::vector<std::string>& v)   = 0;
 
     virtual void clear(std::vector<bool>& set, const std::vector<double>& v)        = 0;
     virtual void clear(std::vector<bool>& set, const std::vector<short>& v)         = 0;
     virtual void clear(std::vector<bool>& set, const std::vector<unsigned char>& v) = 0;
+    virtual void clear(std::vector<bool>& set, const std::vector<long long>& v)     = 0;
     virtual void clear(std::vector<bool>& set, const std::vector<long>& v)          = 0;
     virtual void clear(std::vector<bool>& set, const std::vector<float>& v)         = 0;
     virtual void clear(std::vector<bool>& set, const std::vector<std::string>& v)   = 0;
@@ -94,6 +94,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef mir_api_version_h
-#define mir_api_version_h
+#pragma once
 
 #define mir_VERSION_STR "@mir_VERSION_STR@"
 #define mir_VERSION     "@mir_VERSION@"
@@ -16,4 +15,3 @@ const char * mir_version_str();
 
 const char * mir_git_sha1();
 
-#endif

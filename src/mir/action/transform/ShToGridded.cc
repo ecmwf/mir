@@ -12,29 +12,27 @@
 
 #include "mir/action/transform/ShToGridded.h"
 
-#include <iostream>
+#include <ostream>
 #include <sstream>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/ResourceUsage.h"
-#include "eckit/log/Timer.h"
+#include "eckit/system/MemoryInfo.h"
 #include "eckit/system/SystemInfo.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/action/transform/TransCache.h"
 #include "mir/api/MIREstimation.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/caching/LegendreCache.h"
 #include "mir/caching/legendre/LegendreLoader.h"
-#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/util/TraceResourceUsage.h"
+#include "mir/util/Mutex.h"
+#include "mir/util/Trace.h"
 
 
 namespace mir {
@@ -42,17 +40,14 @@ namespace action {
 namespace transform {
 
 
-static eckit::Mutex amutex;
-
-
-static caching::InMemoryCache<TransCache> trans_cache("mirCoefficient", 8L * 1024 * 1024 * 1024,
-                                                      8L * 1024 * 1024 * 1024, "$MIR_COEFFICIENT_CACHE");
+constexpr size_t CAPACITY_MEMORY = 8L * 1024 * 1024 * 1024;
+constexpr size_t CAPACITY_SHARED = CAPACITY_MEMORY;
+static caching::InMemoryCache<TransCache> trans_cache("mirCoefficient", CAPACITY_MEMORY, CAPACITY_SHARED,
+                                                      "$MIR_COEFFICIENT_CACHE");
 
 
 static atlas::trans::Cache getTransCache(atlas::trans::LegendreCacheCreator& creator, const std::string& key,
                                          const param::MIRParametrisation& parametrisation, context::Context& ctx) {
-
-
     auto j = trans_cache.find(key);
     if (j != trans_cache.end()) {
         ASSERT(j->transCache_);
@@ -77,11 +72,11 @@ static atlas::trans::Cache getTransCache(atlas::trans::LegendreCacheCreator& cre
 
             void create(const eckit::PathName& path, caching::LegendreCacheTraits::value_type& /*ignore*/,
                         bool& saved) override {
-                util::TraceResourceUsage usage("ShToGridded: create Legendre coefficients");
+                trace::ResourceUsage usage("ShToGridded: create Legendre coefficients");
                 auto timing(ctx_.statistics().createCoeffTimer());
 
                 // This will create the cache
-                eckit::Log::info() << "ShToGridded: create Legendre coefficients '" + path + "'" << std::endl;
+                Log::info() << "ShToGridded: create Legendre coefficients '" + path + "'" << std::endl;
                 creator_.create(path);
 
                 saved = path.exists();
@@ -107,21 +102,21 @@ static atlas::trans::Cache getTransCache(atlas::trans::LegendreCacheCreator& cre
     atlas::trans::Cache& transCache = tc.transCache_;
 
     {
-        util::TraceResourceUsage usage("ShToGridded: load Legendre coefficients");
+        trace::ResourceUsage usage("ShToGridded: load Legendre coefficients");
         auto timing(ctx.statistics().loadCoeffTimer());
 
-        eckit::Log::info() << "ShToGridded: loading Legendre coefficients '" + path + "'" << std::endl;
+        Log::info() << "ShToGridded: loading Legendre coefficients '" + path + "'" << std::endl;
 
         auto before = eckit::system::SystemInfo::instance().memoryUsage();
 
         tc.loader_ = caching::legendre::LegendreLoaderFactory::build(parametrisation, path);
         ASSERT(tc.loader_);
-        eckit::Log::debug<LibMir>() << "ShToGridded: LegendreLoader " << *tc.loader_ << std::endl;
+        Log::debug() << "ShToGridded: LegendreLoader " << *tc.loader_ << std::endl;
 
         transCache = tc.loader_->transCache();
 
         auto after = eckit::system::SystemInfo::instance().memoryUsage();
-        after.delta(eckit::Log::info(), before);
+        after.delta(Log::info(), before);
 
         size_t memory                                    = 0;
         size_t shared                                    = 0;
@@ -143,7 +138,8 @@ static eckit::Hash::digest_t atlasOptionsDigest(const ShToGridded::atlas_config_
 
 void ShToGridded::transform(data::MIRField& field, const repres::Representation& representation,
                             context::Context& ctx) const {
-    eckit::AutoLock<eckit::Mutex> lock(amutex);  // To protect trans_cache
+    static util::recursive_mutex local_mutex;
+    util::lock_guard<util::recursive_mutex> lock(local_mutex);  // To protect trans_cache
 
     // Make sure another thread to no evict anything from the cache while we are using it
     // FIXME check if it should be in ::execute()
@@ -176,7 +172,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 
     atlas_trans_t trans;
     try {
-        eckit::Timer time("ShToGridded::caching", eckit::Log::debug<LibMir>());
+        trace::Timer time("ShToGridded::caching", Log::debug());
 
         bool caching = true;
         parametrisation_.get("caching", caching);
@@ -189,10 +185,9 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
         }
         else if (!creator.supported()) {
 
-            eckit::Log::warning() << "ShToGridded: LegendreCacheCreator is not supported for:"
-                                  << "\n  representation: " << representation << "\n  options: " << options_
-                                  << std::endl
-                                  << "ShToGridded: continuing with hindered performance" << std::endl;
+            Log::warning() << "ShToGridded: LegendreCacheCreator is not supported for:"
+                           << "\n  representation: " << representation << "\n  options: " << options_ << std::endl
+                           << "ShToGridded: continuing with hindered performance" << std::endl;
 
             trans = atlas_trans_t(grid, domain, truncation, options_);
         }
@@ -211,7 +206,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
         }
     }
     catch (std::exception& e) {
-        eckit::Log::error() << "ShToGridded::caching: " << e.what() << std::endl;
+        Log::error() << "ShToGridded::caching: " << e.what() << std::endl;
         trans_cache.erase(key);
         throw;
     }
@@ -223,7 +218,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
         sh2grid(field, trans, parametrisation_);
     }
     catch (std::exception& e) {
-        eckit::Log::error() << "ShToGridded::transform: " << e.what() << std::endl;
+        Log::error() << "ShToGridded::transform: " << e.what() << std::endl;
         throw;
     }
 }
@@ -240,8 +235,8 @@ ShToGridded::ShToGridded(const param::MIRParametrisation& parametrisation) : Act
         msg << "ShToGridded: Atlas/Trans spectral transforms type '" << type
             << "' not supported, available types are: ";
         atlas::trans::Trans::listBackends(msg);
-        eckit::Log::error() << msg.str() << std::endl;
-        throw eckit::UserError(msg.str());
+        Log::error() << msg.str() << std::endl;
+        throw exception::UserError(msg.str());
     }
 
     options_.set(atlas::option::type(type));
@@ -272,7 +267,7 @@ void ShToGridded::execute(context::Context& ctx) const {
     transform(ctx.field(), *out, ctx);
 
     if (cropping_) {
-        util::TraceResourceUsage usage("ShToGridded: cropping");
+        trace::ResourceUsage usage("ShToGridded: cropping");
         auto timing(ctx.statistics().cropTimer());
 
         const util::BoundingBox& bbox = cropping_.boundingBox();
@@ -320,9 +315,9 @@ bool ShToGridded::mergeWithNext(const Action& next) {
         repres::RepresentationHandle out(outputRepresentation());
         cropping_.boundingBox(out->extendBoundingBox(bbox));
 
-        eckit::Log::debug<LibMir>() << "ShToGridded::mergeWithNext: "
-                                    << "\n   " << oldAction.str() << "\n + " << next << "\n = " << *this << "\n + "
-                                    << "(...)" << std::endl;
+        Log::debug() << "ShToGridded::mergeWithNext: "
+                     << "\n   " << oldAction.str() << "\n + " << next << "\n = " << *this << "\n + "
+                     << "(...)" << std::endl;
     }
     return false;
 }

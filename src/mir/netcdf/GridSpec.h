@@ -10,13 +10,12 @@
  */
 
 
-#ifndef mir_netcdf_GridSpec_h
-#define mir_netcdf_GridSpec_h
+#pragma once
 
 #include <iosfwd>
 #include <vector>
 
-#include "mir/data/MIRValuesVector.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -61,7 +60,7 @@ private:
 
     // - Methods
 
-    virtual void print(std::ostream& s) const = 0;
+    virtual void print(std::ostream&) const = 0;
 
     // -- Friends
     friend std::ostream& operator<<(std::ostream& s, const GridSpec& v) {
@@ -91,9 +90,7 @@ private:
 
 template <class T>
 class GridSpecGuesserBuilder : public GridSpecGuesser {
-
-
-    virtual GridSpec* guess(const Variable& variable, const Variable& latitudes, const Variable& longitudes) const {
+    GridSpec* guess(const Variable& variable, const Variable& latitudes, const Variable& longitudes) const override {
         return T::guess(variable, latitudes, longitudes);
     }
 
@@ -104,6 +101,3 @@ public:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

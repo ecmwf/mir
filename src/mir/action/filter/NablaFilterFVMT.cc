@@ -16,17 +16,17 @@
 #include <memory>
 #include <ostream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/api/Atlas.h"
 #include "mir/api/MIREstimation.h"
 #include "mir/caching/InMemoryMeshCache.h"
 #include "mir/data/MIRField.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -39,6 +39,8 @@ struct NablaOperation {
         nabla_(fvm_),
         nodes_(fvm_.node_columns().nodes()),
         nodeIsGhost_(nodes_) {}
+
+    virtual ~NablaOperation() = default;
 
     virtual void operator()(data::MIRField&) const = 0;
 
@@ -83,7 +85,7 @@ protected:
         auto variables = field.variables() > 0 ? field.variables() : 1;
         ASSERT(variables > 0);
 
-        data.dimensions(variables);
+        data.dimensions(size_t(variables));
 
         using atlas::array::Range;
         const auto view = variables == 1 ? atlas::array::make_view<double, 1>(field).slice(Range::all(), Range::dummy())
@@ -91,7 +93,7 @@ protected:
 
         // Copy results (not great, but there you go)
         for (atlas::idx_t v = 0; v < variables; ++v) {
-            data::MIRValuesVector values;
+            MIRValuesVector values;
             values.reserve(points);
 
             for (atlas::idx_t n = 0; n < nodes_.size(); ++n) {
@@ -115,7 +117,7 @@ private:
 };
 
 
-struct ScalarGradient : NablaOperation {
+struct ScalarGradient final : NablaOperation {
     using NablaOperation::NablaOperation;
     static const char* name() { return "ScalarGradient"; }
     void operator()(data::MIRField& field) const override {
@@ -131,7 +133,7 @@ struct ScalarGradient : NablaOperation {
 };
 
 
-struct ScalarLaplacian : NablaOperation {
+struct ScalarLaplacian final : NablaOperation {
     using NablaOperation::NablaOperation;
     static const char* name() { return "ScalarLaplacian"; }
     void operator()(data::MIRField& field) const override {
@@ -144,7 +146,7 @@ struct ScalarLaplacian : NablaOperation {
 };
 
 
-struct UVGradient : NablaOperation {
+struct UVGradient final : NablaOperation {
     using NablaOperation::NablaOperation;
     static const char* name() { return "UVGradient"; }
     void operator()(data::MIRField& field) const override {
@@ -162,7 +164,7 @@ struct UVGradient : NablaOperation {
 };
 
 
-struct UVDivergence : NablaOperation {
+struct UVDivergence final : NablaOperation {
     using NablaOperation::NablaOperation;
     static const char* name() { return "UVDivergence"; }
     void operator()(data::MIRField& field) const override {
@@ -175,7 +177,7 @@ struct UVDivergence : NablaOperation {
 };
 
 
-struct UVVorticity : NablaOperation {
+struct UVVorticity final : NablaOperation {
     using NablaOperation::NablaOperation;
     static const char* name() { return "UVVorticity"; }
     void operator()(data::MIRField& field) const override {
@@ -202,7 +204,7 @@ void NablaFilterFVMT<T>::execute(context::Context& ctx) const {
     // Generate mesh (disabling incompatible features)
     auto& field = ctx.field();
     if (field.hasMissing()) {
-        throw eckit::UserError(std::string(name()) + ": missing values not supported");
+        throw exception::UserError(std::string(name()) + ": missing values not supported");
     }
 
     auto params = meshGeneratorParams_;

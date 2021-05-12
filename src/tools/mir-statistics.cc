@@ -12,8 +12,6 @@
 
 #include <memory>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/SimpleOption.h"
@@ -31,31 +29,25 @@
 #include "mir/stats/Method.h"
 #include "mir/stats/Statistics.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/util/Pretty.h"
+#include "mir/util/Types.h"
 
 
 using namespace mir;
 using prec_t = decltype(std::cout.precision());
 
 
-class MIRStatistics : public mir::tools::MIRTool {
-private:
-    void execute(const eckit::option::CmdArgs&);
+struct PerPointStatistics {
+    static void list(std::ostream& out) { out << eckit::StringTools::join(", ", perPointStats()) << std::endl; }
+    static std::vector<std::string> perPointStats() { return {"mean", "variance", "stddev"}; }
+};
 
-    void usage(const std::string& tool) const;
 
-    int minimumPositionalArguments() const { return 1; }
-
-    struct PerPointStatistics {
-        static void list(std::ostream& out) { out << eckit::StringTools::join(", ", perPointStats()) << std::endl; }
-        static std::vector<std::string> perPointStats() { return {"mean", "variance", "stddev"}; }
-    };
-
-public:
+struct MIRStatistics : tools::MIRTool {
     MIRStatistics(int argc, char** argv) : MIRTool(argc, argv) {
-        using eckit::option::FactoryOption;
-        using eckit::option::SimpleOption;
+        using namespace eckit::option;
 
         options_.push_back(new FactoryOption<stats::StatisticsFactory>(
             "statistics", "Statistics methods for interpreting field values"));
@@ -65,36 +57,40 @@ public:
             "output", "/-separated list of per-point statistics (output GRIB to <statistics>"));
         options_.push_back(new SimpleOption<prec_t>("precision", "Output precision"));
     }
+
+    int minimumPositionalArguments() const override { return 1; }
+
+    void usage(const std::string& tool) const override {
+        Log::info() << "\n"
+                       "Calculate field statistics, or per-point statistics when specifying output."
+                       "\n"
+                       "\n"
+                       "Usage: "
+                    << tool
+                    << " [--statistics=option] file.grib [file2.grib [...]]"
+                       "\n"
+                       "\n"
+                       "Examples:"
+                       "\n"
+                       "  % "
+                    << tool
+                    << " file.grib"
+                       "\n"
+                       "  % "
+                    << tool
+                    << " --statistics=scalar file1.grib file2.grib file3.grib"
+                       "\n"
+                       "  % "
+                    << tool
+                    << " --statistics=spectral file.grib"
+                       "\n"
+                       "  % "
+                    << tool << " --output=mean/min/max file1.grib file2.grib file3.grib" << std::endl;
+    }
+
+
+    void execute(const eckit::option::CmdArgs&) override;
 };
-
-
-void MIRStatistics::usage(const std::string& tool) const {
-    eckit::Log::info() << "\n"
-                          "Calculate field statistics, or per-point statistics when specifying output."
-                          "\n"
-                          "\n"
-                          "Usage: "
-                       << tool
-                       << " [--statistics=option] file.grib [file2.grib [...]]"
-                          "\n"
-                          "\n"
-                          "Examples:"
-                          "\n"
-                          "  % "
-                       << tool
-                       << " file.grib"
-                          "\n"
-                          "  % "
-                       << tool
-                       << " --statistics=scalar file1.grib file2.grib file3.grib"
-                          "\n"
-                          "  % "
-                       << tool
-                       << " --statistics=spectral file.grib"
-                          "\n"
-                          "  % "
-                       << tool << " --output=mean/min/max file1.grib file2.grib file3.grib" << std::endl;
-}
 
 
 void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
@@ -107,7 +103,7 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
     const param::ConfigurationWrapper args_wrap(args);
     const param::DefaultParametrisation defaults;
 
-    auto& log = eckit::Log::info();
+    auto& log = Log::info();
     prec_t precision;
     auto old = args.get("precision", precision) ? log.precision(precision) : log.precision();
 
@@ -124,7 +120,7 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
 
         size_t Nfirst = firstInput.field().values(0).size();
         ASSERT(Nfirst > 0);
-        log << "Using " << Pretty(Nfirst, {"grid point"}) << std::endl;
+        log << "Using " << Log::Pretty(Nfirst, {"grid point"}) << std::endl;
 
         // set paramId/metadata-specific method per-point statistics
         std::string statistics = "scalar";
@@ -146,14 +142,14 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
 
                 repres::RepresentationHandle repres(input.field().representation());
                 if (!repres->sameAs(*reference)) {
-                    eckit::Log::error() << "Input not expected,"
-                                           "\n"
-                                           "expected "
-                                        << *reference
-                                        << "\n"
-                                           "but got "
-                                        << *repres;
-                    throw eckit::UserError("input not of the expected format");
+                    Log::error() << "Input not expected,"
+                                    "\n"
+                                    "expected "
+                                 << *reference
+                                 << "\n"
+                                    "but got "
+                                 << *repres;
+                    throw exception::UserError("input not of the expected format");
                 }
 
                 pps->execute(input.field());
@@ -172,10 +168,10 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
             context::Context ctx(firstGribFile, stats);
 
             auto& f = ctx.field();
-            j == "mean" ? pps->mean(f)
-                        : j == "variance" ? pps->variance(f)
-                                          : j == "stddev" ? pps->stddev(f)
-                                                          : throw eckit::UserError("Output " + j + "' not supported");
+            j == "mean"       ? pps->mean(f)
+            : j == "variance" ? pps->variance(f)
+            : j == "stddev"   ? pps->stddev(f)
+                              : throw exception::UserError("Output " + j + "' not supported");
 
             std::unique_ptr<output::MIROutput> out(new output::GribFileOutput(j));
             out->save(*param, ctx);

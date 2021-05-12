@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_fe_L2Projection_h
-#define mir_method_fe_L2Projection_h
+#pragma once
 
 #include <memory>
 
@@ -50,7 +49,7 @@ public:
 
     // -- Destructor
 
-    virtual ~L2Projection();
+    ~L2Projection() override;
 
     // -- Convertors
     // None
@@ -98,15 +97,15 @@ private:
     // -- Overridden methods
 
     // From Method
-    void hash(eckit::MD5&) const;
-    int version() const;
-    bool sameAs(const Method&) const;
-    void print(std::ostream&) const;
+    void hash(eckit::MD5&) const override;
+    int version() const override;
+    bool sameAs(const Method&) const override;
+    void print(std::ostream&) const override;
 
     // From MethodWeighted
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
-                  const repres::Representation& out) const;
-    virtual const char* name() const;
+                  const repres::Representation& out) const override;
+    const char* name() const override;
 
     // -- Class members
     // None
@@ -122,6 +121,3 @@ private:
 }  // namespace fe
 }  // namespace method
 }  // namespace mir
-
-
-#endif

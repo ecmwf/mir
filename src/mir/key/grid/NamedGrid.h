@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_grid_NamedGrid_h
-#define mir_key_grid_NamedGrid_h
+#pragma once
 
 #include "mir/key/grid/Grid.h"
 
@@ -28,8 +27,7 @@ protected:
     NamedGrid(const std::string& key) : Grid(key, named_t) {}
 
     // -- Destructor
-
-    virtual ~NamedGrid() = default;
+    // None
 
     // -- Convertors
     // None
@@ -42,10 +40,10 @@ protected:
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const                                           = 0;
-    virtual size_t gaussianNumber() const                                             = 0;
-    virtual const repres::Representation* representation() const                      = 0;
-    virtual const repres::Representation* representation(const util::Rotation&) const = 0;
+    void print(std::ostream&) const override                                           = 0;
+    size_t gaussianNumber() const override                                             = 0;
+    const repres::Representation* representation() const override                      = 0;
+    const repres::Representation* representation(const util::Rotation&) const override = 0;
 
     // -- Class members
     // None
@@ -62,6 +60,3 @@ private:
 }  // namespace grid
 }  // namespace key
 }  // namespace mir
-
-
-#endif

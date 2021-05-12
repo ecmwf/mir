@@ -12,7 +12,7 @@
 
 #include "mir/action/misc/Noop.h"
 
-#include <iostream>
+#include <ostream>
 
 
 namespace mir {

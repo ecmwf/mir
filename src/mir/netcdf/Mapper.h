@@ -10,10 +10,9 @@
  */
 
 
-#ifndef mir_netcdf_Mapper_h
-#define mir_netcdf_Mapper_h
+#pragma once
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/Reshape.h"
@@ -109,6 +108,3 @@ void Mapper<T>::set(size_t i, T v) {
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

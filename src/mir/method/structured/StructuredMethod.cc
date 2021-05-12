@@ -14,12 +14,11 @@
 
 #include <memory>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
-
-#include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -163,19 +162,18 @@ void StructuredMethod::boundWestEast(const Longitude& lon, const size_t& Ni, con
 
 void StructuredMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& in,
                                 const repres::Representation& out) const {
-    eckit::Log::debug<LibMir>() << "StructuredMethod::assemble (input: " << in << ", output: " << out << ")..."
-                                << std::endl;
+    Log::debug() << "StructuredMethod::assemble (input: " << in << ", output: " << out << ")..." << std::endl;
 
     // FIXME for the moment
     if (!in.isGlobal()) {
-        throw eckit::UserError("This interpolation method is only for global input grids.", Here());
+        throw exception::UserError("This interpolation method is only for global input grids.", Here());
     }
     if (!out.isGlobal()) {
-        throw eckit::UserError("This interpolation method is only for global output grids.", Here());
+        throw exception::UserError("This interpolation method is only for global output grids.", Here());
     }
 
     assembleStructuredInput(W, in, out);
-    eckit::Log::debug<LibMir>() << "StructuredMethod::assemble." << std::endl;
+    Log::debug() << "StructuredMethod::assemble." << std::endl;
 }
 
 void StructuredMethod::print(std::ostream& out) const {

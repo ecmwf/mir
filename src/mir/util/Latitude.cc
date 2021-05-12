@@ -12,7 +12,7 @@
 
 #include "mir/util/Latitude.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/serialisation/Stream.h"
 #include "eckit/types/FloatCompare.h"

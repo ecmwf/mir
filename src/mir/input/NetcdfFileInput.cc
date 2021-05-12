@@ -14,11 +14,11 @@
 
 #include <limits>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/data/MIRField.h"
 #include "mir/netcdf/Field.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -29,7 +29,7 @@ NetcdfFileInput::NetcdfFileInput(const eckit::PathName& path) :
     path_(path), cache_(*this), dataset_(path, *this), fields_(dataset_.fields()), current_(-1) {
 
     for (auto field : fields_) {
-        eckit::Log::info() << "NC " << *field << std::endl;
+        Log::info() << "NC " << *field << std::endl;
     }
 }
 
@@ -52,7 +52,9 @@ grib_handle* NetcdfFileInput::gribHandle(size_t /*which*/) const {
     static grib_handle* handle = nullptr;
     if (handle == nullptr) {
         handle = codes_grib_handle_new_from_samples(nullptr, "GRIB1");
-        codes_set_long(handle, "paramId", 255);
+
+        constexpr long MISSING = 255;
+        codes_set_long(handle, "paramId", MISSING);
         ASSERT(handle);
     }
     return handle;
@@ -88,7 +90,7 @@ data::MIRField NetcdfFileInput::field() const {
 
     if (modifyMissingValue) {
         mv = std::numeric_limits<double>::lowest();
-        eckit::Log::warning() << "Modifying missing value from NaN to " << mv << std::endl;
+        Log::warning() << "Modifying missing value from NaN to " << mv << std::endl;
     }
 
     data::MIRField field(*this, hasMissing, mv);
@@ -118,25 +120,28 @@ bool NetcdfFileInput::has(const std::string& name) const {
 }
 
 
-bool NetcdfFileInput::get(const std::string& name, long& value) const {
-    return currentField().get(name, value) || FieldParametrisation::get(name, value);
-}
-
-
 bool NetcdfFileInput::get(const std::string& name, std::string& value) const {
     return currentField().get(name, value) || FieldParametrisation::get(name, value);
 }
 
 
 bool NetcdfFileInput::get(const std::string& name, bool& value) const {
+    return FieldParametrisation::get(name, value);
+}
 
-    // NOTE: this disables checking for duplicate points for any NetCDF file!!
-    if (name == "check-duplicate-points") {
-        value = false;
-        return true;
-    }
 
-    return false;
+bool NetcdfFileInput::get(const std::string& name, int& value) const {
+    return FieldParametrisation::get(name, value);
+}
+
+
+bool NetcdfFileInput::get(const std::string& name, long& value) const {
+    return currentField().get(name, value) || FieldParametrisation::get(name, value);
+}
+
+
+bool NetcdfFileInput::get(const std::string& name, float& value) const {
+    return FieldParametrisation::get(name, value);
 }
 
 
@@ -145,8 +150,28 @@ bool NetcdfFileInput::get(const std::string& name, double& value) const {
 }
 
 
+bool NetcdfFileInput::get(const std::string& name, std::vector<int>& value) const {
+    return FieldParametrisation::get(name, value);
+}
+
+
+bool NetcdfFileInput::get(const std::string& name, std::vector<long>& value) const {
+    return FieldParametrisation::get(name, value);
+}
+
+
+bool NetcdfFileInput::get(const std::string& name, std::vector<float>& value) const {
+    return FieldParametrisation::get(name, value);
+}
+
+
 bool NetcdfFileInput::get(const std::string& name, std::vector<double>& value) const {
     return currentField().get(name, value) || FieldParametrisation::get(name, value);
+}
+
+
+bool NetcdfFileInput::get(const std::string& name, std::vector<std::string>& value) const {
+    return FieldParametrisation::get(name, value);
 }
 
 

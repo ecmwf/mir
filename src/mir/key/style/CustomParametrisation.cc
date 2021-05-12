@@ -12,13 +12,12 @@
 
 #include "mir/key/style/CustomParametrisation.h"
 
-#include <iostream>
+#include <ostream>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
 #include "eckit/utils/Translator.h"
 
-#include "mir/config/LibMir.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -67,7 +66,7 @@ static void fill(std::vector<T>& value, const std::vector<std::string>& params) 
 
 template <class T>
 bool CustomParametrisation::_get(const std::string& name, T& value) const {
-    eckit::Log::debug<LibMir>() << *this << " get('" << name << "')" << std::endl;
+    Log::debug() << *this << " get('" << name << "')" << std::endl;
 
     auto j = params_.find(name);
     if (j != params_.end()) {

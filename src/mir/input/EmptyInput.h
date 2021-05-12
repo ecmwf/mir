@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_EmptyInput_h
-#define mir_input_EmptyInput_h
+#pragma once
 
 #include "mir/input/MIRInput.h"
 #include "mir/param/SimpleParametrisation.h"
@@ -31,7 +30,7 @@ public:
 
     // -- Destructor
 
-    virtual ~EmptyInput();  // Change to virtual if base class
+    ~EmptyInput() override;
 
     // -- Convertors
     // None
@@ -78,15 +77,15 @@ private:
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const;  // Change to virtual if base class
-    virtual bool sameAs(const MIRInput& other) const;
+    void print(std::ostream&) const override;
+    bool sameAs(const MIRInput&) const override;
 
-    virtual const param::MIRParametrisation& parametrisation(size_t which) const;
-    virtual data::MIRField field() const;
+    const param::MIRParametrisation& parametrisation(size_t which) const override;
+    data::MIRField field() const override;
 
-    virtual bool next();
+    bool next() override;
 
-    // virtual bool get(const std::string&, double&) const;
+    // bool get(const std::string&, double&) const override;
 
     virtual void latitudes(std::vector<double>&) const;
     virtual void longitudes(std::vector<double>&) const;
@@ -98,14 +97,9 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const EmptyInput& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

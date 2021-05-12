@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_structured_StructuredBilinearLatLon_h
-#define mir_method_structured_StructuredBilinearLatLon_h
+#pragma once
 
 #include "mir/method/structured/StructuredMethod.h"
 
@@ -24,25 +23,22 @@ namespace structured {
 class StructuredBilinearLatLon : public StructuredMethod {
 public:
     StructuredBilinearLatLon(const param::MIRParametrisation&);
-    ~StructuredBilinearLatLon();
+    ~StructuredBilinearLatLon() override;
 
 private:
     void assembleStructuredInput(WeightMatrix&, const repres::Representation& in,
-                                 const repres::Representation& out) const;
+                                 const repres::Representation& out) const override;
 
-    const char* name() const;
+    const char* name() const override;
 
-    void hash(eckit::MD5&) const;
+    void hash(eckit::MD5&) const override;
 
-    void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
-    virtual bool sameAs(const Method& other) const;
+    bool sameAs(const Method&) const override;
 };
 
 
 }  // namespace structured
 }  // namespace method
 }  // namespace mir
-
-
-#endif

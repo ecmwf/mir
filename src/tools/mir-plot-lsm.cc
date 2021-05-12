@@ -14,94 +14,73 @@
 
 #include "eckit/io/StdFile.h"
 #include "eckit/option/CmdArgs.h"
-#include "eckit/option/VectorOption.h"
+#include "eckit/option/SimpleOption.h"
 #include "eckit/runtime/Tool.h"
 
-#include "mir/config/MIRConfiguration.h"
+#include "mir/key/grid/Grid.h"
 #include "mir/lsm/Mask.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/ConfigurationWrapper.h"
+#include "mir/param/DefaultParametrisation.h"
+#include "mir/repres/latlon/RegularLL.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Log.h"
 
 
-class MIRPlotLSM : public mir::tools::MIRTool {
+using namespace mir;
 
-    // -- Overridden methods
 
-    void execute(const eckit::option::CmdArgs&);
-
-    void usage(const std::string& tool) const;
-
-    int minimumPositionalArguments() const { return 1; }
-
-public:
-    // -- Constructors
-
-    MIRPlotLSM(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {
-        using namespace eckit::option;
-
-        options_.push_back(new VectorOption<double>("grid", "Default 1/1", 2));
-        options_.push_back(new VectorOption<long>("ninj", "Default 360/181", 2));
-
-        // options_.push_back(new SimpleOption<eckit::PathName>("load", "Load file into shared memory. If file already
-        // loaded, does nothing.")); options_.push_back(new SimpleOption<eckit::PathName>("unload", "Load file into
-        // shared memory. If file already loaded, does nothing."));
+struct MIRPlotLSM : tools::MIRTool {
+    MIRPlotLSM(int argc, char** argv) : MIRTool(argc, argv) {
+        options_.push_back(new eckit::option::SimpleOption<std::string>("grid", "we/sn grid increments (default 1/1)"));
     }
+
+    int numberOfPositionalArguments() const override { return 1; }
+
+    void usage(const std::string& tool) const override {
+        Log::info() << "\n"
+                    << "Usage: " << tool << " --grid=1/1 output.pbm" << std::endl;
+    }
+
+    void execute(const eckit::option::CmdArgs&) override;
 };
 
 
-void MIRPlotLSM::usage(const std::string& tool) const {
-    eckit::Log::info() << "\n"
-                       << "Usage: " << tool << " file.grib file.lsm" << std::endl;
-}
-
-
 void MIRPlotLSM::execute(const eckit::option::CmdArgs& args) {
-
     const_cast<eckit::option::CmdArgs&>(args).set("lsm", true);  // Force LSM
 
-    size_t Ni = 360;
-    size_t Nj = 181;
 
-    std::vector<double> v;
-    if (args.get("grid", v)) {
-        Ni = size_t(360.0 / v[0] + 0.5);
-        Nj = size_t(180.0 / v[1] + 0.5) + 1;
-    }
+    // Create a regular_ll grid
+    std::string grid = "1/1";
+    args.get("grid", grid);
 
-    std::vector<long> n;
-    if (args.get("ninj", n)) {
-        Ni = size_t(n[0]);
-        Nj = size_t(n[1]);
-    }
+    repres::RepresentationHandle repres(key::grid::Grid::lookup(grid).representation());
+    ASSERT(repres != nullptr);
 
-    eckit::Log::info() << "Ni=" << Ni << ", Nj=" << Nj << std::endl;
+    auto repres_ll = dynamic_cast<const repres::latlon::RegularLL*>(static_cast<const repres::Representation*>(repres));
+    ASSERT(repres_ll != nullptr);
 
+
+    // Build mask
+    static const param::DefaultParametrisation defaults;
+    static const param::ConfigurationWrapper args_wrap(args);
+    param::CombinedParametrisation parametrisation(args_wrap, defaults, defaults);
+
+    const auto& mask = lsm::Mask::lookupOutput(parametrisation, *repres);
+    Log::info() << "MASK IS => " << mask << std::endl;
+
+
+    // Write mask
     eckit::StdFile out(args(0), "w");
+    fprintf(out, "P5\n%zu %zu 255\n", repres_ll->Ni(), repres_ll->Nj());
 
-    // Wrap the arguments, so that they behave as a MIRParameter
-    mir::param::ConfigurationWrapper wrap(args);
-    std::unique_ptr<const mir::param::MIRParametrisation> defaults(
-        mir::config::MIRConfiguration::instance().defaults());
-
-    mir::param::CombinedParametrisation parametrisation(wrap, *defaults, *defaults);
-
-    std::string gridname("L" + std::to_string(Ni) + "x" + std::to_string(Nj));
-    atlas::grid::RegularLonLatGrid grid(gridname);
-
-
-    const mir::lsm::Mask& mask = mir::lsm::Mask::lookupOutput(parametrisation, grid);
-
-    eckit::Log::info() << "MASK IS => " << mask << std::endl;
-
-    const std::vector<bool>& m = mask.mask();
-
-    fprintf(out, "P5\n%zu %zu 255\n", Ni, Nj);
-
-    for (std::vector<bool>::const_iterator j = m.begin(); j != m.end(); ++j) {
+    const auto& m = mask.mask();
+    for (auto j = m.begin(); j != m.end(); ++j) {
         unsigned char c = (*j) ? 0xff : 0;
         ASSERT(fwrite(&c, 1, 1, out));
     }
+
+    out.close();
 }
 
 

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_NablaFilter_h
-#define mir_action_NablaFilter_h
+#pragma once
 
 #include <string>
 
@@ -34,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~NablaFilter();
+    ~NablaFilter() override;
 
     // -- Convertors
     // None
@@ -65,8 +64,8 @@ protected:
 
     // -- Overridden methods
 
-    void print(std::ostream&) const;
-    void custom(std::ostream&) const;
+    void print(std::ostream&) const override;
+    void custom(std::ostream&) const override;
 
     // -- Class members
     // None
@@ -98,7 +97,7 @@ private:
 class NablaFilterFactory : public ActionFactory {
 protected:
     NablaFilterFactory(const std::string& name);
-    virtual ~NablaFilterFactory();
+    ~NablaFilterFactory() override;
 
 public:
     static void list(std::ostream&);
@@ -107,7 +106,7 @@ public:
 
 template <class T>
 class NablaFilterBuilder : public NablaFilterFactory {
-    virtual NablaFilter* make(const param::MIRParametrisation& param) { return new T(param); }
+    NablaFilter* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     NablaFilterBuilder(const std::string& name) : NablaFilterFactory(name) {}
@@ -116,6 +115,3 @@ public:
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

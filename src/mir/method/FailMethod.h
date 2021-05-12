@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_FailMethod_h
-#define mir_method_FailMethod_h
+#pragma once
 
 #include "mir/method/Method.h"
 
@@ -86,6 +85,3 @@ private:
 
 }  // namespace method
 }  // namespace mir
-
-
-#endif

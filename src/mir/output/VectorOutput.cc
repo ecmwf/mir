@@ -12,14 +12,14 @@
 
 #include "mir/output/VectorOutput.h"
 
-#include <iostream>
+#include <ostream>
+#include <sstream>
 #include <typeinfo>  // bad_cast exception
-
-#include "eckit/exception/Exceptions.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/VectorInput.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -28,6 +28,7 @@ namespace output {
 
 VectorOutput::VectorOutput(MIROutput& component1, MIROutput& component2) :
     component1_(component1), component2_(component2) {}
+
 
 VectorOutput::~VectorOutput() = default;
 
@@ -50,7 +51,7 @@ size_t VectorOutput::copy(const param::MIRParametrisation& param, context::Conte
     catch (std::bad_cast&) {
         std::ostringstream os;
         os << "VectorOutput::copy() not implemented for input of type: " << input;
-        throw eckit::SeriousBug(os.str());
+        throw exception::SeriousBug(os.str());
     }
 }
 
@@ -86,7 +87,7 @@ size_t VectorOutput::save(const param::MIRParametrisation& param, context::Conte
     catch (std::bad_cast&) {
         std::ostringstream os;
         os << "VectorOutput::save() not implemented for input of type: " << input;
-        throw eckit::SeriousBug(os.str());
+        throw exception::SeriousBug(os.str());
     }
 }
 
@@ -109,7 +110,7 @@ size_t VectorOutput::set(const param::MIRParametrisation& param, context::Contex
     catch (std::bad_cast&) {
         std::ostringstream os;
         os << "VectorOutput::set() not implemented for input of type: " << input;
-        throw eckit::SeriousBug(os.str());
+        throw exception::SeriousBug(os.str());
     }
 }
 
@@ -134,6 +135,7 @@ bool VectorOutput::printParametrisation(std::ostream& out, const param::MIRParam
 void VectorOutput::prepare(const param::MIRParametrisation& parametrisation, action::ActionPlan& plan,
                            input::MIRInput& input, output::MIROutput& output) {
     component1_.prepare(parametrisation, plan, input, output);
+    component2_.prepare(parametrisation, plan, input, output);
 }
 
 

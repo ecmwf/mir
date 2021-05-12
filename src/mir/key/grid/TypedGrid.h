@@ -10,12 +10,11 @@
  */
 
 
-#ifndef mir_key_grid_TypedGrid_h
-#define mir_key_grid_TypedGrid_h
-
-#include "mir/key/grid/Grid.h"
+#pragma once
 
 #include <set>
+
+#include "mir/key/grid/Grid.h"
 
 
 namespace mir {
@@ -32,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~TypedGrid() = default;
+    virtual ~TypedGrid() override;
 
     // -- Convertors
     // None
@@ -64,10 +63,10 @@ protected:
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const override;
-    virtual const repres::Representation* representation(const param::MIRParametrisation&) const override = 0;
-    virtual void parametrisation(const std::string& grid, param::SimpleParametrisation&) const override;
-    virtual size_t gaussianNumber() const override;
+    void print(std::ostream&) const override;
+    const repres::Representation* representation(const param::MIRParametrisation&) const override = 0;
+    void parametrisation(const std::string& grid, param::SimpleParametrisation&) const override;
+    size_t gaussianNumber() const override;
 
     // -- Class members
     // None
@@ -99,6 +98,3 @@ private:
 }  // namespace grid
 }  // namespace key
 }  // namespace mir
-
-
-#endif

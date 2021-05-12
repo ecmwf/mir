@@ -10,10 +10,15 @@
  */
 
 
-#ifndef mir_key_grid_RegularLL_h
-#define mir_key_grid_RegularLL_h
+#pragma once
 
 #include "mir/key/grid/Grid.h"
+
+namespace mir {
+namespace util {
+class Increments;
+}
+}  // namespace mir
 
 
 namespace mir {
@@ -48,6 +53,7 @@ public:
     // -- Overridden methods
 
     size_t gaussianNumber() const override;
+    const repres::Representation* representation() const override;
 
     // -- Class members
     // None
@@ -60,7 +66,8 @@ private:
     // None
 
     // -- Methods
-    // None
+
+    util::Increments increments() const;
 
     // -- Overridden methods
 
@@ -80,6 +87,3 @@ private:
 }  // namespace grid
 }  // namespace key
 }  // namespace mir
-
-
-#endif

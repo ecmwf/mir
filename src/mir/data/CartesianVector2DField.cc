@@ -13,14 +13,13 @@
 #include "mir/data/CartesianVector2DField.h"
 
 #include <cmath>
-#include <iostream>
 #include <memory>
-
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
 
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Angles.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Rotation.h"
 
 

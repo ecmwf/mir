@@ -3,4 +3,4 @@ stream=wave,param=2dfd,direction=1,frequency=1
 # mir
 --accuracy=10 --grid=1/1
 # plan
-Gridded2RegularLL[increments=Increments[west_east=1,south_north=1],bbox=BoundingBox[north=90,west=0,south=-90,east=359],interpolation=nearest-neighbour,method=KNearestNeighbours[nonLinear[MissingIfHeaviestMissing[]],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,nearestMethod=NearestNeighbourWithLowestIndex[nclosest=4],distanceWeighting=InverseDistanceWeightingSquared[]]]|Save[accuracy=10,output=...]
+Gridded2RegularLL[increments=Increments[west_east=1,south_north=1],bbox=BoundingBox[north=90,west=0,south=-90,east=359],interpolation=nearest-neighbour,method=KNearestNeighbours[nonLinear[MissingIfHeaviestMissing[]],Solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,nearestMethod=NearestNeighbourWithLowestIndex[nclosest=4],distanceWeighting=InverseDistanceWeightingSquared[]]]|Save[accuracy=10,output=...]

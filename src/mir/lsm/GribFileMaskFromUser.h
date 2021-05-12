@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_lsm_GribFileMaskFromUser_h
-#define mir_lsm_GribFileMaskFromUser_h
+#pragma once
 
 #include "mir/lsm/GribFileMask.h"
 
@@ -22,8 +21,8 @@ namespace lsm {
 
 class GribFileMaskFromUser : public GribFileMask {
 
-    virtual bool cacheable() const;
-    virtual std::string cacheName() const;
+    bool cacheable() const override;
+    std::string cacheName() const override;
 
 public:
     using GribFileMask::GribFileMask;
@@ -32,6 +31,3 @@ public:
 
 }  // namespace lsm
 }  // namespace mir
-
-
-#endif

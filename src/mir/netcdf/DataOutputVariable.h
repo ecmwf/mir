@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_DataOutputVariable_h
-#define mir_netcdf_DataOutputVariable_h
+#pragma once
 
 #include "mir/netcdf/OutputVariable.h"
 
@@ -24,13 +23,13 @@ class DataOutputVariable : public OutputVariable {
 public:
     DataOutputVariable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions);
 
-    virtual ~DataOutputVariable();
+    ~DataOutputVariable() override;
 
 private:
-    virtual void merge(const Variable&, MergePlan& plan);
-    virtual void print(std::ostream&) const;
-    virtual const std::string& ncname() const;
-    virtual void collectField(std::vector<Field*>&) const;
+    void merge(const Variable&, MergePlan&) override;
+    void print(std::ostream&) const override;
+    const std::string& ncname() const override;
+    void collectField(std::vector<Field*>&) const override;
 
     mutable std::string ncname_;
 };
@@ -38,6 +37,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

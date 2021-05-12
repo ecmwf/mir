@@ -12,9 +12,7 @@
 
 #include "mir/repres/unsupported/AzimuthRange.h"
 
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
 
 
 namespace mir {
@@ -24,24 +22,13 @@ namespace repres {
 AzimuthRange::AzimuthRange(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
-AzimuthRange::AzimuthRange() = default;
-
-
-AzimuthRange::~AzimuthRange() = default;
-
-
 void AzimuthRange::print(std::ostream& out) const {
     out << "AzimuthRange["
         << "]";
 }
 
 
-void AzimuthRange::fill(grib_info& /*info*/) const {
-    NOTIMP;
-}
-
-
-static RepresentationBuilder<AzimuthRange> azimuthRange("azimuth_range");
+static RepresentationBuilder<AzimuthRange> __repres("azimuth_range");
 
 
 }  // namespace repres

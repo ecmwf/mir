@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_intgrid_NamedGrid_h
-#define mir_key_intgrid_NamedGrid_h
+#pragma once
 
 #include "mir/key/intgrid/Intgrid.h"
 
@@ -44,7 +43,7 @@ public:
 
     // -- Overridden methods
 
-    const std::string& gridname() const;
+    const std::string& gridname() const override;
 
     // -- Class members
     // None
@@ -77,6 +76,3 @@ private:
 }  // namespace intgrid
 }  // namespace key
 }  // namespace mir
-
-
-#endif

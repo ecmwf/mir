@@ -10,10 +10,10 @@
  */
 
 
-#include <iostream>
+#include <ostream>
+#include <sstream>
 
 #include "eckit/config/Resource.h"
-#include "eckit/log/Timer.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/action/plan/ActionGraph.h"
@@ -23,6 +23,9 @@
 #include "mir/api/MIRJob.h"
 #include "mir/api/MIRWatcher.h"
 #include "mir/input/MIRInput.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Trace.h"
 
 
 namespace mir {
@@ -58,49 +61,36 @@ void MIRComplexJob::clear() {
 
 
 void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
-
-    if (jobs_.empty()) {
-        return;
-    }
-
     static bool printActionGraph = eckit::Resource<bool>("$MIR_PRINT_ACTION_GRAPH", false);
 
-    action::ActionGraph graph;
-
-    size_t i = 0;
-    for (auto j = jobs_.begin(); j != jobs_.end(); ++j, ++i) {
-        graph.add((*j)->plan(), watchers_[i]);
-    }
-
-    if (input_ == nullptr) {
+    if (jobs_.empty() || input_ == nullptr) {
         return;
     }
 
-    std::unique_ptr<eckit::Timer> timer;
+    action::ActionGraph graph;
+    size_t i = 0;
+    for (auto& j : jobs_) {
+        graph.add(j->plan(), watchers_[i++]);
+    }
+
+    std::unique_ptr<trace::Timer> timer(printActionGraph ? new trace::Timer("MIRComplexJob::execute", Log::info())
+                                                         : nullptr);
 
     if (printActionGraph) {
-        timer.reset(new eckit::Timer("MIRComplexJob::execute", eckit::Log::info()));
+        Log::info() << ">>>>>>>>>>>>"
+                       "\n"
+                    << *input_ << std::endl;
+        graph.dump(Log::info(), 1);
     }
 
     context::Context ctx(*input_, statistics);
 
-    if (printActionGraph) {
-        eckit::Log::info() << ">>>>>>>>>>>>"
-                              "\n"
-                           << *input_ << std::endl;
-    }
-
-    const action::Executor& executor = action::Executor::lookup((*jobs_.begin())->parametrisation());
-
-    if (printActionGraph) {
-        graph.dump(eckit::Log::info(), 1);
-    }
+    auto& executor = action::Executor::lookup(jobs_.front()->parametrisation());
     graph.execute(ctx, executor);
-
     executor.wait();
 
     if (printActionGraph) {
-        eckit::Log::info() << "<<<<<<<<<<<" << std::endl;
+        Log::info() << "<<<<<<<<<<<<" << std::endl;
     }
 }
 
@@ -129,7 +119,7 @@ MIRComplexJob& MIRComplexJob::add(api::MIRJob* job, input::MIRInput& input, outp
     if (input_ != &input) {
         std::ostringstream oss;
         oss << "MIRComplexJob: all jobs must share the same input (for now)";
-        throw eckit::SeriousBug(oss.str());
+        throw exception::SeriousBug(oss.str());
     }
 
 

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_MergeDataMatrix_h
-#define mir_netcdf_MergeDataMatrix_h
+#pragma once
 
 #include "mir/netcdf/Matrix.h"
 
@@ -23,20 +22,17 @@ namespace netcdf {
 class MergeDataMatrix : public Matrix {
 public:
     MergeDataMatrix(Matrix* out, Matrix* in, size_t size);
-    virtual ~MergeDataMatrix();
+    ~MergeDataMatrix() override;
 
 private:
     Matrix* out_;
     Matrix* in_;
 
-    virtual void print(std::ostream& out) const;
+    void print(std::ostream&) const override;
 
-    virtual void dumpTree(std::ostream&, size_t) const;
+    void dumpTree(std::ostream&, size_t) const override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

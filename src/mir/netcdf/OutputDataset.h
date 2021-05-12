@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_OutputField_h
-#define mir_netcdf_OutputField_h
+#pragma once
 
 #include "mir/netcdf/Dataset.h"
 
@@ -30,11 +29,11 @@ namespace netcdf {
 class OutputDataset : public Dataset {
 public:
     OutputDataset(const std::string&, NCFileCache&, int format = 0);
-    virtual ~OutputDataset();
+    ~OutputDataset() override;
 
     // -- Methods
 
-    void merge(Dataset& other);
+    void merge(Dataset&);
     void save() const;
 
 private:
@@ -50,12 +49,9 @@ private:
 
     // From Dataset
 
-    virtual void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

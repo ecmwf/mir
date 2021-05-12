@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_Gridded_h
-#define mir_repres_Gridded_h
+#pragma once
 
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
@@ -33,7 +32,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gridded();
+    ~Gridded() override;
 
     // -- Convertors
     // None
@@ -67,10 +66,10 @@ protected:
 
     // -- Overridden methods
 
-    util::Domain domain() const;
-    const util::BoundingBox& boundingBox() const;
-    virtual bool getLongestElementDiagonal(double&) const;
-    virtual void estimate(api::MIREstimation&) const;
+    util::Domain domain() const override;
+    const util::BoundingBox& boundingBox() const override;
+    bool getLongestElementDiagonal(double&) const override;
+    void estimate(api::MIREstimation&) const override;
 
     // -- Class members
     // None
@@ -86,10 +85,7 @@ private:
     // None
 
     // -- Overridden methods
-
-    virtual void setComplexPacking(grib_info&) const;
-    virtual void setSimplePacking(grib_info&) const;
-    virtual void setGivenPacking(grib_info&) const;
+    // None
 
     // -- Class members
     // None
@@ -98,14 +94,9 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const Gridded& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

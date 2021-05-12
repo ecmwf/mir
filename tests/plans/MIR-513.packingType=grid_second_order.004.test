@@ -1,0 +1,6 @@
+# mars
+packingType=grid_second_order.grib2
+# mir
+--packing=ieee
+# plan
+Set[packing=ieee,precision=1,output=...]

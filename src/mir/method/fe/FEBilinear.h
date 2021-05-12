@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_fe_FEBilinear_h
-#define mir_method_fe_FEBilinear_h
+#pragma once
 
 #include "mir/method/fe/FiniteElement.h"
 
@@ -80,7 +79,7 @@ private:
     // -- Overridden methods
 
     // From MethodWeighted
-    const char* name() const;
+    const char* name() const override;
 
     // -- Class members
     // None
@@ -96,6 +95,3 @@ private:
 }  // namespace fe
 }  // namespace method
 }  // namespace mir
-
-
-#endif

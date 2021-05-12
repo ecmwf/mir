@@ -10,13 +10,13 @@
  */
 
 
-#ifndef mir_action_transform_TransCache_h
-#define mir_action_transform_TransCache_h
+#pragma once
 
 #include <iosfwd>
 
-#include "mir/api/Atlas.h"
 #include "mir/caching/legendre/LegendreLoader.h"
+#include "mir/util/Atlas.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -52,6 +52,3 @@ struct TransCache {
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-
-
-#endif

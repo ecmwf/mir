@@ -10,10 +10,9 @@
  */
 
 
-#ifndef mir_util_PointLatLonT_h
-#define mir_util_PointLatLonT_h
+#pragma once
 
-#include <iostream>
+#include <ostream>
 
 
 namespace mir {
@@ -44,15 +43,12 @@ protected:
     virtual void print(std::ostream& out) const { out << "PointLatLon[" << lat_ << "," << lon_ << "]"; }
 
 private:
-    friend std::ostream& operator<<(std::ostream& s, const PointLatLonT& p) {
-        p.print(s);
-        return s;
+    friend std::ostream& operator<<(std::ostream& out, const PointLatLonT& p) {
+        p.print(out);
+        return out;
     }
 };
 
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

@@ -3,4 +3,4 @@ param=t,level=1000
 # mir
 --intgrid=source --grid=O80
 # plan
-ShToNamedGrid[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<scalar>,grid=O1280]|Gridded2NamedGrid[grid=O80,interpolation=linear,method=FiniteElement[method=linear,nonLinear[MissingIfHeaviestMissing[]],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10]]|Save[output=...]
+ShToNamedGrid[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<scalar>,grid=O1280]|Gridded2NamedGrid[grid=O80,interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],Solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,validateMesh=0,missingValueOnProjectionFail=1]]|Save[packing=simple,output=...]

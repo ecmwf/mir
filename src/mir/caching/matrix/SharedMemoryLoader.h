@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_caching_matrix_SharedMemoryLoader_h
-#define mir_caching_matrix_SharedMemoryLoader_h
+#pragma once
 
 #include "mir/caching/matrix/MatrixLoader.h"
 
@@ -25,18 +24,18 @@ class SharedMemoryLoader : public MatrixLoader {
 public:
     SharedMemoryLoader(const std::string& name, const eckit::PathName&);
 
-    virtual ~SharedMemoryLoader();
+    ~SharedMemoryLoader() override;
 
     static void loadSharedMemory(const eckit::PathName&);
     static void unloadSharedMemory(const eckit::PathName&);
 
 protected:
-    virtual void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
 private:
-    virtual const void* address() const;
-    virtual size_t size() const;
-    virtual bool inSharedMemory() const;
+    const void* address() const override;
+    size_t size() const override;
+    bool inSharedMemory() const override;
 
     void* address_;
     size_t size_;
@@ -47,6 +46,3 @@ private:
 }  // namespace matrix
 }  // namespace caching
 }  // namespace mir
-
-
-#endif

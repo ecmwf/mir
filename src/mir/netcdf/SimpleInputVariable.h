@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_SimpleInputVariable_h
-#define mir_netcdf_SimpleInputVariable_h
+#pragma once
 
 #include "mir/netcdf/InputVariable.h"
 
@@ -24,28 +23,25 @@ class SimpleInputVariable : public InputVariable {
 public:
     SimpleInputVariable(Dataset& owner, const std::string& name, int id, const std::vector<Dimension*>& dimensions);
 
-    virtual ~SimpleInputVariable();
+    ~SimpleInputVariable() override;
 
 private:
-    std::vector<std::string> coordinates() const;
+    std::vector<std::string> coordinates() const override;
 
     Variable* makeOutputVariable(Dataset& owner, const std::string& name,
-                                 const std::vector<Dimension*>& dimensions) const;
+                                 const std::vector<Dimension*>& dimensions) const override;
 
-    virtual Variable* makeDataVariable();
-    virtual Variable* makeCoordinateVariable();
-    virtual Variable* makeCellMethodVariable();
+    Variable* makeDataVariable() override;
+    Variable* makeCoordinateVariable() override;
+    Variable* makeCellMethodVariable() override;
 
-    virtual void print(std::ostream&) const;
-    virtual void validate() const;
-    virtual bool identified() const;
+    void print(std::ostream&) const override;
+    void validate() const override;
+    bool identified() const override;
 
-    Variable* addMissingCoordinates();
+    Variable* addMissingCoordinates() override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

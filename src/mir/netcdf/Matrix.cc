@@ -12,7 +12,8 @@
 
 #include "mir/netcdf/Matrix.h"
 
-#include <iostream>
+#include <ostream>
+#include <sstream>
 
 #include "mir/netcdf/Codec.h"
 #include "mir/netcdf/Exceptions.h"
@@ -112,49 +113,49 @@ Codec* Matrix::codec() const {
 void Matrix::read(std::vector<double>&) const {
     std::ostringstream os;
     os << "Matrix::read(std::vector<double>) not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Matrix::read(std::vector<float>&) const {
     std::ostringstream os;
     os << "Matrix::read(std::vector<float>) not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Matrix::read(std::vector<long>&) const {
     std::ostringstream os;
     os << "Matrix::read(std::vector<long>) not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Matrix::read(std::vector<short>&) const {
     std::ostringstream os;
     os << "Matrix::read(std::vector<short>) not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Matrix::read(std::vector<unsigned char>&) const {
     std::ostringstream os;
     os << "Matrix::read(std::vector<unsigned char>) not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Matrix::read(std::vector<long long>&) const {
     std::ostringstream os;
     os << "Matrix::read(std::vector<long long>) not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Matrix::read(std::vector<std::string>&) const {
     std::ostringstream os;
     os << "Matrix::read(std::vector<std::string>) not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
@@ -162,7 +163,7 @@ void Matrix::read(std::vector<double>&, const std::vector<size_t>& /*start*/,
                   const std::vector<size_t>& /*count*/) const {
     std::ostringstream os;
     os << "Matrix::read() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
@@ -170,7 +171,7 @@ void Matrix::read(std::vector<float>&, const std::vector<size_t>& /*start*/,
                   const std::vector<size_t>& /*count*/) const {
     std::ostringstream os;
     os << "Matrix::read() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
@@ -178,7 +179,7 @@ void Matrix::read(std::vector<long>&, const std::vector<size_t>& /*start*/,
                   const std::vector<size_t>& /*count*/) const {
     std::ostringstream os;
     os << "Matrix::read() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
@@ -186,7 +187,7 @@ void Matrix::read(std::vector<short>&, const std::vector<size_t>& /*start*/,
                   const std::vector<size_t>& /*count*/) const {
     std::ostringstream os;
     os << "Matrix::read() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
@@ -194,7 +195,7 @@ void Matrix::read(std::vector<unsigned char>&, const std::vector<size_t>& /*star
                   const std::vector<size_t>& /*count*/) const {
     std::ostringstream os;
     os << "Matrix::read() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
@@ -202,7 +203,7 @@ void Matrix::read(std::vector<long long>&, const std::vector<size_t>& /*start*/,
                   const std::vector<size_t>& /*count*/) const {
     std::ostringstream os;
     os << "Matrix::read() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 

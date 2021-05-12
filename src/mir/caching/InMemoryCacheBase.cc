@@ -13,47 +13,46 @@
 #include "mir/caching/InMemoryCacheBase.h"
 
 #include "eckit/config/Resource.h"
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
 
-#include "mir/config/LibMir.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
 namespace caching {
 
 
-static eckit::Mutex* local_mutex       = nullptr;
-static std::set<InMemoryCacheBase*>* m = nullptr;
-static pthread_once_t once             = PTHREAD_ONCE_INIT;
+static util::recursive_mutex* local_mutex = nullptr;
+static std::set<InMemoryCacheBase*>* m    = nullptr;
+static util::once_flag once;
 
 
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::set<InMemoryCacheBase*>();
 }
 
 
 InMemoryCacheBase::InMemoryCacheBase() {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
+
     ASSERT(m->find(this) == m->end());
     m->insert(this);
 }
 
 InMemoryCacheBase::~InMemoryCacheBase() {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
+
     ASSERT(m->find(this) != m->end());
     m->erase(this);
 }
 
 InMemoryCacheUsage InMemoryCacheBase::totalFootprint() {
-
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     InMemoryCacheUsage result;
 
@@ -65,13 +64,14 @@ InMemoryCacheUsage InMemoryCacheBase::totalFootprint() {
 }
 
 void InMemoryCacheBase::checkTotalFootprint() {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-
+    constexpr size_t CAPACITY_MEMORY = 1024LL * 1024 * 1024 * 1024 * 1024 * 1024;
+    constexpr size_t CAPACITY_SHARED = CAPACITY_MEMORY;
     static eckit::Resource<InMemoryCacheUsage> totalInMemoryCacheCapacity(
         "mirTotalInMemoryCacheCapacity;$MIR_TOTAL_CACHE_MEMORY_FOOTPRINT",
-        InMemoryCacheUsage(1024LL * 1024 * 1024 * 1024 * 1024 * 1024, 1024LL * 1024 * 1024 * 1024 * 1024 * 1024));
+        InMemoryCacheUsage(CAPACITY_MEMORY, CAPACITY_SHARED));
 
     InMemoryCacheUsage maximumCapacity = totalInMemoryCacheCapacity;
 
@@ -79,40 +79,29 @@ void InMemoryCacheBase::checkTotalFootprint() {
         return;
     }
 
-
-    bool more = true;
-    while (more) {
-
+    for (bool more = true; more;) {
         more = false;
 
         InMemoryCacheUsage totalFootprint;
-
         for (auto& j : *m) {
             totalFootprint += j->footprint();
         }
 
-        log() << "CACHE-checkTotalFootprint size " << totalFootprint << ", max is " << maximumCapacity << std::endl;
+        Log::debug() << "CACHE-checkTotalFootprint size " << totalFootprint << ", max is " << maximumCapacity
+                     << std::endl;
 
         if (totalFootprint > maximumCapacity) {
-
             InMemoryCacheUsage p = (totalFootprint - maximumCapacity) / m->size();
-
 
             for (auto& j : *m) {
                 InMemoryCacheUsage purged = j->purge(p);
                 if (purged) {
-                    log() << "CACHE-checkTotalFootprint purged " << purged << " from " << j->name() << std::endl;
+                    Log::debug() << "CACHE-checkTotalFootprint purged " << purged << " from " << j->name() << std::endl;
                     more = true;
                 }
             }
         }
     }
-}
-
-
-eckit::Channel& InMemoryCacheBase::log() {
-    static auto& channel = eckit::Log::debug<LibMir>();
-    return channel;
 }
 
 

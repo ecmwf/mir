@@ -14,11 +14,11 @@
 
 #include <cstdlib>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -38,8 +38,7 @@ Sample::Sample(const param::MIRParametrisation& param) {
 }
 
 
-void Sample::pick(const search::PointSearch& tree, const eckit::geometry::Point3& p,
-                  Pick::neighbours_t& closest) const {
+void Sample::pick(const search::PointSearch& tree, const Point3& p, Pick::neighbours_t& closest) const {
     tree.closestWithinRadius(p, distance_, closest);
     if (closest.size() <= nClosest_) {
         return;
@@ -54,7 +53,7 @@ void Sample::pick(const search::PointSearch& tree, const eckit::geometry::Point3
     }
 
     // closest.resize(nClosest_);  // FIXME: better than below (but has black magic)
-    closest.erase(closest.begin() + nClosest_, closest.end());
+    closest.erase(closest.begin() + long(nClosest_), closest.end());
 }
 
 

@@ -14,51 +14,54 @@
 #include <string>
 #include <vector>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/utils/StringTools.h"
 #include "eckit/utils/Translator.h"
 
-#include "mir/api/Atlas.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/repres/Representation.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Atlas.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Types.h"
 
 
-class MIRSpectralTransformPoints : public mir::tools::MIRTool {
-private:
-    void execute(const eckit::option::CmdArgs&);
+using namespace mir;
 
-    int minimumPositionalArguments() const { return 1; }
 
-    void usage(const std::string& tool) const {
-        eckit::Log::info() << "\n"
-                              "Usage: "
-                           << tool
-                           << " --point=N/W input1.grib [input2.grib [...]]"
-                              "\n"
-                              "Examples: "
-                              "\n"
-                              "  % "
-                           << tool
-                           << " --point=1/1 input.grib"
-                              "\n"
-                              "  % "
-                           << tool << " --pont=\"1/1 2/2\" input.grib" << std::endl;
-    }
-
-public:
+struct MIRSpectralTransformPoints : tools::MIRTool {
     MIRSpectralTransformPoints(int argc, char** argv) : MIRTool(argc, argv) {
         options_.push_back(
             new eckit::option::SimpleOption<std::string>("point", "lat/lon coordinate pair(s), space-separated"));
     }
+
+    int minimumPositionalArguments() const override { return 1; }
+
+    void usage(const std::string& tool) const override {
+        Log::info() << "\n"
+                       "Usage: "
+                    << tool
+                    << " --point=N/W input1.grib [input2.grib [...]]"
+                       "\n"
+                       "Examples: "
+                       "\n"
+                       "  % "
+                    << tool
+                    << " --point=1/1 input.grib"
+                       "\n"
+                       "  % "
+                    << tool << " --pont=\"1/1 2/2\" input.grib" << std::endl;
+    }
+
+    void execute(const eckit::option::CmdArgs&) override;
 };
 
 
 void MIRSpectralTransformPoints::execute(const eckit::option::CmdArgs& args) {
-    auto& log = eckit::Log::info();
+    auto& log = Log::info();
     eckit::Translator<std::string, double> to_double;
 
     std::string point = args.getString("point");
@@ -70,7 +73,7 @@ void MIRSpectralTransformPoints::execute(const eckit::option::CmdArgs& args) {
     for (auto& pt : points) {
         auto ll = eckit::StringTools::split("/", pt);
         if (ll.size() != 2) {
-            throw eckit::UserError("Expecting lat/lon, got '" + pt + "'");
+            throw exception::UserError("Expecting lat/lon, got '" + pt + "'");
         }
         pts->push_back({to_double(ll[1]), to_double(ll[0])});
     }
@@ -81,7 +84,7 @@ void MIRSpectralTransformPoints::execute(const eckit::option::CmdArgs& args) {
 
     // loop over each file(s) message(s)
     for (size_t a = 0; a < args.count(); ++a) {
-        for (std::unique_ptr<mir::input::MIRInput> input(new mir::input::GribFileInput(args(a))); input->next();) {
+        for (std::unique_ptr<input::MIRInput> input(new input::GribFileInput(args(a))); input->next();) {
 
             auto field = input->field();
             ASSERT(field.dimensions() == 1);
@@ -89,7 +92,7 @@ void MIRSpectralTransformPoints::execute(const eckit::option::CmdArgs& args) {
             size_t T = field.representation()->truncation();
             ASSERT(T > 0);
 
-            mir::MIRValuesVector out(size_t(grid.size()), 0.);
+            MIRValuesVector out(size_t(grid.size()), 0.);
 
             atlas::trans::Trans trans(grid, int(T), atlas::util::Config("type", "local"));
             trans.invtrans(1, field.values(0).data(), out.data(), atlas::option::global());

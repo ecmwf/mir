@@ -12,9 +12,8 @@
 
 #include "mir/action/misc/SetMetadata.h"
 
-#include <iostream>
+#include <ostream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/types/Types.h"
 #include "eckit/utils/Tokenizer.h"
 #include "eckit/utils/Translator.h"
@@ -22,6 +21,7 @@
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

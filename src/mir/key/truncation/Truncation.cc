@@ -14,16 +14,13 @@
 
 #include <algorithm>
 #include <cctype>  // for ::isdigit
-#include <iostream>
 #include <map>
+#include <ostream>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
-#include "eckit/thread/Once.h"
-
-#include "mir/config/LibMir.h"
 #include "mir/key/truncation/Ordinal.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -31,11 +28,11 @@ namespace key {
 namespace truncation {
 
 
-static pthread_once_t once                          = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex                    = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex           = nullptr;
 static std::map<std::string, TruncationFactory*>* m = nullptr;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, TruncationFactory*>();
 }
 
@@ -44,12 +41,11 @@ Truncation::Truncation(const param::MIRParametrisation& parametrisation) : param
 
 
 TruncationFactory::TruncationFactory(const std::string& name) : name_(name) {
-    pthread_once(&once, init);
-
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("TruncationFactory: duplicate '" + name + "'");
+        throw exception::SeriousBug("TruncationFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -58,7 +54,7 @@ TruncationFactory::TruncationFactory(const std::string& name) : name_(name) {
 
 
 TruncationFactory::~TruncationFactory() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     m->erase(name_);
 }
@@ -66,31 +62,33 @@ TruncationFactory::~TruncationFactory() {
 
 Truncation* TruncationFactory::build(const std::string& name, const param::MIRParametrisation& parametrisation,
                                      long targetGaussianN) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    {
+        util::call_once(once, init);
+        util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-    eckit::Log::debug<LibMir>() << "TruncationFactory: looking for '" << name << "'" << std::endl;
-    ASSERT(!name.empty());
+        Log::debug() << "TruncationFactory: looking for '" << name << "'" << std::endl;
+        ASSERT(!name.empty());
 
-    auto j = m->find(name);
-    if (j != m->end()) {
-        return j->second->make(parametrisation, targetGaussianN);
+        auto j = m->find(name);
+        if (j != m->end()) {
+            return j->second->make(parametrisation, targetGaussianN);
+        }
+
+        // Look for a plain number
+        if (std::all_of(name.begin(), name.end(), ::isdigit)) {
+            long number = std::stol(name);
+            return new truncation::Ordinal(number, parametrisation);
+        }
     }
 
-    // Look for a plain number
-    if (std::all_of(name.begin(), name.end(), ::isdigit)) {
-        long number = std::stol(name);
-        return new truncation::Ordinal(number, parametrisation);
-    }
-
-    list(eckit::Log::error() << "TruncationFactory: unknown '" << name << "', choices are: ");
-    throw eckit::SeriousBug("TruncationFactory: unknown '" + name + "'");
+    list(Log::error() << "TruncationFactory: unknown '" << name << "', choices are: ");
+    throw exception::SeriousBug("TruncationFactory: unknown '" + name + "'");
 }
 
 
 void TruncationFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

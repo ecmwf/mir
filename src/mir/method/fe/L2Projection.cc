@@ -12,17 +12,17 @@
 
 #include "mir/method/fe/L2Projection.h"
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/linalg/Vector.h"
-#include "eckit/log/Log.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/method/fe/FiniteElement.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -59,7 +59,7 @@ bool L2Projection::sameAs(const Method& other) const {
 
 void L2Projection::assemble(util::MIRStatistics& statistics, WeightMatrix& W, const repres::Representation& in,
                             const repres::Representation& out) const {
-    eckit::Channel& log = eckit::Log::debug<LibMir>();
+    auto& log = Log::debug();
     log << "L2Projection::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
 

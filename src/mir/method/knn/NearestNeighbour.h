@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_knn_NearestNeighbour_h
-#define mir_method_knn_NearestNeighbour_h
+#pragma once
 
 #include "mir/method/knn/KNearestNeighbours.h"
 
@@ -27,13 +26,13 @@ class NearestNeighbour : public KNearestNeighbours {
 public:
     NearestNeighbour(const param::MIRParametrisation&);
 
-    virtual ~NearestNeighbour();
+    ~NearestNeighbour() override;
 
 private:
-    virtual const char* name() const;
-    virtual bool sameAs(const Method& other) const;
-    virtual const pick::Pick& pick() const;
-    virtual const distance::DistanceWeighting& distanceWeighting() const;
+    const char* name() const override;
+    bool sameAs(const Method&) const override;
+    const pick::Pick& pick() const override;
+    const distance::DistanceWeighting& distanceWeighting() const override;
 
     std::unique_ptr<const pick::Pick> pick_;
     distance::InverseDistanceWeightingSquared distanceWeighting_;
@@ -43,6 +42,3 @@ private:
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-
-
-#endif

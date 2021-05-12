@@ -17,6 +17,7 @@
 #include <cmath>
 #include <cstring>
 #include <iomanip>
+#include <sstream>
 
 #include "eckit/config/Resource.h"
 #include "eckit/log/JSON.h"
@@ -26,6 +27,7 @@
 #include "eckit/utils/MD5.h"
 
 #include "mir/util/Grib.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -569,7 +571,7 @@ void GribField::area(double n, double w, double s, double e) {
     if (north_ < south_) {
         std::ostringstream oss;
         oss << "Invalid area: " << *this;
-        throw eckit::SeriousBug(oss.str());
+        throw exception::SeriousBug(oss.str());
     }
 }
 
@@ -1203,13 +1205,13 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
                 setArea(*field, h);
             }
             else if (v == "polar_stereographic") {
-                eckit::Log::warning() << "Ignoring polar_stereographic in " << path << std::endl;
+                Log::warning() << "Ignoring polar_stereographic in " << path << std::endl;
                 return result;
             }
             else {
                 std::ostringstream oss;
                 oss << path << ": Unknown grid [" << v << "]";
-                throw eckit::SeriousBug(oss.str());
+                throw exception::SeriousBug(oss.str());
             }
         }
     }
@@ -1296,7 +1298,7 @@ void GribField::setArea(GribField& field, grib_handle* h) {
         default: {
             std::ostringstream oss;
             oss << "Invalid scanning mode " << scanningMode;
-            throw eckit::SeriousBug(oss.str());
+            throw exception::SeriousBug(oss.str());
         } /*break;*/
     }
 

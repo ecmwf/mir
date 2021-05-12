@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_ReshapeVariableStep_h
-#define mir_netcdf_ReshapeVariableStep_h
+#pragma once
 
 #include "mir/netcdf/Step.h"
 
@@ -31,7 +30,7 @@ namespace netcdf {
 class ReshapeVariableStep : public Step {
 public:
     ReshapeVariableStep(Variable& out, const Dimension& dimension, size_t growth);
-    virtual ~ReshapeVariableStep();
+    ~ReshapeVariableStep() override;
 
 private:
     // Members
@@ -42,15 +41,12 @@ private:
     ReshapeVariableStep* next_;
 
     // -- Methods
-    virtual void print(std::ostream& out) const;
-    virtual int rank() const;
-    virtual void execute(MergePlan& plan);
-    virtual bool merge(Step* other);
+    void print(std::ostream&) const override;
+    int rank() const override;
+    void execute(MergePlan&) override;
+    bool merge(Step*) override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

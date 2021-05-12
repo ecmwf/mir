@@ -12,7 +12,7 @@
 
 #include "mir/key/grid/NamedRegular.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/repres/gauss/regular/RegularGG.h"
 #include "mir/repres/gauss/regular/RotatedGG.h"
@@ -24,9 +24,6 @@ namespace grid {
 
 
 NamedRegular::NamedRegular(const std::string& name, size_t N) : NamedGrid(name), N_(N) {}
-
-
-NamedRegular::~NamedRegular() = default;
 
 
 void NamedRegular::print(std::ostream& out) const {

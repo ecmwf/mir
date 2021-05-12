@@ -10,10 +10,10 @@
  */
 
 
-#ifndef mir_search_tree_TreeMemory_h
-#define mir_search_tree_TreeMemory_h
+#pragma once
 
 #include "eckit/container/KDTree.h"
+
 #include "mir/search/Tree.h"
 
 
@@ -27,25 +27,25 @@ class TreeMemory : public Tree {
 protected:
     eckit::KDTreeMemory<Tree> tree_;
 
-    void build(std::vector<PointValueType>&);
+    void build(std::vector<PointValueType>&) override;
 
-    void insert(const PointValueType&);
+    void insert(const PointValueType&) override;
 
-    void statsPrint(std::ostream&, bool pretty);
+    void statsPrint(std::ostream&, bool pretty) override;
 
-    void statsReset();
+    void statsReset() override;
 
-    PointValueType nearestNeighbour(const Tree::Point&);
+    PointValueType nearestNeighbour(const Tree::Point&) override;
 
-    std::vector<PointValueType> kNearestNeighbours(const Point&, size_t k);
+    std::vector<PointValueType> kNearestNeighbours(const Point&, size_t k) override;
 
-    std::vector<PointValueType> findInSphere(const Point&, double radius);
+    std::vector<PointValueType> findInSphere(const Point&, double radius) override;
 
-    virtual bool ready() const;
+    bool ready() const override;
 
-    virtual void commit();
+    void commit() override;
 
-    virtual void print(std::ostream& out) const;
+    void print(std::ostream&) const override;
 
 public:
     TreeMemory(const repres::Representation&, const param::MIRParametrisation&);
@@ -55,6 +55,3 @@ public:
 }  // namespace tree
 }  // namespace search
 }  // namespace mir
-
-
-#endif

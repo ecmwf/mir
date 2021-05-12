@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_grid_ClassicPattern_h
-#define mir_key_grid_ClassicPattern_h
+#pragma once
 
 #include "mir/key/grid/GridPattern.h"
 
@@ -33,7 +32,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ClassicPattern();
+    ~ClassicPattern() override;
 
     // -- Convertors
     // None
@@ -54,23 +53,6 @@ public:
     // -- Class methods
     // None
 
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-
-    virtual void print(std::ostream&) const;
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
 private:
     // -- Members
     // None
@@ -79,14 +61,16 @@ private:
     // None
 
     // -- Overridden methods
-    // None
+
+    void print(std::ostream&) const override;
+    const Grid* make(const std::string&) const override;
+    std::string canonical(const std::string& name, const param::MIRParametrisation&) const override;
 
     // -- Class members
     // None
 
     // -- Class methods
-
-    virtual const Grid* make(const std::string& name) const;
+    // None
 
     // -- Friends
     // None
@@ -96,6 +80,3 @@ private:
 }  // namespace grid
 }  // namespace key
 }  // namespace mir
-
-
-#endif

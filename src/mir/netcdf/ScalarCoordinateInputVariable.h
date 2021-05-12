@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_ScalarCoordinateInputVariable_h
-#define mir_netcdf_ScalarCoordinateInputVariable_h
+#pragma once
 
 #include "mir/netcdf/InputVariable.h"
 
@@ -24,20 +23,17 @@ class ScalarCoordinateInputVariable : public InputVariable {
 public:
     ScalarCoordinateInputVariable(Dataset& owner, const std::string& name, int id,
                                   const std::vector<Dimension*>& dimensions);
-    virtual ~ScalarCoordinateInputVariable();
+    ~ScalarCoordinateInputVariable() override;
 
 private:
     Variable* makeOutputVariable(Dataset& owner, const std::string& name,
-                                 const std::vector<Dimension*>& dimensions) const;
-    virtual Dimension* getVirtualDimension();
-    virtual Variable* makeCoordinateVariable();
-    virtual Variable* makeScalarCoordinateVariable();
-    virtual void print(std::ostream&) const;
+                                 const std::vector<Dimension*>& dimensions) const override;
+    Dimension* getVirtualDimension() override;
+    Variable* makeCoordinateVariable() override;
+    Variable* makeScalarCoordinateVariable() override;
+    void print(std::ostream&) const override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

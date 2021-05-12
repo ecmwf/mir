@@ -10,12 +10,11 @@
  */
 
 
-#ifndef mir_method_structured_StructuredMethod_h
-#define mir_method_structured_StructuredMethod_h
-
-#include "mir/method/MethodWeighted.h"
+#pragma once
 
 #include <vector>
+
+#include "mir/method/MethodWeighted.h"
 
 
 namespace mir {
@@ -36,7 +35,7 @@ namespace structured {
 class StructuredMethod : public MethodWeighted {
 public:
     StructuredMethod(const param::MIRParametrisation&);
-    ~StructuredMethod();
+    ~StructuredMethod() override;
 
 protected:
     // Utility types
@@ -63,13 +62,14 @@ protected:
     // Find nearest West-East bounding i indices
     void boundWestEast(const Longitude&, const size_t& Ni, const size_t& iStart, size_t& iWest, size_t& iEast) const;
 
-    virtual bool sameAs(const Method& other) const = 0;
+    bool sameAs(const Method&) const override = 0;
 
-    virtual void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
 private:
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
-                  const repres::Representation& out) const;
+                  const repres::Representation& out) const override;
+
     virtual void assembleStructuredInput(WeightMatrix&, const repres::Representation& in,
                                          const repres::Representation& out) const = 0;
 };
@@ -78,6 +78,3 @@ private:
 }  // namespace structured
 }  // namespace method
 }  // namespace mir
-
-
-#endif

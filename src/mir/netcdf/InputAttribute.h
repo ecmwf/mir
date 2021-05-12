@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_InputAttribute_h
-#define mir_netcdf_InputAttribute_h
+#pragma once
 
 #include "mir/netcdf/Attribute.h"
 
@@ -23,17 +22,14 @@ namespace netcdf {
 class InputAttribute : public Attribute {
 public:
     InputAttribute(Endowed& owner, const std::string& name, Value* value);
-    virtual ~InputAttribute();
+    ~InputAttribute() override;
 
 private:
     // From Atttribute
-    virtual void print(std::ostream& out) const;
-    virtual void clone(Endowed& owner) const;
+    void print(std::ostream&) const override;
+    void clone(Endowed& owner) const override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

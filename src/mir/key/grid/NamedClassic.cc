@@ -12,7 +12,7 @@
 
 #include "mir/key/grid/NamedClassic.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/repres/gauss/reduced/ReducedClassic.h"
 #include "mir/repres/gauss/reduced/RotatedClassic.h"
@@ -24,9 +24,6 @@ namespace grid {
 
 
 NamedClassic::NamedClassic(const std::string& name, size_t N) : NamedGrid(name), N_(N) {}
-
-
-NamedClassic::~NamedClassic() = default;
 
 
 void NamedClassic::print(std::ostream& out) const {

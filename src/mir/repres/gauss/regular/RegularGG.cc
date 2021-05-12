@@ -12,10 +12,11 @@
 
 #include "mir/repres/gauss/regular/RegularGG.h"
 
-#include <iostream>
+#include <ostream>
+#include <utility>
 
-#include "eckit/exception/Exceptions.h"
-
+#include "mir/repres/gauss/GaussianIterator.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/GridBox.h"
 
 
@@ -49,8 +50,8 @@ bool RegularGG::sameAs(const Representation& other) const {
 
 
 Iterator* RegularGG::iterator() const {
-    auto Ni = [=](size_t) { return long(4 * N_); };
-    return Gaussian::unrotatedIterator(Ni);
+    std::vector<long> pl(N_ * 2, long(4 * N_));
+    return new gauss::GaussianIterator(latitudes(), std::move(pl), bbox_, N_, Nj_, 0);
 }
 
 
@@ -76,13 +77,13 @@ std::vector<util::GridBox> RegularGG::gridBoxes() const {
     // longitude edges
     bool periodic = isPeriodicWestEast();
     auto lon0     = bbox_.west();
-    auto inc      = (bbox_.east() - bbox_.west()) / (Ni_ - 1);
+    auto inc      = (bbox_.east() - bbox_.west()).fraction() / (Ni_ - 1);
     eckit::Fraction half(1, 2);
 
     std::vector<double> lonEdges(Ni_ + 1, 0.);
     lonEdges[0] = (lon0 - inc / 2).value();
     for (size_t i = 0; i < Ni_; ++i) {
-        lonEdges[i + 1] = (lon0 + (i + half) * inc.fraction()).value();
+        lonEdges[i + 1] = (lon0 + (i + half) * inc).value();
     }
 
 

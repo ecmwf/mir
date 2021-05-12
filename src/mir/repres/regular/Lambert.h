@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_regular_Lambert_h
-#define mir_repres_regular_Lambert_h
+#pragma once
 
 #include "mir/repres/regular/RegularGrid.h"
 
@@ -65,7 +64,7 @@ protected:
 
     // -- Overridden methods
 
-    virtual void fill(grib_info&) const;
+    virtual void fill(grib_info&) const override;
 
     // -- Class members
     // None
@@ -81,6 +80,3 @@ protected:
 }  // namespace regular
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

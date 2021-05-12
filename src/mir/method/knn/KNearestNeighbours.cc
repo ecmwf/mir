@@ -15,18 +15,18 @@
 #include <algorithm>
 #include <memory>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/TraceTimer.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/method/knn/distance/DistanceWeighting.h"
 #include "mir/method/knn/pick/Pick.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
-#include "mir/util/Pretty.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Trace.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -63,10 +63,10 @@ void KNearestNeighbours::assemble(util::MIRStatistics& stats, WeightMatrix& W, c
 void KNearestNeighbours::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& in,
                                   const repres::Representation& out, const pick::Pick& pick,
                                   const distance::DistanceWeighting& distanceWeighting) const {
-    auto& log = eckit::Log::debug<LibMir>();
+    auto& log = Log::debug();
 
     log << *this << "::assemble (input: " << in << ", output: " << out << ")" << std::endl;
-    eckit::TraceTimer<LibMir> timer("KNearestNeighbours::assemble");
+    trace::Timer timer("KNearestNeighbours::assemble");
 
     const size_t nbOutputPoints = out.numberOfPoints();
 
@@ -82,7 +82,7 @@ void KNearestNeighbours::assemble(util::MIRStatistics&, WeightMatrix& W, const r
     std::vector<WeightMatrix::Triplet> triplets;
 
     {
-        Pretty::ProgressTimer progress("Locating", nbOutputPoints, {"point"}, log);
+        trace::ProgressTimer progress("Locating", nbOutputPoints, {"point"}, log);
         double search = 0;
         double insert = 0;
 
@@ -113,7 +113,7 @@ void KNearestNeighbours::assemble(util::MIRStatistics&, WeightMatrix& W, const r
                 {
                     double t = timer.elapsed();
                     pick.pick(sptree, p, closest);
-                    search += timer.elapsed() - t;
+                    search += timer.elapsed(t);
                     if (closest.empty()) {
                         continue;
                     }
@@ -127,14 +127,14 @@ void KNearestNeighbours::assemble(util::MIRStatistics&, WeightMatrix& W, const r
                 {
                     double t = timer.elapsed();
                     std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
-                    insert += timer.elapsed() - t;
+                    insert += timer.elapsed(t);
                 }
             }
         }
     }
 
     if (weights_triplets.empty()) {
-        throw eckit::SeriousBug("KNearestNeighbours: failed to interpolate");
+        throw exception::SeriousBug("KNearestNeighbours: failed to interpolate");
     }
 
     // fill-in sparse matrix
@@ -146,11 +146,6 @@ void KNearestNeighbours::print(std::ostream& out) const {
     out << "KNearestNeighbours[";
     MethodWeighted::print(out);
     out << ",nearestMethod=" << pick() << ",distanceWeighting=" << distanceWeighting() << "]";
-}
-
-
-bool KNearestNeighbours::canIntroduceMissingValues() const {
-    return true;
 }
 
 

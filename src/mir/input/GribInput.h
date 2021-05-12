@@ -10,14 +10,12 @@
  */
 
 
-#ifndef mir_input_GribInput_h
-#define mir_input_GribInput_h
-
-#include "eckit/thread/Mutex.h"
+#pragma once
 
 #include "mir/input/MIRInput.h"
 #include "mir/param/CachedParametrisation.h"
 #include "mir/param/FieldParametrisation.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -28,7 +26,7 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
 public:
     GribInput();
 
-    virtual ~GribInput();
+    ~GribInput() override;
 
     // For debugging only
     void marsRequest(std::ostream&) const;
@@ -41,7 +39,8 @@ private:
 
     param::CachedParametrisation cache_;
 
-    mutable eckit::Mutex mutex_;
+    mutable util::recursive_mutex mutex_;
+
     grib_handle* grib_;
 
     // For unstructured grids
@@ -55,37 +54,34 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    virtual const param::MIRParametrisation& parametrisation(size_t which) const;
-    virtual data::MIRField field() const;
-    virtual grib_handle* gribHandle(size_t which = 0) const;
-    virtual void setAuxiliaryInformation(const std::string&);
-    virtual bool only(size_t paramId);
-    virtual size_t dimensions() const;
+    const param::MIRParametrisation& parametrisation(size_t which) const override;
+    data::MIRField field() const override;
+    grib_handle* gribHandle(size_t which = 0) const override;
+    void setAuxiliaryInformation(const std::string&) override;
+    bool only(size_t paramId) override;
+    size_t dimensions() const override;
 
     /// From MIRParametrisation
-    virtual bool has(const std::string& name) const;
+    bool has(const std::string& name) const override;
 
-    virtual bool get(const std::string& name, std::string& value) const;
-    virtual bool get(const std::string& name, bool& value) const;
-    virtual bool get(const std::string& name, int& value) const;
-    virtual bool get(const std::string& name, long& value) const;
-    virtual bool get(const std::string& name, float& value) const;
-    virtual bool get(const std::string& name, double& value) const;
+    bool get(const std::string& name, std::string& value) const override;
+    bool get(const std::string& name, bool& value) const override;
+    bool get(const std::string& name, int& value) const override;
+    bool get(const std::string& name, long& value) const override;
+    bool get(const std::string& name, float& value) const override;
+    bool get(const std::string& name, double& value) const override;
 
-    virtual bool get(const std::string& name, std::vector<int>& value) const;
-    virtual bool get(const std::string& name, std::vector<long>& value) const;
-    virtual bool get(const std::string& name, std::vector<float>& value) const;
-    virtual bool get(const std::string& name, std::vector<double>& value) const;
-    virtual bool get(const std::string& name, std::vector<std::string>& value) const;
+    bool get(const std::string& name, std::vector<int>& value) const override;
+    bool get(const std::string& name, std::vector<long>& value) const override;
+    bool get(const std::string& name, std::vector<float>& value) const override;
+    bool get(const std::string& name, std::vector<double>& value) const override;
+    bool get(const std::string& name, std::vector<std::string>& value) const override;
 
     // From FieldParametrisation
-    virtual void latitudes(std::vector<double>&) const;
-    virtual void longitudes(std::vector<double>&) const;
+    void latitudes(std::vector<double>&) const override;
+    void longitudes(std::vector<double>&) const override;
 };
 
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

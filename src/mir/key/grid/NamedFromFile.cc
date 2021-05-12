@@ -12,11 +12,11 @@
 
 #include "mir/key/grid/NamedFromFile.h"
 
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
 
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -27,9 +27,6 @@ namespace grid {
 NamedFromFile::NamedFromFile(const std::string& name) : NamedGrid(name) {}
 
 
-NamedFromFile::~NamedFromFile() = default;
-
-
 void NamedFromFile::print(std::ostream& out) const {
     out << "NamedFromFile[key=" << key_ << ",parametrisation=";
     SimpleParametrisation::print(out);
@@ -38,12 +35,8 @@ void NamedFromFile::print(std::ostream& out) const {
 
 
 size_t NamedFromFile::gaussianNumber() const {
-    long N = 64;
-    if (!get("gaussianNumber", N)) {
-        eckit::Log::warning() << "NamedFromFile::gaussianNumber: didn't find key 'gaussianNumber', setting N=" << N
-                              << " (hardcoded!)" << std::endl;
-    }
-    return size_t(N);
+    long N;
+    return SimpleParametrisation::get("gaussianNumber", N) && N > 0 ? size_t(N) : default_gaussian_number();
 }
 
 

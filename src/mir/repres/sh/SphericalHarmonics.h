@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_sh_SphericalHarmonics_h
-#define mir_repres_sh_SphericalHarmonics_h
+#pragma once
 
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
@@ -31,16 +30,18 @@ public:
 
     SphericalHarmonics(const param::MIRParametrisation&);
     SphericalHarmonics(size_t truncation);
+    SphericalHarmonics(const SphericalHarmonics&) = delete;
 
     // -- Destructor
 
-    virtual ~SphericalHarmonics();
+    ~SphericalHarmonics() override;
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    SphericalHarmonics& operator=(const SphericalHarmonics&) = delete;
 
     // -- Methods
 
@@ -53,7 +54,7 @@ public:
 
     // -- Overridden methods
 
-    util::Domain domain() const { return util::Domain(); }
+    util::Domain domain() const override { return util::Domain(); }
 
     // -- Class members
     // None
@@ -67,7 +68,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -79,11 +80,6 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    SphericalHarmonics(const SphericalHarmonics&);
-    SphericalHarmonics& operator=(const SphericalHarmonics&);
-
     // -- Members
 
     size_t truncation_;
@@ -91,29 +87,26 @@ private:
     // -- Methods
     // None
 
-
     // -- Overridden methods
 
-    virtual void fill(grib_info&) const;
-    virtual void fill(api::MIRJob&) const;
-    virtual void estimate(api::MIREstimation&) const;
-    virtual std::string factory() const;
+    void fill(grib_info&) const override;
+    void fill(api::MIRJob&) const override;
+    void estimate(api::MIREstimation&) const override;
+    std::string factory() const override;
 
-    virtual const Representation* truncate(size_t truncation, const MIRValuesVector&, MIRValuesVector&) const;
-    virtual size_t truncation() const;
+    const Representation* truncate(size_t truncation, const MIRValuesVector&, MIRValuesVector&) const override;
+    size_t truncation() const override;
 
-    virtual void comparison(std::string&) const;
+    void comparison(std::string&) const override;
 
-    virtual void validate(const MIRValuesVector&) const;
+    void validate(const MIRValuesVector&) const override;
 
-    virtual void setComplexPacking(grib_info&) const;
-    virtual void setSimplePacking(grib_info&) const;
-    virtual void makeName(std::ostream&) const;
-    virtual bool sameAs(const Representation& other) const;
+    void makeName(std::ostream&) const override;
+    bool sameAs(const Representation&) const override;
 
-    bool isPeriodicWestEast() const;
-    bool includesNorthPole() const;
-    bool includesSouthPole() const;
+    bool isPeriodicWestEast() const override;
+    bool includesNorthPole() const override;
+    bool includesSouthPole() const override;
 
     // -- Class members
     // None
@@ -122,15 +115,10 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const SphericalHarmonics& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace sh
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

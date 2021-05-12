@@ -10,14 +10,11 @@
  */
 
 
-#ifndef mir_input_GribFixes_h
-#define mir_input_GribFixes_h
+#pragma once
 
 #include <iosfwd>
 #include <utility>
 #include <vector>
-
-#include "eckit/thread/Mutex.h"
 
 
 namespace mir {
@@ -90,7 +87,6 @@ private:
 
     // -- Members
 
-    eckit::Mutex mutex_;
     std::vector<fix_t> fixes_;
 
     // -- Methods
@@ -118,6 +114,3 @@ private:
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

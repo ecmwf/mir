@@ -10,17 +10,11 @@
  */
 
 
-#ifndef mir_caching_InMemoryCacheBase_h
-#define mir_caching_InMemoryCacheBase_h
+#pragma once
 
 #include <string>
 
 #include "mir/caching/InMemoryCacheUsage.h"
-
-
-namespace eckit {
-class Channel;
-}
 
 
 namespace mir {
@@ -43,7 +37,6 @@ public:  // methods
 
 protected:
     void checkTotalFootprint();
-    static eckit::Channel& log();
 
 private:
     virtual InMemoryCacheUsage footprint() const                                    = 0;
@@ -54,6 +47,3 @@ private:
 
 }  // namespace caching
 }  // namespace mir
-
-
-#endif

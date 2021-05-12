@@ -15,6 +15,7 @@
 #include <ostream>
 
 #include "mir/key/grid/NamedClenshawCurtis.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -38,7 +39,13 @@ const Grid* ClenshawCurtisPattern::make(const std::string& name) const {
 }
 
 
-static ClenshawCurtisPattern pattern("^[rR][cC][cC][1-9][0-9]*$");
+std::string ClenshawCurtisPattern::canonical(const std::string& name, const param::MIRParametrisation&) const {
+    ASSERT(name.size() > 3);
+    return "RCC" + name.substr(3);
+}
+
+
+static ClenshawCurtisPattern __pattern("^[rR][cC][cC][1-9][0-9]*$");
 
 
 }  // namespace grid

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_compare_BufrField_H
-#define mir_compare_BufrField_H
+#pragma once
 
 #include <iosfwd>
 #include <map>
@@ -41,9 +40,9 @@ public:
     BufrEntry(const std::string& full, const std::vector<long>& l, const std::vector<double>& d, const std::string& s,
               int type);
 
-    void print(std::ostream& out) const;
-    void printValue(std::ostream& out) const;
-    void json(eckit::JSON& json) const;
+    void print(std::ostream&) const;
+    void printValue(std::ostream&) const;
+    void json(eckit::JSON&) const;
 
     friend eckit::JSON& operator<<(eckit::JSON& s, const BufrEntry& x) {
         x.json(s);
@@ -61,9 +60,9 @@ public:
 
     bool ignore() const { return ignore_; }
 
-    bool operator==(const BufrEntry& other) const;
-    bool operator!=(const BufrEntry& other) const;
-    bool operator<(const BufrEntry& other) const;
+    bool operator==(const BufrEntry&) const;
+    bool operator!=(const BufrEntry&) const;
+    bool operator<(const BufrEntry&) const;
 };
 
 class BufrField : public FieldBase {
@@ -72,15 +71,14 @@ public:
                        const std::vector<std::string>& ignore);
 
 public:
-    static void addOptions(std::vector<eckit::option::Option*>& options);
-    static void setOptions(const eckit::option::CmdArgs& args);
+    static void addOptions(std::vector<eckit::option::Option*>&);
+    static void setOptions(const eckit::option::CmdArgs&);
 
 private:
     BufrField(const char* buffer, size_t size, const std::string& path, off_t offset,
               const std::vector<std::string>& ignore);
-    ~BufrField();
 
-    bool operator==(const BufrField& other) const;
+    bool operator==(const BufrField&) const;
 
 
 private:
@@ -93,26 +91,23 @@ private:
     std::set<std::string> ignored_;
 
 
-    virtual void print(std::ostream& out) const;
-    virtual bool wrapped() const;
-    virtual bool less_than(const FieldBase& other) const;
-    virtual void whiteListEntries(std::ostream&) const;
-    virtual size_t differences(const FieldBase& other) const;
-    virtual std::ostream& printDifference(std::ostream&, const FieldBase& other) const;
-    virtual void compareExtra(std::ostream&, const FieldBase& other) const;
-    virtual bool same(const FieldBase& other) const;
-    virtual bool match(const FieldBase& other) const;
-    virtual std::ostream& printGrid(std::ostream&) const;
-    virtual bool match(const std::string&, const std::string&) const;
-    virtual size_t numberOfPoints() const;
-    virtual const std::string& format() const;
-    virtual bool canCompareFieldValues() const;
-    virtual void json(eckit::JSON& json) const;
+    void print(std::ostream&) const override;
+    bool wrapped() const override;
+    bool less_than(const FieldBase&) const override;
+    void whiteListEntries(std::ostream&) const override;
+    size_t differences(const FieldBase&) const override;
+    std::ostream& printDifference(std::ostream&, const FieldBase&) const override;
+    void compareExtra(std::ostream&, const FieldBase&) const override;
+    bool same(const FieldBase&) const override;
+    bool match(const FieldBase&) const override;
+    std::ostream& printGrid(std::ostream&) const override;
+    bool match(const std::string&, const std::string&) const override;
+    size_t numberOfPoints() const override;
+    const std::string& format() const override;
+    bool canCompareFieldValues() const override;
+    void json(eckit::JSON&) const override;
 };
 
 
 }  // namespace compare
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_Bitmap_h
-#define mir_util_Bitmap_h
+#pragma once
 
 #include <string>
 #include <vector>
@@ -32,7 +31,7 @@ public:
 
     // -- Destructor
 
-    ~Bitmap();  // Change to virtual if base class
+    ~Bitmap();
 
     // -- Convertors
     // None
@@ -65,7 +64,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const;
 
     // -- Overridden methods
     // None
@@ -111,6 +110,3 @@ private:
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

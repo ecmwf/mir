@@ -12,20 +12,21 @@
 
 #include "mir/action/plan/ThreadExecutor.h"
 
-#include "eckit/log/Log.h"
 #include "eckit/thread/ThreadPool.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/action/plan/ActionNode.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
 namespace action {
 
 
+static util::once_flag once;
 static eckit::ThreadPool* pool = nullptr;
-static pthread_once_t once     = PTHREAD_ONCE_INIT;
 static void init() {
     pool = new eckit::ThreadPool("executor", 2);
 }
@@ -36,10 +37,10 @@ class ThreadExecutorTask : public eckit::ThreadPoolTask {
     context::Context ctx_;  // Not a reference, so we have a copy
     const ActionNode& node_;
 
-    virtual void execute() {
-        eckit::Log::info() << "===> Execute " << node_ << std::endl;
+    void execute() override {
+        Log::info() << "===> Execute " << node_ << std::endl;
         node_.execute(ctx_, owner_);
-        eckit::Log::info() << "<=== Done " << node_ << std::endl;
+        Log::info() << "<=== Done " << node_ << std::endl;
     }
 
 public:
@@ -54,28 +55,25 @@ public:
 ThreadExecutor::ThreadExecutor(const std::string& name) : Executor(name) {}
 
 
-ThreadExecutor::~ThreadExecutor() = default;
-
-
 void ThreadExecutor::print(std::ostream& out) const {
     out << "ThreadExecutor[]";
 }
 
 
 void ThreadExecutor::wait() const {
-    pthread_once(&once, init);
+    util::call_once(once, init);
     pool->wait();
 }
 
 
 void ThreadExecutor::execute(context::Context& ctx, const ActionNode& node) const {
-    pthread_once(&once, init);
+    util::call_once(once, init);
     pool->push(new ThreadExecutorTask(*this, ctx, node));
 }
 
 
 void ThreadExecutor::parametrisation(const param::MIRParametrisation& parametrisation) {
-    pthread_once(&once, init);
+    util::call_once(once, init);
     size_t threads;
     if (parametrisation.get("executor.threads", threads)) {
         pool->resize(threads);

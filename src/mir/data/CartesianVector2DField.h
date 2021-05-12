@@ -10,12 +10,11 @@
  */
 
 
-#ifndef mir_data_CartesianVector2DField_h
-#define mir_data_CartesianVector2DField_h
+#pragma once
 
 #include <iosfwd>
 
-#include "mir/data/MIRValuesVector.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -72,7 +71,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const;
 
     // -- Overridden methods
     // None
@@ -114,6 +113,3 @@ private:
 
 }  // namespace data
 }  // namespace mir
-
-
-#endif

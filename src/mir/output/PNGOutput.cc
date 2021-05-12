@@ -24,23 +24,21 @@
 #include "png.h"
 
 #include "eckit/config/Resource.h"
-#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
-#include "eckit/log/ResourceUsage.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
-#include "eckit/thread/Once.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/action/io/Save.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/api/Atlas.h"
-#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/LatLon.h"
+#include "mir/util/Atlas.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Mutex.h"
+#include "mir/util/Trace.h"
 
 
 namespace mir {
@@ -48,8 +46,8 @@ namespace output {
 
 void call_zero(int bad, const std::string& msg) {
     if (bad != 0) {
-        eckit::Log::error() << "PNGOutput: " << msg << " failed" << std::endl;
-        throw eckit::SeriousBug(msg);
+        Log::error() << "PNGOutput: " << msg << " failed" << std::endl;
+        throw exception::SeriousBug(msg);
     }
 }
 
@@ -78,7 +76,7 @@ size_t PNGOutput::copy(const param::MIRParametrisation&, context::Context&) {
 }
 
 size_t PNGOutput::save(const param::MIRParametrisation& param, context::Context& ctx) {
-    eckit::TraceResourceUsage<LibMir> usage("PNGOutput::save");
+    trace::ResourceUsage usage("PNGOutput::save");
     auto timing(ctx.statistics().saveTimer());
 
     const auto& field = ctx.field();
@@ -88,7 +86,7 @@ size_t PNGOutput::save(const param::MIRParametrisation& param, context::Context&
 
     atlas::RegularGrid grid(rep->atlasGrid());
     if (!grid) {
-        throw eckit::UserError("PNGOutput: field should be on a regular grid");
+        throw exception::UserError("PNGOutput: field should be on a regular grid");
     }
     auto Ni = size_t(grid.nx());
     auto Nj = size_t(grid.ny());
@@ -110,7 +108,7 @@ size_t PNGOutput::save(const param::MIRParametrisation& param, context::Context&
             path = name.str();
         }
 
-        eckit::Log::debug<LibMir>() << "PNGOutput: writing to '" + path.asString() + "'" << std::endl;
+        Log::debug() << "PNGOutput: writing to '" + path.asString() + "'" << std::endl;
 
         // initialize
         FILE* fp;
@@ -191,21 +189,21 @@ void PNGOutput::print(std::ostream& out) const {
 
 static MIROutputBuilder<PNGOutput> output1("png", {".png"});
 
-static pthread_once_t once                          = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex                    = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex           = nullptr;
 static std::map<std::string, PNGEncoderFactory*>* m = nullptr;
 
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, PNGEncoderFactory*>();
 }
 
 PNGEncoderFactory::PNGEncoderFactory(const std::string& name) : name_(name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("PNGEncoderFactory: duplicate '" + name + "'");
+        throw exception::SeriousBug("PNGEncoderFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -216,8 +214,8 @@ PNGEncoderFactory::~PNGEncoderFactory() = default;
 
 const PNGOutput::PNGEncoder* PNGEncoderFactory::build(const param::MIRParametrisation& param,
                                                       const data::MIRField& field) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     std::string name;
     param.get("png-output-encoder", name = "8-bit/g");
@@ -226,20 +224,20 @@ const PNGOutput::PNGEncoder* PNGEncoderFactory::build(const param::MIRParametris
         name += 'a';
     }
 
-    eckit::Log::debug<LibMir>() << "PNGEncoderFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "PNGEncoderFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "PNGEncoderFactory: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("PNGEncoderFactory: unknown '" + name + "'");
+        list(Log::error() << "PNGEncoderFactory: unknown '" << name << "', choices are: ");
+        throw exception::SeriousBug("PNGEncoderFactory: unknown '" + name + "'");
     }
 
     return j->second->make(param, field);
 }
 
 void PNGEncoderFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {
@@ -287,10 +285,10 @@ struct PNGEncoderT : PNGOutput::PNGEncoder {
         maxEncode_ = (UINT_T(1) << N_C_CHANNELS * N_BYTES_PER_CHANNEL * 8) - 1;
         maxScale_  = double(maxEncode_) / (max_ - min_);
 
-        eckit::Log::debug<LibMir>() << "PNGEncoder: min/max = " << min_ << " / " << max_ << std::endl;
+        Log::debug() << "PNGEncoder: min/max = " << min_ << " / " << max_ << std::endl;
     }
 
-    void encode(png_bytep& p, const double& value) const {
+    void encode(png_bytep& p, const double& value) const override {
         if (hasMissing_ && value == missingValue_) {
             // set both colour and alpha channels
             for (int i = 0; i < (N_C_CHANNELS + N_A_CHANNELS) * N_BYTES_PER_CHANNEL; ++i) {
@@ -315,12 +313,12 @@ struct PNGEncoderT : PNGOutput::PNGEncoder {
         }
     }
 
-    int bit_depth() const { return N_BYTES_PER_CHANNEL * 8; }
+    int bit_depth() const override { return N_BYTES_PER_CHANNEL * 8; }
 
-    int color_type() const {
-        return N_C_CHANNELS == 1
-                   ? (N_A_CHANNELS != 0 ? PNG_COLOR_TYPE_GRAY_ALPHA : PNG_COLOR_TYPE_GRAY)
-                   : N_C_CHANNELS == 3 ? (N_A_CHANNELS != 0 ? PNG_COLOR_TYPE_RGB_ALPHA : PNG_COLOR_TYPE_RGB) : NOTIMP;
+    int color_type() const override {
+        return N_C_CHANNELS == 1   ? (N_A_CHANNELS != 0 ? PNG_COLOR_TYPE_GRAY_ALPHA : PNG_COLOR_TYPE_GRAY)
+               : N_C_CHANNELS == 3 ? (N_A_CHANNELS != 0 ? PNG_COLOR_TYPE_RGB_ALPHA : PNG_COLOR_TYPE_RGB)
+                                   : NOTIMP;
     }
 
 private:

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_gauss_regular_RegularGG_h
-#define mir_repres_gauss_regular_RegularGG_h
+#pragma once
 
 #include "mir/repres/gauss/regular/Regular.h"
 
@@ -34,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~RegularGG();
+    ~RegularGG() override;
 
     // -- Convertors
     // None
@@ -59,7 +58,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -79,13 +78,13 @@ private:
 
     // -- Overridden methods
 
-    virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const;
-    virtual bool sameAs(const Representation&) const;
-    virtual Iterator* iterator() const;
-    virtual std::string factory() const;
+    const Gridded* croppedRepresentation(const util::BoundingBox&) const override;
+    bool sameAs(const Representation&) const override;
+    Iterator* iterator() const override;
+    std::string factory() const override;
 
     // From Representation
-    std::vector<util::GridBox> gridBoxes() const;
+    std::vector<util::GridBox> gridBoxes() const override;
 
     // -- Class members
     // None
@@ -94,9 +93,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const RegularGG& p)
-    // { p.print(s); return s; }
+    // None
 };
 
 
@@ -104,6 +101,3 @@ private:
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

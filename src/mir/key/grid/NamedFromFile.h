@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_grid_NamedFromFile_h
-#define mir_key_grid_NamedFromFile_h
+#pragma once
 
 #include "mir/key/grid/NamedGrid.h"
 #include "mir/param/SimpleParametrisation.h"
@@ -30,16 +29,17 @@ public:
     // -- Constructors
 
     NamedFromFile(const std::string& name);
+    NamedFromFile(const NamedFromFile&) = delete;
 
     // -- Destructor
-
-    virtual ~NamedFromFile();
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
 
+    NamedFromFile& operator=(const NamedFromFile&) = delete;
 
     // -- Methods
     // None
@@ -62,10 +62,10 @@ protected:
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const;
-    virtual size_t gaussianNumber() const;
-    virtual const repres::Representation* representation() const;
-    virtual const repres::Representation* representation(const util::Rotation&) const;
+    void print(std::ostream&) const override;
+    size_t gaussianNumber() const override;
+    const repres::Representation* representation() const override;
+    const repres::Representation* representation(const util::Rotation&) const override;
 
     // -- Class members
     // None
@@ -97,6 +97,3 @@ private:
 }  // namespace grid
 }  // namespace key
 }  // namespace mir
-
-
-#endif

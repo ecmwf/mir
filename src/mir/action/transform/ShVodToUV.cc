@@ -13,19 +13,16 @@
 #include "mir/action/transform/ShVodToUV.h"
 
 #include <complex>
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
+#include <ostream>
+#include <sstream>
 
 #include "atlas/trans/VorDivToUV.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/api/Atlas.h"
-#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Wind.h"
 
@@ -45,8 +42,8 @@ ShVodToUV::ShVodToUV(const param::MIRParametrisation& parametrisation) : Action(
         std::ostringstream msg;
         msg << "ShVodToUV: Atlas/Trans spectral transforms type '" << type << "' not supported, available types are: ";
         atlas::trans::Trans::listBackends(msg);
-        eckit::Log::error() << msg.str() << std::endl;
-        throw eckit::UserError(msg.str());
+        Log::error() << msg.str() << std::endl;
+        throw exception::UserError(msg.str());
     }
 
     options_.set(atlas::option::type(type));
@@ -85,12 +82,12 @@ void ShVodToUV::execute(context::Context& ctx) const {
     const MIRValuesVector& field_vo = field.values(0);
     const MIRValuesVector& field_d  = field.values(1);
 
-    eckit::Log::debug<LibMir>() << "ShVodToUV truncation=" << truncation << ", size=" << size
-                                << ", values=" << field_vo.size() << std::endl;
+    Log::debug() << "ShVodToUV truncation=" << truncation << ", size=" << size << ", values=" << field_vo.size()
+                 << std::endl;
 
     if (field_vo.size() != field_d.size()) {
-        eckit::Log::error() << "ShVodToUV: input fields have different truncation: " << field_vo.size() << "/"
-                            << field_d.size() << std::endl;
+        Log::error() << "ShVodToUV: input fields have different truncation: " << field_vo.size() << "/"
+                     << field_d.size() << std::endl;
         ASSERT(field_vo.size() == field_d.size());
     }
 

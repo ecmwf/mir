@@ -12,14 +12,16 @@
 
 #include "mir/tools/MIRTool.h"
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/system/Library.h"
+#include "eckit/system/LibraryManager.h"
 
-#include "mir/api/Atlas.h"
-#include "mir/api/mir_config.h"
+#include "mir/util/Atlas.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
+#include "mir/util/Log.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -44,21 +46,21 @@ MIRTool::MIRTool(int argc, char** argv) : eckit::Tool(argc, argv, "MIR_HOME") {
 
 void MIRTool::run() {
 
+    constexpr size_t sha1len = 8;
     eckit::option::CmdArgs args(&mir::tools::usage, options_, numberOfPositionalArguments(),
                                 minimumPositionalArguments());
 
     if (args.has("version")) {
-        auto& log = eckit::Log::info();
+        using eckit::system::LibraryManager;
 
-        using eckit::system::Library;
-        for (const auto& lib_name : Library::list()) {
-            auto& lib = Library::lookup(lib_name);
-            log << lib.name() << " " << lib.version() << " git-sha1:" << lib.gitsha1(8) << " home:" << lib.libraryHome()
-                << std::endl;
+        for (const auto& lib_name : LibraryManager::list()) {
+            auto& lib = LibraryManager::lookup(lib_name);
+            Log::info() << lib.name() << " " << lib.version() << " git-sha1:" << lib.gitsha1(sha1len)
+                        << " home:" << lib.libraryHome() << std::endl;
         }
 
-        log << "eccodes " << ECCODES_VERSION_STR << " git-sha1:" << std::string(codes_get_git_sha1()).substr(0, 8)
-            << std::endl;
+        Log::info() << "eccodes " << ECCODES_VERSION_STR
+                    << " git-sha1:" << std::string(codes_get_git_sha1()).substr(0, sha1len) << std::endl;
     }
 
     init(args);

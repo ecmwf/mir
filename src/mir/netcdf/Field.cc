@@ -12,13 +12,15 @@
 
 #include "mir/netcdf/Field.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/parser/YAMLParser.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/netcdf/GridSpec.h"
 #include "mir/netcdf/Variable.h"
+#include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -38,7 +40,7 @@ const GridSpec& Field::gridSpec() const {
     if (!gridSpec_) {
         // TODO: may need a mutex
         gridSpec_.reset(GridSpec::create(variable_));
-        eckit::Log::info() << *gridSpec_ << std::endl;
+        Log::info() << *gridSpec_ << std::endl;
     }
     return *gridSpec_;
 }
@@ -71,8 +73,10 @@ bool Field::has(const std::string& name) const {
 
 
 bool Field::get(const std::string& name, long& value) const {
+    constexpr long MISSING = 255;
+
     if (name == "paramId") {
-        value = 255;
+        value = MISSING;
         return true;
     }
     return gridSpec().get(name, value);
@@ -99,22 +103,21 @@ void Field::print(std::ostream& out) const {
 }
 
 
-static pthread_once_t once = PTHREAD_ONCE_INIT;
+static util::once_flag once;
 static eckit::Value standard_names;
 
 
 static void init() {
     standard_names = eckit::YAMLParser::decodeFile("~mir/etc/mir/netcdf.yaml");
-    standard_names.dump(eckit::Log::info()) << std::endl;
+    standard_names.dump(Log::info()) << std::endl;
 }
 
 
 void Field::setMetadata(data::MIRField& mirField, size_t which) const {
-
-    pthread_once(&once, init);
+    util::call_once(once, init);
 
     eckit::Value s = standard_names[standardName_];
-    eckit::Log::info() << "NETCDF " << standardName_ << " => " << s << " " << s.isMap() << std::endl;
+    Log::info() << "NETCDF " << standardName_ << " => " << s << " " << s.isMap() << std::endl;
 
     if (s.isMap()) {
         eckit::ValueMap m = s;
@@ -123,8 +126,7 @@ void Field::setMetadata(data::MIRField& mirField, size_t which) const {
         }
     }
     else {
-        eckit::Log::warning() << "No mapping for NetCDF standard name [" << standardName_ << "] " << variable_
-                              << std::endl;
+        Log::warning() << "No mapping for NetCDF standard name [" << standardName_ << "] " << variable_ << std::endl;
     }
 }
 

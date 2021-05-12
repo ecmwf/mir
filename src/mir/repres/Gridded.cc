@@ -33,21 +33,6 @@ Gridded::~Gridded() = default;
 Gridded::Gridded() = default;
 
 
-void Gridded::setComplexPacking(grib_info& info) const {
-    info.packing.packing_type = CODES_UTIL_PACKING_TYPE_GRID_COMPLEX;
-}
-
-
-void Gridded::setSimplePacking(grib_info& info) const {
-    info.packing.packing_type = CODES_UTIL_PACKING_TYPE_GRID_SIMPLE;
-}
-
-
-void Gridded::setGivenPacking(grib_info&) const {
-    // The packing_type is set by the caller
-}
-
-
 util::Domain Gridded::domain() const {
     const Latitude& n  = includesNorthPole() ? Latitude::NORTH_POLE : bbox_.north();
     const Latitude& s  = includesSouthPole() ? Latitude::SOUTH_POLE : bbox_.south();

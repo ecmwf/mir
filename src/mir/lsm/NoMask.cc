@@ -12,9 +12,9 @@
 
 #include "mir/lsm/NoMask.h"
 
-#include <iostream>
+#include <ostream>
 
-#include "eckit/exception/Exceptions.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

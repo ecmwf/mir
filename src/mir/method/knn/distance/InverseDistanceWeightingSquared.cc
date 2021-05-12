@@ -12,8 +12,11 @@
 
 #include "mir/method/knn/distance/InverseDistanceWeightingSquared.h"
 
-#include "eckit/exception/Exceptions.h"
+#include <sstream>
+
 #include "eckit/utils/MD5.h"
+
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

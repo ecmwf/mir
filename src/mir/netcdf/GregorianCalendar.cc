@@ -12,10 +12,11 @@
 
 #include "mir/netcdf/GregorianCalendar.h"
 
+#include <netcdf.h>
+
 #include <algorithm>
 #include <ostream>
-
-#include <netcdf.h>
+#include <sstream>
 
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/OutputAttribute.h"
@@ -31,7 +32,7 @@ static long long offset = 0;
 
 
 static eckit::DateTime reference(const std::string& /*units*/) {
-    // eckit::Log::info() << "===== " << units << std::endl;
+    // Log::info() << "===== " << units << std::endl;
     return eckit::DateTime();
 }
 
@@ -45,7 +46,8 @@ GregorianCalendar::GregorianCalendar(const Variable& variable) :
     auto reference_time = static_cast<long long>(eckit::Second(reference_.time()));
     auto reference_date = static_cast<long long>(reference_.date().julian());
 
-    offset_ = reference_date * 24 * 60 * 60 + reference_time;
+    constexpr long long DAY_IN_SECONDS = 24 * 60 * 60;
+    offset_                            = reference_date * DAY_IN_SECONDS + reference_time;
     if (offset == 0) {  // Not thread safe
         offset = offset_;
     }
@@ -152,7 +154,7 @@ void GregorianCalendar::addAttributes(Variable& v) const {
 
 
 void GregorianCalendar::updateAttributes(int nc, int varid, const std::string& path) {
-    std::stringstream s;
+    std::ostringstream s;
     eckit::DateTime dt = reference_ + eckit::Second(zero_);
     s << "seconds since " << dt.date() << " " << dt.time();
     std::string value = s.str();

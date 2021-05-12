@@ -14,7 +14,7 @@
 
 #include <sstream>
 
-#include "eckit/exception/Exceptions.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -33,7 +33,7 @@ bool GeoPointsOutput::once() {
     if (!once_) {
         std::ostringstream oss;
         oss << "GeoPointsOutput: attempt to write more than once to " << *this;
-        throw eckit::SeriousBug(oss.str());
+        throw exception::SeriousBug(oss.str());
     }
 
     once_ = false;

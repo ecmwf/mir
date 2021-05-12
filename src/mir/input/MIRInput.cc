@@ -14,16 +14,16 @@
 
 #include <cstdio>
 #include <iomanip>
+#include <sstream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/io/StdFile.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/input/ArtificialInput.h"
 #include "mir/input/GribFileInput.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
+#include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -41,7 +41,9 @@ grib_handle* MIRInput::gribHandle(size_t) const {
     static grib_handle* handle = nullptr;
     if (handle == nullptr) {
         handle = codes_grib_handle_new_from_samples(nullptr, "GRIB1");
-        codes_set_long(handle, "paramId", 255);
+
+        constexpr long MISSING = 255;
+        codes_set_long(handle, "paramId", MISSING);
         ASSERT(handle);
     }
     return handle;
@@ -51,55 +53,55 @@ grib_handle* MIRInput::gribHandle(size_t) const {
 void MIRInput::setAuxiliaryInformation(const std::string&) {
     std::ostringstream os;
     os << "MIRInput::setAuxiliaryInformation() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 bool MIRInput::next() {
     std::ostringstream os;
     os << "MIRInput::next() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 bool MIRInput::only(size_t) {
     std::ostringstream os;
     os << "MIRInput::only() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 size_t MIRInput::copy(double*, size_t) const {
     std::ostringstream os;
     os << "MIRInput::copy() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 size_t MIRInput::dimensions() const {
     std::ostringstream os;
     os << "MIRInput::dimensions() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
-static pthread_once_t once                          = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex                    = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex           = nullptr;
 static std::map<unsigned long, MIRInputFactory*>* m = nullptr;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<unsigned long, MIRInputFactory*>();
 }
 
 
 MIRInputFactory::MIRInputFactory(unsigned long magic) : magic_(magic) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (m->find(magic) != m->end()) {
         std::ostringstream oss;
         oss << "MIRInputFactory: duplicate '" << std::hex << magic << "'";
-        throw eckit::SeriousBug(oss.str());
+        throw exception::SeriousBug(oss.str());
     }
 
     (*m)[magic] = this;
@@ -107,7 +109,7 @@ MIRInputFactory::MIRInputFactory(unsigned long magic) : magic_(magic) {
 
 
 MIRInputFactory::~MIRInputFactory() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     m->erase(magic_);
 }
@@ -131,8 +133,8 @@ static void put(std::ostream& out, unsigned long magic) {
 
 
 MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParametrisation& parametrisation) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const param::MIRParametrisation& user = parametrisation.userParametrisation();
 
@@ -169,14 +171,14 @@ MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParame
 
     std::ostringstream oss;
     oss << "0x" << std::hex << magic << std::dec << " (" << smagic << ")";
-    eckit::Log::debug<LibMir>() << "MIRInputFactory: looking for '" << oss.str() << "'" << std::endl;
+    Log::debug() << "MIRInputFactory: looking for '" << oss.str() << "'" << std::endl;
 
     auto j = m->find(magic);
     if (j == m->end()) {
-        list(eckit::Log::warning() << "MIRInputFactory: unknown '" << oss.str() << "', choices are: ");
-        eckit::Log::warning() << std::endl;
+        list(Log::warning() << "MIRInputFactory: unknown '" << oss.str() << "', choices are: ");
+        Log::warning() << std::endl;
 
-        eckit::Log::warning() << "MIRInputFactory: assuming 'GRIB'" << std::endl;
+        Log::warning() << "MIRInputFactory: assuming 'GRIB'" << std::endl;
         return aux(new GribFileInput(path));
     }
 
@@ -185,8 +187,8 @@ MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParame
 
 
 void MIRInputFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_interpolate_Gridded2RotatedOctahedralGG_h
-#define mir_action_interpolate_Gridded2RotatedOctahedralGG_h
+#pragma once
 
 #include "mir/action/interpolate/Gridded2RotatedGrid.h"
 
@@ -32,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gridded2RotatedOctahedralGG();
+    ~Gridded2RotatedOctahedralGG() override;
 
     // -- Convertors
     // None
@@ -62,10 +61,10 @@ protected:
     // -- Overridden methods
 
     // From Gridded2GriddedInterpolation
-    virtual void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
     // From Gridded2RotatedGrid
-    virtual bool sameAs(const Action&) const;
+    bool sameAs(const Action&) const override;
 
     // -- Class members
     // None
@@ -84,10 +83,10 @@ private:
     // -- Overridden methods
 
     // From Action
-    virtual const char* name() const;
+    const char* name() const override;
 
     // From Gridded2GriddedInterpolation
-    virtual const repres::Representation* outputRepresentation() const;
+    const repres::Representation* outputRepresentation() const override;
 
     // -- Class members
     // None
@@ -103,6 +102,3 @@ private:
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-
-
-#endif

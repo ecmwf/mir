@@ -10,11 +10,9 @@
  */
 
 
-#ifndef mir_repres_gauss_Gaussian_h
-#define mir_repres_gauss_Gaussian_h
+#pragma once
 
 #include "mir/repres/Gridded.h"
-#include "mir/repres/gauss/GaussianIterator.h"
 #include "mir/util/BoundingBox.h"
 
 
@@ -34,7 +32,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gaussian();  // Change to virtual if base class
+    ~Gaussian() override;
 
     // -- Convertors
     // None
@@ -78,21 +76,18 @@ protected:
 
     void correctSouthNorth(Latitude& s, Latitude& n, bool in = true) const;
 
-    Iterator* unrotatedIterator(gauss::GaussianIterator::ni_type) const;
-    Iterator* rotatedIterator(gauss::GaussianIterator::ni_type, const util::Rotation&) const;
-
     std::vector<double> calculateUnrotatedGridBoxLatitudeEdges() const;
 
     // -- Overridden methods
 
-    virtual void fill(util::MeshGeneratorParameters&) const;
-    virtual void fill(api::MIRJob&) const;
-    virtual bool sameAs(const Representation&) const;
-    virtual void validate(const MIRValuesVector&) const;
-    virtual bool extendBoundingBoxOnIntersect() const;
+    void fill(util::MeshGeneratorParameters&) const override;
+    void fill(api::MIRJob&) const override;
+    bool sameAs(const Representation&) const override;
+    void validate(const MIRValuesVector&) const override;
+    bool extendBoundingBoxOnIntersect() const override;
 
-    bool includesNorthPole() const;
-    bool includesSouthPole() const;
+    bool includesNorthPole() const override;
+    bool includesSouthPole() const override;
 
     // -- Class members
     // None
@@ -117,14 +112,9 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const Gaussian& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

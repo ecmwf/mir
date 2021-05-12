@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_stats_Comparator_h
-#define mir_stats_Comparator_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -128,7 +127,7 @@ public:
 
 template <class T>
 class ComparatorBuilder : public ComparatorFactory {
-    virtual Comparator* make(const param::MIRParametrisation& param1, const param::MIRParametrisation& param2) {
+    Comparator* make(const param::MIRParametrisation& param1, const param::MIRParametrisation& param2) override {
         return new T(param1, param2);
     }
 
@@ -139,6 +138,3 @@ public:
 
 }  // namespace stats
 }  // namespace mir
-
-
-#endif

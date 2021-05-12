@@ -12,11 +12,12 @@
 
 #include "mir/action/filter/GlobaliseFilter.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -56,7 +57,7 @@ void GlobaliseFilter::execute(context::Context& ctx) const {
 
     auto out = in->globalise(field);
     if (out == nullptr) {
-        eckit::Log::warning() << "Globalise has no effect" << std::endl;
+        Log::warning() << "Globalise has no effect" << std::endl;
     }
     else {
         field.representation(out);

@@ -10,10 +10,10 @@
  */
 
 
-#ifndef mir_netcdf_Remapping_h
-#define mir_netcdf_Remapping_h
+#pragma once
 
 #include "eckit/memory/Counted.h"
+
 #include "mir/netcdf/HyperCube.h"
 
 
@@ -25,7 +25,7 @@ class Remapping : public HyperCube::Remapping, public eckit::Counted {
 
 public:
     Remapping(size_t = 0);
-    virtual ~Remapping();
+    ~Remapping() override;
 
     void validate() const;
 
@@ -45,6 +45,3 @@ public:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

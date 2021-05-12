@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_FormulaParser_h
-#define mir_util_FormulaParser_h
+#pragma once
 
 #include <vector>
 
@@ -52,6 +51,3 @@ private:  // methods
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

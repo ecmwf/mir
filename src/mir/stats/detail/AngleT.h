@@ -10,17 +10,15 @@
  */
 
 
-#ifndef mir_stats_detail_AngleT_h
-#define mir_stats_detail_AngleT_h
+#pragma once
 
 #include <cmath>
 #include <complex>
 #include <limits>
 #include <ostream>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/stats/detail/CentralMomentsT.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -115,6 +113,3 @@ AngleT<double, AngleScale::RADIAN, AngleSpace::SYMMETRIC>::AngleT::AngleT();
 }  // namespace detail
 }  // namespace stats
 }  // namespace mir
-
-
-#endif

@@ -15,17 +15,15 @@
 #include <ostream>
 #include <set>
 
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
-
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
 namespace action {
 
 
-NablaFilter::NablaFilter(const param::MIRParametrisation& param) : Action(param), meshGeneratorParams_("input", param) {
+NablaFilter::NablaFilter(const param::MIRParametrisation& param) : Action(param), meshGeneratorParams_(param, "input") {
     param.get("nabla-poles-missing-values", polesMissingValues_ = false);
 }
 
@@ -43,12 +41,12 @@ void mir::action::NablaFilter::custom(std::ostream& out) const {
 }
 
 
-static pthread_once_t once       = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = nullptr;
-static std::set<std::string>* m  = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex = nullptr;
+static std::set<std::string>* m           = nullptr;
 
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::set<std::string>();
 }
 
@@ -57,16 +55,16 @@ NablaFilterFactory::~NablaFilterFactory() = default;
 
 
 NablaFilterFactory::NablaFilterFactory(const std::string& name) : ActionFactory("filter." + name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     m->insert(name);
 }
 
 
 void NablaFilterFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     auto sep = "";
     for (const auto& j : *m) {

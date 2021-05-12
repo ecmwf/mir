@@ -15,23 +15,20 @@
 #include <map>
 #include <ostream>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
-
-#include "mir/config/LibMir.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
 namespace stats {
 
 
-static eckit::Mutex* local_mutex                    = nullptr;
+static util::recursive_mutex* local_mutex           = nullptr;
 static std::map<std::string, StatisticsFactory*>* m = nullptr;
-static pthread_once_t once                          = PTHREAD_ONCE_INIT;
+static util::once_flag once;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, StatisticsFactory*>();
 }
 
@@ -43,12 +40,11 @@ Statistics::~Statistics() = default;
 
 
 StatisticsFactory::StatisticsFactory(const std::string& name) : name_(name) {
-    pthread_once(&once, init);
-
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("StatisticsFactory: duplicate '" + name + "'");
+        throw exception::SeriousBug("StatisticsFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -57,14 +53,15 @@ StatisticsFactory::StatisticsFactory(const std::string& name) : name_(name) {
 
 
 StatisticsFactory::~StatisticsFactory() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
+
     m->erase(name_);
 }
 
 
 void StatisticsFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (auto& j : *m) {
@@ -76,15 +73,15 @@ void StatisticsFactory::list(std::ostream& out) {
 
 
 Statistics* StatisticsFactory::build(const std::string& name, const param::MIRParametrisation& params) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-    eckit::Log::debug<LibMir>() << "StatisticsFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "StatisticsFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "No StatisticsFactory '" << name << "', choices are:\n");
-        throw eckit::SeriousBug("No StatisticsFactory '" + name + "'");
+        list(Log::error() << "StatisticsFactory: unknown '" << name << "', choices are:\n");
+        throw exception::SeriousBug("StatisticsFactory: unknown '" + name + "'");
     }
 
     return j->second->make(params);

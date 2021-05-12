@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_lsm_LandSeaMasks_h
-#define mir_lsm_LandSeaMasks_h
+#pragma once
 
 #include <iosfwd>
 #include <vector>
@@ -51,7 +50,7 @@ public:
 
     // -- Destructor
 
-    ~LandSeaMasks();
+    ~LandSeaMasks() = default;
 
     // -- Convertors
     // None
@@ -142,6 +141,3 @@ private:
 
 }  // namespace lsm
 }  // namespace mir
-
-
-#endif

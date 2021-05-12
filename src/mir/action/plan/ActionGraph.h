@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_plan_ActionGraph_H
-#define mir_action_plan_ActionGraph_H
+#pragma once
 
 
 #include <iosfwd>
@@ -49,16 +48,18 @@ public:
     // -- Constructors
 
     ActionGraph();
+    ActionGraph(const ActionGraph&) = delete;
 
     // -- Destructor
 
-    ~ActionGraph();  // Change to virtual if base class
+    ~ActionGraph();
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    ActionGraph& operator=(const ActionGraph&) = delete;
 
     // -- Methods
 
@@ -91,7 +92,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const;
 
     // -- Overridden methods
     // None
@@ -103,10 +104,6 @@ protected:
     // None
 
 private:
-    // No copy allowed
-    ActionGraph(const ActionGraph&);
-    ActionGraph& operator=(const ActionGraph&);
-
     // -- Members
     // None
 
@@ -133,6 +130,3 @@ private:
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

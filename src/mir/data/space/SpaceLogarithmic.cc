@@ -13,7 +13,8 @@
 #include "mir/data/space/SpaceLogarithmic.h"
 
 #include <cmath>
-#include "eckit/exception/Exceptions.h"
+
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

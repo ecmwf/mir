@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_VirtualOutputDimension_h
-#define mir_netcdf_VirtualOutputDimension_h
+#pragma once
 
 #include "mir/netcdf/Dimension.h"
 
@@ -23,7 +22,7 @@ namespace netcdf {
 class VirtualOutputDimension : public Dimension {
 public:
     VirtualOutputDimension(Dataset& owner, const std::string& name);
-    virtual ~VirtualOutputDimension();
+    ~VirtualOutputDimension() override;
 
 private:
     mutable int id_;
@@ -33,16 +32,13 @@ private:
     // -- Methods
 
     // From Dimension
-    virtual void print(std::ostream&) const;
-    virtual void create(int nc) const;
-    virtual int id() const;
-    virtual void grow(size_t);
-    virtual bool inUse() const;
+    void print(std::ostream&) const override;
+    void create(int nc) const override;
+    int id() const override;
+    void grow(size_t) override;
+    bool inUse() const override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

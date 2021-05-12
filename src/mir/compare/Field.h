@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_compare_Field_h
-#define mir_compare_Field_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -49,27 +48,27 @@ public:
     const std::string& path() const;
 
 
-    virtual bool wrapped() const                                                       = 0;
-    virtual bool less_than(const FieldBase& other) const                               = 0;
-    virtual void whiteListEntries(std::ostream&) const                                 = 0;
-    virtual size_t differences(const FieldBase& other) const                           = 0;
-    virtual std::ostream& printDifference(std::ostream&, const FieldBase& other) const = 0;
-    virtual void compareExtra(std::ostream&, const FieldBase& other) const             = 0;
-    virtual bool same(const FieldBase& other) const                                    = 0;
-    virtual bool match(const FieldBase& other) const                                   = 0;
-    virtual std::ostream& printGrid(std::ostream&) const                               = 0;
-    virtual bool match(const std::string&, const std::string&) const                   = 0;
-    virtual size_t numberOfPoints() const                                              = 0;
-    virtual const std::string& format() const                                          = 0;
-    virtual bool canCompareFieldValues() const                                         = 0;
+    virtual bool wrapped() const                                                 = 0;
+    virtual bool less_than(const FieldBase&) const                               = 0;
+    virtual void whiteListEntries(std::ostream&) const                           = 0;
+    virtual size_t differences(const FieldBase&) const                           = 0;
+    virtual std::ostream& printDifference(std::ostream&, const FieldBase&) const = 0;
+    virtual void compareExtra(std::ostream&, const FieldBase&) const             = 0;
+    virtual bool same(const FieldBase&) const                                    = 0;
+    virtual bool match(const FieldBase&) const                                   = 0;
+    virtual std::ostream& printGrid(std::ostream&) const                         = 0;
+    virtual bool match(const std::string&, const std::string&) const             = 0;
+    virtual size_t numberOfPoints() const                                        = 0;
+    virtual const std::string& format() const                                    = 0;
+    virtual bool canCompareFieldValues() const                                   = 0;
 
     static double normaliseLongitude(double longitude);
 
 protected:
     FieldInfo info_;
 
-    virtual void print(std::ostream& out) const = 0;
-    virtual void json(eckit::JSON& json) const  = 0;
+    virtual void print(std::ostream&) const = 0;
+    virtual void json(eckit::JSON&) const   = 0;
 
     friend std::ostream& operator<<(std::ostream& s, const FieldBase& x) {
         x.print(s);
@@ -86,15 +85,15 @@ protected:
 class Field {
 public:
     Field(FieldBase* field = nullptr);
-    Field(const Field& other);
+    Field(const Field&);
 
     ~Field();
 
-    Field& operator=(const Field& other);
+    Field& operator=(const Field&);
 
 
-    bool operator<(const Field& other) const;
-    bool operator==(const Field& other) const;
+    bool operator<(const Field&) const;
+    bool operator==(const Field&) const;
 
     operator bool() const;
 
@@ -103,16 +102,16 @@ public:
     const std::string& path() const;
 
 
-    bool same(const Field& other) const;
-    bool match(const Field& other) const;
+    bool same(const Field&) const;
+    bool match(const Field&) const;
 
     std::vector<Field> bestMatches(const FieldSet& fields) const;
     std::vector<Field> sortByDifference(const FieldSet& fields) const;
 
 
     void whiteListEntries(std::ostream&) const;
-    size_t differences(const Field& other) const;
-    std::ostream& printDifference(std::ostream&, const Field& other) const;
+    size_t differences(const Field&) const;
+    std::ostream& printDifference(std::ostream&, const Field&) const;
 
     std::ostream& printGrid(std::ostream&) const;
     bool match(const std::string&, const std::string&) const;
@@ -121,16 +120,16 @@ public:
     bool canCompareFieldValues() const;
 
     bool wrapped() const;
-    void compareExtra(std::ostream&, const Field& other) const;
+    void compareExtra(std::ostream&, const Field&) const;
 
 
-    static void addOptions(std::vector<eckit::option::Option*>& options);
-    static void setOptions(const eckit::option::CmdArgs& args);
+    static void addOptions(std::vector<eckit::option::Option*>&);
+    static void setOptions(const eckit::option::CmdArgs&);
 
 private:
     FieldBase* field_;
 
-    void print(std::ostream& out) const;
+    void print(std::ostream&) const;
     void json(eckit::JSON& json) const;
 
     friend std::ostream& operator<<(std::ostream& s, const Field& x) {
@@ -147,6 +146,3 @@ private:
 
 }  // namespace compare
 }  // namespace mir
-
-
-#endif

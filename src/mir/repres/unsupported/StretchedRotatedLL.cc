@@ -12,9 +12,7 @@
 
 #include "mir/repres/unsupported/StretchedRotatedLL.h"
 
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
 
 
 namespace mir {
@@ -24,24 +22,13 @@ namespace repres {
 StretchedRotatedLL::StretchedRotatedLL(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
-StretchedRotatedLL::StretchedRotatedLL() = default;
-
-
-StretchedRotatedLL::~StretchedRotatedLL() = default;
-
-
 void StretchedRotatedLL::print(std::ostream& out) const {
     out << "StretchedRotatedLL["
         << "]";
 }
 
 
-void StretchedRotatedLL::fill(grib_info& /*info*/) const {
-    NOTIMP;
-}
-
-
-static RepresentationBuilder<StretchedRotatedLL> stretchedRotatedLL("stretched_rotated_ll");
+static RepresentationBuilder<StretchedRotatedLL> __repres("stretched_rotated_ll");
 
 
 }  // namespace repres

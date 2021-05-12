@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_caching_legendre_NoLoader_h
-#define mir_caching_legendre_NoLoader_h
+#pragma once
 
 #include "mir/caching/legendre/LegendreLoader.h"
 
@@ -25,23 +24,20 @@ class NoLoader : public LegendreLoader {
 public:
     NoLoader(const param::MIRParametrisation&, const eckit::PathName& path);
 
-    ~NoLoader();  // Change to virtual if base class
+    ~NoLoader() override;
 
     static bool shared();
 
 protected:
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
 private:
-    virtual const void* address() const;
-    virtual size_t size() const;
-    virtual bool inSharedMemory() const;
+    virtual const void* address() const override;
+    virtual size_t size() const override;
+    virtual bool inSharedMemory() const override;
 };
 
 
 }  // namespace legendre
 }  // namespace caching
 }  // namespace mir
-
-
-#endif

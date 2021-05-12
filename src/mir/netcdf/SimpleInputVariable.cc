@@ -20,6 +20,8 @@
 #include "mir/netcdf/Dimension.h"
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/SimpleOutputVariable.h"
+#include "mir/util/Log.h"
+
 
 namespace mir {
 namespace netcdf {
@@ -66,8 +68,8 @@ void SimpleInputVariable::print(std::ostream& out) const {
 }
 
 void SimpleInputVariable::validate() const {
-    eckit::Log::error() << "Variable '" << name_ << "' is not data, coordinate or cell method." << std::endl;
-    // throw MergeError(std::string("Variable ") + name_ + " is not data, coordinate or cell method.");
+    Log::error() << "Variable '" << name_ << "' is not data, coordinate or cell method." << std::endl;
+    // throw exception::MergeError(std::string("Variable ") + name_ + " is not data, coordinate or cell method.");
 }
 
 Variable* SimpleInputVariable::addMissingCoordinates() {

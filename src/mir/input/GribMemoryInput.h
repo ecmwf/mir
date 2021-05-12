@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_GribMemoryInput_h
-#define mir_input_GribMemoryInput_h
+#pragma once
 
 #include "mir/input/GribInput.h"
 
@@ -31,7 +30,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GribMemoryInput();  // Change to virtual if base class
+    ~GribMemoryInput() override;
 
     // -- Convertors
     // None
@@ -76,8 +75,8 @@ private:
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const;
-    virtual bool sameAs(const MIRInput& other) const;
+    void print(std::ostream&) const override;
+    bool sameAs(const MIRInput&) const override;
 
     // -- Class members
     // None
@@ -86,14 +85,9 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const GribMemoryInput& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

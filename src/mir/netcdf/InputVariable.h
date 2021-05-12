@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_InputVariable_h
-#define mir_netcdf_InputVariable_h
+#pragma once
 
 #include "mir/netcdf/Variable.h"
 
@@ -23,7 +22,7 @@ namespace netcdf {
 class InputVariable : public Variable {
 public:
     InputVariable(Dataset& owner, const std::string& name, int id, const std::vector<Dimension*>& dimensions);
-    virtual ~InputVariable();
+    ~InputVariable() override;
 
 protected:
     // Members
@@ -35,17 +34,14 @@ protected:
                                          const std::vector<Dimension*>& dimensions) const = 0;
 
     // From variable
-    virtual void print(std::ostream&) const;
-    virtual Variable* clone(Dataset& owner) const;
+    void print(std::ostream&) const override;
+    Variable* clone(Dataset& owner) const override;
 
     // From Endowed
 
-    virtual int varid() const;
+    int varid() const override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

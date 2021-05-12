@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_plan_SimpleExecutor_h
-#define mir_action_plan_SimpleExecutor_h
+#pragma once
 
 #include <iosfwd>
 
@@ -30,16 +29,17 @@ public:
     // -- Constructors
 
     SimpleExecutor(const std::string& name);
+    SimpleExecutor(const SimpleExecutor&) = delete;
 
     // -- Destructor
-
-    ~SimpleExecutor();  // Change to virtual if base class
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    SimpleExecutor& operator=(const SimpleExecutor&) = delete;
 
     // -- Methods
     // None
@@ -59,7 +59,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -71,10 +71,6 @@ protected:
     // None
 
 private:
-    // No copy allowed
-    SimpleExecutor(const SimpleExecutor&);
-    SimpleExecutor& operator=(const SimpleExecutor&);
-
     // -- Members
     // None
 
@@ -83,9 +79,9 @@ private:
 
     // -- Overridden methods
     //
-    virtual void execute(context::Context&, const ActionNode&) const;
-    virtual void wait() const;
-    virtual void parametrisation(const param::MIRParametrisation&);
+    void execute(context::Context&, const ActionNode&) const override;
+    void wait() const override;
+    void parametrisation(const param::MIRParametrisation&) override;
 
     // -- Class members
     // None
@@ -100,6 +96,3 @@ private:
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

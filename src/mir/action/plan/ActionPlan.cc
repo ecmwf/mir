@@ -13,16 +13,16 @@
 #include "mir/action/plan/ActionPlan.h"
 
 #include <fstream>
-#include <iostream>
+#include <ostream>
 #include <sstream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/log/JSON.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/action/plan/Action.h"
-#include "mir/config/LibMir.h"
 #include "mir/param/RuntimeParametrisation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -136,17 +136,17 @@ void ActionPlan::execute(context::Context& ctx) const {
     const char* sep = "###################################################################################";
 
     for (const auto& p : *this) {
-        eckit::Log::debug<LibMir>() << "Executing:"
-                                    << "\n"
-                                    << sep << "\n"
-                                    << *p << "\n"
-                                    << sep << std::endl;
+        Log::debug() << "Executing:"
+                     << "\n"
+                     << sep << "\n"
+                     << *p << "\n"
+                     << sep << std::endl;
         p->perform(ctx);
-        eckit::Log::debug<LibMir>() << "Result:"
-                                    << "\n"
-                                    << sep << "\n"
-                                    << ctx << "\n"
-                                    << sep << std::endl;
+        Log::debug() << "Result:"
+                     << "\n"
+                     << sep << "\n"
+                     << ctx << "\n"
+                     << sep << std::endl;
     }
 
     if (!dumpStatisticsFile_.empty()) {
@@ -167,7 +167,7 @@ void ActionPlan::estimate(context::Context& ctx, api::MIREstimation& estimation)
     ASSERT(ended());
 
     for (const auto& p : *this) {
-        eckit::Log::debug<LibMir>() << "Estimate " << (*p) << std::endl;
+        Log::debug() << "Estimate " << (*p) << std::endl;
         p->estimate(ctx, estimation);
     }
 }
@@ -177,11 +177,11 @@ void ActionPlan::compress() {
 
     const char* sep = "#########";
 
-    eckit::Log::debug<LibMir>() << "Compress:"
-                                << "\n"
-                                << sep << "\n"
-                                << *this << "\n"
-                                << sep << std::endl;
+    Log::debug() << "Compress:"
+                 << "\n"
+                 << sep << "\n"
+                 << *this << "\n"
+                 << sep << std::endl;
 
     bool hasCompressed = false;
     bool more          = true;
@@ -194,9 +194,9 @@ void ActionPlan::compress() {
 
             if (action(i).mergeWithNext(action(i + 1))) {
 
-                eckit::Log::debug<LibMir>()
-                    << "ActionPlan::compress: "
-                    << "\n   " << oldAction.str() << "\n + " << action(i + 1) << "\n = " << action(i) << std::endl;
+                Log::debug() << "ActionPlan::compress: "
+                             << "\n   " << oldAction.str() << "\n + " << action(i + 1) << "\n = " << action(i)
+                             << std::endl;
 
                 delete at(i + 1);
                 erase(begin() + long(i + 1));
@@ -219,16 +219,16 @@ void ActionPlan::compress() {
     }
 
     if (hasCompressed) {
-        eckit::Log::debug<LibMir>() << "Compress result:"
-                                    << "\n"
-                                    << sep << "\n"
-                                    << *this << "\n"
-                                    << sep << std::endl;
+        Log::debug() << "Compress result:"
+                     << "\n"
+                     << sep << "\n"
+                     << *this << "\n"
+                     << sep << std::endl;
     }
     else {
-        eckit::Log::debug<LibMir>() << "Compress result: unable to compress"
-                                    << "\n"
-                                    << sep << std::endl;
+        Log::debug() << "Compress result: unable to compress"
+                     << "\n"
+                     << sep << std::endl;
     }
 }
 

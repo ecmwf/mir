@@ -12,7 +12,7 @@
 
 #include "mir/action/plan/SimpleExecutor.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/action/plan/ActionNode.h"
 
@@ -22,9 +22,6 @@ namespace action {
 
 
 SimpleExecutor::SimpleExecutor(const std::string& name) : Executor(name) {}
-
-
-SimpleExecutor::~SimpleExecutor() = default;
 
 
 void SimpleExecutor::print(std::ostream& out) const {

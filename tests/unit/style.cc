@@ -16,12 +16,12 @@
 #include <string>
 #include <vector>
 
-#include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/action/calc/FormulaAction.h"
 #include "mir/action/plan/Action.h"
 #include "mir/action/plan/ActionPlan.h"
+#include "mir/api/mir_config.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
 #include "mir/key/style/MIRStyle.h"
@@ -29,6 +29,7 @@
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/util/Log.h"
 
 // define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
 
@@ -76,7 +77,7 @@ struct TestingOutput : InputOutput {
 
 CASE("ECMWFStyle") {
 
-    eckit::Log::info() << std::boolalpha;
+    Log::info() << std::boolalpha;
     static const param::DefaultParametrisation defaults;
 
     std::vector<bool> _no_yes{false, true};
@@ -107,7 +108,11 @@ CASE("ECMWFStyle") {
         const action::FormulaAction CORRECT_ACTION(p4);
 
 
+#if defined(mir_HAVE_ATLAS)
         for (bool input_gridded : _yes_no) {
+#else
+        for (bool input_gridded : {true}) {
+#endif
             TestingInput in(input_gridded);
 
             for (bool output_gridded : _yes_no) {
@@ -124,9 +129,9 @@ CASE("ECMWFStyle") {
 
                     // test correct user formula.<when> and formula.<when>.metadata, then
                     // test extra, inconsistent formula.<when>.metadata options
-                    bool plan_should_have_formula =
-                        when == "gridded" ? (input_gridded || output_gridded)
-                                          : when == "spectral" ? (!input_gridded || !output_gridded) : true;
+                    bool plan_should_have_formula = when == "gridded"    ? (input_gridded || output_gridded)
+                                                    : when == "spectral" ? (!input_gridded || !output_gridded)
+                                                                         : true;
 
                     for (bool addWrongArguments : _no_yes) {
                         if (addWrongArguments) {
@@ -157,23 +162,23 @@ CASE("ECMWFStyle") {
                                                        plan_has_action(plan, WRONG_ACTION_3);
 
                         static size_t c = 1;
-                        eckit::Log::info() << "Test " << c++ << ":"
-                                           << "\n\t"
-                                              "formula."
-                                           << when << ", formula." << when << ".metadata"
-                                           << "\n\t"
-                                              "in:   "
-                                           << in
-                                           << "\n\t"
-                                              "user: "
-                                           << user
-                                           << "\n\t"
-                                              "plan: "
-                                           << plan
-                                           << "\n\t"
-                                              "has "
-                                           << when << " formula: " << plan_has_this_formula << " (should be "
-                                           << plan_should_have_formula << ")" << std::endl;
+                        Log::info() << "Test " << c++ << ":"
+                                    << "\n\t"
+                                       "formula."
+                                    << when << ", formula." << when << ".metadata"
+                                    << "\n\t"
+                                       "in:   "
+                                    << in
+                                    << "\n\t"
+                                       "user: "
+                                    << user
+                                    << "\n\t"
+                                       "plan: "
+                                    << plan
+                                    << "\n\t"
+                                       "has "
+                                    << when << " formula: " << plan_has_this_formula << " (should be "
+                                    << plan_should_have_formula << ")" << std::endl;
 
                         EXPECT(plan_has_this_formula == plan_should_have_formula);
                         EXPECT(!plan_has_wrong_formulae);

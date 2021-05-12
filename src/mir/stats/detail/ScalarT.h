@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_stats_detail_Scalar_h
-#define mir_stats_detail_Scalar_h
+#pragma once
 
 #include <ostream>
 
@@ -26,7 +25,7 @@ namespace detail {
 /// Scalar statistics (composition)
 template <typename T>
 struct ScalarT : public CentralMomentsT<T> {
-    void print(std::ostream& out) const {
+    void print(std::ostream& out) const override {
         using t = CentralMomentsT<T>;
         out << "Scalar["
                "mean="
@@ -39,6 +38,3 @@ struct ScalarT : public CentralMomentsT<T> {
 }  // namespace detail
 }  // namespace stats
 }  // namespace mir
-
-
-#endif

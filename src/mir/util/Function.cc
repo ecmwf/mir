@@ -12,30 +12,30 @@
 
 #include "mir/util/Function.h"
 
-#include <iostream>
 #include <map>
+#include <ostream>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
 namespace util {
 
 
-static eckit::Mutex* local_mutex           = nullptr;
+static util::recursive_mutex* local_mutex  = nullptr;
 static std::map<std::string, Function*>* m = nullptr;
-static pthread_once_t once                 = PTHREAD_ONCE_INIT;
+static util::once_flag once;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, Function*>();
 }
 
 
 Function::Function(const std::string& name) : name_(name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(name) == m->end());
     (*m)[name] = this;
@@ -43,20 +43,20 @@ Function::Function(const std::string& name) : name_(name) {
 
 
 Function::~Function() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     m->erase(name_);
 }
 
 
 const Function& Function::lookup(const std::string& name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "Function: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("Function: unknown '" + name + "'");
+        list(Log::error() << "Function: unknown '" << name << "', choices are: ");
+        throw exception::SeriousBug("Function: unknown '" + name + "'");
     }
 
     return *(j->second);
@@ -64,8 +64,8 @@ const Function& Function::lookup(const std::string& name) {
 
 
 void Function::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     auto sep = "";
     for (auto& j : *m) {

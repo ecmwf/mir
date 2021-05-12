@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_io_Copy_h
-#define mir_action_io_Copy_h
+#pragma once
 
 #include "mir/action/plan/Action.h"
 
@@ -40,7 +39,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Copy();
+    ~Copy() override;
 
     // -- Convertors
     // None
@@ -67,8 +66,8 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;
-    void custom(std::ostream&) const;
+    void print(std::ostream&) const override;
+    void custom(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -89,12 +88,11 @@ private:
 
     // -- Overridden methods
 
-    // From Action
-    virtual void execute(context::Context&) const;
-    virtual bool sameAs(const Action&) const;
-    virtual const char* name() const;
-    virtual bool isEndAction() const;
-    virtual void estimate(context::Context&, api::MIREstimation&) const;
+    void execute(context::Context&) const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
+    bool isEndAction() const override;
+    void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Class members
     // None
@@ -110,6 +108,3 @@ private:
 }  // namespace io
 }  // namespace action
 }  // namespace mir
-
-
-#endif

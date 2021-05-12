@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_caching_InMemoryMeshCache_h
-#define mir_caching_InMemoryMeshCache_h
+#pragma once
 
 #include "mir/caching/InMemoryCache.h"
 
@@ -87,10 +86,15 @@ private:
     // -- Constructors
 
     InMemoryMeshCache();
+    InMemoryMeshCache(const InMemoryMeshCache&) = delete;
 
     // -- Destructor
 
     virtual ~InMemoryMeshCache() = default;
+
+    // -- Operators
+
+    void operator=(const InMemoryMeshCache&) = delete;
 
     // -- Members
     // None
@@ -119,6 +123,3 @@ private:
 
 }  // namespace caching
 }  // namespace mir
-
-
-#endif

@@ -14,17 +14,26 @@
 
 #include <cmath>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
 namespace method {
 namespace knn {
 namespace pick {
+
+
+NClosestOrNearest::NClosestOrNearest(size_t nClosest, double distanceTolerance) :
+    nClosest_(nClosest), distanceTolerance_(distanceTolerance) {
+    ASSERT(nClosest_ > 0);
+    ASSERT(distanceTolerance_ >= 0.);
+
+    distanceTolerance2_ = distanceTolerance_ * distanceTolerance_;
+}
 
 
 NClosestOrNearest::NClosestOrNearest(const param::MIRParametrisation& param) {
@@ -40,21 +49,24 @@ NClosestOrNearest::NClosestOrNearest(const param::MIRParametrisation& param) {
 }
 
 
-void NClosestOrNearest::pick(const search::PointSearch& tree, const eckit::geometry::Point3& p,
-                             Pick::neighbours_t& closest) const {
-    tree.closestNPoints(p, nClosest_, closest);
-    ASSERT(closest.size() == nClosest_);
+void NClosestOrNearest::pick(const search::PointSearch& tree, const Point3& p, Pick::neighbours_t& closest) const {
+    auto n = nClosest_ == 1 ? 2 : nClosest_;
+    tree.closestNPoints(p, n, closest);
+    ASSERT(closest.size() == n);
 
     // if closest and farthest nb. are at the same distance, other points can
     // also be (like near poles), so we return all points inside radius
-    if (nClosest_ > 1) {
-        auto nearest2  = Point3::distance2(p, closest.front().point());
-        auto farthest2 = Point3::distance2(p, closest.back().point());
-        if (eckit::types::is_approximately_equal(nearest2, farthest2, distanceTolerance2_)) {
-            auto radius = std::sqrt(farthest2) + distanceTolerance_;
-            tree.closestWithinRadius(p, radius, closest);
-            ASSERT(closest.size() >= nClosest_);
-        }
+    auto nearest2  = Point3::distance2(p, closest.front().point());
+    auto farthest2 = Point3::distance2(p, closest.back().point());
+    if (eckit::types::is_approximately_equal(nearest2, farthest2, distanceTolerance2_)) {
+        auto radius = std::sqrt(farthest2) + distanceTolerance_;
+        tree.closestWithinRadius(p, radius, closest);
+        return;
+    }
+
+    if (nClosest_ == 1) {
+        // closest.resize(1);  // FIXME: better than below (but has black magic)
+        closest.erase(closest.begin() + 1, closest.end());
     }
 }
 

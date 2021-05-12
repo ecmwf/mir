@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_Calendar_h
-#define mir_netcdf_Calendar_h
+#pragma once
 
 #include "mir/netcdf/Codec.h"
 
@@ -29,16 +28,12 @@ namespace netcdf {
 
 class Calendar : public Codec {
 public:
-    Calendar()          = default;
-    virtual ~Calendar() = default;
+    Calendar() = default;
 
 private:
-    virtual bool timeAxis() const;
+    bool timeAxis() const override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

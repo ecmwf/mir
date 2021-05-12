@@ -10,11 +10,11 @@
  */
 
 
-#ifndef mir_search_tree_TreeMapped_h
-#define mir_search_tree_TreeMapped_h
+#pragma once
 
 #include "eckit/container/KDTree.h"
 #include "eckit/os/AutoUmask.h"
+
 #include "mir/search/Tree.h"
 
 
@@ -30,25 +30,25 @@ protected:
     eckit::PathName path_;
     eckit::KDTreeMapped<Tree> tree_;
 
-    void build(std::vector<PointValueType>&);
+    void build(std::vector<PointValueType>&) override;
 
-    void insert(const PointValueType&);
+    void insert(const PointValueType&) override;
 
-    void statsPrint(std::ostream&, bool pretty);
+    void statsPrint(std::ostream&, bool pretty) override;
 
-    void statsReset();
+    void statsReset() override;
 
-    PointValueType nearestNeighbour(const Tree::Point&);
+    PointValueType nearestNeighbour(const Tree::Point&) override;
 
-    std::vector<PointValueType> kNearestNeighbours(const Point&, size_t k);
+    std::vector<PointValueType> kNearestNeighbours(const Point&, size_t k) override;
 
-    std::vector<PointValueType> findInSphere(const Point&, double radius);
+    std::vector<PointValueType> findInSphere(const Point&, double radius) override;
 
-    virtual bool ready() const = 0;
+    bool ready() const override = 0;
 
-    virtual void commit() = 0;
+    void commit() override = 0;
 
-    virtual void print(std::ostream& out) const = 0;
+    void print(std::ostream&) const override = 0;
 
 public:
     TreeMapped(const repres::Representation&, const eckit::PathName&);
@@ -58,6 +58,3 @@ public:
 }  // namespace tree
 }  // namespace search
 }  // namespace mir
-
-
-#endif

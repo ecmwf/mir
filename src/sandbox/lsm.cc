@@ -11,53 +11,34 @@
 
 
 #include "eckit/io/StdFile.h"
-#include "eckit/log/Log.h"
 #include "eckit/runtime/Tool.h"
 
 #include "mir/data/MIRField.h"
-#include "mir/data/MIRValuesVector.h"
 #include "mir/input/GribFileInput.h"
+#include "mir/util/Log.h"
+#include "mir/util/Types.h"
 
 
-class LSM : public eckit::Tool {
+using namespace mir;
 
-    virtual void run();
 
-    void usage(const std::string& tool);
-
-public:
-    LSM(int argc, char** argv) : eckit::Tool(argc, argv) {}
+struct LSM : eckit::Tool {
+    using Tool::Tool;
+    void run() override;
 };
 
-// void LSM::grid(const atlas::grid::ReducedGrid &grid) {
-
-//     const std::vector<int> &points_per_latitudes = grid.npts_per_lat();
-//     size_t half = points_per_latitudes.size() / 2;
-
-//     std::vector<int> diff; diff.reserve(half);
-//     eckit::DIFFencode(points_per_latitudes.begin(), points_per_latitudes.begin() + half, std::back_inserter(diff));
-
-//     std::vector<int> rle;
-//     eckit::RLEencode2(diff.begin(), diff.end(), std::back_inserter(rle), 1000);
-
-//     const atlas::Grid& g = grid;
-
-//     eckit::Log::debug<LibMir>() << "uid " << g.uniqueID() << " hash " << g.hash() << " rle ";
-//     eckit::RLEprint(eckit::Log::debug<LibMir>(), rle.begin(), rle.end());
-//     eckit::Log::debug<LibMir>() << std::endl;
-// }
 
 void LSM::run() {
 
-    mir::input::GribFileInput file("/tmp/lsm.grib");
-    const mir::input::MIRInput& input = file;
+    input::GribFileInput file("/tmp/lsm.grib");
+    const input::MIRInput& input = file;
 
     while (file.next()) {
 
         input.parametrisation();  //
-        mir::data::MIRField field(input.field());
+        data::MIRField field(input.field());
 
-        const mir::MIRValuesVector& v = field.values(0);
+        const MIRValuesVector& v = field.values(0);
         std::vector<int32_t> p(v.size());
 
         eckit::AutoStdFile f("zzzzz", "w");
@@ -87,7 +68,7 @@ void LSM::run() {
         fwrite(&c, 1, 1, f);
 
 
-        eckit::Log::info() << std::endl;
+        Log::info() << std::endl;
 
         // std::vector<int32_t> q;
         // q.push_back(p[0]);
@@ -99,16 +80,17 @@ void LSM::run() {
         // eckit::RLEencode2(q.begin(), q.end(), std::back_inserter(diff), 10000);
 
 
-        // eckit::Log::info() << diff.size() << std::endl;
+        // Log::info() << diff.size() << std::endl;
 
 
         // std::vector<int32_t> rle;
         // eckit::RLEdecode2(a.begin(), a.end(), std::back_inserter(rle));
-        // eckit::Log::info() << a.size() << std::endl;
+        // Log::info() << a.size() << std::endl;
 
-        // eckit::Log::info() << "};" << std::endl;
+        // Log::info() << "};" << std::endl;
     }
 }
+
 
 int main(int argc, char** argv) {
     LSM tool(argc, argv);

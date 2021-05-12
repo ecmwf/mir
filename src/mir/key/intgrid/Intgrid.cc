@@ -12,17 +12,15 @@
 
 #include "mir/key/intgrid/Intgrid.h"
 
-#include <iostream>
 #include <map>
+#include <ostream>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
-#include "eckit/thread/Once.h"
-
-#include "mir/config/LibMir.h"
+#include "mir/key/grid/Grid.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/intgrid/NamedGrid.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -30,22 +28,22 @@ namespace key {
 namespace intgrid {
 
 
-static pthread_once_t once                       = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex                 = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex        = nullptr;
 static std::map<std::string, IntgridFactory*>* m = nullptr;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, IntgridFactory*>();
 }
 
 
 IntgridFactory::IntgridFactory(const std::string& name) : name_(name) {
-    pthread_once(&once, init);
+    util::call_once(once, init);
 
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("IntgridFactory: duplicate '" + name + "'");
+        throw exception::SeriousBug("IntgridFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -54,7 +52,7 @@ IntgridFactory::IntgridFactory(const std::string& name) : name_(name) {
 
 
 IntgridFactory::~IntgridFactory() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     m->erase(name_);
 }
@@ -62,10 +60,10 @@ IntgridFactory::~IntgridFactory() {
 
 Intgrid* IntgridFactory::build(const std::string& name, const param::MIRParametrisation& parametrisation,
                                long targetGaussianN) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-    eckit::Log::debug<LibMir>() << "IntgridFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "IntgridFactory: looking for '" << name << "'" << std::endl;
     ASSERT(!name.empty());
 
     auto j = m->find(name);
@@ -74,18 +72,21 @@ Intgrid* IntgridFactory::build(const std::string& name, const param::MIRParametr
     }
 
     // Look for NamedGrid pattern matching
-    if (grid::GridPattern::match(name)) {
-        return new intgrid::NamedGrid(name, parametrisation);
+    std::string intgrid;
+    if (grid::Grid::get("intgrid", intgrid, parametrisation)) {
+        if (grid::Grid::lookup(intgrid, parametrisation).isNamed()) {
+            return new intgrid::NamedGrid(intgrid, parametrisation);
+        }
     }
 
-    list(eckit::Log::error() << "IntgridFactory: unknown '" << name << "', choices are: ");
-    throw eckit::SeriousBug("IntgridFactory: unknown '" + name + "'");
+    list(Log::error() << "IntgridFactory: unknown '" << name << "', choices are: ");
+    throw exception::SeriousBug("IntgridFactory: unknown '" + name + "'");
 }
 
 
 void IntgridFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

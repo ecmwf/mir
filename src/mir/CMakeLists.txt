@@ -6,13 +6,12 @@ configure_file(api/mir_config.h.in api/mir_config.h)
 configure_file(api/mir_version.h.in api/mir_version.h)
 configure_file(api/mir_version.cc.in api/mir_version.cc)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/api/mir_config.h ${CMAKE_CURRENT_BINARY_DIR}/api/mir_version.h
-        DESTINATION ${INSTALL_INCLUDE_DIR}/mir/api)
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/api/mir_config.h ${CMAKE_CURRENT_BINARY_DIR}/api/mir_version.h
+    DESTINATION ${INSTALL_INCLUDE_DIR}/mir/api)
 
 
-list(APPEND mir_srcs api/mir_version.cc)
-
-
+unset(mir_srcs)
 list(APPEND mir_srcs
     action/calc/FormulaAction.cc
     action/calc/FormulaAction.h
@@ -32,8 +31,6 @@ list(APPEND mir_srcs
     action/filter/GlobaliseFilter.h
     action/filter/NablaFilter.cc
     action/filter/NablaFilter.h
-    action/filter/NablaFilterFVMT.cc
-    action/filter/NablaFilterFVMT.h
     action/filter/StatisticsFilter.cc
     action/filter/StatisticsFilter.h
     action/filter/UnstructuredFilter.cc
@@ -112,49 +109,6 @@ list(APPEND mir_srcs
     action/plan/SimpleExecutor.h
     action/plan/ThreadExecutor.cc
     action/plan/ThreadExecutor.h
-    action/transform/InvtransScalar.cc
-    action/transform/InvtransScalar.h
-    action/transform/InvtransVodTouv.cc
-    action/transform/InvtransVodTouv.h
-    action/transform/ShToGridDef.cc
-    action/transform/ShToGridDef.h
-    action/transform/ShToGridded.cc
-    action/transform/ShToGridded.h
-    action/transform/ShToNamedGrid.cc
-    action/transform/ShToNamedGrid.h
-    action/transform/ShToOctahedralGG.cc
-    action/transform/ShToOctahedralGG.h
-    action/transform/ShToPoints.cc
-    action/transform/ShToPoints.h
-    action/transform/ShToReducedGG.cc
-    action/transform/ShToReducedGG.h
-    action/transform/ShToReducedGGPLGiven.cc
-    action/transform/ShToReducedGGPLGiven.h
-    action/transform/ShToRegularGG.cc
-    action/transform/ShToRegularGG.h
-    action/transform/ShToRegularLL.cc
-    action/transform/ShToRegularLL.h
-    action/transform/ShToRotatedNamedGrid.cc
-    action/transform/ShToRotatedNamedGrid.h
-    action/transform/ShToRotatedOctahedralGG.cc
-    action/transform/ShToRotatedOctahedralGG.h
-    action/transform/ShToRotatedReducedGG.cc
-    action/transform/ShToRotatedReducedGG.h
-    action/transform/ShToRotatedReducedGGPLGiven.cc
-    action/transform/ShToRotatedReducedGGPLGiven.h
-    action/transform/ShToRotatedRegularGG.cc
-    action/transform/ShToRotatedRegularGG.h
-    action/transform/ShToRotatedRegularLL.cc
-    action/transform/ShToRotatedRegularLL.h
-    action/transform/ShToTypedGrid.cc
-    action/transform/ShToTypedGrid.h
-    action/transform/ShTruncate.cc
-    action/transform/ShTruncate.h
-    action/transform/ShVodToUV.cc
-    action/transform/ShVodToUV.h
-    action/transform/TransCache.cc
-    action/transform/TransCache.h
-    api/Atlas.h
     api/MIRComplexJob.cc
     api/MIRComplexJob.h
     api/MIREstimation.h
@@ -162,6 +116,7 @@ list(APPEND mir_srcs
     api/MIRJob.h
     api/MIRWatcher.cc
     api/MIRWatcher.h
+    api/mir_version.cc
     caching/CroppingCache.cc
     caching/CroppingCache.h
     caching/InMemoryCache.cc
@@ -172,24 +127,12 @@ list(APPEND mir_srcs
     caching/InMemoryCacheStatistics.h
     caching/InMemoryCacheUsage.cc
     caching/InMemoryCacheUsage.h
-    caching/InMemoryMeshCache.cc
-    caching/InMemoryMeshCache.h
-    caching/LegendreCache.cc
-    caching/LegendreCache.h
     caching/MeshCache.cc
     caching/MeshCache.h
     caching/WeightCache.cc
     caching/WeightCache.h
-    caching/legendre/FileLoader.cc
-    caching/legendre/FileLoader.h
     caching/legendre/LegendreLoader.cc
     caching/legendre/LegendreLoader.h
-    caching/legendre/MappedMemoryLoader.cc
-    caching/legendre/MappedMemoryLoader.h
-    caching/legendre/NoLoader.cc
-    caching/legendre/NoLoader.h
-    caching/legendre/SharedMemoryLoader.cc
-    caching/legendre/SharedMemoryLoader.h
     caching/matrix/FileLoader.cc
     caching/matrix/FileLoader.h
     caching/matrix/MatrixLoader.cc
@@ -222,8 +165,6 @@ list(APPEND mir_srcs
     data/MIRField.h
     data/MIRFieldStats.cc
     data/MIRFieldStats.h
-    data/MIRValuesVector.cc
-    data/MIRValuesVector.h
     data/Space.cc
     data/Space.h
     data/space/Space1DAngleT.cc
@@ -276,6 +217,7 @@ list(APPEND mir_srcs
     input/RawMetadata.h
     input/VectorInput.cc
     input/VectorInput.h
+    iterator/UnstructuredIterator.h
     iterator/detail/RegularIterator.cc
     iterator/detail/RegularIterator.h
     key/Key.cc
@@ -295,14 +237,10 @@ list(APPEND mir_srcs
     key/grid/NamedFromFile.cc
     key/grid/NamedFromFile.h
     key/grid/NamedGrid.h
-    key/grid/NamedORCA.cc
-    key/grid/NamedORCA.h
     key/grid/NamedOctahedral.cc
     key/grid/NamedOctahedral.h
     key/grid/NamedRegular.cc
     key/grid/NamedRegular.h
-    key/grid/ORCAPattern.cc
-    key/grid/ORCAPattern.h
     key/grid/OctahedralPattern.cc
     key/grid/OctahedralPattern.h
     key/grid/RegularLL.cc
@@ -323,6 +261,22 @@ list(APPEND mir_srcs
     key/intgrid/None.h
     key/intgrid/Source.cc
     key/intgrid/Source.h
+    key/packing/ArchivedValue.cc
+    key/packing/ArchivedValue.h
+    key/packing/CCSDS.cc
+    key/packing/CCSDS.h
+    key/packing/Complex.cc
+    key/packing/Complex.h
+    key/packing/IEEE.cc
+    key/packing/IEEE.h
+    key/packing/JPEG2000.cc
+    key/packing/JPEG2000.h
+    key/packing/Packing.cc
+    key/packing/Packing.h
+    key/packing/SecondOrder.cc
+    key/packing/SecondOrder.h
+    key/packing/Simple.cc
+    key/packing/Simple.h
     key/resol/Resol.cc
     key/resol/Resol.h
     key/style/CustomParametrisation.cc
@@ -375,28 +329,14 @@ list(APPEND mir_srcs
     method/Method.h
     method/MethodWeighted.cc
     method/MethodWeighted.h
-    method/ProxyMethod.cc
-    method/ProxyMethod.h
     method/WeightMatrix.cc
     method/WeightMatrix.h
-    method/fe/BuildNodeLumpedMassMatrix.cc
-    method/fe/BuildNodeLumpedMassMatrix.h
-    method/fe/CalculateCellLongestDiagonal.cc
-    method/fe/CalculateCellLongestDiagonal.h
-    method/fe/FEBilinear.cc
-    method/fe/FEBilinear.h
-    method/fe/FELinear.cc
-    method/fe/FELinear.h
-    method/fe/FiniteElement.cc
-    method/fe/FiniteElement.h
-    method/fe/L2Projection.cc
-    method/fe/L2Projection.h
     method/gridbox/GridBoxAverage.cc
     method/gridbox/GridBoxAverage.h
-    method/gridbox/GridBoxMaximum.cc
-    method/gridbox/GridBoxMaximum.h
     method/gridbox/GridBoxMethod.cc
     method/gridbox/GridBoxMethod.h
+    method/gridbox/GridBoxStatistics.cc
+    method/gridbox/GridBoxStatistics.h
     method/knn/KNearest.cc
     method/knn/KNearest.h
     method/knn/KNearestNeighbours.cc
@@ -459,12 +399,15 @@ list(APPEND mir_srcs
     method/nonlinear/SimulateMissingValue.h
     method/other/PseudoLaplace.cc
     method/other/PseudoLaplace.h
-    method/structured/StructuredBilinearLatLon.cc
-    method/structured/StructuredBilinearLatLon.h
-    method/structured/StructuredLinear3D.cc
-    method/structured/StructuredLinear3D.h
-    method/structured/StructuredMethod.cc
-    method/structured/StructuredMethod.h
+    method/solver/Multiply.cc
+    method/solver/Multiply.h
+    method/solver/Solver.h
+    method/solver/Statistics.cc
+    method/solver/Statistics.h
+    method/voronoi/VoronoiMethod.cc
+    method/voronoi/VoronoiMethod.h
+    method/voronoi/VoronoiStatistics.cc
+    method/voronoi/VoronoiStatistics.h
     output/EmptyOutput.cc
     output/EmptyOutput.h
     output/GeoPointsFileOutput.cc
@@ -493,22 +436,6 @@ list(APPEND mir_srcs
     output/ValuesOutput.h
     output/VectorOutput.cc
     output/VectorOutput.h
-    packing/ArchivedValue.cc
-    packing/ArchivedValue.h
-    packing/CCSDS.cc
-    packing/CCSDS.h
-    packing/Complex.cc
-    packing/Complex.h
-    packing/IEEE.cc
-    packing/IEEE.h
-    packing/JPEG2000.cc
-    packing/JPEG2000.h
-    packing/Packer.cc
-    packing/Packer.h
-    packing/SecondOrder.cc
-    packing/SecondOrder.h
-    packing/Simple.cc
-    packing/Simple.h
     param/CachedParametrisation.cc
     param/CachedParametrisation.h
     param/CombinedParametrisation.cc
@@ -577,8 +504,6 @@ list(APPEND mir_srcs
     repres/other/ClenshawCurtis.h
     repres/other/None.cc
     repres/other/None.h
-    repres/other/ORCA.cc
-    repres/other/ORCA.h
     repres/other/UnstructuredGrid.cc
     repres/other/UnstructuredGrid.h
     repres/regular/Lambert.cc
@@ -635,12 +560,12 @@ list(APPEND mir_srcs
     stats/Comparator.h
     stats/Distribution.cc
     stats/Distribution.h
+    stats/Field.cc
+    stats/Field.h
     stats/Method.cc
     stats/Method.h
     stats/Statistics.cc
     stats/Statistics.h
-    stats/ValueStatistics.cc
-    stats/ValueStatistics.h
     stats/comparator/ComparatorT.cc
     stats/comparator/ComparatorT.h
     stats/comparator/MissingValues.cc
@@ -655,18 +580,22 @@ list(APPEND mir_srcs
     stats/detail/Counter.h
     stats/detail/CounterBinary.cc
     stats/detail/CounterBinary.h
-    stats/detail/PNormsT.cc
+    stats/detail/ModeT.cc
+    stats/detail/ModeT.h
     stats/detail/PNormsT.h
-    stats/detail/ScalarT.cc
     stats/detail/ScalarT.h
     stats/distribution/DistributionT.cc
     stats/distribution/DistributionT.h
+    stats/field/CentralMomentStats.cc
+    stats/field/CentralMomentStats.h
+    stats/field/CounterStats.cc
+    stats/field/CounterStats.h
+    stats/field/ModeStats.cc
+    stats/field/ModeStats.h
     stats/method/MethodT.cc
     stats/method/MethodT.h
     stats/statistics/GridBoxIntegral.cc
     stats/statistics/GridBoxIntegral.h
-    stats/statistics/Integral.cc
-    stats/statistics/Integral.h
     stats/statistics/SimplePackingEntropy.cc
     stats/statistics/SimplePackingEntropy.h
     stats/statistics/Spectral.cc
@@ -678,7 +607,7 @@ list(APPEND mir_srcs
     tools/MIRTool.cc
     tools/MIRTool.h
     util/Angles.h
-    util/Assert.h
+    util/Atlas.h
     util/Bitmap.cc
     util/Bitmap.h
     util/BoundingBox.cc
@@ -689,6 +618,7 @@ list(APPEND mir_srcs
     util/Domain.h
     util/Error.cc
     util/Error.h
+    util/Exceptions.h
     util/Formula.cc
     util/Formula.h
     util/FormulaBinop.cc
@@ -716,6 +646,8 @@ list(APPEND mir_srcs
     util/Latitude.cc
     util/Latitude.h
     util/LatitudeIncrement.h
+    util/Log.cc
+    util/Log.h
     util/LongitudeDouble.cc
     util/LongitudeDouble.h
     util/LongitudeFraction.cc
@@ -728,20 +660,114 @@ list(APPEND mir_srcs
     util/PlanParser.cc
     util/PlanParser.h
     util/PointLatLonT.h
-    util/Pretty.cc
-    util/Pretty.h
-    util/RectangularDomain.h
+    util/Regex.cc
+    util/Regex.h
     util/Rotation.cc
     util/Rotation.h
     util/SpectralOrder.cc
     util/SpectralOrder.h
     util/SpectralOrderT.cc
     util/SpectralOrderT.h
-    util/TraceResourceUsage.cc
-    util/TraceResourceUsage.h
+    util/Mutex.h
+    util/Trace.cc
+    util/Trace.h
     util/Types.h
     util/Wind.cc
     util/Wind.h)
+
+
+if(mir_HAVE_ATLAS)
+    list(APPEND mir_srcs
+        action/filter/NablaFilterFVMT.cc
+        action/filter/NablaFilterFVMT.h
+        action/transform/InvtransScalar.cc
+        action/transform/InvtransScalar.h
+        action/transform/InvtransVodTouv.cc
+        action/transform/InvtransVodTouv.h
+        action/transform/ShToGridDef.cc
+        action/transform/ShToGridDef.h
+        action/transform/ShToGridded.cc
+        action/transform/ShToGridded.h
+        action/transform/ShToNamedGrid.cc
+        action/transform/ShToNamedGrid.h
+        action/transform/ShToOctahedralGG.cc
+        action/transform/ShToOctahedralGG.h
+        action/transform/ShToPoints.cc
+        action/transform/ShToPoints.h
+        action/transform/ShToReducedGG.cc
+        action/transform/ShToReducedGG.h
+        action/transform/ShToReducedGGPLGiven.cc
+        action/transform/ShToReducedGGPLGiven.h
+        action/transform/ShToRegularGG.cc
+        action/transform/ShToRegularGG.h
+        action/transform/ShToRegularLL.cc
+        action/transform/ShToRegularLL.h
+        action/transform/ShToRotatedNamedGrid.cc
+        action/transform/ShToRotatedNamedGrid.h
+        action/transform/ShToRotatedOctahedralGG.cc
+        action/transform/ShToRotatedOctahedralGG.h
+        action/transform/ShToRotatedReducedGG.cc
+        action/transform/ShToRotatedReducedGG.h
+        action/transform/ShToRotatedReducedGGPLGiven.cc
+        action/transform/ShToRotatedReducedGGPLGiven.h
+        action/transform/ShToRotatedRegularGG.cc
+        action/transform/ShToRotatedRegularGG.h
+        action/transform/ShToRotatedRegularLL.cc
+        action/transform/ShToRotatedRegularLL.h
+        action/transform/ShToTypedGrid.cc
+        action/transform/ShToTypedGrid.h
+        action/transform/ShTruncate.cc
+        action/transform/ShTruncate.h
+        action/transform/ShVodToUV.cc
+        action/transform/ShVodToUV.h
+        action/transform/TransCache.cc
+        action/transform/TransCache.h
+        caching/InMemoryMeshCache.cc
+        caching/InMemoryMeshCache.h
+        caching/LegendreCache.cc
+        caching/LegendreCache.h
+        caching/legendre/FileLoader.cc
+        caching/legendre/FileLoader.h
+        caching/legendre/MappedMemoryLoader.cc
+        caching/legendre/MappedMemoryLoader.h
+        caching/legendre/NoLoader.cc
+        caching/legendre/NoLoader.h
+        caching/legendre/SharedMemoryLoader.cc
+        caching/legendre/SharedMemoryLoader.h
+        key/grid/NamedORCA.cc
+        key/grid/NamedORCA.h
+        key/grid/ORCAPattern.cc
+        key/grid/ORCAPattern.h
+        method/ProxyMethod.cc
+        method/ProxyMethod.h
+        method/fe/BuildNodeLumpedMassMatrix.cc
+        method/fe/BuildNodeLumpedMassMatrix.h
+        method/fe/CalculateCellLongestDiagonal.cc
+        method/fe/CalculateCellLongestDiagonal.h
+        method/fe/FEBilinear.cc
+        method/fe/FEBilinear.h
+        method/fe/FELinear.cc
+        method/fe/FELinear.h
+        method/fe/FiniteElement.cc
+        method/fe/FiniteElement.h
+        method/fe/L2Projection.cc
+        method/fe/L2Projection.h
+        method/structured/StructuredBilinearLatLon.cc
+        method/structured/StructuredBilinearLatLon.h
+        method/structured/StructuredLinear3D.cc
+        method/structured/StructuredLinear3D.h
+        method/structured/StructuredMethod.cc
+        method/structured/StructuredMethod.h
+        output/GmshOutput.cc
+        output/GmshOutput.h
+        repres/other/ORCA.cc
+        repres/other/ORCA.h
+        stats/statistics/Integral.cc
+        stats/statistics/Integral.h)
+else()
+    list(APPEND mir_srcs util/Atlas.cc)
+endif()
+
 
 if(mir_HAVE_NETCDF)
     list(APPEND mir_srcs
@@ -877,31 +903,26 @@ if(mir_HAVE_NETCDF)
         netcdf/VirtualOutputDimension.h)
 endif()
 
-
 if(mir_HAVE_PNG)
-    list(APPEND mir_srcs output/PNGOutput.cc output/PNGOutput.h)
+    list(APPEND mir_srcs output/PNGOutput.h output/PNGOutput.cc)
 endif()
-
-
-list(APPEND mir_tmpls caching/InMemoryCache.cc)
-
 
 ecbuild_add_library(
     TARGET             mir
     INSTALL_HEADERS    LISTED
     HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/mir
-    SOURCES            ${mir_srcs}
     GENERATED          api/mir_version.cc
-    TEMPLATES          ${mir_tmpls}
-    PUBLIC_LIBS        atlas eckit_linalg eckit_geometry eckit_option eckit eccodes
-    PUBLIC_INCLUDES    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
-                       $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/src>
-)
+    TEMPLATES          caching/InMemoryCache.cc
+    PUBLIC_LIBS        eckit_linalg eckit_geometry eckit_option eckit eccodes
+    PUBLIC_INCLUDES    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/src>
+    SOURCES            ${mir_srcs})
 
+if(mir_HAVE_ATLAS)
+    target_link_libraries(mir PUBLIC atlas)
+endif()
 if(mir_HAVE_NETCDF)
     target_link_libraries(mir PRIVATE NetCDF::NetCDF_C)
 endif()
-
 if(mir_HAVE_PNG)
     target_link_libraries(mir PRIVATE PNG::PNG)
 endif()

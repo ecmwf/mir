@@ -15,51 +15,49 @@
 #include <map>
 #include <set>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
-
-#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
 namespace action {
 
 
-static eckit::Mutex* local_mutex           = nullptr;
+static util::recursive_mutex* local_mutex  = nullptr;
 static std::map<std::string, Executor*>* m = nullptr;
-static pthread_once_t once                 = PTHREAD_ONCE_INIT;
+static util::once_flag once;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, Executor*>();
 }
 
 
 Executor::Executor(const std::string& name) : name_(name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(name) == m->end());
     (*m)[name] = this;
 }
 
 Executor::~Executor() {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(name_) != m->end());
     m->erase(name_);
 }
 
-void Executor::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+void Executor::list(std::ostream& out, bool full) {
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     std::set<std::string> seen;
     const char* sep = "";
     for (auto& j : *m) {
-        std::string name = j.first.substr(0, j.first.find("."));
+        std::string name = full ? j.first : j.first.substr(0, j.first.find("."));
         if (seen.find(name) == seen.end()) {
             out << sep << name;
             sep = ", ";
@@ -68,29 +66,26 @@ void Executor::list(std::ostream& out) {
     }
 }
 
+
 const Executor& Executor::lookup(const param::MIRParametrisation& params) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     std::string name;
     if (!params.get("executor", name)) {
-        throw eckit::SeriousBug("Executor cannot get executor");
+        throw exception::SeriousBug("Executor cannot get executor");
     }
 
-    eckit::Log::debug<LibMir>() << "Looking for Executor [" << name << "]" << std::endl;
+    Log::debug() << "Looking for Executor [" << name << "]" << std::endl;
 
     auto j = m->find(name);
-    if (j == m->end()) {
-        eckit::Log::error() << "No Executor for [" << name << "]" << std::endl;
-        eckit::Log::error() << "Executors are:" << std::endl;
-        for (auto& k : *m) {
-            eckit::Log::error() << "   " << k.first << std::endl;
-        }
-        throw eckit::SeriousBug("No Executor called " + name);
+    if (j != m->end()) {
+        j->second->parametrisation(params);
+        return *(j->second);
     }
 
-    j->second->parametrisation(params);
-    return *(j->second);
+    list(Log::error() << "Executor: unknown '" << name << "', choices are: ", true);
+    throw exception::SeriousBug("Executor: unknown '" + name + "'");
 }
 
 

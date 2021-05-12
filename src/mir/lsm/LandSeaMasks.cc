@@ -12,14 +12,13 @@
 
 #include "mir/lsm/LandSeaMasks.h"
 
-#include <iostream>
+#include <ostream>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/TraceTimer.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/lsm/Mask.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Trace.h"
 
 
 namespace mir {
@@ -31,10 +30,7 @@ LandSeaMasks::LandSeaMasks(const Mask& input, const Mask& output) : input_(input
 }
 
 
-LandSeaMasks::LandSeaMasks(const LandSeaMasks& other) = default;
-
-
-LandSeaMasks::~LandSeaMasks() = default;
+LandSeaMasks::LandSeaMasks(const LandSeaMasks&) = default;
 
 
 void LandSeaMasks::print(std::ostream& out) const {
@@ -53,7 +49,7 @@ std::string LandSeaMasks::cacheName() const {
 
 LandSeaMasks LandSeaMasks::lookup(const param::MIRParametrisation& parametrisation, const repres::Representation& in,
                                   const repres::Representation& out) {
-    eckit::TraceTimer<LibMir>("LandSeaMasks::lookup");
+    trace::Timer("LandSeaMasks::lookup");
     return LandSeaMasks(Mask::lookupInput(parametrisation, in), Mask::lookupOutput(parametrisation, out));
 }
 

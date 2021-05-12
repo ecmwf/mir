@@ -12,10 +12,11 @@
 
 #include "mir/netcdf/MergePlan.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/Variable.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -61,7 +62,7 @@ void MergePlan::link(const Variable& out, const Variable& in) {
 
 const Variable& MergePlan::link(const Variable& out) {
     if (link_.find(&out) == link_.end()) {
-        eckit::Log::info() << "MergePlan::link cannot find: " << out << std::endl;
+        Log::info() << "MergePlan::link cannot find: " << out << std::endl;
     }
     ASSERT(link_.find(&out) != link_.end());
     return *link_[&out];

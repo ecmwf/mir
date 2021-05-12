@@ -10,16 +10,17 @@
  */
 
 
+#include "mir/data/Field.h"
+
 #include <algorithm>
 #include <ostream>
 
-#include "eckit/exception/Exceptions.h"
+#include "eckit/thread/AutoLock.h"
 #include "eckit/types/Types.h"
 
-#include "eckit/thread/AutoLock.h"
-#include "mir/data/Field.h"
 #include "mir/data/MIRFieldStats.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -62,10 +63,10 @@ Field* Field::clone() const {
 
 
 // Warning: take ownership of values
-void Field::update(MIRValuesVector& values, size_t which, bool recomputeHasMissing) {
+void Field::update(MIRValuesVector& values, size_t which) {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
-    recomputeHasMissing_ = recomputeHasMissing;
+    recomputeHasMissing_ = true;
 
     if (values_.size() <= which) {
         values_.resize(which + 1);

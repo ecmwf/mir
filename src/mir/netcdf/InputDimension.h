@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_InputDimension_h
-#define mir_netcdf_InputDimension_h
+#pragma once
 
 #include "mir/netcdf/Dimension.h"
 
@@ -26,7 +25,7 @@ class InputDimension : public Dimension {
 
 public:
     InputDimension(Dataset& owner, const std::string& name, int id, size_t len);
-    virtual ~InputDimension();
+    ~InputDimension() override;
 
 private:
     // Members
@@ -36,15 +35,12 @@ private:
     // -- Methods
 
     // From Dimension
-    virtual void print(std::ostream&) const;
-    virtual void clone(Dataset& owner) const;
-    virtual int id() const;
-    virtual void realDimensions(std::vector<size_t>& dims) const;
+    void print(std::ostream&) const override;
+    void clone(Dataset& owner) const override;
+    int id() const override;
+    void realDimensions(std::vector<size_t>& dims) const override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

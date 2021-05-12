@@ -12,13 +12,13 @@
 
 #include "mir/action/interpolate/Gridded2RegularLL.h"
 
-#include <iostream>
+#include <ostream>
 #include <vector>
 
-#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/latlon/RegularLL.h"
-#include "mir/util/Assert.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -44,14 +44,14 @@ Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation& parametris
 
     repres::latlon::LatLon::globaliseBoundingBox(bbox_, increments_, reference_);
 
-    eckit::Log::debug<LibMir>() << "Gridded2RegularLL: globalise:"
-                                << "\n\t" << increments_ << "\n\t" << bbox_
-                                << "\n\t"
-                                   "shifted in latitude? "
-                                << increments_.isLatitudeShifted(bbox_)
-                                << "\n\t"
-                                   "shifted in longitude? "
-                                << increments_.isLongitudeShifted(bbox_) << std::endl;
+    Log::debug() << "Gridded2RegularLL: globalise:"
+                 << "\n\t" << increments_ << "\n\t" << bbox_
+                 << "\n\t"
+                    "shifted in latitude? "
+                 << increments_.isLatitudeShifted(bbox_)
+                 << "\n\t"
+                    "shifted in longitude? "
+                 << increments_.isLongitudeShifted(bbox_) << std::endl;
 }
 
 

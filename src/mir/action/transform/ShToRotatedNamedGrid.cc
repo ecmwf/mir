@@ -12,13 +12,13 @@
 
 #include "mir/action/transform/ShToRotatedNamedGrid.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/util/Assert.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -29,7 +29,6 @@ namespace transform {
 template <class Invtrans>
 ShToRotatedNamedGrid<Invtrans>::ShToRotatedNamedGrid(const param::MIRParametrisation& parametrisation) :
     ShToGridded(parametrisation) {
-
     ASSERT(parametrisation_.userParametrisation().get("grid", grid_));
 
     std::vector<double> value;

@@ -10,12 +10,11 @@
  */
 
 
-#ifndef mir_data_MIRFieldStats_h
-#define mir_data_MIRFieldStats_h
+#pragma once
 
 #include <iosfwd>
 
-#include "mir/data/MIRValuesVector.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -50,6 +49,3 @@ private:
 
 }  // namespace data
 }  // namespace mir
-
-
-#endif

@@ -14,10 +14,9 @@
 
 #include <ostream>
 
-#include "eckit/log/Bytes.h"
-#include "eckit/log/Log.h"
-
 #include "mir/method/WeightMatrix.h"
+#include "mir/util/Log.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -28,7 +27,7 @@ namespace matrix {
 FileLoader::FileLoader(const std::string& name, const eckit::PathName& path) :
     MatrixLoader(name, path), buffer_(size_t(path.size())) {
 
-    log() << "Loading matrix from " << path << std::endl;
+    Log::info() << "Loading matrix from " << path << std::endl;
 
     // Note: buffer size is based on file.size() -- which is assumed to be bigger than the memory footprint
     method::WeightMatrix w(path);
@@ -38,7 +37,7 @@ FileLoader::FileLoader(const std::string& name, const eckit::PathName& path) :
 FileLoader::~FileLoader() = default;
 
 void FileLoader::print(std::ostream& out) const {
-    out << "FileLoader[path=" << path_ << ",size=" << eckit::Bytes(buffer_.size()) << "]";
+    out << "FileLoader[path=" << path_ << ",size=" << Log::Bytes(buffer_.size()) << "]";
 }
 
 const void* FileLoader::address() const {

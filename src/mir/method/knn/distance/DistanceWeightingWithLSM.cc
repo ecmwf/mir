@@ -13,14 +13,13 @@
 #include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
 
 #include <map>
+#include <sstream>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -29,11 +28,11 @@ namespace knn {
 namespace distance {
 
 
-static eckit::Mutex* local_mutex                                  = nullptr;
+static util::recursive_mutex* local_mutex                         = nullptr;
 static std::map<std::string, DistanceWeightingWithLSMFactory*>* m = nullptr;
-static pthread_once_t once                                        = PTHREAD_ONCE_INIT;
+static util::once_flag once;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, DistanceWeightingWithLSMFactory*>();
 }
 
@@ -43,9 +42,9 @@ DistanceWeightingWithLSM::DistanceWeightingWithLSM(const param::MIRParametrisati
     parametrisation.get("distance-weighting-with-lsm", name);
 
     if (!DistanceWeightingWithLSMFactory::has(name)) {
-        DistanceWeightingWithLSMFactory::list(eckit::Log::error()
+        DistanceWeightingWithLSMFactory::list(Log::error()
                                               << "No DistanceWeightingWithLSMFactory '" << name << "', choices are:\n");
-        throw eckit::SeriousBug("No DistanceWeightingWithLSMFactory '" + name + "'");
+        throw exception::SeriousBug("No DistanceWeightingWithLSMFactory '" + name + "'");
     }
 
     method_ = name;
@@ -79,11 +78,12 @@ void DistanceWeightingWithLSM::hash(eckit::MD5& h) const {
 
 
 DistanceWeightingWithLSMFactory::DistanceWeightingWithLSMFactory(const std::string& name) : name_(name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("DistanceWeightingWithLSMFactory: duplicated DistanceWeightingWithLSM '" + name + "'");
+        throw exception::SeriousBug("DistanceWeightingWithLSMFactory: duplicated DistanceWeightingWithLSM '" + name +
+                                    "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -92,7 +92,8 @@ DistanceWeightingWithLSMFactory::DistanceWeightingWithLSMFactory(const std::stri
 
 
 DistanceWeightingWithLSMFactory::~DistanceWeightingWithLSMFactory() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
+
     m->erase(name_);
 }
 
@@ -100,15 +101,15 @@ DistanceWeightingWithLSMFactory::~DistanceWeightingWithLSMFactory() {
 const DistanceWeighting* DistanceWeightingWithLSMFactory::build(const std::string& name,
                                                                 const param::MIRParametrisation& param,
                                                                 const lsm::LandSeaMasks& lsm) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-    eckit::Log::debug<LibMir>() << "DistanceWeightingWithLSMFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "DistanceWeightingWithLSMFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "No DistanceWeightingWithLSMFactory '" << name << "', choices are:\n");
-        throw eckit::SeriousBug("No DistanceWeightingWithLSMFactory '" + name + "'");
+        list(Log::error() << "DistanceWeightingWithLSMFactory: unknown '" << name << "', choices are:\n");
+        throw exception::SeriousBug("DistanceWeightingWithLSMFactory: unknown '" + name + "'");
     }
 
     return j->second->make(param, lsm);
@@ -116,8 +117,8 @@ const DistanceWeighting* DistanceWeightingWithLSMFactory::build(const std::strin
 
 
 void DistanceWeightingWithLSMFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (auto& j : *m) {

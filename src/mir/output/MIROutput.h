@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_output_MIROutput_h
-#define mir_output_MIROutput_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -66,7 +65,7 @@ public:
 
     virtual size_t copy(const param::MIRParametrisation&, context::Context&)                                   = 0;
     virtual size_t save(const param::MIRParametrisation&, context::Context&)                                   = 0;
-    virtual bool sameAs(const MIROutput& other) const                                                          = 0;
+    virtual bool sameAs(const MIROutput&) const                                                                = 0;
     virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const = 0;
     virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const                   = 0;
 
@@ -146,7 +145,7 @@ public:
 
 template <class T>
 class MIROutputBuilder : public MIROutputFactory {
-    virtual MIROutput* make(const std::string& path) { return new T(path); }
+    MIROutput* make(const std::string& path) override { return new T(path); }
 
 public:
     MIROutputBuilder(const std::string& name) : MIROutputFactory(name) {}
@@ -157,6 +156,3 @@ public:
 
 }  // namespace output
 }  // namespace mir
-
-
-#endif

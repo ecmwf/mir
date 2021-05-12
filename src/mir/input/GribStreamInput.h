@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_GribStreamInput_h
-#define mir_input_GribStreamInput_h
+#pragma once
 
 #include "eckit/io/Buffer.h"
 
@@ -40,7 +39,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GribStreamInput();  // Change to virtual if base class
+    ~GribStreamInput() override;
 
     // -- Convertors
     // None
@@ -53,7 +52,7 @@ public:
 
     // -- Overridden methods
 
-    virtual bool next();
+    bool next() override;
 
     // -- Class members
     // None
@@ -100,14 +99,9 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const GribStreamInput& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

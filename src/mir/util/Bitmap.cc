@@ -12,15 +12,15 @@
 
 #include <cstring>
 #include <fstream>
-#include <iostream>
+#include <ostream>
 #include <sstream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/utils/Tokenizer.h"
 #include "eckit/utils/Translator.h"
 
 #include "mir/util/Bitmap.h"
+#include "mir/util/Exceptions.h"
 
 
 // TODO: Cache bitmaps
@@ -188,7 +188,7 @@ void Bitmap::prodgenBitmap(const std::string& path, const std::string& destinati
     char line[1024];
     std::ifstream in(path.c_str());
     if (!in) {
-        throw eckit::CantOpenFile(path);
+        throw exception::CantOpenFile(path);
     }
 
     eckit::Translator<std::string, size_t> s2l;
@@ -245,7 +245,7 @@ void Bitmap::prodgenBitmap(const std::string& path, const std::string& destinati
 
     std::ostringstream oss;
     oss << "Cannot find bitmap " << no << " for destination " << destination << " in " << path;
-    throw eckit::UserError(oss.str());
+    throw exception::UserError(oss.str());
 }
 
 

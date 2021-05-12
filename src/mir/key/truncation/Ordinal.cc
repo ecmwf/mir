@@ -12,7 +12,7 @@
 
 #include "mir/key/truncation/Ordinal.h"
 
-#include "eckit/exception/Exceptions.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

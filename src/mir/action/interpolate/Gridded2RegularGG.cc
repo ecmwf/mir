@@ -12,12 +12,11 @@
 
 #include "mir/action/interpolate/Gridded2RegularGG.h"
 
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
 
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/gauss/regular/RegularGG.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

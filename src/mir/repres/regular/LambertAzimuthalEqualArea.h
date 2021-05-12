@@ -10,12 +10,10 @@
  */
 
 
-#ifndef mir_repres_regular_LambertAzimuthalEqualArea_h
-#define mir_repres_regular_LambertAzimuthalEqualArea_h
-
-#include "mir/api/Atlas.h"
+#pragma once
 
 #include "mir/repres/regular/RegularGrid.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -65,7 +63,7 @@ private:
 
     // -- Overridden methods
 
-    virtual void fill(grib_info&) const;
+    virtual void fill(grib_info&) const override;
 
     // -- Class members
     // None
@@ -81,6 +79,3 @@ private:
 }  // namespace regular
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

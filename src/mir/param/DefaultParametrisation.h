@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_param_DefaultParametrisation_h
-#define mir_param_DefaultParametrisation_h
+#pragma once
 
 #include "mir/param/SimpleParametrisation.h"
 
@@ -31,7 +30,7 @@ public:
 
     // -- Destructor
 
-    virtual ~DefaultParametrisation();
+    ~DefaultParametrisation() override;
 
     // -- Convertors
     // None
@@ -90,6 +89,3 @@ private:
 
 }  // namespace param
 }  // namespace mir
-
-
-#endif

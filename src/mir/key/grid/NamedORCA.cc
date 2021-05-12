@@ -15,14 +15,12 @@
 #include <ostream>
 
 #include "mir/repres/other/ORCA.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
 namespace key {
 namespace grid {
-
-
-NamedORCA::~NamedORCA() = default;
 
 
 NamedORCA::NamedORCA(const std::string& name) : NamedGrid(name) {}
@@ -44,7 +42,7 @@ const repres::Representation* NamedORCA::representation(const util::Rotation&) c
 
 
 size_t NamedORCA::gaussianNumber() const {
-    return 0;  // FIXME
+    return default_gaussian_number();
 }
 
 

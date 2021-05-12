@@ -12,10 +12,8 @@
 
 #include "mir/action/filter/BitmapFilter.h"
 
-#include <iostream>
-
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
+#include <ostream>
+#include <sstream>
 
 #include "mir/action/context/Context.h"
 #include "mir/api/MIREstimation.h"
@@ -25,15 +23,15 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Bitmap.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
 namespace action {
 
 
-static eckit::Mutex local_mutex;
-static caching::InMemoryCache<util::Bitmap> cache("mirBitmap", 256 * 1024 * 1024, 0,
-                                                  "$MIR_BITMAP_CACHE_MEMORY_FOOTPRINT");
+constexpr size_t CAPACITY = 256 * 1024 * 1024;
+static caching::InMemoryCache<util::Bitmap> cache("mirBitmap", CAPACITY, 0, "$MIR_BITMAP_CACHE_MEMORY_FOOTPRINT");
 
 
 BitmapFilter::BitmapFilter(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
@@ -56,16 +54,17 @@ void BitmapFilter::print(std::ostream& out) const {
 
 
 util::Bitmap& BitmapFilter::bitmap() const {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    static util::recursive_mutex local_mutex;
+    util::lock_guard<util::recursive_mutex> lock(local_mutex);
+
     auto j = cache.find(path_);
-    if (j == cache.end()) {
-        std::unique_ptr<util::Bitmap> bitmap(new util::Bitmap(path_));
-        size_t footprint     = bitmap->footprint();
-        util::Bitmap& result = cache.insert(path_, bitmap.release());
-        cache.footprint(path_, caching::InMemoryCacheUsage(footprint, 0));
-        return result;
+    if (j != cache.end()) {
+        return *j;
     }
-    return *j;
+
+    auto& bitmap = cache.insert(path_, new util::Bitmap(path_));
+    cache.footprint(path_, caching::InMemoryCacheUsage(bitmap.footprint(), 0));
+    return bitmap;
 }
 
 
@@ -89,7 +88,7 @@ void BitmapFilter::execute(context::Context& ctx) const {
             os << "BitmapFilter::execute size mismatch: values=" << values.size() << ", bitmap=" << b.width() << "x"
                << b.height() << "=" << b.width() * b.height();
 
-            throw eckit::UserError(os.str());
+            throw exception::UserError(os.str());
         }
 
 

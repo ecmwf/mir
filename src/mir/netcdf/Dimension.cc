@@ -12,7 +12,8 @@
 
 #include "mir/netcdf/Dimension.h"
 
-#include <iostream>
+#include <ostream>
+#include <sstream>
 
 #include "mir/netcdf/Dataset.h"
 #include "mir/netcdf/Exceptions.h"
@@ -58,35 +59,35 @@ size_t Dimension::count() const {
 void Dimension::grow(size_t) {
     std::ostringstream os;
     os << "Dimension::grow() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Dimension::clone(Dataset&) const {
     std::ostringstream os;
     os << "Dimension::clone() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Dimension::create(int) const {
     std::ostringstream os;
     os << "Dimension::create() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 int Dimension::id() const {
     std::ostringstream os;
     os << "Dimension::id() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Dimension::realDimensions(std::vector<size_t>& /*dims*/) const {
     std::ostringstream os;
     os << "Dimension::realDimensions() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 

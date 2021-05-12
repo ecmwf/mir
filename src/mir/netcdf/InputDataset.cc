@@ -14,8 +14,6 @@
 
 #include <netcdf.h>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/InputDimension.h"
 #include "mir/netcdf/InputMatrix.h"
@@ -23,6 +21,8 @@
 #include "mir/netcdf/NCFileCache.h"
 #include "mir/netcdf/SimpleInputVariable.h"
 #include "mir/netcdf/Type.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -30,7 +30,7 @@ namespace netcdf {
 
 
 InputDataset::InputDataset(const std::string& path, NCFileCache& cache) : Dataset(path), cache_(cache) {
-    eckit::Log::info() << "Dataset: pass1..." << std::endl;
+    Log::info() << "Dataset: pass1..." << std::endl;
 
 
     char name[NC_MAX_NAME + 1];
@@ -78,8 +78,8 @@ InputDataset::InputDataset(const std::string& path, NCFileCache& cache) : Datase
 
     file.close();
 
-    eckit::Log::info() << "Dataset: pass1 done" << std::endl;
-    eckit::Log::info() << "Dataset: pass2..." << std::endl;
+    Log::info() << "Dataset: pass1 done" << std::endl;
+    Log::info() << "Dataset: pass2..." << std::endl;
 
     // Finalise...  mark coordinate and cell methods
 
@@ -105,8 +105,7 @@ InputDataset::InputDataset(const std::string& path, NCFileCache& cache) : Datase
             // This is a coordinate variable
             auto m = variables_.find(k);
             if (m == variables_.end()) {
-                eckit::Log::error() << "Coordinate '" << k << "' of " << *v << "has no corresponding variable"
-                                    << std::endl;
+                Log::error() << "Coordinate '" << k << "' of " << *v << "has no corresponding variable" << std::endl;
 
                 continue;
             }
@@ -125,8 +124,7 @@ InputDataset::InputDataset(const std::string& path, NCFileCache& cache) : Datase
             // This is a coordinate variable
             auto m = variables_.find(k);
             if (m == variables_.end()) {
-                eckit::Log::error() << "Cell method '" << k << "' of " << *v << "has no corresponding variable"
-                                    << std::endl;
+                Log::error() << "Cell method '" << k << "' of " << *v << "has no corresponding variable" << std::endl;
 
                 continue;
             }
@@ -150,7 +148,7 @@ InputDataset::InputDataset(const std::string& path, NCFileCache& cache) : Datase
 
         if (v->coordinate()) {
 
-            eckit::Log::warning() << "Assuming that " << *v << " is a coordinate variable" << std::endl;
+            Log::warning() << "Assuming that " << *v << " is a coordinate variable" << std::endl;
 
             // This is a coordinate variable
             Variable* w = v->makeCoordinateVariable();
@@ -170,7 +168,7 @@ InputDataset::InputDataset(const std::string& path, NCFileCache& cache) : Datase
         }
     }
 
-    eckit::Log::info() << "Dataset: pass2..." << std::endl;
+    Log::info() << "Dataset: pass2..." << std::endl;
 
     // Check is the variable needs a special codec (calendar or scale_factor/add_offset)
     for (auto& j : variables_) {
@@ -178,15 +176,15 @@ InputDataset::InputDataset(const std::string& path, NCFileCache& cache) : Datase
     }
 
 
-    eckit::Log::info() << "Dataset: pass4..." << std::endl;
+    Log::info() << "Dataset: pass4..." << std::endl;
 
     for (auto& j : variables_) {
         (j.second)->validate();
     }
 
 
-    eckit::Log::info() << "Dataset: pass4 done" << std::endl;
-    dump(eckit::Log::info(), false);
+    Log::info() << "Dataset: pass4 done" << std::endl;
+    dump(Log::info(), false);
 }
 
 

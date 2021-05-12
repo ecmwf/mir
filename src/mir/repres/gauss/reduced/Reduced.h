@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_gauss_reduced_reduced_h
-#define mir_repres_gauss_reduced_reduced_h
+#pragma once
 
 #include "mir/repres/gauss/Gaussian.h"
 
@@ -42,7 +41,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Reduced();
+    ~Reduced() override;
 
     // -- Convertors
     // None
@@ -78,21 +77,22 @@ protected:
     Iterator* rotatedIterator(const util::Rotation&) const;
 
     const std::vector<long>& pls() const;
-    template <typename PlVector>
-    void setNj(const PlVector&, const Latitude& s, const Latitude& n);
+    static std::vector<long> pls(const std::string&);
+
+    void setNj(std::vector<long>, const Latitude& s, const Latitude& n);
     void correctWestEast(Longitude& w, Longitude& e) const;
 
     // -- Overridden methods
 
-    virtual void fill(grib_info&) const;
-    virtual void fill(api::MIRJob&) const;
-    virtual bool sameAs(const Representation&) const;
-    virtual util::BoundingBox extendBoundingBox(const util::BoundingBox&) const;
+    void fill(grib_info&) const override;
+    void fill(api::MIRJob&) const override;
+    bool sameAs(const Representation&) const override;
+    util::BoundingBox extendBoundingBox(const util::BoundingBox&) const override;
 
     // from Representation
-    virtual bool isPeriodicWestEast() const;
-    virtual void estimate(api::MIREstimation&) const;
-    virtual std::vector<util::GridBox> gridBoxes() const;
+    bool isPeriodicWestEast() const override;
+    void estimate(api::MIREstimation&) const override;
+    std::vector<util::GridBox> gridBoxes() const override;
 
     // -- Class members
 
@@ -110,10 +110,10 @@ private:
 
     // -- Overridden methods
 
-    virtual size_t frame(MIRValuesVector& values, size_t size, double missingValue, bool estimate = false) const;
-    virtual size_t numberOfPoints() const;
-    virtual bool getLongestElementDiagonal(double&) const;
-    virtual std::string factory() const;
+    size_t frame(MIRValuesVector& values, size_t size, double missingValue, bool estimate = false) const override;
+    size_t numberOfPoints() const override;
+    bool getLongestElementDiagonal(double&) const override;
+    std::string factory() const override;
 
     // -- Class members
     // None
@@ -122,9 +122,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const Reduced& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
@@ -132,6 +130,3 @@ private:
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_truncation_Truncation_h
-#define mir_key_truncation_Truncation_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -120,7 +119,7 @@ public:
 
 template <class T>
 class TruncationBuilder : public TruncationFactory {
-    virtual Truncation* make(const param::MIRParametrisation& parametrisation, long targetGaussianN) {
+    Truncation* make(const param::MIRParametrisation& parametrisation, long targetGaussianN) override {
         return new T(parametrisation, targetGaussianN);
     }
 
@@ -132,6 +131,3 @@ public:
 }  // namespace truncation
 }  // namespace key
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_Matrix_h
-#define mir_netcdf_Matrix_h
+#pragma once
 
 #include <string>
 #include <vector>
@@ -79,7 +78,7 @@ public:
     Codec* codec() const;
 
 protected:
-    virtual ~Matrix();
+    ~Matrix() override;
 
     // -- Members
 
@@ -95,7 +94,7 @@ private:
 
     // -- Methods
 
-    virtual void print(std::ostream& out) const = 0;
+    virtual void print(std::ostream&) const = 0;
 
     // -- Friends
     friend std::ostream& operator<<(std::ostream& out, const Matrix& v) {
@@ -107,6 +106,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

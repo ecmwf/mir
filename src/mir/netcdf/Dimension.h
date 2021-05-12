@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_Dimension_h
-#define mir_netcdf_Dimension_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -58,7 +57,7 @@ protected:
 
 private:
     // -- Methods
-    virtual void print(std::ostream& s) const = 0;
+    virtual void print(std::ostream&) const = 0;
 
     // -- Friends
 
@@ -71,6 +70,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

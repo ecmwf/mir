@@ -10,13 +10,12 @@
  */
 
 
-#ifndef mir_method_nonlinear_NonLinear_h
-#define mir_method_nonlinear_NonLinear_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
 
-#include "mir/data/MIRValuesVector.h"
+#include "mir/method/MethodWeighted.h"
 
 
 namespace eckit {
@@ -43,9 +42,6 @@ namespace nonlinear {
 
 class NonLinear {
 public:
-    using WeightMatrix = method::WeightMatrix;
-    using Matrix       = eckit::linalg::Matrix;
-
     NonLinear(const param::MIRParametrisation&);
 
     NonLinear(const NonLinear&) = delete;
@@ -54,14 +50,14 @@ public:
     virtual ~NonLinear();
 
     /// Update interpolation linear system to account for non-linearities
-    virtual bool treatment(Matrix& A, WeightMatrix& W, Matrix& B, const data::MIRValuesVector& values,
-                           const double& missingValue) const = 0;
+    virtual bool treatment(MethodWeighted::Matrix& A, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& B,
+                           const MIRValuesVector& values, const double& missingValue) const = 0;
 
-    virtual bool sameAs(const NonLinear& other) const = 0;
+    virtual bool sameAs(const NonLinear&) const = 0;
 
     virtual void hash(eckit::MD5&) const = 0;
 
-    virtual bool canIntroduceMissingValues() const;
+    virtual bool modifiesMatrix() const;
 
 private:
     virtual void print(std::ostream&) const = 0;
@@ -93,7 +89,7 @@ public:
 
 template <class T>
 class NonLinearBuilder : public NonLinearFactory {
-    virtual NonLinear* make(const param::MIRParametrisation& param) { return new T(param); }
+    NonLinear* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     NonLinearBuilder(const std::string& name) : NonLinearFactory(name) {}
@@ -103,6 +99,3 @@ public:
 }  // namespace nonlinear
 }  // namespace method
 }  // namespace mir
-
-
-#endif

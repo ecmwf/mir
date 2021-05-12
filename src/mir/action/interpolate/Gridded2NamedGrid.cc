@@ -12,12 +12,11 @@
 
 #include "mir/action/interpolate/Gridded2NamedGrid.h"
 
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
 
 #include "mir/key/grid/Grid.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -27,7 +26,7 @@ namespace interpolate {
 
 Gridded2NamedGrid::Gridded2NamedGrid(const param::MIRParametrisation& parametrisation) :
     Gridded2UnrotatedGrid(parametrisation) {
-    ASSERT(parametrisation_.userParametrisation().get("grid", grid_));
+    ASSERT(key::grid::Grid::get("grid", grid_, parametrisation) && !grid_.empty());
 }
 
 
@@ -48,7 +47,7 @@ void Gridded2NamedGrid::print(std::ostream& out) const {
 
 
 const repres::Representation* Gridded2NamedGrid::outputRepresentation() const {
-    const auto& ng = key::grid::Grid::lookup(grid_);
+    auto& ng = key::grid::Grid::lookup(grid_, parametrisation_);
     return ng.representation();
 }
 

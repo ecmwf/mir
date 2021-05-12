@@ -15,16 +15,14 @@
 #include <memory>
 
 #include "eckit/log/JSON.h"
-#include "eckit/log/Log.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
-#include "mir/util/Assert.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Increments.h"
-#include "mir/util/Pretty.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -116,7 +114,7 @@ void Count::count(const PointLatLon& point) {
 
 
 void Count::print(std::ostream& out) const {
-    out << Pretty(count_) << " out of " << Pretty(countTotal_) << ", north=" << n_ << " (bbox.n - n "
+    out << Log::Pretty(count_) << " out of " << Log::Pretty(countTotal_) << ", north=" << n_ << " (bbox.n - n "
         << bbox_.north() - n_ << ")"
         << ", west=" << w_ << " (w - bbox.w " << w_ - bbox_.west() << ")"
         << ", south=" << s_ << " (s - bbox.s " << s_ - bbox_.south() << ")"
@@ -184,22 +182,15 @@ void Count::json(eckit::JSON& j, bool enclose) const {
 }
 
 
-void Count::countOnNamedGrid(std::string grid) {
-    ASSERT(!grid.empty());
+void Count::countOnNamedGrid(const std::string& grid) {
     reset();
-
-    if (!key::grid::Grid::known(grid)) {
-        // avoid 'grid=auto' or 'grid=av' without failure
-        eckit::Log::debug<LibMir>() << "Count: unknown grid '" << grid << "', skipping." << std::endl;
-        return;
-    }
 
     repres::RepresentationHandle rep(key::grid::Grid::lookup(grid).representation());
     countOnRepresentation(*rep);
 }
 
 
-void Count::countOnGridIncrements(std::vector<double> grid) {
+void Count::countOnGridIncrements(const std::vector<double>& grid) {
     ASSERT_KEYWORD_GRID_SIZE(grid.size());
     reset();
 

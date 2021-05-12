@@ -10,14 +10,14 @@
  */
 
 
-#ifndef mir_search_Tree_h
-#define mir_search_Tree_h
+#pragma once
 
-#include <iostream>
+#include <ostream>
 #include <vector>
 
 #include "eckit/container/sptree/SPValue.h"
 #include "eckit/geometry/Point3.h"
+
 #include "mir/util/Types.h"
 
 
@@ -93,7 +93,7 @@ public:
 
 template <class T>
 class TreeBuilder : public TreeFactory {
-    virtual Tree* make(const repres::Representation& r, const param::MIRParametrisation& param) {
+    Tree* make(const repres::Representation& r, const param::MIRParametrisation& param) override {
         return new T(r, param);
     }
 
@@ -104,6 +104,3 @@ public:
 
 }  // namespace search
 }  // namespace mir
-
-
-#endif

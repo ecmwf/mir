@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_compare_FieldInfo_h
-#define mir_compare_FieldInfo_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -41,8 +40,8 @@ private:
     off_t offset_;
     size_t length_;
 
-    void print(std::ostream& out) const;
-    void json(eckit::JSON& json) const;
+    void print(std::ostream&) const;
+    void json(eckit::JSON&) const;
 
     friend std::ostream& operator<<(std::ostream& s, const FieldInfo& x) {
         x.print(s);
@@ -58,6 +57,3 @@ private:
 
 }  // namespace compare
 }  // namespace mir
-
-
-#endif

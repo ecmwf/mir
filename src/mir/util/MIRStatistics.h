@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_MIRStatistics_h
-#define mir_util_MIRStatistics_h
+#pragma once
 
 #include <iosfwd>
 #include <map>
@@ -151,6 +150,3 @@ private:
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

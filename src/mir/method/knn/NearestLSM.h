@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_knn_NearestLSM_h
-#define mir_method_knn_NearestLSM_h
+#pragma once
 
 #include "mir/method/knn/KNearestNeighbours.h"
 
@@ -27,22 +26,22 @@ class NearestLSM : public KNearestNeighbours {
 public:
     NearestLSM(const param::MIRParametrisation&);
 
-    virtual ~NearestLSM();
+    ~NearestLSM() override;
 
 private:
-    virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
-                          const repres::Representation& out) const;
+    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                  const repres::Representation& out) const override;
 
     /// Update matrix to account for field masked values
-    virtual void applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const;
+    void applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const override;
 
-    virtual lsm::LandSeaMasks getMasks(const repres::Representation& in, const repres::Representation& out) const;
+    lsm::LandSeaMasks getMasks(const repres::Representation& in, const repres::Representation& out) const override;
 
-    virtual const char* name() const;
-    virtual bool sameAs(const Method& other) const;
+    const char* name() const override;
+    bool sameAs(const Method&) const override;
 
-    virtual const pick::Pick& pick() const;
-    virtual const distance::DistanceWeighting& distanceWeighting() const;
+    const pick::Pick& pick() const override;
+    const distance::DistanceWeighting& distanceWeighting() const override;
 
     std::unique_ptr<const pick::Pick> pick_;
     distance::DistanceWeightingWithLSM distanceWeighting_;
@@ -52,6 +51,3 @@ private:
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-
-
-#endif

@@ -13,14 +13,14 @@
 #include "mir/search/PointSearch.h"
 
 #include "eckit/config/Resource.h"
-#include "eckit/log/Timer.h"
 #include "eckit/thread/AutoLock.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/Pretty.h"
+#include "mir/util/Log.h"
+#include "mir/util/Trace.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -35,7 +35,7 @@ PointSearch::PointSearch(const param::MIRParametrisation& parametrisation, const
 
     eckit::AutoLock<Tree> lock(*tree_);
 
-    eckit::Log::debug<LibMir>() << "Search using " << *tree_ << std::endl;
+    Log::debug() << "Search using " << *tree_ << std::endl;
 
     if (!tree_->ready()) {
         build(r);
@@ -67,9 +67,9 @@ void PointSearch::build(const repres::Representation& r) {
     const size_t npts = tree_->itemCount();
     ASSERT(npts > 0);
 
-    eckit::Timer timer("PointSearch: building k-d tree");
-    eckit::Log::info() << "PointSearch: building " << *tree_ << " for " << r << " (" << Pretty(npts, {"point"}) << ")"
-                       << std::endl;
+    trace::Timer timer("PointSearch: building k-d tree");
+    Log::info() << "PointSearch: building " << *tree_ << " for " << r << " (" << Log::Pretty(npts, {"point"}) << ")"
+                << std::endl;
 
     static bool fastBuildKDTrees =
         eckit::Resource<bool>("$ATLAS_FAST_BUILD_KDTREES", true);  // We use the same Resource as ATLAS for now

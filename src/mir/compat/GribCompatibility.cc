@@ -12,28 +12,29 @@
 
 #include "mir/compat/GribCompatibility.h"
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
 #include "eckit/utils/Tokenizer.h"
+
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
 namespace compat {
 
 
-static pthread_once_t once                          = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex                    = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex           = nullptr;
 static std::map<std::string, GribCompatibility*>* m = nullptr;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, GribCompatibility*>();
 }
 
 
 GribCompatibility::GribCompatibility(const std::string& name) : name_(name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(name) == m->end());
     (*m)[name] = this;
@@ -41,8 +42,7 @@ GribCompatibility::GribCompatibility(const std::string& name) : name_(name) {
 
 
 GribCompatibility::~GribCompatibility() {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(name_) != m->end());
     m->erase(name_);
@@ -50,8 +50,8 @@ GribCompatibility::~GribCompatibility() {
 
 
 void GribCompatibility::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {
@@ -60,25 +60,26 @@ void GribCompatibility::list(std::ostream& out) {
     }
 }
 
+
 class CombinedGribCompatibility : public GribCompatibility {
 
     std::vector<const GribCompatibility*> list_;
 
-    virtual void execute(const output::MIROutput& output, const param::MIRParametrisation& parametrisation,
-                         grib_handle* h, grib_info& info) const {
+    void execute(const output::MIROutput& output, const param::MIRParametrisation& parametrisation, grib_handle* h,
+                 grib_info& info) const override {
         for (auto c : list_) {
             c->execute(output, parametrisation, h, info);
         }
     }
 
-    virtual void printParametrisation(std::ostream& out, const param::MIRParametrisation& param) const {
+    void printParametrisation(std::ostream& out, const param::MIRParametrisation& param) const override {
         for (auto c : list_) {
             c->printParametrisation(out, param);
         }
     }
 
-    virtual bool sameParametrisation(const param::MIRParametrisation& param1,
-                                     const param::MIRParametrisation& param2) const {
+    bool sameParametrisation(const param::MIRParametrisation& param1,
+                             const param::MIRParametrisation& param2) const override {
 
         for (auto c : list_) {
             if (!c->sameParametrisation(param1, param2)) {
@@ -89,14 +90,14 @@ class CombinedGribCompatibility : public GribCompatibility {
         return true;
     }
 
-    virtual void initialise(const metkit::mars::MarsRequest& request,
-                            std::map<std::string, std::string>& postproc) const {
+    void initialise(const metkit::mars::MarsRequest& request,
+                    std::map<std::string, std::string>& postproc) const override {
         for (auto c : list_) {
             c->initialise(request, postproc);
         }
     }
 
-    virtual void print(std::ostream& out) const {
+    void print(std::ostream& out) const override {
         out << "CombinedGribCompatibility[";
         const char* sep = "";
         for (auto c : list_) {
@@ -105,7 +106,6 @@ class CombinedGribCompatibility : public GribCompatibility {
         }
         out << "]";
     }
-
 
 public:
     CombinedGribCompatibility(const std::string& name, const std::vector<std::string>& names) :
@@ -117,9 +117,10 @@ public:
     }
 };
 
+
 const GribCompatibility& GribCompatibility::lookup(const std::string& name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     auto j = m->find(name);
     if (j == m->end()) {
@@ -132,8 +133,8 @@ const GribCompatibility& GribCompatibility::lookup(const std::string& name) {
             return *(new CombinedGribCompatibility(name, v));
         }
 
-        list(eckit::Log::error() << "GribCompatibility: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("GribCompatibility: unknown '" + name + "'");
+        list(Log::error() << "GribCompatibility: unknown '" << name << "', choices are: ");
+        throw exception::SeriousBug("GribCompatibility: unknown '" + name + "'");
     }
 
     return *(j->second);

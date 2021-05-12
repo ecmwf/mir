@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_ArtificialInput_h
-#define mir_input_ArtificialInput_h
+#pragma once
 
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
@@ -27,7 +26,7 @@ class ArtificialInput : public MIRInput, protected param::FieldParametrisation {
 public:
     // -- Destructor
 
-    virtual ~ArtificialInput();
+    ~ArtificialInput() override;
 
     // -- Convertors
     // None
@@ -57,35 +56,35 @@ protected:
 
     // -- Methods
 
-    virtual data::MIRValuesVector fill(size_t) const = 0;
+    virtual MIRValuesVector fill(size_t) const = 0;
     param::SimpleParametrisation& parametrisation(size_t which = 0);
 
     // -- Overridden methods
 
     // From MIRInput
-    virtual bool next();
-    virtual size_t dimensions() const;
-    virtual const param::MIRParametrisation& parametrisation(size_t which = 0) const;
-    virtual data::MIRField field() const;
-    virtual void setAuxiliaryInformation(const std::string& yaml);
-    virtual void print(std::ostream&) const;
-    virtual bool sameAs(const MIRInput&) const;
+    bool next() override;
+    size_t dimensions() const override;
+    const param::MIRParametrisation& parametrisation(size_t which = 0) const override;
+    data::MIRField field() const override;
+    void setAuxiliaryInformation(const std::string& yaml) override;
+    void print(std::ostream&) const override;
+    bool sameAs(const MIRInput&) const override;
 
     // From FieldParametrisation
-    virtual bool has(const std::string& name) const;
+    bool has(const std::string& name) const override;
 
-    virtual bool get(const std::string& name, std::string& value) const;
-    virtual bool get(const std::string& name, bool& value) const;
-    virtual bool get(const std::string& name, int& value) const;
-    virtual bool get(const std::string& name, long& value) const;
-    virtual bool get(const std::string& name, float& value) const;
-    virtual bool get(const std::string& name, double& value) const;
+    bool get(const std::string& name, std::string& value) const override;
+    bool get(const std::string& name, bool& value) const override;
+    bool get(const std::string& name, int& value) const override;
+    bool get(const std::string& name, long& value) const override;
+    bool get(const std::string& name, float& value) const override;
+    bool get(const std::string& name, double& value) const override;
 
-    virtual bool get(const std::string& name, std::vector<int>& value) const;
-    virtual bool get(const std::string& name, std::vector<long>& value) const;
-    virtual bool get(const std::string& name, std::vector<float>& value) const;
-    virtual bool get(const std::string& name, std::vector<double>& value) const;
-    virtual bool get(const std::string& name, std::vector<std::string>& value) const;
+    bool get(const std::string& name, std::vector<int>& value) const override;
+    bool get(const std::string& name, std::vector<long>& value) const override;
+    bool get(const std::string& name, std::vector<float>& value) const override;
+    bool get(const std::string& name, std::vector<double>& value) const override;
+    bool get(const std::string& name, std::vector<std::string>& value) const override;
 
     // -- Class members
     // None
@@ -138,7 +137,7 @@ public:
 
 template <class T>
 class ArtificialInputBuilder : public ArtificialInputFactory {
-    virtual ArtificialInput* make(const param::MIRParametrisation& param) { return new T(param); }
+    ArtificialInput* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     ArtificialInputBuilder(const std::string& name) : ArtificialInputFactory(name) {}
@@ -147,6 +146,3 @@ public:
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

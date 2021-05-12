@@ -12,7 +12,7 @@
 
 #include "mir/action/io/Set.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/action/context/Context.h"
 #include "mir/input/MIRInput.h"

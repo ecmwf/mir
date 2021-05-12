@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_GlobaliseFilter_h
-#define mir_action_GlobaliseFilter_h
+#pragma once
 
 #include "mir/action/plan/Action.h"
 
@@ -28,16 +27,18 @@ public:
     // -- Constructors
 
     GlobaliseFilter(const param::MIRParametrisation&);
+    GlobaliseFilter(const GlobaliseFilter&) = delete;
 
     // -- Destructor
 
-    virtual ~GlobaliseFilter();  // Change to virtual if base class
+    ~GlobaliseFilter() override;
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    GlobaliseFilter& operator=(const GlobaliseFilter&) = delete;
 
     // -- Methods
     // None
@@ -60,8 +61,8 @@ protected:
 
     // -- Overridden methods
 
-    void print(std::ostream&) const;
-    bool deleteWithNext(const Action&);
+    void print(std::ostream&) const override;
+    bool deleteWithNext(const Action&) override;
 
     // -- Class members
     // None
@@ -70,23 +71,17 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    GlobaliseFilter(const GlobaliseFilter&);
-    GlobaliseFilter& operator=(const GlobaliseFilter&);
-
     // -- Members
-
+    // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual void execute(context::Context& ctx) const;
-    virtual bool sameAs(const Action& other) const;
-    virtual const char* name() const;
-
+    void execute(context::Context&) const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
 
     // -- Class members
     // None
@@ -95,14 +90,9 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const GlobaliseFilter& p)
-    //	{ p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

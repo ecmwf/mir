@@ -14,9 +14,11 @@
 
 #include <cmath>
 #include <complex>
-#include "eckit/exception/Exceptions.h"
+
 #include "eckit/types/FloatCompare.h"
+
 #include "mir/util/Angles.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -65,12 +67,12 @@ struct NormaliseAngle {
 };
 
 template <int SCALE>
-double convert_to_angle(const complex_t&) {
+double convert_to_angle(complex_t) {
     NOTIMP; /* ensure specialisation */
 }
 
 template <int SCALE>
-complex_t convert_to_complex(const double&) {
+complex_t convert_to_complex(double) {
     NOTIMP; /* ensure specialisation */
 }
 
@@ -78,16 +80,18 @@ complex_t convert_to_complex(const double&) {
 // Specialised types
 
 template <>
-NormaliseAngle<DEGREE, ASYMMETRIC>::NormaliseAngle() : GLOBE(360.), MIN(0.) {}
+NormaliseAngle<DEGREE, ASYMMETRIC>::NormaliseAngle() :
+    GLOBE(LongitudeDouble::GLOBE.value()), MIN(LongitudeDouble::GREENWICH.value()) {}
 template <>
-NormaliseAngle<DEGREE, SYMMETRIC>::NormaliseAngle() : GLOBE(360.), MIN(-180.) {}
+NormaliseAngle<DEGREE, SYMMETRIC>::NormaliseAngle() :
+    GLOBE(LongitudeDouble::GLOBE.value()), MIN(LongitudeDouble::MINUS_DATE_LINE.value()) {}
 template <>
-NormaliseAngle<RADIAN, ASYMMETRIC>::NormaliseAngle() : GLOBE(M_PI * 2), MIN(0.) {}
+NormaliseAngle<RADIAN, ASYMMETRIC>::NormaliseAngle() : GLOBE(M_PI * 2.), MIN(0.) {}
 template <>
-NormaliseAngle<RADIAN, SYMMETRIC>::NormaliseAngle() : GLOBE(M_PI * 2), MIN(-M_PI) {}
+NormaliseAngle<RADIAN, SYMMETRIC>::NormaliseAngle() : GLOBE(M_PI * 2.), MIN(-M_PI) {}
 
 template <>
-double convert_to_angle<RADIAN>(const complex_t& c) {
+double convert_to_angle<RADIAN>(complex_t c) {
     if (eckit::types::is_approximately_equal(std::real(c), 0.) &&
         eckit::types::is_approximately_equal(std::imag(c), 0.)) {
         return 0.;
@@ -96,17 +100,17 @@ double convert_to_angle<RADIAN>(const complex_t& c) {
 }
 
 template <>
-complex_t convert_to_complex<RADIAN>(const double& a) {
+complex_t convert_to_complex<RADIAN>(double a) {
     return std::polar(1., a);
 }
 
 template <>
-double convert_to_angle<DEGREE>(const complex_t& c) {
+double convert_to_angle<DEGREE>(complex_t c) {
     return util::radian_to_degree(convert_to_angle<RADIAN>(c));
 }
 
 template <>
-complex_t convert_to_complex<DEGREE>(const double& a) {
+complex_t convert_to_complex<DEGREE>(double a) {
     return convert_to_complex<RADIAN>(util::degree_to_radian(a));
 }
 
@@ -163,7 +167,7 @@ void Space1DAngleT<SCALE, SYMMETRY>::unlinearise(const Space::Matrix& matrixIn, 
             xy           = complex_t(matrixIn(i, 0), matrixIn(i, 1));
             th           = convert_to_angle<SCALE>(xy);
             matrixOut[i] = norm.normalise(th);
-            if (matrixOut[i] > 360.) {
+            if (matrixOut[i] > LongitudeDouble::GLOBE.value()) {
                 th = 2.;
             }
         }

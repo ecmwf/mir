@@ -12,7 +12,6 @@
 
 #include <memory>
 
-#include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/action/misc/AreaCropper.h"
@@ -21,9 +20,9 @@
 #include "mir/action/plan/ActionNode.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/api/MIRWatcher.h"
-#include "mir/config/LibMir.h"
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/param/RuntimeParametrisation.h"
+#include "mir/util/Log.h"
 
 // define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
 
@@ -34,9 +33,9 @@ namespace unit {
 
 
 struct TestWatcher : api::MIRWatcher {
-    void print(std::ostream&) const {}
-    bool failure(std::exception& e, const mir::action::Action& action) {
-        eckit::Log::error() << "Exception: '" << e.what() << "' on " << action << std::endl;
+    void print(std::ostream&) const override {}
+    bool failure(std::exception& e, const mir::action::Action& action) override {
+        Log::error() << "Exception: '" << e.what() << "' on " << action << std::endl;
         throw;
     }
 };
@@ -67,7 +66,7 @@ CASE("ActionGraph") {
         graph.add(plan1, watcher.get());
         graph.add(plan2, watcher.get());
 
-        eckit::Log::debug<LibMir>() << graph << std::endl;
+        Log::debug() << graph << std::endl;
         EXPECT(graph.size() == 2);
         EXPECT(graph[0]->action().sameAs(*reference1));
         EXPECT(graph[1]->action().sameAs(*reference2));
@@ -79,7 +78,7 @@ CASE("ActionGraph") {
         graph.add(plan2, watcher.get());
         graph.add(plan1, watcher.get());
 
-        eckit::Log::debug<LibMir>() << graph << std::endl;
+        Log::debug() << graph << std::endl;
         EXPECT(graph.size() == 2);
         EXPECT(graph[0]->action().sameAs(*reference2));
         EXPECT(graph[1]->action().sameAs(*reference1));
@@ -91,7 +90,7 @@ CASE("ActionGraph") {
         graph.add(plan1, watcher.get());
         graph.add(plan1, watcher.get());
 
-        eckit::Log::debug<LibMir>() << graph << std::endl;
+        Log::debug() << graph << std::endl;
         EXPECT(graph.size() == 1);
         EXPECT(graph[0]->action().sameAs(*reference1));
     }
@@ -102,7 +101,7 @@ CASE("ActionGraph") {
         graph.add(plan2, watcher.get());
         graph.add(plan2, watcher.get());
 
-        eckit::Log::debug<LibMir>() << graph << std::endl;
+        Log::debug() << graph << std::endl;
         EXPECT(graph.size() == 1);
         EXPECT(graph[0]->action().sameAs(*reference2));
     }

@@ -12,7 +12,7 @@
 
 #include "mir/repres/gauss/reduced/ReducedFromPL.h"
 
-#include <iostream>
+#include <ostream>
 
 
 namespace mir {

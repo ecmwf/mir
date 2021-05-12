@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_Job_h
-#define mir_action_Job_h
+#pragma once
 
 #include <memory>
 
@@ -64,8 +63,8 @@ public:
 
     // -- Methods
 
-    void execute(util::MIRStatistics& statistics) const;
-    void estimate(api::MIREstimation& estimation) const;
+    void execute(util::MIRStatistics&) const;
+    void estimate(api::MIREstimation&) const;
 
     const ActionPlan& plan() const;
 
@@ -123,6 +122,3 @@ private:
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

@@ -15,10 +15,11 @@
 #include <cstdio>
 #include <ostream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/io/StdFile.h"
-#include "eckit/log/Bytes.h"
-#include "eckit/log/Log.h"
+
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -29,7 +30,7 @@ namespace legendre {
 FileLoader::FileLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
     LegendreLoader(parametrisation, path), buffer_(size_t(path.size())) {
 
-    log() << "Loading Legendre coefficients from " << path << std::endl;
+    Log::debug() << "Loading Legendre coefficients from " << path << std::endl;
 
     eckit::AutoStdFile file(path);
     ASSERT(std::fread(buffer_, 1, buffer_.size(), file) == buffer_.size());
@@ -38,7 +39,7 @@ FileLoader::FileLoader(const param::MIRParametrisation& parametrisation, const e
 FileLoader::~FileLoader() = default;
 
 void FileLoader::print(std::ostream& out) const {
-    out << "FileLoader[path=" << path_ << ",size=" << eckit::Bytes(buffer_.size()) << "]";
+    out << "FileLoader[path=" << path_ << ",size=" << Log::Bytes(buffer_.size()) << "]";
 }
 
 const void* FileLoader::address() const {

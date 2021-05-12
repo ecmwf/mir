@@ -10,16 +10,14 @@
  */
 
 
-#ifndef mir_stats_statistics_StatisticsT_h
-#define mir_stats_statistics_StatisticsT_h
+#pragma once
 
 #include <ostream>
-
-#include "eckit/exception/Exceptions.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/stats/Statistics.h"
 #include "mir/stats/detail/Counter.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -53,7 +51,7 @@ public:
 
     // -- Overridden methods
 
-    void execute(const data::MIRField& field) {
+    void execute(const data::MIRField& field) override {
         Counter::reset(field);
         STATS::reset();
 
@@ -80,7 +78,7 @@ private:
 
     // -- Overridden methods
 
-    void print(std::ostream& out) const {
+    void print(std::ostream& out) const override {
         out << "Statistics[";
         Counter::print(out);
         out << ",";
@@ -102,6 +100,3 @@ private:
 }  // namespace statistics
 }  // namespace stats
 }  // namespace mir
-
-
-#endif

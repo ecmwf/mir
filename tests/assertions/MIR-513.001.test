@@ -1,0 +1,8 @@
+# mars
+param=vo_d,level=1000,resol=20.SPECIAL
+# mir
+--grid=1/1 --intgrid=none --vod2uv --packing=av
+# grib_get assertions
+packingType=grid_simple
+edition=2
+bitsPerValue=16

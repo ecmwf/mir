@@ -11,59 +11,57 @@
 
 
 #include <ios>
-#include <iostream>
 #include <memory>
+#include <ostream>
 #include <string>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Bytes.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/SimpleOption.h"
 
 #include "mir/caching/legendre/LegendreLoader.h"
 #include "mir/caching/legendre/SharedMemoryLoader.h"
-#include "mir/config/LibMir.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Types.h"
 
 
-class MIRLoadLegendre : public mir::tools::MIRTool {
+using namespace mir;
 
-    // -- Overridden methods
 
-    void execute(const eckit::option::CmdArgs&);
+struct MIRLoadLegendre : tools::MIRTool {
+    MIRLoadLegendre(int argc, char** argv) : MIRTool(argc, argv) {
+        using namespace eckit::option;
 
-    void usage(const std::string& tool) const {
-        eckit::Log::info() << "\n"
-                           << "Usage: " << tool << " [--load] [--unload] <path>" << std::endl;
-    }
-
-    int minimumPositionalArguments() const { return 1; }
-
-public:
-    // -- Constructors
-
-    MIRLoadLegendre(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {
-        options_.push_back(new eckit::option::SimpleOption<bool>(
-            "load", "Load file into memory. If file is already loaded, does nothing."));
-        options_.push_back(new eckit::option::SimpleOption<bool>(
+        options_.push_back(
+            new SimpleOption<bool>("load", "Load file into memory. If file is already loaded, does nothing."));
+        options_.push_back(new SimpleOption<bool>(
             "unload",
             "Unload file from memory. If file is not loaded, or loader does not employ shmem, does nothing."));
-        options_.push_back(
-            new eckit::option::SimpleOption<bool>("wait", "After load/unload, wait for user input before exiting."));
-        options_.push_back(new eckit::option::FactoryOption<mir::caching::legendre::LegendreLoaderFactory>(
+        options_.push_back(new SimpleOption<bool>("wait", "After load/unload, wait for user input before exiting."));
+        options_.push_back(new FactoryOption<caching::legendre::LegendreLoaderFactory>(
             "legendre-loader", "Select how to load Legendre coefficients in memory"));
     }
+
+    int minimumPositionalArguments() const override { return 1; }
+
+    void usage(const std::string& tool) const override {
+        Log::info() << "\n"
+                    << "Usage: " << tool << " [--load] [--unload] <path>" << std::endl;
+    }
+
+    void execute(const eckit::option::CmdArgs&) override;
 };
 
 
-void display(eckit::Channel& out, mir::caching::legendre::LegendreLoader* loader, std::string path) {
+void display(Log::Channel& out, caching::legendre::LegendreLoader* loader, const std::string& path) {
     ASSERT(loader);
 
     // clang-format off
     out << "\n" "path:\t'" << path << "'"
-        << "\n" "size:\t" << eckit::Bytes(loader->size())
+        << "\n" "size:\t" << Log::Bytes(loader->size())
         << "\n" "address:\t" << std::hex << loader->address() << std::dec
         << "\n" "inSharedMemory:\t" << std::boolalpha << loader->inSharedMemory() << std::noboolalpha
         << std::endl;
@@ -72,12 +70,14 @@ void display(eckit::Channel& out, mir::caching::legendre::LegendreLoader* loader
 
 
 void MIRLoadLegendre::execute(const eckit::option::CmdArgs& args) {
-    using namespace mir::caching::legendre;
+    using caching::legendre::LegendreLoader;
+    using caching::legendre::LegendreLoaderFactory;
+    using caching::legendre::SharedMemoryLoader;
 
-    eckit::Log::debug<mir::LibMir>().setStream(std::cerr);
-    eckit::Log::info().setStream(std::cerr);
+    Log::debug().setStream(std::cerr);
+    Log::info().setStream(std::cerr);
 
-    const mir::param::ConfigurationWrapper param(args);
+    const param::ConfigurationWrapper param(args);
 
     bool load   = false;
     bool unload = false;
@@ -90,38 +90,38 @@ void MIRLoadLegendre::execute(const eckit::option::CmdArgs& args) {
         for (const std::string& path : args) {
 
             if (!load) {
-                eckit::Log::info() << "---"
-                                      "\n"
-                                      "unloadSharedMemory"
-                                   << std::endl;
+                Log::info() << "---"
+                               "\n"
+                               "unloadSharedMemory"
+                            << std::endl;
                 SharedMemoryLoader::unloadSharedMemory(path);
                 continue;
             }
 
-            eckit::Log::info() << "---"
-                                  "\n"
-                                  "load"
-                               << std::endl;
+            Log::info() << "---"
+                           "\n"
+                           "load"
+                        << std::endl;
 
             std::unique_ptr<LegendreLoader> loader(LegendreLoaderFactory::build(param, path));
-            display(eckit::Log::info(), loader.get(), path);
+            display(Log::info(), loader.get(), path);
 
             if (unload) {
                 auto shmLoader = dynamic_cast<SharedMemoryLoader*>(loader.get());
                 if (shmLoader != nullptr) {
-                    eckit::Log::info() << "---"
-                                          "\n"
-                                          "unload"
-                                       << std::endl;
+                    Log::info() << "---"
+                                   "\n"
+                                   "unload"
+                                << std::endl;
                     SharedMemoryLoader::unloadSharedMemory(path);
-                    display(eckit::Log::info(), loader.get(), path);
+                    display(Log::info(), loader.get(), path);
                 }
             }
         }
     }
 
     if (wait) {
-        eckit::Log::info() << "Press enter/return to continue..." << std::endl;
+        Log::info() << "Press enter/return to continue..." << std::endl;
         std::cin.get();
     }
 }

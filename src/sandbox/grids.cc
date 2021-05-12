@@ -10,24 +10,24 @@
  */
 
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
 #include "eckit/runtime/Tool.h"
 #include "eckit/utils/RLE.h"
 
-#include "mir/api/Atlas.h"
+#include "mir/util/Atlas.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Types.h"
 
 
-class Grids : public eckit::Tool {
+using namespace mir;
 
-    virtual void run();
 
-    void usage(const std::string& tool);
+struct Grids : eckit::Tool {
+    using Tool::Tool;
+    void run() override;
     void grid(const atlas::StructuredGrid&);
-
-public:
-    Grids(int argc, char** argv) : eckit::Tool(argc, argv) {}
 };
+
 
 void Grids::grid(const atlas::StructuredGrid& grid) {
 
@@ -42,69 +42,34 @@ void Grids::grid(const atlas::StructuredGrid& grid) {
 
     std::vector<int> diff;
     diff.reserve(half);
-    eckit::DIFFencode(points_per_latitudes.begin(), points_per_latitudes.begin() + half, std::back_inserter(diff));
+    eckit::DIFFencode(points_per_latitudes.begin(), points_per_latitudes.begin() + long(half),
+                      std::back_inserter(diff));
 
     std::vector<int> rle;
     eckit::RLEencode2(diff.begin(), diff.end(), std::back_inserter(rle), 1000);
 
     const atlas::Grid& g = grid;
 
-    eckit::Log::info() << "uid " << g.uid() << " rle ";
-    eckit::RLEprint(eckit::Log::info(), rle.begin(), rle.end());
-    eckit::Log::info() << std::endl;
+    Log::info() << "uid " << g.uid() << " rle ";
+    eckit::RLEprint(Log::info(), rle.begin(), rle.end());
+    Log::info() << std::endl;
 }
+
 
 void Grids::run() {
-    using atlas::ReducedGaussianGrid;
+    for (const std::string& name :
+         {"N16",  "N24",  "N32",  "N48",  "N64",  "N80",   "N96",   "N128",  "N160",  "N200",  "N256", "N320",
+          "N400", "N512", "N576", "N640", "N800", "N1024", "N1280", "N1600", "N2000", "N4000", "N8000"}) {
+        grid(atlas::ReducedGaussianGrid(name));
+    }
 
-    grid(ReducedGaussianGrid("N16"));
-    grid(ReducedGaussianGrid("N24"));
-    grid(ReducedGaussianGrid("N32"));
-    grid(ReducedGaussianGrid("N48"));
-    grid(ReducedGaussianGrid("N64"));
-    grid(ReducedGaussianGrid("N80"));
-    grid(ReducedGaussianGrid("N96"));
-    grid(ReducedGaussianGrid("N128"));
-    grid(ReducedGaussianGrid("N160"));
-    grid(ReducedGaussianGrid("N200"));
-    grid(ReducedGaussianGrid("N256"));
-    grid(ReducedGaussianGrid("N320"));
-    grid(ReducedGaussianGrid("N400"));
-    grid(ReducedGaussianGrid("N512"));
-    grid(ReducedGaussianGrid("N576"));
-    grid(ReducedGaussianGrid("N640"));
-    grid(ReducedGaussianGrid("N800"));
-    grid(ReducedGaussianGrid("N1024"));
-    grid(ReducedGaussianGrid("N1280"));
-    grid(ReducedGaussianGrid("N1600"));
-    grid(ReducedGaussianGrid("N2000"));
-    grid(ReducedGaussianGrid("N4000"));
-    grid(ReducedGaussianGrid("N8000"));
-
-    grid(ReducedGaussianGrid("O16"));
-    grid(ReducedGaussianGrid("O24"));
-    grid(ReducedGaussianGrid("O32"));
-    grid(ReducedGaussianGrid("O48"));
-    grid(ReducedGaussianGrid("O64"));
-    grid(ReducedGaussianGrid("O80"));
-    grid(ReducedGaussianGrid("O96"));
-    grid(ReducedGaussianGrid("O128"));
-    grid(ReducedGaussianGrid("O160"));
-    grid(ReducedGaussianGrid("O200"));
-    grid(ReducedGaussianGrid("O256"));
-    grid(ReducedGaussianGrid("O320"));
-    grid(ReducedGaussianGrid("O400"));
-    grid(ReducedGaussianGrid("O512"));
-    grid(ReducedGaussianGrid("O576"));
-    grid(ReducedGaussianGrid("O640"));
-    grid(ReducedGaussianGrid("O800"));
-    grid(ReducedGaussianGrid("O1024"));
-    grid(ReducedGaussianGrid("O1280"));
-    grid(ReducedGaussianGrid("O1600"));
-    grid(ReducedGaussianGrid("O2000"));
-    grid(ReducedGaussianGrid("O4000"));
-    grid(ReducedGaussianGrid("O8000"));
+    for (const std::string& name :
+         {"O16",  "O24",  "O32",  "O48",  "O64",  "O80",   "O96",   "O128",  "O160",  "O200",  "O256", "O320",
+          "O400", "O512", "O576", "O640", "O800", "O1024", "O1280", "O1600", "O2000", "O4000", "O8000"}) {
+        grid(atlas::ReducedGaussianGrid(name));
+    }
 }
+
 
 int main(int argc, char** argv) {
     Grids tool(argc, argv);

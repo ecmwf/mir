@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_Dataset_h
-#define mir_netcdf_Dataset_h
+#pragma once
 
 #include "mir/netcdf/Endowed.h"
 
@@ -35,7 +34,7 @@ namespace netcdf {
 class Dataset : public Endowed {
 public:
     Dataset(const std::string&);
-    virtual ~Dataset();
+    ~Dataset() override;
 
     // -- Methods
 
@@ -58,7 +57,7 @@ public:
 
     // From Endowed
 
-    virtual const std::string& path() const;
+    const std::string& path() const override;
 
 protected:
     // -- Members
@@ -72,12 +71,12 @@ private:
 
     // From Endowed
 
-    virtual int varid() const;
-    virtual const std::string& name() const;
+    int varid() const override;
+    const std::string& name() const override;
 
     // - Methods
 
-    virtual void print(std::ostream& s) const = 0;
+    virtual void print(std::ostream&) const = 0;
 
     // -- Friends
     friend std::ostream& operator<<(std::ostream& s, const Dataset& v) {
@@ -89,6 +88,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

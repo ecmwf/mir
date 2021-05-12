@@ -1,0 +1,6 @@
+# Mars request
+gridType=regular_gg,gridName=F32,shortName=msl.grib1
+# Mir tool options
+--grid=O32 --interpolation=nn
+# grib_get assertions
+gridName=O32

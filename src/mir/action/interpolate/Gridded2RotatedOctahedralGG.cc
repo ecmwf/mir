@@ -12,12 +12,11 @@
 
 #include "mir/action/interpolate/Gridded2RotatedOctahedralGG.h"
 
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
 
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/gauss/reduced/RotatedOctahedral.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

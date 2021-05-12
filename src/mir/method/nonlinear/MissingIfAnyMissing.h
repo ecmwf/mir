@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_nonlinear_MissingIfAnyMissing_h
-#define mir_method_nonlinear_MissingIfAnyMissing_h
+#pragma once
 
 #include "mir/method/nonlinear/NonLinear.h"
 
@@ -25,17 +24,14 @@ struct MissingIfAnyMissing : NonLinear {
     MissingIfAnyMissing(const param::MIRParametrisation&);
 
 private:
-    bool treatment(Matrix& A, WeightMatrix& W, Matrix& B, const data::MIRValuesVector& values,
-                   const double& missingValue) const;
-    bool sameAs(const NonLinear&) const;
-    void print(std::ostream&) const;
-    void hash(eckit::MD5&) const;
+    bool treatment(MethodWeighted::Matrix& A, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& B,
+                   const MIRValuesVector& values, const double& missingValue) const override;
+    bool sameAs(const NonLinear&) const override;
+    void print(std::ostream&) const override;
+    void hash(eckit::MD5&) const override;
 };
 
 
 }  // namespace nonlinear
 }  // namespace method
 }  // namespace mir
-
-
-#endif

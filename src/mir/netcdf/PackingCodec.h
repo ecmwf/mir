@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_PackingCodec_h
-#define mir_netcdf_PackingCodec_h
+#pragma once
 
 #include "mir/netcdf/Codec.h"
 
@@ -23,20 +22,17 @@ namespace netcdf {
 class PackingCodec : public Codec {
 public:
     PackingCodec(const Variable&);
-    virtual ~PackingCodec();
+    ~PackingCodec() override;
 
 private:
     double scale_factor_;
     double add_offset_;
 
     // -- Methods
-    virtual void print(std::ostream&) const;
-    virtual void decode(std::vector<double>&) const;
+    void print(std::ostream&) const override;
+    void decode(std::vector<double>&) const override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

@@ -72,6 +72,12 @@ index.associated:
 # physical quantity whose magnitude is independent of the extent (size) of the system (typical units: no typical units)
 intensity: {}
 
+# radiant intensity per unit frequency or wavelength
+intensity.spectral-intensity: {}
+
+# radiance of a surface per unit frequency or wavelength (also called "spectral intensity")
+intensity.spectral-radiance: {}
+
 # quantity interpreted as accumulated in time (typical units: [<original unit> s])
 numerics.accumulated: {}
 
@@ -141,6 +147,21 @@ spectrum.associated-magnitude:
 
 # quantity expressing the internal forces arising from deformation exerted from external forces (typical units: [Pa])
 stress: {}
+
+orca.arrangement.f:
+    orca-arrangement: F
+
+orca.arrangement.t:
+    orca-arrangement: T
+
+orca.arrangement.u:
+    orca-arrangement: U
+
+orca.arrangement.v:
+    orca-arrangement: V
+
+orca.arrangement.w:
+    orca-arrangement: W
 
 unknown.experimental:
     _warning: true

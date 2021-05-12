@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_knn_pick_SortedSample_h
-#define mir_method_knn_pick_SortedSample_h
+#pragma once
 
 #include "mir/method/knn/pick/Pick.h"
 #include "mir/method/knn/pick/Sample.h"
@@ -25,13 +24,13 @@ namespace pick {
 
 struct SortedSample : Pick {
     SortedSample(const param::MIRParametrisation&);
-    void pick(const search::PointSearch&, const Point3&, neighbours_t&) const;
-    virtual size_t n() const;
-    virtual bool sameAs(const Pick&) const;
-    virtual void hash(eckit::MD5&) const;
+    void pick(const search::PointSearch&, const Point3&, neighbours_t&) const override;
+    size_t n() const override;
+    bool sameAs(const Pick&) const override;
+    void hash(eckit::MD5&) const override;
 
 private:
-    virtual void print(std::ostream&) const;
+    void print(std::ostream&) const override;
     Sample sample_;
 };
 
@@ -40,6 +39,3 @@ private:
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-
-
-#endif

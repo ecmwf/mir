@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_caching_CroppingCache_h
-#define mir_caching_CroppingCache_h
+#pragma once
 
 #include "eckit/container/CacheManager.h"
 #include "mir/util/BoundingBox.h"
@@ -65,6 +64,3 @@ public:  // methods
 
 }  // namespace caching
 }  // namespace mir
-
-
-#endif

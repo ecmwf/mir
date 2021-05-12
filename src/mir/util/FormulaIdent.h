@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_FormulaIdent_h
-#define mir_util_FormulaIdent_h
+#pragma once
 
 #include <string>
 
@@ -25,13 +24,13 @@ namespace util {
 class FormulaIdent : public Formula {
 public:
     FormulaIdent(const param::MIRParametrisation& parametrisation, const std::string& name);
-    virtual ~FormulaIdent();
+    ~FormulaIdent() override;
 
 private:
-    virtual void print(std::ostream&) const;
-    virtual void execute(context::Context&) const;
-    virtual bool sameAs(const Action&) const;
-    virtual const char* name() const;
+    void print(std::ostream&) const override;
+    void execute(context::Context&) const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
 
 private:  // members
     std::string name_;
@@ -40,6 +39,3 @@ private:  // members
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

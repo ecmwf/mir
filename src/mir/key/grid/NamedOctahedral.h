@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_grid_NamedOctahedral_h
-#define mir_key_grid_NamedOctahedral_h
+#pragma once
 
 #include "mir/key/grid/NamedGrid.h"
 
@@ -32,8 +31,7 @@ public:
     NamedOctahedral(const NamedOctahedral&) = delete;
 
     // -- Destructor
-
-    virtual ~NamedOctahedral();
+    // None
 
     // -- Convertors
     // None
@@ -63,10 +61,10 @@ protected:
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const;
-    virtual size_t gaussianNumber() const;
-    virtual const repres::Representation* representation() const;
-    virtual const repres::Representation* representation(const util::Rotation&) const;
+    void print(std::ostream&) const override;
+    size_t gaussianNumber() const override;
+    const repres::Representation* representation() const override;
+    const repres::Representation* representation(const util::Rotation&) const override;
 
     // -- Class members
     // None
@@ -99,6 +97,3 @@ private:
 }  // namespace grid
 }  // namespace key
 }  // namespace mir
-
-
-#endif

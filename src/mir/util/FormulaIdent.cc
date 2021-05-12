@@ -11,9 +11,12 @@
 
 
 #include "mir/util/FormulaIdent.h"
-#include <iostream>
-#include "eckit/exception/Exceptions.h"
+
+#include <ostream>
+#include <sstream>
+
 #include "mir/action/context/Context.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -49,7 +52,7 @@ void FormulaIdent::execute(mir::context::Context& ctx) const {
     if (name_ != "f") {
         std::ostringstream oss;
         oss << "Only variable 'f' is supported (" << name_ << ")";
-        throw eckit::UserError(oss.str());
+        throw exception::UserError(oss.str());
     }
 
     // Make sure the field is loaded

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_gauss_reduced_ReducedOctahedral_h
-#define mir_repres_gauss_reduced_ReducedOctahedral_h
+#pragma once
 
 #include "mir/repres/gauss/reduced/Octahedral.h"
 
@@ -33,7 +32,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ReducedOctahedral();
+    ~ReducedOctahedral() override;
 
     // -- Convertors
     // None
@@ -59,7 +58,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -79,10 +78,10 @@ private:
 
     // -- Overridden methods
 
-    virtual Iterator* iterator() const;
-    virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const;
-    virtual void makeName(std::ostream&) const;
-    virtual bool sameAs(const Representation&) const;
+    Iterator* iterator() const override;
+    const Gridded* croppedRepresentation(const util::BoundingBox&) const override;
+    void makeName(std::ostream&) const override;
+    bool sameAs(const Representation&) const override;
 
     // -- Class members
     // None
@@ -99,6 +98,3 @@ private:
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

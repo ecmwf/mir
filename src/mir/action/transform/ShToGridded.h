@@ -10,12 +10,12 @@
  */
 
 
-#ifndef mir_action_transform_ShToGridded_h
-#define mir_action_transform_ShToGridded_h
+#pragma once
 
 #include "mir/action/plan/Action.h"
-#include "mir/api/Atlas.h"
 #include "mir/method/Cropping.h"
+#include "mir/util/Atlas.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -49,7 +49,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ShToGridded();
+    ~ShToGridded() override;
 
     // -- Convertors
     // None
@@ -78,9 +78,9 @@ protected:
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const        = 0;
-    virtual bool sameAs(const Action& other) const = 0;
-    virtual void estimate(context::Context&, api::MIREstimation& estimation) const;
+    void print(std::ostream&) const override  = 0;
+    bool sameAs(const Action&) const override = 0;
+    void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Class members
     // None
@@ -104,9 +104,9 @@ private:
 
     // -- Overridden methods
 
-    virtual void execute(context::Context&) const;
+    void execute(context::Context&) const override;
 
-    virtual bool mergeWithNext(const Action&);
+    bool mergeWithNext(const Action&) override;
 
     // -- Class members
     // None
@@ -115,15 +115,10 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const ShToGriddedTransform& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-
-
-#endif

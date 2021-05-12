@@ -12,14 +12,15 @@
 
 #include "mir/output/MIROutput.h"
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/filesystem/PathName.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
+#include <sstream>
 
-#include "mir/config/LibMir.h"
+#include "eckit/filesystem/PathName.h"
+
 #include "mir/output/GribFileOutput.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -32,40 +33,40 @@ MIROutput::MIROutput() = default;
 MIROutput::~MIROutput() = default;
 
 
-static pthread_once_t once                                    = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex                              = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* fmt_mutex                       = nullptr;
+static util::recursive_mutex* ext_mutex                       = nullptr;
 static std::map<std::string, MIROutputFactory*>* m_formats    = nullptr;
 static std::map<std::string, MIROutputFactory*>* m_extensions = nullptr;
 static void init() {
-    local_mutex  = new eckit::Mutex();
+    fmt_mutex    = new util::recursive_mutex();
+    ext_mutex    = new util::recursive_mutex();
     m_formats    = new std::map<std::string, MIROutputFactory*>();
     m_extensions = new std::map<std::string, MIROutputFactory*>();
 }
 
 
-// Extension handling
 struct OutputFromExtension : public MIROutputFactory {
 
-    virtual MIROutput* make(const std::string& path) {
+    MIROutput* make(const std::string& path) override {
         const eckit::PathName p(path);
         const std::string ext = p.extension();
 
         auto j = m_extensions->find(ext);
         if (j == m_extensions->cend()) {
-            list(eckit::Log::debug<LibMir>()
-                 << "OutputFromExtension: unknown extension '" << ext << "', choices are: ");
-            eckit::Log::debug<LibMir>() << ", returning 'grib'" << std::endl;
+            list(Log::debug() << "OutputFromExtension: unknown extension '" << ext << "', choices are: ");
+            Log::debug() << ", returning 'grib'" << std::endl;
 
             return new GribFileOutput(p);
         }
 
-        eckit::Log::debug<LibMir>() << "MIROutputFactory: returning '" << ext << "' for '" << path << "'" << std::endl;
+        Log::debug() << "MIROutputFactory: returning '" << ext << "' for '" << path << "'" << std::endl;
         return j->second->make(path);
     }
 
     static void list(std::ostream& out) {
-        pthread_once(&once, init);
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+        util::call_once(once, init);
+        util::lock_guard<util::recursive_mutex> lock(*ext_mutex);
 
         const char* sep = "";
         for (const auto& j : *m_extensions) {
@@ -76,18 +77,21 @@ struct OutputFromExtension : public MIROutputFactory {
 
     OutputFromExtension() : MIROutputFactory("extension") {}
 
-    ~OutputFromExtension() { m_extensions->clear(); }
+    ~OutputFromExtension() override {
+        util::lock_guard<util::recursive_mutex> lock(*ext_mutex);
+        m_extensions->clear();
+    }
 
 } static _extension;
 
 
 MIROutputFactory::MIROutputFactory(const std::string& name, const std::vector<std::string>& extensions) :
     name_(name), extensions_(extensions) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*fmt_mutex);
 
     if (m_formats->find(name) != m_formats->end()) {
-        throw eckit::SeriousBug("MIROutputFactory: duplicate '" + name + "'");
+        throw exception::SeriousBug("MIROutputFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m_formats->find(name) == m_formats->end());
@@ -96,7 +100,7 @@ MIROutputFactory::MIROutputFactory(const std::string& name, const std::vector<st
     for (auto& ext : extensions) {
         ASSERT(!ext.empty());
         if (m_extensions->find(ext) != m_extensions->end()) {
-            throw eckit::SeriousBug("MIROutputFactory: duplicate extension '" + ext + "'");
+            throw exception::SeriousBug("MIROutputFactory: duplicate extension '" + ext + "'");
         }
 
         ASSERT(m_extensions->find(name) == m_extensions->end());
@@ -106,7 +110,8 @@ MIROutputFactory::MIROutputFactory(const std::string& name, const std::vector<st
 
 
 MIROutputFactory::~MIROutputFactory() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*fmt_mutex);
+
     if (m_formats != nullptr) {
         m_formats->erase(name_);
     }
@@ -114,8 +119,10 @@ MIROutputFactory::~MIROutputFactory() {
 
 
 MIROutput* MIROutputFactory::build(const std::string& path, const param::MIRParametrisation& parametrisation) {
-    const param::MIRParametrisation& user = parametrisation.userParametrisation();
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*fmt_mutex);
 
+    const auto& user   = parametrisation.userParametrisation();
     std::string format = user.has("griddef") || user.has("latitudes") || user.has("longitudes")
                              ? "geopoints"
                              : "extension";  // maybe "grib"??
@@ -124,19 +131,19 @@ MIROutput* MIROutputFactory::build(const std::string& path, const param::MIRPara
 
     auto j = m_formats->find(format);
     if (j == m_formats->cend()) {
-        list(eckit::Log::error() << "MIROutputFactory: unknown '" << format << "', choices are: ");
-        eckit::Log::error() << std::endl;
-        throw eckit::SeriousBug("MIROutputFactory: unknown '" + format + "'");
+        list(Log::error() << "MIROutputFactory: unknown '" << format << "', choices are: ");
+        Log::error() << std::endl;
+        throw exception::SeriousBug("MIROutputFactory: unknown '" + format + "'");
     }
 
-    eckit::Log::debug<LibMir>() << "MIROutputFactory: returning '" << format << "' for '" << path << "'" << std::endl;
+    Log::debug() << "MIROutputFactory: returning '" << format << "' for '" << path << "'" << std::endl;
     return j->second->make(path);
 }
 
 
 void MIROutputFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*fmt_mutex);
 
     const char* sep = "";
     for (const auto& j : *m_formats) {
@@ -160,7 +167,7 @@ void MIROutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, i
 void MIROutput::estimate(const param::MIRParametrisation&, api::MIREstimation&, context::Context&) const {
     std::ostringstream oss;
     oss << "MIROutput::estimate not implemented for " << *this;
-    throw eckit::SeriousBug(oss.str());
+    throw exception::SeriousBug(oss.str());
 }
 
 

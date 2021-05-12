@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_interpolate_Gridded2GriddedInterpolation_h
-#define mir_action_interpolate_Gridded2GriddedInterpolation_h
+#pragma once
 
 #include <memory>
 
@@ -45,7 +44,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gridded2GriddedInterpolation();
+    ~Gridded2GriddedInterpolation() override;
 
     // -- Convertors
     // None
@@ -73,12 +72,12 @@ protected:
 
     const method::Method& method() const;
     virtual const repres::Representation* outputRepresentation() const = 0;
-    virtual void estimate(context::Context&, api::MIREstimation& estimation) const;
+    void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action&) const = 0;
-    virtual void print(std::ostream&) const  = 0;
+    bool sameAs(const Action&) const override = 0;
+    void print(std::ostream&) const override  = 0;
 
     // -- Class members
     // None
@@ -95,15 +94,15 @@ private:
 
     // -- Methods
 
-    virtual util::BoundingBox outputBoundingBox() const = 0;
+    util::BoundingBox outputBoundingBox() const override = 0;
 
     // -- Overridden methods
 
-    virtual void execute(context::Context&) const;
-    virtual bool mergeWithNext(const Action&);
-    virtual bool canCrop() const;
+    void execute(context::Context&) const override;
+    bool mergeWithNext(const Action&) override;
+    bool canCrop() const override;
 
-    method::Cropping cropping(context::Context& ctx) const;
+    method::Cropping cropping(context::Context&) const;
 
     // -- Class members
     // None
@@ -119,6 +118,3 @@ private:
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-
-
-#endif

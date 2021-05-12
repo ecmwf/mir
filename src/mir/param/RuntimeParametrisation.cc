@@ -12,9 +12,9 @@
 
 #include "mir/param/RuntimeParametrisation.h"
 
-#include <iostream>
-#include "eckit/log/Log.h"
-#include "mir/config/LibMir.h"
+#include <ostream>
+
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -37,16 +37,14 @@ void RuntimeParametrisation::print(std::ostream& out) const {
 
 template <class T>
 void RuntimeParametrisation::_set(const std::string& name, const T& value) {
-    eckit::Log::debug<LibMir>() << "************* RuntimeParametrisation::set [" << name << "] = [" << value << "]"
-                                << std::endl;
+    Log::debug() << "************* RuntimeParametrisation::set [" << name << "] = [" << value << "]" << std::endl;
     SimpleParametrisation::set(name, value);
 }
 
 
 template <class T>
 void RuntimeParametrisation::_set(const std::string& name, const std::vector<T>& value) {
-    eckit::Log::debug<LibMir>() << "************* RuntimeParametrisation::set [" << name << "] = #" << value.size()
-                                << std::endl;
+    Log::debug() << "************* RuntimeParametrisation::set [" << name << "] = #" << value.size() << std::endl;
     SimpleParametrisation::set(name, value);
 }
 

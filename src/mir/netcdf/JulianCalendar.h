@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_GregorianDateCodec_h
-#define mir_netcdf_GregorianDateCodec_h
+#pragma once
 
 #include "mir/netcdf/Calendar.h"
 
@@ -23,15 +22,12 @@ namespace netcdf {
 class JulianCalendar : public Calendar {
 public:
     JulianCalendar(const Variable&);
-    virtual ~JulianCalendar();
+    ~JulianCalendar() override;
 
 private:
-    virtual void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

@@ -14,15 +14,15 @@
 
 #include <string>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/JSON.h"
-#include "eckit/log/Log.h"
 #include "eckit/parser/YAMLParser.h"
-#include "eckit/thread/AutoLock.h"
 #include "eckit/utils/StringTools.h"
 
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -43,13 +43,13 @@ GribFixes::~GribFixes() {
 
 
 bool GribFixes::fix(const param::MIRParametrisation& input, param::SimpleParametrisation& fixed) {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
-    auto& log = eckit::Log::warning();
+    static util::recursive_mutex mtx;
+    util::lock_guard<util::recursive_mutex> lock(mtx);
 
     for (auto& f : fixes_) {
         if ((f.first)->matches(input)) {
             ASSERT(f.second);
-            log << "GribFixes: applying fixes " << *(f.second) << std::endl;
+            Log::warning() << "GribFixes: applying fixes " << *(f.second) << std::endl;
             f.second->copyValuesTo(fixed);
             return true;
         }
@@ -72,7 +72,8 @@ void GribFixes::print(std::ostream& s) const {
 
 
 void GribFixes::readConfigurationFiles() {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    static util::recursive_mutex mtx;
+    util::lock_guard<util::recursive_mutex> lock(mtx);
 
     using eckit::StringTools;
 
@@ -95,7 +96,7 @@ void GribFixes::readConfigurationFiles() {
             auto key   = StringTools::trim(keyValue[0]);
             auto value = StringTools::trim(keyValue[1]);
 
-            if (value.find("/") != std::string::npos) {
+            if (value.find('/') != std::string::npos) {
                 auto values = StringTools::split("/", value);
                 id->set(key, values);
             }
@@ -108,17 +109,15 @@ void GribFixes::readConfigurationFiles() {
         auto fix = new param::SimpleParametrisation;
         ASSERT(fix);
 
-        for (eckit::ValueMap fixes : static_cast<const eckit::ValueList&>(rule.second)) {
-            for (const auto& keyValue : fixes) {
+        for (auto& fixes : static_cast<const eckit::ValueList&>(rule.second)) {
+            for (const auto& keyValue : eckit::ValueMap(fixes)) {
                 auto key = StringTools::trim(keyValue.first);
 
                 // value type checking prevents lossy conversions (eg. string > double > string > double)
-                keyValue.second.isDouble()
-                    ? fix->set(key, keyValue.second.as<double>())
-                    : keyValue.second.isNumber()
-                          ? fix->set(key, keyValue.second.as<long long>())
-                          : keyValue.second.isBool() ? fix->set(key, keyValue.second.as<bool>())
-                                                     : fix->set(key, keyValue.second.as<std::string>());
+                keyValue.second.isDouble()   ? fix->set(key, keyValue.second.as<double>())
+                : keyValue.second.isNumber() ? fix->set(key, keyValue.second.as<long long>())
+                : keyValue.second.isBool()   ? fix->set(key, keyValue.second.as<bool>())
+                                             : fix->set(key, keyValue.second.as<std::string>());
             }
         }
 

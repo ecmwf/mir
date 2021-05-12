@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_stats_statistics_Spectral_h
-#define mir_stats_statistics_Spectral_h
+#pragma once
 
 #include "mir/stats/Statistics.h"
 
@@ -35,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Spectral();
+    ~Spectral() override;
 
     // -- Convertors
     // None
@@ -53,7 +52,7 @@ public:
 
     // -- Overridden methods
 
-    void execute(const data::MIRField&);
+    void execute(const data::MIRField&) override;
 
     // -- Class members
     // None
@@ -74,7 +73,7 @@ private:
 
     // -- Overridden methods
 
-    void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
     // -- Class members
     // None
@@ -90,6 +89,3 @@ private:
 }  // namespace statistics
 }  // namespace stats
 }  // namespace mir
-
-
-#endif

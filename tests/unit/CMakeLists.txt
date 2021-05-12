@@ -3,7 +3,7 @@
 set(TEST_ECKIT_CACHE_DIR ${CMAKE_CURRENT_BINARY_DIR}/cache/)
 file(REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR})
 
-set(tests
+foreach(_t
 #    MIR-333
     MIR-425
     action_graph
@@ -13,11 +13,9 @@ set(tests
     increments
     iterator
     spectral_order
+    statistics
     style
-    wind
-    atlas)
-
-foreach(_t ${tests})
+    wind)
     ecbuild_add_test(
         TARGET            mir_tests_unit_${_t}
         SOURCES           ${_t}.cc
@@ -25,4 +23,13 @@ foreach(_t ${tests})
         ENVIRONMENT       ${_testEnvironment}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 endforeach()
+
+if(mir_HAVE_ATLAS)
+    ecbuild_add_test(
+        TARGET            mir_tests_unit_atlas
+        SOURCES           atlas.cc
+        LIBS              mir
+        ENVIRONMENT       ${_testEnvironment}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+endif()
 

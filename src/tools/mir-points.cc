@@ -10,40 +10,36 @@
  */
 
 
-#include "eckit/log/Log.h"
 #include "eckit/option/CmdArgs.h"
 
 #include "mir/api/MIRJob.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/output/ValuesOutput.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Log.h"
 
 
-class MIRPoints : public mir::tools::MIRTool {
+using namespace mir;
 
-    // -- Overridden methods
 
-    void execute(const eckit::option::CmdArgs&);
+struct MIRPoints : tools::MIRTool {
+    using MIRTool::MIRTool;
 
-    void usage(const std::string& tool) const {
-        eckit::Log::info() << "\n"
-                              "Usage: "
-                           << tool << std::endl;
+    void usage(const std::string& tool) const override {
+        Log::info() << "\n"
+                       "Usage: "
+                    << tool << std::endl;
     }
 
-public:
-    // -- Constructors
-
-    using MIRTool::MIRTool;
+    void execute(const eckit::option::CmdArgs&) override;
 };
 
 
 void MIRPoints::execute(const eckit::option::CmdArgs& args) {
+    input::GribFileInput input(args(0));
+    output::ValuesOutput output;
 
-    mir::input::GribFileInput input(args(0));
-    mir::output::ValuesOutput output;
-
-    mir::api::MIRJob job;
+    api::MIRJob job;
 
     std::vector<double> latitudes  = {50, 30, 20, 10, 0};
     std::vector<double> longitudes = {-10, 10, 6, 52, 8};
@@ -60,10 +56,10 @@ void MIRPoints::execute(const eckit::option::CmdArgs& args) {
     while (input.next()) {
         job.execute(input, output);
 
-        eckit::Log::info() << "Number of fields: " << output.dimensions() << std::endl;
-        eckit::Log::info() << "Values " << output.values() << std::endl;
-        eckit::Log::info() << "Has missing " << output.hasMissing() << std::endl;
-        eckit::Log::info() << "Missing " << output.missingValue() << std::endl;
+        Log::info() << "Number of fields: " << output.dimensions() << std::endl;
+        Log::info() << "Values " << output.values() << std::endl;
+        Log::info() << "Has missing " << output.hasMissing() << std::endl;
+        Log::info() << "Missing " << output.missingValue() << std::endl;
     }
 }
 

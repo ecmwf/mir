@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_InputField_h
-#define mir_netcdf_InputField_h
+#pragma once
 
 #include "mir/netcdf/Dataset.h"
 
@@ -30,7 +29,7 @@ namespace netcdf {
 class InputDataset : public Dataset {
 public:
     InputDataset(const std::string&, NCFileCache&);
-    virtual ~InputDataset();
+    ~InputDataset() override;
 
     virtual std::vector<Field*> fields() const;
 
@@ -50,12 +49,9 @@ private:
 
     // - Methods
 
-    void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_caching_legendre_MappedMemoryLoader_h
-#define mir_caching_legendre_MappedMemoryLoader_h
+#pragma once
 
 #include "mir/caching/legendre/LegendreLoader.h"
 
@@ -25,17 +24,17 @@ class MappedMemoryLoader : public LegendreLoader {
 public:
     MappedMemoryLoader(const param::MIRParametrisation&, const eckit::PathName& path);
 
-    ~MappedMemoryLoader();
+    ~MappedMemoryLoader() override;
 
     static bool shared();
 
 protected:
-    void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
 private:
-    virtual const void* address() const;
-    virtual size_t size() const;
-    virtual bool inSharedMemory() const;
+    virtual const void* address() const override;
+    virtual size_t size() const override;
+    virtual bool inSharedMemory() const override;
 
 private:
     int fd_;
@@ -47,6 +46,3 @@ private:
 }  // namespace legendre
 }  // namespace caching
 }  // namespace mir
-
-
-#endif

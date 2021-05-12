@@ -14,11 +14,10 @@
 #include <string>
 #include <vector>
 
-#include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
-#include "eckit/thread/AutoLock.h"
 
 #include "mir/action/misc/AreaCropper.h"
+#include "mir/api/mir_config.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribMemoryInput.h"
 #include "mir/key/grid/Grid.h"
@@ -27,6 +26,8 @@
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Grib.h"
+#include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -37,12 +38,12 @@ using input::MIRInput;
 using repres::RepresentationHandle;
 using util::BoundingBox;
 
-static eckit::Mutex local_mutex;
-
+static util::recursive_mutex local_mutex;
 static std::vector<bool> _yes_no{true, false};
 static std::vector<long> _one_two{1, 2};
 
 namespace {
+
 
 class EncodeTest {
 
@@ -60,16 +61,14 @@ class EncodeTest {
 
 protected:
     grib_handle* gribHandle(long edition) {
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+        std::lock_guard<util::recursive_mutex> lock(local_mutex);
 
         ASSERT(edition == 1 || edition == 2);
         grib_handle*& handle(edition == 1 ? grib1Handle_ : grib2Handle_);
 
         if (handle == nullptr) {
 
-            grib_info info = {{
-                0,
-            }};
+            grib_info info;
 
             // paramId "Indicates a missing value"
             auto j                                    = info.packing.extra_settings_count++;
@@ -105,7 +104,7 @@ protected:
     }
 
     const MIRInput& gribInput(long edition) {
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+        std::lock_guard<util::recursive_mutex> lock(local_mutex);
 
         ASSERT(edition == 1 || edition == 2);
         MIRInput*& input(edition == 1 ? grib1Input_ : grib2Input_);
@@ -132,7 +131,7 @@ public:
         grib2Input_(nullptr) {}
 
     virtual ~EncodeTest() {
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+        std::lock_guard<util::recursive_mutex> lock(local_mutex);
         grib_handle_delete(grib1Handle_);
         grib_handle_delete(grib2Handle_);
         delete grib1Input_;
@@ -145,7 +144,7 @@ public:
     virtual size_t numberOfValues() const = 0;
 
     size_t numberOfValuesEncodedInGrib(long edition) {
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+        std::lock_guard<util::recursive_mutex> lock(local_mutex);
 
         long n = 0;
         grib_get_long(gribHandle(edition), "numberOfValues", &n);
@@ -155,7 +154,7 @@ public:
     }
 
     size_t numberOfValuesFromGribIterator(long edition) {
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+        std::lock_guard<util::recursive_mutex> lock(local_mutex);
 
         int err   = 0;
         auto iter = grib_iterator_new(gribHandle(edition), 0, &err);
@@ -174,7 +173,7 @@ public:
     }
 
     bool compareCoordinates(long edition, double toleranceLat, double toleranceLon) {
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+        std::lock_guard<util::recursive_mutex> lock(local_mutex);
 
         std::unique_ptr<repres::Iterator> iter_m(representation_->iterator());
 
@@ -206,8 +205,6 @@ public:
 
 #if 0
     size_t numberOfValuesFromGribInput(long edition) {
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-
         RepresentationHandle rep = gribInput(edition).field().representation();
         return rep->numberOfPoints();
     }
@@ -215,7 +212,7 @@ public:
 
 #if 0
     BoundingBox boundingBoxEncodedInGrib(long edition) {
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+        std::lock_guard<util::recursive_mutex> lock(local_mutex);
 
         grib_handle* handle = gribHandle(edition);
         ASSERT(handle);
@@ -231,16 +228,15 @@ public:
 #endif
 
     BoundingBox boundingBoxFromGribInput(long edition) {
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-
         RepresentationHandle rep = gribInput(edition).field().representation();
         return rep->boundingBox();
     }
 };
 
+
 class EncodeReduced : public EncodeTest {
     size_t numberOfValues_;
-    size_t numberOfValues() const { return numberOfValues_; }
+    size_t numberOfValues() const override { return numberOfValues_; }
 
 public:
     EncodeReduced(const repres::Representation* rep, size_t numberOfValues) :
@@ -249,9 +245,10 @@ public:
     }
 };
 
+
 class EncodeReducedGaussianGrid final : public EncodeReduced {
     size_t gaussianNumber_;
-    std::string gribSample(long edition) const {
+    std::string gribSample(long edition) const override {
         return std::string("reduced_gg_pl_" + std::to_string(gaussianNumber_) + "_grib" + std::to_string(edition));
     }
 
@@ -262,9 +259,10 @@ public:
     }
 };
 
+
 class EncodeRegular : public EncodeTest {
     size_t Ni_, Nj_;
-    size_t numberOfValues() const { return Ni_ * Nj_; }
+    size_t numberOfValues() const override { return Ni_ * Nj_; }
     size_t Ni() const { return Ni_; }
     size_t Nj() const { return Nj_; }
 
@@ -274,10 +272,10 @@ public:
         ASSERT(Nj_);
     }
 
-    ~EncodeRegular() = default;
+    ~EncodeRegular() override = default;
 
     size_t NiEncodedInGrib(long edition) {
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+        std::lock_guard<util::recursive_mutex> lock(local_mutex);
 
         long n = 0;
         grib_get_long(gribHandle(edition), "Ni", &n);
@@ -287,7 +285,7 @@ public:
     }
 
     size_t NjEncodedInGrib(long edition) {
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+        std::lock_guard<util::recursive_mutex> lock(local_mutex);
 
         long n = 0;
         grib_get_long(gribHandle(edition), "Nj", &n);
@@ -297,8 +295,11 @@ public:
     }
 };
 
+
 class EncodeRegularGaussianGrid final : public EncodeRegular {
-    std::string gribSample(long edition) const { return std::string("regular_gg_pl_grib" + std::to_string(edition)); }
+    std::string gribSample(long edition) const override {
+        return std::string("regular_gg_pl_grib" + std::to_string(edition));
+    }
 
 public:
     EncodeRegularGaussianGrid(const repres::Representation* rep, size_t Ni, size_t Nj, size_t gaussianNumber) :
@@ -307,18 +308,22 @@ public:
     }
 };
 
+
 class EncodeRegularLatLonGrid final : public EncodeRegular {
-    std::string gribSample(long edition) const { return std::string("regular_ll_pl_grib" + std::to_string(edition)); }
+    std::string gribSample(long edition) const override {
+        return std::string("regular_ll_pl_grib" + std::to_string(edition));
+    }
 
 public:
     using EncodeRegular::EncodeRegular;
 };
 
+
 }  // namespace
 
-CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
 
-    auto& log = eckit::Log::info();
+CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
+    auto& log = Log::info();
 
     struct test_t {
         std::string grid;
@@ -338,14 +343,16 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
             test_t{"O1280", {-10.017, -85, -38.981, -56}, 124577},
             test_t{"O1280", {-10.017, 275, -38.981, 304}, 124577}, test_t{"O1280", {-10, -85, -39, -56.1}, 124143},
 
+#if defined(mir_HAVE_ATLAS)
             // ECC-576
             test_t{"N256", {90, 0, -90, 359.6489}, 348528}, test_t{"N256", {90, 0, -90, 359.9}, 348528},
             test_t{"N640", {90, 0, -90, 359.9}, 2140702}, test_t{"N640", {90, 0, -90, 359.99}, 2140702},
             test_t{"N640", {90, -180, -90, 179.99}, 2140702}, test_t{"O640", {90, 0, -90, 359.999}, 1661440},
+#endif
 
-        // FIXME: issues decoding with MIR, because West/East converted to fraction go "inwards"
 #if 0
              // MIR-390: resolution triggers these
+             // FIXME: issues decoding with MIR, because West/East converted to fraction go "inwards"
              test_t{"O1280", {37.6025, -114.891, 27.7626, -105.188}, 12369},
              test_t{"O1280", {27.9, 253, 27.8, 254}, 19},
              test_t{"O1280", {37.5747, 245.109, 27.8032, 254.812}, 12274},
@@ -408,9 +415,9 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
     }
 }
 
-CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
 
-    auto& log = eckit::Log::info();
+CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
+    auto& log = Log::info();
 
     struct test_t {
         std::string grid;
@@ -475,8 +482,9 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
     }
 }
 
+
 CASE("GRIB1/GRIB2 encoding of sub-area of regular lat/lon grids") {
-    auto& log = eckit::Log::info();
+    auto& log = Log::info();
 
     struct test_t {
         util::Increments increments;
@@ -536,8 +544,9 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular lat/lon grids") {
     }
 }
 
+
 CASE("GRIB1/GRIB2 deleteLocalDefinition") {
-    auto& log = eckit::Log::info();
+    auto& log = Log::info();
 
     RepresentationHandle repres(new repres::latlon::RegularLL(util::Increments(1, 1)));
     log << "Test " << *(repres) << "..." << std::endl;
@@ -545,14 +554,12 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
     // GRIB1/GRIB2 encoding
     for (bool remove : _yes_no) {
         for (long edition : _one_two) {
-            eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+            std::lock_guard<util::recursive_mutex> lock(local_mutex);
 
             // initialise a new grib handle from samples
             grib_handle* handle(nullptr);
 
-            grib_info info = {{
-                0,
-            }};
+            grib_info info;
 
             // paramId "Indicates a missing value"
             auto j                                    = info.packing.extra_settings_count++;
@@ -610,6 +617,7 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
         }
     }
 }
+
 
 }  // namespace unit
 }  // namespace tests

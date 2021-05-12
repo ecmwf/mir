@@ -12,14 +12,14 @@
 
 #include "mir/action/context/Context.h"
 
-#include <iostream>
+#include <ostream>
 #include <sstream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -28,18 +28,18 @@ namespace context {
 
 
 namespace {
-class MissingInput : public input::MIRInput {
-    virtual const param::MIRParametrisation& parametrisation(size_t /*which*/ = 0) const { NOTIMP; }
+class MissingInput final : public input::MIRInput {
+    const param::MIRParametrisation& parametrisation(size_t /*which*/ = 0) const override { NOTIMP; }
 
-    virtual bool sameAs(const MIRInput&) const { NOTIMP; }
+    bool sameAs(const MIRInput&) const override { NOTIMP; }
 
-    virtual void print(std::ostream& out) const { out << "MissingInput[]"; }
+    void print(std::ostream& out) const override { out << "MissingInput[]"; }
 
-    virtual data::MIRField field() const { NOTIMP; }
+    data::MIRField field() const override { NOTIMP; }
 
 public:
-    MissingInput()  = default;
-    ~MissingInput() = default;
+    MissingInput()           = default;
+    ~MissingInput() override = default;
 };
 }  // namespace
 
@@ -62,19 +62,19 @@ public:
     virtual data::MIRField& field() {
         std::ostringstream oss;
         oss << "Cannot get field from " << *this;
-        throw eckit::SeriousBug(oss.str());
+        throw exception::SeriousBug(oss.str());
     }
 
     virtual double scalar() const {
         std::ostringstream oss;
         oss << "Cannot get field from " << *this;
-        throw eckit::SeriousBug(oss.str());
+        throw exception::SeriousBug(oss.str());
     }
 
     virtual Extension& extension() const {
         std::ostringstream oss;
         oss << "Cannot get extension from " << *this;
-        throw eckit::SeriousBug(oss.str());
+        throw exception::SeriousBug(oss.str());
     }
 
     virtual bool isField() const { return false; }
@@ -96,13 +96,13 @@ class ScalarContent : public Content {
 
     double value_;
 
-    virtual void print(std::ostream& out) const { out << "ScalarContent[value=" << value_ << "]"; }
+    void print(std::ostream& out) const override { out << "ScalarContent[value=" << value_ << "]"; }
 
-    virtual double scalar() const { return value_; }
+    double scalar() const override { return value_; }
 
-    virtual bool isScalar() const { return true; }
+    bool isScalar() const override { return true; }
 
-    virtual Content* clone() const { return new ScalarContent(value_); }
+    Content* clone() const override { return new ScalarContent(value_); }
 
 public:
     ScalarContent(double value) : value_(value) {}
@@ -112,13 +112,13 @@ public:
 class FieldContent : public Content {
     data::MIRField field_;
 
-    data::MIRField& field() { return field_; }
+    data::MIRField& field() override { return field_; }
 
-    virtual void print(std::ostream& out) const { out << "FieldContent[field=" << field_ << "]"; }
+    void print(std::ostream& out) const override { out << "FieldContent[field=" << field_ << "]"; }
 
-    virtual bool isField() const { return true; }
+    bool isField() const override { return true; }
 
-    virtual Content* clone() const { return new FieldContent(field_); }
+    Content* clone() const override { return new FieldContent(field_); }
 
 public:
     FieldContent(const data::MIRField& field) : field_(field) {}
@@ -128,19 +128,16 @@ class ExtensionContent : public Content {
 
     std::unique_ptr<Extension> extension_;
 
-    virtual void print(std::ostream& out) const { out << "ExtensionContent[" << *extension_ << "]"; }
+    void print(std::ostream& out) const override { out << "ExtensionContent[" << *extension_ << "]"; }
 
-    virtual bool isExtension() const { return true; }
+    bool isExtension() const override { return true; }
 
+    Extension& extension() const override { return *extension_; }
 
-    virtual Extension& extension() const { return *extension_; }
-
-    virtual Content* clone() const { return new ExtensionContent(extension_->clone()); }
+    Content* clone() const override { return new ExtensionContent(extension_->clone()); }
 
 public:
     ExtensionContent(Extension* extension) : extension_(extension) { ASSERT(extension_); }
-
-    ~ExtensionContent() = default;
 };
 
 
@@ -167,35 +164,20 @@ Context::~Context() = default;
 
 
 bool Context::isField() const {
-
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
-
-    if (!content_) {
-        return false;
-    }
-    return content_->isField();
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
+    return content_ ? content_->isField() : false;
 }
 
 
 bool Context::isScalar() const {
-
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
-
-
-    if (!content_) {
-        return false;
-    }
-    return content_->isScalar();
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
+    return content_ ? content_->isScalar() : false;
 }
 
+
 bool Context::isExtension() const {
-
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
-
-    if (!content_) {
-        return false;
-    }
-    return content_->isExtension();
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
+    return content_ ? content_->isExtension() : false;
 }
 
 
@@ -215,7 +197,7 @@ util::MIRStatistics& Context::statistics() {
 
 
 data::MIRField& Context::field() {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     if (!content_) {
         content_.reset(new FieldContent(input_.field()));
@@ -224,7 +206,7 @@ data::MIRField& Context::field() {
 }
 
 Extension& Context::extension() {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(isExtension());
     return content_->extension();
@@ -237,21 +219,21 @@ void Context::extension(Extension* e) {
 
 
 void Context::select(size_t which) {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     field().select(which);
 }
 
 
 void Context::scalar(double value) {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     content_.reset(new ScalarContent(value));
 }
 
 
 double Context::scalar() const {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(content_);
     return content_->scalar();
@@ -259,7 +241,7 @@ double Context::scalar() const {
 
 
 void Context::print(std::ostream& out) const {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     out << "Context[content=";
     if (content_) {
@@ -273,7 +255,7 @@ void Context::print(std::ostream& out) const {
 
 
 Context& Context::push() {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     stack_.emplace_back(Context(*this));
     return stack_.back();
@@ -281,7 +263,7 @@ Context& Context::push() {
 
 
 Context Context::pop() {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(stack_.size());
     Context ctx = stack_.back();

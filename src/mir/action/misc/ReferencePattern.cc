@@ -13,10 +13,8 @@
 #include "mir/action/misc/ReferencePattern.h"
 
 #include <cmath>
-#include <iostream>
 #include <memory>
-
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
@@ -24,6 +22,7 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Angles.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -53,11 +52,8 @@ void ReferencePattern::execute(context::Context& ctx) const {
     bool normalize = false;
     parametrisation_.get("0-1", normalize);
 
-    std::vector<long> frequencies;
-    if (!parametrisation_.get("frequencies", frequencies)) {
-        frequencies.push_back(6);
-        frequencies.push_back(3);
-    }
+    std::vector<double> frequencies{6., 3.};
+    parametrisation_.get("frequencies", frequencies);
 
     bool hasMissing     = field.hasMissing();
     double missingValue = field.missingValue();

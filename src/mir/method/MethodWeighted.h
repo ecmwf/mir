@@ -10,13 +10,11 @@
  */
 
 
-#ifndef mir_method_MethodWeighted_h
-#define mir_method_MethodWeighted_h
+#pragma once
 
 #include <memory>
 #include <vector>
 
-#include "mir/data/MIRValuesVector.h"
 #include "mir/method/Cropping.h"
 #include "mir/method/Method.h"
 #include "mir/method/WeightMatrix.h"
@@ -32,6 +30,9 @@ class LandSeaMasks;
 namespace method {
 namespace nonlinear {
 class NonLinear;
+}
+namespace solver {
+class Solver;
 }
 }  // namespace method
 namespace repres {
@@ -50,7 +51,9 @@ namespace method {
 class MethodWeighted : public Method {
 public:
     // -- Types
-    // None
+
+    using WeightMatrix = method::WeightMatrix;
+    using Matrix       = eckit::linalg::Matrix;
 
     // -- Exceptions
     // None
@@ -61,7 +64,7 @@ public:
 
     // -- Destructor
 
-    virtual ~MethodWeighted();
+    ~MethodWeighted() override;
 
     // -- Convertors
     // None
@@ -71,9 +74,9 @@ public:
 
     // -- Methods
 
-    virtual void hash(eckit::MD5&) const;
+    void hash(eckit::MD5&) const override;
 
-    virtual int version() const;
+    int version() const override;
 
     virtual const WeightMatrix& getMatrix(context::Context&, const repres::Representation& in,
                                           const repres::Representation& out) const;
@@ -94,13 +97,15 @@ protected:
     // -- Methods
 
     virtual const char* name() const = 0;
+    const solver::Solver& solver() const;
     void addNonLinearTreatment(const nonlinear::NonLinear*);
+    void setSolver(const solver::Solver*);
 
     // -- Overridden methods
 
     // From Method
-    virtual bool sameAs(const Method&) const = 0;
-    virtual void print(std::ostream&) const  = 0;
+    bool sameAs(const Method&) const override = 0;
+    void print(std::ostream&) const override  = 0;
 
     // -- Class members
     // None
@@ -116,13 +121,13 @@ private:
     Cropping cropping_;
 
     std::vector<std::unique_ptr<const nonlinear::NonLinear>> nonLinear_;
+    std::unique_ptr<const solver::Solver> solver_;
 
     bool matrixValidate_;
     bool matrixAssemble_;
 
     // -- Methods
 
-    virtual bool canIntroduceMissingValues() const;
     virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
                           const repres::Representation& out) const = 0;
     virtual void applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const;
@@ -146,14 +151,12 @@ private:
     // -- Overridden methods
 
     // From Method
-    virtual void execute(context::Context&, const repres::Representation& in, const repres::Representation& out) const;
-    virtual bool canCrop() const;
-    virtual void setCropping(const mir::util::BoundingBox&);
-    virtual bool hasCropping() const;
-    virtual const util::BoundingBox& getCropping() const;
+    void execute(context::Context&, const repres::Representation& in, const repres::Representation& out) const override;
+    bool canCrop() const override;
+    void setCropping(const util::BoundingBox&) override;
+    bool hasCropping() const override;
+    const util::BoundingBox& getCropping() const override;
 
-
-    /// Update matrix to account for field masked values
     // -- Class members
     // None
 
@@ -167,6 +170,3 @@ private:
 
 }  // namespace method
 }  // namespace mir
-
-
-#endif

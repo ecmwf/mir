@@ -10,8 +10,7 @@
  */
 
 
-#ifndef ReferencePattern_H
-#define ReferencePattern_H
+#pragma once
 
 #include "mir/action/plan/Action.h"
 
@@ -28,16 +27,18 @@ public:
     // -- Constructors
 
     ReferencePattern(const param::MIRParametrisation&);
+    ReferencePattern(const ReferencePattern&) = delete;
 
     // -- Destructor
 
-    virtual ~ReferencePattern();  // Change to virtual if base class
+    ~ReferencePattern() override;
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    ReferencePattern& operator=(const ReferencePattern&) = delete;
 
     // -- Methods
     // None
@@ -45,7 +46,7 @@ public:
     // -- Overridden methods
     // None
 
-    virtual void execute(context::Context& ctx) const;
+    void execute(context::Context&) const override;
 
     // -- Class members
     // None
@@ -59,7 +60,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -71,20 +72,16 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    ReferencePattern(const ReferencePattern&);
-    ReferencePattern& operator=(const ReferencePattern&);
-
     // -- Members
+    // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const;
-    virtual const char* name() const;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
 
     // -- Class members
     // None
@@ -93,12 +90,9 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const ReferencePattern& p)
-    //	{ p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace action
 }  // namespace mir
-#endif

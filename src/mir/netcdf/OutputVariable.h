@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_OutputVariable_h
-#define mir_netcdf_OutputVariable_h
+#pragma once
 
 #include "mir/netcdf/Variable.h"
 
@@ -23,7 +22,7 @@ namespace netcdf {
 class OutputVariable : public Variable {
 public:
     OutputVariable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions);
-    virtual ~OutputVariable();
+    ~OutputVariable() override;
 
 private:
     // -- Members
@@ -33,18 +32,15 @@ private:
 
     // From variable
 
-    virtual void print(std::ostream&) const;
-    virtual void create(int nc) const;
-    virtual void save(int nc) const;
+    void print(std::ostream&) const override;
+    void create(int nc) const override;
+    void save(int nc) const override;
 
     // From Endowed
 
-    virtual int varid() const;
+    int varid() const override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

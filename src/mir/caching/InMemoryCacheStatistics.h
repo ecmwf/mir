@@ -10,12 +10,12 @@
  */
 
 
-#ifndef mir_caching_InMemoryCacheStatistics_h
-#define mir_caching_InMemoryCacheStatistics_h
+#pragma once
 
 #include <iosfwd>
 
 #include "eckit/log/Statistics.h"
+
 #include "mir/caching/InMemoryCacheUsage.h"
 
 
@@ -49,7 +49,7 @@ public:
     size_t unique_;
     InMemoryCacheUsage required_;
 
-    void report(const char* title, std::ostream& out, const char* indent = "") const;
+    void report(const char* title, std::ostream&, const char* indent = "") const;
 
     void encode(eckit::Stream&) const;
 
@@ -62,6 +62,3 @@ public:
 
 }  // namespace caching
 }  // namespace mir
-
-
-#endif

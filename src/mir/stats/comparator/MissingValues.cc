@@ -16,11 +16,10 @@
 #include <ostream>
 #include <sstream>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/data/MIRField.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -36,15 +35,15 @@ std::string MissingValues::execute(const data::MIRField& field1, const data::MIR
         return "";
     }
 
+    if (field1.dimensions() != field2.dimensions()) {
+        return "\n* different dimensions, cannot compare";
+    }
 
     // setup representations (for the iterator)
     repres::RepresentationHandle rep1(field1.representation());
     repres::RepresentationHandle rep2(field2.representation());
     if (!rep1->sameAs(*rep2)) {
         return "\n* different representations, cannot compare";
-    }
-    if (field1.dimensions() != field2.dimensions()) {
-        return "\n* different dimensions, cannot compare";
     }
 
 

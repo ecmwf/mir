@@ -12,7 +12,9 @@
 
 #include "mir/netcdf/OutputDataset.h"
 
-#include <iostream>
+#include <netcdf.h>
+
+#include <ostream>
 
 #include "mir/netcdf/Attribute.h"
 #include "mir/netcdf/Dimension.h"
@@ -21,8 +23,7 @@
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/MergePlan.h"
 #include "mir/netcdf/Variable.h"
-
-#include <netcdf.h>
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -72,7 +73,7 @@ void OutputDataset::merge(Dataset& other) {
             }
             if (!found) {
                 // Variable not in output file
-                eckit::Log::info() << "MISSING in output " << *(j.second) << std::endl;
+                Log::info() << "MISSING in output " << *(j.second) << std::endl;
                 Variable* v = j.second;
                 v->clone(*this)->setMatrix(new DummyMatrix(*v));
                 more = true;
@@ -94,7 +95,7 @@ void OutputDataset::merge(Dataset& other) {
             }
             if (!found) {
                 // Variable not in input file
-                eckit::Log::info() << "MISSING in input " << *(k.second) << std::endl;
+                Log::info() << "MISSING in input " << *(k.second) << std::endl;
                 other.add(new DummyInputVariable(other, *(k.second)));
                 more = true;
                 break;
@@ -147,31 +148,31 @@ void OutputDataset::save() const {
     NC_CALL(nc_set_fill(nc, NC_NOFILL, NULL), path_);
 
 
-    // eckit::Log::info() << "Save dimensions" << std::endl;
+    // Log::info() << "Save dimensions" << std::endl;
     for (auto& j : dimensions_) {
         if ((j.second)->inUse()) {
-            // eckit::Log::info() << "Define " << *(j.second) << std::endl;
+            // Log::info() << "Define " << *(j.second) << std::endl;
             (j.second)->create(nc);
         }
     }
 
-    // eckit::Log::info() << "Save attributes" << std::endl;
+    // Log::info() << "Save attributes" << std::endl;
     for (auto& j : attributes_) {
-        // eckit::Log::info() << "Define " << *(j.second) << std::endl;
+        // Log::info() << "Define " << *(j.second) << std::endl;
         (j.second)->create(nc);
     }
 
-    // eckit::Log::info() << "Save variables" << std::endl;
+    // Log::info() << "Save variables" << std::endl;
 
     for (auto& j : variables_) {
-        // eckit::Log::info() << "Define " << *(j.second) << std::endl;
+        // Log::info() << "Define " << *(j.second) << std::endl;
         (j.second)->create(nc);
     }
 
     NC_CALL(nc_enddef(nc), path_);
 
     for (auto& j : variables_) {
-        eckit::Log::info() << "Save " << *(j.second) << std::endl;
+        Log::info() << "Save " << *(j.second) << std::endl;
         (j.second)->save(nc);
     }
 

@@ -15,18 +15,15 @@
 #include <algorithm>
 #include <vector>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/utils/MD5.h"
 
-#include "eckit/log/Log.h"
-#include "eckit/log/Seconds.h"
-#include "eckit/log/Timer.h"
-
 #include "mir/action/context/Context.h"
-#include "mir/api/Atlas.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Trace.h"
 
 
 namespace mir {
@@ -89,6 +86,9 @@ ProxyMethod::ProxyMethod(const param::MIRParametrisation& param, std::string typ
 }
 
 
+ProxyMethod::~ProxyMethod() = default;
+
+
 void ProxyMethod::hash(eckit::MD5& md5) const {
     md5.add(options_);
     md5.add(cropping_);
@@ -114,7 +114,7 @@ void ProxyMethod::execute(context::Context& ctx, const repres::Representation& i
             std::copy_n(values.begin(), n, view.data());
         }
 
-        void appendFieldWrapped(data::MIRValuesVector& values) {
+        void appendFieldWrapped(MIRValuesVector& values) {
             ASSERT(n == values.size());
             auto field = fields.add(atlas::Field("?", values.data(), atlas::array::make_shape(n)));
             field.set_functionspace(fs);
@@ -125,8 +125,8 @@ void ProxyMethod::execute(context::Context& ctx, const repres::Representation& i
         atlas::FieldSet fields;
     };
 
-    eckit::Timer timer("ProxyMethod::execute", eckit::Log::info());
-    auto report = [](eckit::Timer& timer, const std::string& msg) {
+    trace::Timer timer("ProxyMethod::execute", Log::info());
+    auto report = [](trace::Timer& timer, const std::string& msg) {
         timer.report(msg);
         timer.stop();
         timer.start();
@@ -147,7 +147,7 @@ void ProxyMethod::execute(context::Context& ctx, const repres::Representation& i
     report(timer, type_ + ": copy input");
 
 
-    std::vector<data::MIRValuesVector> result(field.dimensions(), data::MIRValuesVector(output.n));
+    std::vector<MIRValuesVector> result(field.dimensions(), MIRValuesVector(output.n));
     for (auto& v : result) {
         output.appendFieldWrapped(v);
     }
@@ -156,7 +156,7 @@ void ProxyMethod::execute(context::Context& ctx, const repres::Representation& i
 
     interpol.execute(input.fields, output.fields);
     for (size_t i = 0; i < field.dimensions(); ++i) {
-        field.update(result[i], i, true);
+        field.update(result[i], i);
     }
     report(timer, type_ + ": interpolate");
 }

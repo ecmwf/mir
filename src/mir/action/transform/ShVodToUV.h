@@ -10,11 +10,11 @@
  */
 
 
-#ifndef mir_action_transform_ShVodToUV_h
-#define mir_action_transform_ShVodToUV_h
+#pragma once
 
 #include "mir/action/plan/Action.h"
-#include "mir/api/Atlas.h"
+#include "mir/util/Atlas.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -37,7 +37,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ShVodToUV();  // Change to virtual if base class
+    ~ShVodToUV() override;
 
     // -- Convertors
     // None
@@ -63,7 +63,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -84,9 +84,9 @@ private:
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action&) const;
-    virtual void execute(context::Context&) const;
-    virtual const char* name() const;
+    bool sameAs(const Action&) const override;
+    void execute(context::Context&) const override;
+    const char* name() const override;
 
     // -- Class members
     // None
@@ -102,6 +102,3 @@ private:
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-
-
-#endif

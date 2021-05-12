@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_AdjustWindsScaleCosLatitude_h
-#define mir_action_AdjustWindsScaleCosLatitude_h
+#pragma once
 
 #include "mir/action/plan/Action.h"
 
@@ -28,6 +27,7 @@ public:
     // -- Constructors
 
     AdjustWindsScaleCosLatitude(const param::MIRParametrisation&);
+    AdjustWindsScaleCosLatitude(const AdjustWindsScaleCosLatitude&) = delete;
 
     // -- Destructor
     // None
@@ -36,7 +36,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    AdjustWindsScaleCosLatitude& operator=(const AdjustWindsScaleCosLatitude&) = delete;
 
     // -- Methods
     // None
@@ -56,7 +57,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -68,11 +69,6 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    AdjustWindsScaleCosLatitude(const AdjustWindsScaleCosLatitude&);
-    AdjustWindsScaleCosLatitude& operator=(const AdjustWindsScaleCosLatitude&);
-
     // -- Members
     // None
 
@@ -81,9 +77,9 @@ private:
 
     // -- Overridden methods
 
-    virtual void execute(context::Context&) const;
-    virtual bool sameAs(const Action&) const;
-    virtual const char* name() const;
+    void execute(context::Context&) const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
 
     // -- Class members
     // None
@@ -92,14 +88,9 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const AdjustWinds& p)
-    //	{ p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

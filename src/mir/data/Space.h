@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_data_Space_h
-#define mir_data_Space_h
+#pragma once
 
 #include <string>
 
@@ -131,6 +130,3 @@ public:
 
 }  // namespace data
 }  // namespace mir
-
-
-#endif

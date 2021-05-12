@@ -11,8 +11,10 @@
 
 
 #include "mir/param/MIRParametrisation.h"
+
 #include <sstream>
-#include "eckit/exception/Exceptions.h"
+
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -28,14 +30,14 @@ MIRParametrisation::~MIRParametrisation() = default;
 const MIRParametrisation& MIRParametrisation::userParametrisation() const {
     std::ostringstream os;
     os << "MIRParametrisation::userParametrisation() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 const MIRParametrisation& MIRParametrisation::fieldParametrisation() const {
     std::ostringstream os;
     os << "MIRParametrisation::fieldParametrisation() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 

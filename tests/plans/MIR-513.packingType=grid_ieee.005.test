@@ -1,0 +1,6 @@
+# mars
+packingType=grid_ieee.grib2
+# mir
+--packing=ieee --accuracy=64
+# plan
+Set[accuracy=64,precision=2,output=...]

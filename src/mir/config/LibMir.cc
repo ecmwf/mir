@@ -67,7 +67,8 @@ std::string LibMir::gitsha1(unsigned int count) const {
         return "not available";
     }
 
-    return sha1.substr(0, std::min(count, 40U));
+    constexpr unsigned int MAX_LENGTH = 40U;
+    return sha1.substr(0, std::min(count, MAX_LENGTH));
 }
 
 

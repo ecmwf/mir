@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_knn_pick_Distance_h
-#define mir_method_knn_pick_Distance_h
+#pragma once
 
 #include "mir/method/knn/pick/Pick.h"
 
@@ -24,13 +23,13 @@ namespace pick {
 
 struct Distance : Pick {
     Distance(const param::MIRParametrisation&);
-    void pick(const search::PointSearch&, const Point3&, neighbours_t&) const;
-    size_t n() const;
-    virtual bool sameAs(const Pick&) const;
+    void pick(const search::PointSearch&, const Point3&, neighbours_t&) const override;
+    size_t n() const override;
+    bool sameAs(const Pick&) const override;
 
 private:
-    virtual void print(std::ostream&) const;
-    virtual void hash(eckit::MD5&) const;
+    void print(std::ostream&) const override;
+    void hash(eckit::MD5&) const override;
     double distance_;
 };
 
@@ -39,6 +38,3 @@ private:
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-
-
-#endif

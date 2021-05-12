@@ -12,13 +12,12 @@
 
 #include "mir/action/interpolate/Gridded2RotatedReducedGGPLGiven.h"
 
-#include <iostream>
+#include <ostream>
 #include <vector>
-
-#include "eckit/exception/Exceptions.h"
 
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/gauss/reduced/RotatedFromPL.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

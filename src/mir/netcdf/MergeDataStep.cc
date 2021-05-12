@@ -12,27 +12,30 @@
 
 #include "mir/netcdf/MergeDataStep.h"
 
+#include <ostream>
+
 #include "mir/netcdf/Dimension.h"
 #include "mir/netcdf/Matrix.h"
 #include "mir/netcdf/Type.h"
 #include "mir/netcdf/Variable.h"
 
-#include <ostream>
 
 namespace mir {
 namespace netcdf {
 
+
 MergeDataStep::MergeDataStep(Variable& out, const Variable& in) : out_(out), in_(in) {}
 
-MergeDataStep::~MergeDataStep() = default;
 
 int MergeDataStep::rank() const {
     return 5;
 }
 
+
 void MergeDataStep::print(std::ostream& out) const {
     out << "MergeDataStep[" << out_ << " & " << in_ << "]";
 }
+
 
 void MergeDataStep::execute(MergePlan& /*plan*/) {
 #if 0
@@ -61,6 +64,7 @@ void MergeDataStep::execute(MergePlan& /*plan*/) {
     // out_.setMatrix(m);
 #endif
 }
+
 
 }  // namespace netcdf
 }  // namespace mir

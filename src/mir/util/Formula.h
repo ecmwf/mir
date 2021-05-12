@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_Formula_h
-#define mir_util_Formula_h
+#pragma once
 
 #include <iosfwd>
 
@@ -25,10 +24,10 @@ namespace util {
 class Formula : public action::Action {
 public:
     using Action::Action;
-    virtual ~Formula();
+    ~Formula() override;
 
 private:
-    virtual void print(std::ostream&) const = 0;
+    void print(std::ostream&) const override = 0;
 
     friend std::ostream& operator<<(std::ostream& out, const Formula& f) {
         f.print(out);
@@ -39,6 +38,3 @@ private:
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

@@ -13,22 +13,22 @@
 #include <sys/time.h>
 #include <time.h>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Bytes.h"
-#include "eckit/log/Seconds.h"
-#include "eckit/thread/AutoLock.h"
-
 #include "mir/caching/InMemoryCache.h"
 #include "mir/caching/InMemoryCacheStatistics.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+
 
 namespace mir {
 namespace caching {
 
+
 inline static double utime() {
     struct timeval t;
-    ::gettimeofday(&t, 0);
+    ::gettimeofday(&t, nullptr);
     return double(t.tv_sec) + double(t.tv_usec) * 0.000001;
 }
+
 
 template <class T>
 InMemoryCache<T>::InMemoryCache(const std::string& name, size_t memory_capacity, size_t shared_capacity,
@@ -40,21 +40,21 @@ InMemoryCache<T>::InMemoryCache(const std::string& name, size_t memory_capacity,
 
 template <class T>
 InMemoryCache<T>::~InMemoryCache() {
-    // log() << "Deleting InMemoryCache " << name_ << " capacity=" << capacity_ << ", entries: " <<
+    // Log::debug() << "Deleting InMemoryCache " << name_ << " capacity=" << capacity_ << ", entries: " <<
     // cache_.size() << std::endl;
     for (auto& j : cache_) {
-        // log() << "Deleting InMemoryCache " << name_ << " " << *(j.second->ptr_) << std::endl;
+        // Log::debug() << "Deleting InMemoryCache " << name_ << " " << *(j.second->ptr_) << std::endl;
         delete j.second;
     }
 
     // std::string title = "InMemoryCache(" + name_ + ")";
-    // statistics_.report(title.c_str(), log());
+    // statistics_.report(title.c_str(), Log::debug());
 }
 
 
 template <class T>
 T* InMemoryCache<T>::find(const std::string& key) const {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     auto j = cache_.find(key);
     if (j != cache_.end()) {
@@ -67,14 +67,15 @@ T* InMemoryCache<T>::find(const std::string& key) const {
     // if (statistics_) {
     //     statistics_.misses_++;
     // }
-    return 0;
+    return nullptr;
 }
+
 
 template <class T>
 void InMemoryCache<T>::footprint(const std::string& key, const InMemoryCacheUsage& usage) {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
-    log() << "CACHE-FOOTPRINT-" << name_ << " " << key << " => " << usage << std::endl;
+    Log::debug() << "CACHE-FOOTPRINT-" << name_ << " " << key << " => " << usage << std::endl;
 
 
     auto k = cache_.find(key);
@@ -92,8 +93,8 @@ void InMemoryCache<T>::footprint(const std::string& key, const InMemoryCacheUsag
 
     statistics_.required_ = result;
 
-    log() << "CACHE-FOOTPRINT-" << name_ << " total " << footprint() << " required " << result << " capacity "
-          << capacity_ << std::endl;
+    Log::debug() << "CACHE-FOOTPRINT-" << name_ << " total " << footprint() << " required " << result << " capacity "
+                 << capacity_ << std::endl;
 }
 
 
@@ -105,16 +106,16 @@ void InMemoryCache<T>::reserve(size_t size, bool inSharedMemory) {
 
 template <class T>
 void InMemoryCache<T>::reserve(const InMemoryCacheUsage& usage) {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     auto f = footprint();
     auto c = capacity();
     auto u = usage;
     auto p = (f + u) - c;
 
-    log() << "CACHE-RESERVE-" << name_ << " "
-          << " => " << u << " footprint: " << f << " capacity: " << c << " f+u: " << f + u << " f+u-c: " << p
-          << std::endl;
+    Log::debug() << "CACHE-RESERVE-" << name_ << " "
+                 << " => " << u << " footprint: " << f << " capacity: " << c << " f+u: " << f + u << " f+u-c: " << p
+                 << std::endl;
 
 
     if (p) {
@@ -125,13 +126,10 @@ void InMemoryCache<T>::reserve(const InMemoryCacheUsage& usage) {
 
 template <class T>
 T& InMemoryCache<T>::operator[](const std::string& key) {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     T* ptr = find(key);
-    if (ptr) {
-        return *ptr;
-    }
-    return create(key);
+    return ptr == nullptr ? create(key) : *ptr;
 }
 
 static inline double score(size_t /*count*/, double recent, double /*age*/) {
@@ -149,13 +147,13 @@ static inline double score(size_t /*count*/, double recent, double /*age*/) {
 
 template <class T>
 T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
-    ASSERT(ptr);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    ASSERT(ptr);
 
     statistics_.insertions_++;
 
-    // log() << "Insert in InMemoryCache " << *ptr << std::endl;
+    // Log::debug() << "Insert in InMemoryCache " << *ptr << std::endl;
 
     auto k = cache_.find(key);
     if (k != cache_.end()) {
@@ -180,7 +178,6 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
 
 template <class T>
 void InMemoryCache<T>::purge() {
-
     auto f = footprint();
     if (f > capacity_) {
         purge(f - capacity_);
@@ -191,12 +188,15 @@ void InMemoryCache<T>::purge() {
 template <class T>
 InMemoryCacheUsage InMemoryCache<T>::footprint() const {
     InMemoryCacheUsage result;
+
     for (auto j = cache_.begin(); j != cache_.end(); ++j) {
         result += j->second->footprint_;
     }
+
     if (result > statistics_.footprint_) {
         statistics_.footprint_ = result;
     }
+
     return result;
 }
 
@@ -207,18 +207,20 @@ T& InMemoryCache<T>::create(const std::string& key) {
 
 template <class T>
 void InMemoryCache<T>::startUsing() {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
     users_++;
 }
 
 template <class T>
 void InMemoryCache<T>::stopUsing(InMemoryCacheStatistics& statistics) {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
+
     ASSERT(users_);
     users_--;
     if (users_ == 0) {
         purge();
     }
+
     checkTotalFootprint();
 
     statistics_.capacity_ = capacity_;
@@ -228,7 +230,7 @@ void InMemoryCache<T>::stopUsing(InMemoryCacheStatistics& statistics) {
 
 template <class T>
 void InMemoryCache<T>::erase(const std::string& key) {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     auto j = cache_.find(key);
     if (j != cache_.end()) {
@@ -251,15 +253,13 @@ const std::string& InMemoryCache<T>::name() const {
 
 template <class T>
 InMemoryCacheUsage InMemoryCache<T>::purge(const InMemoryCacheUsage& amount, bool force) {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
-
     InMemoryCacheUsage purged;
 
     if (users_ && !force) {
         return purged;
     }
 
-    log() << "CACHE " << name_ << " purging " << amount << std::endl;
+    Log::debug() << "CACHE " << name_ << " purging " << amount << std::endl;
 
     while (purged < amount) {
 
@@ -292,11 +292,11 @@ InMemoryCacheUsage InMemoryCache<T>::purge(const InMemoryCacheUsage& amount, boo
 
         purged += best->second->footprint_;
 
-        log() << "CACHE " << name_ << " decache " << best->first << std::endl;
+        Log::debug() << "CACHE " << name_ << " decache " << best->first << std::endl;
         delete best->second;
         cache_.erase(best);
 
-        log() << "CACHE " << name_ << " purging " << amount << " purged " << purged << std::endl;
+        Log::debug() << "CACHE " << name_ << " purging " << amount << " purged " << purged << std::endl;
     }
 
     return purged;

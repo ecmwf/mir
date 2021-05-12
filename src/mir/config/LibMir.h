@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_config_LibMir_h
-#define mir_config_LibMir_h
+#pragma once
 
 #include <string>
 
@@ -30,13 +29,10 @@ public:
     static bool caching();
 
 protected:
-    const void* addr() const;
-    virtual std::string version() const;
-    virtual std::string gitsha1(unsigned int count) const;
+    const void* addr() const override;
+    std::string version() const override;
+    std::string gitsha1(unsigned int count) const override;
 };
 
 
 }  // namespace mir
-
-
-#endif

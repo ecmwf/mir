@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_AreaCropper_h
-#define mir_action_AreaCropper_h
+#pragma once
 
 #include "mir/action/plan/Action.h"
 #include "mir/util/BoundingBox.h"
@@ -40,7 +39,7 @@ public:
 
     // -- Destructor
 
-    virtual ~AreaCropper();  // Change to virtual if base class
+    ~AreaCropper() override;
 
     // -- Convertors
     // None
@@ -54,7 +53,7 @@ public:
 
     // -- Overridden methods
 
-    virtual void execute(context::Context&) const;
+    void execute(context::Context&) const override;
 
     // -- Class members
     // None
@@ -68,7 +67,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -90,12 +89,12 @@ private:
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const;
-    virtual const char* name() const;
-    virtual bool isCropAction() const;
-    virtual bool canCrop() const;
-    virtual util::BoundingBox outputBoundingBox() const;
-    virtual void estimate(context::Context& ctx, api::MIREstimation& estimation) const;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
+    bool isCropAction() const override;
+    bool canCrop() const override;
+    util::BoundingBox outputBoundingBox() const override;
+    void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Class members
     // None
@@ -104,14 +103,9 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const AreaCropper& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

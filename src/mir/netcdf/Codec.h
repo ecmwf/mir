@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_Codec_h
-#define mir_netcdf_Codec_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -34,7 +33,7 @@ namespace netcdf {
 class Codec : public eckit::Counted {
 public:
     Codec();
-    virtual ~Codec();
+    ~Codec() override;
 
     Codec(const Codec&) = delete;
     void operator=(const Codec&) = delete;
@@ -92,7 +91,7 @@ public:
 
 template <class T>
 class CodecBuilder : public CodecFactory {
-    virtual Codec* make(const Variable& variable) { return new T(variable); }
+    Codec* make(const Variable& variable) override { return new T(variable); }
 
 public:
     CodecBuilder(const std::string& name) : CodecFactory(name) {}
@@ -101,6 +100,3 @@ public:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

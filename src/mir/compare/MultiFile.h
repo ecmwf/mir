@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_compare_MultiFile_h
-#define mir_compare_MultiFile_h
+#pragma once
 
 #include <string>
 #include <vector>
@@ -34,7 +33,7 @@ public:
     MultiFile(const std::string& name, const std::string& from);
     MultiFile(eckit::Stream& s);
 
-    bool operator<(const MultiFile& other) const;
+    bool operator<(const MultiFile&) const;
 
     void add(const std::string& path);
 
@@ -42,7 +41,7 @@ public:
 
     void encode(eckit::Stream& s) const;
 
-    void print(std::ostream& out) const;
+    void print(std::ostream&) const;
 
     void save() const;
 
@@ -50,7 +49,7 @@ public:
     const std::string& name() const;
 
     eckit::Length length() const;
-    void whiteListEntries(std::ostream& out) const;
+    void whiteListEntries(std::ostream&) const;
 
     void save(const std::string& path, off_t offset, size_t length, size_t n) const;
 
@@ -77,6 +76,3 @@ private:
 
 }  // namespace compare
 }  // namespace mir
-
-
-#endif

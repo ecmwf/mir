@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_knn_distance_NearestLSM_h
-#define mir_method_knn_distance_NearestLSM_h
+#pragma once
 
 #include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
 
@@ -34,14 +33,14 @@ namespace distance {
 struct NearestLSM : DistanceWeightingWithLSM {
     NearestLSM(const param::MIRParametrisation&, const lsm::LandSeaMasks&);
     void operator()(size_t ip, const Point3& point, const std::vector<search::PointSearch::PointValueType>& neighbours,
-                    std::vector<WeightMatrix::Triplet>& triplets) const;
+                    std::vector<WeightMatrix::Triplet>& triplets) const override;
 
 private:
     const std::vector<bool>& imask_;
     const std::vector<bool>& omask_;
-    virtual bool sameAs(const DistanceWeighting&) const;
-    virtual void print(std::ostream&) const;
-    virtual void hash(eckit::MD5&) const;
+    bool sameAs(const DistanceWeighting&) const override;
+    void print(std::ostream&) const override;
+    void hash(eckit::MD5&) const override;
 };
 
 
@@ -49,6 +48,3 @@ private:
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-
-
-#endif

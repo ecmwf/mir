@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_fe_CalculateCellLongestDiagonal_h
-#define mir_method_fe_CalculateCellLongestDiagonal_h
+#pragma once
 
 #include <string>
 
@@ -46,7 +45,7 @@ public:
 
     // -- Operators
 
-    double operator()(atlas::Mesh&) const;
+    double operator()(atlas::Mesh&, bool include_virtual_points) const;
 
     // -- Methods
     // None
@@ -102,6 +101,3 @@ private:
 }  // namespace fe
 }  // namespace method
 }  // namespace mir
-
-
-#endif

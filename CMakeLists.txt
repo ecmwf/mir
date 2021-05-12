@@ -12,7 +12,7 @@ cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 
 find_package(ecbuild 3.4 REQUIRED HINTS ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild)
 
-project(mir VERSION 1.7.2 LANGUAGES CXX)
+project(mir VERSION 1.8.0 LANGUAGES CXX)
 
 set(PERSISTENT_NAMESPACE "eckit" CACHE INTERNAL "") # needed for generating .b files for persistent support
 set(CMAKE_CXX_STANDARD 11)
@@ -26,16 +26,25 @@ ecbuild_add_option(FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support f
 ecbuild_add_option(FEATURE PNG                DEFAULT OFF DESCRIPTION "support for PNG encoding" REQUIRED_PACKAGES PNG)
 
 ecbuild_find_package(NAME eccodes VERSION 2.19 REQUIRED)
-ecbuild_find_package(NAME eckit   VERSION 1.10 REQUIRED)
-ecbuild_find_package(NAME atlas   VERSION 0.20 REQUIRED)
+ecbuild_find_package(NAME eckit   VERSION 1.14 REQUIRED)
+
+ecbuild_add_option(FEATURE ATLAS DEFAULT ON DESCRIPTION "support for Atlas" REQUIRED_PACKAGES "atlas VERSION 0.20")
+
+
+set(MIR_LIBRARIES mir)
+
+if(HAVE_BUILD_TOOLS)
+    set(mir_INSTALL_TOOLS)
+else()
+    set(mir_INSTALL_TOOLS NOINSTALL)
+endif()
+
 
 add_subdirectory(src)
 add_subdirectory(etc)
 add_subdirectory(share)
 add_subdirectory(tests)
 
-
-set(MIR_LIBRARIES mir)
 
 ecbuild_add_resources(TARGET ${PROJECT_NAME}_top_files SOURCES AUTHORS README NOTICE LICENSE INSTALL COPYING)
 ecbuild_install_project(NAME ${PROJECT_NAME})

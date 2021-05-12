@@ -13,13 +13,15 @@
 #include "mir/method/knn/distance/GaussianDistanceWeighting.h"
 
 #include <cmath>
+#include <sstream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/api/Atlas.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Atlas.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -30,7 +32,7 @@ namespace distance {
 
 GaussianDistanceWeighting::GaussianDistanceWeighting(const param::MIRParametrisation& parametrisation) {
 
-    stddev_ = atlas::util::Earth::radius();
+    stddev_ = util::Earth::radius();
     parametrisation.get("distance-weighting-gaussian-stddev", stddev_);
     ASSERT(stddev_ > 0.);
 

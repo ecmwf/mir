@@ -16,7 +16,6 @@
 #include <string>
 #include <vector>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/types/FloatCompare.h"
@@ -26,36 +25,35 @@
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/stats/detail/CounterBinary.h"
 #include "mir/tools/MIRTool.h"
-#include "mir/util/Pretty.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
-class MIRWeightMatrixDiff : public mir::tools::MIRTool {
+using namespace mir;
 
-    // -- Overridden methods
 
-    void execute(const eckit::option::CmdArgs&);
-
-    void usage(const std::string& tool) const {
-        eckit::Log::info()
-            << "\n"
-            << "Usage: " << tool
-            << " [--matrix-loader=<loader>] [--matrix-validate] [--absolute-error=eps] [--counter] <path> <path>"
-            << std::endl;
-    }
-
-    int numberOfPositionalArguments() const { return 2; }
-
-public:
-    // -- Constructors
-
-    MIRWeightMatrixDiff(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {
+struct MIRWeightMatrixDiff : tools::MIRTool {
+    MIRWeightMatrixDiff(int argc, char** argv) : MIRTool(argc, argv) {
         using eckit::option::SimpleOption;
+
         options_.push_back(new SimpleOption<std::string>("matrix-loader", "Matrix loader mechanism"));
         options_.push_back(new SimpleOption<bool>("matrix-validate", "Matrix validation after loading"));
         options_.push_back(
             new SimpleOption<double>("absolute-error", "Matrix comparison non-zero maximum allowed error"));
         options_.push_back(new SimpleOption<bool>("counter", "Use statistics counter"));
     }
+
+    int numberOfPositionalArguments() const override { return 2; }
+
+    void usage(const std::string& tool) const override {
+        Log::info()
+            << "\n"
+            << "Usage: " << tool
+            << " [--matrix-loader=<loader>] [--matrix-validate] [--absolute-error=eps] [--counter] <path> <path>"
+            << std::endl;
+    }
+
+    void execute(const eckit::option::CmdArgs&) override;
 };
 
 
@@ -70,28 +68,27 @@ struct diff_t {
 
 
 struct strict_diff_t : diff_t {
-    bool operator()(double a, double b) const { return a != b; }
+    bool operator()(double a, double b) const override { return a != b; }
 };
 
 
 struct approximate_diff_t : diff_t {
     approximate_diff_t(double eps) : eps_(eps) {}
-    bool operator()(double a, double b) const { return !eckit::types::is_approximately_equal(a, b, eps_); }
+    bool operator()(double a, double b) const override { return !eckit::types::is_approximately_equal(a, b, eps_); }
     const double eps_;
 };
 
 
 void MIRWeightMatrixDiff::execute(const eckit::option::CmdArgs& args) {
-    using mir::caching::matrix::MatrixLoaderFactory;
-    using mir::method::WeightMatrix;
-    using Plural = mir::Pretty::Plural;
+    using caching::matrix::MatrixLoaderFactory;
+    using method::WeightMatrix;
 
     struct shape_t : std::vector<WeightMatrix::Size> {
         shape_t(const WeightMatrix& m) : std::vector<WeightMatrix::Size>{m.nonZeros(), m.rows(), m.cols()} {}
     };
 
-    const mir::param::ConfigurationWrapper param(args);
-    auto& log = eckit::Log::info();
+    const param::ConfigurationWrapper param(args);
+    auto& log = Log::info();
 
     std::string matrixLoader = "file-io";
     param.get("matrix-loader", matrixLoader);
@@ -118,7 +115,7 @@ void MIRWeightMatrixDiff::execute(const eckit::option::CmdArgs& args) {
         log << "!= geometry: " << aShape << " != " << bShape << std::endl;
     }
     else if (counter) {
-        mir::stats::detail::CounterBinary counter(param, param);
+        stats::detail::CounterBinary counter(param, param);
 
         auto i = a.begin();
         auto j = b.begin();
@@ -140,7 +137,7 @@ void MIRWeightMatrixDiff::execute(const eckit::option::CmdArgs& args) {
 
         auto check = counter.check();
         if (!check.empty()) {
-            throw eckit::BadValue(check);
+            throw exception::BadValue(check);
         }
     }
     else {
@@ -162,7 +159,7 @@ void MIRWeightMatrixDiff::execute(const eckit::option::CmdArgs& args) {
         ASSERT(j == b.end());
 
         if (d > 0) {
-            throw eckit::BadValue(std::to_string(d) + " " + Plural{"difference"}(d));
+            throw exception::BadValue(std::to_string(d) + " " + Log::Plural("difference")(d));
         }
     }
 }

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_Endowned_h
-#define mir_netcdf_Endowned_h
+#pragma once
 
 #include <map>
 #include <string>
@@ -37,8 +36,8 @@ public:
     void add(Attribute*);
 
     void getAttributes(int nc, int i, int nattr);
-    void copyAttributes(const Endowed& other);
-    void mergeAttributes(const Endowed& other);
+    void copyAttributes(const Endowed&);
+    void mergeAttributes(const Endowed&);
 
     virtual const std::string& path() const = 0;
     virtual int varid() const               = 0;
@@ -61,6 +60,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

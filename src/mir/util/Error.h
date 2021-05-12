@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_Error_h
-#define mir_util_Error_h
+#pragma once
 
 #include <iosfwd>
 
@@ -31,6 +30,3 @@ class Error {
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

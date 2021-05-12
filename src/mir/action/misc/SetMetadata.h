@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_misc_SetMetadata_h
-#define mir_action_misc_SetMetadata_h
+#pragma once
 
 #include <map>
 
@@ -30,16 +29,18 @@ public:
     // -- Constructors
 
     SetMetadata(const param::MIRParametrisation&);
+    SetMetadata(const SetMetadata&) = delete;
 
     // -- Destructor
 
-    virtual ~SetMetadata();  // Change to virtual if base class
+    ~SetMetadata() override;
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    SetMetadata& operator=(const SetMetadata&) = delete;
 
     // -- Methods
     // None
@@ -47,7 +48,7 @@ public:
     // -- Overridden methods
     // None
 
-    virtual void execute(context::Context&) const;
+    void execute(context::Context&) const override;
 
     // -- Class members
     // None
@@ -62,7 +63,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -74,19 +75,16 @@ protected:
     // None
 
 private:
-    // No copy allowed
-    SetMetadata(const SetMetadata&);
-    SetMetadata& operator=(const SetMetadata&);
-
     // -- Members
+    // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action&) const;
-    virtual const char* name() const;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
 
     // -- Class members
     // None
@@ -95,14 +93,9 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const SetMetadata& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

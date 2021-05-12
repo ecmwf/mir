@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_lsm_TenMinutesMask_h
-#define mir_lsm_TenMinutesMask_h
+#pragma once
 
 #include <iosfwd>
 
@@ -42,7 +41,7 @@ public:
 
     // -- Destructor
 
-    virtual ~TenMinutesMask();
+    ~TenMinutesMask() override;
 
     // -- Convertors
     // None
@@ -74,12 +73,12 @@ private:
 
     // -- Overridden methods
 
-    virtual bool active() const;
-    virtual bool cacheable() const;
-    virtual void hash(eckit::MD5&) const;
-    virtual const std::vector<bool>& mask() const;
-    virtual void print(std::ostream&) const;
-    virtual std::string cacheName() const;
+    bool active() const override;
+    bool cacheable() const override;
+    void hash(eckit::MD5&) const override;
+    const std::vector<bool>& mask() const override;
+    void print(std::ostream&) const override;
+    std::string cacheName() const override;
 
     // -- Class members
     // None
@@ -94,6 +93,3 @@ private:
 
 }  // namespace lsm
 }  // namespace mir
-
-
-#endif

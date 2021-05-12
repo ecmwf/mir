@@ -3,4 +3,4 @@ param=vo_d,level=1000
 # mir
 --vod2uv --truncation=none --intgrid=none --grid=F80 --area=10/0/0/10 --dont-compress-plan
 # plan
-ShToNamedGrid[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<vod2uv>,grid=F80]|AreaCropper[bbox=BoundingBox[north=10,west=0,south=0,east=10]]|Save[output=...]
+ShToNamedGrid[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<vod2uv>,grid=F80]|AreaCropper[bbox=BoundingBox[north=10,west=0,south=0,east=10]]|Save[packing=simple,output=...]

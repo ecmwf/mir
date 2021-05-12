@@ -14,11 +14,9 @@
 
 #include <map>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
-
-#include "mir/config/LibMir.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -31,27 +29,27 @@ Space::Space() = default;
 Space::~Space() = default;
 
 
-static pthread_once_t once                     = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex               = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex      = nullptr;
 static std::map<std::string, SpaceChooser*>* m = nullptr;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, SpaceChooser*>();
 }
 
 
 SpaceChooser::SpaceChooser(const std::string& name, Space* choice, size_t component, size_t dimensions) :
     name_(name), choice_(choice), component_(component), dimensions_(dimensions) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("SpaceChooser: duplicate '" + name + "'");
+        throw exception::SeriousBug("SpaceChooser: duplicate '" + name + "'");
     }
 
     if (component_ >= dimensions_) {
-        throw eckit::SeriousBug("SpaceChooser: '" + name + "' component (" + std::to_string(component_) +
-                                ") is not below dimensions (" + std::to_string(dimensions_) + ")");
+        throw exception::SeriousBug("SpaceChooser: '" + name + "' component (" + std::to_string(component_) +
+                                    ") is not below dimensions (" + std::to_string(dimensions_) + ")");
     }
 
     (*m)[name] = this;
@@ -59,7 +57,7 @@ SpaceChooser::SpaceChooser(const std::string& name, Space* choice, size_t compon
 
 
 SpaceChooser::~SpaceChooser() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     delete choice_;
     m->erase(name_);
@@ -67,15 +65,15 @@ SpaceChooser::~SpaceChooser() {
 
 
 const Space& SpaceChooser::lookup(const std::string& name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-    eckit::Log::debug<LibMir>() << "SpaceChooser: looking for '" << name << "'" << std::endl;
+    Log::debug() << "SpaceChooser: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "SpaceChooser: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("SpaceChooser: unknown '" + name + "'");
+        list(Log::error() << "SpaceChooser: unknown '" << name << "', choices are: ");
+        throw exception::SeriousBug("SpaceChooser: unknown '" + name + "'");
     }
 
     return *((j->second)->choice_);
@@ -83,8 +81,8 @@ const Space& SpaceChooser::lookup(const std::string& name) {
 
 
 void SpaceChooser::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

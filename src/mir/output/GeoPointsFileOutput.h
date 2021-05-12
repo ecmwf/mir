@@ -10,12 +10,11 @@
  */
 
 
-#ifndef mir_output_GeoPointsFileOutput_h
-#define mir_output_GeoPointsFileOutput_h
-
-#include "mir/output/GeoPointsOutput.h"
+#pragma once
 
 #include <memory>
+
+#include "mir/output/GeoPointsOutput.h"
 
 
 namespace mir {
@@ -33,7 +32,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GeoPointsFileOutput();
+    ~GeoPointsFileOutput() override;
 
     // -- Convertors
     // None
@@ -66,7 +65,7 @@ protected:
     // -- Overridden methods
 
     // From GeoPointsOutput
-    virtual eckit::DataHandle& dataHandle() const;
+    eckit::DataHandle& dataHandle() const override;
 
     // -- Class members
     // None
@@ -84,8 +83,8 @@ private:
     // -- Overridden methods
 
     // From MIROutput
-    virtual void print(std::ostream&) const;  // Change to virtual if base class
-    virtual bool sameAs(const MIROutput& other) const;
+    void print(std::ostream&) const override;
+    bool sameAs(const MIROutput&) const override;
 
     // -- Class members
     // None
@@ -94,14 +93,9 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const GeoPointsFileOutput& p)
-    // { p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace output
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_knn_pick_NClosest_h
-#define mir_method_knn_pick_NClosest_h
+#pragma once
 
 #include "mir/method/knn/pick/Pick.h"
 
@@ -24,13 +23,13 @@ namespace pick {
 
 struct NClosest : Pick {
     NClosest(const param::MIRParametrisation&);
-    void pick(const search::PointSearch&, const Point3&, neighbours_t&) const;
-    size_t n() const;
-    bool sameAs(const Pick&) const;
+    void pick(const search::PointSearch&, const Point3&, neighbours_t&) const override;
+    size_t n() const override;
+    bool sameAs(const Pick&) const override;
 
 private:
-    void print(std::ostream&) const;
-    void hash(eckit::MD5&) const;
+    void print(std::ostream&) const override;
+    void hash(eckit::MD5&) const override;
     size_t nClosest_;
 };
 
@@ -39,6 +38,3 @@ private:
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-
-
-#endif

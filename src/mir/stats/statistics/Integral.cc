@@ -15,12 +15,12 @@
 #include <cmath>
 #include <limits>
 
-#include "eckit/exception/Exceptions.h"
-
-#include "mir/api/Atlas.h"
 #include "mir/data/MIRField.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Angles.h"
+#include "mir/util/Atlas.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {

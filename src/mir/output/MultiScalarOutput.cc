@@ -12,13 +12,14 @@
 
 #include "mir/output/MultiScalarOutput.h"
 
-#include <iostream>
+#include <ostream>
+#include <sstream>
 #include <typeinfo>  // bad_cast exception
 
-#include "eckit/exception/Exceptions.h"
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/MultiScalarInput.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -58,7 +59,7 @@ size_t MultiScalarOutput::copy(const param::MIRParametrisation& param, context::
     catch (std::bad_cast&) {
         std::ostringstream os;
         os << "MultiScalarOutput::copy() not implemented for input of type: " << input;
-        throw eckit::SeriousBug(os.str());
+        throw exception::SeriousBug(os.str());
     }
 }
 
@@ -91,7 +92,7 @@ size_t MultiScalarOutput::save(const param::MIRParametrisation& param, context::
     catch (std::bad_cast&) {
         std::ostringstream os;
         os << "MultiScalarOutput::save() not implemented for input of type: " << input;
-        throw eckit::SeriousBug(os.str());
+        throw exception::SeriousBug(os.str());
     }
 }
 
@@ -124,7 +125,7 @@ size_t MultiScalarOutput::set(const param::MIRParametrisation& param, context::C
     catch (std::bad_cast&) {
         std::ostringstream os;
         os << "MultiScalarOutput::set() not implemented for input of type: " << input;
-        throw eckit::SeriousBug(os.str());
+        throw exception::SeriousBug(os.str());
     }
 }
 
@@ -168,7 +169,9 @@ bool MultiScalarOutput::printParametrisation(std::ostream& out, const param::MIR
 void MultiScalarOutput::prepare(const param::MIRParametrisation& parametrisation, action::ActionPlan& plan,
                                 input::MIRInput& input, MIROutput& output) {
     ASSERT(!components_.empty());
-    components_[0]->prepare(parametrisation, plan, input, output);
+    for (auto& c : components_) {
+        c->prepare(parametrisation, plan, input, output);
+    }
 }
 
 

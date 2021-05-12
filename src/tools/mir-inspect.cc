@@ -10,80 +10,74 @@
  */
 
 
-#include "eckit/log/Log.h"
-
 #include "mir/input/GribFileInput.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Log.h"
 
 
-class MIRInspect : public mir::tools::MIRTool {
+using namespace mir;
 
-    // -- Overridden methods
 
-    void execute(const eckit::option::CmdArgs&);
+class MIRInspect : public tools::MIRTool {
+    using MIRTool::MIRTool;
 
-    void usage(const std::string& tool) const;
+    int minimumPositionalArguments() const override { return 1; }
 
-    int minimumPositionalArguments() const { return 1; }
+    void usage(const std::string& tool) const override {
+        Log::info() << "\n"
+                       "Usage: "
+                    << tool
+                    << " [key1 key2 ...] file.grib"
+                       "\n"
+                       "Examples:"
+                       "\n"
+                       "% "
+                    << tool
+                    << " grid area file.grib"
+                       "\n"
+                       "% "
+                    << tool
+                    << " reduced file.grib"
+                       "\n"
+                       "% "
+                    << tool
+                    << " regular file.grib"
+                       "\n"
+                       "% "
+                    << tool
+                    << " truncation file.grib"
+                       "\n"
+                       "% "
+                    << tool << " octahedral file.grib" << std::endl;
+    }
 
-public:
-    // -- Constructors
-
-    MIRInspect(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {}
+    void execute(const eckit::option::CmdArgs&) override;
 };
 
 
-void MIRInspect::usage(const std::string& tool) const {
-    eckit::Log::info() << "\n"
-                          "Usage: "
-                       << tool
-                       << " [key1 key2 ...] file.grib"
-                          "\n"
-                          "Examples:"
-                          "\n"
-                          "% "
-                       << tool
-                       << " grid area file.grib"
-                          "\n"
-                          "% "
-                       << tool
-                       << " reduced file.grib"
-                          "\n"
-                          "% "
-                       << tool
-                       << " regular file.grib"
-                          "\n"
-                          "% "
-                       << tool
-                       << " truncation file.grib"
-                          "\n"
-                          "% "
-                       << tool << " octahedral file.grib" << std::endl;
-}
-
 void MIRInspect::execute(const eckit::option::CmdArgs&) {
+    input::GribFileInput file(argv(argc() - 1));
 
-    mir::input::GribFileInput file(argv(argc() - 1));
     while (file.next()) {
-        mir::input::MIRInput& input = file;
+        input::MIRInput& input = file;
 
-        const mir::param::MIRParametrisation& parametrisation = input.parametrisation();
+        const param::MIRParametrisation& parametrisation = input.parametrisation();
 
         const char* sep = "";
         std::string value;
 
         for (int i = 1; i < argc() - 1; i++) {
-            eckit::Log::info() << sep << argv(i) << "=";
+            Log::info() << sep << argv(i) << "=";
             if (parametrisation.get(argv(i), value)) {
-                eckit::Log::info() << value;
+                Log::info() << value;
             }
             else {
-                eckit::Log::info() << "<not found>";
+                Log::info() << "<not found>";
             }
             sep = ", ";
         }
 
-        eckit::Log::info() << std::endl;
+        Log::info() << std::endl;
     }
 }
 

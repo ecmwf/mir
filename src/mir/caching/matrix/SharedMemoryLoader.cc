@@ -12,9 +12,6 @@
 
 #include "mir/caching/matrix/SharedMemoryLoader.h"
 
-#include <cerrno>
-#include <cstring>
-
 #include <fcntl.h>
 #include <unistd.h>
 
@@ -25,10 +22,11 @@
 #include <sys/time.h>
 #include <sys/types.h>
 
+#include <cerrno>
+#include <cstring>
+#include <sstream>
+
 //#include "eckit/config/Resource.h"
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Bytes.h"
-#include "eckit/log/Timer.h"
 #include "eckit/maths/Functions.h"
 #include "eckit/memory/Padded.h"
 #include "eckit/memory/Shmget.h"
@@ -37,7 +35,9 @@
 
 #include "mir/method/WeightMatrix.h"
 #include "mir/util/Error.h"
-#include "mir/util/Pretty.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Trace.h"
 
 
 namespace mir {
@@ -68,7 +68,7 @@ class Unloader {
     Unloader() = default;
 
 public:
-    /// This ensures unloader is destructed in correct order with other static objects (like eckit::Log)
+    /// This ensures unloader is destructed in correct order with other static objects (like Log)
     static Unloader& instance() {
         static Unloader unloader;
         return unloader;
@@ -85,7 +85,7 @@ public:
                 SharedMemoryLoader::unloadSharedMemory(path);
             }
             catch (std::exception& e) {
-                eckit::Log::error() << e.what() << std::endl;
+                Log::error() << e.what() << std::endl;
             }
         }
     }
@@ -97,11 +97,11 @@ class GlobalSemaphore {
 public:
     GlobalSemaphore(eckit::PathName path) : path_(path) {
 
-        SharedMemoryLoader::log() << "Semaphore for " << path << std::endl;
+        Log::debug() << "Semaphore for " << path << std::endl;
 
         key_t key = ::ftok(path.asString().c_str(), 1);
         if (key == key_t(-1)) {
-            throw eckit::FailedSystemCall("ftok(" + path.asString() + ")");
+            throw exception::FailedSystemCall("ftok(" + path.asString() + ")");
         }
         SYSCALL(semaphore_ = ::semget(key, 1, IPC_CREAT | 0600));
     }
@@ -114,8 +114,7 @@ public:
 
 SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::PathName& path) :
     MatrixLoader(name, path), address_(nullptr), size_(0), unload_(false) {
-
-    eckit::Timer timer("SharedMemoryLoader: loading '" + path.asString() + "'", log());
+    trace::Timer timer("SharedMemoryLoader: loading '" + path.asString() + "'", Log::debug());
 
     unload_ = name.substr(0, 4) == "tmp-";
 
@@ -124,11 +123,11 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
     std::ostringstream msg("SharedMemoryLoader: ");
 
     msg << "path='" << real << "', hostname='" << eckit::Main::hostname() << "'";
-    info() << msg.str() << std::endl;
+    Log::info() << msg.str() << std::endl;
 
     if (real.asString().size() >= INFO_PATH - 1) {
-        warn() << msg.str() << ", path name too long, maximum=" << INFO_PATH;
-        throw eckit::SeriousBug(msg.str());
+        Log::warning() << msg.str() << ", path name too long, maximum=" << INFO_PATH;
+        throw exception::SeriousBug(msg.str());
     }
 
     // Try to get an exclusive lock, we may be waiting for another process
@@ -139,8 +138,8 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
     key_t key = ::ftok(real.asString().c_str(), 1);
     if (key == key_t(-1)) {
-        warn() << msg.str() << "::ftok(" << real.asString() << "), " << util::Error();
-        throw eckit::FailedSystemCall(msg.str());
+        Log::warning() << msg.str() << "::ftok(" << real.asString() << "), " << util::Error();
+        throw exception::FailedSystemCall(msg.str());
     }
 
     // NOTE: size is based on file.size() which is assumed to be bigger than the memory footprint. Real size would be:
@@ -153,31 +152,32 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
     size_ = shmsize;
 
-    msg << ", size: " << shmsize << " (" << eckit::Bytes(shmsize) << "), key: 0x" << std::hex << key << std::dec
-        << ", page size: " << eckit::Bytes(page_size) << ", pages: " << Pretty(shmsize / page_size);
+    msg << ", size: " << shmsize << " (" << Log::Bytes(shmsize) << "), key: 0x" << std::hex << key << std::dec
+        << ", page size: " << Log::Bytes(page_size) << ", pages: " << Log::Pretty(shmsize / size_t(page_size));
 
 #ifdef IPC_INFO
     // Only on Linux?
     struct shminfo shm_info;
     SYSCALL(::shmctl(0, IPC_INFO, reinterpret_cast<shmid_ds*>(&shm_info)));
-    msg << ", maximum shared memory segment size: " << eckit::Bytes((shm_info.shmmax >> 10) * 1024);
+    msg << ", maximum shared memory segment size: " << Log::Bytes((shm_info.shmmax >> 10) * 1024);
 #endif
 
     // This may return EINVAL is the segment is too large 256MB
     int shmid;
     if ((shmid = eckit::Shmget::shmget(key, shmsize, IPC_CREAT | 0600)) < 0) {
-        warn() << msg.str()
-               << ", shmget: failed to acquire shared memory, check the maximum authorised on this system (Linux ipcs "
-                  "-l, macOS/BSD ipcs -M), "
-               << util::Error() << std::endl;
-        throw eckit::FailedSystemCall(msg.str());
+        Log::warning()
+            << msg.str()
+            << ", shmget: failed to acquire shared memory, check the maximum authorised on this system (Linux ipcs "
+               "-l, macOS/BSD ipcs -M), "
+            << util::Error() << std::endl;
+        throw exception::FailedSystemCall(msg.str());
     }
-    msg << ", shmid=" << shmid << std::endl;
+    msg << ", shmid=" << shmid;
 
 #ifdef SHM_PAGESIZE
     {
 
-        // log() << "SharedMemoryLoader: attempting to use 64K pages"  << std::endl;
+        // Log::debug() << "SharedMemoryLoader: attempting to use 64K pages"  << std::endl;
 
         /* Use 64K pages to back the shared memory region */
         size_t shm_size;
@@ -187,7 +187,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
         shm_buf.shm_pagesize = psize_64k;
         if (::shmctl(shmid, SHM_PAGESIZE, &shm_buf)) {
-            // warn() << "SharedMemoryLoader: ::shmctl(SHM_PAGESIZE) failed, " << util::Error() << std::endl;
+            // Log::warning() << "SharedMemoryLoader: ::shmctl(SHM_PAGESIZE) failed, " << util::Error() << std::endl;
         }
     }
 
@@ -196,8 +196,8 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
     // Attach shared memory
     address_ = eckit::Shmget::shmat(shmid, nullptr, 0);
     if (address_ == (void*)-1) {
-        warn() << msg.str() << ", shmat: failed to attach shared memory, " << util::Error() << std::endl;
-        throw eckit::FailedSystemCall(msg.str());
+        Log::warning() << msg.str() << ", shmat: failed to attach shared memory, " << util::Error() << std::endl;
+        throw exception::FailedSystemCall(msg.str());
     }
 
 
@@ -208,16 +208,16 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
         // Check if the file has been loaded in memory
         if (nfo->ready != 0) {
-            log() << msg.str() << ", already loaded" << std::endl;
+            Log::debug() << msg.str() << ", already loaded" << std::endl;
 
             if (nfo->magic != MAGIC) {
-                warn() << msg.str() << ", bad magic=" << nfo->magic << std::endl;
-                throw eckit::SeriousBug(msg.str());
+                Log::warning() << msg.str() << ", bad magic=" << nfo->magic << std::endl;
+                throw exception::SeriousBug(msg.str());
             }
 
             if (real.asString() != nfo->path) {
-                warn() << msg.str() << ", path mismatch, file='" << nfo->path << "'" << std::endl;
-                throw eckit::SeriousBug(msg.str());
+                Log::warning() << msg.str() << ", path mismatch, file='" << nfo->path << "'" << std::endl;
+                throw exception::SeriousBug(msg.str());
             }
         }
         else {
@@ -245,7 +245,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
     // char line[1024];
 
     // while(fgets(line, sizeof(line), f)) {
-    //     log() << "LOAD IPCS " << line << std::endl;
+    //     Log::debug() << "LOAD IPCS " << line << std::endl;
     // }
 }
 
@@ -266,40 +266,40 @@ void SharedMemoryLoader::loadSharedMemory(const eckit::PathName& path) {
 
 
 void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
-    log() << "SharedMemoryLoader: unloading '" << path << "'" << std::endl;
+    Log::debug() << "SharedMemoryLoader: unloading '" << path << "'" << std::endl;
 
     eckit::PathName real = path.realName();
 
     key_t key = ::ftok(real.asString().c_str(), 1);
     if (key == key_t(-1)) {
-        warn() << "SharedMemoryLoader: ::ftok(" << real.asString() << ")" << std::endl;
-        throw eckit::FailedSystemCall("SharedMemoryLoader: ::ftok");
+        Log::warning() << "SharedMemoryLoader: ::ftok(" << real.asString() << ")" << std::endl;
+        throw exception::FailedSystemCall("SharedMemoryLoader: ::ftok");
     }
 
     int shmid = eckit::Shmget::shmget(key, 0, 0600);
     if (shmid < 0) {
-        warn() << "SharedMemoryLoader: shmget: path='" << path << "', "
-               << (errno == ENOENT ? "already unloaded" : "failed to acquire shared memory") << std::endl;
+        Log::warning() << "SharedMemoryLoader: shmget: path='" << path << "', "
+                       << (errno == ENOENT ? "already unloaded" : "failed to acquire shared memory") << std::endl;
         return;
     }
 
     // FIXME: add to eckit::Shmget interface
     if (::shmctl(shmid, IPC_RMID, nullptr) < 0) {
-        warn() << "SharedMemoryLoader: ::shmctl: cannot delete '" << path << "'" << std::endl;
+        Log::warning() << "SharedMemoryLoader: ::shmctl: cannot delete '" << path << "'" << std::endl;
     }
 
-    log() << "SharedMemoryLoader: successfully unloaded '" << path << "'" << std::endl;
+    Log::debug() << "SharedMemoryLoader: successfully unloaded '" << path << "'" << std::endl;
 
     // eckit::StdPipe f("ipcs", "r");
     // char line[1024];s
     // while(fgets(line, sizeof(line), f)) {
-    //     log() << "UNLOAD IPCS " << line << std::endl;
+    //     Log::debug() << "UNLOAD IPCS " << line << std::endl;
     // }
 }
 
 
 void SharedMemoryLoader::print(std::ostream& out) const {
-    out << "SharedMemoryLoader[path=" << path_ << ",size=" << eckit::Bytes(size_) << ",unload=" << unload_ << "]";
+    out << "SharedMemoryLoader[path=" << path_ << ",size=" << Log::Bytes(size_) << ",unload=" << unload_ << "]";
 }
 
 

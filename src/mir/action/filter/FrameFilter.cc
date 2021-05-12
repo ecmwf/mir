@@ -12,15 +12,15 @@
 
 #include "mir/action/filter/FrameFilter.h"
 
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
 
 #include "mir/action/context/Context.h"
 #include "mir/api/MIREstimation.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -59,7 +59,7 @@ void FrameFilter::execute(context::Context& ctx) const {
 
         auto* representation = field.representation();
         if (representation->frame(values, size_, missingValue) == 0) {
-            eckit::Log::warning() << "Frame " << size_ << " has no effect" << std::endl;
+            Log::warning() << "Frame " << size_ << " has no effect" << std::endl;
         }
         else {
             field.hasMissing(true);

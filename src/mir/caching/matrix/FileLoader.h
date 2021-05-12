@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_caching_matrix_FileLoader_h
-#define mir_caching_matrix_FileLoader_h
+#pragma once
 
 #include "eckit/memory/MemoryBuffer.h"
 
@@ -27,17 +26,17 @@ class FileLoader : public MatrixLoader {
 public:
     FileLoader(const std::string& name, const eckit::PathName&);
 
-    virtual ~FileLoader();
+    ~FileLoader() override;
 
     static bool shared();
 
 protected:
-    virtual void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
 private:
-    virtual const void* address() const;
-    virtual size_t size() const;
-    virtual bool inSharedMemory() const;
+    const void* address() const override;
+    size_t size() const override;
+    bool inSharedMemory() const override;
 
     eckit::MemoryBuffer buffer_;
 };
@@ -46,6 +45,3 @@ private:
 }  // namespace matrix
 }  // namespace caching
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_Curvilinear_h
-#define mir_netcdf_Curvilinear_h
+#pragma once
 
 #include "mir/netcdf/GridSpec.h"
 
@@ -24,7 +23,7 @@ class Curvilinear : public GridSpec {
 public:
     Curvilinear(const Variable&, const std::vector<double>& latitudes, const std::vector<double>& longitudes);
 
-    virtual ~Curvilinear();
+    ~Curvilinear() override;
 
     // -- Methods
 
@@ -46,23 +45,19 @@ private:
     Curvilinear(const Curvilinear&);
     Curvilinear& operator=(const Curvilinear&);
 
-
     // - Methods
 
-    virtual void print(std::ostream& s) const;
+    void print(std::ostream&) const override;
 
     // From GridSpec
-    virtual bool has(const std::string& name) const;
-    virtual bool get(const std::string&, long&) const;
-    virtual bool get(const std::string&, std::string&) const;
-    virtual bool get(const std::string& name, double& value) const;
-    virtual bool get(const std::string& name, std::vector<double>& value) const;
-    virtual void reorder(MIRValuesVector& values) const;
+    bool has(const std::string& name) const override;
+    bool get(const std::string& name, long&) const override;
+    bool get(const std::string& name, std::string&) const override;
+    bool get(const std::string& name, double&) const override;
+    bool get(const std::string& name, std::vector<double>&) const override;
+    void reorder(MIRValuesVector&) const override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

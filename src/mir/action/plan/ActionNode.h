@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_plan_ActionNode_h
-#define mir_action_plan_ActionNode_h
+#pragma once
 
 #include <iosfwd>
 
@@ -40,16 +39,18 @@ public:
     // -- Constructors
 
     ActionNode(const Action&, api::MIRWatcher*);
+    ActionNode(const ActionNode&) = delete;
 
     // -- Destructor
 
-    ~ActionNode();  // Change to virtual if base class
+    ~ActionNode();
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    ActionNode& operator=(const ActionNode&) = delete;
 
     // -- Methods
 
@@ -78,7 +79,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const;
 
     // -- Overridden methods
     // None
@@ -90,10 +91,6 @@ protected:
     // None
 
 private:
-    // No copy allowed
-    ActionNode(const ActionNode&);
-    ActionNode& operator=(const ActionNode&);
-
     // -- Members
 
     const Action& action_;
@@ -123,6 +120,3 @@ private:
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

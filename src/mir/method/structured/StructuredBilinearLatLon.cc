@@ -15,14 +15,14 @@
 #include <memory>
 #include <vector>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
 #include "eckit/types/FloatCompare.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/Pretty.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Trace.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -65,22 +65,22 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
     Latitude min_lat;
     Latitude max_lat;
     getRepresentationPoints(in, icoords, min_lat, max_lat);
-    eckit::Log::debug<LibMir>() << "StructuredBilinearLatLon::assemble latitude (min,max) = (" << min_lat << ", "
-                                << max_lat << ")" << std::endl;
+    Log::debug() << "StructuredBilinearLatLon::assemble latitude (min,max) = (" << min_lat << ", " << max_lat << ")"
+                 << std::endl;
 
     // set northern & southern-most parallel point indices
-    std::vector<size_t> parallel_north(pl.front());
-    std::vector<size_t> parallel_south(pl.back());
+    std::vector<size_t> parallel_north(size_t(pl.front()));
+    std::vector<size_t> parallel_south(size_t(pl.back()));
 
-    eckit::Log::debug<LibMir>() << "StructuredBilinearLatLon::assemble first row: " << pl.front() << std::endl;
-    for (long i = 0; i < pl.front(); ++i) {
-        parallel_north[i] = size_t(i);
+    Log::debug() << "StructuredBilinearLatLon::assemble first row: " << pl.front() << std::endl;
+    for (size_t i = 0; i < size_t(pl.front()); ++i) {
+        parallel_north[i] = i;
     }
 
-    eckit::Log::debug<LibMir>() << "StructuredBilinearLatLon::assemble last row: " << pl.back() << std::endl;
+    Log::debug() << "StructuredBilinearLatLon::assemble last row: " << pl.back() << std::endl;
     const size_t inpts = in.numberOfPoints();
     for (long i = pl.back(), j = 0; i > 0; i--, j++) {
-        parallel_south[j] = size_t(inpts - i);
+        parallel_south[size_t(j)] = inpts - size_t(i);
     }
 
     //    std::ofstream outfile ("mir.coeffs");
@@ -93,7 +93,7 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
 
     // interpolate each output point in turn
     {
-        Pretty::ProgressTimer progress("Interpolating", nbOutputPoints, {"point"}, eckit::Log::debug<LibMir>());
+        trace::ProgressTimer progress("Interpolating", nbOutputPoints, {"point"}, Log::debug());
 
         std::unique_ptr<repres::Iterator> it(out.iterator());
         size_t ip = 0;
@@ -141,21 +141,18 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
                 ASSERT(pl.size() >= 2);  // at least 2 lines of latitude
 
                 if (eckit::types::is_approximately_equal(max_lat.value(), p.lat().value())) {
-
-                    top_n = pl[0];
-                    bot_n = pl[1];
+                    top_n = size_t(pl[0]);
+                    bot_n = size_t(pl[1]);
                     top_i = 0;
                     bot_i = top_i + top_n;
                 }
                 else if (eckit::types::is_approximately_equal(min_lat.value(), p.lat().value())) {
-
-                    top_n = pl[pl.size() - 2];
-                    bot_n = pl[pl.size() - 1];
+                    top_n = size_t(pl[pl.size() - 2]);
+                    bot_n = size_t(pl[pl.size() - 1]);
                     bot_i = inpts - bot_n;
                     top_i = bot_i - top_n;
                 }
                 else {
-
                     top_lat = icoords[top_i].lat();
                     bot_lat = icoords[bot_i].lat();
 
@@ -243,7 +240,7 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
                 double w_tr = w1.value() * wt.value();
                 double w_tl = w2.value() * wt.value();
 
-                //            eckit::Log::info() << " --> LL "
+                //            Log::info() << " --> LL "
                 //                      << lon << " ["
                 //                      << tl_lon << "/" << tr_lon << ","
                 //                      << bl_lon << "/" << br_lon << "] "

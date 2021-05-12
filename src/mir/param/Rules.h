@@ -10,14 +10,13 @@
  */
 
 
-#ifndef mir_param_Rules_h
-#define mir_param_Rules_h
+#pragma once
 
 #include <map>
 #include <set>
 #include <string>
 
-#include "eckit/thread/Mutex.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -33,10 +32,12 @@ namespace param {
 
 
 class Rules {
-protected:
-    // -- Types
-
 public:
+    // -- Operators
+
+    static const MIRParametrisation& lookup(const std::string& ruleName, long ruleValue);
+
+private:
     // -- Constructors
 
     Rules();
@@ -45,25 +46,21 @@ public:
 
     virtual ~Rules();
 
-    // -- Operators
-
-    const MIRParametrisation& lookup(const std::string& ruleName, long ruleValue);
-
-    // -- Methods
-
-    void readConfigurationFiles();
-
-private:
     // -- Members
 
-    eckit::Mutex mutex_;
-
+    util::recursive_mutex mutex_;
     std::map<long, SimpleParametrisation*> rules_;
     std::set<long> noted_;
     std::set<long> warning_;
 
     // -- Methods
 
+    static Rules& instance() {
+        static Rules fileRules;
+        return fileRules;
+    }
+
+    void readConfigurationFiles();
     SimpleParametrisation& lookup(long paramId);
     virtual void print(std::ostream&) const;
 
@@ -78,6 +75,3 @@ private:
 
 }  // namespace param
 }  // namespace mir
-
-
-#endif

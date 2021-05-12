@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_CellMethodOutputVariable_h
-#define mir_netcdf_CellMethodOutputVariable_h
+#pragma once
 
 #include "mir/netcdf/OutputVariable.h"
 
@@ -23,16 +22,13 @@ namespace netcdf {
 class CellMethodOutputVariable : public OutputVariable {
 public:
     CellMethodOutputVariable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions);
-    virtual ~CellMethodOutputVariable();
+    ~CellMethodOutputVariable() override;
 
 private:
-    virtual void merge(const Variable&, MergePlan& plan);
-    virtual void print(std::ostream&) const;
+    void merge(const Variable&, MergePlan&) override;
+    void print(std::ostream&) const override;
 };
 
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

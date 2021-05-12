@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_stats_distribution_DistributionT_h
-#define mir_stats_distribution_DistributionT_h
+#pragma once
 
 #include "mir/stats/Distribution.h"
 
@@ -88,9 +87,9 @@ private:
     // -- Overridden methods
 
     // From Distribution
-    void reset();
-    double operator()() const;
-    void print(std::ostream&) const;
+    void reset() override;
+    double operator()() const override;
+    void print(std::ostream&) const override;
 
     // -- Class members
     // None
@@ -106,6 +105,3 @@ private:
 }  // namespace distribution
 }  // namespace stats
 }  // namespace mir
-
-
-#endif

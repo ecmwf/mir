@@ -14,9 +14,7 @@
 #include <string>
 
 #include "eckit/config/Resource.h"
-#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
-#include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
 #include "eckit/types/FloatCompare.h"
 
@@ -25,6 +23,8 @@
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/repres/latlon/RegularLL.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -58,11 +58,11 @@ CASE("MIR-333") {
         const method::WeightMatrix& B = nn->getMatrix(ctx, *in, *out);
 
         if (newReference) {
-            eckit::Log::info() << "Saving reference '" << reference << "'" << std::endl;
+            Log::info() << "Saving reference '" << reference << "'" << std::endl;
             B.save(reference);
         }
 
-        eckit::Log::info() << "Loading reference '" << reference << "'" << std::endl;
+        Log::info() << "Loading reference '" << reference << "'" << std::endl;
         const method::WeightMatrix A(reference);
 
         EXPECT(A.rows() == B.rows());

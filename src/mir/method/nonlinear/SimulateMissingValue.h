@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_nonlinear_SimulateMissingValue_h
-#define mir_method_nonlinear_SimulateMissingValue_h
+#pragma once
 
 #include "mir/method/nonlinear/NonLinear.h"
 
@@ -25,11 +24,12 @@ struct SimulateMissingValue : NonLinear {
     SimulateMissingValue(const param::MIRParametrisation&);
 
 private:
-    bool treatment(Matrix& A, WeightMatrix& W, Matrix& B, const data::MIRValuesVector& values, const double&) const;
-    bool sameAs(const NonLinear&) const;
-    void print(std::ostream&) const;
-    void hash(eckit::MD5&) const;
-    bool canIntroduceMissingValues() const;
+    bool treatment(MethodWeighted::Matrix& A, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& B,
+                   const MIRValuesVector& values, const double&) const override;
+    bool sameAs(const NonLinear&) const override;
+    void print(std::ostream&) const override;
+    void hash(eckit::MD5&) const override;
+    bool modifiesMatrix() const override;
 
     double missingValue_;
     double epsilon_;
@@ -39,6 +39,3 @@ private:
 }  // namespace nonlinear
 }  // namespace method
 }  // namespace mir
-
-
-#endif

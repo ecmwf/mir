@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_PlanParser_h
-#define mir_util_PlanParser_h
+#pragma once
 
 #include <map>
 #include <vector>
@@ -36,7 +35,7 @@ namespace util {
 class PlanParser : public eckit::StreamParser {
 
 public:  // methods
-    PlanParser(std::istream& in);
+    PlanParser(std::istream&);
 
     void parse(action::ActionPlan& p, const param::MIRParametrisation&);
 
@@ -51,6 +50,3 @@ private:  // methods
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

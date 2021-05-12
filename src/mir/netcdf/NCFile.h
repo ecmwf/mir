@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_NCFile_h
-#define mir_netcdf_NCFile_h
+#pragma once
 
 #include <string>
 
@@ -41,7 +40,7 @@ private:
     NCFile& operator=(const NCFile&);
 
     // -- Methods
-    void print(std::ostream& out) const;
+    void print(std::ostream&) const;
 
 
     // -- Friends
@@ -54,6 +53,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

@@ -10,10 +10,10 @@
  */
 
 
-#ifndef mir_method_knn_distance_DistanceWeighting_h
-#define mir_method_knn_distance_DistanceWeighting_h
+#pragma once
 
 #include <iosfwd>
+
 #include "mir/method/WeightMatrix.h"
 #include "mir/search/PointSearch.h"
 
@@ -39,7 +39,7 @@ public:
                             const std::vector<search::PointSearch::PointValueType>& neighbours,
                             std::vector<WeightMatrix::Triplet>& triplets) const = 0;
 
-    virtual bool sameAs(const DistanceWeighting& other) const = 0;
+    virtual bool sameAs(const DistanceWeighting&) const = 0;
 
     virtual void hash(eckit::MD5&) const = 0;
 
@@ -76,7 +76,7 @@ public:
 
 template <class T>
 class DistanceWeightingBuilder : public DistanceWeightingFactory {
-    virtual DistanceWeighting* make(const param::MIRParametrisation& param) { return new T(param); }
+    DistanceWeighting* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     DistanceWeightingBuilder(const std::string& name) : DistanceWeightingFactory(name) {}
@@ -87,6 +87,3 @@ public:
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-
-
-#endif

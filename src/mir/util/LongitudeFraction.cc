@@ -12,7 +12,7 @@
 
 #include "mir/util/LongitudeFraction.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/serialisation/Stream.h"
 #include "eckit/utils/MD5.h"

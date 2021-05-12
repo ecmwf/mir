@@ -15,11 +15,9 @@
 #include <map>
 #include <sstream>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
-
-#include "mir/config/LibMir.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -27,18 +25,18 @@ namespace key {
 namespace grid {
 
 
-static eckit::Mutex* local_mutex              = nullptr;
+static util::recursive_mutex* local_mutex     = nullptr;
 static std::map<std::string, GridPattern*>* m = nullptr;
-static pthread_once_t once                    = PTHREAD_ONCE_INIT;
+static util::once_flag once;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, GridPattern*>();
 }
 
 
-GridPattern::GridPattern(const std::string& pattern) : pattern_(pattern) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+GridPattern::GridPattern(const std::string& pattern) : pattern_(pattern), regex_(pattern_) {
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(pattern) == m->end());
     (*m)[pattern] = this;
@@ -46,8 +44,7 @@ GridPattern::GridPattern(const std::string& pattern) : pattern_(pattern) {
 
 
 GridPattern::~GridPattern() {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(pattern_) != m->end());
     m->erase(pattern_);
@@ -55,8 +52,8 @@ GridPattern::~GridPattern() {
 
 
 void GridPattern::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     auto sep = "";
     for (auto& j : *m) {
@@ -65,62 +62,63 @@ void GridPattern::list(std::ostream& out) {
     }
 }
 
+std::string GridPattern::match(const std::string& name, const param::MIRParametrisation& param) {
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-bool GridPattern::match(const std::string& name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-
-    eckit::Log::debug<LibMir>() << "GridPattern: looking for '" << name << "'" << std::endl;
+    Log::debug() << "GridPattern: looking for '" << name << "'" << std::endl;
 
     bool conflicts = false;
     auto k         = m->cend();
     for (auto j = m->cbegin(); j != m->cend() && !conflicts; ++j) {
-        if (j->second->pattern_.match(name)) {
+        if (j->second->regex_.match(name)) {
             conflicts = k != m->cend();
             k         = j;
         }
     }
 
-    bool can = !conflicts && k != m->cend();
-    eckit::Log::debug<LibMir>() << "GridPattern: '" << name << "' " << (can ? "can" : "cannot") << " be built"
-                                << std::endl;
-    return can;
+    if (!conflicts && k != m->cend()) {
+        Log::debug() << "GridPattern: '" << name << "' can be built" << std::endl;
+        return k->second->canonical(name, param);
+    }
+
+    Log::debug() << "GridPattern: '" << name << "' cannot be built" << std::endl;
+    return "";
 }
 
 
-const Grid& GridPattern::lookup(const std::string& name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+const Grid* GridPattern::lookup(const std::string& name) {
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-    eckit::Log::debug<LibMir>() << "GridPattern: looking for '" << name << "'" << std::endl;
+    Log::debug() << "GridPattern: looking for '" << name << "'" << std::endl;
 
     auto k = m->cend();
     for (auto j = m->cbegin(); j != m->cend(); ++j) {
-        if (j->second->pattern_.match(name)) {
-            eckit::Log::debug<LibMir>() << "GridPattern: '" << j->second->pattern_ << "' match" << std::endl;
+        if (j->second->regex_.match(name)) {
+            Log::debug() << "GridPattern: '" << j->second->pattern_ << "' match" << std::endl;
 
             if (k != m->cend()) {
-                std::stringstream os;
+                std::ostringstream os;
                 os << "GridPattern: '" << name << "' matches '" << k->second << "' and '" << j->second << "'"
                    << std::endl;
-                throw eckit::SeriousBug(os.str());
+                throw exception::SeriousBug(os.str());
             }
             k = j;
         }
         else {
-            eckit::Log::debug<LibMir>() << "GridPattern: '" << j->second->pattern_ << "' no match" << std::endl;
+            Log::debug() << "GridPattern: '" << j->second->pattern_ << "' no match" << std::endl;
         }
     }
 
     if (k != m->cend()) {
         // This adds a new Grid to the map
-        auto gp = k->second->make(name);
-        return *gp;
+        return k->second->make(name);
     }
 
 
-    list(eckit::Log::error() << "GridPattern: unknown '" << name << "', choices are: ");
-    throw eckit::SeriousBug("GridPattern: unknown '" + name + "'");
+    list(Log::error() << "GridPattern: unknown '" << name << "', choices are: ");
+    throw exception::SeriousBug("GridPattern: unknown '" + name + "'");
 }
 
 

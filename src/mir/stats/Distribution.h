@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_stats_Distribution_h
-#define mir_stats_Distribution_h
+#pragma once
 
 #include <cstddef>
 #include <iosfwd>
@@ -120,7 +119,7 @@ public:
 
 template <class T>
 class DistributionBuilder : public DistributionFactory {
-    virtual Distribution* make(const param::MIRParametrisation& param) { return new T(param); }
+    Distribution* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     DistributionBuilder(const std::string& name) : DistributionFactory(name) {}
@@ -129,6 +128,3 @@ public:
 
 }  // namespace stats
 }  // namespace mir
-
-
-#endif

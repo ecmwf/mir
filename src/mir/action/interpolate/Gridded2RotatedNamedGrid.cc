@@ -12,12 +12,11 @@
 
 #include "mir/action/interpolate/Gridded2RotatedNamedGrid.h"
 
-#include <iostream>
-
-#include "eckit/exception/Exceptions.h"
+#include <ostream>
 
 #include "mir/key/grid/Grid.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -27,8 +26,7 @@ namespace interpolate {
 
 Gridded2RotatedNamedGrid::Gridded2RotatedNamedGrid(const param::MIRParametrisation& parametrisation) :
     Gridded2RotatedGrid(parametrisation) {
-
-    ASSERT(parametrisation_.userParametrisation().get("grid", grid_));
+    ASSERT(key::grid::Grid::get("grid", grid_, parametrisation) && !grid_.empty());
 }
 
 

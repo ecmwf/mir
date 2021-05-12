@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_NetcdfFileInput_h
-#define mir_input_NetcdfFileInput_h
+#pragma once
 
 #include "mir/api/mir_config.h"
 #if defined(mir_HAVE_NETCDF)
@@ -42,7 +41,7 @@ public:
 
     // -- Destructor
 
-    virtual ~NetcdfFileInput();  // Change to virtual if base class
+    ~NetcdfFileInput() override;
 
     // -- Convertors
     // None
@@ -98,22 +97,29 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    virtual void print(std::ostream&) const;  // Change to virtual if base class
-    virtual bool sameAs(const MIRInput& other) const;
-    virtual const param::MIRParametrisation& parametrisation(size_t which) const;
-    virtual data::MIRField field() const;
-    virtual bool next();
-    virtual size_t dimensions() const;
-    virtual grib_handle* gribHandle(size_t which) const;
+    void print(std::ostream&) const override;
+    bool sameAs(const MIRInput&) const override;
+    const param::MIRParametrisation& parametrisation(size_t which) const override;
+    data::MIRField field() const override;
+    bool next() override;
+    size_t dimensions() const override;
+    grib_handle* gribHandle(size_t which) const override;
 
     // From FieldParametrisation
-    virtual bool has(const std::string& name) const;
+    bool has(const std::string& name) const override;
 
-    virtual bool get(const std::string& name, std::string& value) const;
-    virtual bool get(const std::string& name, bool& value) const;
-    virtual bool get(const std::string& name, long& value) const;
-    virtual bool get(const std::string& name, double& value) const;
-    virtual bool get(const std::string& name, std::vector<double>& value) const;
+    bool get(const std::string& name, std::string& value) const override;
+    bool get(const std::string& name, bool& value) const override;
+    bool get(const std::string& name, int& value) const override;
+    bool get(const std::string& name, long& value) const override;
+    bool get(const std::string& name, float& value) const override;
+    bool get(const std::string& name, double& value) const override;
+
+    bool get(const std::string& name, std::vector<int>& value) const override;
+    bool get(const std::string& name, std::vector<long>& value) const override;
+    bool get(const std::string& name, std::vector<float>& value) const override;
+    bool get(const std::string& name, std::vector<double>& value) const override;
+    bool get(const std::string& name, std::vector<std::string>& value) const override;
 
     // -- Class members
     // None
@@ -122,9 +128,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const NetcdfFileInput& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
@@ -132,5 +136,4 @@ private:
 }  // namespace mir
 
 
-#endif
 #endif
