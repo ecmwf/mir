@@ -25,7 +25,7 @@ ecbuild_add_option(FEATURE TEST_ASSERTIONS    DEFAULT ON  DESCRIPTION "test: reg
 ecbuild_add_option(FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support for netCDF" REQUIRED_PACKAGES "NetCDF COMPONENTS C")
 ecbuild_add_option(FEATURE PNG                DEFAULT OFF DESCRIPTION "support for PNG encoding" REQUIRED_PACKAGES PNG)
 
-ecbuild_find_package(NAME eccodes VERSION 2.19 REQUIRED)
+ecbuild_find_package(NAME eccodes VERSION 2.22 REQUIRED)
 ecbuild_find_package(NAME eckit   VERSION 1.14 REQUIRED)
 
 ecbuild_add_option(FEATURE ATLAS DEFAULT ON DESCRIPTION "support for Atlas" REQUIRED_PACKAGES "atlas VERSION 0.25")
