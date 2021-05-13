@@ -4,12 +4,15 @@ PyMIR - Cython interface to MIR
 Building
 --------
 
-Requires a recent version of Cython_, availble for python/2.7.12-01 ::
+Requires a recent version of Cython_ and Python 3::
 
-  module switch python python/2.7.12-01
-  python setup.py build_ext -i
+  export MIR_INCLUDE_DIRS=<path1>:<path2>:...
+  export MIR_LIB_DIR=<path>
+  python3 setup.py build_ext -i
 
 This will build the ``mir`` extension module in the current directory.
+
+.. _Cython: https://cython.org/
 
 Example
 -------
