@@ -23,3 +23,7 @@ mem_out = mir.GribMemoryOutput(buf)
 job.execute(mir.GribFileInput('z.grib'), mem_out)
 with open('z_ll_fm.grib', 'wb') as f:
     f.write(buf[:len(mem_out)])
+
+print('File-like object to file')
+with open('z.grib', 'rb') as f:
+    job.execute(mir.GribPyIOInput(f), mir.GribFileOutput('z_ll_of.grib'))

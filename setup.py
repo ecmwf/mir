@@ -20,7 +20,7 @@ setup(
     ext_modules = cythonize(
         Extension(
             "mir",
-            ["mir.pyx"],
+            ["mir.pyx", "pyio.cc"],
             language = "c++",
             libraries = ["mir"],
             library_dirs = [mir_lib_dir],

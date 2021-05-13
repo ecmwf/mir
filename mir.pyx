@@ -6,6 +6,8 @@ cimport eckit_defs as eckit
 cimport mir_defs as mir
 cimport std_defs as std
 
+cimport mir_pyio
+
 import sys
 
 # Initialise eckit::Main when module is loaded
@@ -50,6 +52,12 @@ cdef class GribMemoryOutput(MIROutput):
     def __len__(self):
         return (<mir.GribMemoryOutput*>self._output).length()
 
+cdef class GribPyIOInput(MIRInput):
+    def __cinit__(self, obj):
+        self._input = new mir_pyio.GribPyIOInput(obj)
+    def __dealloc__(self):
+        del self._input
+
 cdef class MIRJob:
     cdef mir.MIRJob j
 
@@ -75,6 +83,9 @@ cdef class MIRJob:
         if isinstance(input, GribFileInput):
             while input._input.next():
                 self.j.execute(dereference(input._input), dereference(output._output))
+        elif isinstance(input, GribPyIOInput):
+            input._input.next()
+            self.j.execute(dereference(input._input), dereference(output._output))
         else:
             self.j.execute(dereference(input._input), dereference(output._output))
 
