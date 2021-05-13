@@ -48,7 +48,10 @@ Packing::Packing(const std::string& name, const param::MIRParametrisation& param
     packing_ = name;
     std::string packing;
 
-    definePacking_               = !field.get("packing", packing) || packing_ != packing;
+    bool gridded = false;
+    field.get("gridded", gridded);
+
+    definePacking_               = !field.get("packing", packing) || packing_ != packing || gridded_ != gridded;
     defineAccuracyBeforePacking_ = definePacking_ && packing == "ieee";
 
     defineAccuracy_ = false;
