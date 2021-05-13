@@ -129,6 +129,7 @@ public:
 
     virtual ~EncodeTest() {
         util::lock_guard<util::recursive_mutex> lock(local_mutex);
+
         grib_handle_delete(grib1Handle_);
         grib_handle_delete(grib2Handle_);
         delete grib1Input_;
