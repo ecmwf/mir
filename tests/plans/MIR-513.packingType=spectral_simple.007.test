@@ -3,4 +3,4 @@ packingType=spectral_simple.grib1
 # mir
 --grid=1/1 --intgrid=none --packing=av
 # plan
-ShToRegularLL[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<scalar>,bbox=BoundingBox[north=90,west=0,south=-90,east=360],increments=Increments[west_east=1,south_north=1]]|Save[output=...]
+ShToRegularLL[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<scalar>,bbox=BoundingBox[north=90,west=0,south=-90,east=360],increments=Increments[west_east=1,south_north=1]]|Save[packing=simple,output=...]
