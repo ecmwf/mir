@@ -58,6 +58,12 @@ cdef class GribPyIOInput(MIRInput):
     def __dealloc__(self):
         del self._input
 
+cdef class GribPyIOOutput(MIROutput):
+    def __cinit__(self, obj):
+        self._output = new mir_pyio.GribPyIOOutput(obj)
+    def __dealloc__(self):
+        del self._output
+
 cdef class MIRJob:
     cdef mir.MIRJob j
 

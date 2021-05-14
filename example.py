@@ -27,3 +27,7 @@ with open('z_ll_fm.grib', 'wb') as f:
 print('File-like object to file')
 with open('z.grib', 'rb') as f:
     job.execute(mir.GribPyIOInput(f), mir.GribFileOutput('z_ll_of.grib'))
+
+print('File to file-like object')
+with open('z_ll_fo.grib', 'wb') as f:
+    job.execute(mir.GribFileInput('z.grib'), mir.GribPyIOOutput(f))

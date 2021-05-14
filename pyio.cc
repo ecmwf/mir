@@ -80,3 +80,32 @@ bool GribPyIOInput::sameAs(const mir::input::MIRInput& other) const {
 void GribPyIOInput::print(std::ostream& out) const {
     out << "GribPyIOInput[]";
 }
+
+
+GribPyIOOutput::GribPyIOOutput(PyObject* obj) : obj_(obj) {
+    ASSERT(obj_ != nullptr);
+    Py_INCREF(obj_);
+}
+
+GribPyIOOutput::~GribPyIOOutput() {
+    ASSERT(obj_ != nullptr);
+    Py_DECREF(obj_);
+}
+
+void GribPyIOOutput::out(const void* message, size_t length, bool) {
+    auto buf = const_cast<char*>(reinterpret_cast<const char*>(message));
+    PyObject* view = PyMemoryView_FromMemory(buf, length, PyBUF_READ);
+    ASSERT(view != nullptr);
+    PyObject* res = PyObject_CallMethod(obj_, "write", "O", view);
+    ASSERT(res != nullptr);
+    Py_DECREF(res);
+    Py_DECREF(view);
+}
+
+bool GribPyIOOutput::sameAs(const mir::output::MIROutput& other) const {
+    return this == &other;
+}
+
+void GribPyIOOutput::print(std::ostream& out) const {
+    out << "GribPyIOOutput[]";
+}
