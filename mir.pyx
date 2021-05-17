@@ -86,12 +86,9 @@ cdef class MIRJob:
     #     return self
 
     def execute(self, MIRInput input, MIROutput output):
-        if isinstance(input, GribFileInput):
+        if not isinstance(input, GribMemoryInput):
             while input._input.next():
                 self.j.execute(dereference(input._input), dereference(output._output))
-        elif isinstance(input, GribPyIOInput):
-            input._input.next()
-            self.j.execute(dereference(input._input), dereference(output._output))
         else:
             self.j.execute(dereference(input._input), dereference(output._output))
 
