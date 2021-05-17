@@ -17,7 +17,7 @@ cdef extern from "<sstream>" namespace "std" nogil:
 
 cdef extern from "mir/input/MIRInput.h" namespace "mir::input":
     cdef cppclass MIRInput:
-        bint next()
+        bint next() except +
 
 cdef extern from "mir/input/GribMemoryInput.h" namespace "mir::input":
     cdef cppclass GribMemoryInput(MIRInput):

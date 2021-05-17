@@ -16,12 +16,12 @@ static long pyio_readcb(void* data, void* buf, long len) {
     auto obj = reinterpret_cast<PyObject*>(data);
     PyObject* res = PyObject_CallMethod(obj, "read", "l", len);
     if (res == nullptr)
-        return -1;
+        return -2;
 
     Py_buffer read;
     if (PyObject_GetBuffer(res, &read, PyBUF_SIMPLE) < 0) {
         Py_DECREF(res);
-        return -1;
+        return -2;
     }
 
     Py_DECREF(res);
@@ -30,11 +30,11 @@ static long pyio_readcb(void* data, void* buf, long len) {
     ASSERT(l <= len);
     if (PyBuffer_ToContiguous(buf, &read, l, 'C') < 0) {
         PyBuffer_Release(&read);
-        return -1;
+        return -2;
     }
 
     PyBuffer_Release(&read);
-    return l;
+    return (l > 0)? l : -1;
 }
 
 GribPyIOInput::GribPyIOInput(PyObject* obj) : obj_(obj), buffer_(buffer_size()) {
@@ -66,6 +66,12 @@ bool GribPyIOInput::next() {
 
     if (e == CODES_BUFFER_TOO_SMALL) {
         GRIB_ERROR(e, "wmo_read_any_from_stream");
+    }
+
+    if (e == CODES_IO_PROBLEM) {
+        // FIXME: propagate Python error
+        GRIB_ERROR(e, "wmo_read_any_from_stream");
+        return false;
     }
 
     GRIB_ERROR(e, "wmo_read_any_from_stream");
