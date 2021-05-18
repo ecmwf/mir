@@ -57,7 +57,7 @@ private:
     const param::MIRParametrisation& parametrisation(size_t which) const override;
     data::MIRField field() const override;
     grib_handle* gribHandle(size_t which = 0) const override;
-    void setAuxiliaryInformation(const std::string&) override;
+    void setAuxiliaryInformation(const util::ValueMap&) override;
     bool only(size_t paramId) override;
     size_t dimensions() const override;
 

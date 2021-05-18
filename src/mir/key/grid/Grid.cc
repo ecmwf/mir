@@ -22,6 +22,7 @@
 #include "mir/key/grid/NamedFromFile.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/ValueMap.h"
 
 
 namespace mir {
@@ -50,20 +51,15 @@ static void read_configuration_files() {
     if (path.exists()) {
         Log::debug() << "Grid: reading from '" << path << "'" << std::endl;
 
-        eckit::ValueMap grids = eckit::YAMLParser::decodeFile(path);
+        util::ValueMap grids(eckit::YAMLParser::decodeFile(path));
         for (const auto& g : grids) {
 
             // This registers a new Grid (don't delete pointer)
             auto ng = new NamedFromFile(g.first);
             ASSERT(ng);
 
-            for (const auto& p : eckit::ValueMap(g.second)) {
-                // value type checking prevents lossy conversions (eg. string > double > string > double)
-                p.second.isDouble()   ? ng->set(p.first, p.second.as<double>())
-                : p.second.isNumber() ? ng->set(p.first, p.second.as<long long>())
-                : p.second.isBool()   ? ng->set(p.first, p.second.as<bool>())
-                                      : ng->set(p.first, p.second.as<std::string>());
-            }
+            util::ValueMap map(g.second);
+            map.set(*ng);
 
             Log::debug() << static_cast<const Grid&>(*ng) << std::endl;
         }

@@ -123,7 +123,7 @@ void CheckerBoard::execute(context::Context& ctx) const {
             auto r = size_t(lon.value() / we);
 
             if (!hasMissing || values[j] != missingValue) {
-                values[j] = boxes[std::make_pair(r, c)];
+                values[j] = double(boxes[std::make_pair(r, c)]);
             }
 
             j++;

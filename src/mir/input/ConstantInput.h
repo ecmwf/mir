@@ -26,7 +26,7 @@ public:
 
     // -- Constructors
 
-    ConstantInput(const param::MIRParametrisation&);
+    ConstantInput(const param::MIRParametrisation& param) : ArtificialInput(param) {}
 
     // -- Destructor
     // None
@@ -67,19 +67,14 @@ protected:
 
 private:
     // -- Members
-
-    double constant_;
+    // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    // From MIRInput
-    bool sameAs(const MIRInput&) const override;
-
     // From ArtificialInput
-    void print(std::ostream&) const override;
     MIRValuesVector fill(size_t) const override;
 
     // -- Class members

@@ -34,8 +34,7 @@ public:
                   const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
 
     // -- Destructor
-
-    ~RotatedFromPL() override;
+    // None
 
     // -- Convertors
     // None

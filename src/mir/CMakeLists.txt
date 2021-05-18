@@ -25,12 +25,16 @@ list(APPEND mir_srcs
     action/filter/AdjustWindsScaleCosLatitude.h
     action/filter/BitmapFilter.cc
     action/filter/BitmapFilter.h
+    action/filter/CesaroSummationFilter.cc
+    action/filter/CesaroSummationFilter.h
     action/filter/FrameFilter.cc
     action/filter/FrameFilter.h
     action/filter/GlobaliseFilter.cc
     action/filter/GlobaliseFilter.h
     action/filter/NablaFilter.cc
     action/filter/NablaFilter.h
+    action/filter/ShTruncate.cc
+    action/filter/ShTruncate.h
     action/filter/StatisticsFilter.cc
     action/filter/StatisticsFilter.h
     action/filter/UnstructuredFilter.cc
@@ -209,8 +213,12 @@ list(APPEND mir_srcs
     input/GribStreamInput.h
     input/MIRInput.cc
     input/MIRInput.h
-    input/MultiScalarInput.cc
-    input/MultiScalarInput.h
+    input/MultiDimensionalGribFileInput.cc
+    input/MultiDimensionalGribFileInput.h
+    input/MultiDimensionalInput.cc
+    input/MultiDimensionalInput.h
+    input/MultiStreamInput.cc
+    input/MultiStreamInput.h
     input/RawInput.cc
     input/RawInput.h
     input/RawMetadata.cc
@@ -428,8 +436,8 @@ list(APPEND mir_srcs
     output/GribStreamOutput.h
     output/MIROutput.cc
     output/MIROutput.h
-    output/MultiScalarOutput.cc
-    output/MultiScalarOutput.h
+    output/MultiDimensionalOutput.cc
+    output/MultiDimensionalOutput.h
     output/RawOutput.cc
     output/RawOutput.h
     output/ValuesOutput.cc
@@ -672,6 +680,8 @@ list(APPEND mir_srcs
     util/Trace.cc
     util/Trace.h
     util/Types.h
+    util/ValueMap.cc
+    util/ValueMap.h
     util/Wind.cc
     util/Wind.h)
 
@@ -716,8 +726,6 @@ if(mir_HAVE_ATLAS)
         action/transform/ShToRotatedRegularLL.h
         action/transform/ShToTypedGrid.cc
         action/transform/ShToTypedGrid.h
-        action/transform/ShTruncate.cc
-        action/transform/ShTruncate.h
         action/transform/ShVodToUV.cc
         action/transform/ShVodToUV.h
         action/transform/TransCache.cc

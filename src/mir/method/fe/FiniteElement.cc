@@ -40,8 +40,10 @@ namespace method {
 namespace fe {
 
 
-// epsilon used to scale edge tolerance when projecting ray to intesect element
+// epsilon used to scale edge tolerance when projecting ray to intersect element
 static constexpr double parametricEpsilon = 1e-15;
+
+static constexpr size_t nbFailuresLogged = 10;
 
 static util::once_flag once;
 static util::recursive_mutex* mtx                      = nullptr;
@@ -308,10 +310,10 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
                      * - nb_cols == 4 implies quadrilateral
                      * - no other element is supported at the time
                      */
-                    const auto e = close.value().payload();
-                    ASSERT(e < size_t(connectivity.rows()));
+                    const auto e = atlas::idx_t(close.value().payload());
+                    ASSERT(e < connectivity.rows());
 
-                    auto idx = [e, nbInputPoints, &connectivity](size_t j) {
+                    auto idx = [e, nbInputPoints, &connectivity](atlas::idx_t j) {
                         auto x = size_t(connectivity(e, j));
                         ASSERT(x < nbInputPoints);
                         return x;
@@ -358,7 +360,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
         size_t count = 0;
         for (const auto& f : failures) {
             log << "\n\tpoint " << f.first << " " << f.second;
-            if (++count > 10) {
+            if (++count > nbFailuresLogged) {
                 log << "\n\t...";
                 break;
             }

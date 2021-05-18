@@ -12,27 +12,26 @@
 
 #pragma once
 
-#include "mir/repres/gauss/regular/Regular.h"
+#include <deque>
+
+#include "mir/input/MIRInput.h"
 
 
 namespace mir {
-namespace repres {
-namespace gauss {
-namespace regular {
+namespace input {
 
 
-class RegularGG : public Regular {
+class MultiStreamInput : public MIRInput {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
-
-    RegularGG(const param::MIRParametrisation&);
-    RegularGG(size_t N, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
+    MultiStreamInput();
 
     // -- Destructor
-    // None
+
+    ~MultiStreamInput() override;
 
     // -- Convertors
     // None
@@ -42,8 +41,11 @@ public:
 
     // -- Methods
 
+    void append(MIRInput*);
+
     // -- Overridden methods
-    // None
+
+    size_t dimensions() const override;
 
     // -- Class members
     // None
@@ -56,8 +58,7 @@ protected:
     // None
 
     // -- Methods
-
-    void print(std::ostream&) const override;
+    // None
 
     // -- Overridden methods
     // None
@@ -70,20 +71,21 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    std::deque<MIRInput*> streams_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    const Gridded* croppedRepresentation(const util::BoundingBox&) const override;
-    bool sameAs(const Representation&) const override;
-    Iterator* iterator() const override;
-    std::string factory() const override;
-
-    // From Representation
-    std::vector<util::GridBox> gridBoxes() const override;
+    // From MIRInput
+    const param::MIRParametrisation& parametrisation(size_t which) const override;
+    data::MIRField field() const override;
+    bool next() override;
+    bool sameAs(const MIRInput&) const override;
+    void print(std::ostream&) const override;
+    grib_handle* gribHandle(size_t which = 0) const override;
 
     // -- Class members
     // None
@@ -96,7 +98,5 @@ private:
 };
 
 
-}  // namespace regular
-}  // namespace gauss
-}  // namespace repres
+}  // namespace input
 }  // namespace mir

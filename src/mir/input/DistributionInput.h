@@ -14,8 +14,6 @@
 
 #include "mir/input/ArtificialInput.h"
 
-#include <memory>
-
 
 namespace mir {
 namespace stats {
@@ -35,7 +33,7 @@ public:
 
     // -- Constructors
 
-    DistributionInput(const param::MIRParametrisation&);
+    DistributionInput(const param::MIRParametrisation& param) : ArtificialInput(param) {}
 
     // -- Destructor
     // None
@@ -78,18 +76,13 @@ private:
     // -- Members
 
     std::string name_;
-    mutable std::unique_ptr<stats::Distribution> distribution_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    // From MIRInput
-    bool sameAs(const MIRInput&) const override { return false; }
-
     // From ArtificialInput
-    void print(std::ostream&) const override;
     MIRValuesVector fill(size_t) const override;
 
     // -- Class members

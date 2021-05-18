@@ -12,27 +12,26 @@
 
 #pragma once
 
-#include "mir/repres/gauss/regular/Regular.h"
+#include "mir/action/plan/Action.h"
 
 
 namespace mir {
-namespace repres {
-namespace gauss {
-namespace regular {
+namespace action {
+namespace filter {
 
 
-class RegularGG : public Regular {
+class ShTruncate : public Action {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    RegularGG(const param::MIRParametrisation&);
-    RegularGG(size_t N, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
+    ShTruncate(const param::MIRParametrisation&);
 
     // -- Destructor
-    // None
+
+    ~ShTruncate() override;
 
     // -- Convertors
     // None
@@ -41,6 +40,7 @@ public:
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -70,20 +70,21 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    size_t truncation_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    const Gridded* croppedRepresentation(const util::BoundingBox&) const override;
-    bool sameAs(const Representation&) const override;
-    Iterator* iterator() const override;
-    std::string factory() const override;
+    bool sameAs(const Action&) const override;
 
-    // From Representation
-    std::vector<util::GridBox> gridBoxes() const override;
+    void execute(context::Context&) const override;
+
+    const char* name() const override;
+
+    void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Class members
     // None
@@ -96,7 +97,6 @@ private:
 };
 
 
-}  // namespace regular
-}  // namespace gauss
-}  // namespace repres
+}  // namespace filter
+}  // namespace action
 }  // namespace mir

@@ -17,6 +17,7 @@
 
 #include "atlas/array.h"
 #include "atlas/runtime/Trace.h"
+#include "atlas/util/Topology.h"
 
 #include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
@@ -46,6 +47,10 @@ double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh, bool include_
         auto& nodes       = mesh.nodes();
         const auto coords = atlas::array::make_view<double, 2>(nodes.field("xyz"));
         auto nbRealPts    = nodes.metadata().has("NbRealPts") ? nodes.metadata().get<idx_t>("NbRealPts") : nodes.size();
+        const auto cellFlags = atlas::array::make_view<int, 1>(mesh.cells().flags());
+        auto invalidElement  = [&cellFlags](idx_t e) -> bool {
+            return atlas::util::Topology::view(cellFlags[e]).check(atlas::util::Topology::INVALID);
+        };
 
 
         // distance, up to Earth radius
@@ -61,6 +66,9 @@ double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh, bool include_
         const auto& connectivity = mesh.cells().node_connectivity();
 
         for (idx_t e = 0; e < connectivity.rows(); ++e) {
+            if (invalidElement(e)) {
+                continue;
+            }
             auto nb_cols = connectivity.cols(e);
             ASSERT(nb_cols == 3 || nb_cols == 4);
 

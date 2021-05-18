@@ -81,7 +81,7 @@ void Count::count(const PointLatLon& point) {
     ee_.insert(DistanceLon(bbox_.east().distance(point.lon()), point.lon()));
     ww_.insert(DistanceLon(bbox_.west().distance(point.lon()), point.lon()));
 
-    // std::cout << point.lat << " " << point.lon << " => " << bbox.contains(point.lat, point.lon) << std::endl;
+    // Log::info() << point.lat << " " << point.lon << " => " << bbox.contains(point.lat, point.lon) << std::endl;
 
     if (bbox_.contains(point)) {
 

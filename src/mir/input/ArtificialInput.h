@@ -66,7 +66,7 @@ protected:
     size_t dimensions() const override;
     const param::MIRParametrisation& parametrisation(size_t which = 0) const override;
     data::MIRField field() const override;
-    void setAuxiliaryInformation(const std::string& yaml) override;
+    void setAuxiliaryInformation(const util::ValueMap&) override;
     void print(std::ostream&) const override;
     bool sameAs(const MIRInput&) const override;
 

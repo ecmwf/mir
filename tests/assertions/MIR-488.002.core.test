@@ -1,7 +1,7 @@
 # mars
 /dev/null
 # mir (generate a field with normal, or Gaussian, distributed values given mean and standard deviation)
---add-random=normal-distribution{mean:42.,stddev:3.} --artificial-input=constant --constant=0 --input={gridded:True,gridType:regular_ll,north:10.,west:0.,south:0.,east:10.,south_north_increment:1.,west_east_increment:1.,Ni:11,Nj:11}
+--add-random=normal-distribution{mean:42.,stddev:3.} --input={artificialInput:constant,constant:0.,gridded:True,gridType:regular_ll,north:10.,west:0.,south:0.,east:10.,south_north_increment:1.,west_east_increment:1.,Ni:11,Nj:11}
 # grib_get
 Ni=11
 Nj=11

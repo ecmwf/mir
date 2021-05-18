@@ -33,7 +33,7 @@
 
 
 using namespace mir;
-using prec_t = decltype(std::cout.precision());
+using prec_t = decltype(Log::info().precision());
 
 
 struct MIRCount : tools::MIRTool {

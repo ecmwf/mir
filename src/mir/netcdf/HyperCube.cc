@@ -56,7 +56,7 @@ HyperCube HyperCube::addToDimension(size_t which, size_t where, size_t howMuch, 
 
     Dimensions mul(dimensions_.size());
     size_t n = 1;
-    for (int i = (mul.size()) - 1; i >= 0; i--) {
+    for (int i = int(mul.size()) - 1; i >= 0; i--) {
         auto iu = size_t(i);
         mul[iu] = n;
         n *= newdims[iu];

@@ -55,10 +55,6 @@ class EncodeTest {
 
     virtual std::string gribSample(long edition) const = 0;
 
-    friend std::ostream& operator<<(std::ostream& out, const EncodeTest& test) {
-        return out << "Test " << *(test.representation_) << ", expected # values: " << test.numberOfValues();
-    }
-
 protected:
     grib_handle* gribHandle(long edition) {
         util::lock_guard<util::recursive_mutex> lock(local_mutex);
@@ -93,7 +89,8 @@ protected:
 
             int err   = 0;
             int flags = 0;
-            handle = grib_util_set_spec(sample, &info.grid, &info.packing, flags, values.data(), values.size(), &err);
+            handle =
+                codes_grib_util_set_spec(sample, &info.grid, &info.packing, flags, values.data(), values.size(), &err);
             GRIB_CALL(err);
 
             //            grib_write_message(handle,("error.grib" + std::to_string(edition)).c_str(),"w");
@@ -262,10 +259,10 @@ public:
 
 
 class EncodeRegular : public EncodeTest {
-    size_t Ni_, Nj_;
+    size_t Ni_;
+    size_t Nj_;
+
     size_t numberOfValues() const override { return Ni_ * Nj_; }
-    size_t Ni() const { return Ni_; }
-    size_t Nj() const { return Nj_; }
 
 public:
     EncodeRegular(const repres::Representation* rep, size_t Ni, size_t Nj) : EncodeTest(rep), Ni_(Ni), Nj_(Nj) {
@@ -590,7 +587,8 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
 
             int err   = 0;
             int flags = 0;
-            handle = grib_util_set_spec(sample, &info.grid, &info.packing, flags, values.data(), values.size(), &err);
+            handle =
+                codes_grib_util_set_spec(sample, &info.grid, &info.packing, flags, values.data(), values.size(), &err);
             GRIB_CALL(err);
 
             ASSERT(handle != nullptr);

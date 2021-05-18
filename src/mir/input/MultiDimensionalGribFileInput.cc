@@ -10,22 +10,19 @@
  */
 
 
-#include "mir/input/ConstantInput.h"
+#include "mir/input/MultiDimensionalGribFileInput.h"
+
+#include "mir/input/GribFileInput.h"
 
 
 namespace mir {
 namespace input {
 
 
-static ArtificialInputBuilder<ConstantInput> __artificial("constant");
-
-
-MIRValuesVector ConstantInput::fill(size_t n) const {
-    double constant = 0;
-    parametrisation().get("constant", constant);
-
-    MIRValuesVector values(n, constant);
-    return values;
+MultiDimensionalGribFileInput::MultiDimensionalGribFileInput(const eckit::PathName& path, size_t dim, size_t skip) {
+    for (size_t which = 0; which < dim; ++which) {
+        append(new GribFileInput(path, skip + which, dim));
+    }
 }
 
 

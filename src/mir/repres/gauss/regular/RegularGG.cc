@@ -33,9 +33,6 @@ RegularGG::RegularGG(size_t N, const util::BoundingBox& bbox, double angularPrec
     Regular(N, bbox, angularPrecision) {}
 
 
-RegularGG::~RegularGG() = default;
-
-
 void RegularGG::print(std::ostream& out) const {
     out << "RegularGG["
            "N="

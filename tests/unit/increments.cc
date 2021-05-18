@@ -148,8 +148,8 @@ CASE("Increments::correctBoundingBox") {
 
             auto& bbox = repres->boundingBox();
             EXPECT(bbox.west() == ref.lon());
-            EXPECT(bbox.east() == bbox.west() + (ll.Ni() - 1));
-            EXPECT(bbox.north() == bbox.south() + (ll.Nj() - 1));
+            EXPECT(bbox.east() == bbox.west() + double(ll.Ni() - 1));
+            EXPECT(bbox.north() == bbox.south() + double(ll.Nj() - 1));
 
             repres->validate(MIRValuesVector(Ni * Nj));
         };

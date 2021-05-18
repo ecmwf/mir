@@ -12,27 +12,27 @@
 
 #pragma once
 
-#include "mir/repres/gauss/regular/Regular.h"
+#include <vector>
+
+#include "mir/output/MIROutput.h"
 
 
 namespace mir {
-namespace repres {
-namespace gauss {
-namespace regular {
+namespace output {
 
 
-class RegularGG : public Regular {
+class MultiDimensionalOutput : public MIROutput {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    RegularGG(const param::MIRParametrisation&);
-    RegularGG(size_t N, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
+    MultiDimensionalOutput();
 
     // -- Destructor
-    // None
+
+    ~MultiDimensionalOutput() override;
 
     // -- Convertors
     // None
@@ -41,6 +41,8 @@ public:
     // None
 
     // -- Methods
+
+    void appendDimensionalOutput(MIROutput*);
 
     // -- Overridden methods
     // None
@@ -56,8 +58,7 @@ protected:
     // None
 
     // -- Methods
-
-    void print(std::ostream&) const override;
+    // None
 
     // -- Overridden methods
     // None
@@ -70,20 +71,23 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    std::vector<MIROutput*> dimensions_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    const Gridded* croppedRepresentation(const util::BoundingBox&) const override;
-    bool sameAs(const Representation&) const override;
-    Iterator* iterator() const override;
-    std::string factory() const override;
-
-    // From Representation
-    std::vector<util::GridBox> gridBoxes() const override;
+    // From MIROutput
+    size_t copy(const param::MIRParametrisation&, context::Context&) override;  // No interpolation performed
+    size_t save(const param::MIRParametrisation&, context::Context&) override;
+    size_t set(const param::MIRParametrisation&, context::Context&) override;
+    bool sameAs(const MIROutput&) const override;
+    bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const override;
+    bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const override;
+    void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) override;
+    void print(std::ostream&) const override;
 
     // -- Class members
     // None
@@ -92,11 +96,8 @@ private:
     // None
 
     // -- Friends
-    // None
 };
 
 
-}  // namespace regular
-}  // namespace gauss
-}  // namespace repres
+}  // namespace output
 }  // namespace mir

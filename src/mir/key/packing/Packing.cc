@@ -48,7 +48,10 @@ Packing::Packing(const std::string& name, const param::MIRParametrisation& param
     packing_ = name;
     std::string packing;
 
-    definePacking_               = !field.get("packing", packing) || packing_ != packing;
+    bool gridded = false;
+    field.get("gridded", gridded);
+
+    definePacking_               = !field.get("packing", packing) || packing_ != packing || gridded_ != gridded;
     defineAccuracyBeforePacking_ = definePacking_ && packing == "ieee";
 
     defineAccuracy_ = false;
@@ -167,7 +170,7 @@ void Packing::set(grib_handle* h, const std::string& type) const {
 
 
 PackingFactory::PackingFactory(const std::string& name, const std::string& alias, bool spectral, bool gridded) :
-    name_(name), spectral_(spectral), gridded_(gridded) {
+    name_(name) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 

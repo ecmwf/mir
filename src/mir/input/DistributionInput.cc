@@ -13,9 +13,8 @@
 #include "mir/input/DistributionInput.h"
 
 #include <algorithm>
-#include <ostream>
+#include <memory>
 
-#include "mir/param/MIRParametrisation.h"
 #include "mir/stats/Distribution.h"
 #include "mir/util/Exceptions.h"
 
@@ -27,29 +26,15 @@ namespace input {
 static ArtificialInputBuilder<DistributionInput> __artificial("distribution");
 
 
-DistributionInput::DistributionInput(const param::MIRParametrisation& parametrisation) :
-    ArtificialInput(parametrisation) {
-
-    std::string distribution;
-    parametrisation.get("distribution", distribution);
-
-    distribution_.reset(stats::DistributionFactory::build(distribution));
-    ASSERT(distribution_);
-}
-
-
-void DistributionInput::print(std::ostream& out) const {
-    out << "DistributionInput[distribution=" << *distribution_ << ",";
-    ArtificialInput::print(out);
-    out << "]";
-}
-
-
 MIRValuesVector DistributionInput::fill(size_t n) const {
-    auto& dis = *distribution_;
+    std::string distribution;
+    ASSERT(parametrisation().get("distribution", distribution));
+
+    std::unique_ptr<stats::Distribution> dis(stats::DistributionFactory::build(distribution));
+    ASSERT(dis);
 
     MIRValuesVector values(n);
-    std::generate(values.begin(), values.end(), [&]() -> double { return dis(); });
+    std::generate(values.begin(), values.end(), [&]() -> double { return (*dis)(); });
     return values;
 }
 

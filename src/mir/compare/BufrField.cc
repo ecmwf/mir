@@ -231,7 +231,7 @@ static bool sameValue(const std::string& name, const std::vector<T>& a, const st
     }
 
     for (size_t i = 0; i < a.size(); ++i) {
-        if (!sameValue(name, a[i], b[i], e)) {
+        if (!sameValue(name, double(a[i]), double(b[i]), e)) {
             return false;
         }
     }

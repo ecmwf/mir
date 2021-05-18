@@ -191,11 +191,11 @@ void Rules::readConfigurationFiles() {
             SimpleParametrisation& pidConfig = *(p.second);
 
             for (const auto& j : defaultConfig) {
-                const std::string& keyName  = j.first;
-                const std::string& keyValue = j.second;
+                const std::string& name  = j.first;
+                const std::string& value = j.second;
 
-                if (!pidConfig.has(keyName)) {
-                    pidConfig.set(keyName, keyValue);
+                if (!pidConfig.has(name)) {
+                    pidConfig.set(name, value);
                 }
             }
         }

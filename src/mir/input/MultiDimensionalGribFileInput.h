@@ -12,34 +12,32 @@
 
 #pragma once
 
-#include <vector>
-
-#include "mir/input/MIRInput.h"
+#include "mir/input/MultiDimensionalInput.h"
 
 
-namespace mir {
-namespace output {
-class MultiScalarOutput;
+namespace eckit {
+class PathName;
 }
-}  // namespace mir
 
 
 namespace mir {
 namespace input {
 
 
-class MultiScalarInput : public MIRInput {
+class MultiDimensionalGribFileInput : public MultiDimensionalInput {
 public:
+    // -- Types
+    // None
+
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    MultiScalarInput();
+    MultiDimensionalGribFileInput(const eckit::PathName&, size_t dim = 1, size_t skip = 0);
 
     // -- Destructor
-
-    ~MultiScalarInput() override;
+    // None
 
     // -- Convertors
     // None
@@ -48,12 +46,10 @@ public:
     // None
 
     // -- Methods
-
-    void appendScalarInput(MIRInput*);
+    // None
 
     // -- Overridden methods
-
-    size_t dimensions() const override;
+    // None
 
     // -- Class members
     // None
@@ -63,8 +59,7 @@ public:
 
 protected:
     // -- Members
-
-    std::vector<MIRInput*> components_;
+    // None
 
     // -- Methods
     // None
@@ -86,14 +81,7 @@ private:
     // None
 
     // -- Overridden methods
-
-    // From MIRInput
-    const param::MIRParametrisation& parametrisation(size_t which) const override;
-    data::MIRField field() const override;
-    bool next() override;
-    bool sameAs(const MIRInput&) const override;
-    void print(std::ostream&) const override;
-    grib_handle* gribHandle(size_t which = 0) const override;
+    // None
 
     // -- Class members
     // None
@@ -102,8 +90,7 @@ private:
     // None
 
     // -- Friends
-
-    friend class output::MultiScalarOutput;
+    // None
 };
 
 

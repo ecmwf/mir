@@ -17,27 +17,29 @@
 
 namespace mir {
 namespace action {
-namespace transform {
+namespace filter {
 
 
-class ShTruncate : public Action {
+class CesaroSummationFilter : public Action {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    ShTruncate(const param::MIRParametrisation&);
+    CesaroSummationFilter(const param::MIRParametrisation&);
+    CesaroSummationFilter(const CesaroSummationFilter&) = delete;
 
     // -- Destructor
 
-    ~ShTruncate() override;
+    ~CesaroSummationFilter() override;
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    CesaroSummationFilter& operator=(const CesaroSummationFilter&) = delete;
 
     // -- Methods
     // None
@@ -71,19 +73,17 @@ protected:
 private:
     // -- Members
 
-    size_t truncation_;
+    double k_;
+    size_t Tmin_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    bool sameAs(const Action&) const override;
-
     void execute(context::Context&) const override;
-
+    bool sameAs(const Action&) const override;
     const char* name() const override;
-
     void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Class members
@@ -97,6 +97,6 @@ private:
 };
 
 
-}  // namespace transform
+}  // namespace filter
 }  // namespace action
 }  // namespace mir

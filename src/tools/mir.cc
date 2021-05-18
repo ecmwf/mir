@@ -12,6 +12,7 @@
 
 #include <memory>
 #include <ostream>
+#include <string>
 
 #include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/option/CmdArgs.h"
@@ -25,9 +26,7 @@
 #include "mir/api/MIRJob.h"
 #include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/data/Space.h"
-#include "mir/input/ArtificialInput.h"
-#include "mir/input/GribFileInput.h"
-#include "mir/input/VectorInput.h"
+#include "mir/input/MultiDimensionalGribFileInput.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/intgrid/Intgrid.h"
 #include "mir/key/packing/Packing.h"
@@ -244,6 +243,11 @@ struct MIR : tools::MIRTool {
             "Unstructured grid globalise minimum distance to insert missing values if needed (default 555975. [m])"));
         options_.push_back(new SimpleOption<bool>("unstructured", "Convert to unstructured grid"));
 
+        options_.push_back(new SimpleOption<bool>("cesaro", "Cesàro summation filtering"));
+        options_.push_back(new SimpleOption<double>("cesaro-k", "Cesàro summation k (default 2.)"));
+        options_.push_back(new SimpleOption<size_t>(
+            "cesaro-truncation", "Cesàro summation filtering minimum truncation (1 <= Tmin < T, default 1)"));
+
         //==============================================
         options_.push_back(new Separator("Compute"));
         options_.push_back(new SimpleOption<std::string>("formula", "Formula to apply on field"));
@@ -306,11 +310,9 @@ struct MIR : tools::MIRTool {
         options_.push_back(
             new FactoryOption<key::style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
         options_.push_back(new FactoryOption<data::SpaceChooser>("dimension", "Select dimension"));
-        options_.push_back(new SimpleOption<std::string>(
-            "input", "Additional information to decribe input (such as latitudes, longitudes, coordinates) in YAML"));
         options_.push_back(new SimpleOption<size_t>("precision", "Statistics methods output precision"));
-        options_.push_back(new SimpleOption<double>("constant", "Set input to constant value"));
-        options_.push_back(new SimpleOption<std::string>("output", "Output options"));
+        options_.push_back(new SimpleOption<std::string>("input", "Input options YAML (lat, lon, etc.)"));
+        options_.push_back(new SimpleOption<std::string>("output", "Output options YAML"));
         options_.push_back(new FactoryOption<action::Executor>("executor", "Select whether threads are used or not"));
         options_.push_back(new SimpleOption<std::string>("plan", "String containing a plan definition"));
         options_.push_back(new SimpleOption<eckit::PathName>("plan-script", "File containing a plan definition"));
@@ -340,8 +342,6 @@ struct MIR : tools::MIRTool {
             options_.push_back(new SimpleOption<std::string>("dump-statistics-file",
                                                              "Write statistics to file (after plan execution)"));
             options_.push_back(new SimpleOption<bool>("dont-compress-plan", "Don't compress plan"));
-            options_.push_back(
-                new FactoryOption<input::ArtificialInputFactory>("artificial-input", "Use artificial data for input"));
             options_.push_back(new FactoryOption<output::MIROutputFactory>("format", "Output format"));
 #if defined(mir_HAVE_PNG)
             options_.push_back(
@@ -381,7 +381,7 @@ struct MIR : tools::MIRTool {
 
     void process(const api::MIRJob&, input::MIRInput&, output::MIROutput&, const std::string&);
 
-    void only(const api::MIRJob&, input::MIRInput&, output::MIROutput&, size_t);
+    void only(const api::MIRJob&, input::MIRInput&, output::MIROutput&, const std::string&, size_t);
 };
 
 
@@ -410,11 +410,6 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
     }
 
 
-    bool uv2uv  = false;
-    bool vod2uv = false;
-    args.get("uv2uv", uv2uv);
-    args.get("vod2uv", vod2uv);
-
     if (args.has("plan") || args.has("plan-script")) {
         job.set("style", "custom");
     }
@@ -423,25 +418,13 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
     std::unique_ptr<output::MIROutput> output(output::MIROutputFactory::build(args(1), args_wrap));
     ASSERT(output);
 
-    if (vod2uv || uv2uv) {
-        ASSERT(vod2uv != uv2uv);
-        ASSERT(!args.has("latitudes") && !args.has("longitudes"));
-
-        input::GribFileInput input1(args(0), 0, 2);
-        input::GribFileInput input2(args(0), 1, 2);
-        input::VectorInput input(input1, input2);
-
-        process(job, input, *output, "wind");
-        return;
-    }
-
-
     std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build(args(0), args_wrap));
     ASSERT(input);
 
     size_t onlyParamId = 0;
     if (args.get("only", onlyParamId)) {
-        only(job, *input, *output, onlyParamId);
+        only(job, *input, *output, "field", onlyParamId);
+        return;
     }
 
     process(job, *input, *output, "field");
@@ -467,10 +450,9 @@ void MIR::process(const api::MIRJob& job, input::MIRInput& input, output::MIROut
 }
 
 
-void MIR::only(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output, size_t paramId) {
+void MIR::only(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output, const std::string& what,
+               size_t paramId) {
     trace::Timer timer("Total time");
-
-    std::string what = "field";
 
     util::MIRStatistics statistics;
     Log::debug() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;

@@ -74,11 +74,7 @@ private:
 
     // -- Overridden methods
 
-    // From MIRInput
-    bool sameAs(const MIRInput&) const override;
-
     // From ArtificialInput
-    void print(std::ostream&) const override;
     MIRValuesVector fill(size_t) const override;
 
     // -- Class members

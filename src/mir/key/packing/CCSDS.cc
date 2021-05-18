@@ -12,7 +12,9 @@
 
 #include "mir/key/packing/CCSDS.h"
 
+#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -21,6 +23,16 @@ namespace packing {
 
 
 static PackingBuilder<CCSDS> __packing("ccsds", false, true);
+
+
+CCSDS::CCSDS(const std::string& name, const param::MIRParametrisation& param) : Packing(name, param) {
+    if (!gridded()) {
+        std::string msg = "packing=ccsds: only supports gridded fields";
+        Log::error() << msg << std::endl;
+        throw exception::UserError(msg);
+    }
+    requireEdition(param, 2);
+}
 
 
 void CCSDS::fill(const repres::Representation*, grib_info& info) const {

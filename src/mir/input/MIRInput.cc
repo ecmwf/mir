@@ -17,13 +17,16 @@
 #include <sstream>
 
 #include "eckit/io/StdFile.h"
+#include "eckit/parser/YAMLParser.h"
 
 #include "mir/input/ArtificialInput.h"
 #include "mir/input/GribFileInput.h"
+#include "mir/input/MultiDimensionalGribFileInput.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
+#include "mir/util/ValueMap.h"
 
 
 namespace mir {
@@ -50,7 +53,7 @@ grib_handle* MIRInput::gribHandle(size_t) const {
 }
 
 
-void MIRInput::setAuxiliaryInformation(const std::string&) {
+void MIRInput::setAuxiliaryInformation(const util::ValueMap&) {
     std::ostringstream os;
     os << "MIRInput::setAuxiliaryInformation() not implemented for " << *this;
     throw exception::SeriousBug(os.str());
@@ -132,27 +135,48 @@ static void put(std::ostream& out, unsigned long magic) {
 }
 
 
-MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParametrisation& parametrisation) {
+MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParametrisation& param) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-    const param::MIRParametrisation& user = parametrisation.userParametrisation();
-
+    util::ValueMap map;
     std::string input;
-    user.get("input", input);
+    if (param.get("input", input) && !input.empty()) {
+        map = eckit::YAMLParser::decodeString(input);
+    }
 
     // attach information after construction (pe. extra files), so virtual methods are specific to child class
-    auto aux = [&input](MIRInput* in) {
+    auto aux = [&map](MIRInput* in) {
         ASSERT(in);
-        if (!input.empty()) {
-            in->setAuxiliaryInformation(input);
+        if (!map.empty()) {
+            in->setAuxiliaryInformation(map);
         }
         return in;
     };
 
-    std::string synth;
-    if (user.get("artificial-input", synth)) {
-        return aux(ArtificialInputFactory::build(synth, user));
+    // Special case: artificial input
+    auto ai = map.find("artificialInput");
+    if (ai != map.end() && ai->second.isString()) {
+        return aux(ArtificialInputFactory::build(ai->second, param));
+    }
+
+    // Special case: multi-dimensional input
+    auto md  = map.find("multiDimensional");
+    size_t N = md != map.end() && md->second.isNumber() ? size_t(md->second) : 1;
+    ASSERT(N > 0);
+
+    bool uv2uv  = false;
+    bool vod2uv = false;
+    param.get("uv2uv", uv2uv);
+    param.get("vod2uv", vod2uv);
+
+    if (uv2uv || vod2uv) {
+        ASSERT(uv2uv != vod2uv);
+        N *= 2;
+    }
+
+    if (N > 1) {
+        return aux(new MultiDimensionalGribFileInput(path, N));
     }
 
     eckit::AutoStdFile f(path);

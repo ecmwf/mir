@@ -23,7 +23,6 @@
 #include "eckit/io/Buffer.h"
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/io/StdFile.h"
-#include "eckit/parser/YAMLParser.h"
 #include "eckit/serialisation/HandleStream.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
@@ -35,6 +34,8 @@
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
 #include "mir/util/LongitudeDouble.h"
+#include "mir/util/Mutex.h"
+#include "mir/util/ValueMap.h"
 #include "mir/util/Wind.h"
 
 
@@ -517,7 +518,7 @@ static ProcessingT<std::string>* packing() {
         };
 
         auto packingType = get(h, "packingType");
-        for (std::string prefix : {"grid_", "spectral_"}) {
+        for (auto& prefix : std::vector<std::string>{"grid_", "spectral_"}) {
             if (packingType.find(prefix) == 0) {
                 value = packingType.substr(prefix.size());
                 std::replace(value.begin(), value.end(), '_', '-');
@@ -1140,11 +1141,10 @@ void GribInput::auxilaryValues(const std::string& path, std::vector<double>& val
 }
 
 
-void GribInput::setAuxiliaryInformation(const std::string& yaml) {
+void GribInput::setAuxiliaryInformation(const util::ValueMap& map) {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
-    eckit::ValueMap keyValue = eckit::YAMLParser::decodeString(yaml);
-    for (const auto& kv : keyValue) {
+    for (const auto& kv : map) {
         if (kv.first == "latitudes") {
             Log::debug() << "Loading auxilary file '" << kv.second << "'" << std::endl;
             auxilaryValues(kv.second, latitudes_);

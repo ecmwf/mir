@@ -34,8 +34,7 @@ public:
               double angularPrecision = 0);
 
     // -- Destructor
-
-    ~RotatedGG() override;
+    // None
 
     // -- Convertors
     // None

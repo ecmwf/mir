@@ -82,7 +82,13 @@ void Resol::prepare(action::ActionPlan& plan) const {
     long T = 0;
     if (truncation_->truncation(T, inputTruncation_)) {
         ASSERT(0 < T);
-        plan.add("transform.sh-truncate", "truncation", T);
+        plan.add("filter.sh-truncate", "truncation", T);
+    }
+
+    // filter
+    bool cesaro;
+    if (parametrisation_.get("cesaro", cesaro)) {
+        plan.add("filter.sh-cesaro-summation-filter");
     }
 
     // transform, if specified
