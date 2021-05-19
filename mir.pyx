@@ -64,7 +64,7 @@ cdef class GribPyIOOutput(MIROutput):
     def __dealloc__(self):
         del self._output
 
-cdef class MIRJob:
+cdef class Job:
     cdef mir.MIRJob j
 
     def set(self, string key, string value):
