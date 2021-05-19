@@ -67,6 +67,11 @@ cdef class GribPyIOOutput(MIROutput):
 cdef class Job:
     cdef mir.MIRJob j
 
+    def __init__(self, **kwargs):
+        cdef str key, value
+        for key, value in kwargs.items():
+            self.set(key, value)
+
     def set(self, string key, string value):
         self.j.set(key, value)
         return self
