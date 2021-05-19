@@ -90,12 +90,27 @@ cdef class Job:
     #             raise ValueError('Invalid value: %s' % value)
     #     return self
 
-    def execute(self, MIRInput input, MIROutput output):
-        if not isinstance(input, GribMemoryInput):
-            while input._input.next():
-                self.j.execute(dereference(input._input), dereference(output._output))
+    def execute(self, input, output):
+        cdef MIRInput in_
+        cdef MIROutput out
+
+        if isinstance(input, MIRInput):
+            in_ = input
         else:
-            self.j.execute(dereference(input._input), dereference(output._output))
+            assert hasattr(input, "read")
+            in_ = GribPyIOInput(input)
+
+        if isinstance(output, MIROutput):
+            out = output
+        else:
+            assert hasattr(output, "write")
+            out = GribPyIOOutput(output)
+
+        if not isinstance(in_, GribMemoryInput):
+            while in_._input.next():
+                self.j.execute(dereference(in_._input), dereference(out._output))
+        else:
+            self.j.execute(dereference(in_._input), dereference(out._output))
 
     # def execute(self, input, output):
     #     in_ = new mir.GribFileInput(eckit.PathName(input))
