@@ -1,5 +1,5 @@
-PyMIR - Cython interface to MIR
-===============================
+mir-python - Cython interface to MIR
+====================================
 
 Building
 --------

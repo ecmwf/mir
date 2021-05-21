@@ -1,5 +1,4 @@
-#ifndef pymir_pyio_h
-#define pymir_pyio_h
+#pragma once
 
 #include "Python.h"
 
@@ -35,4 +34,3 @@ private:
     virtual bool sameAs(const mir::output::MIROutput& other) const;
 };
 
-#endif /* pymir_pyio_h */
