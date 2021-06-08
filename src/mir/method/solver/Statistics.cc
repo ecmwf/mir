@@ -12,6 +12,7 @@
 
 #include "mir/method/solver/Statistics.h"
 
+#include <cmath>
 #include <sstream>
 
 #include "eckit/utils/MD5.h"
@@ -44,14 +45,15 @@ void Statistics::solve(const MethodWeighted::Matrix& A, const MethodWeighted::We
 
     WeightMatrix::const_iterator it(W);
     for (WeightMatrix::Size r = 0; r < W.rows(); ++r) {
-        stats_->reset(missingValue, missingValue == missingValue);
+        stats_->reset(missingValue, !std::isnan(missingValue));
 
         for (; it != W.end(r); ++it) {
             ASSERT(it.col() < N);
             stats_->count(A[it.col()]);
         }
 
-        B(r, 0) = static_cast<WeightMatrix::Scalar>(stats_->value());
+        auto value = stats_->value();
+        B(r, 0)    = static_cast<WeightMatrix::Scalar>(std::isnan(value) ? missingValue : value);
     }
 }
 
