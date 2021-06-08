@@ -524,6 +524,8 @@ list(APPEND mir_srcs
     repres/regular/PolarStereographic.h
     repres/regular/RegularGrid.cc
     repres/regular/RegularGrid.h
+    repres/regular/TransverseMercator.cc
+    repres/regular/TransverseMercator.h
     repres/sh/SphericalHarmonics.cc
     repres/sh/SphericalHarmonics.h
     repres/unsupported/Albers.cc
@@ -550,8 +552,6 @@ list(APPEND mir_srcs
     repres/unsupported/StretchedRotatedSH.h
     repres/unsupported/StretchedSH.cc
     repres/unsupported/StretchedSH.h
-    repres/unsupported/TransverseMercator.cc
-    repres/unsupported/TransverseMercator.h
     search/PointSearch.cc
     search/PointSearch.h
     search/Tree.cc

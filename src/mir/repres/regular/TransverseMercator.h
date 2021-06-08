@@ -12,14 +12,15 @@
 
 #pragma once
 
-#include "mir/repres/Gridded.h"
+#include "mir/repres/regular/RegularGrid.h"
 
 
 namespace mir {
 namespace repres {
+namespace regular {
 
 
-class TransverseMercator : public Gridded {
+class TransverseMercator : public RegularGrid {
 public:
     // -- Exceptions
     // None
@@ -28,6 +29,7 @@ public:
 
     TransverseMercator(const param::MIRParametrisation&);
     TransverseMercator(const TransverseMercator&) = delete;
+    TransverseMercator& operator=(const TransverseMercator&) = delete;
 
     // -- Destructor
     // None
@@ -36,28 +38,9 @@ public:
     // None
 
     // -- Operators
-
-    TransverseMercator& operator=(const TransverseMercator&) = delete;
-
-    // -- Methods
-    // // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
     // None
 
     // -- Methods
-
-    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -73,10 +56,12 @@ private:
     // None
 
     // -- Methods
-    // None
+
+    static Projection make_projection(const param::MIRParametrisation&);
 
     // -- Overridden methods
-    // None
+
+    virtual void fill(grib_info&) const override;
 
     // -- Class members
     // None
@@ -89,5 +74,6 @@ private:
 };
 
 
+}  // namespace regular
 }  // namespace repres
 }  // namespace mir
