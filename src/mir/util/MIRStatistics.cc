@@ -41,6 +41,7 @@ static const char* all_timings[] = {"crop",          "Time in area-crop",
                                     "nabla",         "Time in nabla calculations",
                                     "save",          "Time saving",
                                     "gribEncoding",  "Time in GRIB encoding",
+                                    "gribDecoding",  "Time in GRIB decoding",
                                     nullptr};
 
 

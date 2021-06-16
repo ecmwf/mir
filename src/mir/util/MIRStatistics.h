@@ -86,8 +86,10 @@ public:
     AutoTiming nablaTimer() { return {timer_, timings_.at("nabla")}; }
     AutoTiming saveTimer() { return {timer_, timings_.at("save")}; }
     AutoTiming gribEncodingTimer() { return {timer_, timings_.at("gribEncoding")}; }
+    AutoTiming gribDecodingTimer() { return {timer_, timings_.at("gribDecoding")}; }
 
     Timing& gribEncodingTiming() { return timings_.at("gribEncoding"); }
+    Timing& gribDecodingTiming() { return timings_.at("gribDecoding"); }
 
     void report(std::ostream&, const char* indent = "") const;
     void csvHeader(std::ostream&) const;
