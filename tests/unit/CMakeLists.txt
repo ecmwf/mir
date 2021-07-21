@@ -6,6 +6,7 @@ file(REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR})
 foreach(_t
 #    MIR-333
     MIR-425
+    MIR-536
     action_graph
     bounding_box
     gaussian_grid
