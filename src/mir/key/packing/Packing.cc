@@ -80,8 +80,10 @@ bool Packing::sameAs(Packing* other) const {
         defineEdition_ != other->defineEdition_) {
         return false;
     }
-    return (definePacking_ && packing_ == other->packing_) && (defineAccuracy_ && accuracy_ == other->accuracy_) &&
-           (defineEdition_ && edition_ == other->edition_);
+    bool samePacking  = !definePacking_ || packing_ == other->packing_;
+    bool sameAccuracy = !defineAccuracy_ || accuracy_ == other->accuracy_;
+    bool sameEdition  = !defineEdition_ || edition_ == other->edition_;
+    return samePacking && sameAccuracy && sameEdition;
 }
 
 
