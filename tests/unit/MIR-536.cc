@@ -31,8 +31,12 @@ CASE("MIR-536") {
     std::unique_ptr<output::MIROutput> out(new output::GribFileOutput(""));
 
     struct Param : param::SimpleParametrisation {
+        Param() { field_.set("edition", 0L).set("accuracy", 0L).set("packing", "not_simple"); }
         const MIRParametrisation& userParametrisation() const override { return *this; }
-        const MIRParametrisation& fieldParametrisation() const override { return *this; }
+        const MIRParametrisation& fieldParametrisation() const override { return field_; }
+
+    private:
+        SimpleParametrisation field_;
     };
 
 
@@ -43,6 +47,28 @@ CASE("MIR-536") {
         std::unique_ptr<action::Action> b(new action::io::Save(defaults, *in, *out));
 
         EXPECT(a->sameAs(*b));
+    }
+
+
+    SECTION("Packing changes") {
+        Param param[4];
+        param[1].set("packing", "simple");
+        param[2].set("accuracy", 12L);
+        param[3].set("edition", 2L);
+
+        for (size_t i = 0; i < 4; ++i) {
+            for (size_t j = 0; j < 4; ++j) {
+                std::unique_ptr<action::Action> a(new action::io::Save(param[i], *in, *out));
+                std::unique_ptr<action::Action> b(new action::io::Save(param[j], *in, *out));
+
+                if (i == j) {
+                    EXPECT(a->sameAs(*b));
+                }
+                else {
+                    EXPECT_NOT(a->sameAs(*b));
+                }
+            }
+        }
     }
 }
 
