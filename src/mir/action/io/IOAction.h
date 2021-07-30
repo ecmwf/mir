@@ -12,10 +12,17 @@
 
 #pragma once
 
+#include <memory>
+
 #include "mir/action/plan/Action.h"
 
 
 namespace mir {
+namespace key {
+namespace packing {
+class Packing;
+}
+}  // namespace key
 namespace output {
 class MIROutput;
 }
@@ -68,6 +75,7 @@ protected:
 
     output::MIROutput& output() { return output_; }
     const output::MIROutput& output() const { return output_; }
+    const key::packing::Packing* packing() const { return packing_.get(); }
 
     // -- Overridden methods
     // None
@@ -82,6 +90,7 @@ private:
     // -- Members
 
     output::MIROutput& output_;
+    std::unique_ptr<key::packing::Packing> packing_;
 
     // -- Methods
     // None

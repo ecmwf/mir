@@ -12,7 +12,9 @@
 
 #include "mir/action/io/IOAction.h"
 
+#include "mir/key/packing/Packing.h"
 #include "mir/output/MIROutput.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -20,8 +22,10 @@ namespace action {
 namespace io {
 
 
-IOAction::IOAction(const param::MIRParametrisation& parametrisation, output::MIROutput& output) :
-    Action(parametrisation), output_(output) {}
+IOAction::IOAction(const param::MIRParametrisation& param, output::MIROutput& output) : Action(param), output_(output) {
+    packing_.reset(key::packing::PackingFactory::build(param));
+    ASSERT(packing_);
+}
 
 
 IOAction::~IOAction() = default;
@@ -29,7 +33,7 @@ IOAction::~IOAction() = default;
 
 bool IOAction::sameAs(const Action& other) const {
     auto o = dynamic_cast<const IOAction*>(&other);
-    return (o != nullptr) && output_.sameAs(o->output_) &&
+    return (o != nullptr) && output_.sameAs(o->output_) && packing_->sameAs(o->packing()) &&
            o->output_.sameParametrisation(parametrisation_, o->parametrisation_);
 }
 

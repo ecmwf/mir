@@ -86,7 +86,6 @@ private:
 
     size_t interpolated_;
     size_t saved_;
-    std::unique_ptr<key::packing::Packing> packing_;
 
     // -- Methods
 

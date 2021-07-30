@@ -58,7 +58,7 @@ public:
     virtual void fill(const repres::Representation*, grib_info&) const  = 0;
     virtual void set(const repres::Representation*, grib_handle*) const = 0;
 
-    virtual bool sameAs(Packing*) const;
+    virtual bool sameAs(const Packing*) const;
     virtual bool printParametrisation(std::ostream&) const;
 
     virtual bool empty() const;

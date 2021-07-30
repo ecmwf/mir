@@ -75,7 +75,7 @@ Packing::Packing(const std::string& name, const param::MIRParametrisation& param
 Packing::~Packing() = default;
 
 
-bool Packing::sameAs(Packing* other) const {
+bool Packing::sameAs(const Packing* other) const {
     if (definePacking_ != other->definePacking_ || defineAccuracy_ != other->defineAccuracy_ ||
         defineEdition_ != other->defineEdition_) {
         return false;
