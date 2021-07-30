@@ -25,18 +25,11 @@ namespace action {
 namespace io {
 
 
-Save::Save(const param::MIRParametrisation& parametrisation, input::MIRInput& input, output::MIROutput& output) :
-    IOAction(parametrisation, output), input_(input) {}
+Save::Save(const param::MIRParametrisation& parametrisation, output::MIROutput& output) :
+    IOAction(parametrisation, output) {}
 
 
 Save::~Save() = default;
-
-
-bool Save::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const Save*>(&other);
-    return (o != nullptr) && input_.sameAs(o->input_) && output().sameAs(o->output()) &&
-           o->output().sameParametrisation(parametrisation_, o->parametrisation_);
-}
 
 
 void Save::print(std::ostream& out) const {

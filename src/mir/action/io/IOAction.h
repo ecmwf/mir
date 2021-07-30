@@ -39,7 +39,7 @@ public:
 
     // -- Destructor
 
-    ~IOAction() override;
+    virtual ~IOAction() override;
 
     // -- Convertors
     // None
@@ -65,9 +65,6 @@ protected:
     // None
 
     // -- Methods
-
-    void print(std::ostream&) const override;
-    void custom(std::ostream&) const override;
 
     output::MIROutput& output() { return output_; }
     const output::MIROutput& output() const { return output_; }

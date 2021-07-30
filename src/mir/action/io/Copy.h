@@ -58,12 +58,12 @@ protected:
     // None
 
     // -- Methods
+    // None
+
+    // -- Overridden methods
 
     void print(std::ostream&) const override;
     void custom(std::ostream&) const override;
-
-    // -- Overridden methods
-    // None
 
     // -- Class members
     // None
@@ -81,7 +81,6 @@ private:
     // -- Overridden methods
 
     void execute(context::Context&) const override;
-    bool sameAs(const Action&) const override;
     const char* name() const override;
     void estimate(context::Context&, api::MIREstimation&) const override;
 

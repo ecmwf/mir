@@ -25,18 +25,11 @@ namespace action {
 namespace io {
 
 
-Set::Set(const param::MIRParametrisation& parametrisation, input::MIRInput& input, output::MIROutput& output) :
-    IOAction(parametrisation, output), input_(input) {}
+Set::Set(const param::MIRParametrisation& parametrisation, output::MIROutput& output) :
+    IOAction(parametrisation, output) {}
 
 
 Set::~Set() = default;
-
-
-bool Set::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const Set*>(&other);
-    return (o != nullptr) && input_.sameAs(o->input_) && output().sameAs(o->output()) &&
-           o->output().sameParametrisation(parametrisation_, o->parametrisation_);
-}
 
 
 void Set::print(std::ostream& out) const {

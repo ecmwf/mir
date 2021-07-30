@@ -12,12 +12,7 @@
 
 #include "mir/action/io/IOAction.h"
 
-#include <ostream>
-
-#include "mir/action/context/Context.h"
-#include "mir/api/MIREstimation.h"
 #include "mir/output/MIROutput.h"
-#include "mir/util/MIRStatistics.h"
 
 
 namespace mir {
@@ -29,43 +24,18 @@ IOAction::IOAction(const param::MIRParametrisation& parametrisation, output::MIR
     Action(parametrisation), output_(output) {}
 
 
-EndAction::~EndAction() = default;
+IOAction::~IOAction() = default;
 
 
 bool IOAction::sameAs(const Action& other) const {
     auto o = dynamic_cast<const IOAction*>(&other);
-    return (o != nullptr) && output_.sameAs(o->output_);
-}
-
-
-void IOAction::print(std::ostream& out) const {
-    out << "EndAction[output=" << output_ << "]";
-}
-
-
-void IOAction::custom(std::ostream& out) const {
-    out << "EndAction[...]";
-}
-
-
-void IOAction::execute(context::Context& ctx) const {
-    auto timing(ctx.statistics().saveTimer());
-    output_.copy(parametrisation_, ctx);
-}
-
-
-const char* IOAction::name() const {
-    return "EndAction";
+    return (o != nullptr) && output_.sameAs(o->output_) &&
+           o->output_.sameParametrisation(parametrisation_, o->parametrisation_);
 }
 
 
 bool IOAction::isEndAction() const {
     return true;
-}
-
-
-void IOAction::estimate(context::Context&, api::MIREstimation& estimation) const {
-    estimation.sameAsInput();
 }
 
 

@@ -34,7 +34,7 @@ public:
 
     // -- Constructors
 
-    Set(const param::MIRParametrisation&, input::MIRInput&, output::MIROutput&);
+    Set(const param::MIRParametrisation&, output::MIROutput&);
     Set(const Set&) = delete;
 
     // -- Destructor
@@ -65,12 +65,12 @@ protected:
     // None
 
     // -- Methods
+    // None
+
+    // -- Overridden methods
 
     void print(std::ostream&) const override;
     void custom(std::ostream&) const override;
-
-    // -- Overridden methods
-    // None
 
     // -- Class members
     // None
@@ -80,8 +80,7 @@ protected:
 
 private:
     // -- Members
-
-    input::MIRInput& input_;
+    // None
 
     // -- Methods
     // None
@@ -90,7 +89,6 @@ private:
 
     // From Action
     void execute(context::Context&) const override;
-    bool sameAs(const Action&) const override;
     const char* name() const override;
     void estimate(context::Context&, api::MIREstimation&) const override;
 

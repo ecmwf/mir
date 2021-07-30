@@ -16,13 +16,6 @@
 
 
 namespace mir {
-namespace input {
-class MIRInput;
-}
-}  // namespace mir
-
-
-namespace mir {
 namespace action {
 namespace io {
 
@@ -34,7 +27,7 @@ public:
 
     // -- Constructors
 
-    Save(const param::MIRParametrisation&, input::MIRInput&, output::MIROutput&);
+    Save(const param::MIRParametrisation&, output::MIROutput&);
     Save(const Save&) = delete;
 
     // -- Destructor
@@ -65,12 +58,12 @@ protected:
     // None
 
     // -- Methods
+    // None
+
+    // -- Overridden methods
 
     void print(std::ostream&) const override;
     void custom(std::ostream&) const override;
-
-    // -- Overridden methods
-    // None
 
     // -- Class members
     // None
@@ -80,8 +73,7 @@ protected:
 
 private:
     // -- Members
-
-    input::MIRInput& input_;
+    // None
 
     // -- Methods
     // None
@@ -89,7 +81,6 @@ private:
     // -- Overridden methods
 
     void execute(context::Context&) const override;
-    bool sameAs(const Action&) const override;
     const char* name() const override;
     void estimate(context::Context&, api::MIREstimation&) const override;
 

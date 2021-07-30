@@ -32,12 +32,6 @@ Copy::Copy(const param::MIRParametrisation& parametrisation, output::MIROutput& 
 Copy::~Copy() = default;
 
 
-bool Copy::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const Copy*>(&other);
-    return (o != nullptr) && output().sameAs(o->output());
-}
-
-
 void Copy::print(std::ostream& out) const {
     out << "Copy[output=" << output() << "]";
 }
