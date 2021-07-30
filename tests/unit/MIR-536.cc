@@ -15,7 +15,6 @@
 #include "eckit/testing/Test.h"
 
 #include "mir/action/io/Save.h"
-#include "mir/input/GribFileInput.h"
 #include "mir/output/GribFileOutput.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Log.h"
@@ -27,7 +26,6 @@ namespace unit {
 
 
 CASE("MIR-536") {
-    std::unique_ptr<input::MIRInput> in(new input::GribFileInput(""));
     std::unique_ptr<output::MIROutput> out(new output::GribFileOutput(""));
 
     struct Param : param::SimpleParametrisation {
@@ -43,8 +41,8 @@ CASE("MIR-536") {
     SECTION("Defaults") {
         Param defaults;
 
-        std::unique_ptr<action::Action> a(new action::io::Save(defaults, *in, *out));
-        std::unique_ptr<action::Action> b(new action::io::Save(defaults, *in, *out));
+        std::unique_ptr<action::Action> a(new action::io::Save(defaults, *out));
+        std::unique_ptr<action::Action> b(new action::io::Save(defaults, *out));
 
         EXPECT(a->sameAs(*b));
     }
@@ -58,8 +56,8 @@ CASE("MIR-536") {
 
         for (size_t i = 0; i < 4; ++i) {
             for (size_t j = 0; j < 4; ++j) {
-                std::unique_ptr<action::Action> a(new action::io::Save(param[i], *in, *out));
-                std::unique_ptr<action::Action> b(new action::io::Save(param[j], *in, *out));
+                std::unique_ptr<action::Action> a(new action::io::Save(param[i], *out));
+                std::unique_ptr<action::Action> b(new action::io::Save(param[j], *out));
 
                 if (i == j) {
                     EXPECT(a->sameAs(*b));

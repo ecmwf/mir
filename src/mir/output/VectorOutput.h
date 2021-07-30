@@ -85,7 +85,7 @@ private:
     bool sameAs(const MIROutput&) const override;
     bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const override;
     bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const override;
-    void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) override;
+    void prepare(const param::MIRParametrisation&, action::ActionPlan&, output::MIROutput&) override;
     void print(std::ostream&) const override;
 
     // -- Class members

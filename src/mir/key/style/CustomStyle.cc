@@ -31,18 +31,18 @@ namespace style {
 
 
 void parse(std::istream& str, action::ActionPlan& plan, const param::MIRParametrisation& parametrisation,
-           input::MIRInput& input, output::MIROutput& output) {
+           output::MIROutput& output) {
 
     util::PlanParser parser(str);
     parser.parse(plan, parametrisation);
 
-    output.prepare(parametrisation, plan, input, output);
+    output.prepare(parametrisation, plan, output);
 
     if (plan.empty()) {
         plan.add(new action::io::Copy(parametrisation, output));
     }
     else {
-        plan.add(new action::io::Save(parametrisation, input, output));
+        plan.add(new action::io::Save(parametrisation, output));
     }
 }
 
@@ -53,13 +53,12 @@ CustomStyle::CustomStyle(const param::MIRParametrisation& parametrisation) : MIR
 CustomStyle::~CustomStyle() = default;
 
 
-void CustomStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, output::MIROutput& output) const {
-
+void CustomStyle::prepare(action::ActionPlan& plan, output::MIROutput& output) const {
     std::string s;
 
     if (parametrisation_.get("plan", s)) {
         std::istringstream in(s);
-        parse(in, plan, parametrisation_, input, output);
+        parse(in, plan, parametrisation_, output);
         return;
     }
 
@@ -68,7 +67,7 @@ void CustomStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outp
         if (!in) {
             throw exception::CantOpenFile(s);
         }
-        parse(in, plan, parametrisation_, input, output);
+        parse(in, plan, parametrisation_, output);
         return;
     }
 

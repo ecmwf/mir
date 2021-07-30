@@ -24,9 +24,6 @@ class ActionPlan;
 namespace context {
 class Context;
 }
-namespace input {
-class MIRInput;
-}
 namespace param {
 class MIRParametrisation;
 }
@@ -70,7 +67,7 @@ public:
     virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const                   = 0;
 
     virtual size_t set(const param::MIRParametrisation&, context::Context&);
-    virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&);
+    virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, output::MIROutput&);
     virtual void estimate(const param::MIRParametrisation&, api::MIREstimation&, context::Context&) const;
 
     // -- Overridden methods

@@ -167,10 +167,10 @@ bool MultiDimensionalOutput::printParametrisation(std::ostream& out, const param
 
 
 void MultiDimensionalOutput::prepare(const param::MIRParametrisation& parametrisation, action::ActionPlan& plan,
-                                     input::MIRInput& input, MIROutput& output) {
+                                     MIROutput& output) {
     ASSERT(!dimensions_.empty());
     for (auto& d : dimensions_) {
-        d->prepare(parametrisation, plan, input, output);
+        d->prepare(parametrisation, plan, output);
     }
 }
 

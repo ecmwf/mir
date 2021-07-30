@@ -20,9 +20,6 @@ namespace mir {
 namespace action {
 class ActionPlan;
 }
-namespace input {
-class MIRInput;
-}
 namespace output {
 class MIROutput;
 }
@@ -60,7 +57,7 @@ public:
 
     // -- Methods
 
-    virtual void prepare(action::ActionPlan&, input::MIRInput&, output::MIROutput&) const = 0;
+    virtual void prepare(action::ActionPlan&, output::MIROutput&) const = 0;
 
     // -- Overridden methods
     // None
