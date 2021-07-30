@@ -228,15 +228,12 @@ Packing* PackingFactory::build(const param::MIRParametrisation& param) {
 
     // In case of packing=av, try instantiating specific packing
     if (av) {
-        Log::debug() << "PackingFactory: looking for '" << packing << "'" << std::endl;
-
         auto j = m.find(packing);
         if (j != m.end()) {
             return j->second->make(packing, param);
         }
     }
 
-    Log::debug() << "PackingFactory: looking for '" << name << "'" << std::endl;
     auto j = m.find(name);
     if (j != m.end()) {
         return j->second->make(av ? packing : j->second->name_, param);

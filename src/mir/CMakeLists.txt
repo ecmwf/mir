@@ -81,8 +81,8 @@ list(APPEND mir_srcs
     action/interpolate/Gridded2UnrotatedGrid.h
     action/io/Copy.cc
     action/io/Copy.h
-    action/io/IOAction.cc
-    action/io/IOAction.h
+    action/io/EndAction.cc
+    action/io/EndAction.h
     action/io/Save.cc
     action/io/Save.h
     action/io/Set.cc

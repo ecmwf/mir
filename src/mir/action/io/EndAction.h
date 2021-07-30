@@ -12,17 +12,10 @@
 
 #pragma once
 
-#include <memory>
-
 #include "mir/action/plan/Action.h"
 
 
 namespace mir {
-namespace key {
-namespace packing {
-class Packing;
-}
-}  // namespace key
 namespace output {
 class MIROutput;
 }
@@ -34,26 +27,26 @@ namespace action {
 namespace io {
 
 
-class IOAction : public Action {
+class EndAction : public Action {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    IOAction(const param::MIRParametrisation&, output::MIROutput&);
-    IOAction(const IOAction&) = delete;
+    EndAction(const param::MIRParametrisation&, output::MIROutput&);
+    EndAction(const EndAction&) = delete;
 
     // -- Destructor
 
-    virtual ~IOAction() override;
+    virtual ~EndAction() override;
 
     // -- Convertors
     // None
 
     // -- Operators
 
-    IOAction& operator=(const IOAction&) = delete;
+    EndAction& operator=(const EndAction&) = delete;
 
     // -- Methods
     // None
@@ -75,7 +68,6 @@ protected:
 
     output::MIROutput& output() { return output_; }
     const output::MIROutput& output() const { return output_; }
-    const key::packing::Packing* packing() const { return packing_.get(); }
 
     // -- Overridden methods
     // None
@@ -90,7 +82,6 @@ private:
     // -- Members
 
     output::MIROutput& output_;
-    std::unique_ptr<key::packing::Packing> packing_;
 
     // -- Methods
     // None
@@ -99,6 +90,9 @@ private:
 
     bool sameAs(const Action&) const override;
     bool isEndAction() const override;
+
+    virtual void print(std::ostream&) const override;
+    virtual void custom(std::ostream&) const override;
 
     // -- Class members
     // None

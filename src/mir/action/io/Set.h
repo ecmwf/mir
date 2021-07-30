@@ -12,7 +12,7 @@
 
 #pragma once
 
-#include "mir/action/io/IOAction.h"
+#include "mir/action/io/EndAction.h"
 
 
 namespace mir {
@@ -27,7 +27,7 @@ namespace action {
 namespace io {
 
 
-class Set : public IOAction {
+class Set : public EndAction {
 public:
     // -- Exceptions
     // None
@@ -68,9 +68,7 @@ protected:
     // None
 
     // -- Overridden methods
-
-    void print(std::ostream&) const override;
-    void custom(std::ostream&) const override;
+    // None
 
     // -- Class members
     // None

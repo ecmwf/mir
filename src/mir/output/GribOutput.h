@@ -20,14 +20,6 @@
 struct grib_info;
 struct grib_handle;
 
-namespace mir {
-namespace key {
-namespace packing {
-class Packing;
-}
-}  // namespace key
-}  // namespace mir
-
 
 namespace mir {
 namespace output {

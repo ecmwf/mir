@@ -26,20 +26,10 @@ namespace io {
 
 
 Copy::Copy(const param::MIRParametrisation& parametrisation, output::MIROutput& output) :
-    IOAction(parametrisation, output) {}
+    EndAction(parametrisation, output) {}
 
 
 Copy::~Copy() = default;
-
-
-void Copy::print(std::ostream& out) const {
-    out << "Copy[output=" << output() << "]";
-}
-
-
-void Copy::custom(std::ostream& out) const {
-    out << "Copy[...]";
-}
 
 
 void Copy::execute(context::Context& ctx) const {
@@ -55,6 +45,11 @@ const char* Copy::name() const {
 
 void Copy::estimate(context::Context&, api::MIREstimation& estimation) const {
     estimation.sameAsInput();
+}
+
+
+void Copy::custom(std::ostream& out) const {
+    out << "Copy[...]";
 }
 
 

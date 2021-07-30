@@ -12,8 +12,6 @@
 
 #include "mir/action/io/Set.h"
 
-#include <ostream>
-
 #include "mir/action/context/Context.h"
 #include "mir/output/MIROutput.h"
 #include "mir/util/MIRStatistics.h"
@@ -25,28 +23,10 @@ namespace io {
 
 
 Set::Set(const param::MIRParametrisation& parametrisation, output::MIROutput& output) :
-    IOAction(parametrisation, output) {}
+    EndAction(parametrisation, output) {}
 
 
 Set::~Set() = default;
-
-
-void Set::print(std::ostream& out) const {
-    out << "Set[";
-    if (output().printParametrisation(out, parametrisation_)) {
-        out << ",";
-    }
-    out << "output=" << output() << "]";
-}
-
-
-void Set::custom(std::ostream& out) const {
-    out << "Set[";
-    if (output().printParametrisation(out, parametrisation_)) {
-        out << ",";
-    }
-    out << "output=...]";
-}
 
 
 void Set::execute(context::Context& ctx) const {

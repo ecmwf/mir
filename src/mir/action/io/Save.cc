@@ -25,28 +25,10 @@ namespace io {
 
 
 Save::Save(const param::MIRParametrisation& parametrisation, output::MIROutput& output) :
-    IOAction(parametrisation, output) {}
+    EndAction(parametrisation, output) {}
 
 
 Save::~Save() = default;
-
-
-void Save::print(std::ostream& out) const {
-    out << "Save[";
-    if (output().printParametrisation(out, parametrisation_)) {
-        out << ",";
-    }
-    out << "output=" << output() << "]";
-}
-
-
-void Save::custom(std::ostream& out) const {
-    out << "Save[";
-    if (output().printParametrisation(out, parametrisation_)) {
-        out << ",";
-    }
-    out << "output=...]";
-}
 
 
 void Save::execute(context::Context& ctx) const {
