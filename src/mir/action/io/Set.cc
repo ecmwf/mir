@@ -15,7 +15,6 @@
 #include <ostream>
 
 #include "mir/action/context/Context.h"
-#include "mir/input/MIRInput.h"
 #include "mir/output/MIROutput.h"
 #include "mir/util/MIRStatistics.h"
 
