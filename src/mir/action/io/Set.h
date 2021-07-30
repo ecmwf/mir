@@ -12,15 +12,12 @@
 
 #pragma once
 
-#include "mir/action/plan/Action.h"
+#include "mir/action/io/IOAction.h"
 
 
 namespace mir {
 namespace input {
 class MIRInput;
-}
-namespace output {
-class MIROutput;
 }
 }  // namespace mir
 
@@ -30,7 +27,7 @@ namespace action {
 namespace io {
 
 
-class Set : public Action {
+class Set : public IOAction {
 public:
     // -- Exceptions
     // None
@@ -85,7 +82,6 @@ private:
     // -- Members
 
     input::MIRInput& input_;
-    output::MIROutput& output_;
 
     // -- Methods
     // None
@@ -96,7 +92,6 @@ private:
     void execute(context::Context&) const override;
     bool sameAs(const Action&) const override;
     const char* name() const override;
-    bool isEndAction() const override;
     void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Class members

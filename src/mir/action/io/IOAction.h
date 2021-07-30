@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996- ECMWF.
+ * (C) EndActionright 1996- ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -12,7 +12,14 @@
 
 #pragma once
 
-#include "mir/action/io/IOAction.h"
+#include "mir/action/plan/Action.h"
+
+
+namespace mir {
+namespace output {
+class MIROutput;
+}
+}  // namespace mir
 
 
 namespace mir {
@@ -20,26 +27,26 @@ namespace action {
 namespace io {
 
 
-class Copy : public IOAction {
+class IOAction : public Action {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    Copy(const param::MIRParametrisation&, output::MIROutput&);
-    Copy(const Copy&) = delete;
+    IOAction(const param::MIRParametrisation&, output::MIROutput&);
+    IOAction(const IOAction&) = delete;
 
     // -- Destructor
 
-    ~Copy() override;
+    ~IOAction() override;
 
     // -- Convertors
     // None
 
     // -- Operators
 
-    Copy& operator=(const Copy&) = delete;
+    IOAction& operator=(const IOAction&) = delete;
 
     // -- Methods
     // None
@@ -62,6 +69,9 @@ protected:
     void print(std::ostream&) const override;
     void custom(std::ostream&) const override;
 
+    output::MIROutput& output() { return output_; }
+    const output::MIROutput& output() const { return output_; }
+
     // -- Overridden methods
     // None
 
@@ -73,17 +83,16 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    output::MIROutput& output_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    void execute(context::Context&) const override;
     bool sameAs(const Action&) const override;
-    const char* name() const override;
-    void estimate(context::Context&, api::MIREstimation&) const override;
+    bool isEndAction() const override;
 
     // -- Class members
     // None

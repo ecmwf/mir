@@ -26,7 +26,7 @@ namespace io {
 
 
 Set::Set(const param::MIRParametrisation& parametrisation, input::MIRInput& input, output::MIROutput& output) :
-    Action(parametrisation), input_(input), output_(output) {}
+    IOAction(parametrisation, output), input_(input) {}
 
 
 Set::~Set() = default;
@@ -34,23 +34,23 @@ Set::~Set() = default;
 
 bool Set::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Set*>(&other);
-    return (o != nullptr) && input_.sameAs(o->input_) && output_.sameAs(o->output_) &&
-           o->output_.sameParametrisation(parametrisation_, o->parametrisation_);
+    return (o != nullptr) && input_.sameAs(o->input_) && output().sameAs(o->output()) &&
+           o->output().sameParametrisation(parametrisation_, o->parametrisation_);
 }
 
 
 void Set::print(std::ostream& out) const {
     out << "Set[";
-    if (output_.printParametrisation(out, parametrisation_)) {
+    if (output().printParametrisation(out, parametrisation_)) {
         out << ",";
     }
-    out << "output=" << output_ << "]";
+    out << "output=" << output() << "]";
 }
 
 
 void Set::custom(std::ostream& out) const {
     out << "Set[";
-    if (output_.printParametrisation(out, parametrisation_)) {
+    if (output().printParametrisation(out, parametrisation_)) {
         out << ",";
     }
     out << "output=...]";
@@ -59,7 +59,7 @@ void Set::custom(std::ostream& out) const {
 
 void Set::execute(context::Context& ctx) const {
     auto timing(ctx.statistics().saveTimer());
-    output_.set(parametrisation_, ctx);
+    const_cast<output::MIROutput&>(output()).set(parametrisation_, ctx);
 }
 
 
@@ -68,12 +68,8 @@ const char* Set::name() const {
 }
 
 
-bool Set::isEndAction() const {
-    return true;
-}
-
 void Set::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
-    output_.estimate(parametrisation_, estimation, ctx);
+    output().estimate(parametrisation_, estimation, ctx);
 }
 
 

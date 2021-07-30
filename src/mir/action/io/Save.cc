@@ -26,7 +26,7 @@ namespace io {
 
 
 Save::Save(const param::MIRParametrisation& parametrisation, input::MIRInput& input, output::MIROutput& output) :
-    Action(parametrisation), input_(input), output_(output) {}
+    IOAction(parametrisation, output), input_(input) {}
 
 
 Save::~Save() = default;
@@ -34,23 +34,23 @@ Save::~Save() = default;
 
 bool Save::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Save*>(&other);
-    return (o != nullptr) && input_.sameAs(o->input_) && output_.sameAs(o->output_) &&
-           o->output_.sameParametrisation(parametrisation_, o->parametrisation_);
+    return (o != nullptr) && input_.sameAs(o->input_) && output().sameAs(o->output()) &&
+           o->output().sameParametrisation(parametrisation_, o->parametrisation_);
 }
 
 
 void Save::print(std::ostream& out) const {
     out << "Save[";
-    if (output_.printParametrisation(out, parametrisation_)) {
+    if (output().printParametrisation(out, parametrisation_)) {
         out << ",";
     }
-    out << "output=" << output_ << "]";
+    out << "output=" << output() << "]";
 }
 
 
 void Save::custom(std::ostream& out) const {
     out << "Save[";
-    if (output_.printParametrisation(out, parametrisation_)) {
+    if (output().printParametrisation(out, parametrisation_)) {
         out << ",";
     }
     out << "output=...]";
@@ -59,7 +59,7 @@ void Save::custom(std::ostream& out) const {
 
 void Save::execute(context::Context& ctx) const {
     auto timing(ctx.statistics().saveTimer());
-    output_.save(parametrisation_, ctx);
+    const_cast<output::MIROutput&>(output()).save(parametrisation_, ctx);
 }
 
 
@@ -68,12 +68,8 @@ const char* Save::name() const {
 }
 
 
-bool Save::isEndAction() const {
-    return true;
-}
-
 void Save::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
-    output_.estimate(parametrisation_, estimation, ctx);
+    output().estimate(parametrisation_, estimation, ctx);
 }
 
 

@@ -26,7 +26,7 @@ namespace io {
 
 
 Copy::Copy(const param::MIRParametrisation& parametrisation, output::MIROutput& output) :
-    Action(parametrisation), output_(output) {}
+    IOAction(parametrisation, output) {}
 
 
 Copy::~Copy() = default;
@@ -34,12 +34,12 @@ Copy::~Copy() = default;
 
 bool Copy::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Copy*>(&other);
-    return (o != nullptr) && output_.sameAs(o->output_);
+    return (o != nullptr) && output().sameAs(o->output());
 }
 
 
 void Copy::print(std::ostream& out) const {
-    out << "Copy[output=" << output_ << "]";
+    out << "Copy[output=" << output() << "]";
 }
 
 
@@ -50,17 +50,12 @@ void Copy::custom(std::ostream& out) const {
 
 void Copy::execute(context::Context& ctx) const {
     auto timing(ctx.statistics().saveTimer());
-    output_.copy(parametrisation_, ctx);
+    const_cast<output::MIROutput&>(output()).copy(parametrisation_, ctx);
 }
 
 
 const char* Copy::name() const {
     return "Copy";
-}
-
-
-bool Copy::isEndAction() const {
-    return true;
 }
 
 
