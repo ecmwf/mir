@@ -12,14 +12,7 @@
 
 #pragma once
 
-#include "mir/action/plan/Action.h"
-
-
-namespace mir {
-namespace output {
-class MIROutput;
-}
-}  // namespace mir
+#include "mir/action/io/EndAction.h"
 
 
 namespace mir {
@@ -27,7 +20,7 @@ namespace action {
 namespace io {
 
 
-class Copy : public Action {
+class Copy : public EndAction {
 public:
     // -- Exceptions
     // None
@@ -65,9 +58,7 @@ protected:
     // None
 
     // -- Methods
-
-    void print(std::ostream&) const override;
-    void custom(std::ostream&) const override;
+    // None
 
     // -- Overridden methods
     // None
@@ -80,8 +71,7 @@ protected:
 
 private:
     // -- Members
-
-    output::MIROutput& output_;
+    // None
 
     // -- Methods
     // None
@@ -89,10 +79,9 @@ private:
     // -- Overridden methods
 
     void execute(context::Context&) const override;
-    bool sameAs(const Action&) const override;
-    const char* name() const override;
-    bool isEndAction() const override;
     void estimate(context::Context&, api::MIREstimation&) const override;
+    const char* name() const override;
+    void custom(std::ostream&) const override;
 
     // -- Class members
     // None

@@ -77,7 +77,7 @@ private:
 
     // -- Overridden methods
 
-    void prepare(action::ActionPlan&, input::MIRInput&, output::MIROutput&) const override;
+    void prepare(action::ActionPlan&, output::MIROutput&) const override;
 
     // -- Class members
     // None
