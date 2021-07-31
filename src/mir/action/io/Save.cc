@@ -12,8 +12,6 @@
 
 #include "mir/action/io/Save.h"
 
-#include <ostream>
-
 #include "mir/action/context/Context.h"
 #include "mir/output/MIROutput.h"
 #include "mir/util/MIRStatistics.h"
@@ -33,6 +31,8 @@ Save::~Save() = default;
 
 void Save::execute(context::Context& ctx) const {
     auto timing(ctx.statistics().saveTimer());
+
+    // TODO: MIROutput::save/set/copy should be const
     const_cast<output::MIROutput&>(output()).save(parametrisation_, ctx);
 }
 

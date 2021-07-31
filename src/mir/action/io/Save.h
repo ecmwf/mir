@@ -78,9 +78,10 @@ private:
 
     // -- Overridden methods
 
+    // From Action
     void execute(context::Context&) const override;
-    const char* name() const override;
     void estimate(context::Context&, api::MIREstimation&) const override;
+    const char* name() const override;
 
     // -- Class members
     // None
