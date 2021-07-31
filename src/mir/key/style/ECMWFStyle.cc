@@ -346,7 +346,7 @@ void ECMWFStyle::print(std::ostream& out) const {
 }
 
 
-void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, output::MIROutput& output) const {
+void ECMWFStyle::prepare(action::ActionPlan& plan, output::MIROutput& output) const {
     auto& user = parametrisation_.userParametrisation();
 
     // All the nasty logic goes there
@@ -451,7 +451,7 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outpu
     epilogue(plan);
 
 
-    output.prepare(parametrisation_, plan, input, output);
+    output.prepare(parametrisation_, plan, output);
 
 
     if (!plan.ended()) {
@@ -459,7 +459,7 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outpu
             plan.add(new action::io::Copy(parametrisation_, output));
         }
         else {
-            plan.add(new action::io::Save(parametrisation_, input, output));
+            plan.add(new action::io::Save(parametrisation_, output));
         }
     }
     ASSERT(plan.ended());

@@ -12,15 +12,12 @@
 
 #pragma once
 
-#include "mir/action/plan/Action.h"
+#include "mir/action/io/EndAction.h"
 
 
 namespace mir {
 namespace input {
 class MIRInput;
-}
-namespace output {
-class MIROutput;
 }
 }  // namespace mir
 
@@ -30,14 +27,14 @@ namespace action {
 namespace io {
 
 
-class Set : public Action {
+class Set : public EndAction {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    Set(const param::MIRParametrisation&, input::MIRInput&, output::MIROutput&);
+    Set(const param::MIRParametrisation&, output::MIROutput&);
     Set(const Set&) = delete;
 
     // -- Destructor
@@ -68,9 +65,7 @@ protected:
     // None
 
     // -- Methods
-
-    void print(std::ostream&) const override;
-    void custom(std::ostream&) const override;
+    // None
 
     // -- Overridden methods
     // None
@@ -83,9 +78,7 @@ protected:
 
 private:
     // -- Members
-
-    input::MIRInput& input_;
-    output::MIROutput& output_;
+    // None
 
     // -- Methods
     // None
@@ -94,9 +87,7 @@ private:
 
     // From Action
     void execute(context::Context&) const override;
-    bool sameAs(const Action&) const override;
     const char* name() const override;
-    bool isEndAction() const override;
     void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Class members

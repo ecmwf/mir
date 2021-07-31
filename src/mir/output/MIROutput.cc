@@ -158,7 +158,7 @@ size_t MIROutput::set(const param::MIRParametrisation& param, context::Context& 
 }
 
 
-void MIROutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) {
+void MIROutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, output::MIROutput&) {
     // do nothing
 }
 

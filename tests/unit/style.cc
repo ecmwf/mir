@@ -154,7 +154,7 @@ CASE("ECMWFStyle") {
                         std::unique_ptr<key::style::MIRStyle> style(key::style::MIRStyleFactory::build(combined));
 
                         action::ActionPlan plan(combined);
-                        style->prepare(plan, in, out);
+                        style->prepare(plan, out);
 
                         bool plan_has_this_formula   = plan_has_action(plan, CORRECT_ACTION);
                         bool plan_has_wrong_formulae = plan_has_action(plan, WRONG_ACTION_1) ||

@@ -20,14 +20,6 @@
 struct grib_info;
 struct grib_handle;
 
-namespace mir {
-namespace key {
-namespace packing {
-class Packing;
-}
-}  // namespace key
-}  // namespace mir
-
 
 namespace mir {
 namespace output {
@@ -86,7 +78,6 @@ private:
 
     size_t interpolated_;
     size_t saved_;
-    std::unique_ptr<key::packing::Packing> packing_;
 
     // -- Methods
 
@@ -100,7 +91,7 @@ private:
     size_t set(const param::MIRParametrisation&, context::Context&) override;
     bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const override;
     bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const override;
-    void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) override;
+    void prepare(const param::MIRParametrisation&, action::ActionPlan&, output::MIROutput&) override;
     void estimate(const param::MIRParametrisation&, api::MIREstimation&, context::Context&) const override;
 
     // -- Class members
