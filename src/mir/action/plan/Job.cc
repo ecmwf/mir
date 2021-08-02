@@ -37,48 +37,29 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     static param::DefaultParametrisation defaults;
     const param::MIRParametrisation& metadata = input.parametrisation();
 
-
-    // skip preparing an Action plan if nothing to do, or
-    // input is already what was specified
-
-    bool postProcessingRequested = false;
-    for (auto& keyword : key::Key::postProcess()) {
-        if (job.has(keyword)) {
-            postProcessingRequested = true;
-            break;
-        }
-    }
-
-    if (!postProcessingRequested) {
-        if (job.empty() || job.matches(metadata)) {
-            plan_.reset(new action::ActionPlan(job));
-            plan_->add(new action::io::Copy(job, output_));
-            ASSERT(plan_->ended());
-
-            if (Log::debug()) {
-                plan_->dump(Log::debug() << "Action plan is:"
-                                            "\n");
-            }
-
-            return;
-        }
-    }
-
     combined_.reset(new param::CombinedParametrisation(job, metadata, defaults));
-    plan_.reset(new action::ActionPlan(*combined_));
+    plan_.reset(new ActionPlan(*combined_));
 
-    std::unique_ptr<key::style::MIRStyle> style(key::style::MIRStyleFactory::build(*combined_));
-    style->prepare(*plan_, output_);
-    ASSERT(plan_->ended());
 
-    if (compress) {
-        plan_->compress();
+    // skip preparing an Action plan if nothing to do, or input is already what was specified
+    if (!key::Key::postProcess(job) && job.matches(metadata)) {
+        plan_->add(new io::Copy(*combined_, output_));
+    }
+    else {
+        std::unique_ptr<key::style::MIRStyle> style(key::style::MIRStyleFactory::build(*combined_));
+        style->prepare(*plan_, output_);
+
+        if (compress) {
+            plan_->compress();
+        }
     }
 
     if (Log::debug()) {
         plan_->dump(Log::debug() << "Action plan is:"
                                     "\n");
     }
+
+    ASSERT(plan_->ended());
 }
 
 
