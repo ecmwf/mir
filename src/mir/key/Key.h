@@ -12,8 +12,12 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
+
+namespace mir {
+namespace param {
+class MIRParametrisation;
+}
+}  // namespace mir
 
 
 namespace mir {
@@ -23,7 +27,7 @@ namespace key {
 class Key {
 public:
     // -- Types
-    using keywords_t = std::vector<std::string>;
+    // None
 
     // -- Exceptions
     // None
@@ -42,7 +46,7 @@ public:
 
     // -- Methods
 
-    static keywords_t postProcess();
+    static bool postProcess(const param::MIRParametrisation&);
 
     // -- Overridden methods
     // None

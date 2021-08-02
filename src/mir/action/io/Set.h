@@ -16,13 +16,6 @@
 
 
 namespace mir {
-namespace input {
-class MIRInput;
-}
-}  // namespace mir
-
-
-namespace mir {
 namespace action {
 namespace io {
 
@@ -87,8 +80,8 @@ private:
 
     // From Action
     void execute(context::Context&) const override;
-    const char* name() const override;
     void estimate(context::Context&, api::MIREstimation&) const override;
+    const char* name() const override;
 
     // -- Class members
     // None

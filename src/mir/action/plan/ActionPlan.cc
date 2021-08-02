@@ -173,8 +173,6 @@ void ActionPlan::estimate(context::Context& ctx, api::MIREstimation& estimation)
 }
 
 void ActionPlan::compress() {
-    ASSERT(ended());
-
     const char* sep = "#########";
 
     Log::debug() << "Compress:"
