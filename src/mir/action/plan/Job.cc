@@ -41,28 +41,17 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     plan_.reset(new ActionPlan(*combined_));
 
 
-    // skip preparing an Action plan if nothing to do, or
-    // input is already what was specified
-
-    if (!key::Key::postProcess(job)) {
-        if (job.empty() || job.matches(metadata)) {
-            plan_->add(new io::Copy(*combined_, output_));
-
-            if (Log::debug()) {
-                plan_->dump(Log::debug() << "Action plan is:"
-                                            "\n");
-            }
-
-            ASSERT(plan_->ended());
-            return;
-        }
+    // skip preparing an Action plan if nothing to do, or input is already what was specified
+    if (!key::Key::postProcess(job) && job.matches(metadata)) {
+        plan_->add(new io::Copy(*combined_, output_));
     }
+    else {
+        std::unique_ptr<key::style::MIRStyle> style(key::style::MIRStyleFactory::build(*combined_));
+        style->prepare(*plan_, output_);
 
-    std::unique_ptr<key::style::MIRStyle> style(key::style::MIRStyleFactory::build(*combined_));
-    style->prepare(*plan_, output_);
-
-    if (compress) {
-        plan_->compress();
+        if (compress) {
+            plan_->compress();
+        }
     }
 
     if (Log::debug()) {
