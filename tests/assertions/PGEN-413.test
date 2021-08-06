@@ -1,0 +1,9 @@
+# mars retrieve,param=nsss,levtype=sfc,date=20210802,type=fc,time=1200,step=65,area=0.5/6.75/-0.5/7.25,target=PGEN-413.grib
+# (there are no missing values in the input data, the output shouldn't contain any)
+PGEN-413.grib
+# mir
+--grid=.25/.25 --area=.25/7/-.25/7 --caching=0
+# grib_get assertions
+bitsPerValue=16
+bitmapPresent=0
+missingValuesPresent=0
