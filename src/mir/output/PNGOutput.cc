@@ -180,9 +180,8 @@ bool PNGOutput::printParametrisation(std::ostream&, const param::MIRParametrisat
     return false;
 }
 
-void PNGOutput::prepare(const param::MIRParametrisation& param, action::ActionPlan& plan, input::MIRInput& in,
-                        output::MIROutput& out) {
-    plan.add(new action::io::Save(param, in, out));
+void PNGOutput::prepare(const param::MIRParametrisation& param, action::ActionPlan& plan, output::MIROutput& out) {
+    plan.add(new action::io::Save(param, out));
 }
 
 void PNGOutput::print(std::ostream& out) const {
