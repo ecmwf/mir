@@ -332,6 +332,11 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
     const bool hasMissing     = field.hasMissing() || !forceMissing.empty();
     const double missingValue = hasMissing ? field.missingValue() : std::numeric_limits<double>::quiet_NaN();
 
+    // ensure unique missingValue on 1) no input missing values, and 2) none forced
+    if (!hasMissing) {
+        field.missingValue(std::numeric_limits<double>::lowest());
+    }
+
     // matrix copy: run-time modifiable matrix is not cacheable
     bool matrixCopy = hasMissing;
     if (!matrixCopy) {
