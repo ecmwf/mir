@@ -27,7 +27,6 @@
 #include "eckit/filesystem/PathName.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/action/io/Save.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
@@ -72,10 +71,6 @@ struct PNGOutput::PNGEncoder {
 PNGOutput::PNGOutput(std::string path) : path_(std::move(path)) {}
 
 PNGOutput::~PNGOutput() = default;
-
-size_t PNGOutput::copy(const param::MIRParametrisation&, context::Context&) {
-    NOTIMP;
-}
 
 size_t PNGOutput::save(const param::MIRParametrisation& param, context::Context& ctx) {
     trace::ResourceUsage usage("PNGOutput::save");
@@ -178,10 +173,6 @@ bool PNGOutput::sameParametrisation(const param::MIRParametrisation&, const para
 
 bool PNGOutput::printParametrisation(std::ostream&, const param::MIRParametrisation&) const {
     return false;
-}
-
-void PNGOutput::prepare(const param::MIRParametrisation& param, action::ActionPlan& plan, MIROutput& out) {
-    plan.add(new action::io::Save(param, out));
 }
 
 void PNGOutput::print(std::ostream& out) const {

@@ -16,8 +16,6 @@
 #include <ostream>
 #include <sstream>
 
-#include "mir/action/io/Copy.h"
-#include "mir/action/io/Save.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/MIRParametrisation.h"
@@ -38,12 +36,7 @@ void parse(std::istream& str, action::ActionPlan& plan, const param::MIRParametr
 
     output.prepare(parametrisation, plan, output);
 
-    if (plan.empty()) {
-        plan.add(new action::io::Copy(parametrisation, output));
-    }
-    else {
-        plan.add(new action::io::Save(parametrisation, output));
-    }
+    ASSERT(plan.ended());
 }
 
 

@@ -22,8 +22,6 @@
 #include "eckit/parser/YAMLParser.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/action/io/Save.h"
-#include "mir/action/plan/ActionPlan.h"
 #include "mir/caching/InMemoryMeshCache.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
@@ -42,11 +40,6 @@ namespace output {
 
 
 GmshOutput::GmshOutput(std::string path) : path_(std::move(path)) {}
-
-
-size_t GmshOutput::copy(const param::MIRParametrisation& param, context::Context& ctx) {
-    return save(param, ctx);
-}
 
 
 size_t GmshOutput::save(const param::MIRParametrisation& param, context::Context& ctx) {
@@ -147,16 +140,6 @@ bool GmshOutput::sameParametrisation(const param::MIRParametrisation&, const par
 
 bool GmshOutput::printParametrisation(std::ostream&, const param::MIRParametrisation&) const {
     return false;
-}
-
-
-size_t GmshOutput::set(const param::MIRParametrisation&, context::Context&) {
-    return 0;
-}
-
-
-void GmshOutput::prepare(const param::MIRParametrisation& param, action::ActionPlan& plan, MIROutput& out) {
-    plan.add(new action::io::Save(param, out));
 }
 
 
