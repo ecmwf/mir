@@ -167,6 +167,53 @@ public:
 */
 
 
+void wrongly_encoded_grib(const std::string& msg) {
+    static bool abortIfWronglyEncodedGRIB = eckit::Resource<bool>("$MIR_ABORT_IF_WRONGLY_ENCODED_GRIB", false);
+
+    if (abortIfWronglyEncodedGRIB) {
+        Log::error() << msg << std::endl;
+        throw exception::UserError(msg);
+    }
+
+    Log::warning() << msg << std::endl;
+}
+
+
+size_t fix_pl_array_zeros(std::vector<long>& pl) {
+    wrongly_encoded_grib("GribInput: wrongly encoded pl array contains zeros");
+
+    size_t new_entries = 0;
+
+    // if a zero is found, copy the *following* non-zero value into the range "current entry -> non-zero entry"
+    for (auto p = pl.begin(); p != pl.end(); ++p) {
+        if (*p == 0) {
+
+            auto nz = std::find_if(p, pl.end(), [](long x) { return x != 0; });
+            if (nz != pl.end()) {
+                new_entries += size_t(*nz) * size_t(std::distance(p, nz));
+                std::fill(p, nz, *nz);
+            }
+        }
+    }
+
+    // if a zero is found, copy the *previous* non-zero value into the range "non-zero entry -> current entry"
+    for (auto p = pl.rbegin(); p != pl.rend(); ++p) {
+        if (*p == 0) {
+
+            auto nz = std::find_if(p, pl.rend(), [](long x) { return x != 0; });
+            if (nz != pl.rend()) {
+                new_entries += size_t(*nz) * size_t(std::distance(p, nz));
+                std::fill(p, nz, *nz);
+            }
+        }
+    }
+
+    ASSERT(0 == std::count(pl.begin(), pl.end(), 0));
+    ASSERT(new_entries);
+    return new_entries;
+}
+
+
 }  // namespace
 
 
@@ -194,18 +241,6 @@ static Condition *_not(const Condition *c) {
     return new ConditionNOT(c);
 }
 */
-
-
-void wrongly_encoded_grib(const std::string& msg) {
-    static bool abortIfWronglyEncodedGRIB = eckit::Resource<bool>("$MIR_ABORT_IF_WRONGLY_ENCODED_GRIB", false);
-
-    if (abortIfWronglyEncodedGRIB) {
-        Log::error() << msg << std::endl;
-        throw exception::UserError(msg);
-    }
-
-    Log::warning() << msg << std::endl;
-}
 
 
 static const char* get_key(const std::string& name, grib_handle* h) {
@@ -546,70 +581,6 @@ static bool get_value(const std::string& name, grib_handle* h, T& value, const P
 }
 
 
-namespace {
-
-
-void get_unique_missing_value(const MIRValuesVector& values, double& missing) {
-    ASSERT(values.size());
-
-    // check if it's unique, otherwise a high then a low value
-    if (std::find(values.begin(), values.end(), missing) == values.end()) {
-        return;
-    }
-
-    auto mm = std::minmax_element(values.begin(), values.end());
-    missing = *(mm.second) + 1.;
-    if (missing == missing) {
-        return;
-    }
-
-    missing = *(mm.first) - 1.;
-    if (missing == missing) {
-        return;
-    }
-
-    throw exception::SeriousBug("GribInput: get_unique_missing_value: failed to get a unique missing value.");
-}
-
-
-size_t fix_pl_array_zeros(std::vector<long>& pl) {
-    wrongly_encoded_grib("GribInput: wrongly encoded pl array contains zeros");
-
-    size_t new_entries = 0;
-
-    // if a zero is found, copy the *following* non-zero value into the range "current entry -> non-zero entry"
-    for (auto p = pl.begin(); p != pl.end(); ++p) {
-        if (*p == 0) {
-
-            auto nz = std::find_if(p, pl.end(), [](long x) { return x != 0; });
-            if (nz != pl.end()) {
-                new_entries += size_t(*nz) * size_t(std::distance(p, nz));
-                std::fill(p, nz, *nz);
-            }
-        }
-    }
-
-    // if a zero is found, copy the *previous* non-zero value into the range "non-zero entry -> current entry"
-    for (auto p = pl.rbegin(); p != pl.rend(); ++p) {
-        if (*p == 0) {
-
-            auto nz = std::find_if(p, pl.rend(), [](long x) { return x != 0; });
-            if (nz != pl.rend()) {
-                new_entries += size_t(*nz) * size_t(std::distance(p, nz));
-                std::fill(p, nz, *nz);
-            }
-        }
-    }
-
-    ASSERT(0 == std::count(pl.begin(), pl.end(), 0));
-    ASSERT(new_entries);
-    return new_entries;
-}
-
-
-}  // namespace
-
-
 GribInput::GribInput() : cache_(*this), grib_(nullptr) {}
 
 
@@ -663,7 +634,7 @@ data::MIRField GribInput::field() const {
     long numberOfMissingValues = 0;
     if (codes_get_long(grib_, "numberOfMissingValues", &numberOfMissingValues) == CODES_SUCCESS &&
         numberOfMissingValues == 0) {
-        get_unique_missing_value(values, missing);
+        grib_get_unique_missing_value(values, missing);
     }
 
     // If grib has a 0-containing pl array, add missing values in their place
@@ -684,7 +655,7 @@ data::MIRField GribInput::field() const {
             if (missingValuesPresent == 0) {
                 Log::debug() << "GribInput::field(): introducing missing values (setting bitmap)." << std::endl;
                 missingValuesPresent = 1;
-                get_unique_missing_value(values, missing);
+                grib_get_unique_missing_value(values, missing);
             }
 
             // pl array: insert entries in place of zeros

@@ -61,7 +61,7 @@ void FormulaFunction::print(std::ostream& out) const {
 }
 
 
-void FormulaFunction::execute(mir::context::Context& ctx) const {
+void FormulaFunction::execute(context::Context& ctx) const {
     for (auto& j : args_) {
         j->perform(ctx.push());
     }
@@ -69,7 +69,7 @@ void FormulaFunction::execute(mir::context::Context& ctx) const {
 }
 
 
-bool FormulaFunction::sameAs(const mir::action::Action& other) const {
+bool FormulaFunction::sameAs(const action::Action& other) const {
     auto o = dynamic_cast<const FormulaFunction*>(&other);
     if ((o != nullptr) && (&function_ == &(o->function_)) && (args_.size() == o->args_.size())) {
         for (size_t i = 0; i < args_.size(); ++i) {

@@ -33,12 +33,12 @@ void FormulaString::print(std::ostream& out) const {
 }
 
 
-void FormulaString::execute(mir::context::Context&) const {
+void FormulaString::execute(context::Context&) const {
     NOTIMP;
 }
 
 
-bool FormulaString::sameAs(const mir::action::Action& other) const {
+bool FormulaString::sameAs(const action::Action& other) const {
     auto o = dynamic_cast<const FormulaString*>(&other);
     return (o != nullptr) && (value_ == o->value_);
 }

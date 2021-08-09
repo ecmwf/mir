@@ -49,12 +49,12 @@ GridBox::GridBox(double north, double west, double south, double east) :
 
 
 double GridBox::area() const {
-    return util::Earth::area({west_, north_}, {east_, south_});
+    return Earth::area({west_, north_}, {east_, south_});
 }
 
 
 double GridBox::diagonal() const {
-    return util::Earth::distance({west_, north_}, {east_, south_});
+    return Earth::distance({west_, north_}, {east_, south_});
 }
 
 

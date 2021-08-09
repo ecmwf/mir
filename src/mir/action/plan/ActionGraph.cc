@@ -45,7 +45,7 @@ void ActionGraph::execute(context::Context& ctx, const Executor& executor) const
 
 
 void ActionGraph::add(const ActionPlan& plan, api::MIRWatcher* watcher) {
-    action::ActionGraph* current = this;
+    ActionGraph* current = this;
 
     size_t i = 0;
     while (i < plan.size()) {
@@ -66,8 +66,8 @@ void ActionGraph::add(const ActionPlan& plan, api::MIRWatcher* watcher) {
     }
 
     while (i < plan.size()) {
-        action::ActionNode* node = current->add(plan.action(i), watcher);
-        current                  = &node->graph();
+        ActionNode* node = current->add(plan.action(i), watcher);
+        current          = &node->graph();
         i++;
     }
 }

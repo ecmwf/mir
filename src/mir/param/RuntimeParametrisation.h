@@ -29,7 +29,7 @@ public:
 
     // -- Constructors
 
-    RuntimeParametrisation(const param::MIRParametrisation& owner);
+    RuntimeParametrisation(const MIRParametrisation& owner);
 
     // -- Destructor
 
@@ -107,7 +107,7 @@ protected:
 private:
     // -- Members
 
-    const param::MIRParametrisation& owner_;
+    const MIRParametrisation& owner_;
     std::set<std::string> hidden_;
 
     // -- Methods

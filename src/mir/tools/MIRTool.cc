@@ -47,8 +47,7 @@ MIRTool::MIRTool(int argc, char** argv) : eckit::Tool(argc, argv, "MIR_HOME") {
 void MIRTool::run() {
 
     constexpr size_t sha1len = 8;
-    eckit::option::CmdArgs args(&mir::tools::usage, options_, numberOfPositionalArguments(),
-                                minimumPositionalArguments());
+    eckit::option::CmdArgs args(&tools::usage, options_, numberOfPositionalArguments(), minimumPositionalArguments());
 
     if (args.has("version")) {
         using eckit::system::LibraryManager;

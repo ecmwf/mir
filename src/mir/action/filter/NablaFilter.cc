@@ -36,7 +36,7 @@ void NablaFilter::print(std::ostream& out) const {
 }
 
 
-void mir::action::NablaFilter::custom(std::ostream& out) const {
+void NablaFilter::custom(std::ostream& out) const {
     out << name() << "[meshGeneratorParameters=...]";
 }
 

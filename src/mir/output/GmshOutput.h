@@ -93,7 +93,7 @@ private:
     bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const override;
 
     size_t set(const param::MIRParametrisation&, context::Context&) override;
-    void prepare(const param::MIRParametrisation&, action::ActionPlan&, output::MIROutput&) override;
+    void prepare(const param::MIRParametrisation&, action::ActionPlan&, MIROutput&) override;
     void estimate(const param::MIRParametrisation&, api::MIREstimation&, context::Context&) const override {}
 
     void print(std::ostream&) const override;

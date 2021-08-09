@@ -357,7 +357,6 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
         // compute some statistics on the result
         // This is expensive so we might want to skip it in production code
         data::MIRFieldStats istats;
-
         if (check_stats) {
             istats = field.statistics(i);
         }
@@ -410,19 +409,9 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
         if (check_stats) {
             // compute some statistics on the result
-            data::MIRFieldStats ostats = field.statistics(i);
-            log << "Input field statistics:  " << istats << std::endl;
-            log << "Output field statistics: " << ostats << std::endl;
-
-            /// FIXME: This assertion is to early in the case of LocalGrid input
-            ///        because there will be output points which won't be updated (where skipped)
-            ///        but later should be cropped out
-            ///        UNLESS, we compute the statistics based on only points contained in the Domain
-
-            if (in.isGlobal()) {
-                ASSERT(eckit::types::is_approximately_greater_or_equal(ostats.minimum(), istats.minimum()));
-                ASSERT(eckit::types::is_approximately_greater_or_equal(istats.maximum(), ostats.maximum()));
-            }
+            auto ostats = field.statistics(i);
+            log << "Input field statistics:  " << istats << "\n"
+                << "Output field statistics: " << ostats << std::endl;
         }
     }
 }

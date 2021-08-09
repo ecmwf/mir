@@ -155,7 +155,7 @@ size_t GmshOutput::set(const param::MIRParametrisation&, context::Context&) {
 }
 
 
-void GmshOutput::prepare(const param::MIRParametrisation& param, action::ActionPlan& plan, output::MIROutput& out) {
+void GmshOutput::prepare(const param::MIRParametrisation& param, action::ActionPlan& plan, MIROutput& out) {
     plan.add(new action::io::Save(param, out));
 }
 
