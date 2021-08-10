@@ -12,6 +12,7 @@
 
 #include "mir/method/MethodWeighted.h"
 
+#include <algorithm>
 #include <limits>
 #include <sstream>
 #include <string>
@@ -328,24 +329,19 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
         }
     }
 
-    data::MIRField& field     = ctx.field();
-    const bool hasMissing     = field.hasMissing() || !forceMissing.empty();
-    const double missingValue = hasMissing ? field.missingValue() : std::numeric_limits<double>::quiet_NaN();
-
-    // ensure unique missingValue on 1) no input missing values, and 2) none forced
-    if (!hasMissing) {
+    // ensure unique missingValue on no input missing values
+    data::MIRField& field = ctx.field();
+    if (!field.hasMissing()) {
         field.missingValue(std::numeric_limits<double>::lowest());
     }
 
+    const double missingValue = field.missingValue();
+
     // matrix copy: run-time modifiable matrix is not cacheable
-    bool matrixCopy = hasMissing;
-    if (!matrixCopy) {
-        for (auto& n : nonLinear_) {
-            if ((matrixCopy = n->modifiesMatrix())) {
-                break;
-            }
-        }
-    }
+    const bool matrixCopy = std::any_of(nonLinear_.begin(), nonLinear_.end(),
+                                        [&field](const std::unique_ptr<const nonlinear::NonLinear>& n) {
+                                            return n->modifiesMatrix(field.hasMissing());
+                                        });
 
 
     for (size_t i = 0; i < field.dimensions(); i++) {

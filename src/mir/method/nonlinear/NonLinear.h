@@ -51,13 +51,13 @@ public:
 
     /// Update interpolation linear system to account for non-linearities
     virtual bool treatment(MethodWeighted::Matrix& A, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& B,
-                           const MIRValuesVector& values, const double& missingValue) const = 0;
+                           const MIRValuesVector&, const double& missingValue) const = 0;
 
     virtual bool sameAs(const NonLinear&) const = 0;
 
     virtual void hash(eckit::MD5&) const = 0;
 
-    virtual bool modifiesMatrix() const;
+    virtual bool modifiesMatrix(bool fieldHasMissingValues) const = 0;
 
 private:
     virtual void print(std::ostream&) const = 0;
