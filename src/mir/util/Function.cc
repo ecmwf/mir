@@ -24,18 +24,18 @@ namespace mir {
 namespace util {
 
 
-static util::recursive_mutex* local_mutex  = nullptr;
+static recursive_mutex* local_mutex        = nullptr;
 static std::map<std::string, Function*>* m = nullptr;
-static util::once_flag once;
+static once_flag once;
 static void init() {
-    local_mutex = new util::recursive_mutex();
+    local_mutex = new recursive_mutex();
     m           = new std::map<std::string, Function*>();
 }
 
 
 Function::Function(const std::string& name) : name_(name) {
-    util::call_once(once, init);
-    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
+    call_once(once, init);
+    lock_guard<recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(name) == m->end());
     (*m)[name] = this;
@@ -43,15 +43,15 @@ Function::Function(const std::string& name) : name_(name) {
 
 
 Function::~Function() {
-    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
+    lock_guard<recursive_mutex> lock(*local_mutex);
 
     m->erase(name_);
 }
 
 
 const Function& Function::lookup(const std::string& name) {
-    util::call_once(once, init);
-    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
+    call_once(once, init);
+    lock_guard<recursive_mutex> lock(*local_mutex);
 
     auto j = m->find(name);
     if (j == m->end()) {
@@ -64,8 +64,8 @@ const Function& Function::lookup(const std::string& name) {
 
 
 void Function::list(std::ostream& out) {
-    util::call_once(once, init);
-    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
+    call_once(once, init);
+    lock_guard<recursive_mutex> lock(*local_mutex);
 
     auto sep = "";
     for (auto& j : *m) {

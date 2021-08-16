@@ -133,7 +133,7 @@ bool VectorOutput::printParametrisation(std::ostream& out, const param::MIRParam
 
 
 void VectorOutput::prepare(const param::MIRParametrisation& parametrisation, action::ActionPlan& plan,
-                           output::MIROutput& output) {
+                           MIROutput& output) {
     component1_.prepare(parametrisation, plan, output);
     component2_.prepare(parametrisation, plan, output);
 }

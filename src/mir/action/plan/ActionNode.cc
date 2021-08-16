@@ -64,16 +64,6 @@ void ActionNode::notifyFailure(std::exception& e, const Action& action, api::MIR
 }
 
 
-const action::Action& ActionNode::action() const {
-    return action_;
-}
-
-
-ActionGraph& ActionNode::graph() {
-    return graph_;
-}
-
-
 void ActionNode::dump(std::ostream& out, size_t depth) const {
     for (size_t i = 0; i < depth; i++) {
         out << "   ";

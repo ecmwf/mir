@@ -43,8 +43,8 @@ GribFileMask::GribFileMask(const eckit::PathName& path, const param::MIRParametr
 
     Log::debug() << "GribFileMask loading " << path_ << std::endl;
 
-    mir::input::GribFileInput file(path_);
-    const mir::input::MIRInput& input = file;
+    input::GribFileInput file(path_);
+    const input::MIRInput& input = file;
 
     ASSERT(file.next());
     data::MIRField field = input.field();

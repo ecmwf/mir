@@ -38,19 +38,18 @@ long SpectralOrder::getGaussianNumberFromTruncation(long) const {
 }
 
 
-static util::once_flag once;
-static util::recursive_mutex* local_mutex              = nullptr;
+static once_flag once;
+static recursive_mutex* local_mutex                    = nullptr;
 static std::map<std::string, SpectralOrderFactory*>* m = nullptr;
 static void init() {
-    util::local_mutex = new util::recursive_mutex();
-    m                 = new std::map<std::string, SpectralOrderFactory*>();
+    local_mutex = new recursive_mutex();
+    m           = new std::map<std::string, SpectralOrderFactory*>();
 }
 
 
 SpectralOrderFactory::SpectralOrderFactory(const std::string& name) : name_(name) {
-    util::call_once(once, init);
-
-    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
+    call_once(once, init);
+    lock_guard<recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
         throw exception::SeriousBug("SpectralOrderFactory: duplicate '" + name + "'");
@@ -62,15 +61,15 @@ SpectralOrderFactory::SpectralOrderFactory(const std::string& name) : name_(name
 
 
 SpectralOrderFactory::~SpectralOrderFactory() {
-    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
+    lock_guard<recursive_mutex> lock(*local_mutex);
 
     m->erase(name_);
 }
 
 
 SpectralOrder* SpectralOrderFactory::build(const std::string& name) {
-    util::call_once(once, init);
-    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
+    call_once(once, init);
+    lock_guard<recursive_mutex> lock(*local_mutex);
 
     Log::debug() << "SpectralOrderFactory: looking for '" << name << "'" << std::endl;
 
@@ -85,8 +84,8 @@ SpectralOrder* SpectralOrderFactory::build(const std::string& name) {
 
 
 void SpectralOrderFactory::list(std::ostream& out) {
-    util::call_once(once, init);
-    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
+    call_once(once, init);
+    lock_guard<recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

@@ -16,6 +16,8 @@
 
 #include "eckit/filesystem/PathName.h"
 
+#include "mir/action/io/Save.h"
+#include "mir/action/plan/ActionPlan.h"
 #include "mir/output/GribFileOutput.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
@@ -152,14 +154,21 @@ void MIROutputFactory::list(std::ostream& out) {
 }
 
 
+size_t MIROutput::copy(const param::MIRParametrisation& param, context::Context& ctx) {
+    // redirect to save
+    return save(param, ctx);
+}
+
+
 size_t MIROutput::set(const param::MIRParametrisation& param, context::Context& ctx) {
     // redirect to save
     return save(param, ctx);
 }
 
 
-void MIROutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, output::MIROutput&) {
-    // do nothing
+void MIROutput::prepare(const param::MIRParametrisation& param, action::ActionPlan& plan, MIROutput& out) {
+    ASSERT(!plan.ended());
+    plan.add(new action::io::Save(param, out));
 }
 
 

@@ -26,10 +26,6 @@
 #include "mir/util/Trace.h"
 
 
-static mir::util::recursive_mutex local_mutex;
-static std::vector<std::vector<bool> > ten_minutes_;
-
-
 namespace mir {
 namespace lsm {
 
@@ -48,6 +44,8 @@ From EMOSLIB:
 TenMinutesMask::TenMinutesMask(const std::string& name, const eckit::PathName& path, const param::MIRParametrisation&,
                                const repres::Representation& representation, const std::string&) :
     name_(name), path_(path) {
+    static util::recursive_mutex local_mutex;
+    static std::vector<std::vector<bool> > ten_minutes_;
 
     const size_t ROWS = 1080;
     const size_t COLS = 2160;

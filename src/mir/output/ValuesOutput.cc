@@ -24,11 +24,6 @@ namespace output {
 ValuesOutput::ValuesOutput() : missingValue_(9999), hasMissing_(false) {}
 
 
-size_t ValuesOutput::copy(const param::MIRParametrisation&, context::Context&) {
-    NOTIMP;
-}
-
-
 bool ValuesOutput::sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const {
     return true;
 }

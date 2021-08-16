@@ -148,7 +148,7 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
                                                "Maximum difference of spectral energy norm (spectral fields only)"));
 
     options.push_back(
-        new FactoryOption<mir::stats::ComparatorFactory>("compare", "/-separated list of value comparison methods"));
+        new FactoryOption<stats::ComparatorFactory>("compare", "/-separated list of value comparison methods"));
 }
 
 
@@ -234,36 +234,36 @@ void FieldComparator::compare(const std::string& name, const MultiFile& multi1, 
         compareFields(multi2, multi1, fields2, fields1, false, false, compareStatistics);
     }
 
-
     if (fatals_ == save) {
         Log::info() << name << " OK." << std::endl;
+        return;
     }
-    else {
-        if (!requirements.empty()) {
-            /*
-            std::string output = name + eckit::PathName(requirements).extension();
 
-            std::ofstream out(output.c_str());
-            std::ifstream in(requirements.c_str());
+    if (!requirements.empty()) {
+        /*
+        std::string output = name + eckit::PathName(requirements).extension();
 
-            Log::info() << "Save " << output << std::endl;
+        std::ofstream out(output.c_str());
+        std::ifstream in(requirements.c_str());
 
-            std::string dstream = name.substr(0, 2);
-            std::string destination = name.substr(24, 3);
+        Log::info() << "Save " << output << std::endl;
 
-            char line[1024];
-            while (in.getline(line, sizeof(line))) {
-                if (dstream == std::string(line + 99, line + 101) &&
-                        destination == std::string(line + 102, line + 105)) {
-                    out << line << std::endl;
-                }
+        std::string dstream = name.substr(0, 2);
+        std::string destination = name.substr(24, 3);
+
+        char line[1024];
+        while (in.getline(line, sizeof(line))) {
+            if (dstream == std::string(line + 99, line + 101) &&
+                    destination == std::string(line + 102, line + 105)) {
+                out << line << std::endl;
             }
-            */
         }
-        if (saveFields) {
-            multi1.save();
-            multi2.save();
-        }
+        */
+    }
+
+    if (saveFields) {
+        multi1.save();
+        multi2.save();
     }
 }
 
@@ -558,8 +558,8 @@ static void getStats(const Field& field, Statistics& stats) {
 void FieldComparator::compareFieldStatistics(const MultiFile& multi1, const MultiFile& multi2, const Field& field1,
                                              const Field& field2) {
 
-    mir::caching::InMemoryCacheStatistics ignore;
-    mir::caching::InMemoryCacheUser<eckit::AutoStdFile> lock(cache_, ignore);
+    caching::InMemoryCacheStatistics ignore;
+    caching::InMemoryCacheUser<eckit::AutoStdFile> lock(cache_, ignore);
 
     Statistics s1;
     getStats(field1, s1);

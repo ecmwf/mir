@@ -25,11 +25,12 @@ struct SimulateMissingValue : NonLinear {
 
 private:
     bool treatment(MethodWeighted::Matrix& A, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& B,
-                   const MIRValuesVector& values, const double&) const override;
+                   const MIRValuesVector&, const double&) const override;
     bool sameAs(const NonLinear&) const override;
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;
-    bool modifiesMatrix() const override;
+
+    bool modifiesMatrix(bool) const override { return true; }
 
     double missingValue_;
     double epsilon_;

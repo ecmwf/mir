@@ -78,8 +78,6 @@ public:
     SimpleParametrisation& reset();
 
     // Used by Job
-
-    virtual bool empty() const;
     bool matches(const MIRParametrisation&) const;
 
     // -- Overridden methods
@@ -114,7 +112,6 @@ protected:
 
     void print(std::ostream&) const override;
     void json(eckit::JSON&) const;
-    size_t size() const;
 
     // -- Overridden methods
     // None

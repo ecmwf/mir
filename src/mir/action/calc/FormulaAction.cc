@@ -57,7 +57,7 @@ FormulaAction::FormulaAction(const param::MIRParametrisation& parametrisation) :
     }
 
     std::istringstream in(formula);
-    mir::util::FormulaParser p(in);
+    util::FormulaParser p(in);
     formula_.reset(p.parse(parametrisation));
 }
 

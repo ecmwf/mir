@@ -19,8 +19,6 @@
 
 #include "eckit/utils/StringTools.h"
 
-#include "mir/action/io/Copy.h"
-#include "mir/action/io/Save.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/key/resol/Resol.h"
@@ -453,15 +451,6 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, output::MIROutput& output) co
 
     output.prepare(parametrisation_, plan, output);
 
-
-    if (!plan.ended()) {
-        if (plan.empty()) {
-            plan.add(new action::io::Copy(parametrisation_, output));
-        }
-        else {
-            plan.add(new action::io::Save(parametrisation_, output));
-        }
-    }
     ASSERT(plan.ended());
 }
 
