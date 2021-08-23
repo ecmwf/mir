@@ -22,13 +22,15 @@ namespace nonlinear {
 
 struct Heaviest : NonLinear {
     Heaviest(const param::MIRParametrisation&);
-    bool treatment(MethodWeighted::Matrix& A, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& B,
-                   const MIRValuesVector& values, const double& missingValue) const override;
 
 private:
+    bool treatment(MethodWeighted::Matrix& A, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& B,
+                   const MIRValuesVector&, const double& missingValue) const override;
     bool sameAs(const NonLinear&) const override;
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;
+
+    bool modifiesMatrix(bool) const override { return true; }
 };
 
 

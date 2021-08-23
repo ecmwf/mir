@@ -130,7 +130,7 @@ atlas::Mesh InMemoryMeshCache::atlasMesh(util::MIRStatistics& statistics, const 
         throw;
     }
 
-    mesh_cache.footprint(sign, caching::InMemoryCacheUsage(mesh.footprint(), 0));
+    mesh_cache.footprint(sign, InMemoryCacheUsage(mesh.footprint(), 0));
 
     ASSERT(mesh.generated());
     return mesh;

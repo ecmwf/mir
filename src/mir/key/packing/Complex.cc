@@ -35,7 +35,7 @@ void Complex::fill(const repres::Representation*, grib_info& info) const {
 }
 
 
-void mir::key::packing::Complex::set(const repres::Representation*, grib_handle* handle) const {
+void Complex::set(const repres::Representation*, grib_handle* handle) const {
     Packing::set(handle, gridded() ? "grid_complex" : "spectral_complex");
 }
 

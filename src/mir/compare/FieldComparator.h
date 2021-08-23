@@ -62,8 +62,8 @@ public:
 
 class FieldComparator {
 public:  // types
-    using FieldSet  = mir::compare::FieldSet;
-    using MultiFile = mir::compare::MultiFile;
+    using FieldSet  = compare::FieldSet;
+    using MultiFile = compare::MultiFile;
 
 public:  // methods
     FieldComparator(const eckit::option::CmdArgs&, const WhiteLister& = DefaultWhiteLister::instance());

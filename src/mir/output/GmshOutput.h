@@ -86,16 +86,11 @@ private:
     // -- Overridden methods
 
     // From MIROutput
-    size_t copy(const param::MIRParametrisation&, context::Context&) override;
     size_t save(const param::MIRParametrisation&, context::Context&) override;
     bool sameAs(const MIROutput&) const override;
     bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const override;
     bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const override;
-
-    size_t set(const param::MIRParametrisation&, context::Context&) override;
-    void prepare(const param::MIRParametrisation&, action::ActionPlan&, output::MIROutput&) override;
     void estimate(const param::MIRParametrisation&, api::MIREstimation&, context::Context&) const override {}
-
     void print(std::ostream&) const override;
 
     // -- Class members

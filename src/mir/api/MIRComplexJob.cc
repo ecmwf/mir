@@ -105,8 +105,7 @@ void MIRComplexJob::print(std::ostream& out) const {
 }
 
 
-MIRComplexJob& MIRComplexJob::add(api::MIRJob* job, input::MIRInput& input, output::MIROutput& output,
-                                  api::MIRWatcher* watcher) {
+MIRComplexJob& MIRComplexJob::add(MIRJob* job, input::MIRInput& input, output::MIROutput& output, MIRWatcher* watcher) {
 
     if (job == nullptr) {
         return *this;

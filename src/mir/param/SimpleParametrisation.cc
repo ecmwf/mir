@@ -535,11 +535,6 @@ bool SimpleParametrisation::has(const std::string& name) const {
 }
 
 
-size_t SimpleParametrisation::size() const {
-    return settings_.size();
-}
-
-
 template <class T>
 bool SimpleParametrisation::_get(const std::string& name, T& value) const {
     auto j = settings_.find(name);
@@ -756,11 +751,6 @@ void SimpleParametrisation::json(eckit::JSON& s) const {
         s << j.first << *(j.second);
     }
     s.endObject();
-}
-
-
-bool SimpleParametrisation::empty() const {
-    return size() == 0;
 }
 
 

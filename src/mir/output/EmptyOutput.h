@@ -76,7 +76,6 @@ private:
     // -- Overridden methods
 
     // From MIROutput
-    size_t copy(const param::MIRParametrisation&, context::Context&) override;  // No interpolation performed
     size_t save(const param::MIRParametrisation&, context::Context&) override;
     bool sameAs(const MIROutput&) const override;
     bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const override;

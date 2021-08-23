@@ -30,11 +30,11 @@ void FormulaNumber::print(std::ostream& out) const {
 }
 
 
-void FormulaNumber::execute(mir::context::Context& ctx) const {
+void FormulaNumber::execute(context::Context& ctx) const {
     ctx.scalar(value_);
 }
 
-bool FormulaNumber::sameAs(const mir::action::Action& other) const {
+bool FormulaNumber::sameAs(const action::Action& other) const {
     auto o = dynamic_cast<const FormulaNumber*>(&other);
     return (o != nullptr) && (value_ == o->value_);
 }

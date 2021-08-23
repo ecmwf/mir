@@ -36,11 +36,6 @@ static void init() {
 NonLinear::NonLinear(const param::MIRParametrisation&) {}
 
 
-bool NonLinear::modifiesMatrix() const {
-    return false;
-}
-
-
 NonLinear::~NonLinear() = default;
 
 

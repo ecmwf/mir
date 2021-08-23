@@ -90,7 +90,7 @@ public:
     // -- Methods
 
     atlas::Grid rotate(const atlas::Grid&) const;
-    util::BoundingBox boundingBox(const util::BoundingBox&) const;
+    BoundingBox boundingBox(const BoundingBox&) const;
 
     const Latitude& south_pole_latitude() const { return south_pole_latitude_; }
 

@@ -43,11 +43,6 @@ static const char* keys[] = {"class", "type",   "stream",  "expver",   "date", "
                              "step",  "number", "levtype", "levelist", "param"};
 
 
-size_t GeoPointsFileOutputXYV::copy(const param::MIRParametrisation&, context::Context&) {
-    NOTIMP;
-}
-
-
 size_t GeoPointsFileOutputXYV::save(const param::MIRParametrisation& param, context::Context& ctx) {
     ASSERT(once());
     return binary_ ? saveBinary(param, ctx) : saveText(param, ctx);

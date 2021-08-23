@@ -60,14 +60,13 @@ public:
 
     // -- Methods
 
-    virtual size_t copy(const param::MIRParametrisation&, context::Context&)                                   = 0;
-    virtual size_t save(const param::MIRParametrisation&, context::Context&)                                   = 0;
+    virtual size_t copy(const param::MIRParametrisation&, context::Context&);
+    virtual size_t save(const param::MIRParametrisation&, context::Context&) = 0;
+    virtual size_t set(const param::MIRParametrisation&, context::Context&);
     virtual bool sameAs(const MIROutput&) const                                                                = 0;
     virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const = 0;
     virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const                   = 0;
-
-    virtual size_t set(const param::MIRParametrisation&, context::Context&);
-    virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, output::MIROutput&);
+    virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, MIROutput&);
     virtual void estimate(const param::MIRParametrisation&, api::MIREstimation&, context::Context&) const;
 
     // -- Overridden methods

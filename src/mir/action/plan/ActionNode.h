@@ -56,9 +56,9 @@ public:
 
     void execute(context::Context&, const Executor&) const;
 
-    const action::Action& action() const;
+    const Action& action() const { return action_; }
 
-    ActionGraph& graph();
+    ActionGraph& graph() { return graph_; }
 
     void dump(std::ostream&, size_t depth) const;
 

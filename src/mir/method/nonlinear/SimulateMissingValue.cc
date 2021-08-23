@@ -124,11 +124,6 @@ void SimulateMissingValue::hash(eckit::MD5& h) const {
 }
 
 
-bool SimulateMissingValue::modifiesMatrix() const {
-    return true;
-}
-
-
 static NonLinearBuilder<SimulateMissingValue> __nonlinear("simulated-missing-value");
 
 

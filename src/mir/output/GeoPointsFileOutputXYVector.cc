@@ -35,11 +35,6 @@ GeoPointsFileOutputXYVector::GeoPointsFileOutputXYVector(const std::string& path
     GeoPointsFileOutput(path, binary) {}
 
 
-size_t GeoPointsFileOutputXYVector::copy(const param::MIRParametrisation&, context::Context&) {
-    NOTIMP;
-}
-
-
 size_t GeoPointsFileOutputXYVector::save(const param::MIRParametrisation& param, context::Context& ctx) {
     ASSERT(once());
     ASSERT(!binary_);

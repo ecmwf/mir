@@ -101,7 +101,7 @@ private:
     input::MIRInput& input_;
     output::MIROutput& output_;
     std::unique_ptr<const param::MIRParametrisation> combined_;
-    std::unique_ptr<action::ActionPlan> plan_;
+    std::unique_ptr<ActionPlan> plan_;
 
     // -- Methods
     // None
