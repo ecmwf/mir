@@ -27,12 +27,6 @@ Cropping::Cropping() : active_(false) {}
 Cropping::Cropping(const Cropping&) = default;
 
 
-Cropping::~Cropping() = default;
-
-
-Cropping& Cropping::operator=(const Cropping&) = default;
-
-
 void Cropping::hash(eckit::MD5& md5) const {
     md5.add(bbox_);
     md5.add(active_);
@@ -40,23 +34,13 @@ void Cropping::hash(eckit::MD5& md5) const {
 
 
 bool Cropping::sameAs(const Cropping& other) const {
-    if (active_ && other.active_) {
-        // check the bounding box limits explicitly
-        return bbox_.north() == other.bbox_.north() && bbox_.west() == other.bbox_.west() &&
-               bbox_.south() == other.bbox_.south() && bbox_.east() == other.bbox_.east();
-    }
-    return active_ == other.active_;
+    return active_ && other.active_ ? bbox_ == other.bbox_ : active_ == other.active_;
 }
 
 
 void Cropping::boundingBox(const util::BoundingBox& bbox) {
     bbox_   = bbox;
     active_ = true;
-}
-
-
-bool Cropping::operator==(const Cropping& other) const {
-    return (active_ == other.active_) && (bbox_ == other.bbox_);
 }
 
 

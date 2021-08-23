@@ -25,10 +25,6 @@ class Cropping {
 public:
     Cropping();
     Cropping(const Cropping&);
-    ~Cropping();
-
-    Cropping& operator=(const Cropping&);
-    bool operator==(const Cropping&) const;
 
     operator bool() const { return active_; }
 
@@ -38,17 +34,16 @@ public:
     void boundingBox(const util::BoundingBox&);
     const util::BoundingBox& boundingBox() const;
 
-protected:
-    void print(std::ostream&) const;
-
 private:
-    util::BoundingBox bbox_;
-    bool active_;
+    void print(std::ostream&) const;
 
     friend std::ostream& operator<<(std::ostream& s, const Cropping& p) {
         p.print(s);
         return s;
     }
+
+    util::BoundingBox bbox_;
+    bool active_;
 };
 
 
