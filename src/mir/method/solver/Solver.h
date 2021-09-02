@@ -34,6 +34,7 @@ namespace method {
 namespace solver {
 
 
+/// Solve linear system (B = W A)
 class Solver {
 public:
     Solver(const param::MIRParametrisation&) {}
@@ -43,7 +44,6 @@ public:
 
     virtual ~Solver() = default;
 
-    /// Update interpolation linear system (B = W A) to account for non-linearities
     virtual void solve(const MethodWeighted::Matrix& A, const MethodWeighted::WeightMatrix& W,
                        MethodWeighted::Matrix& B, const double& missingValue) const = 0;
 

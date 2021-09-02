@@ -20,6 +20,7 @@ namespace method {
 namespace solver {
 
 
+/// Linear system solving by matrix multiplication
 struct Multiply : Solver {
     using Solver::Solver;
     void solve(const MethodWeighted::Matrix& A, const MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& B,
