@@ -416,6 +416,8 @@ list(APPEND mir_srcs
     method/solver/Statistics.h
     method/voronoi/VoronoiMethod.cc
     method/voronoi/VoronoiMethod.h
+    method/voronoi/VoronoiAverage.cc
+    method/voronoi/VoronoiAverage.h
     method/voronoi/VoronoiStatistics.cc
     method/voronoi/VoronoiStatistics.h
     output/EmptyOutput.cc
@@ -935,5 +937,8 @@ if(mir_HAVE_NETCDF)
 endif()
 if(mir_HAVE_PNG)
     target_link_libraries(mir PRIVATE PNG::PNG)
+endif()
+if(Qhull_FOUND)
+    target_link_libraries(mir PRIVATE Qhull::Qhull)
 endif()
 

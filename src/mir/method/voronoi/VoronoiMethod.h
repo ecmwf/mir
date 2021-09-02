@@ -83,8 +83,8 @@ private:
 
     // From MethodWeighted
     void hash(eckit::MD5&) const override;
-    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
-                  const repres::Representation& out) const override;
+    virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                          const repres::Representation& out) const override;
     bool sameAs(const Method&) const override;
     void print(std::ostream&) const override;
     bool validateMatrixWeights() const override;
