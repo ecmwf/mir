@@ -24,7 +24,7 @@ DefaultParametrisation::DefaultParametrisation() {
     set("executor", "simple");
 
     set("interpolation", "linear/k-nearest-neighbours");
-    set("space", "1d.linear");
+    set("vector-space", "1d.linear");
 
     bool caching = LibMir::caching();
     set("caching", caching);

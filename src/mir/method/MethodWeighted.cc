@@ -359,7 +359,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
         // Get input/output matrices
         std::string space;
-        parametrisation_.get("space", space);
+        parametrisation_.get("vector-space", space);
         const data::Space& sp = data::SpaceChooser::lookup(space);
 
         MIRValuesVector result(npts_out);  // field.update() takes ownership with std::swap()
