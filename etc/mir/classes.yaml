@@ -16,22 +16,22 @@ density.volume: {}
 # Angle starting from 0 (units: degree)
 vector-space.1d-angle-degree-asymmetric:
     vector-space: 1d-angle-degree-asymmetric
-    compare: angle.degree
+    compare: angle-degree
 
 # Angle symmetric around 0 (units: degree)
 vector-space.1d-angle-degree-symmetric:
     vector-space: 1d-angle-degree-symmetric
-    compare: angle.degree
+    compare: angle-degree
 
 # Angle starting from 0 (units: radian)
 vector-space.1d-angle-radian-asymmetric:
     vector-space: 1d-angle-radian-asymmetric
-    compare: angle.radian
+    compare: angle-radian
 
 # Angle symmetric around 0 (units: radian)
 vector-space.1d-angle-radian-symmetric:
     vector-space: 1d-angle-radian-symmetric
-    compare: angle.radian
+    compare: angle-radian
 
 # Vector in 2D Cartesian space, X component
 vector-space.2d-vector-u:

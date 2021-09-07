@@ -307,8 +307,8 @@ struct MIR : tools::MIRTool {
 
         //==============================================
         options_.push_back(new Separator("Miscellaneous"));
-        options_.push_back(
-            new FactoryOption<key::style::MIRStyleFactory>("style", "Select how post-processing options are interpreted"));
+        options_.push_back(new FactoryOption<key::style::MIRStyleFactory>(
+            "style", "Select how post-processing options are interpreted"));
         options_.push_back(new FactoryOption<data::SpaceChooser>("vector-space", "Select vector-space"));
         options_.push_back(new SimpleOption<size_t>("precision", "Statistics methods output precision"));
         options_.push_back(new SimpleOption<std::string>("input", "Input options YAML (lat, lon, etc.)"));

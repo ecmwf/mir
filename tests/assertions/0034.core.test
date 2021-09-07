@@ -1,4 +1,4 @@
-# Test to check interpolation of an angle (1d.angle.degree.asymmetric)
+# Test to check interpolation of an angle (1d-angle-degree-asymmetric)
 # Mars request
 stream=wave,param=mwd
 # Mir tool options
