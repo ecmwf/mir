@@ -18,8 +18,8 @@ namespace data {
 namespace space {
 
 
-static SpaceChoice<Space2DVectorZonalMeridional> __space1("2d.vector.u", 0, 2);
-static SpaceChoice<Space2DVectorZonalMeridional> __space2("2d.vector.v", 1, 2);
+static SpaceChoice<Space2DVectorZonalMeridional> __space1("2d-vector-u", 0, 2);
+static SpaceChoice<Space2DVectorZonalMeridional> __space2("2d-vector-v", 1, 2);
 
 
 size_t Space2DVectorZonalMeridional::dimensions() const {

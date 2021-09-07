@@ -413,7 +413,7 @@ density.volume:
 - 260216  # Volumetric saturation of soil moisture
 - 260644  # Volumetric soil ice
 
-space.1d.angle.degree.asymmetric:
+vector-space.1d-angle-degree-asymmetric:
 - 3031  # Wind direction
 - 3047  # Direction of current
 - 3093  # Direction of ice drift
@@ -450,20 +450,20 @@ space.1d.angle.degree.asymmetric:
 - 300107  # Primary wave direction
 - 300109  # Second wave direction
 
-space.1d.angle.degree.symmetric:
+vector-space.1d-angle-degree-symmetric:
 - 260295  # Latitude of U Wind Component of Velocity
 - 260297  # Latitude of V Wind Component of Velocity
 - 260299  # Latitude of Presure Point
 - 260421  # Latitude (-90 to +90)
 - 260425  # Latitude (nearest neighbor) (-90 to +90)
 
-space.1d.angle.radian.symmetric:
+vector-space.1d-angle-radian-symmetric:
 - 162  # Angle of sub-gridscale orography
 - 129162  # Angle of sub-gridscale orography gradient
 - 171162  # Angle of sub-gridscale orography anomaly
 - 200162  # Angle of sub-gridscale orography difference
 
-space.2d.vector.u:
+vector-space.2d-vector-u:
 - 11  # U component of divergent wind
 - 13  # U component of rotational wind
 - 131  # U component of wind
@@ -558,7 +558,7 @@ space.2d.vector.u:
 - 300230  # Time mean surface zonal wind (u)
 - 300255  # Time mean zonal wind (u)
 
-space.2d.vector.v:
+vector-space.2d-vector-v:
 - 12  # V component of divergent wind
 - 14  # V component of rotational wind
 - 132  # V component of wind
@@ -653,19 +653,19 @@ space.2d.vector.v:
 - 300231  # Time mean surface meridional wind (v)
 - 300241  # Time mean meridional wind (v)
 
-space.3d.vector.u:
+vector-space.3d-vector-u:
 - 150133  # Ocean U wind component
 - 151131  # Ocean current zonal component
 
-space.3d.vector.v:
+vector-space.3d-vector-v:
 - 150134  # Ocean V wind component
 - 151132  # Ocean current meridional component
 
-space.3d.vector.w:
+vector-space.3d-vector-w:
 - 150135  # Ocean W wind component
 - 151133  # Ocean current vertical component
 
-space.geographic-coordinate.latitude:
+vector-space.geographic-coordinate-latitude:
 - 250001  # Latitude
 - 250003  # Latitude on T grid
 - 250005  # Latitude on U grid
@@ -673,7 +673,7 @@ space.geographic-coordinate.latitude:
 - 250009  # Latitude on W grid
 - 250011  # Latitude on F grid
 
-space.geographic-coordinate.longitude:
+vector-space.geographic-coordinate-longitude:
 - 250002  # Longitude
 - 250004  # Longitude on T grid
 - 250006  # Longitude on U grid
