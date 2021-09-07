@@ -18,6 +18,7 @@ foreach(_t
     spectral_order
     statistics
     style
+    vector-space
     wind)
     ecbuild_add_test(
         TARGET            mir_tests_unit_${_t}
