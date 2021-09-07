@@ -22,7 +22,7 @@ namespace data {
 namespace space {
 
 
-static SpaceChoice<SpaceLogarithmic> __space("1d.logarithmic");
+static SpaceChoice<SpaceLogarithmic> __space("1d-logarithmic");
 
 
 SpaceLogarithmic::SpaceLogarithmic() = default;

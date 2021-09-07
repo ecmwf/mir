@@ -118,10 +118,10 @@ complex_t convert_to_complex<DEGREE>(double a) {
 }  // namespace
 
 
-static SpaceChoice<Space1DAngleT<DEGREE, ASYMMETRIC> > __space1("1d.angle.degree.asymmetric");
-static SpaceChoice<Space1DAngleT<DEGREE, SYMMETRIC> > __space2("1d.angle.degree.symmetric");
-static SpaceChoice<Space1DAngleT<RADIAN, ASYMMETRIC> > __space3("1d.angle.radian.asymmetric");
-static SpaceChoice<Space1DAngleT<RADIAN, SYMMETRIC> > __space4("1d.angle.radian.symmetric");
+static SpaceChoice<Space1DAngleT<DEGREE, ASYMMETRIC> > __space1("1d-angle-degree-asymmetric");
+static SpaceChoice<Space1DAngleT<DEGREE, SYMMETRIC> > __space2("1d-angle-degree-symmetric");
+static SpaceChoice<Space1DAngleT<RADIAN, ASYMMETRIC> > __space3("1d-angle-radian-asymmetric");
+static SpaceChoice<Space1DAngleT<RADIAN, SYMMETRIC> > __space4("1d-angle-radian-symmetric");
 
 
 template <int SCALE, int SYMMETRY>

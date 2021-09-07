@@ -14,51 +14,51 @@ density.energy: {}
 density.volume: {}
 
 # Angle starting from 0 (units: degree)
-vector-space.1d.angle.degree.asymmetric:
-    vector-space: 1d.angle.degree.asymmetric
+vector-space.1d-angle-degree-asymmetric:
+    vector-space: 1d-angle-degree-asymmetric
     compare: angle.degree
 
 # Angle symmetric around 0 (units: degree)
-vector-space.1d.angle.degree.symmetric:
-    vector-space: 1d.angle.degree.symmetric
+vector-space.1d-angle-degree-symmetric:
+    vector-space: 1d-angle-degree-symmetric
     compare: angle.degree
 
 # Angle starting from 0 (units: radian)
-vector-space.1d.angle.radian.asymmetric:
-    vector-space: 1d.angle.radian.asymmetric
+vector-space.1d-angle-radian-asymmetric:
+    vector-space: 1d-angle-radian-asymmetric
     compare: angle.radian
 
 # Angle symmetric around 0 (units: radian)
-vector-space.1d.angle.radian.symmetric:
-    vector-space: 1d.angle.radian.symmetric
+vector-space.1d-angle-radian-symmetric:
+    vector-space: 1d-angle-radian-symmetric
     compare: angle.radian
 
 # Vector in 2D Cartesian space, X component
-vector-space.2d.vector.u:
-    vector-space: 2d.vector.u
+vector-space.2d-vector-u:
+    vector-space: 2d-vector-u
 
 # Vector in 2D Cartesian space, Y component
-vector-space.2d.vector.v:
-    vector-space: 2d.vector.v
+vector-space.2d-vector-v:
+    vector-space: 2d-vector-v
 
 # Vector in 3D Cartesian space, X component
-vector-space.3d.vector.u:
-    vector-space: 3d.vector.u
+vector-space.3d-vector-u:
+    vector-space: 3d-vector-u
 
 # Vector in 3D Cartesian space, Y component
-vector-space.3d.vector.v:
-    vector-space: 3d.vector.v
+vector-space.3d-vector-v:
+    vector-space: 3d-vector-v
 
 # Vector in 3D Cartesian space, Z component
-vector-space.3d.vector.w:
-    vector-space: 3d.vector.w
+vector-space.3d-vector-w:
+    vector-space: 3d-vector-w
 
 # Geographic coordinate, latitude
-vector-space.geographic-coordinate.latitude:
+vector-space.geographic-coordinate-latitude:
     interpolation: fail
 
 # Geographic coordinate, longitude
-vector-space.geographic-coordinate.longitude:
+vector-space.geographic-coordinate-longitude:
     interpolation: fail
 
 # associated to a table
