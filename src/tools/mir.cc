@@ -169,7 +169,7 @@ struct MIR : tools::MIRTool {
                                                     "Climate filter (topographic data smoothing operator) width of "
                                                     "filter edge, must be greater than 'distance' (default 1000.)"));
 
-        options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
+        options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and k-d trees (default 1)"));
         options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebra>(
             "backend", "Linear algebra backend (default '" + eckit::linalg::LinearAlgebra::backend().name() + "')"));
         options_.push_back(new FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
