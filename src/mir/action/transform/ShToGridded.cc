@@ -25,6 +25,7 @@
 #include "mir/caching/InMemoryCache.h"
 #include "mir/caching/LegendreCache.h"
 #include "mir/caching/legendre/LegendreLoader.h"
+#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
@@ -174,7 +175,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
     try {
         trace::Timer time("ShToGridded::caching", Log::debug());
 
-        bool caching = true;
+        bool caching = LibMir::caching();
         parametrisation_.get("caching", caching);
 
         auto j = trans_cache.find(key);

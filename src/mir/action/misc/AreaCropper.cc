@@ -21,6 +21,7 @@
 #include "mir/action/context/Context.h"
 #include "mir/caching/CroppingCache.h"
 #include "mir/caching/InMemoryCache.h"
+#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
@@ -63,6 +64,7 @@ AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation) : Act
 
     bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
 
+    caching_ = LibMir::caching();
     parametrisation_.get("caching", caching_);
 }
 
@@ -70,6 +72,7 @@ AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation) : Act
 AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation, const util::BoundingBox& bbox) :
     Action(parametrisation), bbox_(bbox), caching_(true) {
 
+    caching_ = LibMir::caching();
     parametrisation_.get("caching", caching_);
 }
 
