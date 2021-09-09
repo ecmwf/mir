@@ -188,8 +188,9 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     here = timer.elapsed();
     WeightMatrix W(out.numberOfPoints(), in.numberOfPoints());
 
-    bool caching = true;
+    bool caching = LibMir::caching();
     parametrisation_.get("caching", caching);
+
     if (caching) {
 
         // The WeightCache is parametrised by 'caching',
