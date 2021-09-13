@@ -13,7 +13,6 @@
 #pragma once
 
 #include "mir/repres/regular/RegularGrid.h"
-#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -30,7 +29,6 @@ public:
 
     LambertAzimuthalEqualArea(const param::MIRParametrisation&);
     LambertAzimuthalEqualArea(const LambertAzimuthalEqualArea&) = delete;
-    LambertAzimuthalEqualArea& operator=(const LambertAzimuthalEqualArea&) = delete;
 
     // -- Destructor
     // None
@@ -39,7 +37,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    LambertAzimuthalEqualArea& operator=(const LambertAzimuthalEqualArea&) = delete;
 
     // -- Methods
     // None
@@ -63,7 +62,7 @@ private:
 
     // -- Overridden methods
 
-    virtual void fill(grib_info&) const override;
+    void fill(grib_info&) const override;
 
     // -- Class members
     // None

@@ -36,7 +36,6 @@ public:
 
     RegularGrid(const param::MIRParametrisation&, const Projection&);
     RegularGrid(const RegularGrid&) = delete;
-    RegularGrid& operator=(const RegularGrid&) = delete;
 
     // -- Destructor
 
@@ -46,7 +45,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    RegularGrid& operator=(const RegularGrid&) = delete;
 
     // -- Methods
     // None

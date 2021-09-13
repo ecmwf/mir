@@ -24,6 +24,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Types.h"
@@ -35,7 +36,7 @@ namespace action {
 
 struct NablaOperation {
     NablaOperation(atlas::Mesh& mesh) :
-        fvm_(mesh, atlas::util::Config("radius", atlas::util::Earth::radius())),
+        fvm_(mesh, atlas::util::Config("radius", util::Earth::radius())),
         nabla_(fvm_),
         nodes_(fvm_.node_columns().nodes()),
         nodeIsGhost_(nodes_) {}

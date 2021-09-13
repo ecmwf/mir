@@ -29,7 +29,6 @@ public:
 
     Lambert(const param::MIRParametrisation&);
     Lambert(const Lambert&) = delete;
-    Lambert& operator=(const Lambert&) = delete;
 
     // -- Destructor
     // None
@@ -38,7 +37,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    Lambert& operator=(const Lambert&) = delete;
 
     // -- Methods
     // None
@@ -52,7 +52,7 @@ public:
     // -- Class methods
     // None
 
-protected:
+private:
     // -- Members
 
     bool writeLaDInDegrees_;
@@ -64,7 +64,7 @@ protected:
 
     // -- Overridden methods
 
-    virtual void fill(grib_info&) const override;
+    void fill(grib_info&) const override;
 
     // -- Class members
     // None
