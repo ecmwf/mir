@@ -526,6 +526,8 @@ list(APPEND mir_srcs
     repres/regular/PolarStereographic.h
     repres/regular/RegularGrid.cc
     repres/regular/RegularGrid.h
+    repres/regular/SpaceView.cc
+    repres/regular/SpaceView.h
     repres/sh/SphericalHarmonics.cc
     repres/sh/SphericalHarmonics.h
     repres/unsupported/Albers.cc
@@ -538,8 +540,6 @@ list(APPEND mir_srcs
     repres/unsupported/IrregularLatlon.h
     repres/unsupported/RotatedSH.cc
     repres/unsupported/RotatedSH.h
-    repres/unsupported/SpaceView.cc
-    repres/unsupported/SpaceView.h
     repres/unsupported/StretchedGG.cc
     repres/unsupported/StretchedGG.h
     repres/unsupported/StretchedLL.cc

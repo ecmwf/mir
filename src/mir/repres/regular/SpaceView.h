@@ -12,14 +12,15 @@
 
 #pragma once
 
-#include "mir/repres/Gridded.h"
+#include "mir/repres/regular/RegularGrid.h"
 
 
 namespace mir {
 namespace repres {
+namespace regular {
 
 
-class SpaceView : public Gridded {
+class SpaceView : public RegularGrid {
 public:
     // -- Exceptions
     // None
@@ -40,24 +41,7 @@ public:
     SpaceView& operator=(const SpaceView&) = delete;
 
     // -- Methods
-    // // None
-
-    // -- Overridden methods
     // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-
-    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -73,10 +57,12 @@ private:
     // None
 
     // -- Methods
-    // None
+
+    static Projection make_projection(const param::MIRParametrisation&);
 
     // -- Overridden methods
-    // None
+
+    void fill(grib_info&) const override;
 
     // -- Class members
     // None
@@ -89,5 +75,6 @@ private:
 };
 
 
+}  // namespace regular
 }  // namespace repres
 }  // namespace mir

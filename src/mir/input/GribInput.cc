@@ -1008,6 +1008,7 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
         {"grid", vector_double({"DxInMetres", "DyInMetres"}),
          _or(is("gridType", "lambert"), is("gridType", "polar_stereographic"))},
         {"grid", vector_double({"DiInMetres", "DjInMetres"}), is("gridType", "mercator")},
+        {"grid", vector_double({"dx", "dy"}), is("gridType", "space_view")},
         {"rotation", vector_double({"latitudeOfSouthernPoleInDegrees", "longitudeOfSouthernPoleInDegrees"}),
          _or(_or(_or(is("gridType", "rotated_ll"), is("gridType", "rotated_gg")), is("gridType", "rotated_sh")),
              is("gridType", "reduced_rotated_gg"))},
