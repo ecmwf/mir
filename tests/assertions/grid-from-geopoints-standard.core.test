@@ -1,0 +1,6 @@
+# Geopoints: Standard (6-column) geopoints
+geopoints-standard.gpt
+# Mir tool options
+--output=geopoints-xyv
+# grib_get assertions
+# none: output file is GEOPOINTS

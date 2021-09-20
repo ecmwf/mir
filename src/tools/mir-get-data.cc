@@ -22,7 +22,7 @@
 #include "eckit/option/VectorOption.h"
 
 #include "mir/data/MIRField.h"
-#include "mir/input/GribFileInput.h"
+#include "mir/input/MIRInput.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/repres/Iterator.h"
@@ -31,6 +31,7 @@
 #include "mir/stats/detail/Counter.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Atlas.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
 
@@ -306,15 +307,14 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
     }
 
     for (size_t a = 0; a < args.count(); ++a) {
-        input::GribFileInput grib(args(a));
-        const input::MIRInput& input = grib;
-
+        std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build(args(a), args_wrap));
+        ASSERT(input);
 
         size_t count = 0;
-        while (grib.next()) {
+        while (input->next()) {
             log << "\n'" << args(a) << "' #" << ++count << std::endl;
 
-            data::MIRField field = input.field();
+            auto field = input->field();
             ASSERT(field.dimensions() == 1);
 
             auto& values = field.values(0);
@@ -359,7 +359,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
             }
 
             if (ecc) {
-                std::unique_ptr<Coordinates> ecd(new CoordinatesFromGRIB(input.gribHandle()));
+                std::unique_ptr<Coordinates> ecd(new CoordinatesFromGRIB(input->gribHandle()));
                 err = diff(log, toleranceLat, toleranceLon, *crd, *ecd) != 0 || err;
             }
 
