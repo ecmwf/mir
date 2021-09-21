@@ -30,3 +30,7 @@ if(mir_HAVE_ATLAS)
     endforeach()
 endif()
 
+if(mir_HAVE_QHULL)
+    ecbuild_add_executable(TARGET mir-delaunay SOURCES mir-delaunay.cc LIBS mir Qhull::Qhull ${mir_INSTALL_TOOLS})
+endif()
+
