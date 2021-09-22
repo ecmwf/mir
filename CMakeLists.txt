@@ -24,7 +24,7 @@ ecbuild_add_option(FEATURE MIR_DOWNLOAD_MASKS DEFAULT ON  DESCRIPTION "download 
 ecbuild_add_option(FEATURE TEST_ASSERTIONS    DEFAULT ON  DESCRIPTION "test: regressions")
 ecbuild_add_option(FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support for netCDF" REQUIRED_PACKAGES "NetCDF COMPONENTS C")
 ecbuild_add_option(FEATURE PNG                DEFAULT OFF DESCRIPTION "support for PNG encoding" REQUIRED_PACKAGES PNG)
-ecbuild_add_option(FEATURE QHULL              DEFAULT OFF DESCRIPTION "support for convex hull, Delaunay triangulation, Voronoi diagrams" REQUIRED_PACKAGES Qhull)
+ecbuild_add_option(FEATURE QHULL              DEFAULT OFF DESCRIPTION "support for convex hull, Delaunay triangulation, Voronoi diagrams" REQUIRED_PACKAGES "Qhull COMPONENTS C CXX")
 
 ecbuild_find_package(NAME eccodes VERSION 2.22 REQUIRED)
 ecbuild_find_package(NAME eckit   VERSION 1.14 REQUIRED)
