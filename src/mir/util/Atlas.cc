@@ -18,6 +18,7 @@
 #include <algorithm>
 
 #include "eckit/types/FloatCompare.h"
+#include "eckit/types/Fraction.h"
 #include "eckit/utils/Translator.h"
 
 #include "mir/util/Exceptions.h"
@@ -85,8 +86,16 @@ util::Rotation::Rotation(const PointLonLat& southPole) :
 
 
 namespace grid {
-LinearSpacing::LinearSpacing(value_type /*a*/, value_type /*b*/, long n, bool /*endpoint*/) : Spacing(size_t(n)) {
-    NOTIMP;
+LinearSpacing::LinearSpacing(value_type a, value_type b, long n, bool endpoint) : Spacing(size_t(n)) {
+    ASSERT(n > 1);
+    eckit::Fraction dx((b - a) / value_type(n - (endpoint ? 1 : 0)));
+    eckit::Fraction x(a);
+
+    resize(size_t(n));
+    for (auto& v : *this) {
+        v = x;
+        x += dx;
+    }
 }
 }  // namespace grid
 

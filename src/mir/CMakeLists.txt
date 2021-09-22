@@ -514,6 +514,8 @@ list(APPEND mir_srcs
     repres/other/ClenshawCurtis.h
     repres/other/None.cc
     repres/other/None.h
+    repres/other/SpaceView.cc
+    repres/other/SpaceView.h
     repres/other/UnstructuredGrid.cc
     repres/other/UnstructuredGrid.h
     repres/regular/Lambert.cc
@@ -526,8 +528,6 @@ list(APPEND mir_srcs
     repres/regular/PolarStereographic.h
     repres/regular/RegularGrid.cc
     repres/regular/RegularGrid.h
-    repres/regular/SpaceView.cc
-    repres/regular/SpaceView.h
     repres/sh/SphericalHarmonics.cc
     repres/sh/SphericalHarmonics.h
     repres/unsupported/Albers.cc
