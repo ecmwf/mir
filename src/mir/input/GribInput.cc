@@ -281,8 +281,9 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         {
             "gridded",
             "Nx",
-            _or(_or(is("gridType", "polar_stereographic"), is("gridType", "lambert_azimuthal_equal_area")),
-                is("gridType", "lambert")),
+            _or(_or(_or(is("gridType", "polar_stereographic"), is("gridType", "lambert_azimuthal_equal_area")),
+                    is("gridType", "lambert")),
+                is("gridType", "space_view")),
         },
         {
             "gridded",
