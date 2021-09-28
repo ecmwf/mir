@@ -10,6 +10,7 @@
  */
 
 
+#include <cmath>
 #include <functional>
 #include <memory>
 #include <random>
@@ -57,6 +58,28 @@ double bisection_method(double x_min, double x_max, std::function<double(double)
 }
 
 
+double geometric_maximum(double x_min, std::function<double(double)> f, double f_eps = 1.e-9) {
+    if (std::isinf(f(x_min))) {
+        return x_min;
+    }
+
+    auto x = x_min;
+    for (auto dx = 1., fx = f(x); f_eps < dx;) {
+        auto fx_new = f(x + dx);
+        if (std::isinf(fx_new) || fx_new < fx) {
+            dx /= 2.;
+        }
+        else {
+            fx = fx_new;
+            x += dx;
+            dx *= 2.;
+        }
+    }
+
+    return x;
+}
+
+
 struct MIRSpaceView : MIRTool {
     using MIRTool::MIRTool;
 
@@ -97,17 +120,25 @@ void MIRSpaceView::execute(const eckit::option::CmdArgs& args) {
     auto x   = [&proj](const double x) { return proj.xy({x, 0}).x(); };
     auto y   = [&proj](const double x) { return proj.xy({0, x}).y(); };
 
+    auto m = geometric_maximum(1, lat);
+    log << "f(" << m << ")=" << lat(m) << " [lat max]\nr=" << y(lat(m)) << std::endl;
+
+    m = geometric_maximum(1, lon);
+    log << "f(" << m << ")=" << lon(m) << " [lon max]\nr=" << x(lon(m)) << std::endl;
+
+#if 0
     auto r = bisection_method(0, 1e7, lat, 81.3, 1e-6);
-    log << "f(" << r << ")=" << lat(r) << " [N] r=" << y(lat(r)) << std::endl;
+    log << "f(" << r << ")=" << lat(r) << " [N]\nr=" << y(lat(r)) << std::endl;
 
     r = bisection_method(-1e7, 0, lat, -81.3, 1e-6);
-    log << "f(" << r << ")=" << lat(r) << " [S] r=" << y(lat(r)) << std::endl;
+    log << "f(" << r << ")=" << lat(r) << " [S]\nr=" << y(lat(r)) << std::endl;
 
     r = bisection_method(-1e7, 0, lon, -81.242, 1e-6);
-    log << "f(" << r << ")=" << lon(r) << " [W] r=" << x(lon(r)) << std::endl;
+    log << "f(" << r << ")=" << lon(r) << " [W]\nr=" << x(lon(r)) << std::endl;
 
     r = bisection_method(0, 1e7, lon, 81.242, 1e-6);
-    log << "f(" << r << ")=" << lon(r) << " [E] r=" << x(lon(r)) << std::endl;
+    log << "f(" << r << ")=" << lon(r) << " [E]\nr=" << x(lon(r)) << std::endl;
+#endif
 }
 
 
