@@ -30,10 +30,3 @@ md5GridSection=383b1a933ea4e23c83773251155b3abf/6fcea9a744c0c8f139b43cd69c43b1bb
 md5GridSection=6ae0076681a2541abe053ab52fa60f30, centre=lfpw, gridType=lambert, edition=1:
 - first_point_bottom_left: true
 
-# MSG (Meteosat second generation), non-HRV channels
-md5GridSection=87d23e779d2e6a531634673b50f2fbde, centre=ecmf, gridType=space_view, edition=1, satelliteIdentifier=57, dx=1732:
-- dx: 1811
-- dy: 1811
-- xp: 928
-- yp: 928
-
