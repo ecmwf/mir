@@ -13,6 +13,7 @@
 #include "mir/input/GribInput.h"
 
 #include <algorithm>
+#include <cmath>
 #include <functional>
 #include <memory>
 #include <numeric>
@@ -30,6 +31,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFixes.h"
 #include "mir/repres/Representation.h"
+#include "mir/repres/other/SpaceView.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
@@ -622,20 +624,20 @@ data::MIRField GribInput::field() const {
 
     size_t size = count;
     MIRValuesVector values(count);
-    GRIB_CALL(codes_get_double_array(grib_, "values", &values[0], &size));
+    GRIB_CALL(codes_get_double_array(grib_, "values", values.data(), &size));
     ASSERT(count == size);
 
     long missingValuesPresent;
-    GRIB_CALL(codes_get_long(grib_, "missingValuesPresent", &missingValuesPresent));
+    ASSERT(get("missingValuesPresent", missingValuesPresent));
 
-    double missing;
-    GRIB_CALL(codes_get_double(grib_, "missingValue", &missing));
+    double missingValue;
+    ASSERT(get("missingValue", missingValue));
 
     // Ensure missingValue is unique, so values are not wrongly "missing"
     long numberOfMissingValues = 0;
     if (codes_get_long(grib_, "numberOfMissingValues", &numberOfMissingValues) == CODES_SUCCESS &&
         numberOfMissingValues == 0) {
-        grib_get_unique_missing_value(values, missing);
+        grib_get_unique_missing_value(values, missingValue);
     }
 
     // If grib has a 0-containing pl array, add missing values in their place
@@ -654,9 +656,9 @@ data::MIRField GribInput::field() const {
 
             // if there are no missing values yet, set them
             if (missingValuesPresent == 0) {
-                Log::debug() << "GribInput::field(): introducing missing values (setting bitmap)." << std::endl;
+                Log::debug() << "GribInput: introducing missing values (setting bitmap)" << std::endl;
                 missingValuesPresent = 1;
-                grib_get_unique_missing_value(values, missing);
+                grib_get_unique_missing_value(values, missingValue);
             }
 
             // pl array: insert entries in place of zeros
@@ -666,7 +668,7 @@ data::MIRField GribInput::field() const {
 
 
             // values array: copy values row by row, and when a fixed (0) entry is found, insert missing values
-            Log::debug() << "GribInput::field(): correcting values array with " << new_values << " new missing values."
+            Log::debug() << "GribInput: correcting values array with " << new_values << " new missing values"
                          << std::endl;
 
             MIRValuesVector values_extended;
@@ -678,7 +680,7 @@ data::MIRField GribInput::field() const {
                 if (*p1 == 0) {
                     ASSERT(*p2 > 0);
                     auto Ni = size_t(*p2);
-                    values_extended.insert(values_extended.end(), Ni, missing);
+                    values_extended.insert(values_extended.end(), Ni, missingValue);
                 }
                 else {
                     auto Ni = size_t(*p1);
@@ -699,7 +701,26 @@ data::MIRField GribInput::field() const {
         }
     }
 
-    data::MIRField field(cache_, missingValuesPresent != 0, missing);
+    std::string gridType;
+    ASSERT(get("gridType", gridType));
+
+    if (gridType == "space_view") {
+        if (missingValuesPresent == 0) {
+            Log::debug() << "GribInput: introducing missing values, setting missingValue to " << values.front()
+                         << std::endl;
+            missingValue         = values.front();
+            missingValuesPresent = 1;
+        }
+
+        auto count = values.size();
+        repres::other::SpaceView::remove_invalid_values(*this, values);
+        auto newCount = values.size();
+
+        Log::debug() << "GribInput: removed " << Log::Pretty(count - newCount, {"value"}) << ", new values count "
+                     << Log::Pretty(newCount) << std::endl;
+    }
+
+    data::MIRField field(cache_, missingValuesPresent != 0, missingValue);
 
     long scanningMode = 0;
     if (codes_get_long(grib_, "scanningMode", &scanningMode) == CODES_SUCCESS && scanningMode != 0) {
@@ -1098,7 +1119,7 @@ void GribInput::auxilaryValues(const std::string& path, std::vector<double>& val
 
         size_t size = count;
         values.resize(count);
-        GRIB_CALL(codes_get_double_array(h, "values", &values[0], &size));
+        GRIB_CALL(codes_get_double_array(h, "values", values.data(), &size));
         ASSERT(count == size);
 
         long missingValuesPresent;
