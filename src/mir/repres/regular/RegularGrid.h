@@ -35,6 +35,7 @@ public:
     // -- Constructors
 
     RegularGrid(const param::MIRParametrisation&, const Projection&);
+    RegularGrid(const Projection&, const util::BoundingBox&, const LinearSpacing& x, const LinearSpacing& y);
     RegularGrid(const RegularGrid&) = delete;
 
     // -- Destructor
@@ -106,7 +107,6 @@ private:
     // -- Members
 
     long shapeOfTheEarth_;
-    double radius_;
     double earthMajorAxis_;
     double earthMinorAxis_;
     bool shapeOfTheEarthProvided_;

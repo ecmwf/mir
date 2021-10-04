@@ -78,9 +78,8 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     std::vector<double> weights;
     weights.reserve(nclosest_);
 
-    const std::unique_ptr<repres::Iterator> it(out.iterator());
-    size_t ip = 0;
-    while (it->next()) {
+    for (const std::unique_ptr<repres::Iterator> it(out.iterator()); it->next();) {
+        auto ip = it->index();
         ASSERT(ip < out_npts);
 
         // get the reference output point
@@ -152,8 +151,6 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
             size_t jp = closest[i].payload();
             weights_triplets.emplace_back(WeightMatrix::Triplet(ip, jp, weights[i]));
         }
-
-        ++ip;
     }
 
     // fill-in sparse matrix

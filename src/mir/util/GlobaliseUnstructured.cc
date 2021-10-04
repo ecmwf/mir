@@ -63,8 +63,7 @@ size_t GlobaliseUnstructured::appendGlobalPoints(std::vector<double>& latitudes,
 
 
     // insert global grid points when distant enough from provided grid points
-    std::unique_ptr<repres::Iterator> it(globe->iterator());
-    while (it->next()) {
+    for (const std::unique_ptr<repres::Iterator> it(globe->iterator()); it->next();) {
         const Point3 p(it->point3D());
         if (Point3::distance(p, tree.closestPoint(p).point()) > globaliseMissingRadius_) {
 

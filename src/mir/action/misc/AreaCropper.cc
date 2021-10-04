@@ -86,15 +86,11 @@ void AreaCropper::crop(const repres::Representation& repres, util::BoundingBox& 
     Longitude e = 0;
     Longitude w = 0;
 
-    size_t p   = 0;
     bool first = true;
 
-    // Iterator is "unrotated", because the cropping area
-    // is expressed in before the rotation is applied
-    std::unique_ptr<repres::Iterator> iter(repres.iterator());
-
-    while (iter->next()) {
-        const auto& point = iter->pointUnrotated();
+    // Iterator is "unrotated", because the cropping area is expressed in before the rotation is applied
+    for (const std::unique_ptr<repres::Iterator> it(repres.iterator()); it->next();) {
+        const auto& point = it->pointUnrotated();
 
         // Log::debug() << point << " ====> " << bbox.contains(point) << std::endl;
 
@@ -123,9 +119,8 @@ void AreaCropper::crop(const repres::Representation& repres, util::BoundingBox& 
             }
 
             // Make sure we don't visit duplicate points
-            ASSERT(m.insert(std::make_pair(LL(lat, lon), p)).second);
+            ASSERT(m.insert(std::make_pair(LL(lat, lon), it->index())).second);
         }
-        p++;
     }
 
     // Set mapping (don't support empty results)

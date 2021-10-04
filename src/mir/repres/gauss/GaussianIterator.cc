@@ -87,20 +87,28 @@ bool GaussianIterator::next(Latitude& lat, Longitude& lon) {
     }
 
     if (0 < Nj_ && i_ < Ni_) {
-
         lat = lat_;
         lon = lon_;
 
         lon_ += inc_;
+
+        if (i_ > 0 || j_ > 0) {
+            count_++;
+        }
+
         if (++i_ == Ni_) {
             i_  = 0;
             Ni_ = 0;
         }
 
-        count_++;
         return true;
     }
     return false;
+}
+
+
+size_t GaussianIterator::index() const {
+    return count_;
 }
 
 

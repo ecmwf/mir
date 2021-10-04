@@ -95,14 +95,12 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
     {
         trace::ProgressTimer progress("Interpolating", nbOutputPoints, {"point"}, Log::debug());
 
-        std::unique_ptr<repres::Iterator> it(out.iterator());
-        size_t ip = 0;
-
-        while (it->next()) {
-            ASSERT(ip < nbOutputPoints);
+        for (std::unique_ptr<repres::Iterator> it(out.iterator()); it->next();) {
             ++progress;
 
-            const auto& p = it->pointUnrotated();
+            auto& p = it->pointUnrotated();
+            auto ip = it->index();
+            ASSERT(ip < nbOutputPoints);
 
             const bool too_much_north = p.lat() > max_lat;
             const bool too_much_south = p.lat() < min_lat;
@@ -268,8 +266,6 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
                 normalise(trip);
                 std::copy(trip.begin(), trip.end(), std::back_inserter(triplets));
             }
-
-            ++ip;
         }
     }
 

@@ -225,19 +225,16 @@ void NablaFilterFVMT<T>::execute(context::Context& ctx) const {
         auto missingValue = std::numeric_limits<double>::min();
         auto N            = field.representation()->numberOfPoints();
 
-        for (size_t i = 0, ip = 0; i < field.dimensions(); ++i) {
+        for (size_t i = 0; i < field.dimensions(); ++i) {
             auto& values = field.direct(i);
             ASSERT(values.size() == N);
 
-            const std::unique_ptr<repres::Iterator> it(field.representation()->iterator());
-            while (it->next()) {
+            for (const std::unique_ptr<repres::Iterator> it(field.representation()->iterator()); it->next();) {
                 auto lat = it->pointUnrotated().lat().value();
                 if (eckit::types::is_approximately_equal(lat, Latitude::NORTH_POLE.value()) ||
                     eckit::types::is_approximately_equal(lat, Latitude::SOUTH_POLE.value())) {
-                    ASSERT(ip < N);
-                    values[ip] = missingValue;
+                    values.at(it->index()) = missingValue;
                 }
-                ++ip;
             }
         }
 

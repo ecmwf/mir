@@ -53,7 +53,6 @@ CartesianVector2DField::~CartesianVector2DField() {
 
 void CartesianVector2DField::rotate(const util::Rotation& rotation, MIRValuesVector& valuesX,
                                     MIRValuesVector& valuesY) const {
-
     // setup results vectors
     ASSERT(valuesX.size() == valuesY.size());
     ASSERT(valuesX.size());
@@ -67,15 +66,12 @@ void CartesianVector2DField::rotate(const util::Rotation& rotation, MIRValuesVec
     const double cos_C = std::cos(C);
     const double sin_C = std::sin(C);
 
-    std::unique_ptr<repres::Iterator> it(representation_->iterator());
-    size_t i = 0;
+    for (const std::unique_ptr<repres::Iterator> it(representation_->iterator()); it->next();) {
+        auto& vx = valuesX.at(it->index());
+        auto& vy = valuesY.at(it->index());
 
-    while (it->next()) {
-        ASSERT(i < N);
-
-        if (valuesX[i] == missingValue_ || valuesY[i] == missingValue_) {
-            valuesX[i] = valuesY[i] = missingValue_;
-            ++i;
+        if (vx == missingValue_ || vy == missingValue_) {
+            vx = vy = missingValue_;
             continue;
         }
 
@@ -91,11 +87,10 @@ void CartesianVector2DField::rotate(const util::Rotation& rotation, MIRValuesVec
         const double sin_c = q * std::sqrt(1. - cos_c * cos_c);
 
         // TODO: use matrix multiplication
-        const double x = cos_c * valuesX[i] - sin_c * valuesY[i];
-        const double y = sin_c * valuesX[i] + cos_c * valuesY[i];
-        valuesX[i]     = x;
-        valuesY[i]     = y;
-        ++i;
+        const double x = cos_c * vx - sin_c * vy;
+        const double y = sin_c * vx + cos_c * vy;
+        vx             = x;
+        vy             = y;
     }
 }
 

@@ -106,8 +106,6 @@ void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
                                          : throw exception::UserError("'grid' or 'gridname' should be provided"));
     ASSERT(rep);
 
-    std::unique_ptr<repres::Iterator> iterator(rep->iterator());
-    ASSERT(iterator.get());
 
     util::BoundingBox bbox;
     if (args.get("area", value)) {
@@ -121,19 +119,19 @@ void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
     Sorter<Longitude> w(bbox.west());
     Sorter<Longitude> e(bbox.east());
 
-    while (iterator->next()) {
-        const auto& point = iterator->pointUnrotated();
+    for (const std::unique_ptr<repres::Iterator> it(rep->iterator()); it->next();) {
+        const auto& p = it->pointUnrotated();
 
-        n.push(point.lat());
-        s.push(point.lat());
+        n.push(p.lat());
+        s.push(p.lat());
 
-        w.push(point.lon());
-        w.push(point.lon() + Longitude::GLOBE);
-        w.push(point.lon() - Longitude::GLOBE);
+        w.push(p.lon());
+        w.push(p.lon() + Longitude::GLOBE);
+        w.push(p.lon() - Longitude::GLOBE);
 
-        e.push(point.lon());
-        e.push(point.lon() + Longitude::GLOBE);
-        e.push(point.lon() - Longitude::GLOBE);
+        e.push(p.lon());
+        e.push(p.lon() + Longitude::GLOBE);
+        e.push(p.lon() - Longitude::GLOBE);
     }
 
     log << "north " << n.above_ << ' ' << n.ref_ << ' ' << n.below_ << ' ' << n.dabove_ << ' ' << n.dbelow_

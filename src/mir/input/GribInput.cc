@@ -13,8 +13,8 @@
 #include "mir/input/GribInput.h"
 
 #include <algorithm>
-#include <cmath>
 #include <functional>
+#include <iterator>
 #include <memory>
 #include <numeric>
 #include <ostream>
@@ -31,7 +31,6 @@
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFixes.h"
 #include "mir/repres/Representation.h"
-#include "mir/repres/other/SpaceView.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
@@ -628,10 +627,10 @@ data::MIRField GribInput::field() const {
     ASSERT(count == size);
 
     long missingValuesPresent;
-    ASSERT(get("missingValuesPresent", missingValuesPresent));
+    GRIB_CALL(codes_get_long(grib_, "missingValuesPresent", &missingValuesPresent));
 
     double missingValue;
-    ASSERT(get("missingValue", missingValue));
+    GRIB_CALL(codes_get_double(grib_, "missingValue", &missingValue));
 
     // Ensure missingValue is unique, so values are not wrongly "missing"
     long numberOfMissingValues = 0;
@@ -699,25 +698,6 @@ data::MIRField GribInput::field() const {
             size_t pl_sum = size_t(std::accumulate(pl.begin(), pl.end(), 0));
             ASSERT(pl_sum == values.size());
         }
-    }
-
-    std::string gridType;
-    ASSERT(get("gridType", gridType));
-
-    if (gridType == "space_view") {
-        if (missingValuesPresent == 0) {
-            Log::debug() << "GribInput: introducing missing values, setting missingValue to " << values.front()
-                         << std::endl;
-            missingValue         = values.front();
-            missingValuesPresent = 1;
-        }
-
-        auto count = values.size();
-        repres::other::SpaceView::remove_invalid_values(*this, values);
-        auto newCount = values.size();
-
-        Log::debug() << "GribInput: removed " << Log::Pretty(count - newCount, {"value"}) << ", new values count "
-                     << Log::Pretty(newCount) << std::endl;
     }
 
     data::MIRField field(cache_, missingValuesPresent != 0, missingValue);

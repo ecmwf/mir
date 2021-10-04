@@ -112,9 +112,7 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     {
         trace::ProgressTimer progress("Intersecting", outBoxes.size(), gridBoxes, log);
 
-        const std::unique_ptr<repres::Iterator> it(out.iterator());
-        size_t i = 0;
-        while (it->next()) {
+        for (const std::unique_ptr<repres::Iterator> it(out.iterator()); it->next();) {
             if (++progress) {
                 log << *tree << std::endl;
             }
@@ -129,6 +127,7 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
             triplets.clear();
             triplets.reserve(closest.size());
 
+            auto i      = it->index();
             auto& box   = outBoxes.at(i);
             double area = box.area();
             ASSERT(area > 0.);
@@ -161,9 +160,6 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
                 ++nbFailures;
                 failures.push_front({i, it->pointUnrotated()});
             }
-
-
-            ++i;
         }
     }
     log << "Intersected " << Log::Pretty(weights_triplets.size(), gridBoxes) << std::endl;

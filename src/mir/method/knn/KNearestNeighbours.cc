@@ -86,9 +86,7 @@ void KNearestNeighbours::assemble(util::MIRStatistics&, WeightMatrix& W, const r
         double search = 0;
         double insert = 0;
 
-        size_t ip = 0;
-        for (const std::unique_ptr<repres::Iterator> it(out.iterator()); it->next(); ++ip) {
-            ASSERT(ip < nbOutputPoints);
+        for (const std::unique_ptr<repres::Iterator> it(out.iterator()); it->next();) {
             if (++progress) {
                 log << "KNearestNeighbours: k-d tree"
                        "\n"
@@ -120,6 +118,9 @@ void KNearestNeighbours::assemble(util::MIRStatistics&, WeightMatrix& W, const r
                 }
 
                 // calculate weights
+                auto ip = it->index();
+                ASSERT(ip < nbOutputPoints);
+
                 distanceWeighting(ip, p, closest, triplets);
                 ASSERT(!triplets.empty());
 
