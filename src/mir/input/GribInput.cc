@@ -700,6 +700,16 @@ data::MIRField GribInput::field() const {
         }
     }
 
+    std::string gridType;
+    get("gridType", gridType);
+
+    if (gridType == "space_view" && missingValuesPresent == 0) {
+        missingValuesPresent = 1;
+        missingValue         = values.front();
+        Log::debug() << "GribInput: introducing missing values (setting bitmap, missingValue=" << missingValue << ")"
+                     << std::endl;
+    }
+
     data::MIRField field(cache_, missingValuesPresent != 0, missingValue);
 
     long scanningMode = 0;
