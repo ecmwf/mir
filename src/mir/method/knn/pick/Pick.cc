@@ -40,6 +40,11 @@ Pick::Pick() = default;
 Pick::~Pick() = default;
 
 
+void Pick::distance(const repres::Representation&) const {
+    // by default do nothing
+}
+
+
 PickFactory::PickFactory(const std::string& name) : name_(name) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);

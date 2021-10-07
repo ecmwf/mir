@@ -43,6 +43,8 @@ struct SpaceViewInternal {
     double xb_;
     double ya_;
     double yb_;
+    double LongestElementDiagonal_;
+    std::vector<RegularGrid::PointLonLat> lonlat_;
 };
 
 
@@ -91,8 +93,8 @@ private:
     // -- Overridden methods
 
     void fill(grib_info&) const override;
-
     Iterator* iterator() const override;
+    bool getLongestElementDiagonal(double&) const override;
 
     // -- Class members
     // None

@@ -181,6 +181,12 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
         plan.add("misc.pattern");
     }
 
+    bool resetMissingValues = false;
+    parametrisation_.get("reset-missing-values", resetMissingValues);
+    if (resetMissingValues) {
+        plan.add("misc.reset-missing-values");
+    }
+
     if (user.has("statistics") || user.has("input-statistics")) {
         plan.add("filter.statistics", "which-statistics", "input");
     }

@@ -381,6 +381,8 @@ list(APPEND mir_srcs
     method/knn/pick/DistanceAndNClosest.h
     method/knn/pick/DistanceOrNClosest.cc
     method/knn/pick/DistanceOrNClosest.h
+    method/knn/pick/LongestElementDiagonalAndNClosest.cc
+    method/knn/pick/LongestElementDiagonalAndNClosest.h
     method/knn/pick/NClosest.cc
     method/knn/pick/NClosest.h
     method/knn/pick/NClosestOrNearest.cc

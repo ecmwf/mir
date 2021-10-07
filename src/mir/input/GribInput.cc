@@ -700,16 +700,6 @@ data::MIRField GribInput::field() const {
         }
     }
 
-    std::string gridType;
-    get("gridType", gridType);
-
-    if (gridType == "space_view" && missingValuesPresent == 0) {
-        missingValuesPresent = 1;
-        missingValue         = values.front();
-        Log::debug() << "GribInput: introducing missing values (setting bitmap, missingValue=" << missingValue << ")"
-                     << std::endl;
-    }
-
     data::MIRField field(cache_, missingValuesPresent != 0, missingValue);
 
     long scanningMode = 0;
@@ -1079,9 +1069,7 @@ bool GribInput::handle(grib_handle* h) {
 
         // apply user-defined fixes, if any
         static GribFixes gribFixes;
-        if (gribFixes.fix(*this, cache_.cache_)) {
-            wrongly_encoded_grib("GribInput: wrongly encoded GRIB (user-defined fixes)");
-        }
+        gribFixes.fix(*this, cache_.cache_);
 
         return true;
     }

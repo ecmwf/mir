@@ -54,7 +54,6 @@ void KNearestNeighbours::hash(eckit::MD5& md5) const {
 
 void KNearestNeighbours::assemble(util::MIRStatistics& stats, WeightMatrix& W, const repres::Representation& in,
                                   const repres::Representation& out) const {
-
     // assemble with specific distance weighting method
     assemble(stats, W, in, out, pick(), distanceWeighting());
 }
@@ -71,7 +70,8 @@ void KNearestNeighbours::assemble(util::MIRStatistics&, WeightMatrix& W, const r
     const size_t nbOutputPoints = out.numberOfPoints();
 
     const search::PointSearch sptree(parametrisation_, in);
-    const util::Domain& inDomain = in.domain();
+    const auto& inDomain = in.domain();
+    pick.distance(in);
 
 
     // init structure used to fill in sparse matrix
