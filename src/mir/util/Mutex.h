@@ -12,7 +12,7 @@
 
 #pragma once
 
-#define mir_ECKIT_THREADS
+//#define mir_ECKIT_THREADS
 
 #if defined(mir_ECKIT_THREADS)
 #include "eckit/thread/AutoLock.h"
