@@ -35,7 +35,8 @@ GaussianIterator::GaussianIterator(const std::vector<double>& latitudes, std::ve
     i_(0),
     j_(0),
     k_(k),
-    count_(0) {
+    count_(0),
+    first_(true) {
 
     // NOTE: latitudes_ span the globe, sorted from North-to-South, k_ positions the North
     // NOTE: pl is global
@@ -92,7 +93,10 @@ bool GaussianIterator::next(Latitude& lat, Longitude& lon) {
 
         lon_ += inc_;
 
-        if (i_ > 0 || j_ > 0) {
+        if (first_) {
+            first_ = false;
+        }
+        else {
             count_++;
         }
 

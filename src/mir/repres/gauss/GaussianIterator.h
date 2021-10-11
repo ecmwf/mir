@@ -45,6 +45,7 @@ private:
     size_t j_;
     size_t k_;
     size_t count_;
+    bool first_;
 
 protected:
     void print(std::ostream&) const override;

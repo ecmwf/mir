@@ -114,6 +114,7 @@ protected:
 
     protected:
         size_t count_;
+        bool first_;
 
         ~LatLonIterator();
         void print(std::ostream&) const;

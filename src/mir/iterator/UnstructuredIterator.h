@@ -78,16 +78,10 @@ private:
     }
 
     bool next(Latitude& lat, Longitude& lon) override {
-        if (count_ < size_) {
-            lat = latitudes_[count_];
-            lon = longitudes_[count_];
-
-            if (first_) {
-                first_ = false;
-            }
-            else {
-                count_++;
-            }
+        if ((first_ ? count_ : ++count_) < size_) {
+            first_ = false;
+            lat    = latitudes_[count_];
+            lon    = longitudes_[count_];
 
             return true;
         }
