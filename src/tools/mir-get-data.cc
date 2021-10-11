@@ -97,18 +97,14 @@ struct Coordinates {
 
 struct CoordinatesFromRepresentation : Coordinates {
     CoordinatesFromRepresentation(const repres::Representation& rep) : Coordinates("mir") {
-        std::unique_ptr<repres::Iterator> it(rep.iterator());
-
         const size_t N(rep.numberOfPoints());
         lats_.assign(N, std::numeric_limits<double>::signaling_NaN());
         lons_.assign(N, std::numeric_limits<double>::signaling_NaN());
 
-        size_t n = 0;
-        while (it->next()) {
-            ASSERT(n < N);
-            lats_[n] = (*(*it))[0];
-            lons_[n] = (*(*it))[1];
-            ++n;
+        for (const std::unique_ptr<repres::Iterator> it(rep.iterator()); it->next();) {
+            const Point2& P(**it);
+            lats_.at(it->index()) = P[0];
+            lons_.at(it->index()) = P[1];
         }
     }
     const coord_t& latitudes() const override { return lats_; }
@@ -322,16 +318,12 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
             repres::RepresentationHandle rep(field.representation());
 
             if (!atlas && !ecc && (nclosest == 0)) {
-                std::unique_ptr<repres::Iterator> it(rep->iterator());
-                for (const double& v : values) {
-                    ASSERT(it->next());
+                for (const std::unique_ptr<repres::Iterator> it(rep->iterator()); it->next();) {
                     const Point2& P(**it);
-                    log << "\t" << P[0] << '\t' << P[1] << '\t' << v << std::endl;
+                    log << "\t" << P[0] << '\t' << P[1] << '\t' << values.at(it->index()) << std::endl;
                 }
 
                 log << std::endl;
-                ASSERT(!it->next());
-
                 continue;
             }
 

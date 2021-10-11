@@ -12,22 +12,21 @@
 
 #pragma once
 
-#include "mir/repres/Gridded.h"
+#include "mir/action/plan/Action.h"
 
 
 namespace mir {
-namespace repres {
+namespace action {
 
 
-class SpaceView : public Gridded {
+class ResetMissingValues : public Action {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    SpaceView(const param::MIRParametrisation&);
-    SpaceView(const SpaceView&) = delete;
+    using Action::Action;
 
     // -- Destructor
     // None
@@ -36,11 +35,10 @@ public:
     // None
 
     // -- Operators
-
-    SpaceView& operator=(const SpaceView&) = delete;
+    // None
 
     // -- Methods
-    // // None
+    // None
 
     // -- Overridden methods
     // None
@@ -56,8 +54,7 @@ protected:
     // None
 
     // -- Methods
-
-    void print(std::ostream&) const override;
+    // None
 
     // -- Overridden methods
     // None
@@ -76,7 +73,12 @@ private:
     // None
 
     // -- Overridden methods
-    // None
+
+    void execute(context::Context&) const override;
+    void print(std::ostream&) const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
+    void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Class members
     // None
@@ -89,5 +91,5 @@ private:
 };
 
 
-}  // namespace repres
+}  // namespace action
 }  // namespace mir

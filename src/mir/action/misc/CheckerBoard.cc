@@ -108,28 +108,20 @@ void CheckerBoard::execute(context::Context& ctx) const {
             b %= v.size();
         }
 
+        for (const std::unique_ptr<repres::Iterator> it(representation->iterator()); it->next();) {
+            auto& v = values.at(it->index());
+            if (!hasMissing || v != missingValue) {
+                auto& p = it->pointUnrotated();
 
-        // Assumes iterator scans in the same order as the values
-        std::unique_ptr<repres::Iterator> iter(representation->iterator());
-        size_t j = 0;
+                Latitude lat  = Latitude::NORTH_POLE - p.lat();
+                Longitude lon = p.lon().normalise(Longitude::GREENWICH);
 
-        while (iter->next()) {
-            const auto& p = iter->pointUnrotated();
+                auto c = size_t(lat.value() / ns);
+                auto r = size_t(lon.value() / we);
 
-            Latitude lat  = Latitude::NORTH_POLE - p.lat();
-            Longitude lon = p.lon().normalise(Longitude::GREENWICH);
-
-            auto c = size_t(lat.value() / ns);
-            auto r = size_t(lon.value() / we);
-
-            if (!hasMissing || values[j] != missingValue) {
-                values[j] = double(boxes[std::make_pair(r, c)]);
+                v = double(boxes[std::make_pair(r, c)]);
             }
-
-            j++;
         }
-
-        ASSERT(j == values.size());
     }
 }
 

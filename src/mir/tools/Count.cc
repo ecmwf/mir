@@ -203,7 +203,7 @@ void Count::countOnGridIncrements(const std::vector<double>& grid) {
 
 void Count::countOnRepresentation(const repres::Representation& rep) {
     reset();
-    for (std::unique_ptr<repres::Iterator> iter(rep.iterator()); iter->next();) {
+    for (const std::unique_ptr<repres::Iterator> iter(rep.iterator()); iter->next();) {
         count(iter->pointUnrotated());
     }
 }

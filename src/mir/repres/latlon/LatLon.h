@@ -107,13 +107,14 @@ protected:
         eckit::Fraction ns_;
         size_t i_;
         size_t j_;
-        size_t count_;
         Latitude latValue_;
         Longitude lonValue_;
         eckit::Fraction lat_;
         eckit::Fraction lon_;
 
     protected:
+        size_t count_;
+
         ~LatLonIterator();
         void print(std::ostream&) const;
         bool next(Latitude&, Longitude&);

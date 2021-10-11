@@ -76,6 +76,7 @@ public:
 
     virtual SimpleParametrisation& clear(const std::string& name);
     SimpleParametrisation& reset();
+    size_t size() const;
 
     // Used by Job
     bool matches(const MIRParametrisation&) const;

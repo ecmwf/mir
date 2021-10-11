@@ -14,7 +14,7 @@
 
 #include <algorithm>
 #include <cmath>
-#include <functional>
+#include <limits>
 #include <memory>
 #include <ostream>
 
@@ -46,7 +46,6 @@ void AdjustWindsScaleCosLatitude::print(std::ostream& out) const {
 
 
 void AdjustWindsScaleCosLatitude::execute(context::Context& ctx) const {
-
     data::MIRField& field = ctx.field();
     ASSERT(field.dimensions() > 0);
 
@@ -58,25 +57,24 @@ void AdjustWindsScaleCosLatitude::execute(context::Context& ctx) const {
     const repres::Representation* representation(field.representation());
     ASSERT(representation);
 
-    std::unique_ptr<repres::Iterator> iter(representation->iterator());
-
-    std::vector<double> scale(N);
-    for (auto& s : scale) {
-        ASSERT(iter->next());
-        const auto& p = iter->pointUnrotated();
-        s             = (p.lat() == Latitude::SOUTH_POLE)   ? 0.
-                        : (p.lat() == Latitude::NORTH_POLE) ? 0.
-                                                            : 1. / std::cos(util::degree_to_radian(p.lat().value()));
+    std::vector<double> scale(N, std::numeric_limits<double>::quiet_NaN());
+    for (const std::unique_ptr<repres::Iterator> it(representation->iterator()); it->next();) {
+        const auto& p      = it->pointUnrotated();
+        scale[it->index()] = (p.lat() == Latitude::SOUTH_POLE) ? 0.
+                             : (p.lat() == Latitude::NORTH_POLE)
+                                 ? 0.
+                                 : 1. / std::cos(util::degree_to_radian(p.lat().value()));
     }
-    ASSERT(!(iter->next()));
-
 
     // apply scaling to each field component directly
     for (size_t i = 0; i < field.dimensions(); ++i) {
-        MIRValuesVector& values = field.direct(i);
+        auto& values = field.direct(i);
         ASSERT(values.size() == N);
 
-        std::transform(values.begin(), values.end(), scale.begin(), values.begin(), std::multiplies<double>());
+        std::transform(
+            values.begin(), values.end(), scale.begin(), values.begin(), [](const double& a, const double& b) {
+                return std::isfinite(a) && std::isfinite(b) ? a * b : std::numeric_limits<double>::quiet_NaN();
+            });
     }
 }
 

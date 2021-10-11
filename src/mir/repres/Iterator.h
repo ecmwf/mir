@@ -53,6 +53,7 @@ public:
     Point3 point3D() const;
 
     Iterator& next();
+    virtual size_t index() const = 0;
 
     // -- Overridden methods
     // None

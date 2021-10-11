@@ -49,17 +49,15 @@ void UnstructuredFilter::execute(context::Context& ctx) const {
     repres::RepresentationHandle repres(field.representation());
 
     size_t N = repres->numberOfPoints();
-    ASSERT(N);
+    ASSERT(N > 0);
 
     std::vector<double> latitudes(N);
     std::vector<double> longitudes(N);
 
-    size_t i = 0;
-    for (std::unique_ptr<repres::Iterator> iter(repres->iterator()); iter->next(); ++i) {
-        ASSERT(i < N);
-        auto& p       = **iter;
-        latitudes[i]  = p[LLCOORDS::LAT];
-        longitudes[i] = p[LLCOORDS::LON];
+    for (const std::unique_ptr<repres::Iterator> it(repres->iterator()); it->next();) {
+        auto& p                    = **it;
+        latitudes.at(it->index())  = p[0];
+        longitudes.at(it->index()) = p[1];
     }
 
     field.representation(new repres::other::UnstructuredGrid(latitudes, longitudes));

@@ -343,6 +343,8 @@ struct MIR : tools::MIRTool {
                                                              "Write statistics to file (after plan execution)"));
             options_.push_back(new SimpleOption<bool>("dont-compress-plan", "Don't compress plan"));
             options_.push_back(new FactoryOption<output::MIROutputFactory>("format", "Output format"));
+            options_.push_back(
+                new SimpleOption<bool>("reset-missing-values", "Use first encoded value to set missing value"));
 #if defined(mir_HAVE_PNG)
             options_.push_back(
                 new FactoryOption<output::PNGEncoderFactory>("png-output-encoder", "PNG output encoder"));

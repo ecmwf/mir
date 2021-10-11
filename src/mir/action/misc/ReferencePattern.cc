@@ -99,22 +99,15 @@ void ReferencePattern::execute(context::Context& ctx) const {
         double f1 = frequencies[0] / 2.0;
         double f2 = frequencies[1];
 
-        std::unique_ptr<repres::Iterator> iter(representation->iterator());
-        size_t j = 0;
-
-        while (iter->next()) {
-            const auto& p = iter->pointUnrotated();
-
-            if (!hasMissing || values[j] != missingValue) {
-                values[j] = range * sin(f1 * util::degree_to_radian(p.lon().value())) *
-                                cos(f2 * util::degree_to_radian(p.lat().value())) * 0.5 +
-                            median;
+        for (const std::unique_ptr<repres::Iterator> it(representation->iterator()); it->next();) {
+            auto& v = values[it->index()];
+            if (!hasMissing || v != missingValue) {
+                auto& p = it->pointUnrotated();
+                v       = range * std::sin(f1 * util::degree_to_radian(p.lon().value())) *
+                        std::cos(f2 * util::degree_to_radian(p.lat().value())) * 0.5 +
+                    median;
             }
-
-            j++;
         }
-
-        ASSERT(j == values.size());
     }
 }
 

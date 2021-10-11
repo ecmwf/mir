@@ -14,6 +14,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <iterator>
 #include <memory>
 #include <numeric>
 #include <ostream>
@@ -281,8 +282,9 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         {
             "gridded",
             "Nx",
-            _or(_or(is("gridType", "polar_stereographic"), is("gridType", "lambert_azimuthal_equal_area")),
-                is("gridType", "lambert")),
+            _or(_or(_or(is("gridType", "polar_stereographic"), is("gridType", "lambert_azimuthal_equal_area")),
+                    is("gridType", "lambert")),
+                is("gridType", "space_view")),
         },
         {
             "gridded",
@@ -621,20 +623,20 @@ data::MIRField GribInput::field() const {
 
     size_t size = count;
     MIRValuesVector values(count);
-    GRIB_CALL(codes_get_double_array(grib_, "values", &values[0], &size));
+    GRIB_CALL(codes_get_double_array(grib_, "values", values.data(), &size));
     ASSERT(count == size);
 
     long missingValuesPresent;
     GRIB_CALL(codes_get_long(grib_, "missingValuesPresent", &missingValuesPresent));
 
-    double missing;
-    GRIB_CALL(codes_get_double(grib_, "missingValue", &missing));
+    double missingValue;
+    GRIB_CALL(codes_get_double(grib_, "missingValue", &missingValue));
 
     // Ensure missingValue is unique, so values are not wrongly "missing"
     long numberOfMissingValues = 0;
     if (codes_get_long(grib_, "numberOfMissingValues", &numberOfMissingValues) == CODES_SUCCESS &&
         numberOfMissingValues == 0) {
-        grib_get_unique_missing_value(values, missing);
+        grib_get_unique_missing_value(values, missingValue);
     }
 
     // If grib has a 0-containing pl array, add missing values in their place
@@ -653,9 +655,9 @@ data::MIRField GribInput::field() const {
 
             // if there are no missing values yet, set them
             if (missingValuesPresent == 0) {
-                Log::debug() << "GribInput::field(): introducing missing values (setting bitmap)." << std::endl;
+                Log::debug() << "GribInput: introducing missing values (setting bitmap)" << std::endl;
                 missingValuesPresent = 1;
-                grib_get_unique_missing_value(values, missing);
+                grib_get_unique_missing_value(values, missingValue);
             }
 
             // pl array: insert entries in place of zeros
@@ -665,7 +667,7 @@ data::MIRField GribInput::field() const {
 
 
             // values array: copy values row by row, and when a fixed (0) entry is found, insert missing values
-            Log::debug() << "GribInput::field(): correcting values array with " << new_values << " new missing values."
+            Log::debug() << "GribInput: correcting values array with " << new_values << " new missing values"
                          << std::endl;
 
             MIRValuesVector values_extended;
@@ -677,7 +679,7 @@ data::MIRField GribInput::field() const {
                 if (*p1 == 0) {
                     ASSERT(*p2 > 0);
                     auto Ni = size_t(*p2);
-                    values_extended.insert(values_extended.end(), Ni, missing);
+                    values_extended.insert(values_extended.end(), Ni, missingValue);
                 }
                 else {
                     auto Ni = size_t(*p1);
@@ -698,7 +700,7 @@ data::MIRField GribInput::field() const {
         }
     }
 
-    data::MIRField field(cache_, missingValuesPresent != 0, missing);
+    data::MIRField field(cache_, missingValuesPresent != 0, missingValue);
 
     long scanningMode = 0;
     if (codes_get_long(grib_, "scanningMode", &scanningMode) == CODES_SUCCESS && scanningMode != 0) {
@@ -1008,6 +1010,7 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
         {"grid", vector_double({"DxInMetres", "DyInMetres"}),
          _or(is("gridType", "lambert"), is("gridType", "polar_stereographic"))},
         {"grid", vector_double({"DiInMetres", "DjInMetres"}), is("gridType", "mercator")},
+        {"grid", vector_double({"dx", "dy"}), is("gridType", "space_view")},
         {"rotation", vector_double({"latitudeOfSouthernPoleInDegrees", "longitudeOfSouthernPoleInDegrees"}),
          _or(_or(_or(is("gridType", "rotated_ll"), is("gridType", "rotated_gg")), is("gridType", "rotated_sh")),
              is("gridType", "reduced_rotated_gg"))},
@@ -1066,9 +1069,7 @@ bool GribInput::handle(grib_handle* h) {
 
         // apply user-defined fixes, if any
         static GribFixes gribFixes;
-        if (gribFixes.fix(*this, cache_.cache_)) {
-            wrongly_encoded_grib("GribInput: wrongly encoded GRIB (user-defined fixes)");
-        }
+        gribFixes.fix(*this, cache_.cache_);
 
         return true;
     }
@@ -1096,7 +1097,7 @@ void GribInput::auxilaryValues(const std::string& path, std::vector<double>& val
 
         size_t size = count;
         values.resize(count);
-        GRIB_CALL(codes_get_double_array(h, "values", &values[0], &size));
+        GRIB_CALL(codes_get_double_array(h, "values", values.data(), &size));
         ASSERT(count == size);
 
         long missingValuesPresent;

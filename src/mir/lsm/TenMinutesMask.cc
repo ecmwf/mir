@@ -81,9 +81,8 @@ TenMinutesMask::TenMinutesMask(const std::string& name, const eckit::PathName& p
     // NOTE: this is not using 3D coordinate systems
     // mask_.reserve(grid.size());
 
-    std::unique_ptr<repres::Iterator> iter(representation.iterator());
-    while (iter->next()) {
-        const auto& p = iter->pointUnrotated();
+    for (const std::unique_ptr<repres::Iterator> it(representation.iterator()); it->next();) {
+        const auto& p = it->pointUnrotated();
         Latitude lat  = p.lat();
         Longitude lon = p.lon().normalise(Longitude::GREENWICH);
 

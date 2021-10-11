@@ -95,6 +95,8 @@ list(APPEND mir_srcs
     action/misc/Noop.h
     action/misc/ReferencePattern.cc
     action/misc/ReferencePattern.h
+    action/misc/ResetMissingValues.cc
+    action/misc/ResetMissingValues.h
     action/misc/SelectField.cc
     action/misc/SelectField.h
     action/misc/SetMetadata.cc
@@ -381,6 +383,8 @@ list(APPEND mir_srcs
     method/knn/pick/DistanceAndNClosest.h
     method/knn/pick/DistanceOrNClosest.cc
     method/knn/pick/DistanceOrNClosest.h
+    method/knn/pick/LongestElementDiagonalAndNClosest.cc
+    method/knn/pick/LongestElementDiagonalAndNClosest.h
     method/knn/pick/NClosest.cc
     method/knn/pick/NClosest.h
     method/knn/pick/NClosestOrNearest.cc
@@ -526,6 +530,8 @@ list(APPEND mir_srcs
     repres/regular/PolarStereographic.h
     repres/regular/RegularGrid.cc
     repres/regular/RegularGrid.h
+    repres/regular/SpaceView.cc
+    repres/regular/SpaceView.h
     repres/sh/SphericalHarmonics.cc
     repres/sh/SphericalHarmonics.h
     repres/unsupported/Albers.cc
@@ -538,8 +544,6 @@ list(APPEND mir_srcs
     repres/unsupported/IrregularLatlon.h
     repres/unsupported/RotatedSH.cc
     repres/unsupported/RotatedSH.h
-    repres/unsupported/SpaceView.cc
-    repres/unsupported/SpaceView.h
     repres/unsupported/StretchedGG.cc
     repres/unsupported/StretchedGG.h
     repres/unsupported/StretchedLL.cc

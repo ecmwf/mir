@@ -91,24 +91,20 @@ size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param, 
         out << "\n#DATA";
 
 
-        auto v = values.cbegin();
-
         latitudes.reserve(values.size());
         longitudes.reserve(values.size());
 
-        std::unique_ptr<repres::Iterator> it(field.representation()->iterator());
-        while (it->next()) {
-            const auto& p = it->pointUnrotated();
-            ASSERT(v != values.cend());
-            if (*v != mv) {
-                out << "\n" << p.lon().value() << ' ' << p.lat().value() << ' ' << *v;
+        for (const std::unique_ptr<repres::Iterator> it(field.representation()->iterator()); it->next();) {
+            auto& p = it->pointUnrotated();
+            auto v  = values.at(it->index());
+
+            if (v != mv) {
+                out << "\n" << p.lon().value() << ' ' << p.lat().value() << ' ' << v;
             }
-            ++v;
 
             latitudes.push_back(p.lat().value());
             longitudes.push_back(p.lon().value());
         }
-        ASSERT(v == values.cend());
 
         out << std::endl;
     }
@@ -127,8 +123,7 @@ size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param, 
 
 
 size_t GeoPointsFileOutputXYV::saveBinary(const param::MIRParametrisation& param, context::Context& ctx) {
-
-    const data::MIRField& field = ctx.field();
+    const auto& field = ctx.field();
 
     eckit::DataHandle& handle = dataHandle();
     eckit::Offset position    = handle.position();
@@ -166,29 +161,21 @@ size_t GeoPointsFileOutputXYV::saveBinary(const param::MIRParametrisation& param
         }
 
         out << "-";
-
-        auto v = values.cbegin();
         out << values.size();
 
         latitudes.reserve(values.size());
         longitudes.reserve(values.size());
 
-        std::unique_ptr<repres::Iterator> it(field.representation()->iterator());
-        size_t i = 0;
-        while (it->next()) {
-            const auto& p = it->pointUnrotated();
-            ASSERT(v != values.cend());
-            out << double(p.lon().value()) << double(p.lat().value()) << double(*v);
+        for (const std::unique_ptr<repres::Iterator> it(field.representation()->iterator()); it->next();) {
+            auto& p = it->pointUnrotated();
+            auto v  = values.at(it->index());
+
+            // NOTE: no check for missing value, consider changing
+            out << p.lon().value() << p.lat().value() << v;
 
             latitudes.push_back(p.lat().value());
             longitudes.push_back(p.lon().value());
-
-
-            ++v;
-            ++i;
         }
-        ASSERT(v == values.cend());
-        ASSERT(i == values.size());
     }
 
     out << "END";

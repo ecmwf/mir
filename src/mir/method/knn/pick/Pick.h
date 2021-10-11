@@ -21,6 +21,12 @@ namespace eckit {
 class MD5;
 }
 
+namespace mir {
+namespace repres {
+class Representation;
+}
+}  // namespace mir
+
 
 namespace mir {
 namespace method {
@@ -42,6 +48,8 @@ public:
     virtual size_t n() const                                                          = 0;
     virtual bool sameAs(const Pick&) const                                            = 0;
     virtual void hash(eckit::MD5&) const                                              = 0;
+
+    virtual void distance(const repres::Representation&) const;
 
 private:
     virtual void print(std::ostream&) const = 0;

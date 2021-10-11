@@ -83,8 +83,7 @@ void VoronoiMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
         trace::ProgressTimer progress("assemble: input-based assign", Nin, {"point"}, log);
 
         std::vector<search::PointSearch::PointValueType> closest;
-        size_t j = 0;
-        for (std::unique_ptr<repres::Iterator> it(in.iterator()); it->next(); ++j) {
+        for (const std::unique_ptr<repres::Iterator> it(in.iterator()); it->next();) {
             if (++progress) {
                 log << *tree << std::endl;
             }
@@ -92,7 +91,7 @@ void VoronoiMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
             pick_.pick(*tree, it->point3D(), closest);
             for (auto& c : closest) {
                 auto i = c.payload();
-                biplets.emplace(i, j);
+                biplets.emplace(i, it->index());
                 assigned[i] = true;
             }
         }
@@ -114,8 +113,8 @@ void VoronoiMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
             trace::ProgressTimer progress("assemble: output-based assign", Nout - Nassigned, {"point"}, log);
 
             std::vector<search::PointSearch::PointValueType> closest;
-            size_t i = 0;
-            for (std::unique_ptr<repres::Iterator> it(out.iterator()); it->next(); ++i) {
+            for (const std::unique_ptr<repres::Iterator> it(out.iterator()); it->next();) {
+                auto i = it->index();
                 if (assigned[i]) {
                     continue;
                 }
