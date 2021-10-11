@@ -95,6 +95,8 @@ list(APPEND mir_srcs
     action/misc/Noop.h
     action/misc/ReferencePattern.cc
     action/misc/ReferencePattern.h
+    action/misc/ResetMissingValues.cc
+    action/misc/ResetMissingValues.h
     action/misc/SelectField.cc
     action/misc/SelectField.h
     action/misc/SetMetadata.cc
