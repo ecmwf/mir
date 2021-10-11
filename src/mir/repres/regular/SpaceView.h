@@ -32,10 +32,13 @@ namespace detail {
 struct SpaceViewInternal {
     SpaceViewInternal(const param::MIRParametrisation&);
     RegularGrid::Projection projection_;
+    RegularGrid::Projection projectionGreenwich_;
     util::BoundingBox bbox_;
 
     RegularGrid::LinearSpacing x() const { return {xa_, xb_, Nx_, true}; }
     RegularGrid::LinearSpacing y() const { return {ya_, yb_, Ny_, true}; }
+
+    const std::vector<RegularGrid::PointLonLat>& lonlat() const;
 
     long Nx_;
     long Ny_;
@@ -44,7 +47,10 @@ struct SpaceViewInternal {
     double ya_;
     double yb_;
     double LongestElementDiagonal_;
-    std::vector<RegularGrid::PointLonLat> lonlat_;
+    double Lop_;
+
+private:
+    mutable std::vector<RegularGrid::PointLonLat> lonlat_;
 };
 
 
