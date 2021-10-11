@@ -23,11 +23,11 @@ namespace detail {
 
 /*
  * References:
- * - LRIT/HRIT Global Specification (CGMS 03, Issue 2.6, 12.08.1999)
- * - MSG Ground Segment LRIT/HRIT Mission Specific Implementation, EUMETSAT Document, (EUM/MSG/SPE/057, Issue 6, 21.
+ * - [1] LRIT/HRIT Global Specification (CGMS 03, Issue 2.6, 12.08.1999)
+ * - [2] MSG Ground Segment LRIT/HRIT Mission Specific Implementation, EUMETSAT Document, (EUM/MSG/SPE/057, Issue 6, 21.
  * June 2006)
- * - MSG Ground Segment LRIT/HRIT Mission Specific Implementation, EUMETSAT Document, (EUM/MSG/SPE/057 v7 e-signed. 30
- * November 2015)
+ * - [3] MSG Ground Segment LRIT/HRIT Mission Specific Implementation, EUMETSAT Document, (EUM/MSG/SPE/057 v7 e-signed.
+ * 30 November 2015)
  */
 struct SpaceViewInternal {
     SpaceViewInternal(const param::MIRParametrisation&);
