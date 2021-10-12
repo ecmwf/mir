@@ -168,6 +168,8 @@ struct MIR : tools::MIRTool {
         options_.push_back(new SimpleOption<double>("climate-filter-delta",
                                                     "Climate filter (topographic data smoothing operator) width of "
                                                     "filter edge, must be greater than 'distance' (default 1000.)"));
+        options_.push_back(
+            new SimpleOption<double>("cressman-model-extension-power", "Cressman Model Extension power (default 1.)"));
 
         options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and k-d trees (default 1)"));
         options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebra>(
