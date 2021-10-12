@@ -365,6 +365,8 @@ list(APPEND mir_srcs
     method/knn/distance/DistanceWeightingWithLSM.h
     method/knn/distance/GaussianDistanceWeighting.cc
     method/knn/distance/GaussianDistanceWeighting.h
+    method/knn/distance/Cressman.cc
+    method/knn/distance/Cressman.h
     method/knn/distance/InverseDistanceWeighting.cc
     method/knn/distance/InverseDistanceWeighting.h
     method/knn/distance/InverseDistanceWeightingSquared.cc
