@@ -12,13 +12,11 @@
 
 #include "mir/action/misc/ResetMissingValues.h"
 
-#include <algorithm>
-#include <memory>
+#include <limits>
 #include <ostream>
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -33,40 +31,41 @@ void ResetMissingValues::execute(context::Context& ctx) const {
     trace::Timer timer("ResetMissingValues");
 
     auto& field = ctx.field();
+    if (field.hasMissing()) {
+        return;
+    }
 
     repres::RepresentationHandle rep(field.representation());
-    auto hasMissing   = field.hasMissing();
-    auto missingValue = field.missingValue();
 
+    auto missingValue = std::numeric_limits<double>::lowest();
+
+    size_t count = 0;
+    size_t total = 0;
     for (size_t d = 0; d < field.dimensions(); d++) {
-        const auto& values = field.values(d);
+        auto& values = field.direct(d);
         ASSERT(!values.empty());
 
-        if (!hasMissing) {
-            missingValue = values.front();
-            Log::debug() << "ResetMissingValues: introducing missing values (missingValue=" << missingValue << ")"
-                         << std::endl;
+        auto oldMissingValue = values.front();
+        for (auto& v : values) {
+            if (v == oldMissingValue) {
+                v = missingValue;
+                ++count;
+            }
         }
 
-        MIRValuesVector result(values.size(), missingValue);
+        total += values.size();
+    }
 
-        for (const std::unique_ptr<repres::Iterator> it(rep->iterator()); it->next();) {
-            auto i    = it->index();
-            result[i] = values.at(i);
-        }
+    if (count != 0) {
+        Log::info() << "ResetMissingValues: introducing missing values (missingValue=" << missingValue << "), "
+                    << Log::Pretty(count, {"missing value"}) << " of " << Log::Pretty(total, {"total value"})
+                    << std::endl;
 
-        auto count = std::count(result.begin(), result.end(), missingValue);
-        if (count != 0) {
-            Log::info() << "ResetMissingValues: " << Log::Pretty(count, {"missing value"}) << " of "
-                        << Log::Pretty(values.size(), {"total value"}) << std::endl;
-
-            field.hasMissing(true);
-            field.missingValue(missingValue);
-            field.update(result, d);
-        }
-        else {
-            field.hasMissing(false);
-        }
+        field.hasMissing(true);
+        field.missingValue(missingValue);
+    }
+    else {
+        field.hasMissing(false);
     }
 }
 
