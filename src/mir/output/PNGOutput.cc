@@ -12,6 +12,7 @@
 
 #include "mir/output/PNGOutput.h"
 
+#include <cmath>
 #include <cstdint>
 #include <cstdio>
 #include <iomanip>
@@ -271,11 +272,14 @@ struct PNGEncoderT : PNGOutput::PNGEncoder {
                     first = false;
                 }
             }
+
+            if (!std::isfinite(min_) || !std::isfinite(max_)) {
+                min_ = max_ = missingValue_;
+            }
         }
-        ASSERT(min_ == min_ && max_ == max_ && min_ <= max_);
 
         maxEncode_ = (UINT_T(1) << N_C_CHANNELS * N_BYTES_PER_CHANNEL * N_BITS_PER_BYTE) - 1;
-        maxScale_  = double(maxEncode_) / (max_ - min_);
+        maxScale_  = min_ < max_ ? double(maxEncode_) / (max_ - min_) : 1.;
 
         Log::debug() << "PNGEncoder: min/max = " << min_ << " / " << max_ << std::endl;
     }
