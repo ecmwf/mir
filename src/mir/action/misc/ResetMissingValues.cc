@@ -56,7 +56,8 @@ void ResetMissingValues::execute(context::Context& ctx) const {
         total += values.size();
     }
 
-    if (count != 0) {
+    // avoid reset for without-missing-values and constant fields
+    if (count != 0 && count != total) {
         Log::info() << "ResetMissingValues: introducing missing values (missingValue=" << missingValue << "), "
                     << Log::Pretty(count, {"missing value"}) << " of " << Log::Pretty(total, {"total value"})
                     << std::endl;
