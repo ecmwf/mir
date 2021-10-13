@@ -34,16 +34,5 @@ md5GridSection=6ae0076681a2541abe053ab52fa60f30, centre=lfpw, gridType=lambert, 
 gridType=space_view:
 - interpolation: k-nearest
 - nearest-method: longest-element-diagonal-and-nclosest
-
-# gridType=space_view Meteosat 8
-gridType=space_view,md5GridSection=0630e92b134c94460b56cf7135076267,centre=ecmf:
-- interpolation: k-nearest
-- nearest-method: longest-element-diagonal-and-nclosest
-- reset-missing-values: true
-
-# gridType=space_view Meteosat 10
-gridType=space_view,md5GridSection=d202ffe2ad074d7077331efaa9c83d2a,centre=ecmf:
-- interpolation: k-nearest
-- nearest-method: longest-element-diagonal-and-nclosest
 - reset-missing-values: true
 
