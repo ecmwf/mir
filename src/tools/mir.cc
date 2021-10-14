@@ -329,6 +329,11 @@ struct MIR : tools::MIRTool {
             "legendre-loader", "Select how to load Legendre coefficients in memory"));
 #endif
 
+#if defined(mir_HAVE_OMP)
+        options_.push_back(
+            new SimpleOption<size_t>("parallel-omp-num-threads", "Set number of threads for OMP parallel regions"));
+#endif
+
         //==============================================
         // Only show these options if debug channel is active
         if (Log::debug()) {
