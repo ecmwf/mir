@@ -84,9 +84,11 @@ private:
 
     atlas_config_t options_;
     const std::string type_;
+    std::string nonLinear_;
 
     // -- Methods
-    // None
+
+    virtual void validateMatrix(WeightMatrix&) const = 0;
 
     // -- Overridden methods
 
@@ -98,6 +100,7 @@ private:
     void print(std::ostream&) const override;
 
     // From MethodWeighted
+    const char* name() const override { return type_.c_str(); }
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
                   const repres::Representation& out) const override;
 
