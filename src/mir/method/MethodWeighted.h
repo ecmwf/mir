@@ -104,6 +104,7 @@ protected:
     // -- Overridden methods
 
     // From Method
+    void execute(context::Context&, const repres::Representation& in, const repres::Representation& out) const override;
     bool sameAs(const Method&) const override = 0;
     void print(std::ostream&) const override  = 0;
 
@@ -151,7 +152,6 @@ private:
     // -- Overridden methods
 
     // From Method
-    void execute(context::Context&, const repres::Representation& in, const repres::Representation& out) const override;
     bool canCrop() const override;
     void setCropping(const util::BoundingBox&) override;
     bool hasCropping() const override;

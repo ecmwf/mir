@@ -13,16 +13,20 @@
 #include "mir/method/ProxyMethod.h"
 
 #include <algorithm>
+#include <ostream>
+#include <string>
+#include <utility>
 #include <vector>
 
 #include "eckit/utils/MD5.h"
 
 #include "mir/action/context/Context.h"
+#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/MIRStatistics.h"
 #include "mir/util/Trace.h"
 
 
@@ -32,35 +36,46 @@ namespace method {
 
 struct StructuredBicubic final : public ProxyMethod {
     explicit StructuredBicubic(const param::MIRParametrisation& param) : ProxyMethod(param, "structured-bicubic") {}
+    const char* name() const /*override*/ { return "structured-bicubic"; }
 };
 
 
 struct StructuredBilinear final : public ProxyMethod {
     explicit StructuredBilinear(const param::MIRParametrisation& param) : ProxyMethod(param, "structured-bilinear") {}
+    const char* name() const /*override*/ { return "structured-bilinear"; }
 };
 
 
 struct StructuredBiquasicubic final : public ProxyMethod {
     explicit StructuredBiquasicubic(const param::MIRParametrisation& param) :
         ProxyMethod(param, "structured-biquasicubic") {}
+    const char* name() const /*override*/ { return "structured-biquasicubic"; }
 };
 
 
+#if 0
 struct GridBoxAverage final : public ProxyMethod {
     explicit GridBoxAverage(const param::MIRParametrisation& param) : ProxyMethod(param, "grid-box-average") {}
+    const char* name() const /*override*/ { return "grid-box-average"; }
 };
+#endif
 
 
+#if 0
 struct GridBoxMaximum final : public ProxyMethod {
     explicit GridBoxMaximum(const param::MIRParametrisation& param) : ProxyMethod(param, "grid-box-maximum") {}
+    const char* name() const /*override*/ { return "grid-box-maximum"; }
 };
+#endif
 
 
 static MethodBuilder<StructuredBicubic> __method1("structured-bicubic");
 static MethodBuilder<StructuredBilinear> __method2("structured-bilinear");
 static MethodBuilder<StructuredBiquasicubic> __method3("structured-biquasicubic");
-static MethodBuilder<GridBoxAverage> __method4("grid-box-average-matrix-free");
-static MethodBuilder<GridBoxMaximum> __method5("grid-box-maximum-matrix-free");
+#if 0
+static MethodBuilder<GridBoxAverage> __method4("grid-box-average");
+static MethodBuilder<GridBoxMaximum> __method5("grid-box-maximum");
+#endif
 
 
 static eckit::Hash::digest_t atlasOptionsDigest(const ProxyMethod::atlas_config_t& options) {
@@ -71,37 +86,33 @@ static eckit::Hash::digest_t atlasOptionsDigest(const ProxyMethod::atlas_config_
 
 
 ProxyMethod::ProxyMethod(const param::MIRParametrisation& param, std::string type) :
-    Method(param), type_(std::move(type)) {
+    MethodWeighted(param), type_(std::move(type)) {
+    options_.set("type", type_);
 
-    // // "interpolation" should return one of the methods registered above
-    // param.get("interpolation", type_);
-    // ASSERT(!type_.empty());
-
-    // NOTE: while the Atlas-built matrix is unavailable, "grid-box-*" is inconsistent (default should be false)
-    bool matrixFree = true;
+    bool matrixFree = false;
     param.get("interpolation-matrix-free", matrixFree);
 
-    options_ = {"type", type_};
-    options_.set("matrix_free", matrixFree);
+    options_.set("matrix_free", LibMir::caching() ? matrixFree : true);
 }
 
 
 ProxyMethod::~ProxyMethod() = default;
 
 
-void ProxyMethod::hash(eckit::MD5& md5) const {
-    md5.add(options_);
-    md5.add(cropping_);
+void ProxyMethod::hash(eckit::MD5& h) const {
+    h.add(options_);
+    MethodWeighted::hash(h);
 }
 
 
 int ProxyMethod::version() const {
-    return 0;
+    return 1;
 }
 
 
 void ProxyMethod::execute(context::Context& ctx, const repres::Representation& in,
                           const repres::Representation& out) const {
+    auto& log = Log::debug();
 
     struct Helper {
         Helper(size_t numberOfPoints, atlas::FunctionSpace fspace) : n(numberOfPoints), fs(fspace) {}
@@ -125,7 +136,7 @@ void ProxyMethod::execute(context::Context& ctx, const repres::Representation& i
         atlas::FieldSet fields;
     };
 
-    trace::Timer timer("ProxyMethod::execute", Log::info());
+    trace::Timer timer("ProxyMethod::execute", log);
     auto report = [](trace::Timer& timer, const std::string& msg) {
         timer.report(msg);
         timer.stop();
@@ -134,63 +145,64 @@ void ProxyMethod::execute(context::Context& ctx, const repres::Representation& i
 
     auto& field = ctx.field();
 
+    if (options_.getBool("matrix_free")) {
+        atlas::Interpolation interpol(options_, in.atlasGrid(), out.atlasGrid());
+        Helper input(in.numberOfPoints(), interpol.source());
+        Helper output(out.numberOfPoints(), interpol.target());
+        report(timer, type_ + ": set interpolation");
+
+
+        for (size_t i = 0; i < field.dimensions(); ++i) {
+            input.appendFieldCopy(field.values(i));
+        }
+        report(timer, type_ + ": copy input");
+
+
+        std::vector<MIRValuesVector> result(field.dimensions(), MIRValuesVector(output.n));
+        for (auto& v : result) {
+            output.appendFieldWrapped(v);
+        }
+        report(timer, type_ + ": allocate output");
+
+
+        interpol.execute(input.fields, output.fields);
+        for (size_t i = 0; i < field.dimensions(); ++i) {
+            field.update(result[i], i);
+        }
+        report(timer, type_ + ": interpolate");
+        return;
+    }
+
+    MethodWeighted::execute(ctx, in, out);
+}
+
+
+void ProxyMethod::assemble(util::MIRStatistics& statistics, WeightMatrix& W, const repres::Representation& in,
+                           const repres::Representation& out) const {
+    auto timing(statistics.computeMatrixTimer());
+
+    auto& log = Log::debug();
+    log << "ProxyMethod::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
     atlas::Interpolation interpol(options_, in.atlasGrid(), out.atlasGrid());
-    Helper input(in.numberOfPoints(), interpol.source());
-    Helper output(out.numberOfPoints(), interpol.target());
-    report(timer, type_ + ": set interpolation");
+    auto M = atlas::interpolation::MatrixCache(interpol).matrix();
 
+    // fix
 
-    for (size_t i = 0; i < field.dimensions(); ++i) {
-        input.appendFieldCopy(field.values(i));
-    }
-    report(timer, type_ + ": copy input");
-
-
-    std::vector<MIRValuesVector> result(field.dimensions(), MIRValuesVector(output.n));
-    for (auto& v : result) {
-        output.appendFieldWrapped(v);
-    }
-    report(timer, type_ + ": allocate output");
-
-
-    interpol.execute(input.fields, output.fields);
-    for (size_t i = 0; i < field.dimensions(); ++i) {
-        field.update(result[i], i);
-    }
-    report(timer, type_ + ": interpolate");
+    W.swap(M);
 }
 
 
 bool ProxyMethod::sameAs(const Method& other) const {
     auto o = dynamic_cast<const ProxyMethod*>(&other);
-    return (o != nullptr) && atlasOptionsDigest(options_) == atlasOptionsDigest(o->options_) &&
-           cropping_.sameAs(o->cropping_);
-}
-
-
-bool ProxyMethod::canCrop() const {
-    return true;
-}
-
-
-void ProxyMethod::setCropping(const util::BoundingBox& bbox) {
-    cropping_.boundingBox(bbox);
-}
-
-
-bool ProxyMethod::hasCropping() const {
-    return cropping_;
-}
-
-
-const util::BoundingBox& ProxyMethod::getCropping() const {
-    return cropping_.boundingBox();
+    return (o != nullptr) && atlasOptionsDigest(options_) == atlasOptionsDigest(o->options_);
 }
 
 
 void ProxyMethod::print(std::ostream& out) const {
-    out << "ProxyMethod[options=" << options_ << ",cropping=" << cropping_ << "]";
+    out << "ProxyMethod[";
+    MethodWeighted::print(out);
+    out << "options=" << options_ << "]";
 }
 
 

@@ -12,8 +12,7 @@
 
 #pragma once
 
-#include "mir/method/Cropping.h"
-#include "mir/method/Method.h"
+#include "mir/method/MethodWeighted.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Types.h"
 
@@ -22,7 +21,7 @@ namespace mir {
 namespace method {
 
 
-class ProxyMethod : public Method {
+class ProxyMethod : public MethodWeighted {
 public:
     // -- Types
 
@@ -85,7 +84,6 @@ private:
 
     atlas_config_t options_;
     const std::string type_;
-    Cropping cropping_;
 
     // -- Methods
     // None
@@ -97,11 +95,11 @@ private:
     int version() const override;
     void execute(context::Context&, const repres::Representation& in, const repres::Representation& out) const override;
     bool sameAs(const Method&) const override;
-    bool canCrop() const override;
-    void setCropping(const util::BoundingBox&) override;
-    bool hasCropping() const override;
-    const util::BoundingBox& getCropping() const override;
     void print(std::ostream&) const override;
+
+    // From MethodWeighted
+    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                  const repres::Representation& out) const override;
 
     // -- Class members
     // None
