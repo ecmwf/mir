@@ -114,7 +114,7 @@ void MethodWeighted::createMatrix(context::Context& ctx, const repres::Represent
                                   const Cropping& /*cropping*/) const {
     trace::ResourceUsage usage(std::string("MethodWeighted::createMatrix [") + name() + "]", Log::debug());
 
-    computeMatrixWeights(ctx, in, out, W, validateMatrixWeights());
+    computeMatrixWeights(ctx, in, out, W);
 
     if (masks.active() && masks.cacheable()) {
         applyMasks(W, masks);
@@ -292,11 +292,6 @@ lsm::LandSeaMasks MethodWeighted::getMasks(const repres::Representation& in, con
 }
 
 
-bool MethodWeighted::validateMatrixWeights() const {
-    return true;
-}
-
-
 void MethodWeighted::execute(context::Context& ctx, const repres::Representation& in,
                              const repres::Representation& out) const {
 
@@ -415,7 +410,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
 
 void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::Representation& in,
-                                          const repres::Representation& out, WeightMatrix& W, bool validate) const {
+                                          const repres::Representation& out, WeightMatrix& W) const {
     auto timing(ctx.statistics().computeMatrixTimer());
 
     if (in.sameAs(out) && !matrixAssemble_) {
@@ -429,9 +424,7 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::R
     }
 
     // matrix validation always happens after creation, because the matrix can/will be cached
-    if (validate) {
-        W.validate("computeMatrixWeights");
-    }
+    W.validate("computeMatrixWeights");
 }
 
 

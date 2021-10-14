@@ -25,15 +25,9 @@ namespace mir {
 namespace method {
 
 
-WeightMatrix::WeightMatrix(SparseMatrix::Allocator* alloc) : SparseMatrix(alloc) {}
-
-
 WeightMatrix::WeightMatrix(const eckit::PathName& path) {
     load(path);
 }
-
-
-WeightMatrix::WeightMatrix(WeightMatrix::Size rows, WeightMatrix::Size cols) : SparseMatrix(rows, cols) {}
 
 
 void WeightMatrix::setFromTriplets(const std::vector<WeightMatrix::Triplet>& triplets) {
@@ -105,6 +99,10 @@ void WeightMatrix::validate(const char* when) const {
     constexpr size_t Nerrors = 50;
     constexpr size_t Nvalues = 10;
 
+    if (!validateMatrixEntryBounds_ && !validateMatrixRowSum_) {
+        return;
+    }
+
     size_t errors = 0;
 
     for (Size r = 0; r < rows(); r++) {
@@ -115,21 +113,23 @@ void WeightMatrix::validate(const char* when) const {
 
         for (const_iterator it = begin(r); it != end(r); ++it) {
             double a = *it;
-            ok &= eckit::types::is_approximately_greater_or_equal(a, 0.) &&
-                  eckit::types::is_approximately_greater_or_equal(1., a);
+            if (validateMatrixEntryBounds_) {
+                ok &= eckit::types::is_approximately_greater_or_equal(a, 0.) &&
+                      eckit::types::is_approximately_greater_or_equal(1., a);
+            }
             sum += a;
         }
 
-        ok &= (eckit::types::is_approximately_equal(sum, 0.) || eckit::types::is_approximately_equal(sum, 1.));
+        if (validateMatrixRowSum_) {
+            ok &= (eckit::types::is_approximately_equal(sum, 0.) || eckit::types::is_approximately_equal(sum, 1.));
+        }
 
         // log issues, per row
         if (!ok && Log::debug()) {
-
             if (errors < Nerrors) {
                 if (errors == 0) {
-                    Log::debug() << "WeightMatrix::validate(" << when << ") failed " << std::endl;
+                    Log::debug() << "WeightMatrix: validation failed (" << when << ")" << std::endl;
                 }
-
                 Log::debug() << "Row: " << r;
                 size_t n = 0;
                 for (const_iterator it = begin(r); it != end(r); ++it, ++n) {
@@ -148,6 +148,21 @@ void WeightMatrix::validate(const char* when) const {
             errors++;
         }
     }
+
+    if (errors > 0) {
+        Log::warning() << "WeightMatrix: invalid " << Log::Pretty(errors) << " out of "
+                       << Log::Pretty(rows(), {"matrix row"}) << std::endl;
+    }
+}
+
+
+void WeightMatrix::validateMatrixEntryBounds(bool yes) {
+    validateMatrixEntryBounds_ = yes;
+}
+
+
+void WeightMatrix::validateMatrixRowSum(bool yes) {
+    validateMatrixRowSum_ = yes;
 }
 
 

@@ -136,8 +136,12 @@ void VoronoiMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
         trace::Timer time("assemble: fill sparse matrix", log);
 
         // TODO: triplets, really? why not writing to the matrix directly?
+
+        // fill sparse matrix (disable expensive validation, as the matrix isn't very sparse)
         ASSERT_NONEMPTY_INTERPOLATION("VoronoiMethod", !biplets.empty());
         W.setFromTriplets({biplets.begin(), biplets.end()});
+        W.validateMatrixEntryBounds(false);
+        W.validateMatrixRowSum(false);
     }
 }
 
@@ -154,11 +158,6 @@ void VoronoiMethod::print(std::ostream& out) const {
     out << "VoronoiMethod[name=" << name() << ",";
     MethodWeighted::print(out);
     out << "]";
-}
-
-
-bool VoronoiMethod::validateMatrixWeights() const {
-    return false;
 }
 
 

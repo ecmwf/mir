@@ -179,9 +179,11 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     }
 
 
-    // fill sparse matrix
+    // fill sparse matrix (disable expensive validation, as the matrix isn't very sparse)
     ASSERT_NONEMPTY_INTERPOLATION("GridBoxMethod", !weights_triplets.empty());
     W.setFromTriplets(weights_triplets);
+    W.validateMatrixEntryBounds(false);
+    W.validateMatrixRowSum(false);
 }
 
 
@@ -195,11 +197,6 @@ void GridBoxMethod::print(std::ostream& out) const {
     out << "GridBoxMethod[name=" << name() << ",";
     MethodWeighted::print(out);
     out << "]";
-}
-
-
-bool GridBoxMethod::validateMatrixWeights() const {
-    return false;
 }
 
 

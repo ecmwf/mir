@@ -24,26 +24,42 @@ namespace method {
 
 
 class WeightMatrix : public eckit::linalg::SparseMatrix {
+public:
+    // -- Types
 
-public:  // types
     using Triplet = eckit::linalg::Triplet;
     using Matrix  = eckit::linalg::Matrix;
     using Vector  = eckit::linalg::Vector;
     using Scalar  = eckit::linalg::Scalar;
     using Size    = eckit::linalg::Size;
 
-public:  // methods
-    WeightMatrix(SparseMatrix::Allocator* = nullptr);
+    // -- Exceptions
+    // None
 
+    // -- Constructors
+
+    using SparseMatrix::SparseMatrix;
     WeightMatrix(const eckit::PathName&);
 
-    WeightMatrix(Size rows, Size cols);
+    // -- Destructor
+    // None
+
+    // -- Convertors
+    // None
+
+    // -- Operators
+    // None
+
+    // -- Methods
 
     void setFromTriplets(const std::vector<Triplet>&);
 
     void cleanup(const double& pruneEpsilon = 0);
 
     void validate(const char* when) const;
+
+    void validateMatrixEntryBounds(bool);
+    void validateMatrixRowSum(bool);
 
     using SparseMatrix::cols;
     using SparseMatrix::rows;
@@ -59,13 +75,57 @@ public:  // methods
     using SparseMatrix::end;
     using SparseMatrix::iterator;
 
-private:  // members
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+protected:
+    // -- Members
+    // None
+
+    // -- Methods
+    // None
+
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+private:
+    // -- Members
+
+    bool validateMatrixEntryBounds_ = true;
+    bool validateMatrixRowSum_      = true;
+
+    // -- Methods
+
     void print(std::ostream&) const;
 
     friend std::ostream& operator<<(std::ostream& out, const WeightMatrix& m) {
         m.print(out);
         return out;
     }
+
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+    // -- Friends
+    // None
 };
 
 
