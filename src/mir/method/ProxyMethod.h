@@ -86,6 +86,7 @@ private:
     atlas_config_t options_;
     const std::string type_;
     std::string nonLinear_;
+    bool vectorField_;
 
     // -- Methods
 

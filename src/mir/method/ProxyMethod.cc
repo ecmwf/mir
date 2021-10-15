@@ -106,6 +106,12 @@ ProxyMethod::ProxyMethod(const param::MIRParametrisation& param, std::string typ
 
     nonLinear_ = "missing-if-heaviest-missing";
     parametrisation_.get("non-linear", nonLinear_);
+
+    bool vod2uv = false;
+    bool uv2uv  = false;
+    param.get("vod2uv", vod2uv);
+    param.get("uv2uv", uv2uv);
+    vectorField_ = vod2uv || uv2uv;
 }
 
 
@@ -114,6 +120,7 @@ ProxyMethod::~ProxyMethod() = default;
 
 void ProxyMethod::hash(eckit::MD5& h) const {
     h.add(options_);
+    h.add(vectorField_);
     MethodWeighted::hash(h);
 }
 
@@ -135,9 +142,9 @@ void ProxyMethod::execute(context::Context& ctx, const repres::Representation& i
     struct Helper {
         Helper(size_t numberOfPoints, atlas::FunctionSpace fspace) : n(numberOfPoints), fs(fspace) {}
 
-        atlas::Field appendFieldCopy(const MIRValuesVector& values) {
+        atlas::Field appendFieldCopy(const MIRValuesVector& values, bool vector) {
             ASSERT(n == values.size());
-            auto f = fs.createField<double>();
+            auto f = vector ? fs.createField<double>(atlas::option::name("vector")) : fs.createField<double>();
 
             auto view = atlas::array::make_view<double, 1>(fields.add(f));
             ASSERT(view.contiguous());
@@ -180,7 +187,7 @@ void ProxyMethod::execute(context::Context& ctx, const repres::Representation& i
     report(timer, type_ + ": set interpolation");
 
     for (size_t i = 0; i < field.dimensions(); ++i) {
-        auto f = input.appendFieldCopy(field.values(i));
+        auto f = input.appendFieldCopy(field.values(i), vectorField_);
 
         if (field.hasMissing()) {
             f.metadata().set("missing_value_type", "equals");
