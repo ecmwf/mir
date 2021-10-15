@@ -24,8 +24,10 @@
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/method/nonlinear/NonLinear.h"
+#include "mir/method/solver/Statistics.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/stats/Field.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
@@ -55,29 +57,36 @@ struct StructuredBiquasicubic final : public ProxyMethod {
 };
 
 
-#if 0
 struct GridBoxAverage final : public ProxyMethod {
     explicit GridBoxAverage(const param::MIRParametrisation& param) : ProxyMethod(param, "grid-box-average") {}
-    const char* name() const /*override*/ { return "grid-box-average"; }
+    void validateMatrix(WeightMatrix& W) const override {
+        // W.validateMatrixEntryBounds(false);
+        W.validateMatrixRowSum(false);
+    }
 };
-#endif
 
 
-#if 0
-struct GridBoxMaximum final : public ProxyMethod {
-    explicit GridBoxMaximum(const param::MIRParametrisation& param) : ProxyMethod(param, "grid-box-maximum") {}
-    const char* name() const /*override*/ { return "grid-box-maximum"; }
+struct GridBoxStatistics final : public ProxyMethod {
+    explicit GridBoxStatistics(const param::MIRParametrisation& param) : ProxyMethod(param, "grid-box-average") {
+        std::string stats = "maximum";
+        param.get("interpolation-statistics", stats);
+
+        // statistics methods are matrix-based
+        setSolver(new solver::Statistics(param, stats::FieldFactory::build(stats, param)));
+        options().set("matrix_free", false);
+    }
+    void validateMatrix(WeightMatrix& W) const override {
+        // W.validateMatrixEntryBounds(false);
+        W.validateMatrixRowSum(false);
+    }
 };
-#endif
 
 
 static MethodBuilder<StructuredBicubic> __method1("structured-bicubic");
 static MethodBuilder<StructuredBilinear> __method2("structured-bilinear");
 static MethodBuilder<StructuredBiquasicubic> __method3("structured-biquasicubic");
-#if 0
 static MethodBuilder<GridBoxAverage> __method4("grid-box-average");
-static MethodBuilder<GridBoxMaximum> __method5("grid-box-maximum");
-#endif
+static MethodBuilder<GridBoxStatistics> __method5("grid-box-statistics");
 
 
 static eckit::Hash::digest_t atlasOptionsDigest(const ProxyMethod::atlas_config_t& options) {
@@ -95,10 +104,8 @@ ProxyMethod::ProxyMethod(const param::MIRParametrisation& param, std::string typ
     param.get("interpolation-matrix-free", matrixFree);
     options_.set("matrix_free", matrixFree);
 
-    if (matrixFree) {
-        parametrisation_.get("non-linear", nonLinear_ = "missing-if-heaviest-missing");
-        ASSERT(!nonLinear_.empty());
-    }
+    nonLinear_ = "missing-if-heaviest-missing";
+    parametrisation_.get("non-linear", nonLinear_);
 }
 
 
@@ -163,6 +170,7 @@ void ProxyMethod::execute(context::Context& ctx, const repres::Representation& i
     auto& field = ctx.field();
     decltype(options_) options(options_);
     if (field.hasMissing()) {
+        ASSERT(!nonLinear_.empty());
         options.set("non_linear", nonLinear_);
     }
 

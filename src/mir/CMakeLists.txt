@@ -345,12 +345,6 @@ list(APPEND mir_srcs
     method/MethodWeighted.h
     method/WeightMatrix.cc
     method/WeightMatrix.h
-    method/gridbox/GridBoxAverage.cc
-    method/gridbox/GridBoxAverage.h
-    method/gridbox/GridBoxMethod.cc
-    method/gridbox/GridBoxMethod.h
-    method/gridbox/GridBoxStatistics.cc
-    method/gridbox/GridBoxStatistics.h
     method/knn/KNearest.cc
     method/knn/KNearest.h
     method/knn/KNearestNeighbours.cc
@@ -612,8 +606,6 @@ list(APPEND mir_srcs
     stats/field/ModeStats.h
     stats/method/MethodT.cc
     stats/method/MethodT.h
-    stats/statistics/GridBoxIntegral.cc
-    stats/statistics/GridBoxIntegral.h
     stats/statistics/SimplePackingEntropy.cc
     stats/statistics/SimplePackingEntropy.h
     stats/statistics/Spectral.cc
@@ -657,8 +649,6 @@ list(APPEND mir_srcs
     util/GlobaliseUnstructured.h
     util/Grib.cc
     util/Grib.h
-    util/GridBox.cc
-    util/GridBox.h
     util/Increments.cc
     util/Increments.h
     util/Latitude.cc
@@ -774,6 +764,8 @@ if(mir_HAVE_ATLAS)
         output/GmshOutput.h
         repres/other/ORCA.cc
         repres/other/ORCA.h
+        stats/statistics/GridBoxIntegral.cc
+        stats/statistics/GridBoxIntegral.h
         stats/statistics/Integral.cc
         stats/statistics/Integral.h)
 else()

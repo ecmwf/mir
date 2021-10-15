@@ -94,7 +94,6 @@ private:
     // -- Methods
 
     const std::vector<double>& latitudes() const { return latitudes(N_); }
-    std::vector<double> calculateUnrotatedGridBoxLatitudeEdges() const;
 
     // -- Overridden methods
 
@@ -104,7 +103,6 @@ private:
     bool extendBoundingBoxOnIntersect() const override;
     bool sameAs(const Representation&) const override;
     size_t numberOfPoints() const override;
-    std::vector<util::GridBox> gridBoxes() const override;
     void fill(grib_info&) const override;
     void fill(util::MeshGeneratorParameters&) const override;
     void makeName(std::ostream&) const override;

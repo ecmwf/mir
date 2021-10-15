@@ -117,7 +117,6 @@ namespace util {
 
 void gaussian_latitudes_npole_equator(size_t N, double* latitudes);
 void gaussian_latitudes_npole_spole(size_t N, double* latitudes);
-void gaussian_quadrature_npole_spole(size_t N, double* latitudes, double* weights);
 
 
 struct DatumIFS {

@@ -17,7 +17,6 @@
 
 #include "mir/repres/gauss/GaussianIterator.h"
 #include "mir/util/Exceptions.h"
-#include "mir/util/GridBox.h"
 
 
 namespace mir {
@@ -59,49 +58,6 @@ const Gridded* RegularGG::croppedRepresentation(const util::BoundingBox& bbox) c
 
 std::string RegularGG::factory() const {
     return "regular_gg";
-}
-
-
-std::vector<util::GridBox> RegularGG::gridBoxes() const {
-    ASSERT(1 < Ni_);
-    ASSERT(1 < Nj_);
-
-
-    // latitude edges
-    std::vector<double> latEdges = calculateUnrotatedGridBoxLatitudeEdges();
-
-
-    // longitude edges
-    bool periodic = isPeriodicWestEast();
-    auto lon0     = bbox_.west();
-    auto inc      = (bbox_.east() - bbox_.west()).fraction() / (Ni_ - 1);
-    eckit::Fraction half(1, 2);
-
-    std::vector<double> lonEdges(Ni_ + 1, 0.);
-    lonEdges[0] = (lon0 - inc / 2).value();
-    for (size_t i = 0; i < Ni_; ++i) {
-        lonEdges[i + 1] = (lon0 + (i + half) * inc).value();
-    }
-
-
-    // grid boxes
-    std::vector<util::GridBox> r;
-    r.reserve(Ni_ * Nj_);
-
-    for (size_t j = 0; j < Nj_; ++j) {
-        Longitude lon1 = lon0;
-
-        for (size_t i = 0; i < Ni_; ++i) {
-            auto l = lon1;
-            lon1   = l + Longitude(inc * (i + half));
-            r.emplace_back(util::GridBox(latEdges[j], lonEdges[i], latEdges[j + 1], lonEdges[i + 1]));
-        }
-
-        ASSERT(periodic ? lon0 == lon1.normalise(lon0) : lon0 < lon1.normalise(lon0));
-    }
-
-    ASSERT(r.size() == Ni_ * Nj_);
-    return r;
 }
 
 

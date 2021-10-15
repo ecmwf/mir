@@ -36,11 +36,9 @@ namespace repres {
 static util::once_flag once;
 static util::recursive_mutex* local_mutex         = nullptr;
 static std::map<size_t, std::vector<double> >* ml = nullptr;
-static std::map<size_t, std::vector<double> >* mw = nullptr;
 static void init() {
     local_mutex = new util::recursive_mutex();
     ml          = new std::map<size_t, std::vector<double> >();
-    mw          = new std::map<size_t, std::vector<double> >();
 }
 
 
@@ -164,36 +162,6 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool in) const {
 }
 
 
-std::vector<double> Gaussian::calculateUnrotatedGridBoxLatitudeEdges() const {
-
-    // grid-box edge latitudes are the accumulated Gaussian quadrature weights
-    size_t Nj = N_ * 2;
-    ASSERT(Nj > 1);
-
-    auto& w = weights();
-    ASSERT(w.size() == Nj);
-
-    std::vector<double> edges(Nj + 1);
-    auto f = edges.begin();
-    auto b = edges.rbegin();
-
-    *(f++) = Latitude::NORTH_POLE.value();
-    *(b++) = Latitude::SOUTH_POLE.value();
-
-    double wacc = -1.;
-    for (size_t j = 0; j < N_; ++j, ++b, ++f) {
-        wacc += 2. * w[j];
-        double deg = util::radian_to_degree(std::asin(wacc));
-        ASSERT(Latitude::SOUTH_POLE.value() <= deg && deg <= Latitude::NORTH_POLE.value());
-
-        *b = deg;
-        *f = -(*b);
-    }
-
-    return edges;
-}
-
-
 void Gaussian::fill(util::MeshGeneratorParameters& params) const {
     if (params.meshGenerator_.empty()) {
         params.meshGenerator_ = "structured";
@@ -247,39 +215,8 @@ const std::vector<double>& Gaussian::latitudes(size_t N) {
 }
 
 
-const std::vector<double>& Gaussian::weights(size_t N) {
-    util::call_once(once, init);
-    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
-
-    ASSERT(N);
-    auto j = mw->find(N);
-    if (j == mw->end()) {
-        trace::Timer timer("Gaussian quadrature weights " + std::to_string(N), Log::debug());
-
-        // calculate quadrature weights and insert in known-N-weights map
-        // FIXME: innefficient interface, latitudes are discarded
-        std::vector<double> latitudes(N * 2);
-        std::vector<double>& weights = (*mw)[N];
-        weights.resize(N * 2);
-
-        atlas::util::gaussian_quadrature_npole_spole(N, latitudes.data(), weights.data());
-
-        j = mw->find(N);
-    }
-    ASSERT(j != mw->end());
-    ASSERT(j->second.size() == 2 * N);
-
-    return j->second;
-}
-
-
 const std::vector<double>& Gaussian::latitudes() const {
     return latitudes(N_);
-}
-
-
-const std::vector<double>& Gaussian::weights() const {
-    return weights(N_);
 }
 
 

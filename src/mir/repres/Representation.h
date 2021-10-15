@@ -40,7 +40,6 @@ class Iterator;
 namespace util {
 class BoundingBox;
 class Domain;
-class GridBox;
 class MeshGeneratorParameters;
 }  // namespace util
 
@@ -118,8 +117,6 @@ public:
     virtual void comparison(std::string&) const;
 
     virtual void reorder(long scanningMode, MIRValuesVector&) const;
-
-    virtual std::vector<util::GridBox> gridBoxes() const;
 
     virtual std::string factory() const;  // Return factory name
 

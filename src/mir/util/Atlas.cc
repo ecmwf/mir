@@ -73,12 +73,6 @@ void util::gaussian_latitudes_npole_spole(size_t N, double* latitudes) {
 }
 
 
-void util::gaussian_quadrature_npole_spole(size_t /*N*/, double* /*latitudes*/, double* /*weights*/) {
-    // used in interpolation=grid-box-average/maximum
-    NOTIMP;
-}
-
-
 util::Rotation::Rotation(const PointLonLat& southPole) :
     PointLonLat(mir::Longitude::GREENWICH.value(), mir::Latitude::SOUTH_POLE.value()) {
     ASSERT(southPole == *this);

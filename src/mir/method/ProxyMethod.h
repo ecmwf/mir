@@ -69,6 +69,7 @@ protected:
     // -- Methods
 
     const std::string& type() const { return type_; }
+    atlas_config_t& options() { return options_; }
 
     // -- Overridden methods
     // None

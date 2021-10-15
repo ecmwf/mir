@@ -14,10 +14,12 @@
 
 #include <limits>
 
+#include "atlas/grid.h"
+#include "atlas/interpolation/method/knn/GridBox.h"
+
 #include "mir/data/MIRField.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
-#include "mir/util/GridBox.h"
 
 
 namespace mir {
@@ -37,14 +39,15 @@ void GridBoxIntegral::reset() {
 
 
 void GridBoxIntegral::execute(const data::MIRField& field) {
-
     ASSERT(field.dimensions() == 1);
+
     const repres::RepresentationHandle rep(field.representation());
     ASSERT(rep);
 
-    const auto boxes   = rep->gridBoxes();
     const auto& values = field.values(0);
     ASSERT(values.size() == rep->numberOfPoints());
+
+    const auto boxes = atlas::interpolation::method::GridBoxes(rep->atlasGrid());
     ASSERT(values.size() == boxes.size());
 
     integral_ = 0.;

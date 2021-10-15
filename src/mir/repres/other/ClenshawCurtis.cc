@@ -32,7 +32,6 @@
 #include "mir/repres/Iterator.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
-#include "mir/util/GridBox.h"
 #include "mir/util/Log.h"
 #include "mir/util/MeshGeneratorParameters.h"
 #include "mir/util/Mutex.h"
@@ -154,25 +153,6 @@ bool ClenshawCurtis::extendBoundingBoxOnIntersect() const {
 }
 
 
-std::vector<double> ClenshawCurtis::calculateUnrotatedGridBoxLatitudeEdges() const {
-
-    // grid-box edge latitudes are the latitude midpoints
-    auto& lats = latitudes();
-    ASSERT(!lats.empty());
-
-    std::vector<double> edges;
-    edges.reserve(lats.size() + 1);
-
-    edges.push_back(Latitude::NORTH_POLE.value());
-    for (auto b = lats.begin(), a = b++; b != lats.end(); a = b++) {
-        edges.push_back((*b + *a) / 2.);
-    }
-    edges.push_back(Latitude::SOUTH_POLE.value());
-
-    return edges;
-}
-
-
 void ClenshawCurtis::fill(util::MeshGeneratorParameters& params) const {
     if (params.meshGenerator_.empty()) {
         params.meshGenerator_ = "structured";
@@ -234,48 +214,6 @@ void ClenshawCurtis::fill(grib_info& info) const {
 void ClenshawCurtis::estimate(api::MIREstimation& estimation) const {
     Gridded::estimate(estimation);
     estimation.pl(pl_.size());
-}
-
-
-std::vector<util::GridBox> ClenshawCurtis::gridBoxes() const {
-
-    // latitude edges
-    std::vector<double> latEdges = calculateUnrotatedGridBoxLatitudeEdges();
-    ASSERT(!latEdges.empty());
-
-
-    // grid boxes
-    std::vector<util::GridBox> r;
-    r.reserve(numberOfPoints());
-
-
-    ASSERT(!pl_.empty());
-    for (size_t j = 0; j < pl_.size(); ++j) {
-        ASSERT(pl_[j] > 0);
-
-        auto inc = increment(pl_[j]);
-        auto ni  = size_t(pl_[j]);
-
-        // longitude edges
-        auto west = bbox_.west().fraction();
-        auto Nw   = (west / inc).integralPart();
-        if (Nw * inc < west) {
-            Nw += 1;
-        }
-        Longitude lon0 = (Nw * inc) - (inc / 2);
-        Longitude lon1 = lon0;
-
-        for (size_t i = 0; i < ni; ++i) {
-            auto l = lon1;
-            lon1 += inc;
-            r.emplace_back(util::GridBox(latEdges[j], l.value(), latEdges[j + 1], lon1.value()));
-        }
-
-        ASSERT(lon0 == lon1.normalise(lon0));
-    }
-
-    ASSERT(r.size() == numberOfPoints());
-    return r;
 }
 
 
