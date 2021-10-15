@@ -11,9 +11,11 @@
 
 
 #include "mir/netcdf/CellMethodInputVariable.h"
-#include "mir/netcdf/CellMethodOutputVariable.h"
 
 #include <ostream>
+
+#include "mir/netcdf/CellMethodOutputVariable.h"
+
 
 namespace mir {
 namespace netcdf {
@@ -22,16 +24,20 @@ CellMethodInputVariable::CellMethodInputVariable(Dataset& owner, const std::stri
                                                  const std::vector<Dimension*>& dimensions) :
     InputVariable(owner, name, id, dimensions) {}
 
+
 CellMethodInputVariable::~CellMethodInputVariable() = default;
+
 
 Variable* CellMethodInputVariable::makeOutputVariable(Dataset& owner, const std::string& name,
                                                       const std::vector<Dimension*>& dimensions) const {
     return new CellMethodOutputVariable(owner, name, dimensions);
 }
 
+
 void CellMethodInputVariable::print(std::ostream& out) const {
     out << "CellMethodInputVariable[name=" << name_ << "]";
 }
+
 
 const char* CellMethodInputVariable::kind() const {
     return "cell method";

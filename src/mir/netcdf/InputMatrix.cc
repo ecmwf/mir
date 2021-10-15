@@ -14,14 +14,14 @@
 
 #include <ostream>
 
+#include <netcdf.h>
+
 #include "mir/netcdf/Codec.h"
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/Mapper.h"
 #include "mir/netcdf/NCFile.h"
 #include "mir/netcdf/Type.h"
 #include "mir/netcdf/Value.h"
-
-#include <netcdf.h>
 
 
 namespace mir {

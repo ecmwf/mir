@@ -12,18 +12,22 @@
 
 #include "mir/netcdf/OutputDimension.h"
 
+#include <netcdf.h>
+
 #include "mir/netcdf/Dataset.h"
 #include "mir/netcdf/Exceptions.h"
 
-#include <netcdf.h>
 
 namespace mir {
 namespace netcdf {
 
+
 OutputDimension::OutputDimension(Dataset& owner, const std::string& name, size_t len) :
     Dimension(owner, name, len), id_(-1), created_(false), grown_(false) {}
 
+
 OutputDimension::~OutputDimension() = default;
+
 
 void OutputDimension::create(int nc) const {
     ASSERT(!created_);
@@ -31,14 +35,17 @@ void OutputDimension::create(int nc) const {
     created_ = true;
 }
 
+
 void OutputDimension::print(std::ostream& out) const {
     out << "OutputDimension[name=" << name_ << ",size=" << len_ << "]";
 }
+
 
 int OutputDimension::id() const {
     ASSERT(created_);
     return id_;
 }
+
 
 void OutputDimension::grow(size_t count) {
     ASSERT(!created_);
@@ -46,6 +53,7 @@ void OutputDimension::grow(size_t count) {
     len_   = count;
     grown_ = true;
 }
+
 
 }  // namespace netcdf
 }  // namespace mir

@@ -12,16 +12,16 @@
 
 #include "mir/netcdf/PackingCodec.h"
 
-#include "mir/netcdf/Exceptions.h"
-#include "mir/netcdf/OutputAttribute.h"
-#include "mir/netcdf/Value.h"
-#include "mir/netcdf/Variable.h"
+#include <netcdf.h>
 
 #include <algorithm>
 #include <ostream>
 #include <sstream>
 
-#include <netcdf.h>
+#include "mir/netcdf/Exceptions.h"
+#include "mir/netcdf/OutputAttribute.h"
+#include "mir/netcdf/Value.h"
+#include "mir/netcdf/Variable.h"
 
 
 namespace mir {

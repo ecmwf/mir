@@ -17,8 +17,9 @@
 
 namespace mir {
 namespace netcdf {
+class Field;
 class NCFileCache;
-}
+}  // namespace netcdf
 }  // namespace mir
 
 

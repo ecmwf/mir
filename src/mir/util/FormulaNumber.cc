@@ -10,10 +10,11 @@
  */
 
 
+#include "mir/util/FormulaNumber.h"
+
 #include <ostream>
 
 #include "mir/action/context/Context.h"
-#include "mir/util/FormulaNumber.h"
 
 
 namespace mir {

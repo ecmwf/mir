@@ -12,17 +12,16 @@
 
 #pragma once
 
-#include "mir/netcdf/Endowed.h"
-
 #include <string>
 #include <vector>
+
+#include "mir/netcdf/Endowed.h"
 
 
 namespace mir {
 namespace netcdf {
 class Dimension;
 class Variable;
-class Field;
 }  // namespace netcdf
 }  // namespace mir
 

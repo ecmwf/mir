@@ -10,10 +10,11 @@
  */
 
 
+#include "mir/util/FormulaFunction.h"
+
 #include <ostream>
 
 #include "mir/action/context/Context.h"
-#include "mir/util/FormulaFunction.h"
 #include "mir/util/Function.h"
 
 

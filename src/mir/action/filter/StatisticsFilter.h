@@ -12,10 +12,10 @@
 
 #pragma once
 
-#include "mir/action/plan/Action.h"
-
 #include <memory>
 #include <vector>
+
+#include "mir/action/plan/Action.h"
 
 
 namespace mir {
