@@ -14,7 +14,6 @@
 
 #include <algorithm>
 #include <ostream>
-#include <set>
 #include <string>
 #include <utility>
 #include <vector>
@@ -239,7 +238,7 @@ void ProxyMethod::assemble(util::MIRStatistics& statistics, WeightMatrix& W, con
     }
     report(timer, type_ + ": generate matrix");
 
-    // adjust matrix to remove halo presence
+    // adjust matrix to remove halo presence (this is done in-place for performance)
     auto& fs       = interpol.source();
     auto cols      = in.numberOfPoints();
     auto cols_halo = size_t(fs.size());
@@ -252,23 +251,18 @@ void ProxyMethod::assemble(util::MIRStatistics& statistics, WeightMatrix& W, con
     ASSERT(cols_halo == remote.size());
     ASSERT(cols_halo > cols);
 
-    std::set<WeightMatrix::Triplet> triplets;
-    auto hint  = triplets.begin();
+    auto inn   = const_cast<WeightMatrix::Index*>(W.inner());
+    auto Ncols = WeightMatrix::Index(cols);
+    W.cols(Ncols);
+
     size_t fix = 0;
-    for (WeightMatrix::iterator it(W); it != W.end(); ++it) {
-        auto col = it.col();
-        if (col >= cols) {
-            col = remote[it.col()];
-            ASSERT(col < cols);
+    for (WeightMatrix::Size i = 0; i < W.nonZeros(); ++i) {
+        auto& col = inn[i];
+        if (col >= Ncols) {
+            col = remote[col];
+            ASSERT(col < Ncols);
             ++fix;
         }
-        hint = triplets.emplace_hint(hint, it.row(), col, *it);
-    }
-
-    {
-        WeightMatrix X(W.rows(), cols, {triplets.cbegin(), triplets.cend()});
-        W.swap(X);
-        validateMatrix(W);
     }
 
     report(timer, type_ + ": adjust matrix to remove halo presence ");

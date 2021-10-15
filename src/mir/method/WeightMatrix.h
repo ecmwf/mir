@@ -32,6 +32,7 @@ public:
     using Vector  = eckit::linalg::Vector;
     using Scalar  = eckit::linalg::Scalar;
     using Size    = eckit::linalg::Size;
+    using Index   = eckit::linalg::Index;
 
     // -- Exceptions
     // None
