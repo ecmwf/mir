@@ -105,6 +105,10 @@ ProxyMethod::ProxyMethod(const param::MIRParametrisation& param, std::string typ
 
     nonLinear_ = "missing-if-heaviest-missing";
     parametrisation_.get("non-linear", nonLinear_);
+    if (nonLinear_.find('/') != std::string::npos) {
+        throw exception::UserError("ProxyMethod: only one method supported in 'non-linear', currently '" + nonLinear_ +
+                                   "'");
+    }
 
     bool vod2uv = false;
     bool uv2uv  = false;
@@ -251,7 +255,9 @@ void ProxyMethod::assemble(util::MIRStatistics& statistics, WeightMatrix& W, con
     ASSERT(cols_halo == remote.size());
     ASSERT(cols_halo > cols);
 
-    auto inn   = const_cast<WeightMatrix::Index*>(W.inner());
+    auto inn = const_cast<WeightMatrix::Index*>(W.inner());
+    ASSERT(inn != nullptr);
+
     auto Ncols = WeightMatrix::Index(cols);
     W.cols(Ncols);
 
@@ -265,7 +271,7 @@ void ProxyMethod::assemble(util::MIRStatistics& statistics, WeightMatrix& W, con
         }
     }
 
-    report(timer, type_ + ": adjust matrix to remove halo presence ");
+    report(timer, type_ + ": adjust matrix to remove halo presence");
     log << "ProxyMethod: adjusted " << Log::Pretty(fix) << " out of "
         << Log::Pretty(W.nonZeros(), {"matrix entry", "matrix entries"}) << std::endl;
 }
@@ -280,7 +286,7 @@ bool ProxyMethod::sameAs(const Method& other) const {
 void ProxyMethod::print(std::ostream& out) const {
     out << "ProxyMethod[";
     MethodWeighted::print(out);
-    out << "options=" << options_ << "]";
+    out << "options=" << options_ << ",vectorField=" << vectorField_ << "]";
 }
 
 
