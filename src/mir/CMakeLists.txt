@@ -361,14 +361,14 @@ list(APPEND mir_srcs
     method/knn/NearestNeighbour.h
     method/knn/distance/ClimateFilter.cc
     method/knn/distance/ClimateFilter.h
+    method/knn/distance/Cressman.cc
+    method/knn/distance/Cressman.h
     method/knn/distance/DistanceWeighting.cc
     method/knn/distance/DistanceWeighting.h
     method/knn/distance/DistanceWeightingWithLSM.cc
     method/knn/distance/DistanceWeightingWithLSM.h
     method/knn/distance/GaussianDistanceWeighting.cc
     method/knn/distance/GaussianDistanceWeighting.h
-    method/knn/distance/Cressman.cc
-    method/knn/distance/Cressman.h
     method/knn/distance/InverseDistanceWeighting.cc
     method/knn/distance/InverseDistanceWeighting.h
     method/knn/distance/InverseDistanceWeightingSquared.cc
@@ -381,6 +381,8 @@ list(APPEND mir_srcs
     method/knn/distance/NearestNeighbour.h
     method/knn/distance/NoDistanceWeighting.cc
     method/knn/distance/NoDistanceWeighting.h
+    method/knn/distance/PseudoLaplace.cc
+    method/knn/distance/PseudoLaplace.h
     method/knn/pick/Distance.cc
     method/knn/pick/Distance.h
     method/knn/pick/DistanceAndNClosest.cc
@@ -415,8 +417,6 @@ list(APPEND mir_srcs
     method/nonlinear/NonLinear.h
     method/nonlinear/SimulateMissingValue.cc
     method/nonlinear/SimulateMissingValue.h
-    method/other/PseudoLaplace.cc
-    method/other/PseudoLaplace.h
     method/solver/Multiply.cc
     method/solver/Multiply.h
     method/solver/Solver.h
