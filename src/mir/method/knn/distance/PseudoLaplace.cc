@@ -12,7 +12,9 @@
 
 #include "mir/method/knn/distance/PseudoLaplace.h"
 
-#include "eckit/linalg/Vector.h"
+#include <sstream>
+
+#include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/util/Exceptions.h"
@@ -37,9 +39,7 @@ void PseudoLaplace::operator()(size_t ip, const Point3& point,
     triplets.reserve(npts);
 
     // calculate coefficients
-    eckit::linalg::Vector Dx(npts);
-    eckit::linalg::Vector Dy(npts);
-    eckit::linalg::Vector Dz(npts);
+    std::vector<Point3> D(npts);
 
     double Ixx = 0;
     double Ixy = 0;
@@ -52,11 +52,11 @@ void PseudoLaplace::operator()(size_t ip, const Point3& point,
     double Rz  = 0;
 
     for (size_t j = 0; j < npts; ++j) {
-        auto& np = neighbours[j].point();
+        D[j] = Point3::sub(neighbours[j].point(), point);
 
-        auto dx = np[XYZCOORDS::XX] - point[XYZCOORDS::XX];
-        auto dy = np[XYZCOORDS::YY] - point[XYZCOORDS::YY];
-        auto dz = np[XYZCOORDS::ZZ] - point[XYZCOORDS::ZZ];
+        auto dx = D[j][XYZCOORDS::XX];
+        auto dy = D[j][XYZCOORDS::YY];
+        auto dz = D[j][XYZCOORDS::ZZ];
 
         Ixx += dx * dx;
         Ixy += dx * dy;
@@ -68,30 +68,35 @@ void PseudoLaplace::operator()(size_t ip, const Point3& point,
         Rx += dx;
         Ry += dy;
         Rz += dz;
-
-        Dx[j] = dx;
-        Dy[j] = dy;
-        Dz[j] = dz;
     }
 
-    auto Lx = (-(Iyz * Iyz * Rx) + Iyy * Izz * Rx + Ixz * Iyz * Ry - Ixy * Izz * Ry - Ixz * Iyy * Rz + Ixy * Iyz * Rz) /
-              (Ixz * Ixz * Iyy - 2. * Ixy * Ixz * Iyz + Ixy * Ixy * Izz + Ixx * (Iyz * Iyz - Iyy * Izz));
-    auto Ly = (Ixz * Iyz * Rx - Ixy * Izz * Rx - Ixz * Ixz * Ry + Ixx * Izz * Ry + Ixy * Ixz * Rz - Ixx * Iyz * Rz) /
-              (Ixz * Ixz * Iyy - 2. * Ixy * Ixz * Iyz + Ixx * Iyz * Iyz + Ixy * Ixy * Izz - Ixx * Iyy * Izz);
-    auto Lz = (-(Ixz * Iyy * Rx) + Ixy * Iyz * Rx + Ixy * Ixz * Ry - Ixx * Iyz * Ry - Ixy * Ixy * Rz + Ixx * Iyy * Rz) /
-              (Ixz * Ixz * Iyy - 2. * Ixy * Ixz * Iyz + Ixy * Ixy * Izz + Ixx * (Iyz * Iyz - Iyy * Izz));
-
     // calculate neighbour points weights, and their total (for normalisation)
+    // on moments singularities, degenerate into nearest neighbour
+    auto a = Ixz * Ixz * Iyy - 2. * Ixy * Ixz * Iyz + Ixy * Ixy * Izz + Ixx * (Iyz * Iyz - Iyy * Izz);
+    auto b = Ixz * Ixz * Iyy - 2. * Ixy * Ixz * Iyz + Ixx * Iyz * Iyz + Ixy * Ixy * Izz - Ixx * Iyy * Izz;
+
+    if (eckit::types::is_approximately_equal(a, 0.) || eckit::types::is_approximately_equal(b, 0.)) {
+        triplets.emplace_back(ip, neighbours[0].payload(), 1.);
+        return;
+    }
+
+    Point3 L{
+        (-(Iyz * Iyz * Rx) + Iyy * Izz * Rx + Ixz * Iyz * Ry - Ixy * Izz * Ry - Ixz * Iyy * Rz + Ixy * Iyz * Rz) / a,
+        (Ixz * Iyz * Rx - Ixy * Izz * Rx - Ixz * Ixz * Ry + Ixx * Izz * Ry + Ixy * Ixz * Rz - Ixx * Iyz * Rz) / b,
+        (-(Ixz * Iyy * Rx) + Ixy * Iyz * Rx + Ixy * Ixz * Ry - Ixx * Iyz * Ry - Ixy * Ixy * Rz + Ixx * Iyy * Rz) / a};
+
     double sum = 0;
     for (size_t j = 0; j < npts; ++j) {
-        auto weight = 1. + Lx * Dx[j] + Ly * Dy[j] + Lz * Dz[j];
-
+        auto weight = 1. + Point3::dot(L, D[j]);
         triplets.emplace_back(ip, neighbours[j].payload(), weight);
         sum += weight;
     }
 
-    // normalise all weights according to the total weights sum
-    ASSERT(sum > 0.);
+    if (eckit::types::is_approximately_equal(sum, 0.)) {
+        triplets = {{ip, neighbours[0].payload(), 1.}};
+        return;
+    }
+
     for (auto& t : triplets) {
         t.value() /= sum;
     }
