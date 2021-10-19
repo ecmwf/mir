@@ -72,6 +72,8 @@ struct PointLonLat : public eckit::geometry::Point2 {
     using Point2::Point2;
     double lon() const { return x_[0]; }
     double lat() const { return x_[1]; }
+    double& lon() { return x_[0]; }
+    double& lat() { return x_[1]; }
     //    operator mir::PointLatLon() const { return {lat(), lon()}; }
 };
 
@@ -165,6 +167,9 @@ struct Spacing : protected std::vector<double> {
     using vector::front;
     using vector::size;
     using vector::operator[];
+
+    using vector::begin;
+    using vector::end;
 
     value_type min() const { return front() < back() ? front() : back(); }
     value_type max() const { return front() > back() ? front() : back(); }
