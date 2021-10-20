@@ -70,6 +70,8 @@ CASE("ActionGraph") {
         EXPECT(graph.size() == 2);
         EXPECT(graph[0]->action().sameAs(*reference1));
         EXPECT(graph[1]->action().sameAs(*reference2));
+
+        graph.dump(Log::info(), 1);
     }
 
 
@@ -82,6 +84,8 @@ CASE("ActionGraph") {
         EXPECT(graph.size() == 2);
         EXPECT(graph[0]->action().sameAs(*reference2));
         EXPECT(graph[1]->action().sameAs(*reference1));
+
+        graph.dump(Log::info(), 1);
     }
 
 
@@ -93,6 +97,8 @@ CASE("ActionGraph") {
         Log::debug() << graph << std::endl;
         EXPECT(graph.size() == 1);
         EXPECT(graph[0]->action().sameAs(*reference1));
+
+        graph.dump(Log::info(), 1);
     }
 
 
@@ -104,6 +110,8 @@ CASE("ActionGraph") {
         Log::debug() << graph << std::endl;
         EXPECT(graph.size() == 1);
         EXPECT(graph[0]->action().sameAs(*reference2));
+
+        graph.dump(Log::info(), 1);
     }
 }
 
