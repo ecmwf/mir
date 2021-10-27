@@ -65,7 +65,7 @@ void ShVodToUV::print(std::ostream& out) const {
 
 
 void ShVodToUV::execute(context::Context& ctx) const {
-    auto timing(ctx.statistics().vod2uvTimer());
+//    auto timing(ctx.statistics().vod2uvTimer());
 
     // get field properties
     data::MIRField& field = ctx.field();

@@ -12,7 +12,8 @@
 
 #pragma once
 
-#include <iosfwd>
+#include <iostream>
+//#include <iosfwd>
 #include <string>
 
 #include "eckit/log/Bytes.h"
@@ -29,7 +30,8 @@ struct Log final : protected eckit::Log {
     using eckit::Log::warning;
 
 
-    using Channel = decltype(Log::debug());
+    //using Channel = decltype(Log::debug());
+    using Channel = std::ostream; 
     static Channel& debug();
 
 

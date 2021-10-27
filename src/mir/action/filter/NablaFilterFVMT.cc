@@ -199,7 +199,7 @@ bool NablaFilterFVMT<T>::sameAs(const Action& other) const {
 
 template <typename T>
 void NablaFilterFVMT<T>::execute(context::Context& ctx) const {
-    auto timing(ctx.statistics().nablaTimer());
+//    auto timing(ctx.statistics().nablaTimer());
 
     // Generate mesh (disabling incompatible features)
     auto& field = ctx.field();

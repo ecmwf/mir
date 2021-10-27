@@ -371,7 +371,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
 
         if (matrixCopy) {
-            auto timing(ctx.statistics().matrixTimer());
+//            auto timing(ctx.statistics().matrixTimer());
             WeightMatrix M(W);  // modifiable matrix copy
 
             for (auto& n : nonLinear_) {
@@ -389,7 +389,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
             solver_->solve(A, M, B, missingValue);
         }
         else {
-            auto timing(ctx.statistics().matrixTimer());
+//            auto timing(ctx.statistics().matrixTimer());
             solver_->solve(A, W, B, missingValue);
         }
 
@@ -415,7 +415,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
 void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::Representation& in,
                                           const repres::Representation& out, WeightMatrix& W, bool validate) const {
-    auto timing(ctx.statistics().computeMatrixTimer());
+//    auto timing(ctx.statistics().computeMatrixTimer());
 
     if (in.sameAs(out) && !matrixAssemble_) {
         Log::debug() << "Matrix is identity" << std::endl;

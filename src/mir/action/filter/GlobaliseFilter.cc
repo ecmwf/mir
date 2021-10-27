@@ -50,7 +50,7 @@ bool GlobaliseFilter::deleteWithNext(const Action& next) {
 
 
 void GlobaliseFilter::execute(context::Context& ctx) const {
-    auto timing(ctx.statistics().globaliseTimer());
+//    auto timing(ctx.statistics().globaliseTimer());
 
     auto& field = ctx.field();
     repres::RepresentationHandle in(field.representation());

@@ -240,8 +240,8 @@ static const caching::CroppingCacheEntry& getMapping(const repres::Representatio
 void AreaCropper::execute(context::Context& ctx) const {
 
     // Make sure another thread to no evict anything from the cache while we are using it
-    auto cacheUse(ctx.statistics().cacheUser(cache));
-    auto timing(ctx.statistics().cropTimer());
+//    auto cacheUse(ctx.statistics().cacheUser(cache));
+//    auto timing(ctx.statistics().cropTimer());
 
     // Keep a pointer on the original representation, as the one in the field will
     // be changed in the loop

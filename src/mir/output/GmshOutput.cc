@@ -44,7 +44,7 @@ GmshOutput::GmshOutput(std::string path) : path_(std::move(path)) {}
 
 size_t GmshOutput::save(const param::MIRParametrisation& param, context::Context& ctx) {
     trace::ResourceUsage usage("GmshOutput::save");
-    auto timing(ctx.statistics().saveTimer());
+//    auto timing(ctx.statistics().saveTimer());
 
 
     // Options

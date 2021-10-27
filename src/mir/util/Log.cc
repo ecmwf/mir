@@ -12,7 +12,11 @@
 
 #include "mir/util/Log.h"
 
+#include <utility>
 #include <ostream>
+#include <thread>
+#include <sstream>
+#include <fstream>
 
 #include "eckit/log/BigNum.h"
 
@@ -23,7 +27,12 @@ namespace mir {
 
 
 Log::Channel& Log::debug() {
-    return eckit::Log::debug<LibMir>();
+
+    std::ostringstream oss;
+    oss << "mirout-" << std::this_thread::get_id() << ".log";
+    thread_local std::ofstream outfile{oss.str()};
+    return outfile;
+//    return eckit::Log::debug<LibMir>();
 }
 
 

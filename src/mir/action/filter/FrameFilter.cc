@@ -48,7 +48,7 @@ void FrameFilter::print(std::ostream& out) const {
 
 
 void FrameFilter::execute(context::Context& ctx) const {
-    auto timing(ctx.statistics().frameTimer());
+//    auto timing(ctx.statistics().frameTimer());
 
     data::MIRField& field = ctx.field();
     double missingValue   = field.missingValue();

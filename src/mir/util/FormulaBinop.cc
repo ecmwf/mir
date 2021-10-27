@@ -48,7 +48,7 @@ class Unop : public Function {
     void print(std::ostream& s) const override { s << name_; }
 
     void field(context::Context& ctx, context::Context& ctx1) const {
-        auto timing(ctx.statistics().calcTimer());
+//        auto timing(ctx.statistics().calcTimer());
 
         auto& field  = ctx.field();
         auto& field1 = ctx1.field();
@@ -120,7 +120,7 @@ class Binop : public Function {
     void print(std::ostream& s) const override { s << name_; }
 
     void fieldField(context::Context& ctx, context::Context& ctx1, context::Context& ctx2) const {
-        auto timing(ctx.statistics().calcTimer());
+//        auto timing(ctx.statistics().calcTimer());
 
         auto& field  = ctx.field();
         auto& field1 = ctx1.field();
@@ -169,7 +169,7 @@ class Binop : public Function {
     }
 
     void fieldScalar(context::Context& ctx, context::Context& ctx1, context::Context& ctx2) const {
-        auto timing(ctx.statistics().calcTimer());
+//        auto timing(ctx.statistics().calcTimer());
 
         auto& field    = ctx.field();
         auto& field1   = ctx1.field();
@@ -210,7 +210,7 @@ class Binop : public Function {
     }
 
     void scalarField(context::Context& ctx, context::Context& ctx1, context::Context& ctx2) const {
-        auto timing(ctx.statistics().calcTimer());
+//        auto timing(ctx.statistics().calcTimer());
 
         double scalar1 = ctx1.scalar();
         auto& field    = ctx.field();
