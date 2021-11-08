@@ -272,6 +272,7 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
     // outfile.close();
 
     // fill sparse matrix
+    ASSERT_NONEMPTY_INTERPOLATION("StructuredBilinearLatLon", !triplets.empty());
     W.setFromTriplets(triplets);
 }
 

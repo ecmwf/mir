@@ -206,6 +206,7 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
     }
 
     // fill sparse matrix
+    ASSERT_NONEMPTY_INTERPOLATION("StructuredLinear3D", !triplets.empty());
     W.setFromTriplets(triplets);
 }
 

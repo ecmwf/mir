@@ -371,6 +371,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
 
 
     // fill sparse matrix
+    ASSERT_NONEMPTY_INTERPOLATION("FiniteElement", !weights_triplets.empty());
     W.setFromTriplets(weights_triplets);
 }
 

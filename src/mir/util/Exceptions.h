@@ -22,8 +22,14 @@
 
 #define ASSERT_VALUES_SIZE_EQ_ITERATOR_COUNT(m, size, count) \
     ASSERT_MSG((size) == (count), m ": values size equals iterator count")
+
 #define ASSERT_VALUES_SIZE_EQ_NUMBER_OF_COEFFS(m, size, count) \
     ASSERT_MSG((size) == (count), m ": values size equals number of coefficients")
+
+#define ASSERT_NONEMPTY_INTERPOLATION(m, nonempty) \
+    ASSERT_MSG((nonempty), m ": non-empty interpolation (to at least one point)")
+
+#define ASSERT_NONEMPTY_AREA_CROP(m, nonempty) ASSERT_MSG((nonempty), m ": non-empty area crop (to at least one point)")
 
 
 namespace mir {

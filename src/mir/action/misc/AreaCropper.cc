@@ -245,8 +245,9 @@ void AreaCropper::execute(context::Context& ctx) const {
     // be changed in the loop
     auto& field = ctx.field();
     repres::RepresentationHandle representation(field.representation());
-    const caching::CroppingCacheEntry& c = getMapping(representation, bbox_, caching_);
-    ASSERT(c.mapping_.size());
+
+    auto& c = getMapping(representation, bbox_, caching_);
+    ASSERT_NONEMPTY_AREA_CROP("AreaCropper", !c.mapping_.empty());
 
     for (size_t i = 0; i < field.dimensions(); i++) {
         const MIRValuesVector& values = field.values(i);

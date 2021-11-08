@@ -139,6 +139,7 @@ void KNearestNeighbours::assemble(util::MIRStatistics&, WeightMatrix& W, const r
     }
 
     // fill-in sparse matrix
+    ASSERT_NONEMPTY_INTERPOLATION("KNearestNeighbours", !weights_triplets.empty());
     W.setFromTriplets(weights_triplets);
 }
 

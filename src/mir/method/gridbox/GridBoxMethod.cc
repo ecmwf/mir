@@ -180,6 +180,7 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
 
 
     // fill sparse matrix
+    ASSERT_NONEMPTY_INTERPOLATION("GridBoxMethod", !weights_triplets.empty());
     W.setFromTriplets(weights_triplets);
 }
 
