@@ -68,7 +68,8 @@ public:
 protected:
     // -- Members
 
-    util::Increments increments_;
+    const util::Increments increments_;
+    const PointLatLon reference_;
     size_t ni_;
     size_t nj_;
 
