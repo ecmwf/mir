@@ -29,8 +29,7 @@ public:
     // -- Constructors
 
     LatLon(const param::MIRParametrisation&);
-    LatLon(const util::Increments&, const util::BoundingBox& = util::BoundingBox(),
-           const PointLatLon& reference = PointLatLon(0, 0));
+    LatLon(const util::Increments&, const util::BoundingBox& = {}, const PointLatLon& reference = {0, 0});
 
     // -- Destructor
 
@@ -49,10 +48,10 @@ public:
     size_t Nj() const { return nj_; }
 
     static void globaliseBoundingBox(util::BoundingBox&, const util::Increments&,
-                                     const PointLatLon& reference = PointLatLon(0, 0));
+                                     const PointLatLon& reference = {0, 0});
 
     static void correctBoundingBox(util::BoundingBox&, size_t& ni, size_t& nj, const util::Increments&,
-                                   const PointLatLon& reference = PointLatLon(0, 0));
+                                   const PointLatLon& reference = {0, 0});
 
     static bool samePoints(const param::MIRParametrisation& user, const param::MIRParametrisation& field);
 
