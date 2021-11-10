@@ -14,6 +14,7 @@
 
 #include <ostream>
 
+#include "eckit/utils/StringTools.h"
 #include "eckit/utils/Translator.h"
 
 #include "mir/util/Exceptions.h"
@@ -50,6 +51,12 @@ static void fill(T& value, const std::vector<std::string>& params) {
 
     ASSERT(params.size() == 1);
     value = t(params[0]);
+}
+
+
+template <>
+void fill(std::string& value, const std::vector<std::string>& params) {
+    value = eckit::StringTools::join("/", params);
 }
 
 
