@@ -35,7 +35,7 @@ namespace lsm {
 static NamedLSM __lsm_selection("named");
 
 
-static NamedMaskBuilder<MappedMask> __NamedMappedMask_1("1km", "~mir/share/mir/masks/lsm.1km.climate.v020.mask");
+static NamedMaskBuilder<MappedMask> __NamedMappedMask_1("1km", "~mir/share/mir/masks/lsm.1km.climate.v013.mask");
 static NamedMaskBuilder<MappedMask> __NamedMappedMask_2("1km.climate.v020", "~mir/share/mir/masks/lsm.1km.climate.v020.mask");
 static NamedMaskBuilder<MappedMask> __NamedMappedMask_3("1km.climate.v013", "~mir/share/mir/masks/lsm.1km.climate.v013.mask");
 
