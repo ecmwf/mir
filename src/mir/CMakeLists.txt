@@ -232,6 +232,8 @@ list(APPEND mir_srcs
     iterator/UnstructuredIterator.h
     iterator/detail/RegularIterator.cc
     iterator/detail/RegularIterator.h
+    key/Area.cc
+    key/Area.h
     key/Key.cc
     key/Key.h
     key/grid/ClassicPattern.cc
