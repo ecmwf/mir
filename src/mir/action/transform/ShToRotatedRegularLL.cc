@@ -16,6 +16,7 @@
 
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
+#include "mir/key/Area.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/latlon/RotatedLL.h"
 #include "mir/util/Exceptions.h"
@@ -29,13 +30,9 @@ namespace transform {
 template <class Invtrans>
 ShToRotatedRegularLL<Invtrans>::ShToRotatedRegularLL(const param::MIRParametrisation& parametrisation) :
     ShToGridded(parametrisation) {
+    key::Area::get(parametrisation_.userParametrisation(), bbox_);
 
     std::vector<double> value;
-
-    if (parametrisation.userParametrisation().get("area", value)) {
-        ASSERT_KEYWORD_AREA_SIZE(value.size());
-        bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
-    }
 
     ASSERT(parametrisation.userParametrisation().get("grid", value));
     ASSERT_KEYWORD_GRID_SIZE(value.size());

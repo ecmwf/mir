@@ -27,6 +27,7 @@
 #include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/data/Space.h"
 #include "mir/input/MultiDimensionalGribFileInput.h"
+#include "mir/key/Area.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/intgrid/Intgrid.h"
 #include "mir/key/packing/Packing.h"
@@ -225,7 +226,7 @@ struct MIR : tools::MIRTool {
 
         //==============================================
         options_.push_back(new Separator("Filtering"));
-        options_.push_back(new VectorOption<double>("area", "cropping area: north/west/south/east", 4));
+        options_.push_back(new FactoryOption<key::Area>("area", "cropping area"));
         options_.push_back(new SimpleOption<eckit::PathName>("bitmap", "Bitmap file to apply"));
         options_.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
         options_.push_back(new FactoryOption<stats::DistributionFactory>(

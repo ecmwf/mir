@@ -23,6 +23,7 @@
 #include "mir/caching/InMemoryCache.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
+#include "mir/key/Area.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
@@ -57,12 +58,7 @@ struct LL {
 
 
 AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation) : Action(parametrisation), caching_(true) {
-
-    std::vector<double> value;
-    ASSERT(parametrisation.userParametrisation().get("area", value));
-    ASSERT_KEYWORD_AREA_SIZE(value.size());
-
-    bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
+    ASSERT(key::Area::get(parametrisation_.userParametrisation(), bbox_));
 
     caching_ = LibMir::caching();
     parametrisation_.get("caching", caching_);
@@ -78,7 +74,6 @@ AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation, const
 
 
 void AreaCropper::crop(const repres::Representation& repres, util::BoundingBox& bbox, std::vector<size_t>& mapping) {
-
     std::map<LL, size_t> m;
 
     Latitude n  = 0;
