@@ -14,11 +14,14 @@
 
 #include "eckit/io/StdFile.h"
 #include "eckit/option/CmdArgs.h"
+#include "eckit/option/FactoryOption.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/runtime/Tool.h"
 
 #include "mir/key/grid/Grid.h"
+#include "mir/lsm/LSMSelection.h"
 #include "mir/lsm/Mask.h"
+#include "mir/lsm/NamedLSM.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/param/DefaultParametrisation.h"
@@ -32,7 +35,17 @@ using namespace mir;
 
 struct MIRPlotLSM : tools::MIRTool {
     MIRPlotLSM(int argc, char** argv) : MIRTool(argc, argv) {
-        options_.push_back(new eckit::option::SimpleOption<std::string>("grid", "we/sn grid increments (default 1/1)"));
+        using eckit::option::FactoryOption;
+        using eckit::option::SimpleOption;
+
+        options_.push_back(new SimpleOption<std::string>("grid", "we/sn grid increments (default 1/1)"));
+
+        options_.push_back(
+            new FactoryOption<lsm::LSMSelection>("lsm-selection", "LSM selection method for both input and output"));
+        options_.push_back(new FactoryOption<lsm::NamedMaskFactory>(
+            "lsm-named", "If --lsm-selection=named, LSM name to use for both input and output"));
+        options_.push_back(new SimpleOption<eckit::PathName>(
+            "lsm-file", "If --lsm-selection=file, LSM GRIB file path to use for both input and output"));
     }
 
     int numberOfPositionalArguments() const override { return 1; }

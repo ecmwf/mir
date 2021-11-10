@@ -35,14 +35,18 @@ namespace lsm {
 static NamedLSM __lsm_selection("named");
 
 
-static NamedMaskBuilder<MappedMask> __NamedMask_1("1km", "~mir/share/mir/masks/lsm.1km.mask");
-static NamedMaskBuilder<TenMinutesMask> __NamedMask_2("10min", "~mir/share/mir/masks/lsm.10min.mask");
-static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_3("N128", "~mir/share/mir/masks/lsm.N128.grib");
-static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_4("N256", "~mir/share/mir/masks/lsm.N256.grib");
-static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_5("N320", "~mir/share/mir/masks/lsm.N320.grib");
-static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_6("O320", "~mir/share/mir/masks/lsm.O320.grib");
-static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_7("O640", "~mir/share/mir/masks/lsm.O640.grib");
-static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_8("O1280", "~mir/share/mir/masks/lsm.O1280.grib");
+static NamedMaskBuilder<MappedMask> __NamedMappedMask_1("1km", "~mir/share/mir/masks/lsm.1km.climate.v013.mask");
+static NamedMaskBuilder<MappedMask> __NamedMappedMask_2("1km.climate.v020", "~mir/share/mir/masks/lsm.1km.climate.v020.mask");
+static NamedMaskBuilder<MappedMask> __NamedMappedMask_3("1km.climate.v013", "~mir/share/mir/masks/lsm.1km.climate.v013.mask");
+
+static NamedMaskBuilder<TenMinutesMask> __NamedTenMinutesMask("10min", "~mir/share/mir/masks/lsm.10min.mask");
+
+static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_1("N128", "~mir/share/mir/masks/lsm.N128.grib");
+static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_2("N256", "~mir/share/mir/masks/lsm.N256.grib");
+static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_3("N320", "~mir/share/mir/masks/lsm.N320.grib");
+static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_4("O320", "~mir/share/mir/masks/lsm.O320.grib");
+static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_5("O640", "~mir/share/mir/masks/lsm.O640.grib");
+static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_6("O1280", "~mir/share/mir/masks/lsm.O1280.grib");
 
 
 static util::once_flag once;
