@@ -8,6 +8,7 @@ foreach(_t
     MIR-425
     MIR-536
     PGEN-412
+    area
     action_graph
     bounding_box
     gaussian_grid
