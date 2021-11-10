@@ -3,4 +3,4 @@ param=2t,levtype=sfc
 # Mir tool options
 --plan=grid2regular-ll(grid=[2,2]);grid2namedgrid(grid=O80);grid2rotated-regular-ll(grid=[2,2],rotation=[-90,0])
 # grib_get assertions
-numberOfValues=16200
+numberOfValues=16380
