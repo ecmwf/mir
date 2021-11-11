@@ -54,7 +54,6 @@ public:
     // -- Methods
 
     static bool get(const param::MIRParametrisation&, util::BoundingBox&);
-
     static bool match(const std::string&, util::BoundingBox&);
     static void list(std::ostream&);
 
