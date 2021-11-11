@@ -52,7 +52,7 @@ struct map_t : std::map<std::string, std::array<double, 4>> {
     }
 };
 
-map_t* m                          = nullptr;
+static map_t* m                   = nullptr;
 static util::recursive_mutex* mtx = nullptr;
 static util::once_flag once;
 
