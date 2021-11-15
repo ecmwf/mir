@@ -1,0 +1,7 @@
+# Mars request
+param=2t,levtype=sfc,grid=O16
+# Mir tool options
+--grid=2/2 --interpolation=k-nearest-neighbours --distance-weighting=pseudo-laplace --nearest-method=nclosest-or-nearest
+# grib_get assertions
+iDirectionIncrementInDegrees=2
+jDirectionIncrementInDegrees=2
