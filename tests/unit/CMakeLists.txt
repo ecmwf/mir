@@ -5,6 +5,7 @@ file(REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR})
 
 foreach(_t
 #    MIR-333
+#    MIR-356
     MIR-425
     MIR-536
     PGEN-412
