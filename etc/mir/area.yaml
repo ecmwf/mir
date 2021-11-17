@@ -22,13 +22,13 @@ arctic: [90., -180., 60., 180.]
 asia: [80., 45., 25., -170.]
 
 # Asia (WMO)
-asia.wmo: [65., 60., 25., 145.]
+asia-wmo: [65., 60., 25., 145.]
 
 # Australia N Zealand
 austnz: [-12.5, 120., -45., 175.]
 
 # Australia N Zealand (WMO)
-austnz.wmo: [-10., 90., -55., 180.]
+austnz-wmo: [-10., 90., -55., 180.]
 
 # Australia
 australia: [-10., 112., -44.5, 156.25]
@@ -43,49 +43,49 @@ balkan: [46., 19., 35., 30.]
 baltic: [66., 10., 53., 31.]
 
 # Central Africa
-c.afr: [12.5, 5., -12.5, 42.5]
+c-afr: [12.5, 5., -12.5, 42.5]
 
 # Central Europe
-c.europe: [54.5, 2., 44., 27.]
+c-europe: [54.5, 2., 44., 27.]
 
 # California Nevada
-california.nevada: [42., -125., 32., -114.]
+california-nevada: [42., -125., 32., -114.]
 
 # Central Eastern Europe
-ce.europe: [56., 9., 45., 30.]
+ce-europe: [56., 9., 45., 30.]
 
 # CentE Pacific trop
-ce.trop.pac: [20., -180., -20., -90.]
+ce-trop-pac: [20., -180., -20., -90.]
 
 # Central Europe v2
 ceur2: [55., -5., 41., 15.]
 
 # E Asia
-e.asia: [60., 102.5, 25., 150.]
+e-asia: [60., 102.5, 25., 150.]
 
 # E Pacific trop
-e.trop.pac: [10., -140., -20., -90.]
+e-trop-pac: [10., -140., -20., -90.]
 
 # Eastern Australia and New Zealand
 eaustnz: [-20., 145., -50., 180.]
 
 # Europe N Africa
-eurnafr.wmo: [70., -10., 25., 28.]
+eurnafr-wmo: [70., -10., 25., 28.]
 
 # Europe TEPS
-euro.teps: [82., -23., 24., 50.]
+euro-teps: [82., -23., 24., 50.]
 
 # Europe TEPS North
-euro.tepsn: [82., -15., 50., 50.]
+euro-tepsn: [82., -15., 50., 50.]
 
 # Europe
 europe: [75., -12.5, 35., 42.5]
 
 # Extratropics North
-n.extrop30: [90., -180., 30., 180.]
+n-extrop30: [90., -180., 30., 180.]
 
 # Extratropics South
-s.extrop30: [-30., -180., -90., 180.]
+s-extrop30: [-30., -180., -90., 180.]
 
 # France
 france: [51.5, -5., 42., 8.5]
@@ -103,7 +103,7 @@ glameps: [80., -60., 25., 60.]
 global: [90., -180., -90., 180.]
 
 # Gulf of Mexico
-gulf.mexico: [31., -98., 17., -81.]
+gulf-mexico: [31., -98., 17., -81.]
 
 # Hawaii
 hawaii: [30., -180., 10., -140.]
@@ -112,7 +112,7 @@ hawaii: [30., -180., 10., -140.]
 iberian: [44., -10., 35., 3.5]
 
 # Indian Ocean
-ind.oc: [30., 50., -10., 100.]
+ind-oc: [30., 50., -10., 100.]
 
 # India
 india: [32.5, 75., 5., 102.5]
@@ -133,106 +133,106 @@ med: [46., -6., 30., 36.]
 med2: [46., -1., 30., 36.]
 
 # N America
-n.amer: [60., -120., 25., -75.]
+n-amer: [60., -120., 25., -75.]
 
 # N America (WMO)
-n.amer.wmo: [60., -145., 25., -50.]
+n-amer-wmo: [60., -145., 25., -50.]
 
 # N Atlantic
-n.atl: [65., -70., 25., -10.]
+n-atl: [65., -70., 25., -10.]
 
 # N Europe
-n.europe: [75., 5., 55., 35.]
+n-europe: [75., 5., 55., 35.]
 
 # NHem Extratropics
-n.hem: [90., -180., 20., 180.]
+n-hem: [90., -180., 20., 180.]
 
 # N Hemisphere
-n.hem.full: [90., -180., 0., 180.]
+n-hem-full: [90., -180., 0., 180.]
 
 # NH Midlatitudes
-n.hem.mid: [65., -180., 35., 180.]
+n-hem-mid: [65., -180., 35., 180.]
 
 # NH Midlatitudes
-n.hem.mid2: [60., -180., 30., 180.]
+n-hem-mid2: [60., -180., 30., 180.]
 
 # N Pacific
-n.pac: [60., 145., 25., -130.]
+n-pac: [60., 145., 25., -130.]
 
 # N Pole
-n.pole: [90., -180., 65., 180.]
+n-pole: [90., -180., 65., 180.]
 
 # North Sea
-n.sea: [62., -1., 51.5, 10.]
+n-sea: [62., -1., 51.5, 10.]
 
 # NH Subtropics
-n.subtropics: [35., -180., 20., 180.]
+n-subtropics: [35., -180., 20., 180.]
 
 # North East Atlantic
-ne.atl: [72., -40., 30., -4.]
+ne-atl: [72., -40., 30., -4.]
 
 # North East Pacific
-ne.pac: [62., -180., 30., -115.]
+ne-pac: [62., -180., 30., -115.]
 
 # NW Africa
-nw.afr: [35., -22.5, 12.5, 12.5]
+nw-afr: [35., -22.5, 12.5, 12.5]
 
 # North West Atlantic
-nw.atl: [55., -81., 30., -40.]
+nw-atl: [55., -81., 30., -40.]
 
 # North West Pacific
-nw.pac: [62., 120., 30., 180.]
+nw-pac: [62., 120., 30., 180.]
 
 # Europe RAQ
-raq.europe: [70., -15., 35., 35.]
+raq-europe: [70., -15., 35., 35.]
 
 # S Africa
-s.afr: [-12.5, 10., -47.5, 52.5]
+s-afr: [-12.5, 10., -47.5, 52.5]
 
 # S America (north)
-s.amer.n: [17.5, -85., -12.5, -55.]
+s-amer-n: [17.5, -85., -12.5, -55.]
 
 # S America (south)
-s.amer.s: [-12.5, -80., -57.5, -42.5]
+s-amer-s: [-12.5, -80., -57.5, -42.5]
 
 # SHem Extratropics
-s.hem: [-20., -180., -90., 180.]
+s-hem: [-20., -180., -90., 180.]
 
 # S Hemisphere
-s.hem.full: [0., -180., -90., 180.]
+s-hem-full: [0., -180., -90., 180.]
 
 # SH Midlatitudes
-s.hem.mid: [-35., -180., -65., 180.]
+s-hem-mid: [-35., -180., -65., 180.]
 
 # SH Midlatitudes
-s.hem.mid2: [-30., -180., -60., 180.]
+s-hem-mid2: [-30., -180., -60., 180.]
 
 # S Pole
-s.pole: [-65., -180., -90., 180.]
+s-pole: [-65., -180., -90., 180.]
 
 # SH Subtropics
-s.subtropics: [-20., -180., -35., 180.]
+s-subtropics: [-20., -180., -35., 180.]
 
 # Scandinavia
 scandinavia: [71., 4.5, 54.5, 31.5]
 
 # SE Europe
-se.europe: [45., 10., 32.5, 32.5]
+se-europe: [45., 10., 32.5, 32.5]
 
 # SM Med
-sm.med: [47., 2.75, 36., 23.]
+sm-med: [47., 2.75, 36., 23.]
 
 # Hurricane Main Devel Region
-atl.hmdr: [20., -80., 10., -20.]
+atl-hmdr: [20., -80., 10., -20.]
 
 # SN Atl Afr
-sn.atl.afr: [45., -60., 0., 60.]
+sn-atl-afr: [45., -60., 0., 60.]
 
 # South Southwestern Australia
-ssw.australia: [-20., 105., -45., 145.]
+ssw-australia: [-20., 105., -45., 145.]
 
 # SW Europe
-sw.europe: [45., -15., 32.5, 10.]
+sw-europe: [45., -15., 32.5, 10.]
 
 # Tropics
 tropics: [20., -180., -20., 180.]
@@ -244,8 +244,8 @@ tropics30: [30., -180., -30., 180.]
 uk: [59.5, -10.5, 49.5, 2.]
 
 # Western Europe
-w.europe: [58., -7.5, 43., 9.]
+w-europe: [58., -7.5, 43., 9.]
 
 # Western USA
-western.usa: [50., -130., 30., -110.]
+western-usa: [50., -130., 30., -110.]
 
