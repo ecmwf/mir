@@ -319,7 +319,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
     ASSERT(W.cols() == npts_inp);
 
     std::vector<size_t> forceMissing;  // reserving size unnecessary (not the general case)
-    if (!in.isGlobal() || canIntroduceMissingValues()) {
+    {
         auto begin = W.begin(0);
         auto end(begin);
         for (size_t r = 0; r < W.rows(); r++) {
@@ -402,7 +402,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
         for (auto& r : forceMissing) {
             result[r] = missingValue;
         }
-        field.update(result, i, hasMissing || canIntroduceMissingValues());
+        field.update(result, i, hasMissing || !forceMissing.empty());
 
 
         if (check_stats) {
@@ -531,11 +531,6 @@ bool MethodWeighted::hasCropping() const {
 
 const util::BoundingBox& MethodWeighted::getCropping() const {
     return cropping_.boundingBox();
-}
-
-
-bool MethodWeighted::canIntroduceMissingValues() const {
-    return false;
 }
 
 
