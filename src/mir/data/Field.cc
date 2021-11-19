@@ -63,10 +63,10 @@ Field* Field::clone() const {
 
 
 // Warning: take ownership of values
-void Field::update(MIRValuesVector& values, size_t which) {
+void Field::update(MIRValuesVector& values, size_t which, bool recomputeHasMissing) {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
-    recomputeHasMissing_ = true;
+    recomputeHasMissing_ = recomputeHasMissing;
 
     if (values_.size() <= which) {
         values_.resize(which + 1);
