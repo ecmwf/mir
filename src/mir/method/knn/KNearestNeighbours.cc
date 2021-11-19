@@ -149,6 +149,11 @@ void KNearestNeighbours::print(std::ostream& out) const {
 }
 
 
+bool KNearestNeighbours::canIntroduceMissingValues() const {
+    return true;
+}
+
+
 }  // namespace knn
 }  // namespace method
 }  // namespace mir

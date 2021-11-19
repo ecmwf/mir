@@ -156,7 +156,7 @@ void ProxyMethod::execute(context::Context& ctx, const repres::Representation& i
 
     interpol.execute(input.fields, output.fields);
     for (size_t i = 0; i < field.dimensions(); ++i) {
-        field.update(result[i], i);
+        field.update(result[i], i, true);
     }
     report(timer, type_ + ": interpolate");
 }

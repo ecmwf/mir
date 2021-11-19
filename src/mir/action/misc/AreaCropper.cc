@@ -273,7 +273,7 @@ void AreaCropper::execute(context::Context& ctx) const {
         cropped->validate(result);
 
         field.representation(cropped);
-        field.update(result, i);
+        field.update(result, i, field.hasMissing());
     }
 }
 
