@@ -1,0 +1,90 @@
+#!/usr/bin/env python3
+#
+# (C) Copyright 1996- ECMWF.
+#
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+#
+# In applying this licence, ECMWF does not waive the privileges and immunities
+# granted to it by virtue of its status as an intergovernmental organisation nor
+# does it submit to any jurisdiction.
+
+
+import argparse
+import re
+import mir
+
+
+class _type_re(object):
+    def __init__(self, pattern):
+        self._pattern = re.compile(pattern)
+
+    def __call__(self, value):
+        if not self._pattern.match(value):
+            raise argparse.ArgumentTypeError(
+                "must match '{}'".format(self._pattern.pattern)
+            )
+        return value
+
+
+_grid_re = r"^[0-9.]+/[0-9.]+|[ONF][1-9][0-9]+$"
+_area_re = r"^[-0-9.]+/[-0-9.]+/[-0-9.]+/[-0-9.]+$"
+_interpolation_re = r"^(linear|nn|grid-box-average)$"
+_intgrid_re = r"^[ONF][1-9][0-9]+|none|source$"
+_truncation_re = r"^[1-9][0-9]+|none$"
+
+
+arg = argparse.ArgumentParser()
+arg.add_argument(
+    "--area",
+    type=_type_re(_area_re),
+    help="sub-area of data to be extracted (" + _area_re + ")",
+)
+arg.add_argument(
+    "--grid",
+    type=_type_re(_grid_re),
+    help="Regular latitude/longitude grids (<west-east>/<south-north> increments) or Gaussian octahedral/quasi-regular/regular grids (<[ONF]N>) ("
+    + _grid_re
+    + ")",
+)
+arg.add_argument(
+    "--interpolation",
+    type=_type_re(_interpolation_re),
+    help="interpolation method (" + _interpolation_re + ")",
+)
+arg.add_argument(
+    "--intgrid",
+    type=_type_re(_intgrid_re),
+    help="spectral inverse transforms intermediate Gaussian grid (" + _intgrid_re + ")",
+)
+arg.add_argument(
+    "--truncation",
+    type=_type_re(_truncation_re),
+    help="spectral inverse transforms intermediate truncation (" + _truncation_re + ")",
+)
+
+g = arg.add_mutually_exclusive_group()
+g.add_argument("--vod2uv", help="", action="store_true")
+g.add_argument("--uv2uv", help="", action="store_true")
+
+arg.add_argument("grib_in", type=str, help="Input GRIB file")
+arg.add_argument("grib_out", type=str, help="Output GRIB file")
+
+args = arg.parse_args()
+print(args)
+
+
+options = {}
+for k in ["area", "grid", "interpolation", "intgrid", "truncation"]:
+    if hasattr(args, k):
+        v = getattr(args, k)
+        if v is not None:
+            options[k] = getattr(args, k)
+
+
+job = mir.Job(**options)
+print("Running", job)
+
+grib_out = mir.GribFileOutput(args.grib_out)
+with open(args.grib_in, "rb") as grib_in:
+    job.execute(grib_in, grib_out)
