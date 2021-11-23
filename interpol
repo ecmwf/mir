@@ -15,7 +15,7 @@ import re
 import mir
 
 
-class _type_re(object):
+class _Regex(object):
     def __init__(self, pattern):
         self._pattern = re.compile(pattern)
 
@@ -27,45 +27,65 @@ class _type_re(object):
         return value
 
 
-_grid_re = r"^[0-9.]+/[0-9.]+|[ONF][1-9][0-9]+$"
-_area_re = r"^[-0-9.]+/[-0-9.]+/[-0-9.]+/[-0-9.]+$"
-_interpolation_re = r"^(linear|nn|grid-box-average)$"
-_intgrid_re = r"^[ONF][1-9][0-9]+|none|source$"
-_truncation_re = r"^[1-9][0-9]+|none$"
+g = r"[ONF][1-9][0-9]*"
+f = r"([0-9]*[.])?[0-9]+"
+
+_grid = r"^" + f + r"/" + f + "|" + g + r"$"
+_area = r"^-?" + f + r"/-?" + f + r"/-?" + f + r"/-?" + f + r"$"
+_interpolation = r"^(linear|nn|grid-box-average)$"
+_intgrid = r"^" + g + r"|none|source$"
+_truncation = r"^[1-9][0-9]*|none$"
 
 
 arg = argparse.ArgumentParser()
+
 arg.add_argument(
     "--area",
-    type=_type_re(_area_re),
-    help="sub-area of data to be extracted (" + _area_re + ")",
+    type=_Regex(_area),
+    help="sub-area to be extracted (" + _area + ")",
 )
+
 arg.add_argument(
     "--grid",
-    type=_type_re(_grid_re),
-    help="Regular latitude/longitude grids (<west-east>/<south-north> increments) or Gaussian octahedral/quasi-regular/regular grids (<[ONF]N>) ("
-    + _grid_re
+    type=_Regex(_grid),
+    help="Regular latitude/longitude grids (<west-east>/<south-north> increments) or Gaussian octahedral/quasi-regular/regular grids ("
+    + _grid
     + ")",
 )
+
 arg.add_argument(
     "--interpolation",
-    type=_type_re(_interpolation_re),
-    help="interpolation method (" + _interpolation_re + ")",
+    type=_Regex(_interpolation),
+    help="interpolation method (" + _interpolation + ")",
 )
+
 arg.add_argument(
     "--intgrid",
-    type=_type_re(_intgrid_re),
-    help="spectral inverse transforms intermediate Gaussian grid (" + _intgrid_re + ")",
+    type=_Regex(_intgrid),
+    help="spectral transforms intermediate Gaussian grid (" + _intgrid + ")",
 )
+
 arg.add_argument(
     "--truncation",
-    type=_type_re(_truncation_re),
-    help="spectral inverse transforms intermediate truncation (" + _truncation_re + ")",
+    type=_Regex(_truncation),
+    help="spectral transforms intermediate truncation (" + _truncation + ")",
 )
 
 g = arg.add_mutually_exclusive_group()
-g.add_argument("--vod2uv", help="", action="store_true")
-g.add_argument("--uv2uv", help="", action="store_true")
+
+g.add_argument(
+    "--vod2uv",
+    help="Input is vorticity and divergence (vo/d), convert to vector Cartesian components (gridded u/v or spectral U/V)",
+    action="store_true",
+)
+
+g.add_argument(
+    "--uv2uv",
+    help="Input is vector Cartesian components spectral U/V or gridded u/v",
+    action="store_true",
+)
+
+# arg.add_argument("-v", "--verbose", action="count", default=0, help="Verbosity level")
 
 arg.add_argument("grib_in", type=str, help="Input GRIB file")
 arg.add_argument("grib_out", type=str, help="Output GRIB file")
