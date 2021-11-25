@@ -704,6 +704,10 @@ index:
 - 260172  # Elevation of snow covered terrain
 - 260184  # Land use
 - 260221  # Cloud top height quality indicator
+- 260318  # Precipitation type (most severe) in the last 1 hour
+- 260319  # Precipitation type (most severe) in the last 3 hours
+- 260320  # Precipitation type (most frequent) in the last 1 hour
+- 260321  # Precipitation type (most frequent) in the last 3 hours
 - 260380  # Categorical Ozone Concentration
 - 260394  # Slight risk convective outlook
 - 260395  # Moderate risk convective outlook
