@@ -5040,6 +5040,8 @@ ratio.mass:
 - 260281  # Specific humidity at top of viscous sublayer
 - 260282  # Maximum specific humidity at 2m
 - 260283  # Minimum specific humidity at 2m
+- 260292  # specific rain water content (convection)
+- 260293  # specific snow water content (convection)
 - 260624  # Ozone mixing ratio
 - 300051  # Specific humidity
 - 300053  # Humidity mixing ratio
