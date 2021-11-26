@@ -1846,6 +1846,8 @@ intensity:
 - 260467  # Water Condensate Zonal Flux (Vertical Int)
 - 260468  # Water Condensate Meridional Flux (Vertical Int)
 - 260469  # Aerodynamic conductance
+- 260472  # Time-mean snow depth water equivalent
+- 260473  # Time-mean skin temperature
 - 260480  # Bare soil surface skin temperature
 - 260481  # Average surface skin temperature
 - 260482  # Effective radiative skin temperature
@@ -2107,6 +2109,14 @@ numerics.mean:
 - 235066  # Mean convective rain rate
 - 235067  # Mean large-scale rain rate
 - 235070  # Mean potential evaporation rate
+- 260435  # Time-mean Evapotranspiration rate in the last 24h
+- 260438  # Time-mean potential evapotranspiration rate in the last 24h
+- 260440  # Time-mean volumetric soil moisture
+- 260441  # Time-mean total precipitation rate
+- 260445  # Time-mean water runoff and drainage rate in the last 24h
+- 260472  # Time-mean snow depth water equivalent
+- 260473  # Time-mean skin temperature
+- 260477  # Time-mean snow melt rate in the last 24h
 
 numerics.accumulated:
 - 8  # Surface runoff
@@ -2521,8 +2531,12 @@ numerics.accumulated:
 - 260427  # Accumulated surface upward short-wave radiation flux, clear sky
 - 260428  # Accumulated surface downward long-wave radiation flux, clear sky
 - 260430  # Percolation
+- 260434  # Time-integrated evapotranspiration rate in the last 24h
+- 260437  # Time-integrated potential evapotranspiration rate in the last 24h
+- 260444  # Time-integrated water runoff and drainage rate in the last 24h
 - 260461  # Water vapor added by precip assimilation
 - 260462  # Water condensate added by precip assimilation
+- 260476  # Time-integrated snow melt rate in the last 24h
 - 260479  # Land Surface Precipitation Accumulation
 - 260564  # Energy release component (as defined by the U.S Forest Service National Fire-Danger Rating System)
 - 260645  # Time integral of total solid precipitation flux
@@ -4034,8 +4048,21 @@ rate.mass-flux:
 - 260287  # Convective precipitation (nearest grid point)
 - 260365  # Percolation rate
 - 260430  # Percolation
+- 260433  # Evapotranspiration rate
+- 260434  # Time-integrated evapotranspiration rate in the last 24h
+- 260435  # Time-mean Evapotranspiration rate in the last 24h
+- 260436  # Potential evapotranspiration rate
+- 260437  # Time-integrated potential evapotranspiration rate in the last 24h
+- 260438  # Time-mean potential evapotranspiration rate in the last 24h
+- 260441  # Time-mean total precipitation rate
+- 260443  # Water runoff and drainage rate
+- 260444  # Time-integrated water runoff and drainage rate in the last 24h
+- 260445  # Time-mean water runoff and drainage rate in the last 24h
 - 260461  # Water vapor added by precip assimilation
 - 260462  # Water condensate added by precip assimilation
+- 260475  # Snow melt rate
+- 260476  # Time-integrated snow melt rate in the last 24h
+- 260477  # Time-mean snow melt rate in the last 24h
 - 260479  # Land Surface Precipitation Accumulation
 - 260621  # Upward mass flux at cloud base
 - 260622  # Upward mass flux
@@ -5245,6 +5272,7 @@ ratio.volume:
 - 190229  # Total soil moisture
 - 228253  # ASCAT first soil moisture CDF matching parameter
 - 260215  # Soil porosity
+- 260440  # Time-mean volumetric soil moisture
 
 ratio.random:
 - 213001  # Random pattern 1 for sppt
