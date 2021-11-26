@@ -4619,6 +4619,7 @@ ratio.fraction:
 - 260162  # Snow free albedo
 - 260173  # Snow water equivalent percent of normal
 - 260187  # Moisture availability
+- 260294  # Glacier mask
 - 260406  # Confidence - Ceiling
 - 260407  # Confidence - Visibility
 - 260408  # Confidence - Flight Category
