@@ -30,7 +30,7 @@ Set::~Set() = default;
 
 
 void Set::execute(context::Context& ctx) const {
-//    auto timing(ctx.statistics().saveTimer());
+    auto timing(ctx.statistics().saveTimer());
 
     // TODO: MIROutput::save/set/copy should be const
     const_cast<output::MIROutput&>(output()).set(parametrisation_, ctx);

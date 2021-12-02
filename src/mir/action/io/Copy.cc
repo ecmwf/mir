@@ -33,7 +33,7 @@ Copy::~Copy() = default;
 
 
 void Copy::execute(context::Context& ctx) const {
-//    auto timing(ctx.statistics().saveTimer());
+    auto timing(ctx.statistics().saveTimer());
 
     // TODO: MIROutput::save/set/copy should be const
     const_cast<output::MIROutput&>(output()).copy(parametrisation_, ctx);

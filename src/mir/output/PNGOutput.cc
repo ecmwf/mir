@@ -74,7 +74,7 @@ PNGOutput::~PNGOutput() = default;
 
 size_t PNGOutput::save(const param::MIRParametrisation& param, context::Context& ctx) {
     trace::ResourceUsage usage("PNGOutput::save");
-//    auto timing(ctx.statistics().saveTimer());
+    auto timing(ctx.statistics().saveTimer());
 
     const auto& field = ctx.field();
     field.validate();

@@ -77,7 +77,7 @@ void FormulaAction::print(std::ostream& out) const {
 
 
 void FormulaAction::execute(context::Context& ctx) const {
-//    auto timing(ctx.statistics().calcTimer());
+    auto timing(ctx.statistics().calcTimer());
 
     formula_->perform(ctx);
 

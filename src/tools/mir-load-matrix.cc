@@ -83,8 +83,8 @@ void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
     using caching::matrix::SharedMemoryLoader;
     using method::WeightMatrix;
 
-//    Log::debug().setStream(std::cerr);
-//    Log::info().setStream(std::cerr);
+    Log::debug().setStream(std::cerr);
+    Log::info().setStream(std::cerr);
 
     const param::ConfigurationWrapper param(args);
 

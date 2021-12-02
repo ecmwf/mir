@@ -120,7 +120,7 @@ method::Cropping Gridded2GriddedInterpolation::cropping(context::Context& ctx) c
 
 
 void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
-//    auto timing(ctx.statistics().grid2gridTimer());
+    auto timing(ctx.statistics().grid2gridTimer());
 
     auto& field = ctx.field();
     repres::RepresentationHandle in(field.representation());

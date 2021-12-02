@@ -200,7 +200,7 @@ data::MIRField& Context::field() {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     if (!content_) {
-//        auto timer(statistics().gribDecodingTimer());
+        auto timer(statistics().gribDecodingTimer());
         content_.reset(new FieldContent(input_.field()));
     }
     return content_->field();

@@ -63,7 +63,7 @@ static atlas::trans::Cache getTransCache(atlas::trans::LegendreCacheCreator& cre
     eckit::PathName path;
     {
         // Block for timers
-//        auto timing(ctx.statistics().coefficientTimer());
+        auto timing(ctx.statistics().coefficientTimer());
 
         class LegendreCacheCreator final : public caching::LegendreCache::CacheContentCreator {
 
@@ -73,7 +73,7 @@ static atlas::trans::Cache getTransCache(atlas::trans::LegendreCacheCreator& cre
             void create(const eckit::PathName& path, caching::LegendreCacheTraits::value_type& /*ignore*/,
                         bool& saved) override {
                 trace::ResourceUsage usage("ShToGridded: create Legendre coefficients");
-//                auto timing(ctx_.statistics().createCoeffTimer());
+                auto timing(ctx_.statistics().createCoeffTimer());
 
                 // This will create the cache
                 Log::info() << "ShToGridded: create Legendre coefficients '" + path + "'" << std::endl;
@@ -103,7 +103,7 @@ static atlas::trans::Cache getTransCache(atlas::trans::LegendreCacheCreator& cre
 
     {
         trace::ResourceUsage usage("ShToGridded: load Legendre coefficients");
-//        auto timing(ctx.statistics().loadCoeffTimer());
+        auto timing(ctx.statistics().loadCoeffTimer());
 
         Log::info() << "ShToGridded: loading Legendre coefficients '" + path + "'" << std::endl;
 
@@ -268,7 +268,7 @@ void ShToGridded::execute(context::Context& ctx) const {
 
     if (cropping_) {
         trace::ResourceUsage usage("ShToGridded: cropping");
-//        auto timing(ctx.statistics().cropTimer());
+        auto timing(ctx.statistics().cropTimer());
 
         const util::BoundingBox& bbox = cropping_.boundingBox();
         ctx.field().representation(out->croppedRepresentation(bbox));

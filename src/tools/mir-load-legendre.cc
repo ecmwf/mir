@@ -74,8 +74,8 @@ void MIRLoadLegendre::execute(const eckit::option::CmdArgs& args) {
     using caching::legendre::LegendreLoaderFactory;
     using caching::legendre::SharedMemoryLoader;
 
-//    Log::debug().setStream(std::cerr);
-//    Log::info().setStream(std::cerr);
+    Log::debug().setStream(std::cerr);
+    Log::info().setStream(std::cerr);
 
     const param::ConfigurationWrapper param(args);
 
