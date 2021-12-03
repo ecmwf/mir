@@ -45,10 +45,12 @@ private:
     size_t j_;
     size_t k_;
     size_t count_;
+    bool first_;
 
 protected:
     void print(std::ostream&) const override;
     bool next(Latitude&, Longitude&) override;
+    size_t index() const override;
     size_t resetToRow(size_t j);
 };
 

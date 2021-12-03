@@ -55,7 +55,7 @@ double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh, bool include_
 
         // distance, up to Earth radius
         double d          = 0.;
-        const double dMax = atlas::util::Earth::radius();
+        const double dMax = util::Earth::radius();
 
 
         // assumes:

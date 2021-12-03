@@ -13,6 +13,7 @@
 #pragma once
 
 #include <iosfwd>
+
 #include "eckit/types/Fraction.h"
 
 

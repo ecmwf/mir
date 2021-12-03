@@ -43,20 +43,26 @@ GribFixes::~GribFixes() {
 }
 
 
-bool GribFixes::fix(const param::MIRParametrisation& input, param::SimpleParametrisation& fixed) {
+void GribFixes::fix(const param::MIRParametrisation& input, param::SimpleParametrisation& fixed) {
     static util::recursive_mutex mtx;
     util::lock_guard<util::recursive_mutex> lock(mtx);
 
+    // select best fix by number of matching keys
+    size_t match           = 0;
+    fix_t::second_type fix = nullptr;
+
     for (auto& f : fixes_) {
-        if ((f.first)->matches(input)) {
+        if ((f.first)->matches(input) && match < (f.first)->size()) {
             ASSERT(f.second);
-            Log::warning() << "GribFixes: applying fixes " << *(f.second) << std::endl;
-            f.second->copyValuesTo(fixed);
-            return true;
+            match = (f.first)->size();
+            fix   = f.second;
         }
     }
 
-    return false;
+    if (fix != nullptr) {
+        Log::warning() << "GribFixes: applying fixes " << *fix << std::endl;
+        fix->copyValuesTo(fixed);
+    }
 }
 
 

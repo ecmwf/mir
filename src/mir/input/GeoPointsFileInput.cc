@@ -12,6 +12,8 @@
 
 #include "mir/input/GeoPointsFileInput.h"
 
+#include <algorithm>
+#include <cctype>
 #include <cstring>
 #include <fstream>
 #include <ostream>
@@ -85,11 +87,17 @@ GeoPointsFileInput::~GeoPointsFileInput() = default;
 size_t GeoPointsFileInput::readText(std::ifstream& in) {
     constexpr size_t lenGEO        = 4;
     constexpr size_t lenFORMAT     = 8;
-    constexpr size_t lenCOMMENT    = 2;
+    constexpr size_t lenCOLUMNS    = 8;
     constexpr size_t lenDATA       = 5;
     constexpr size_t lenLineBuffer = 10240;
 
-    eckit::Tokenizer parse2("=");
+    auto sane = [](const std::string& s) {
+        auto t(s);
+        std::transform(t.begin(), t.end(), t.begin(), [=](std::string::value_type c) { return std::tolower(c); });
+        return t;
+    };
+
+    eckit::Tokenizer parse_equals("=");
     eckit::Tokenizer parse(" \t");
     eckit::Translator<std::string, double> s2d;
 
@@ -97,13 +105,8 @@ size_t GeoPointsFileInput::readText(std::ifstream& in) {
     bool data = false;
     int count = 0;
 
-    enum
-    {
-        STANDARD = 0,
-        XYV,
-        XY_VECTOR,
-        POLAR_VECTOR
-    } format = STANDARD;
+    size_t latIndex = 0;
+    size_t lonIndex = 1;
 
     while (in.getline(line, sizeof(line))) {
 
@@ -130,18 +133,37 @@ size_t GeoPointsFileInput::readText(std::ifstream& in) {
             parse(line + lenFORMAT, v);
             ASSERT(v.size() == 1);
 
-            format = v[0] == "XYV"         ? XYV
-                     : v[0] == "XY_VECTOR" ? XY_VECTOR
-                     : v[0] == "POLAR_VECTOR"
-                         ? POLAR_VECTOR
-                         : throw exception::SeriousBug(path_ + " invalid format line '" + line + "'");
+            if (v[0] == "XYV") {
+                lonIndex = 0;
+                latIndex = 1;
+                continue;
+            }
         }
 
-        if (!data && std::strncmp(line, "# ", lenCOMMENT) == 0) {
+        if (!data && std::strncmp(line, "#COLUMNS", lenCOLUMNS) == 0) {
+            ASSERT(in.getline(line, sizeof(line)));
+
             std::vector<std::string> v;
-            parse2(line + 2, v);
-            ASSERT(v.size() == 2);
-            fieldParametrisation_.set(v[0], v[1]);
+            parse(line, v);
+            ASSERT(v.size() >= 3);
+
+            latIndex = 0;
+            lonIndex = 0;
+            for (size_t i = 0; i < v.size(); ++i) {
+                auto s = sane(v[i]);
+
+                if (s == "lon" || s == "x/long" || s == "long" || s == "longitude") {
+                    lonIndex = i;
+                    continue;
+                }
+                if (s == "lat" || s == "y/lat" || s == "latitude") {
+                    latIndex = i;
+                    continue;
+                }
+            }
+
+            ASSERT(latIndex != lonIndex);
+            continue;
         }
 
         if (!data && std::strncmp(line, "#DATA", lenDATA) == 0) {
@@ -149,12 +171,24 @@ size_t GeoPointsFileInput::readText(std::ifstream& in) {
             continue;
         }
 
+        if (!data) {
+            std::vector<std::string> v;
+            parse_equals(line + (std::strncmp(line, "#", 1) == 0 ? 1 : 0), v);
+
+            if (v.size() == 2) {
+                auto key = sane(v[0]) == "parameter" ? "paramId" : v[0];
+
+                fieldParametrisation_.set(key, v[1]);
+                continue;
+            }
+        }
+
         if (data) {
             std::vector<std::string> v;
             parse(line, v);
             if (v.size() >= 3) {
-                latitudes_.push_back(s2d(v[format == XYV ? 1 : 0]));
-                longitudes_.push_back(s2d(v[format == XYV ? 0 : 1]));
+                latitudes_.push_back(s2d(v[latIndex]));
+                longitudes_.push_back(s2d(v[lonIndex]));
                 values_.push_back(s2d(v.back()));
             }
         }

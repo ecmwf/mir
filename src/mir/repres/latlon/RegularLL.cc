@@ -45,6 +45,8 @@ Iterator* RegularLL::iterator() const {
         }
         bool next(Latitude& lat, Longitude& lon) override { return LatLonIterator::next(lat, lon); }
 
+        size_t index() const override { return count_; }
+
     public:
         RegularLLIterator(size_t ni, size_t nj, Latitude north, Longitude west, const util::Increments& increments) :
             LatLonIterator(ni, nj, north, west, increments) {}
@@ -60,21 +62,17 @@ void RegularLL::print(std::ostream& out) const {
 }
 
 atlas::Grid RegularLL::atlasGrid() const {
-
-    // NOTE: for non-shifted/shifted grid, yspace uses bounding box
+    // NOTE: yspace uses bounding box and not the domain
     // (this works together with the Atlas RectangularDomain cropping)
-    const util::Domain dom = domain();
-    double n               = bbox_.north().value();
-    double s               = bbox_.south().value();
-    double w               = dom.west().value();
-    double e               = dom.east().value();
+    const auto dom = domain();
 
-    using atlas::StructuredGrid;
-    using atlas::grid::LinearSpacing;
-    StructuredGrid::XSpace xspace(LinearSpacing(w, e, long(ni_), !dom.isPeriodicWestEast()));
-    StructuredGrid::YSpace yspace(LinearSpacing(n, s, long(nj_)));
+    atlas::StructuredGrid::XSpace xspace(
+        atlas::grid::LinearSpacing(dom.west().value(), dom.east().value(), long(ni_), !dom.isPeriodicWestEast()));
 
-    return StructuredGrid(xspace, yspace, StructuredGrid::Projection(), dom);
+    atlas::StructuredGrid::YSpace yspace(
+        atlas::grid::LinearSpacing(bbox_.north().value(), bbox_.south().value(), long(nj_)));
+
+    return atlas::StructuredGrid(xspace, yspace, {}, dom);
 }
 
 void RegularLL::fill(grib_info& info) const {
@@ -99,25 +97,19 @@ bool RegularLL::sameAs(const Representation& other) const {
 }
 
 const RegularLL* RegularLL::croppedRepresentation(const util::BoundingBox& bbox) const {
-    // Called by AreaCropper::execute and Gridded2GriddedInterpolation::execute
-
-    const PointLatLon reference(bbox_.south(), bbox_.west());
-
-    return new RegularLL(increments_, bbox, reference);
+    return new RegularLL(increments_, bbox, reference_);
 }
 
 util::BoundingBox RegularLL::extendBoundingBox(const util::BoundingBox& bbox) const {
     using iterator::detail::RegularIterator;
-
-    const PointLatLon reference(bbox_.south(), bbox_.west());
 
     auto sn = increments_.south_north().latitude().fraction();
     auto we = increments_.west_east().longitude().fraction();
     ASSERT(sn > 0);
     ASSERT(we > 0);
 
-    auto shift_sn = (reference.lat().fraction() / sn).decimalPart() * sn;
-    auto shift_we = (reference.lon().fraction() / we).decimalPart() * we;
+    auto shift_sn = (reference_.lat().fraction() / sn).decimalPart() * sn;
+    auto shift_we = (reference_.lon().fraction() / we).decimalPart() * we;
 
     // adjust West/East to include bbox's West/East ('outwards')
     Longitude w = bbox.west();

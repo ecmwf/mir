@@ -12,25 +12,30 @@
 
 #include "mir/netcdf/MergeCoordinateStep.h"
 
+#include <ostream>
+
 #include "mir/netcdf/Dimension.h"
 #include "mir/netcdf/Matrix.h"
 #include "mir/netcdf/Type.h"
 #include "mir/netcdf/Variable.h"
 
-#include <ostream>
 
 namespace mir {
 namespace netcdf {
 
+
 MergeCoordinateStep::MergeCoordinateStep(Variable& out, const Variable& in) : out_(out), in_(in) {}
+
 
 int MergeCoordinateStep::rank() const {
     return 4;
 }
 
+
 void MergeCoordinateStep::print(std::ostream& out) const {
     out << "MergeCoordinateStep[" << out_ << " & " << in_ << "]";
 }
+
 
 void MergeCoordinateStep::execute(MergePlan& /*plan*/) {
 #if 0
@@ -61,6 +66,7 @@ void MergeCoordinateStep::execute(MergePlan& /*plan*/) {
     // out_.setMatrix(m);
 #endif
 }
+
 
 }  // namespace netcdf
 }  // namespace mir

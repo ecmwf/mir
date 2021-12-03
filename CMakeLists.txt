@@ -12,7 +12,7 @@ cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 
 find_package(ecbuild 3.4 REQUIRED HINTS ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild)
 
-project(mir VERSION 1.9.7 LANGUAGES CXX)
+project(mir VERSION 1.10.0 LANGUAGES CXX)
 
 set(PERSISTENT_NAMESPACE "eckit" CACHE INTERNAL "") # needed for generating .b files for persistent support
 set(CMAKE_CXX_STANDARD 11)
@@ -24,6 +24,11 @@ ecbuild_add_option(FEATURE MIR_DOWNLOAD_MASKS DEFAULT ON  DESCRIPTION "download 
 ecbuild_add_option(FEATURE TEST_ASSERTIONS    DEFAULT ON  DESCRIPTION "test: regressions")
 ecbuild_add_option(FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support for netCDF" REQUIRED_PACKAGES "NetCDF COMPONENTS C")
 ecbuild_add_option(FEATURE PNG                DEFAULT OFF DESCRIPTION "support for PNG encoding" REQUIRED_PACKAGES PNG)
+ecbuild_add_option(FEATURE OMP                DEFAULT OFF DESCRIPTION "support for OpenMP shared memory parallelism" REQUIRED_PACKAGES "OpenMP COMPONENTS CXX")
+
+if(NOT TARGET OpenMP::OpenMP_CXX)
+    set(mir_HAVE_OMP 0)
+endif()
 
 ecbuild_find_package(NAME eccodes VERSION 2.22 REQUIRED)
 ecbuild_find_package(NAME eckit   VERSION 1.14 REQUIRED)

@@ -95,6 +95,8 @@ list(APPEND mir_srcs
     action/misc/Noop.h
     action/misc/ReferencePattern.cc
     action/misc/ReferencePattern.h
+    action/misc/ResetMissingValues.cc
+    action/misc/ResetMissingValues.h
     action/misc/SelectField.cc
     action/misc/SelectField.h
     action/misc/SetMetadata.cc
@@ -230,6 +232,8 @@ list(APPEND mir_srcs
     iterator/UnstructuredIterator.h
     iterator/detail/RegularIterator.cc
     iterator/detail/RegularIterator.h
+    key/Area.cc
+    key/Area.h
     key/Key.cc
     key/Key.h
     key/grid/ClassicPattern.cc
@@ -357,6 +361,8 @@ list(APPEND mir_srcs
     method/knn/NearestNeighbour.h
     method/knn/distance/ClimateFilter.cc
     method/knn/distance/ClimateFilter.h
+    method/knn/distance/Cressman.cc
+    method/knn/distance/Cressman.h
     method/knn/distance/DistanceWeighting.cc
     method/knn/distance/DistanceWeighting.h
     method/knn/distance/DistanceWeightingWithLSM.cc
@@ -375,12 +381,16 @@ list(APPEND mir_srcs
     method/knn/distance/NearestNeighbour.h
     method/knn/distance/NoDistanceWeighting.cc
     method/knn/distance/NoDistanceWeighting.h
+    method/knn/distance/PseudoLaplace.cc
+    method/knn/distance/PseudoLaplace.h
     method/knn/pick/Distance.cc
     method/knn/pick/Distance.h
     method/knn/pick/DistanceAndNClosest.cc
     method/knn/pick/DistanceAndNClosest.h
     method/knn/pick/DistanceOrNClosest.cc
     method/knn/pick/DistanceOrNClosest.h
+    method/knn/pick/LongestElementDiagonalAndNClosest.cc
+    method/knn/pick/LongestElementDiagonalAndNClosest.h
     method/knn/pick/NClosest.cc
     method/knn/pick/NClosest.h
     method/knn/pick/NClosestOrNearest.cc
@@ -407,8 +417,6 @@ list(APPEND mir_srcs
     method/nonlinear/NonLinear.h
     method/nonlinear/SimulateMissingValue.cc
     method/nonlinear/SimulateMissingValue.h
-    method/other/PseudoLaplace.cc
-    method/other/PseudoLaplace.h
     method/solver/Multiply.cc
     method/solver/Multiply.h
     method/solver/Solver.h
@@ -526,6 +534,8 @@ list(APPEND mir_srcs
     repres/regular/PolarStereographic.h
     repres/regular/RegularGrid.cc
     repres/regular/RegularGrid.h
+    repres/regular/SpaceView.cc
+    repres/regular/SpaceView.h
     repres/sh/SphericalHarmonics.cc
     repres/sh/SphericalHarmonics.h
     repres/unsupported/Albers.cc
@@ -538,8 +548,6 @@ list(APPEND mir_srcs
     repres/unsupported/IrregularLatlon.h
     repres/unsupported/RotatedSH.cc
     repres/unsupported/RotatedSH.h
-    repres/unsupported/SpaceView.cc
-    repres/unsupported/SpaceView.h
     repres/unsupported/StretchedGG.cc
     repres/unsupported/StretchedGG.h
     repres/unsupported/StretchedLL.cc

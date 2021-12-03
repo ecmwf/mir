@@ -15,6 +15,7 @@
 #include <ostream>
 #include <vector>
 
+#include "mir/key/Area.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/Exceptions.h"
@@ -27,7 +28,7 @@ namespace interpolate {
 
 
 Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation& parametrisation) :
-    Gridded2UnrotatedGrid(parametrisation), reference_(0, 0) {
+    Gridded2UnrotatedGrid(parametrisation), reference_{0, 0} {
 
     std::vector<double> value;
     ASSERT(parametrisation_.get("grid", value));
@@ -35,11 +36,8 @@ Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation& parametris
 
     increments_ = util::Increments(value[0], value[1]);
 
-    if (parametrisation_.userParametrisation().get("area", value)) {
-        ASSERT_KEYWORD_AREA_SIZE(value.size());
-
-        bbox_      = util::BoundingBox(value[0], value[1], value[2], value[3]);
-        reference_ = PointLatLon(bbox_.south(), bbox_.west());
+    if (key::Area::get(parametrisation_.userParametrisation(), bbox_)) {
+        reference_ = {bbox_.south(), bbox_.west()};
     }
 
     repres::latlon::LatLon::globaliseBoundingBox(bbox_, increments_, reference_);

@@ -27,7 +27,7 @@ public:
 
     // -- Constructors
     UnstructuredIterator(const std::vector<double>& latitudes, const std::vector<double>& longitudes) :
-        i_(0), size_(latitudes.size()), latitudes_(latitudes), longitudes_(longitudes) {
+        count_(0), size_(latitudes.size()), latitudes_(latitudes), longitudes_(longitudes), first_(true) {
         ASSERT(latitudes_.size() == longitudes_.size());
     }
 
@@ -58,10 +58,11 @@ public:
 private:
     // -- Members
 
-    size_t i_;
+    size_t count_;
     const size_t size_;
     const std::vector<double>& latitudes_;
     const std::vector<double>& longitudes_;
+    bool first_;
 
     // -- Methods
     // None
@@ -77,14 +78,17 @@ private:
     }
 
     bool next(Latitude& lat, Longitude& lon) override {
-        if (i_ < size_) {
-            lat = latitudes_[i_];
-            lon = longitudes_[i_];
-            i_++;
+        if ((first_ ? count_ : ++count_) < size_) {
+            first_ = false;
+            lat    = latitudes_[count_];
+            lon    = longitudes_[count_];
+
             return true;
         }
         return false;
     }
+
+    size_t index() const override { return count_; }
 
     // -- Class members
     // None

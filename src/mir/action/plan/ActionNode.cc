@@ -10,10 +10,11 @@
  */
 
 
+#include "mir/action/plan/ActionNode.h"
+
 #include <ostream>
 
 #include "mir/action/plan/Action.h"
-#include "mir/action/plan/ActionNode.h"
 #include "mir/action/plan/Executor.h"
 #include "mir/util/Log.h"
 

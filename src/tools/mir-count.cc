@@ -16,10 +16,10 @@
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/SimpleOption.h"
-#include "eckit/option/VectorOption.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
+#include "mir/key/Area.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/param/ConfigurationWrapper.h"
@@ -42,7 +42,7 @@ struct MIRCount : tools::MIRTool {
 
         // options_.push_back(new SimpleOption< bool >("sizes", "compare sizes of coordinates and values vectors,
         // default false"));
-        options_.push_back(new VectorOption<double>("area", "cropping area (North/West/South/East)", 4));
+        options_.push_back(new FactoryOption<key::Area>("area", "cropping area"));
         options_.push_back(new FactoryOption<key::grid::GridPattern>(
             "grid", "Interpolate to given grid (following a recognizable regular expression)"));
         options_.push_back(new SimpleOption<prec_t>("precision", "Output precision"));

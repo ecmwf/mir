@@ -15,6 +15,7 @@
 #include "eckit/config/Resource.h"
 #include "eckit/thread/AutoLock.h"
 
+#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
@@ -27,11 +28,13 @@ namespace mir {
 namespace search {
 
 PointSearch::PointSearch(const param::MIRParametrisation& parametrisation, const repres::Representation& r) {
+    bool caching = LibMir::caching();
+    parametrisation.get("caching", caching);
 
-    std::string name = "mapped-cache-file";
+    std::string name = caching ? "mapped-cache-file" : "memory";
     parametrisation.get("point-search-trees", name);
 
-    tree_.reset(TreeFactory::build(name, r, parametrisation));
+    tree_.reset(TreeFactory::build(name, r));
 
     eckit::AutoLock<Tree> lock(*tree_);
 
@@ -78,27 +81,20 @@ void PointSearch::build(const repres::Representation& r) {
         std::vector<PointValueType> points;
         points.reserve(npts);
 
-        const std::unique_ptr<repres::Iterator> it(r.iterator());
-        size_t i = 0;
-        while (it->next()) {
-            ASSERT(i < npts);
-            points.emplace_back(PointValueType(it->point3D(), i));
-            ++i;
+        for (const std::unique_ptr<repres::Iterator> it(r.iterator()); it->next();) {
+            points.emplace_back(PointValueType(it->point3D(), it->index()));
         }
 
-        ASSERT(npts == i);
         tree_->build(points);
+
+        if (points.size() < npts) {
+            Log::info() << "PointSearch: built tree for " << Log::Pretty(points.size(), {"valid point"}) << std::endl;
+        }
     }
     else {
-        const std::unique_ptr<repres::Iterator> it(r.iterator());
-        size_t i = 0;
-        while (it->next()) {
-            ASSERT(i < npts);
-            tree_->insert(PointValueType(it->point3D(), i));
-            ++i;
+        for (const std::unique_ptr<repres::Iterator> it(r.iterator()); it->next();) {
+            tree_->insert(PointValueType(it->point3D(), it->index()));
         }
-
-        ASSERT(npts == i);
     }
 }
 

@@ -29,8 +29,7 @@ public:
     // -- Constructors
 
     LatLon(const param::MIRParametrisation&);
-    LatLon(const util::Increments&, const util::BoundingBox& = util::BoundingBox(),
-           const PointLatLon& reference = PointLatLon(0, 0));
+    LatLon(const util::Increments&, const util::BoundingBox& = {}, const PointLatLon& reference = {0, 0});
 
     // -- Destructor
 
@@ -49,10 +48,10 @@ public:
     size_t Nj() const { return nj_; }
 
     static void globaliseBoundingBox(util::BoundingBox&, const util::Increments&,
-                                     const PointLatLon& reference = PointLatLon(0, 0));
+                                     const PointLatLon& reference = {0, 0});
 
     static void correctBoundingBox(util::BoundingBox&, size_t& ni, size_t& nj, const util::Increments&,
-                                   const PointLatLon& reference = PointLatLon(0, 0));
+                                   const PointLatLon& reference = {0, 0});
 
     static bool samePoints(const param::MIRParametrisation& user, const param::MIRParametrisation& field);
 
@@ -68,7 +67,8 @@ public:
 protected:
     // -- Members
 
-    util::Increments increments_;
+    const util::Increments increments_;
+    const PointLatLon reference_;
     size_t ni_;
     size_t nj_;
 
@@ -107,13 +107,15 @@ protected:
         eckit::Fraction ns_;
         size_t i_;
         size_t j_;
-        size_t count_;
         Latitude latValue_;
         Longitude lonValue_;
         eckit::Fraction lat_;
         eckit::Fraction lon_;
 
     protected:
+        size_t count_;
+        bool first_;
+
         ~LatLonIterator();
         void print(std::ostream&) const;
         bool next(Latitude&, Longitude&);

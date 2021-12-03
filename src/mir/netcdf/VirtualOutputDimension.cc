@@ -12,18 +12,22 @@
 
 #include "mir/netcdf/VirtualOutputDimension.h"
 
+#include <netcdf.h>
+
 #include "mir/netcdf/Dataset.h"
 #include "mir/netcdf/Exceptions.h"
 
-#include <netcdf.h>
 
 namespace mir {
 namespace netcdf {
 
+
 VirtualOutputDimension::VirtualOutputDimension(Dataset& owner, const std::string& name) :
     Dimension(owner, name, 1), id_(-1), created_(false), grown_(false) {}
 
+
 VirtualOutputDimension::~VirtualOutputDimension() = default;
+
 
 void VirtualOutputDimension::create(int nc) const {
     ASSERT(len_ > 1);
@@ -39,14 +43,17 @@ bool VirtualOutputDimension::inUse() const {
     return len_ > 1;
 }
 
+
 void VirtualOutputDimension::print(std::ostream& out) const {
     out << "VirtualOutputDimension[name=" << name_ << ",size=" << len_ << "]";
 }
+
 
 int VirtualOutputDimension::id() const {
     ASSERT(created_);
     return id_;
 }
+
 
 void VirtualOutputDimension::grow(size_t count) {
     ASSERT(!created_);
@@ -54,6 +61,7 @@ void VirtualOutputDimension::grow(size_t count) {
     len_   = count;
     grown_ = true;
 }
+
 
 }  // namespace netcdf
 }  // namespace mir

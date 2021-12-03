@@ -29,8 +29,8 @@ public:
     // -- Constructors
 
     RotatedLL(const param::MIRParametrisation&);
-    RotatedLL(const util::Increments&, const util::Rotation&, const util::BoundingBox& = util::BoundingBox(),
-              const PointLatLon& reference = PointLatLon(0, 0));
+    RotatedLL(const util::Increments&, const util::Rotation&, const util::BoundingBox& = {},
+              const PointLatLon& reference = {0, 0});
 
     // -- Destructor
 

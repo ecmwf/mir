@@ -5,9 +5,11 @@ file(REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR})
 
 foreach(_t
 #    MIR-333
+#    MIR-356
     MIR-425
     MIR-536
     PGEN-412
+    area
     action_graph
     bounding_box
     gaussian_grid
@@ -18,6 +20,7 @@ foreach(_t
     spectral_order
     statistics
     style
+    vector-space
     wind)
     ecbuild_add_test(
         TARGET            mir_tests_unit_${_t}

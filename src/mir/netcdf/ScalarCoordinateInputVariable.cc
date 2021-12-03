@@ -12,11 +12,12 @@
 
 #include "mir/netcdf/ScalarCoordinateInputVariable.h"
 
+#include <ostream>
+
 #include "mir/netcdf/Dataset.h"
 #include "mir/netcdf/ScalarCoordinateOutputVariable.h"
 #include "mir/netcdf/VirtualInputDimension.h"
 
-#include <ostream>
 
 namespace mir {
 namespace netcdf {

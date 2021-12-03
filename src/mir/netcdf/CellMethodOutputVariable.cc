@@ -12,10 +12,10 @@
 
 #include "mir/netcdf/CellMethodOutputVariable.h"
 
+#include <ostream>
+
 #include "mir/netcdf/MergeDataStep.h"
 #include "mir/netcdf/MergePlan.h"
-
-#include <ostream>
 
 
 namespace mir {
@@ -25,16 +25,20 @@ CellMethodOutputVariable::CellMethodOutputVariable(Dataset& owner, const std::st
                                                    const std::vector<Dimension*>& dimensions) :
     OutputVariable(owner, name, dimensions) {}
 
+
 CellMethodOutputVariable::~CellMethodOutputVariable() = default;
+
 
 void CellMethodOutputVariable::print(std::ostream& out) const {
     out << "CellMethodOutputVariable[name=" << name_ << "]";
 }
 
+
 void CellMethodOutputVariable::merge(const Variable& other, MergePlan& plan) {
     Variable::merge(other, plan);
     plan.add(new MergeDataStep(*this, other));
 }
+
 
 }  // namespace netcdf
 }  // namespace mir

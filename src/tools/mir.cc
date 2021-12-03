@@ -27,6 +27,7 @@
 #include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/data/Space.h"
 #include "mir/input/MultiDimensionalGribFileInput.h"
+#include "mir/key/Area.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/intgrid/Intgrid.h"
 #include "mir/key/packing/Packing.h"
@@ -168,8 +169,10 @@ struct MIR : tools::MIRTool {
         options_.push_back(new SimpleOption<double>("climate-filter-delta",
                                                     "Climate filter (topographic data smoothing operator) width of "
                                                     "filter edge, must be greater than 'distance' (default 1000.)"));
+        options_.push_back(
+            new SimpleOption<double>("cressman-model-extension-power", "Cressman Model Extension power (default 1.)"));
 
-        options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
+        options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and k-d trees (default 1)"));
         options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebra>(
             "backend", "Linear algebra backend (default '" + eckit::linalg::LinearAlgebra::backend().name() + "')"));
         options_.push_back(new FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
@@ -223,7 +226,7 @@ struct MIR : tools::MIRTool {
 
         //==============================================
         options_.push_back(new Separator("Filtering"));
-        options_.push_back(new VectorOption<double>("area", "cropping area: north/west/south/east", 4));
+        options_.push_back(new FactoryOption<key::Area>("area", "cropping area"));
         options_.push_back(new SimpleOption<eckit::PathName>("bitmap", "Bitmap file to apply"));
         options_.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
         options_.push_back(new FactoryOption<stats::DistributionFactory>(
@@ -307,9 +310,9 @@ struct MIR : tools::MIRTool {
 
         //==============================================
         options_.push_back(new Separator("Miscellaneous"));
-        options_.push_back(
-            new FactoryOption<key::style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
-        options_.push_back(new FactoryOption<data::SpaceChooser>("dimension", "Select dimension"));
+        options_.push_back(new FactoryOption<key::style::MIRStyleFactory>(
+            "style", "Select how post-processing options are interpreted"));
+        options_.push_back(new FactoryOption<data::SpaceChooser>("vector-space", "Select vector-space"));
         options_.push_back(new SimpleOption<size_t>("precision", "Statistics methods output precision"));
         options_.push_back(new SimpleOption<std::string>("input", "Input options YAML (lat, lon, etc.)"));
         options_.push_back(new SimpleOption<std::string>("output", "Output options YAML"));
@@ -324,6 +327,11 @@ struct MIR : tools::MIRTool {
 #if defined(mir_HAVE_ATLAS)
         options_.push_back(new FactoryOption<caching::legendre::LegendreLoaderFactory>(
             "legendre-loader", "Select how to load Legendre coefficients in memory"));
+#endif
+
+#if defined(mir_HAVE_OMP)
+        options_.push_back(
+            new SimpleOption<size_t>("parallel-omp-num-threads", "Set number of threads for OMP parallel regions"));
 #endif
 
         //==============================================
@@ -343,6 +351,8 @@ struct MIR : tools::MIRTool {
                                                              "Write statistics to file (after plan execution)"));
             options_.push_back(new SimpleOption<bool>("dont-compress-plan", "Don't compress plan"));
             options_.push_back(new FactoryOption<output::MIROutputFactory>("format", "Output format"));
+            options_.push_back(
+                new SimpleOption<bool>("reset-missing-values", "Use first encoded value to set missing value"));
 #if defined(mir_HAVE_PNG)
             options_.push_back(
                 new FactoryOption<output::PNGEncoderFactory>("png-output-encoder", "PNG output encoder"));

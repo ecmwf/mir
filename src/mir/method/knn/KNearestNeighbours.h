@@ -56,8 +56,6 @@ protected:
 private:
     void print(std::ostream&) const override;
 
-    bool canIntroduceMissingValues() const override;
-
     const char* name() const override = 0;
 
     virtual const pick::Pick& pick() const                               = 0;

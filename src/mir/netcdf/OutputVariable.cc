@@ -12,6 +12,8 @@
 
 #include "mir/netcdf/OutputVariable.h"
 
+#include <netcdf.h>
+
 #include "mir/netcdf/Attribute.h"
 #include "mir/netcdf/Codec.h"
 #include "mir/netcdf/Dataset.h"
@@ -20,7 +22,6 @@
 #include "mir/netcdf/Matrix.h"
 #include "mir/netcdf/Type.h"
 
-#include <netcdf.h>
 
 namespace mir {
 namespace netcdf {
@@ -63,6 +64,7 @@ void OutputVariable::create(int nc) const {
     }
 }
 
+
 void OutputVariable::save(int nc) const {
     ASSERT(created_);
     matrix_->save(nc, id_, path());
@@ -73,15 +75,18 @@ void OutputVariable::save(int nc) const {
     }
 }
 
+
 void OutputVariable::print(std::ostream& out) const {
     out << "OutputVariable[name=" << name_ << "]";
 }
+
 
 int OutputVariable::varid() const {
     ASSERT(created_);
     ASSERT(id_ >= 0);
     return id_;
 }
+
 
 }  // namespace netcdf
 }  // namespace mir

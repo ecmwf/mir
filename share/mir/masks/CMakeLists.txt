@@ -3,7 +3,8 @@ if(HAVE_MIR_DOWNLOAD_MASKS)
     set(_dir "share/mir/masks")
     foreach(_f
         "lsm.10min.mask"
-        "lsm.1km.mask"
+        "lsm.1km.climate.v013.mask"
+        "lsm.1km.climate.v020.mask"
         "lsm.N128.grib"
         "lsm.N256.grib"
         "lsm.N320.grib"

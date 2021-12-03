@@ -81,26 +81,26 @@ void StructuredMethod::normalise(triplet_vector_t& triplets) const {
 
 void StructuredMethod::getRepresentationPoints(const repres::Representation& r, std::vector<PointLatLon>& points,
                                                Latitude& minimum, Latitude& maximum) const {
-    const size_t N = r.numberOfPoints();
-    points.resize(N);
+    points.resize(r.numberOfPoints());
     minimum = 0;
     maximum = 0;
 
-    std::unique_ptr<repres::Iterator> it(r.iterator());
-    for (size_t i = 0; it->next(); ++i) {
+    bool first = true;
 
-        ASSERT(i < N);
-        const auto& p = it->pointUnrotated();
+    for (const std::unique_ptr<repres::Iterator> it(r.iterator()); it->next();) {
+        auto& p                = it->pointUnrotated();
+        points.at(it->index()) = p;
 
-        points[i] = PointLatLon(p.lat(), p.lon());
-
-        if (i == 0 || p.lat() < minimum) {
-            minimum = p.lat();
+        auto& lat = p.lat();
+        if (first || lat < minimum) {
+            minimum = lat;
         }
 
-        if (i == 0 || p.lat() > maximum) {
-            maximum = p.lat();
+        if (first || lat > maximum) {
+            maximum = lat;
         }
+
+        first = false;
     }
 
     ASSERT(minimum <= maximum);
@@ -117,7 +117,7 @@ void StructuredMethod::getRepresentationLatitudes(const repres::Representation& 
     latitudes.clear();
     latitudes.reserve(pl.size());
 
-    std::unique_ptr<repres::Iterator> it(r.iterator());
+    const std::unique_ptr<repres::Iterator> it(r.iterator());
     for (long Nj : pl) {
         ASSERT(Nj >= 2);
         for (long i = 0; i < Nj; ++i) {

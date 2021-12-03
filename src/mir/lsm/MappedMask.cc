@@ -113,9 +113,8 @@ MappedMask::MappedMask(const std::string& name, const eckit::PathName& path, con
 
     const unsigned char* mask = reinterpret_cast<unsigned char*>(address);
 
-    std::unique_ptr<repres::Iterator> iter(representation.iterator());
-    while (iter->next()) {
-        const auto& p = iter->pointUnrotated();
+    for (const std::unique_ptr<repres::Iterator> it(representation.iterator()); it->next();) {
+        const auto& p = it->pointUnrotated();
         Latitude lat  = p.lat();
         Longitude lon = p.lon().normalise(Longitude::GREENWICH);
 

@@ -1,0 +1,7 @@
+# mars
+tiny.grib
+# mir
+$MIR_CACHE_PATH=/bad
+--grid=0.5/0.5 --caching=0
+# assertions
+gridType=regular_ll

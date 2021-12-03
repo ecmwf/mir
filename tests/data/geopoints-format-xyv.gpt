@@ -1,0 +1,8 @@
+#GEO
+#FORMAT XYV
+PARAMETER = 12004
+x/long y/lat value
+#DATA
+-5.35  36.15  300.9
+32.98  34.58  301.6
+21.65  41.97  299.4

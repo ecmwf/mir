@@ -413,7 +413,7 @@ density.volume:
 - 260216  # Volumetric saturation of soil moisture
 - 260644  # Volumetric soil ice
 
-space.1d.angle.degree.asymmetric:
+vector-space.1d-angle-degree-asymmetric:
 - 3031  # Wind direction
 - 3047  # Direction of current
 - 3093  # Direction of ice drift
@@ -450,20 +450,20 @@ space.1d.angle.degree.asymmetric:
 - 300107  # Primary wave direction
 - 300109  # Second wave direction
 
-space.1d.angle.degree.symmetric:
+vector-space.1d-angle-degree-symmetric:
 - 260295  # Latitude of U Wind Component of Velocity
 - 260297  # Latitude of V Wind Component of Velocity
 - 260299  # Latitude of Presure Point
 - 260421  # Latitude (-90 to +90)
 - 260425  # Latitude (nearest neighbor) (-90 to +90)
 
-space.1d.angle.radian.symmetric:
+vector-space.1d-angle-radian-symmetric:
 - 162  # Angle of sub-gridscale orography
 - 129162  # Angle of sub-gridscale orography gradient
 - 171162  # Angle of sub-gridscale orography anomaly
 - 200162  # Angle of sub-gridscale orography difference
 
-space.2d.vector.u:
+vector-space.2d-vector-u:
 - 11  # U component of divergent wind
 - 13  # U component of rotational wind
 - 131  # U component of wind
@@ -558,7 +558,7 @@ space.2d.vector.u:
 - 300230  # Time mean surface zonal wind (u)
 - 300255  # Time mean zonal wind (u)
 
-space.2d.vector.v:
+vector-space.2d-vector-v:
 - 12  # V component of divergent wind
 - 14  # V component of rotational wind
 - 132  # V component of wind
@@ -653,19 +653,19 @@ space.2d.vector.v:
 - 300231  # Time mean surface meridional wind (v)
 - 300241  # Time mean meridional wind (v)
 
-space.3d.vector.u:
+vector-space.3d-vector-u:
 - 150133  # Ocean U wind component
 - 151131  # Ocean current zonal component
 
-space.3d.vector.v:
+vector-space.3d-vector-v:
 - 150134  # Ocean V wind component
 - 151132  # Ocean current meridional component
 
-space.3d.vector.w:
+vector-space.3d-vector-w:
 - 150135  # Ocean W wind component
 - 151133  # Ocean current vertical component
 
-space.geographic-coordinate.latitude:
+vector-space.geographic-coordinate-latitude:
 - 250001  # Latitude
 - 250003  # Latitude on T grid
 - 250005  # Latitude on U grid
@@ -673,7 +673,7 @@ space.geographic-coordinate.latitude:
 - 250009  # Latitude on W grid
 - 250011  # Latitude on F grid
 
-space.geographic-coordinate.longitude:
+vector-space.geographic-coordinate-longitude:
 - 250002  # Longitude
 - 250004  # Longitude on T grid
 - 250006  # Longitude on U grid
@@ -704,6 +704,10 @@ index:
 - 260172  # Elevation of snow covered terrain
 - 260184  # Land use
 - 260221  # Cloud top height quality indicator
+- 260318  # Precipitation type (most severe) in the last 1 hour
+- 260319  # Precipitation type (most severe) in the last 3 hours
+- 260320  # Precipitation type (most frequent) in the last 1 hour
+- 260321  # Precipitation type (most frequent) in the last 3 hours
 - 260380  # Categorical Ozone Concentration
 - 260394  # Slight risk convective outlook
 - 260395  # Moderate risk convective outlook
@@ -1842,6 +1846,8 @@ intensity:
 - 260467  # Water Condensate Zonal Flux (Vertical Int)
 - 260468  # Water Condensate Meridional Flux (Vertical Int)
 - 260469  # Aerodynamic conductance
+- 260472  # Time-mean snow depth water equivalent
+- 260473  # Time-mean skin temperature
 - 260480  # Bare soil surface skin temperature
 - 260481  # Average surface skin temperature
 - 260482  # Effective radiative skin temperature
@@ -2103,6 +2109,14 @@ numerics.mean:
 - 235066  # Mean convective rain rate
 - 235067  # Mean large-scale rain rate
 - 235070  # Mean potential evaporation rate
+- 260435  # Time-mean Evapotranspiration rate in the last 24h
+- 260438  # Time-mean potential evapotranspiration rate in the last 24h
+- 260440  # Time-mean volumetric soil moisture
+- 260441  # Time-mean total precipitation rate
+- 260445  # Time-mean water runoff and drainage rate in the last 24h
+- 260472  # Time-mean snow depth water equivalent
+- 260473  # Time-mean skin temperature
+- 260477  # Time-mean snow melt rate in the last 24h
 
 numerics.accumulated:
 - 8  # Surface runoff
@@ -2327,6 +2341,100 @@ numerics.accumulated:
 - 201102  # surface precipitation amount, rain, grid scale
 - 201113  # surface precipitation amount, rain, convective
 - 215089  # Accumulated total aerosol optical depth at 550 nm
+- 222001  # Time-integrated dry deposition mass flux of Ozone
+- 222003  # Time-integrated dry deposition mass flux of Hydrogen peroxide
+- 222005  # Time-integrated dry deposition mass flux of Carbon monoxide
+- 222006  # Time-integrated dry deposition mass flux of Nitric acid
+- 222007  # Time-integrated dry deposition mass flux of Methyl peroxide
+- 222008  # Time-integrated dry deposition mass flux of Formaldehyde
+- 222012  # Time-integrated dry deposition mass flux of Aldehydes
+- 222013  # Time-integrated dry deposition mass flux of Peroxyacetyl nitrate
+- 222014  # Time-integrated dry deposition mass flux of Peroxides
+- 222015  # Time-integrated dry deposition mass flux of Organic nitrates
+- 222016  # Time-integrated dry deposition mass flux of Isoprene
+- 222017  # Time-integrated dry deposition mass flux of Sulphur dioxide
+- 222019  # Time-integrated dry deposition mass flux of Ammonia
+- 222020  # Time-integrated dry deposition mass flux of Sulfate
+- 222021  # Time-integrated dry deposition mass flux of Ammonium
+- 222023  # Time-integrated dry deposition mass flux of Methyl glyoxal
+- 222024  # Time-integrated dry deposition mass flux of Ozone (stratospheric)
+- 222027  # Time-integrated dry deposition mass flux of Nitrogen monoxide
+- 222028  # Time-integrated dry deposition mass flux of Hydroperoxy radical
+- 222029  # Time-integrated dry deposition mass flux of Methylperoxy radical
+- 222031  # Time-integrated dry deposition mass flux of Nitrogen dioxide
+- 222032  # Time-integrated dry deposition mass flux of Nitrate radical
+- 222033  # Time-integrated dry deposition mass flux of Dinitrogen pentoxide
+- 222034  # Time-integrated dry deposition mass flux of Pernitric acid
+- 222042  # Time-integrated dry deposition mass flux of Methanol
+- 222043  # Time-integrated dry deposition mass flux of Formic acid
+- 222044  # Time-integrated dry deposition mass flux of Methacrylic acid
+- 222045  # Time-integrated dry deposition mass flux of Ethane
+- 222046  # Time-integrated dry deposition mass flux of Ethanol
+- 222050  # Time-integrated dry deposition mass flux of Methacrolein
+- 222051  # Time-integrated dry deposition mass flux of Nitrate
+- 222052  # Time-integrated dry deposition mass flux of Acetone
+- 222086  # Time-integrated dry deposition mass flux of Nitrous acid
+- 222099  # Time-integrated dry deposition mass flux of Toluene and less reactive aromatics
+- 222100  # Time-integrated dry deposition mass flux of Xylene and more reactive aromatics
+- 222101  # Time-integrated dry deposition mass flux of Glycolaldehyde
+- 222107  # Time-integrated dry deposition mass flux of Glyoxal
+- 222118  # Time-integrated dry deposition mass flux of Hydroxyacetone
+- 222161  # Time-integrated dry deposition mass flux of All hydroxy-peroxides products of the reaction of hydroxy-isoprene adducts with O2
+- 222224  # Time-integrated dry deposition mass flux of Acetonitrile
+- 222226  # Time-integrated dry deposition mass flux of Hydrogen cyanide
+- 223001  # Time-integrated wet deposition mass flux of Ozone
+- 223003  # Time-integrated wet deposition mass flux of Hydrogen peroxide
+- 223006  # Time-integrated wet deposition mass flux of Nitric acid
+- 223007  # Time-integrated wet deposition mass flux of Methyl peroxide
+- 223008  # Time-integrated wet deposition mass flux of Formaldehyde
+- 223012  # Time-integrated wet deposition mass flux of Aldehydes
+- 223013  # Time-integrated wet deposition mass flux of Peroxyacetyl nitrate
+- 223014  # Time-integrated wet deposition mass flux of Peroxides
+- 223015  # Time-integrated wet deposition mass flux of Organic nitrates
+- 223016  # Time-integrated wet deposition mass flux of Isoprene
+- 223017  # Time-integrated wet deposition mass flux of Sulphur dioxide
+- 223019  # Time-integrated wet deposition mass flux of Ammonia
+- 223020  # Time-integrated wet deposition mass flux of Sulfate
+- 223021  # Time-integrated wet deposition mass flux of Ammonium
+- 223022  # Time-integrated wet deposition mass flux of Methane sulfonic acid
+- 223023  # Time-integrated wet deposition mass flux of Methyl glyoxal
+- 223025  # Time-integrated wet deposition mass flux of Carbon monoxide
+- 223026  # Time-integrated wet deposition mass flux of Lead
+- 223027  # Time-integrated wet deposition mass flux of Nitrogen monoxide
+- 223028  # Time-integrated wet deposition mass flux of Hydroperoxy radical
+- 223029  # Time-integrated wet deposition mass flux of Methylperoxy radical
+- 223031  # Time-integrated wet deposition mass flux of Nitrogen dioxide
+- 223032  # Time-integrated wet deposition mass flux of Nitrate radical
+- 223033  # Time-integrated wet deposition mass flux of Dinitrogen pentoxide
+- 223034  # Time-integrated wet deposition mass flux of Pernitric acid
+- 223042  # Time-integrated wet deposition mass flux of Methanol
+- 223043  # Time-integrated wet deposition mass flux of Formic acid
+- 223044  # Time-integrated wet deposition mass flux of Methacrylic acid
+- 223045  # Time-integrated wet deposition mass flux of Ethane
+- 223046  # Time-integrated wet deposition mass flux of Ethanol
+- 223050  # Time-integrated wet deposition mass flux of Methacrolein
+- 223051  # Time-integrated wet deposition mass flux of Nitrate
+- 223052  # Time-integrated wet deposition mass flux of Acetone
+- 223064  # Time-integrated wet deposition mass flux of Chlorine nitrate
+- 223065  # Time-integrated wet deposition mass flux of Hypochlorous acid
+- 223068  # Time-integrated wet deposition mass flux of Hydrogen bromide
+- 223070  # Time-integrated wet deposition mass flux of Hypobromous acid
+- 223086  # Time-integrated wet deposition mass flux of Nitrous acid
+- 223099  # Time-integrated wet deposition mass flux of Toluene and less reactive aromatics
+- 223100  # Time-integrated wet deposition mass flux of Xylene and more reactive aromatics
+- 223101  # Time-integrated wet deposition mass flux of Glycolaldehyde
+- 223107  # Time-integrated wet deposition mass flux of Glyoxal
+- 223118  # Time-integrated wet deposition mass flux of Hydroxyacetone
+- 223161  # Time-integrated wet deposition mass flux of All hydroxy-peroxides products of the reaction of hydroxy-isoprene adducts with O2
+- 223186  # Time-integrated wet deposition mass flux of Condensable gas type 1
+- 223187  # Time-integrated wet deposition mass flux of Condensable gas type 2a
+- 223188  # Time-integrated wet deposition mass flux of Condensable gas type 2b
+- 223194  # Time-integrated wet deposition mass flux of Bromine nitrate
+- 223200  # Time-integrated wet deposition mass flux of Hydrogen chloride
+- 223224  # Time-integrated wet deposition mass flux of Acetonitrile
+- 223226  # Time-integrated wet deposition mass flux of Hydrogen cyanide
+- 223227  # Time-integrated wet deposition mass flux of Hydroperoxy aldehydes type 1
+- 223228  # Time-integrated wet deposition mass flux of Hydroperoxy aldehydes type 2
 - 228021  # Total sky direct solar radiation at surface
 - 228022  # Clear-sky direct solar radiation at surface
 - 228038  # Liquid water content in snow pack
@@ -2423,8 +2531,12 @@ numerics.accumulated:
 - 260427  # Accumulated surface upward short-wave radiation flux, clear sky
 - 260428  # Accumulated surface downward long-wave radiation flux, clear sky
 - 260430  # Percolation
+- 260434  # Time-integrated evapotranspiration rate in the last 24h
+- 260437  # Time-integrated potential evapotranspiration rate in the last 24h
+- 260444  # Time-integrated water runoff and drainage rate in the last 24h
 - 260461  # Water vapor added by precip assimilation
 - 260462  # Water condensate added by precip assimilation
+- 260476  # Time-integrated snow melt rate in the last 24h
 - 260479  # Land Surface Precipitation Accumulation
 - 260564  # Energy release component (as defined by the U.S Forest Service National Fire-Danger Rating System)
 - 260645  # Time integral of total solid precipitation flux
@@ -3761,6 +3873,100 @@ rate.mass-flux:
 - 219230  # Atmosphere emission mass flux of Isoprene peroxy type D
 - 219231  # Atmosphere emission mass flux of Anthropogenic volatile organic compounds
 - 219232  # Atmosphere emission mass flux of Biomass burning volatile organic compounds
+- 222001  # Time-integrated dry deposition mass flux of Ozone
+- 222003  # Time-integrated dry deposition mass flux of Hydrogen peroxide
+- 222005  # Time-integrated dry deposition mass flux of Carbon monoxide
+- 222006  # Time-integrated dry deposition mass flux of Nitric acid
+- 222007  # Time-integrated dry deposition mass flux of Methyl peroxide
+- 222008  # Time-integrated dry deposition mass flux of Formaldehyde
+- 222012  # Time-integrated dry deposition mass flux of Aldehydes
+- 222013  # Time-integrated dry deposition mass flux of Peroxyacetyl nitrate
+- 222014  # Time-integrated dry deposition mass flux of Peroxides
+- 222015  # Time-integrated dry deposition mass flux of Organic nitrates
+- 222016  # Time-integrated dry deposition mass flux of Isoprene
+- 222017  # Time-integrated dry deposition mass flux of Sulphur dioxide
+- 222019  # Time-integrated dry deposition mass flux of Ammonia
+- 222020  # Time-integrated dry deposition mass flux of Sulfate
+- 222021  # Time-integrated dry deposition mass flux of Ammonium
+- 222023  # Time-integrated dry deposition mass flux of Methyl glyoxal
+- 222024  # Time-integrated dry deposition mass flux of Ozone (stratospheric)
+- 222027  # Time-integrated dry deposition mass flux of Nitrogen monoxide
+- 222028  # Time-integrated dry deposition mass flux of Hydroperoxy radical
+- 222029  # Time-integrated dry deposition mass flux of Methylperoxy radical
+- 222031  # Time-integrated dry deposition mass flux of Nitrogen dioxide
+- 222032  # Time-integrated dry deposition mass flux of Nitrate radical
+- 222033  # Time-integrated dry deposition mass flux of Dinitrogen pentoxide
+- 222034  # Time-integrated dry deposition mass flux of Pernitric acid
+- 222042  # Time-integrated dry deposition mass flux of Methanol
+- 222043  # Time-integrated dry deposition mass flux of Formic acid
+- 222044  # Time-integrated dry deposition mass flux of Methacrylic acid
+- 222045  # Time-integrated dry deposition mass flux of Ethane
+- 222046  # Time-integrated dry deposition mass flux of Ethanol
+- 222050  # Time-integrated dry deposition mass flux of Methacrolein
+- 222051  # Time-integrated dry deposition mass flux of Nitrate
+- 222052  # Time-integrated dry deposition mass flux of Acetone
+- 222086  # Time-integrated dry deposition mass flux of Nitrous acid
+- 222099  # Time-integrated dry deposition mass flux of Toluene and less reactive aromatics
+- 222100  # Time-integrated dry deposition mass flux of Xylene and more reactive aromatics
+- 222101  # Time-integrated dry deposition mass flux of Glycolaldehyde
+- 222107  # Time-integrated dry deposition mass flux of Glyoxal
+- 222118  # Time-integrated dry deposition mass flux of Hydroxyacetone
+- 222161  # Time-integrated dry deposition mass flux of All hydroxy-peroxides products of the reaction of hydroxy-isoprene adducts with O2
+- 222224  # Time-integrated dry deposition mass flux of Acetonitrile
+- 222226  # Time-integrated dry deposition mass flux of Hydrogen cyanide
+- 223001  # Time-integrated wet deposition mass flux of Ozone
+- 223003  # Time-integrated wet deposition mass flux of Hydrogen peroxide
+- 223006  # Time-integrated wet deposition mass flux of Nitric acid
+- 223007  # Time-integrated wet deposition mass flux of Methyl peroxide
+- 223008  # Time-integrated wet deposition mass flux of Formaldehyde
+- 223012  # Time-integrated wet deposition mass flux of Aldehydes
+- 223013  # Time-integrated wet deposition mass flux of Peroxyacetyl nitrate
+- 223014  # Time-integrated wet deposition mass flux of Peroxides
+- 223015  # Time-integrated wet deposition mass flux of Organic nitrates
+- 223016  # Time-integrated wet deposition mass flux of Isoprene
+- 223017  # Time-integrated wet deposition mass flux of Sulphur dioxide
+- 223019  # Time-integrated wet deposition mass flux of Ammonia
+- 223020  # Time-integrated wet deposition mass flux of Sulfate
+- 223021  # Time-integrated wet deposition mass flux of Ammonium
+- 223022  # Time-integrated wet deposition mass flux of Methane sulfonic acid
+- 223023  # Time-integrated wet deposition mass flux of Methyl glyoxal
+- 223025  # Time-integrated wet deposition mass flux of Carbon monoxide
+- 223026  # Time-integrated wet deposition mass flux of Lead
+- 223027  # Time-integrated wet deposition mass flux of Nitrogen monoxide
+- 223028  # Time-integrated wet deposition mass flux of Hydroperoxy radical
+- 223029  # Time-integrated wet deposition mass flux of Methylperoxy radical
+- 223031  # Time-integrated wet deposition mass flux of Nitrogen dioxide
+- 223032  # Time-integrated wet deposition mass flux of Nitrate radical
+- 223033  # Time-integrated wet deposition mass flux of Dinitrogen pentoxide
+- 223034  # Time-integrated wet deposition mass flux of Pernitric acid
+- 223042  # Time-integrated wet deposition mass flux of Methanol
+- 223043  # Time-integrated wet deposition mass flux of Formic acid
+- 223044  # Time-integrated wet deposition mass flux of Methacrylic acid
+- 223045  # Time-integrated wet deposition mass flux of Ethane
+- 223046  # Time-integrated wet deposition mass flux of Ethanol
+- 223050  # Time-integrated wet deposition mass flux of Methacrolein
+- 223051  # Time-integrated wet deposition mass flux of Nitrate
+- 223052  # Time-integrated wet deposition mass flux of Acetone
+- 223064  # Time-integrated wet deposition mass flux of Chlorine nitrate
+- 223065  # Time-integrated wet deposition mass flux of Hypochlorous acid
+- 223068  # Time-integrated wet deposition mass flux of Hydrogen bromide
+- 223070  # Time-integrated wet deposition mass flux of Hypobromous acid
+- 223086  # Time-integrated wet deposition mass flux of Nitrous acid
+- 223099  # Time-integrated wet deposition mass flux of Toluene and less reactive aromatics
+- 223100  # Time-integrated wet deposition mass flux of Xylene and more reactive aromatics
+- 223101  # Time-integrated wet deposition mass flux of Glycolaldehyde
+- 223107  # Time-integrated wet deposition mass flux of Glyoxal
+- 223118  # Time-integrated wet deposition mass flux of Hydroxyacetone
+- 223161  # Time-integrated wet deposition mass flux of All hydroxy-peroxides products of the reaction of hydroxy-isoprene adducts with O2
+- 223186  # Time-integrated wet deposition mass flux of Condensable gas type 1
+- 223187  # Time-integrated wet deposition mass flux of Condensable gas type 2a
+- 223188  # Time-integrated wet deposition mass flux of Condensable gas type 2b
+- 223194  # Time-integrated wet deposition mass flux of Bromine nitrate
+- 223200  # Time-integrated wet deposition mass flux of Hydrogen chloride
+- 223224  # Time-integrated wet deposition mass flux of Acetonitrile
+- 223226  # Time-integrated wet deposition mass flux of Hydrogen cyanide
+- 223227  # Time-integrated wet deposition mass flux of Hydroperoxy aldehydes type 1
+- 223228  # Time-integrated wet deposition mass flux of Hydroperoxy aldehydes type 2
 - 228038  # Liquid water content in snow pack
 - 228083  # Flux of Carbon Dioxide Net Ecosystem Exchange
 - 228084  # Flux of Carbon Dioxide Gross Primary Production
@@ -3842,8 +4048,21 @@ rate.mass-flux:
 - 260287  # Convective precipitation (nearest grid point)
 - 260365  # Percolation rate
 - 260430  # Percolation
+- 260433  # Evapotranspiration rate
+- 260434  # Time-integrated evapotranspiration rate in the last 24h
+- 260435  # Time-mean Evapotranspiration rate in the last 24h
+- 260436  # Potential evapotranspiration rate
+- 260437  # Time-integrated potential evapotranspiration rate in the last 24h
+- 260438  # Time-mean potential evapotranspiration rate in the last 24h
+- 260441  # Time-mean total precipitation rate
+- 260443  # Water runoff and drainage rate
+- 260444  # Time-integrated water runoff and drainage rate in the last 24h
+- 260445  # Time-mean water runoff and drainage rate in the last 24h
 - 260461  # Water vapor added by precip assimilation
 - 260462  # Water condensate added by precip assimilation
+- 260475  # Snow melt rate
+- 260476  # Time-integrated snow melt rate in the last 24h
+- 260477  # Time-mean snow melt rate in the last 24h
 - 260479  # Land Surface Precipitation Accumulation
 - 260621  # Upward mass flux at cloud base
 - 260622  # Upward mass flux
@@ -4427,6 +4646,7 @@ ratio.fraction:
 - 260162  # Snow free albedo
 - 260173  # Snow water equivalent percent of normal
 - 260187  # Moisture availability
+- 260294  # Glacier mask
 - 260406  # Confidence - Ceiling
 - 260407  # Confidence - Visibility
 - 260408  # Confidence - Flight Category
@@ -4848,6 +5068,8 @@ ratio.mass:
 - 260281  # Specific humidity at top of viscous sublayer
 - 260282  # Maximum specific humidity at 2m
 - 260283  # Minimum specific humidity at 2m
+- 260292  # specific rain water content (convection)
+- 260293  # specific snow water content (convection)
 - 260624  # Ozone mixing ratio
 - 300051  # Specific humidity
 - 300053  # Humidity mixing ratio
@@ -5050,6 +5272,7 @@ ratio.volume:
 - 190229  # Total soil moisture
 - 228253  # ASCAT first soil moisture CDF matching parameter
 - 260215  # Soil porosity
+- 260440  # Time-mean volumetric soil moisture
 
 ratio.random:
 - 213001  # Random pattern 1 for sppt

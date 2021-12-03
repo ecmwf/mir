@@ -286,15 +286,15 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
         trace::ProgressTimer progress("Projecting", nbOutputPoints, {"point"}, log);
 
         // iterate over output points
-        size_t ip = 0;
-        for (std::unique_ptr<repres::Iterator> it(out.iterator()); it->next(); ++ip, ++progress) {
-            ASSERT(ip < nbOutputPoints);
-
+        for (const std::unique_ptr<repres::Iterator> it(out.iterator()); it->next(); ++progress) {
             if (inDomain.contains(it->pointRotated())) {
 
                 // 3D projection, trying elements closest to p (if this fails, consider lowering parametricEpsilon)
                 Point3 p(it->point3D());
                 size_t nbProjectionAttempts = 0;
+
+                auto ip = it->index();
+                ASSERT(ip < nbOutputPoints);
 
                 auto closest = eTree->findInSphere(p, R);
 
@@ -371,6 +371,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
 
 
     // fill sparse matrix
+    ASSERT_NONEMPTY_INTERPOLATION("FiniteElement", !weights_triplets.empty());
     W.setFromTriplets(weights_triplets);
 }
 

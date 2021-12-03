@@ -13,7 +13,6 @@
 #pragma once
 
 #include "mir/repres/regular/RegularGrid.h"
-#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -30,7 +29,6 @@ public:
 
     Mercator(const param::MIRParametrisation&);
     Mercator(const Mercator&) = delete;
-    Mercator& operator=(const Mercator&) = delete;
 
     // -- Destructor
     // None
@@ -39,9 +37,11 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    Mercator& operator=(const Mercator&) = delete;
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -57,12 +57,11 @@ private:
     // None
 
     // -- Methods
-
-    static Projection make_projection(const param::MIRParametrisation&);
+    // None
 
     // -- Overridden methods
 
-    virtual void fill(grib_info&) const override;
+    void fill(grib_info&) const override;
 
     // -- Class members
     // None

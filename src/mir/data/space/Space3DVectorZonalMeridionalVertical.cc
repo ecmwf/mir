@@ -18,9 +18,9 @@ namespace data {
 namespace space {
 
 
-static SpaceChoice<Space3DVectorZonalMeridionalVertical> __space1("3d.vector.u", 0, 3);
-static SpaceChoice<Space3DVectorZonalMeridionalVertical> __space2("3d.vector.v", 1, 3);
-static SpaceChoice<Space3DVectorZonalMeridionalVertical> __space3("3d.vector.w", 2, 3);
+static SpaceChoice<Space3DVectorZonalMeridionalVertical> __space1("3d-vector-u", 0, 3);
+static SpaceChoice<Space3DVectorZonalMeridionalVertical> __space2("3d-vector-v", 1, 3);
+static SpaceChoice<Space3DVectorZonalMeridionalVertical> __space3("3d-vector-w", 2, 3);
 
 
 size_t Space3DVectorZonalMeridionalVertical::dimensions() const {

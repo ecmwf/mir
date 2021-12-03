@@ -29,7 +29,6 @@ public:
 
     PolarStereographic(const param::MIRParametrisation&);
     PolarStereographic(const PolarStereographic&) = delete;
-    PolarStereographic& operator=(const PolarStereographic&) = delete;
 
     // -- Destructor
     // None
@@ -38,9 +37,11 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    PolarStereographic& operator=(const PolarStereographic&) = delete;
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -56,12 +57,11 @@ private:
     // None
 
     // -- Methods
-
-    static Projection make_projection(const param::MIRParametrisation&);
+    // None
 
     // -- Overridden methods
 
-    virtual void fill(grib_info&) const override;
+    void fill(grib_info&) const override;
 
     // -- Class members
     // None

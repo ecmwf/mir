@@ -12,35 +12,28 @@
 
 #pragma once
 
-#include "mir/method/MethodWeighted.h"
+#include "mir/method/knn/distance/DistanceWeighting.h"
 
 
 namespace mir {
 namespace method {
-namespace other {
+namespace knn {
+namespace distance {
 
 
-class PseudoLaplace : public MethodWeighted {
-
-    size_t nclosest_;  ///< Number of closest points to search for
-
-public:
+struct PseudoLaplace : DistanceWeighting {
     PseudoLaplace(const param::MIRParametrisation&);
-
-    ~PseudoLaplace() override;
-
-protected:
-    void hash(eckit::MD5&) const override;
+    void operator()(size_t ip, const Point3& point, const std::vector<search::PointSearch::PointValueType>& neighbours,
+                    std::vector<WeightMatrix::Triplet>& triplets) const override;
 
 private:
-    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
-                  const repres::Representation& out) const override;
+    bool sameAs(const DistanceWeighting&) const override;
     void print(std::ostream&) const override;
-    const char* name() const override;
-    bool sameAs(const Method&) const override;
+    void hash(eckit::MD5&) const override;
 };
 
 
-}  // namespace other
+}  // namespace distance
+}  // namespace knn
 }  // namespace method
 }  // namespace mir

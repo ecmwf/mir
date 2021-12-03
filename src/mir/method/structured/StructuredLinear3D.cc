@@ -92,12 +92,12 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
     // interpolate each output point in turn
     {
         trace::ProgressTimer progress("Interpolating", nbOutputPoints, {"point"}, Log::debug());
-        std::unique_ptr<repres::Iterator> it(out.iterator());
-        size_t ip = 0;
 
-        while (it->next()) {
-            ASSERT(ip < nbOutputPoints);
+        for (const std::unique_ptr<repres::Iterator> it(out.iterator()); it->next();) {
             ++progress;
+
+            auto i = it->index();
+            ASSERT(i < nbOutputPoints);
 
             triplet_vector_t trip;
             const auto& p = it->pointUnrotated();
@@ -116,8 +116,8 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
 
                 const Longitude& l0 = icoords[l[0]].lon();
                 const Longitude& l1 = icoords[l[1]].lon();
-                trip                = {WeightMatrix::Triplet(ip, l[0], (l1 - p.lon()).value()),
-                        WeightMatrix::Triplet(ip, l[1], (p.lon() - l0).value())};
+                trip                = {WeightMatrix::Triplet(i, l[0], (l1 - p.lon()).value()),
+                        WeightMatrix::Triplet(i, l[1], (p.lon() - l0).value())};
             }
             else {
 
@@ -195,19 +195,18 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
                 ASSERT(inter);
 
                 // weights are the linear Lagrange function evaluated at u,v (aka barycentric coordinates)
-                trip = {WeightMatrix::Triplet(ip, q[T[w][0]], 1. - inter.u - inter.v),
-                        WeightMatrix::Triplet(ip, q[T[w][1]], inter.u), WeightMatrix::Triplet(ip, q[T[w][2]], inter.v)};
+                trip = {WeightMatrix::Triplet(i, q[T[w][0]], 1. - inter.u - inter.v),
+                        WeightMatrix::Triplet(i, q[T[w][1]], inter.u), WeightMatrix::Triplet(i, q[T[w][2]], inter.v)};
             }
 
             // insert local point weights (normalized) into matrix "filler"
             normalise(trip);
             std::copy(trip.begin(), trip.end(), std::back_inserter(triplets));
-
-            ++ip;
         }
     }
 
     // fill sparse matrix
+    ASSERT_NONEMPTY_INTERPOLATION("StructuredLinear3D", !triplets.empty());
     W.setFromTriplets(triplets);
 }
 

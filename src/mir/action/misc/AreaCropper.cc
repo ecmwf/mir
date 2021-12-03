@@ -21,7 +21,9 @@
 #include "mir/action/context/Context.h"
 #include "mir/caching/CroppingCache.h"
 #include "mir/caching/InMemoryCache.h"
+#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
+#include "mir/key/Area.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
@@ -56,13 +58,9 @@ struct LL {
 
 
 AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation) : Action(parametrisation), caching_(true) {
+    ASSERT(key::Area::get(parametrisation_.userParametrisation(), bbox_));
 
-    std::vector<double> value;
-    ASSERT(parametrisation.userParametrisation().get("area", value));
-    ASSERT_KEYWORD_AREA_SIZE(value.size());
-
-    bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
-
+    caching_ = LibMir::caching();
     parametrisation_.get("caching", caching_);
 }
 
@@ -70,12 +68,12 @@ AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation) : Act
 AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation, const util::BoundingBox& bbox) :
     Action(parametrisation), bbox_(bbox), caching_(true) {
 
+    caching_ = LibMir::caching();
     parametrisation_.get("caching", caching_);
 }
 
 
 void AreaCropper::crop(const repres::Representation& repres, util::BoundingBox& bbox, std::vector<size_t>& mapping) {
-
     std::map<LL, size_t> m;
 
     Latitude n  = 0;
@@ -83,15 +81,11 @@ void AreaCropper::crop(const repres::Representation& repres, util::BoundingBox& 
     Longitude e = 0;
     Longitude w = 0;
 
-    size_t p   = 0;
     bool first = true;
 
-    // Iterator is "unrotated", because the cropping area
-    // is expressed in before the rotation is applied
-    std::unique_ptr<repres::Iterator> iter(repres.iterator());
-
-    while (iter->next()) {
-        const auto& point = iter->pointUnrotated();
+    // Iterator is "unrotated", because the cropping area is expressed in before the rotation is applied
+    for (const std::unique_ptr<repres::Iterator> it(repres.iterator()); it->next();) {
+        const auto& point = it->pointUnrotated();
 
         // Log::debug() << point << " ====> " << bbox.contains(point) << std::endl;
 
@@ -120,9 +114,8 @@ void AreaCropper::crop(const repres::Representation& repres, util::BoundingBox& 
             }
 
             // Make sure we don't visit duplicate points
-            ASSERT(m.insert(std::make_pair(LL(lat, lon), p)).second);
+            ASSERT(m.insert(std::make_pair(LL(lat, lon), it->index())).second);
         }
-        p++;
     }
 
     // Set mapping (don't support empty results)
@@ -247,8 +240,9 @@ void AreaCropper::execute(context::Context& ctx) const {
     // be changed in the loop
     auto& field = ctx.field();
     repres::RepresentationHandle representation(field.representation());
-    const caching::CroppingCacheEntry& c = getMapping(representation, bbox_, caching_);
-    ASSERT(c.mapping_.size());
+
+    auto& c = getMapping(representation, bbox_, caching_);
+    ASSERT_NONEMPTY_AREA_CROP("AreaCropper", !c.mapping_.empty());
 
     for (size_t i = 0; i < field.dimensions(); i++) {
         const MIRValuesVector& values = field.values(i);

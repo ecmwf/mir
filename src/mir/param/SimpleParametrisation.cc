@@ -693,6 +693,11 @@ SimpleParametrisation& SimpleParametrisation::reset() {
 }
 
 
+size_t SimpleParametrisation::size() const {
+    return settings_.size();
+}
+
+
 SimpleParametrisation& SimpleParametrisation::set(const std::string& name, const std::vector<long>& value) {
     _set(name, value);
     return *this;

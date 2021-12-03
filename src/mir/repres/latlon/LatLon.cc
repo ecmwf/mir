@@ -21,6 +21,7 @@
 
 #include "mir/data/MIRField.h"
 #include "mir/iterator/detail/RegularIterator.h"
+#include "mir/key/Area.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/param/SameParametrisation.h"
 #include "mir/util/Domain.h"
@@ -37,12 +38,10 @@ namespace latlon {
 
 
 LatLon::LatLon(const param::MIRParametrisation& parametrisation) :
-    Gridded(parametrisation), increments_(parametrisation), ni_(0), nj_(0) {
-
-    PointLatLon reference(bbox_.south(), bbox_.west());
-    correctBoundingBox(bbox_, ni_, nj_, increments_, reference);
-    ASSERT(ni_);
-    ASSERT(nj_);
+    Gridded(parametrisation), increments_(parametrisation), reference_(bbox_.south(), bbox_.west()), ni_(0), nj_(0) {
+    correctBoundingBox(bbox_, ni_, nj_, increments_, reference_);
+    ASSERT(ni_ != 0);
+    ASSERT(nj_ != 0);
 
     // confirm Ni/Nj from parametrisation (input)
     size_t ni = 0;
@@ -65,11 +64,10 @@ LatLon::LatLon(const param::MIRParametrisation& parametrisation) :
 
 
 LatLon::LatLon(const util::Increments& increments, const util::BoundingBox& bbox, const PointLatLon& reference) :
-    Gridded(bbox), increments_(increments), ni_(0), nj_(0) {
-
-    correctBoundingBox(bbox_, ni_, nj_, increments_, reference);
-    ASSERT(ni_);
-    ASSERT(nj_);
+    Gridded(bbox), increments_(increments), reference_(reference), ni_(0), nj_(0) {
+    correctBoundingBox(bbox_, ni_, nj_, increments_, reference_);
+    ASSERT(ni_ != 0);
+    ASSERT(nj_ != 0);
 }
 
 
@@ -288,7 +286,8 @@ LatLon::LatLonIterator::LatLonIterator(size_t ni, size_t nj, Latitude north, Lon
     ns_(increments.south_north().latitude().fraction()),
     i_(0),
     j_(0),
-    count_(0) {
+    count_(0),
+    first_(true) {
     lat_      = north_;
     lon_      = west_;
     latValue_ = lat_;
@@ -297,7 +296,8 @@ LatLon::LatLonIterator::LatLonIterator(size_t ni, size_t nj, Latitude north, Lon
 
 
 LatLon::LatLonIterator::~LatLonIterator() {
-    ASSERT(count_ == ni_ * nj_);
+    auto count = count_ + (i_ > 0 || j_ > 0 ? 1 : 0);
+    ASSERT(count == ni_ * nj_);
 }
 
 
@@ -313,17 +313,26 @@ bool LatLon::LatLonIterator::next(Latitude& lat, Longitude& lon) {
         if (i_ < ni_) {
             lat = latValue_;
             lon = lonValue_;
+
             lon_ += we_;
-            i_++;
-            if (i_ == ni_) {
+
+            if (first_) {
+                first_ = false;
+            }
+            else {
+                count_++;
+            }
+
+            if (++i_ == ni_) {
                 j_++;
                 i_ = 0;
                 lat_ -= ns_;
                 lon_      = west_;
                 latValue_ = lat_;
             }
+
             lonValue_ = lon_;
-            count_++;
+
             return true;
         }
     }
@@ -412,15 +421,12 @@ bool LatLon::samePoints(const param::MIRParametrisation& user, const param::MIRP
         return false;
     }
 
-    std::vector<double> area;
-    if (user.get("area", area)) {
-        ASSERT_KEYWORD_AREA_SIZE(area.size());
-
+    util::BoundingBox bboxUser;
+    if (key::Area::get(user, bboxUser)) {
         util::Increments inc(field);
         size_t ni = 0;
         size_t nj = 0;
 
-        util::BoundingBox bboxUser(area[0], area[1], area[2], area[3]);
         correctBoundingBox(bboxUser, ni, nj, inc, {bboxUser.south(), bboxUser.west()});
 
         util::BoundingBox bboxField(field);

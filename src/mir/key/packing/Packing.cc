@@ -179,16 +179,16 @@ PackingFactory::PackingFactory(const std::string& name, const std::string& alias
     ASSERT(gridded || spectral);
 
     if (gridded) {
-        ASSERT_MSG(mg->insert({name, this}).second, "PackingFactory: duplicate gridded packing '" + name + "'");
+        ASSERT_MSG(mg->insert({name, this}).second, "PackingFactory: duplicate gridded packing");
         if (!alias.empty()) {
-            ASSERT_MSG(mg->insert({alias, this}).second, "PackingFactory: duplicate gridded packing '" + name + "'");
+            ASSERT_MSG(mg->insert({alias, this}).second, "PackingFactory: duplicate gridded packing");
         }
     }
 
     if (spectral) {
-        ASSERT_MSG(ms->insert({name, this}).second, "PackingFactory: duplicate spectral packing '" + name + "'");
+        ASSERT_MSG(ms->insert({name, this}).second, "PackingFactory: duplicate spectral packing");
         if (!alias.empty()) {
-            ASSERT_MSG(ms->insert({alias, this}).second, "PackingFactory: duplicate spectral packing '" + name + "'");
+            ASSERT_MSG(ms->insert({alias, this}).second, "PackingFactory: duplicate spectral packing");
         }
     }
 }

@@ -19,6 +19,7 @@
 #include "eckit/geometry/Point2.h"
 #include "eckit/geometry/Point3.h"
 #include "eckit/geometry/SphereT.h"
+#include "eckit/utils/Hash.h"
 
 #include "mir/api/mir_config.h"
 #include "mir/util/Types.h"
@@ -71,6 +72,8 @@ struct PointLonLat : public eckit::geometry::Point2 {
     using Point2::Point2;
     double lon() const { return x_[0]; }
     double lat() const { return x_[1]; }
+    double& lon() { return x_[0]; }
+    double& lat() { return x_[1]; }
     //    operator mir::PointLatLon() const { return {lat(), lon()}; }
 };
 
@@ -165,6 +168,9 @@ struct Spacing : protected std::vector<double> {
     using vector::size;
     using vector::operator[];
 
+    using vector::begin;
+    using vector::end;
+
     value_type min() const { return front() < back() ? front() : back(); }
     value_type max() const { return front() > back() ? front() : back(); }
 };
@@ -192,10 +198,12 @@ struct MeshGenerator {
 
 
 struct Projection {
-    // no projection supported
     using Spec = util::Config;
     Spec spec_;
     Spec spec() const { return spec_; }
+    void hash(eckit::Hash& h) const { spec_.hash(h); }
+
+    // no projection supported
     Projection() = default;
     Projection(const Spec& spec) : spec_(spec) {}
     operator bool() const { return true; }
@@ -209,10 +217,13 @@ using idx_t = long;
 
 
 struct Grid {
-    using Spec       = util::Config;
-    using Projection = atlas::Projection;
+    using Spec = util::Config;
     Spec spec_;
     Spec spec() const { return spec_; }
+    void hash(eckit::Hash& h) const { spec_.hash(h); }
+
+    using Projection = atlas::Projection;
+
     Grid() = default;
     Grid(const Spec& spec) : spec_(spec) {}
     operator bool() const { return true; }

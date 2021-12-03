@@ -12,6 +12,7 @@
 
 #include "mir/output/GeoPointsFileOutputXYVector.h"
 
+#include <limits>
 #include <memory>
 
 #include "eckit/io/HandleBuf.h"
@@ -39,7 +40,8 @@ size_t GeoPointsFileOutputXYVector::save(const param::MIRParametrisation& param,
     ASSERT(once());
     ASSERT(!binary_);
 
-    const data::MIRField& field = ctx.field();
+    const auto& field = ctx.field();
+    auto mv           = field.hasMissing() ? field.missingValue() : std::numeric_limits<double>::quiet_NaN();
 
     eckit::DataHandle& handle = dataHandle();
     eckit::Offset position    = handle.position();
@@ -48,13 +50,9 @@ size_t GeoPointsFileOutputXYVector::save(const param::MIRParametrisation& param,
 
     ASSERT(field.dimensions() % 2 == 0);
     for (size_t j = 0; j < field.dimensions(); j += 2) {
-
-        const MIRValuesVector& values_u = field.values(j);
-        const MIRValuesVector& values_v = field.values(j + 1);
+        auto& values_u = field.values(j);
+        auto& values_v = field.values(j + 1);
         ASSERT(values_u.size() == values_v.size());
-
-        // Log::info() << "GeoPointsFileOutputXYVector::save => " << handle << std::endl;
-
 
         out << "#GEO"
                "\n#FORMAT XY_VECTOR"
@@ -68,17 +66,14 @@ size_t GeoPointsFileOutputXYVector::save(const param::MIRParametrisation& param,
             extra += ' ' + v;
         }
 
-        auto u = values_u.cbegin();
-        auto v = values_v.cbegin();
-
-        std::unique_ptr<repres::Iterator> it(field.representation()->iterator());
-        while (it->next()) {
+        for (const std::unique_ptr<repres::Iterator> it(field.representation()->iterator()); it->next();) {
             const auto& p = it->pointUnrotated();
-            ASSERT(u != values_u.cend());
-            ASSERT(v != values_v.cend());
-            out << "\n" << p.lat().value() << ' ' << p.lon().value() << extra << ' ' << *u << ' ' << *v;
-            ++u;
-            ++v;
+            auto u        = values_u.at(it->index());
+            auto v        = values_v.at(it->index());
+
+            if (u != mv && v != mv) {
+                out << "\n" << p.lat().value() << ' ' << p.lon().value() << extra << ' ' << u << ' ' << v;
+            }
         }
 
         out << std::endl;
