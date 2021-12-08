@@ -48,7 +48,18 @@ bool RegularGG::sameAs(const Representation& other) const {
 
 Iterator* RegularGG::iterator() const {
     std::vector<long> pl(N_ * 2, long(4 * N_));
-    return new gauss::GaussianIterator(latitudes(), std::move(pl), bbox_, N_, Nj_, 0);
+
+    const std::vector<double>& lats = latitudes();
+    size_t k = 0;
+    Latitude n = bbox_.north();
+    for (double lat : lats) {
+        Latitude ll(lat);
+        if (n < ll && !angleApproximatelyEqual(n, ll)) {
+            ++k;
+        }
+    }
+
+    return new gauss::GaussianIterator(std::move(lats), std::move(pl), bbox_, N_, Nj_, k);
 }
 
 
