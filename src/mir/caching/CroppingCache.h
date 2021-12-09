@@ -13,6 +13,8 @@
 #pragma once
 
 #include "eckit/container/CacheManager.h"
+
+#include "mir/util/AreaCropperMapping.h"
 #include "mir/util/BoundingBox.h"
 
 
@@ -24,7 +26,7 @@ struct CroppingCacheEntry {
 
     ~CroppingCacheEntry();
 
-    std::vector<size_t> mapping_;
+    util::AreaCropperMapping mapping_;
     util::BoundingBox bbox_;
 
     void print(std::ostream&) const;

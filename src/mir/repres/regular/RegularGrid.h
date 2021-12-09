@@ -12,14 +12,18 @@
 
 #pragma once
 
+#include <utility>  // for pair
+
 #include "mir/repres/Gridded.h"
 #include "mir/util/Atlas.h"
+#include "mir/util/Shape.h"
 #include "mir/util/Types.h"
 
 
 namespace mir {
 namespace repres {
 namespace regular {
+
 
 class RegularGrid : public Gridded {
 public:
@@ -29,13 +33,19 @@ public:
     using PointLonLat   = ::atlas::PointLonLat;
     using Projection    = ::atlas::Projection;
 
+    struct ij_t {
+        size_t i;
+        size_t j;
+    };
+
     // -- Exceptions
     // None
 
     // -- Constructors
 
     RegularGrid(const param::MIRParametrisation&, const Projection&);
-    RegularGrid(const Projection&, const util::BoundingBox&, const LinearSpacing& x, const LinearSpacing& y);
+    RegularGrid(const Projection&, const util::BoundingBox&, const LinearSpacing& x, const LinearSpacing& y,
+                const util::Shape&);
     RegularGrid(const RegularGrid&) = delete;
 
     // -- Destructor
@@ -53,7 +63,8 @@ public:
     // None
 
     // -- Overridden methods
-    // None
+
+    Iterator* iterator() const override;
 
     // -- Class members
     // None
@@ -67,11 +78,16 @@ protected:
     ::atlas::RegularGrid grid_;
     LinearSpacing x_;
     LinearSpacing y_;
+    util::Shape shape_;
+    bool xPlus_;
+    bool yPlus_;
     bool firstPointBottomLeft_;
 
     // -- Methods
 
     static Projection::Spec make_proj_spec(const param::MIRParametrisation&);
+    static LinearSpacing linspace(double start, double step, long num, bool plus);
+    std::pair<ij_t, ij_t> minmax_ij(const util::BoundingBox&) const;
 
     // -- Overridden methods
 
@@ -88,10 +104,11 @@ protected:
     void validate(const MIRValuesVector&) const override;
     void makeName(std::ostream&) const override;
     void print(std::ostream&) const override;
+
     bool extendBoundingBoxOnIntersect() const override;
+    bool crop(util::BoundingBox&, util::AreaCropperMapping&) const override;
 
     ::atlas::Grid atlasGrid() const override;
-    Iterator* iterator() const override;
     size_t numberOfPoints() const override;
 
     // -- Class members
@@ -102,14 +119,6 @@ protected:
 
     // -- Friends
     // None
-
-private:
-    // -- Members
-
-    long shapeOfTheEarth_;
-    double earthMajorAxis_;
-    double earthMinorAxis_;
-    bool shapeOfTheEarthProvided_;
 };
 
 

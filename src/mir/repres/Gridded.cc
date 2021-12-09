@@ -52,9 +52,15 @@ bool Gridded::getLongestElementDiagonal(double&) const {
     return false;
 }
 
+
 void Gridded::estimate(api::MIREstimation& estimation) const {
     estimation.packing("grid_simple");  // Will be overriden
     estimation.representation(factory());
+}
+
+
+bool Gridded::crop(util::BoundingBox&, util::AreaCropperMapping&) const {
+    return false;
 }
 
 

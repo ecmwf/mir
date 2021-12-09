@@ -13,6 +13,7 @@
 #pragma once
 
 #include "mir/action/plan/Action.h"
+#include "mir/util/AreaCropperMapping.h"
 #include "mir/util/BoundingBox.h"
 
 
@@ -49,7 +50,7 @@ public:
 
     // -- Methods
 
-    static void crop(const repres::Representation&, util::BoundingBox&, std::vector<size_t>& mapping);
+    static void crop(const repres::Representation&, util::BoundingBox&, util::AreaCropperMapping&);
 
     // -- Overridden methods
 
