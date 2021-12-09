@@ -1,0 +1,6 @@
+# GRIB
+MIR-553.grib2
+# mir
+--area=germany
+# plan
+AreaCropper[bbox=BoundingBox[north=55.5,west=5.5,south=47,east=15.5]]|Save[output=...]
