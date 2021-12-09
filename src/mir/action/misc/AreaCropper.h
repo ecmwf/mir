@@ -20,7 +20,7 @@
 namespace mir {
 namespace repres {
 class Representation;
-}
+}  // namespace repres
 }  // namespace mir
 
 
