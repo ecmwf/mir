@@ -28,8 +28,10 @@ namespace mir {
 namespace tests {
 namespace unit {
 
+auto equal = [](double a, double b) { return eckit::types::is_approximately_equal(a, b, 5.e-4); };
+
 bool nearby(const Point2& a, const Point2& b) {
-    return Point2::distance2(a, b) < 0.000001;
+    return equal(a.x(), b.x()) && equal(a.y(), b.y());
 }
 
 CASE("Gaussian Iterator") {
