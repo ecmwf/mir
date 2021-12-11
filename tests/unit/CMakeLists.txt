@@ -13,7 +13,6 @@ foreach(_t
     action_graph
     bounding_box
     gaussian_grid
-    gaussian_iterator
     grib_encoding
     increments
     input_MultiDimensionalInput
