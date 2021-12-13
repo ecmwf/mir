@@ -59,6 +59,7 @@ protected:
 
     // -- Members
 
+    size_t k_;
     size_t Ni_;
     size_t Nj_;
 
