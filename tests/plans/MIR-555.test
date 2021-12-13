@@ -1,0 +1,6 @@
+# mars
+param=t,level=1000
+# mir
+--truncation=none --intgrid=none --grid=F640 --area=54/-16.5/50.5/-3
+# plan
+ShToNamedGrid[type=local,cropping=BoundingBox[north=54,west=-16.5,south=50.5,east=-3],options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<scalar>,grid=F640]|Save[packing=simple,output=...]

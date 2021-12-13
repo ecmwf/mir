@@ -16,16 +16,13 @@
 #include "eckit/types/Fraction.h"
 
 #include "mir/iterator/detail/RegularIterator.h"
+#include "mir/key/grid/Grid.h"
 #include "mir/repres/Representation.h"
+#include "mir/repres/gauss/GaussianIterator.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
 #include "mir/util/Log.h"
 
-
-
-//#include "mir/api/mir_config.h"
-#include "mir/key/grid/Grid.h"
-#include "mir/repres/gauss/GaussianIterator.h"
 
 namespace mir {
 namespace tests {
@@ -45,7 +42,6 @@ static auto& log = Log::info();
 
 
 CASE("MIR-390") {
-
     auto old(log.precision(16));
     log << std::boolalpha;
 
@@ -58,6 +54,7 @@ CASE("MIR-390") {
 
     Increments inc((bbox.east().fraction() - bbox.west().fraction()) / Ni,
                    (bbox.north().fraction() - bbox.south().fraction()) / Nj);
+
 
     SECTION("LatLon::correctBoundingBox") {
 
@@ -96,32 +93,25 @@ CASE("MIR-390") {
 }
 
 
-auto equal = [](double a, double b) { return eckit::types::is_approximately_equal(a, b); };
-
-bool nearby(const Point2& a, const Point2& b) {
-    return equal(a.x(), b.x()) && equal(a.y(), b.y());
-}
-
-
-CASE("MIR-555") {
+CASE("GaussianIterator") {
+    auto old(log.precision(16));
 
     struct test_t {
         const std::string grid;
         size_t numberOfPoints;
         size_t numberOfCroppedPoints;
-        util::BoundingBox bbox;
-        mir::Point2 globalP1;
-        mir::Point2 globalP2;
-        mir::Point2 localP1;
-        mir::Point2 localP2;
+        BoundingBox bbox;
+        Point2 globalP1;
+        Point2 globalP2;
+        Point2 localP1;
+        Point2 localP2;
     };
 
-    auto& log = Log::info();
-    auto old  = log.precision(16);
+    BoundingBox globe;
 
-    util::BoundingBox globe;
 
-    std::vector<test_t> tests{
+    SECTION("GaussianIterator") {
+        std::vector<test_t> tests{
         {"F128", 131072, 858, {80.351, -150.46875, 79.648, 150.46875}, {89.462821568577,0},{89.462821568577,0.703125},{80.350237152036,-150.46875},{80.350237152036,-149.765625}},
         {"F128", 131072, 429, {80.350, -150.46875, 79.648, 150.46875}, {89.462821568577,0},{89.462821568577,0.703125},{79.648526993666,-150.46875},{79.648526993666,-149.765625}},
         {"F320", 819200, 912, {56, -16.5, 50.5, -3}, {89.784876907219,0},{89.784876907219,0.28125},{55.784517651898,-16.3125},{55.784517651898,-16.03125}},
@@ -141,45 +131,72 @@ CASE("MIR-555") {
         {"N128", 88838, 88838, {90, 0, -90, 359.297},{89.462821568577,0},{89.462821568577,20},{89.462821568577,0},{89.462821568577,20}},
         {"N320", 542080, 13437, {-60, 50, -90, 180},{89.784876907219,0},{89.784876907219,20},{-60.280999861572,50.13333333333333},{-60.280999861572,50.66666666666666}},
         {"N640", 2140702, 52654, {-60, 50, -90, 180},{89.89239644558999,0},{89.89239644558999,20},{-60.093705799122,50.13333333333333},{-60.093705799122,50.4}},
-    };
+        };
 
-    for (const auto& t : tests) {
-        log << "Test " + t.grid + " (global)" << std::endl;
-        repres::RepresentationHandle global(key::grid::Grid::lookup(t.grid).representation());
-        {
-            std::unique_ptr<repres::Iterator> it{global->iterator()};
-            {
-                it->next();
-                auto& P = it->pointRotated();
-                EXPECT(globe.contains(P));
-                EXPECT(eckit::geometry::points_equal(P, t.globalP1));
-            }
-            {
-                it->next();
-                auto& P = it->pointRotated();
-                EXPECT(globe.contains(P));
-                EXPECT(eckit::geometry::points_equal(P, t.globalP2));
-            }
-        }
+        for (const auto& t : tests) {
+            log << "Test " + t.grid + " (global)" << std::endl;
+            repres::RepresentationHandle global(key::grid::Grid::lookup(t.grid).representation());
+            std::unique_ptr<repres::Iterator> git{global->iterator()};
 
-        log << "Test " + t.grid + " (cropped)" << std::endl;
-        repres::RepresentationHandle local(global->croppedRepresentation(t.bbox));
-        {
-            std::unique_ptr<repres::Iterator> it{local->iterator()};
-            {
-                it->next();
-                auto& P = it->pointRotated();
-                EXPECT(t.bbox.contains(P));
-                EXPECT(eckit::geometry::points_equal(P, t.localP1));
-            }
-            {
-                it->next();
-                auto& P = it->pointRotated();
-                EXPECT(t.bbox.contains(P));
-                EXPECT(eckit::geometry::points_equal(P, t.localP2));
-            }
+            EXPECT(global->numberOfPoints() == t.numberOfPoints);
+
+            ASSERT(git->next());
+            EXPECT(globe.contains(*(*git)));
+            EXPECT(eckit::geometry::points_equal(*(*git), t.globalP1));
+
+            ASSERT(git->next());
+            EXPECT(globe.contains(*(*git)));
+            EXPECT(eckit::geometry::points_equal(*(*git), t.globalP2));
+
+            log << "Test " + t.grid + " (cropped)" << std::endl;
+            repres::RepresentationHandle cropped(global->croppedRepresentation(t.bbox));
+            std::unique_ptr<repres::Iterator> cit{cropped->iterator()};
+
+            EXPECT(cropped->numberOfPoints() == t.numberOfCroppedPoints);
+
+            ASSERT(cit->next());
+            EXPECT(t.bbox.contains(*(*cit)));
+            EXPECT(eckit::geometry::points_equal(*(*cit), t.localP1));
+
+            ASSERT(cit->next());
+            EXPECT(t.bbox.contains(*(*cit)));
+            EXPECT(eckit::geometry::points_equal(*(*cit), t.localP2));
         }
     }
+
+
+    SECTION("MIR-555") {
+        test_t t{"F640", 3276800, 2400, {54., -16.5, 50.5, -3.}, {89.89239644558999, 0.}, {89.89239644558999, 0.140625}, {53.908623449839, -16.453125}, {53.908623449839, -16.3125}};
+
+        log << "Test " + t.grid + " (global)" << std::endl;
+        repres::RepresentationHandle global(key::grid::Grid::lookup(t.grid).representation());
+        std::unique_ptr<repres::Iterator> git{global->iterator()};
+
+        EXPECT(global->numberOfPoints() == t.numberOfPoints);
+
+        ASSERT(git->next());
+        EXPECT(globe.contains(*(*git)));
+        EXPECT(eckit::geometry::points_equal(*(*git), t.globalP1));
+
+        ASSERT(git->next());
+        EXPECT(globe.contains(*(*git)));
+        EXPECT(eckit::geometry::points_equal(*(*git), t.globalP2));
+
+        log << "Test " + t.grid + " (cropped)" << std::endl;
+        repres::RepresentationHandle cropped(global->croppedRepresentation(t.bbox));
+        std::unique_ptr<repres::Iterator> cit{cropped->iterator()};
+
+        EXPECT(cropped->numberOfPoints() == t.numberOfCroppedPoints);
+
+        ASSERT(cit->next());
+        EXPECT(t.bbox.contains(*(*cit)));
+        EXPECT(eckit::geometry::points_equal(*(*cit), t.localP1));
+
+        ASSERT(cit->next());
+        EXPECT(t.bbox.contains(*(*cit)));
+        EXPECT(eckit::geometry::points_equal(*(*cit), t.localP2));
+    }
+
 
     log.precision(old);
 }
