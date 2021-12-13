@@ -53,7 +53,7 @@ public:
 
 protected:
     // -- Members
-    // None
+    size_t k_;
 
     // -- Methods
 

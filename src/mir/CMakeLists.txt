@@ -13,6 +13,9 @@ install(
 
 unset(mir_srcs)
 list(APPEND mir_srcs
+
+    ${CMAKE_CURRENT_BINARY_DIR}/api/mir_version.cc
+
     action/calc/FormulaAction.cc
     action/calc/FormulaAction.h
     action/context/Context.cc
@@ -124,7 +127,6 @@ list(APPEND mir_srcs
     api/MIRJob.h
     api/MIRWatcher.cc
     api/MIRWatcher.h
-    api/mir_version.cc
     caching/CroppingCache.cc
     caching/CroppingCache.h
     caching/InMemoryCache.cc
@@ -929,7 +931,6 @@ ecbuild_add_library(
     TARGET             mir
     INSTALL_HEADERS    LISTED
     HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/mir
-    GENERATED          api/mir_version.cc
     TEMPLATES          caching/InMemoryCache.cc
     PUBLIC_LIBS        eckit_linalg eckit_geometry eckit_option eckit eccodes
     PUBLIC_INCLUDES    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/src>
