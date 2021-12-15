@@ -132,8 +132,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     auto& log = Log::debug();
 
     log << "MethodWeighted::getMatrix " << *this << std::endl;
-    trace::Timer timer("MethodWeighted::getMatrix");
-
+    trace::Timer timer("MethodWeighted::getMatrix", Log::debug());
 
     double here                   = timer.elapsed();
     const lsm::LandSeaMasks masks = getMasks(in, out);
@@ -306,7 +305,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
     static bool check_stats = eckit::Resource<bool>("mirCheckStats", false);
 
-    trace::Timer timer("MethodWeighted::execute");
+    trace::Timer timer("MethodWeighted::execute", Log::debug());
     auto& log = Log::debug();
     log << "MethodWeighted::execute" << std::endl;
 
@@ -350,7 +349,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
         std::ostringstream os;
         os << "Interpolating field (" << Log::Pretty(npts_inp) << " -> " << Log::Pretty(npts_out) << ")";
-        trace::Timer trace(os.str());
+        trace::Timer trace(os.str(), Log::debug());
 
         // compute some statistics on the result
         // This is expensive so we might want to skip it in production code
