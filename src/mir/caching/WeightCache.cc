@@ -79,7 +79,7 @@ void WeightCacheTraits::save(const eckit::CacheManagerBase&, const value_type& W
 
 
 void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type& w, const eckit::PathName& path) {
-    trace::Timer timer("Loading weights from cache");
+    trace::Timer timer("Loading weights from cache", Log::debug());
 
     value_type tmp(matrix::MatrixLoaderFactory::build(manager.loader(), path));
     w.swap(tmp);
