@@ -28,7 +28,7 @@ namespace action {
 
 
 void ResetMissingValues::execute(context::Context& ctx) const {
-    trace::Timer timer("ResetMissingValues");
+    trace::Timer timer("ResetMissingValues", Log::info());
 
     auto& field = ctx.field();
     if (field.hasMissing()) {

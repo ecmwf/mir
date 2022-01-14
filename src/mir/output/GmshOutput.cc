@@ -78,7 +78,7 @@ size_t GmshOutput::save(const param::MIRParametrisation& param, context::Context
         rep->fill(meshGenParams);
         meshGenParams.set("3d", config.getString("coordinates") == "xyz");
 
-        trace::Timer time("Generating mesh");
+        trace::Timer time("Generating mesh", Log::info());
         mesh = caching::InMemoryMeshCache::atlasMesh(ctx.statistics(), grid, meshGenParams);
     }
 
@@ -103,7 +103,7 @@ size_t GmshOutput::save(const param::MIRParametrisation& param, context::Context
 
     for (size_t d = 0; d < field.dimensions(); d++) {
         auto path = get_path(path_, overwrite);
-        trace::Timer time("GmshOutput: writing to '" + path + "'", Log::debug());
+        trace::Timer time("GmshOutput: writing to '" + path + "'");
 
         atlas::output::Gmsh out(path, config);
 

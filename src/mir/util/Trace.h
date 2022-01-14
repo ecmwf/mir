@@ -26,7 +26,11 @@ namespace mir {
 namespace trace {
 
 
-struct Timer : public eckit::Timer {
+class Timer : public eckit::Timer {
+public:
+    Timer(const std::string& name, std::ostream& o = Log::debug()) : eckit::Timer(name, o) {}
+    Timer(const char* name, std::ostream& o = Log::debug()) : eckit::Timer(name, o) {}
+
     using eckit::Timer::elapsed;
     using eckit::Timer::Timer;
     double elapsed(double t) { return eckit::Timer::elapsed() - t; }

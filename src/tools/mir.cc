@@ -442,7 +442,7 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
 
 
 void MIR::process(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output, const std::string& what) {
-    trace::Timer timer("Total time");
+    trace::Timer timer("Total time", Log::info());
 
     util::MIRStatistics statistics;
     Log::debug() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;
@@ -462,7 +462,7 @@ void MIR::process(const api::MIRJob& job, input::MIRInput& input, output::MIROut
 
 void MIR::only(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output, const std::string& what,
                size_t paramId) {
-    trace::Timer timer("Total time");
+    trace::Timer timer("Total time", Log::info());
 
     util::MIRStatistics statistics;
     Log::debug() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;

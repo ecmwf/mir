@@ -133,7 +133,7 @@ void VoronoiMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     }
 
     {
-        trace::Timer time("assemble: fill sparse matrix", log);
+        trace::Timer time("assemble: fill sparse matrix");
 
         // TODO: triplets, really? why not writing to the matrix directly?
         ASSERT_NONEMPTY_INTERPOLATION("VoronoiMethod", !biplets.empty());

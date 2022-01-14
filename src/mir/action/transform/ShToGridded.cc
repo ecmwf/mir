@@ -173,7 +173,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 
     atlas_trans_t trans;
     try {
-        trace::Timer time("ShToGridded::caching", Log::debug());
+        trace::Timer time("ShToGridded::caching");
 
         bool caching = LibMir::caching();
         parametrisation_.get("caching", caching);

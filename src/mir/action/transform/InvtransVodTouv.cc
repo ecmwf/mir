@@ -36,8 +36,7 @@ void InvtransVodTouv::print(std::ostream& out) const {
 
 void InvtransVodTouv::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
                               const param::MIRParametrisation& parametrisation) const {
-    auto& log = Log::debug();
-    trace::Timer mainTimer("InvtransVodTouv::sh2grid", log);
+    trace::Timer mainTimer("InvtransVodTouv::sh2grid");
 
 
     // set invtrans options
@@ -52,7 +51,7 @@ void InvtransVodTouv::sh2grid(data::MIRField& field, const ShToGridded::atlas_tr
     MIRValuesVector input_vo;
     MIRValuesVector input_d;
     if (F > 1) {
-        trace::Timer timer("InvtransVodTouv: interlacing spectra", log);
+        trace::Timer timer("InvtransVodTouv: interlacing spectra");
 
         auto T = size_t(trans.truncation());
         ASSERT(T > 0);
@@ -87,7 +86,7 @@ void InvtransVodTouv::sh2grid(data::MIRField& field, const ShToGridded::atlas_tr
 
     // inverse transform
     {
-        trace::Timer timer("InvtransVodTouv: invtrans", log);
+        trace::Timer timer("InvtransVodTouv: invtrans");
         trans.invtrans(int(F), input_vo.data(), input_d.data(), output.data(), config);
 
         input_vo.clear();
@@ -97,7 +96,7 @@ void InvtransVodTouv::sh2grid(data::MIRField& field, const ShToGridded::atlas_tr
 
     // set field values (again, avoid copies for one field pair only)
     {
-        trace::Timer timer("InvtransVodTouv: copying grid-point values", log);
+        trace::Timer timer("InvtransVodTouv: copying grid-point values");
 
         // u/v are contiguous, they are saved in alternate order
         long id_u = 0;

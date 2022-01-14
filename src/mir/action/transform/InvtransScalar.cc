@@ -35,8 +35,7 @@ void InvtransScalar::print(std::ostream& out) const {
 
 void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
                              const param::MIRParametrisation&) const {
-    auto& log = Log::debug();
-    trace::Timer mainTimer("InvtransScalar::sh2grid", log);
+    trace::Timer mainTimer("InvtransScalar::sh2grid");
 
 
     // set invtrans options
@@ -50,7 +49,7 @@ void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_tra
     // set input working area (avoid copies for one field only)
     MIRValuesVector input;
     if (F > 1) {
-        trace::Timer timer("InvtransScalar: interlacing spectra", log);
+        trace::Timer timer("InvtransScalar: interlacing spectra");
 
         auto T = size_t(trans.truncation());
         ASSERT(T > 0);
@@ -79,7 +78,7 @@ void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_tra
 
     // inverse transform
     {
-        trace::Timer timer("InvtransScalar: invtrans", log);
+        trace::Timer timer("InvtransScalar: invtrans");
         trans.invtrans(int(F), input.data(), output.data(), config);
 
         input.clear();
@@ -88,7 +87,7 @@ void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_tra
 
     // set field values (again, avoid copies for one field only)
     if (F > 1) {
-        trace::Timer timer("InvtransScalar: copying grid-point values", log);
+        trace::Timer timer("InvtransScalar: copying grid-point values");
 
         MIRValuesVector values;
         auto here = output.cbegin();

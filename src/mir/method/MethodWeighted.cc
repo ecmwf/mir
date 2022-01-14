@@ -132,7 +132,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     auto& log = Log::debug();
 
     log << "MethodWeighted::getMatrix " << *this << std::endl;
-    trace::Timer timer("MethodWeighted::getMatrix", Log::debug());
+    trace::Timer timer("MethodWeighted::getMatrix");
 
     double here                   = timer.elapsed();
     const lsm::LandSeaMasks masks = getMasks(in, out);
@@ -305,7 +305,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
     static bool check_stats = eckit::Resource<bool>("mirCheckStats", false);
 
-    trace::Timer timer("MethodWeighted::execute", Log::debug());
+    trace::Timer timer("MethodWeighted::execute");
     auto& log = Log::debug();
     log << "MethodWeighted::execute" << std::endl;
 
@@ -349,7 +349,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
         std::ostringstream os;
         os << "Interpolating field (" << Log::Pretty(npts_inp) << " -> " << Log::Pretty(npts_out) << ")";
-        trace::Timer trace(os.str(), Log::debug());
+        trace::Timer trace(os.str());
 
         // compute some statistics on the result
         // This is expensive so we might want to skip it in production code
@@ -378,7 +378,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
             for (auto& n : nonLinear_) {
                 std::ostringstream str;
                 str << *n;
-                trace::Timer t(str.str());
+                trace::Timer t(str.str(), Log::info());
 
                 if (n->treatment(A, M, B, field.values(i), missingValue)) {
                     if (matrixValidate_) {
@@ -423,7 +423,7 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::R
         W.setIdentity(W.rows(), W.cols());
     }
     else {
-        trace::Timer timer("Assemble matrix");
+        trace::Timer timer("Assemble matrix", Log::info());
         assemble(ctx.statistics(), W, in, out);
         W.cleanup(pruneEpsilon_);
     }
@@ -436,7 +436,7 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::R
 
 
 void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks) const {
-    trace::Timer timer("MethodWeighted::applyMasks");
+    trace::Timer timer("MethodWeighted::applyMasks", Log::info());
     auto& log = Log::debug();
 
     log << "MethodWeighted::applyMasks(" << masks << ")" << std::endl;

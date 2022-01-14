@@ -49,7 +49,7 @@ std::string LandSeaMasks::cacheName() const {
 
 LandSeaMasks LandSeaMasks::lookup(const param::MIRParametrisation& parametrisation, const repres::Representation& in,
                                   const repres::Representation& out) {
-    trace::Timer("LandSeaMasks::lookup", Log::debug());
+    trace::Timer("LandSeaMasks::lookup");
     return LandSeaMasks(Mask::lookupInput(parametrisation, in), Mask::lookupOutput(parametrisation, out));
 }
 
