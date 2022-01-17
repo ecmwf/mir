@@ -106,7 +106,7 @@ MappedMask::MappedMask(const std::string& name, const eckit::PathName& path, con
 
     Log::debug() << "LSM: Ni=" << Ni << ", Nj=" << Nj << std::endl;
 
-    trace::Timer timer("Extract points from  LSM", Log::info());
+    trace::Timer timer("Extract points from  LSM");
 
     // NOTE: this is not using 3D coordinate systems
     // mask_.reserve(grid.size());

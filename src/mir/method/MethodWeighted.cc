@@ -112,7 +112,7 @@ bool MethodWeighted::sameAs(const Method& other) const {
 void MethodWeighted::createMatrix(context::Context& ctx, const repres::Representation& in,
                                   const repres::Representation& out, WeightMatrix& W, const lsm::LandSeaMasks& masks,
                                   const Cropping& /*cropping*/) const {
-    trace::ResourceUsage usage(std::string("MethodWeighted::createMatrix [") + name() + "]", Log::debug());
+    trace::ResourceUsage usage(std::string("MethodWeighted::createMatrix [") + name() + "]");
 
     computeMatrixWeights(ctx, in, out, W, validateMatrixWeights());
 
@@ -378,7 +378,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
             for (auto& n : nonLinear_) {
                 std::ostringstream str;
                 str << *n;
-                trace::Timer t(str.str(), Log::info());
+                trace::Timer t(str.str());
 
                 if (n->treatment(A, M, B, field.values(i), missingValue)) {
                     if (matrixValidate_) {
@@ -423,7 +423,7 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::R
         W.setIdentity(W.rows(), W.cols());
     }
     else {
-        trace::Timer timer("Assemble matrix", Log::info());
+        trace::Timer timer("Assemble matrix");
         assemble(ctx.statistics(), W, in, out);
         W.cleanup(pruneEpsilon_);
     }
@@ -436,7 +436,7 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::R
 
 
 void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks) const {
-    trace::Timer timer("MethodWeighted::applyMasks", Log::info());
+    trace::Timer timer("MethodWeighted::applyMasks");
     auto& log = Log::debug();
 
     log << "MethodWeighted::applyMasks(" << masks << ")" << std::endl;

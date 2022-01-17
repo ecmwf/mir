@@ -73,8 +73,7 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
         graph.add(j->plan(), watchers_[i++]);
     }
 
-    std::unique_ptr<trace::Timer> timer(printActionGraph ? new trace::Timer("MIRComplexJob::execute", Log::info())
-                                                         : nullptr);
+    std::unique_ptr<trace::Timer> timer(printActionGraph ? new trace::Timer("MIRComplexJob::execute") : nullptr);
 
     if (printActionGraph) {
         Log::info() << ">>>>>>>>>>>>"

@@ -22,7 +22,6 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
-#include "mir/util/Log.h"
 #include "mir/util/Trace.h"
 
 
@@ -125,7 +124,7 @@ void ProxyMethod::execute(context::Context& ctx, const repres::Representation& i
         atlas::FieldSet fields;
     };
 
-    trace::Timer timer("ProxyMethod::execute", Log::info());
+    trace::Timer timer("ProxyMethod::execute");
     auto report = [](trace::Timer& timer, const std::string& msg) {
         timer.report(msg);
         timer.stop();

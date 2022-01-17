@@ -46,7 +46,7 @@ size_t CroppingCacheEntry::footprint() const {
 
 
 void CroppingCacheEntry::save(const eckit::PathName& path) const {
-    trace::Timer timer("Saving cropping to cache", Log::info());
+    trace::Timer timer("Saving cropping to cache");
 
     eckit::FileStream f(path, "w");
     auto c = eckit::closer(f);
@@ -64,7 +64,7 @@ void CroppingCacheEntry::save(const eckit::PathName& path) const {
 
 
 void CroppingCacheEntry::load(const eckit::PathName& path) {
-    trace::Timer timer("Loading cropping from cache", Log::info());
+    trace::Timer timer("Loading cropping from cache");
 
     eckit::FileStream f(path, "r");
     auto c = eckit::closer(f);

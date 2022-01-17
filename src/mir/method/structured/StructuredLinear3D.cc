@@ -91,7 +91,7 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
 
     // interpolate each output point in turn
     {
-        trace::ProgressTimer progress("Interpolating", nbOutputPoints, {"point"}, Log::debug());
+        trace::ProgressTimer progress("Interpolating", nbOutputPoints, {"point"});
 
         for (const std::unique_ptr<repres::Iterator> it(out.iterator()); it->next();) {
             ++progress;

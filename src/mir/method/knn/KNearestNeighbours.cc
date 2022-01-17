@@ -65,7 +65,7 @@ void KNearestNeighbours::assemble(util::MIRStatistics&, WeightMatrix& W, const r
     auto& log = Log::debug();
 
     log << *this << "::assemble (input: " << in << ", output: " << out << ")" << std::endl;
-    trace::Timer timer("KNearestNeighbours::assemble", Log::info());
+    trace::Timer timer("KNearestNeighbours::assemble");
 
     const size_t nbOutputPoints = out.numberOfPoints();
 
@@ -82,7 +82,7 @@ void KNearestNeighbours::assemble(util::MIRStatistics&, WeightMatrix& W, const r
     std::vector<WeightMatrix::Triplet> triplets;
 
     {
-        trace::ProgressTimer progress("Locating", nbOutputPoints, {"point"}, log);
+        trace::ProgressTimer progress("Locating", nbOutputPoints, {"point"});
         double search = 0;
         double insert = 0;
 

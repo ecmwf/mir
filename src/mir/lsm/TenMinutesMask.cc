@@ -51,7 +51,7 @@ TenMinutesMask::TenMinutesMask(const std::string& name, const eckit::PathName& p
     const size_t COLS = 2160;
 
     if (ten_minutes_.empty()) {
-        trace::Timer timer("Load 10 minutes LSM", Log::info());
+        trace::Timer timer("Load 10 minutes LSM");
 
         util::lock_guard<util::recursive_mutex> lock(local_mutex);
 
@@ -75,7 +75,7 @@ TenMinutesMask::TenMinutesMask(const std::string& name, const eckit::PathName& p
         }
     }
 
-    trace::Timer timer("Extract point from 10 minutes LSM", Log::info());
+    trace::Timer timer("Extract point from 10 minutes LSM");
 
 
     // NOTE: this is not using 3D coordinate systems

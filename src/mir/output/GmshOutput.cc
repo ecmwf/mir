@@ -28,7 +28,6 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
-#include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/MeshGeneratorParameters.h"
 #include "mir/util/Trace.h"
@@ -78,7 +77,7 @@ size_t GmshOutput::save(const param::MIRParametrisation& param, context::Context
         rep->fill(meshGenParams);
         meshGenParams.set("3d", config.getString("coordinates") == "xyz");
 
-        trace::Timer time("Generating mesh", Log::info());
+        trace::Timer time("Generating mesh");
         mesh = caching::InMemoryMeshCache::atlasMesh(ctx.statistics(), grid, meshGenParams);
     }
 

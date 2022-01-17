@@ -28,20 +28,16 @@ namespace trace {
 
 class Timer : public eckit::Timer {
 public:
-    Timer(const std::string& name, std::ostream& o = Log::debug()) : eckit::Timer(name, o) {}
-    Timer(const char* name, std::ostream& o = Log::debug()) : eckit::Timer(name, o) {}
+    explicit Timer(const std::string&);
 
     using eckit::Timer::elapsed;
-    using eckit::Timer::Timer;
     double elapsed(double t) { return eckit::Timer::elapsed() - t; }
     Log::Seconds elapsedSeconds(double t = 0, bool compact = false) { return {elapsed(t), compact}; }
 };
 
 
 struct ResourceUsage : public Timer {
-    explicit ResourceUsage(const std::string& name, Log::Channel& log = Log::debug()) :
-        ResourceUsage(name.c_str(), log) {}
-    explicit ResourceUsage(const char* name, Log::Channel& log = Log::debug());
+    explicit ResourceUsage(const std::string&);
     ~ResourceUsage();
 
 private:
@@ -59,8 +55,7 @@ struct ProgressTimer : public Timer {
     /// @param units unit/units
     /// @param time how often to output progress, based on elapsed time
     /// @param out output stream
-    ProgressTimer(const std::string& name, size_t limit, const Log::Plural& units, Log::Channel& out = Log::info(),
-                  double time = 5.);
+    ProgressTimer(const std::string& name, size_t limit, const Log::Plural& units, double time = 5.);
 
     bool operator++();
 
