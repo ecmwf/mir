@@ -12,7 +12,7 @@
 
 #include "mir/method/fe/L2Projection.h"
 
-#include "eckit/linalg/LinearAlgebra.h"
+#include "eckit/linalg/LinearAlgebraSparse.h"
 #include "eckit/linalg/Vector.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
@@ -92,7 +92,7 @@ void L2Projection::assemble(util::MIRStatistics& statistics, WeightMatrix& W, co
 
     // 4) W = M_d^{-1} I M_s
     W.reserve(I.rows(), I.cols(), I.nonZeros());  // reserve same space as I
-    eckit::linalg::LinearAlgebra::backend().dsptd(inv_M_d, I, M_s, W);
+    eckit::linalg::LinearAlgebraSparse::backend().dsptd(inv_M_d, I, M_s, W);
 
 
     // 5) Normalise row weights
