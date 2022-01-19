@@ -283,7 +283,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
 
 
     {
-        trace::ProgressTimer progress("Projecting", nbOutputPoints, {"point"}, log);
+        trace::ProgressTimer progress("Projecting", nbOutputPoints, {"point"});
 
         // iterate over output points
         for (const std::unique_ptr<repres::Iterator> it(out.iterator()); it->next(); ++progress) {

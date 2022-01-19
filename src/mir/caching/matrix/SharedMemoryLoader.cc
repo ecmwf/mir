@@ -114,7 +114,7 @@ public:
 
 SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::PathName& path) :
     MatrixLoader(name, path), address_(nullptr), size_(0), unload_(false) {
-    trace::Timer timer("SharedMemoryLoader: loading '" + path.asString() + "'", Log::debug());
+    trace::Timer timer("SharedMemoryLoader: loading '" + path.asString() + "'");
 
     unload_ = name.substr(0, 4) == "tmp-";
 

@@ -82,7 +82,7 @@ void Action::estimate(context::Context&, api::MIREstimation& /*estimation*/) con
 
 void Action::estimateNumberOfGridPoints(context::Context&, api::MIREstimation& estimation,
                                         const repres::Representation& out) {
-    // trace::Timer timer("estimateNumberOfGridPoints", Log::error());
+    // trace::Timer timer("estimateNumberOfGridPoints");
     estimation.numberOfGridPoints(out.numberOfPoints());
 }
 
@@ -93,7 +93,7 @@ void Action::estimateMissingValues(context::Context& /*ctx*/, api::MIREstimation
     data::MIRField& field = ctx.field();
     ASSERT(field.dimensions() == 1);
     if (field.hasMissing()) {
-        trace::Timer timer("estimateMissingValues", Log::error());
+        trace::Timer timer("estimateMissingValues");
 
         param::DefaultParametrisation runtime;
         param::CombinedParametrisation combined(runtime, runtime, runtime);

@@ -113,7 +113,7 @@ public:
 SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
     LegendreLoader(parametrisation, path), address_(nullptr), size_(size_t(path.size())), unload_(false) {
 
-    trace::Timer timer("SharedMemoryLoader: loading '" + path.asString() + "'", Log::debug());
+    trace::Timer timer("SharedMemoryLoader: loading '" + path.asString() + "'");
 
     std::string name;
     if (parametrisation.get("legendre-loader", name)) {
@@ -217,7 +217,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
             }
         }
         else {
-            trace::Timer("SharedMemoryLoader: loading into shared memory", Log::debug());
+            trace::Timer("SharedMemoryLoader: loading into shared memory");
 
             eckit::AutoStdFile file(real);
             ASSERT(std::fread(address_, 1, size_, file) == size_);

@@ -112,7 +112,7 @@ bool MethodWeighted::sameAs(const Method& other) const {
 void MethodWeighted::createMatrix(context::Context& ctx, const repres::Representation& in,
                                   const repres::Representation& out, WeightMatrix& W, const lsm::LandSeaMasks& masks,
                                   const Cropping& /*cropping*/) const {
-    trace::ResourceUsage usage(std::string("MethodWeighted::createMatrix [") + name() + "]", Log::debug());
+    trace::ResourceUsage usage(std::string("MethodWeighted::createMatrix [") + name() + "]");
 
     computeMatrixWeights(ctx, in, out, W, validateMatrixWeights());
 
@@ -132,7 +132,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     auto& log = Log::debug();
 
     log << "MethodWeighted::getMatrix " << *this << std::endl;
-    trace::Timer timer("MethodWeighted::getMatrix", Log::debug());
+    trace::Timer timer("MethodWeighted::getMatrix");
 
     double here                   = timer.elapsed();
     const lsm::LandSeaMasks masks = getMasks(in, out);
@@ -305,7 +305,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
     static bool check_stats = eckit::Resource<bool>("mirCheckStats", false);
 
-    trace::Timer timer("MethodWeighted::execute", Log::debug());
+    trace::Timer timer("MethodWeighted::execute");
     auto& log = Log::debug();
     log << "MethodWeighted::execute" << std::endl;
 
@@ -349,7 +349,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
         std::ostringstream os;
         os << "Interpolating field (" << Log::Pretty(npts_inp) << " -> " << Log::Pretty(npts_out) << ")";
-        trace::Timer trace(os.str(), Log::debug());
+        trace::Timer trace(os.str());
 
         // compute some statistics on the result
         // This is expensive so we might want to skip it in production code
