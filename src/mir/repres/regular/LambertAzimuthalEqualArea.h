@@ -28,6 +28,8 @@ public:
     // -- Constructors
 
     LambertAzimuthalEqualArea(const param::MIRParametrisation&);
+    LambertAzimuthalEqualArea(const Projection&, const util::BoundingBox&, const LinearSpacing& x,
+                              const LinearSpacing& y, const util::Shape&);
     LambertAzimuthalEqualArea(const LambertAzimuthalEqualArea&) = delete;
 
     // -- Destructor
@@ -63,6 +65,7 @@ private:
     // -- Overridden methods
 
     void fill(grib_info&) const override;
+    const Representation* croppedRepresentation(const util::BoundingBox&) const override;
 
     // -- Class members
     // None
