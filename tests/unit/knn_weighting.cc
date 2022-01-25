@@ -43,8 +43,10 @@ CASE("distance-weighting") {
         {{0., 0., 3.}, 3},
     };
     param::SimpleParametrisation param;
-    param.set("distance", 1.);
+    param.set("distance", 2.);
     param.set("nclosest", 4);
+    param.set("climate-filter-delta", 1.);
+
 
     auto methods = {"climate-filter", "cressman", "exponential-mean", "exponential-sum", "gaussian",
                     "inverse-distance-weighting", "inverse-distance-weighting-squared", "nearest-neighbour", "no",
