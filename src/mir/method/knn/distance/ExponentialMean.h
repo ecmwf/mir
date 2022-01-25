@@ -22,18 +22,19 @@ namespace distance {
 
 
 /**
- * Cressman, George P., An operational objective analysis system. Mon. Wea. Rev., 87, 367-374 (01 Oct 1959),
- * @ref http://dx.doi.org/10.1175/1520-0493(1959)087<0367:AOOAS>2.0.CO;2
+/* Calculates the mean of the values weighted (multiplied) by the following:
+ * - if tolerance is not zero: exp(−distance2/tolerance2)
+ * - if tolerance is zero: 1. if the point is on the target point, 0. otherwise
+ * @note With a tolerance of zero, it calculates the number of input points that lie exactly on each target point.
  */
-struct Cressman : DistanceWeighting {
-    Cressman(const param::MIRParametrisation&);
+struct ExponentialMean : DistanceWeighting {
+    ExponentialMean(const param::MIRParametrisation&);
     void operator()(size_t ip, const Point3& point, const std::vector<search::PointSearch::PointValueType>& neighbours,
                     std::vector<WeightMatrix::Triplet>& triplets) const override;
 
 private:
-    double r_;
-    double r2_;
-    double power_;
+    double tolerance_;
+    double tolerance2_;
     bool sameAs(const DistanceWeighting&) const override;
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;

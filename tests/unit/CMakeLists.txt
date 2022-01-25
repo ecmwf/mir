@@ -17,6 +17,7 @@ foreach(_t
     increments
     input_MultiDimensionalInput
     iterator
+    knn_weighting
     spectral_order
     statistics
     style

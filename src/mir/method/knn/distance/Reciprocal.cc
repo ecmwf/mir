@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/method/knn/distance/Cressman.h"
+#include "mir/method/knn/distance/Reciprocal.h"
 
 #include <sstream>
 
@@ -27,10 +27,7 @@ namespace knn {
 namespace distance {
 
 
-Cressman::Cressman(const param::MIRParametrisation& parametrisation) {
-    parametrisation.get("cressman-model-extension-power", power_ = 1.);
-    ASSERT(power_ >= 1.);
-
+Reciprocal::Reciprocal(const param::MIRParametrisation& parametrisation) {
     parametrisation.get("distance", r_ = 1.);
     ASSERT(r_ >= 0.);
 
@@ -38,11 +35,17 @@ Cressman::Cressman(const param::MIRParametrisation& parametrisation) {
 }
 
 
-void Cressman::operator()(size_t ip, const Point3& point,
-                          const std::vector<search::PointSearch::PointValueType>& neighbours,
-                          std::vector<WeightMatrix::Triplet>& triplets) const {
+void Reciprocal::operator()(size_t ip, const Point3& point,
+                            const std::vector<search::PointSearch::PointValueType>& neighbours,
+                            std::vector<WeightMatrix::Triplet>& triplets) const {
     const size_t nbPoints = neighbours.size();
     ASSERT(0 < nbPoints);
+
+    if (eckit::types::is_approximately_equal(Point3::distance2(point, neighbours.front().point()), 0.)) {
+        const size_t jp = neighbours.front().payload();
+        triplets.assign(1, {ip, jp, 1.});
+        return;
+    }
 
     triplets.clear();
     triplets.reserve(nbPoints);
@@ -52,39 +55,39 @@ void Cressman::operator()(size_t ip, const Point3& point,
     double sum = 0.;
     for (size_t j = 0; j < nbPoints; ++j) {
         auto d2    = Point3::distance2(point, neighbours[j].point());
-        weights[j] = d2 < r2_ ? std::pow((d2 - r2_) / (d2 + r2_), power_) : 0.;
+        weights[j] = d2 < r2_ ? 1. / d2 : 0.;
         sum += weights[j];
     }
 
     // normalise all weights according to the total, and set sparse matrix triplets
     if (eckit::types::is_strictly_greater(sum, 0.)) {
         for (size_t j = 0; j < nbPoints; ++j) {
-            size_t jp = neighbours[j].payload();
-            triplets.emplace_back(WeightMatrix::Triplet(ip, jp, weights[j] / sum));
+            const size_t jp = neighbours[j].payload();
+            triplets.emplace_back(ip, jp, weights[j] / sum);
         }
     }
 }
 
 
-bool Cressman::sameAs(const DistanceWeighting& other) const {
-    auto o = dynamic_cast<const Cressman*>(&other);
+bool Reciprocal::sameAs(const DistanceWeighting& other) const {
+    const auto* o = dynamic_cast<const Reciprocal*>(&other);
     return (o != nullptr) && eckit::types::is_approximately_equal(r_, o->r_);
 }
 
 
-void Cressman::print(std::ostream& out) const {
-    out << "Cressman[radius=" << r_ << "]";
+void Reciprocal::print(std::ostream& out) const {
+    out << "Reciprocal[radius=" << r_ << "]";
 }
 
 
-void Cressman::hash(eckit::MD5& h) const {
+void Reciprocal::hash(eckit::MD5& h) const {
     std::ostringstream s;
     s << *this;
     h.add(s.str());
 }
 
 
-static const DistanceWeightingBuilder<Cressman> __distance("cressman");
+static const DistanceWeightingBuilder<Reciprocal> __distance("reciprocal");
 
 
 }  // namespace distance

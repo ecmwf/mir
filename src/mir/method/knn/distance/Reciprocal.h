@@ -21,19 +21,17 @@ namespace knn {
 namespace distance {
 
 
-/**
- * Cressman, George P., An operational objective analysis system. Mon. Wea. Rev., 87, 367-374 (01 Oct 1959),
- * @ref http://dx.doi.org/10.1175/1520-0493(1959)087<0367:AOOAS>2.0.CO;2
- */
-struct Cressman : DistanceWeighting {
-    Cressman(const param::MIRParametrisation&);
+/// Reciprocal: the mean of the values, weighted by the (square of the) inverse of their distance from the target point.
+/// If a source point lies exactly on the target point then its value is used directly and the rest of the values
+/// discarded.
+struct Reciprocal : DistanceWeighting {
+    Reciprocal(const param::MIRParametrisation&);
     void operator()(size_t ip, const Point3& point, const std::vector<search::PointSearch::PointValueType>& neighbours,
                     std::vector<WeightMatrix::Triplet>& triplets) const override;
 
 private:
     double r_;
     double r2_;
-    double power_;
     bool sameAs(const DistanceWeighting&) const override;
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;

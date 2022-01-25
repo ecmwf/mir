@@ -95,8 +95,8 @@ void InverseDistanceWeighting::hash(eckit::MD5& h) const {
 }
 
 
-static DistanceWeightingBuilder<InverseDistanceWeighting> __distance1("inverse-distance-weighting");
-static DistanceWeightingBuilder<InverseDistanceWeighting> __distance2("shepard");
+static const DistanceWeightingBuilder<InverseDistanceWeighting> __distance1("inverse-distance-weighting");
+static const DistanceWeightingBuilder<InverseDistanceWeighting> __distance2("shepard");
 
 
 }  // namespace distance

@@ -87,7 +87,7 @@ void GaussianDistanceWeighting::hash(eckit::MD5& h) const {
 }
 
 
-static DistanceWeightingBuilder<GaussianDistanceWeighting> __distance("gaussian");
+static const DistanceWeightingBuilder<GaussianDistanceWeighting> __distance("gaussian");
 
 
 }  // namespace distance
