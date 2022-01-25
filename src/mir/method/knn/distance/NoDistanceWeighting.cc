@@ -62,8 +62,8 @@ void NoDistanceWeighting::hash(eckit::MD5& h) const {
 }
 
 
-static DistanceWeightingBuilder<NoDistanceWeighting> __distance1("no-distance-weighting");
-static DistanceWeightingBuilder<NoDistanceWeighting> __distance2("no");
+static const DistanceWeightingBuilder<NoDistanceWeighting> __distance1("no-distance-weighting");
+static const DistanceWeightingBuilder<NoDistanceWeighting> __distance2("no");
 
 
 }  // namespace distance

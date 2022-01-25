@@ -84,7 +84,7 @@ void Cressman::hash(eckit::MD5& h) const {
 }
 
 
-static DistanceWeightingBuilder<Cressman> __distance("cressman");
+static const DistanceWeightingBuilder<Cressman> __distance("cressman");
 
 
 }  // namespace distance

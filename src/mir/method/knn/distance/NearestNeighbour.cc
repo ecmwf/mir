@@ -55,7 +55,7 @@ void NearestNeighbour::hash(eckit::MD5& h) const {
 }
 
 
-static DistanceWeightingBuilder<NearestNeighbour> __distance("nearest-neighbour");
+static const DistanceWeightingBuilder<NearestNeighbour> __distance("nearest-neighbour");
 
 
 }  // namespace distance

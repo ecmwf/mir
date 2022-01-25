@@ -76,7 +76,7 @@ void InverseDistanceWeightingSquared::hash(eckit::MD5& h) const {
 }
 
 
-static DistanceWeightingBuilder<InverseDistanceWeightingSquared> __distance("inverse-distance-weighting-squared");
+static const DistanceWeightingBuilder<InverseDistanceWeightingSquared> __distance("inverse-distance-weighting-squared");
 
 
 }  // namespace distance

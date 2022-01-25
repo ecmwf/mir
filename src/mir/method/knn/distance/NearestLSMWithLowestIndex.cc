@@ -95,7 +95,7 @@ void NearestLSMWithLowestIndex::hash(eckit::MD5& h) const {
 }
 
 
-static DistanceWeightingWithLSMBuilder<NearestLSMWithLowestIndex> __distance("nearest-lsm-with-lowest-index");
+static const DistanceWeightingWithLSMBuilder<NearestLSMWithLowestIndex> __distance("nearest-lsm-with-lowest-index");
 
 
 }  // namespace distance

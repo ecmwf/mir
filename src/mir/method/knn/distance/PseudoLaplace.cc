@@ -120,7 +120,7 @@ void PseudoLaplace::hash(eckit::MD5& h) const {
 }
 
 
-static DistanceWeightingBuilder<PseudoLaplace> __distance("pseudo-laplace");
+static const DistanceWeightingBuilder<PseudoLaplace> __distance("pseudo-laplace");
 
 
 }  // namespace distance
