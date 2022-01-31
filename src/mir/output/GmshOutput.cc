@@ -127,7 +127,7 @@ size_t GmshOutput::save(const param::MIRParametrisation& param, context::Context
 
 
 bool GmshOutput::sameAs(const MIROutput& other) const {
-    auto o = dynamic_cast<const GmshOutput*>(&other);
+    const auto* o = dynamic_cast<const GmshOutput*>(&other);
     return (o != nullptr) && eckit::PathName(path_) == eckit::PathName(o->path_);
 }
 
@@ -147,7 +147,7 @@ void GmshOutput::print(std::ostream& out) const {
 }
 
 
-static MIROutputBuilder<GmshOutput> _output("gmsh", {".msh"});
+static const MIROutputBuilder<GmshOutput> _output("gmsh", {".msh"});
 
 
 }  // namespace output

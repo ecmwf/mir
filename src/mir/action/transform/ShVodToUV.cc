@@ -54,7 +54,7 @@ ShVodToUV::~ShVodToUV() = default;
 
 
 bool ShVodToUV::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const ShVodToUV*>(&other);
+    const auto* o = dynamic_cast<const ShVodToUV*>(&other);
     return (o != nullptr);
 }
 
@@ -124,7 +124,7 @@ const char* ShVodToUV::name() const {
 }
 
 
-static ActionBuilder<ShVodToUV> __action("transform.sh-vod-to-UV");
+static const ActionBuilder<ShVodToUV> __action("transform.sh-vod-to-UV");
 
 
 }  // namespace transform

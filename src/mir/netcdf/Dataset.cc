@@ -75,7 +75,7 @@ int Dataset::varid() const {
 
 
 Dimension* Dataset::findDimension(int id) const {
-    for (auto& j : dimensions_) {
+    for (const auto& j : dimensions_) {
         if ((j.second)->id() == id) {
             return (j.second);
         }
@@ -86,7 +86,7 @@ Dimension* Dataset::findDimension(int id) const {
 
 
 Dimension* Dataset::findDimension(const std::string& name) const {
-    for (auto& j : dimensions_) {
+    for (const auto& j : dimensions_) {
         if ((j.second)->name() == name) {
             return (j.second);
         }
@@ -100,20 +100,20 @@ void Dataset::dump(std::ostream& out, bool data) const {
 
     out << "netcdf " << path_ << "{" << std::endl;
     out << "dimensions:" << std::endl;
-    for (auto& j : dimensions_) {
+    for (const auto& j : dimensions_) {
         (j.second)->dump(out);
     }
     out << "variables:" << std::endl;
-    for (auto& j : variables_) {
+    for (const auto& j : variables_) {
         (j.second)->dump(out);
     }
     out << "// global attributes:" << std::endl;
-    for (auto& j : attributes_) {
+    for (const auto& j : attributes_) {
         (j.second)->dump(out);
     }
     if (data) {
         out << std::endl << "data:" << std::endl;
-        for (auto& j : variables_) {
+        for (const auto& j : variables_) {
             out << std::endl;
             (j.second)->dumpData(out);
         }
@@ -125,7 +125,7 @@ void Dataset::dump(std::ostream& out, bool data) const {
 
 std::vector<Variable*> Dataset::variablesForDimension(const Dimension& dim) const {
     std::vector<Variable*> result;
-    for (auto& j : variables_) {
+    for (const auto& j : variables_) {
         std::vector<Dimension*> dimensions = (j.second)->dimensions();
         for (auto& k : dimensions) {
             if (k == &dim) {

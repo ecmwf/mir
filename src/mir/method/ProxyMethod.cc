@@ -55,11 +55,11 @@ struct GridBoxMaximum final : public ProxyMethod {
 };
 
 
-static MethodBuilder<StructuredBicubic> __method1("structured-bicubic");
-static MethodBuilder<StructuredBilinear> __method2("structured-bilinear");
-static MethodBuilder<StructuredBiquasicubic> __method3("structured-biquasicubic");
-static MethodBuilder<GridBoxAverage> __method4("grid-box-average-matrix-free");
-static MethodBuilder<GridBoxMaximum> __method5("grid-box-maximum-matrix-free");
+static const MethodBuilder<StructuredBicubic> __method1("structured-bicubic");
+static const MethodBuilder<StructuredBilinear> __method2("structured-bilinear");
+static const MethodBuilder<StructuredBiquasicubic> __method3("structured-biquasicubic");
+static const MethodBuilder<GridBoxAverage> __method4("grid-box-average-matrix-free");
+static const MethodBuilder<GridBoxMaximum> __method5("grid-box-maximum-matrix-free");
 
 
 static eckit::Hash::digest_t atlasOptionsDigest(const ProxyMethod::atlas_config_t& options) {
@@ -162,7 +162,7 @@ void ProxyMethod::execute(context::Context& ctx, const repres::Representation& i
 
 
 bool ProxyMethod::sameAs(const Method& other) const {
-    auto o = dynamic_cast<const ProxyMethod*>(&other);
+    const auto* o = dynamic_cast<const ProxyMethod*>(&other);
     return (o != nullptr) && atlasOptionsDigest(options_) == atlasOptionsDigest(o->options_) &&
            cropping_.sameAs(o->cropping_);
 }

@@ -34,7 +34,7 @@ UnstructuredFilter::~UnstructuredFilter() = default;
 
 
 bool UnstructuredFilter::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const UnstructuredFilter*>(&other);
+    const auto* o = dynamic_cast<const UnstructuredFilter*>(&other);
     return (o != nullptr);
 }
 
@@ -74,7 +74,7 @@ const char* UnstructuredFilter::name() const {
 }
 
 
-static ActionBuilder<UnstructuredFilter> __action("filter.unstructured");
+static const ActionBuilder<UnstructuredFilter> __action("filter.unstructured");
 
 
 }  // namespace action

@@ -129,16 +129,16 @@ Type& Type::lookup(Type& type1, Type& type2) {
         t2 = &lookup(t2->super_);
     }
 
-    for (std::vector<int>::const_iterator j = s1.begin(); j != s1.end(); ++j) {
-        std::vector<int>::const_iterator k = std::find(s2.begin(), s2.end(), *j);
+    for (const auto j : s1) {
+        auto k = std::find(s2.begin(), s2.end(), j);
         if (k != s2.end()) {
 
             if (type1 != type2) {
-                Log::info() << "Common super-type for " << type1 << " and " << type2 << " is " << lookup(*j)
+                Log::info() << "Common super-type for " << type1 << " and " << type2 << " is " << lookup(j)
                             << std::endl;
             }
 
-            return lookup(*j);
+            return lookup(j);
         }
     }
 
@@ -435,7 +435,7 @@ Value* TypeT<float>::attributeValue(int nc, int id, const char* name, size_t len
 }
 
 
-#define T(a, b, c) static TypeT<a> TYPE_##b(b, #b, #a, c)
+#define T(a, b, c) static const TypeT<a> TYPE_##b(b, #b, #a, c)
 T(unsigned char, NC_BYTE, NC_SHORT);
 T(short, NC_SHORT, NC_LONG);
 T(long, NC_LONG, NC_DOUBLE);

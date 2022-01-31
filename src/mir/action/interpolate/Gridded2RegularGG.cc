@@ -35,7 +35,7 @@ Gridded2RegularGG::~Gridded2RegularGG() = default;
 
 
 bool Gridded2RegularGG::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const Gridded2RegularGG*>(&other);
+    const auto* o = dynamic_cast<const Gridded2RegularGG*>(&other);
     return (o != nullptr) && (N_ == o->N_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
@@ -59,7 +59,7 @@ const char* Gridded2RegularGG::name() const {
 }
 
 
-static ActionBuilder<Gridded2RegularGG> grid2grid("interpolate.grid2regular-gg");
+static const ActionBuilder<Gridded2RegularGG> grid2grid("interpolate.grid2regular-gg");
 
 
 }  // namespace interpolate

@@ -20,7 +20,7 @@ namespace key {
 namespace packing {
 
 
-static PackingBuilder<JPEG2000> __packing("jpeg", false, true);
+static const PackingBuilder<JPEG2000> __packing("jpeg", false, true);
 
 
 void JPEG2000::fill(const repres::Representation*, grib_info& info) const {

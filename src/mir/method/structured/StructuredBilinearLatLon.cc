@@ -30,7 +30,7 @@ namespace method {
 namespace structured {
 
 
-static MethodBuilder<StructuredBilinearLatLon> __method("structured-bilinear-latlon");
+static const MethodBuilder<StructuredBilinearLatLon> __method("structured-bilinear-latlon");
 
 
 StructuredBilinearLatLon::StructuredBilinearLatLon(const param::MIRParametrisation& param) : StructuredMethod(param) {}
@@ -40,7 +40,7 @@ StructuredBilinearLatLon::~StructuredBilinearLatLon() = default;
 
 
 bool StructuredBilinearLatLon::sameAs(const Method& other) const {
-    auto o = dynamic_cast<const StructuredBilinearLatLon*>(&other);
+    const auto* o = dynamic_cast<const StructuredBilinearLatLon*>(&other);
     return (o != nullptr) && StructuredMethod::sameAs(other);
 }
 

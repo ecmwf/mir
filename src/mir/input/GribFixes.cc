@@ -71,7 +71,7 @@ void GribFixes::print(std::ostream& s) const {
     eckit::JSON json(s);
 
     json.startObject();
-    for (auto& fix : fixes_) {
+    for (const auto& fix : fixes_) {
         json << *(fix.first) << *(fix.second);
     }
     json.endObject();
@@ -95,7 +95,7 @@ void GribFixes::readConfigurationFiles() {
     for (const auto& rule : rules) {
 
         // how the input is to be identified
-        auto id = new param::SimpleParametrisation;
+        auto* id = new param::SimpleParametrisation;
         ASSERT(id);
 
         for (auto& ids : StringTools::split(",", rule.first)) {
@@ -115,10 +115,10 @@ void GribFixes::readConfigurationFiles() {
         }
 
         // how the input is to be corrected
-        auto fix = new param::SimpleParametrisation;
+        auto* fix = new param::SimpleParametrisation;
         ASSERT(fix);
 
-        for (auto& fixes : static_cast<const eckit::ValueList&>(rule.second)) {
+        for (const auto& fixes : static_cast<const eckit::ValueList&>(rule.second)) {
             util::ValueMap map(fixes);
             map.set(*fix);
         }

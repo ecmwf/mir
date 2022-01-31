@@ -30,7 +30,7 @@ const char* FELinear::name() const {
 }
 
 
-static FiniteElementBuilder<FELinear> __builder("linear");
+static const FiniteElementBuilder<FELinear> __builder("linear");
 
 
 }  // namespace fe

@@ -107,7 +107,7 @@ bool MultiDimensionalInput::next() {
 
 
 bool MultiDimensionalInput::sameAs(const MIRInput& other) const {
-    auto o = dynamic_cast<const MultiDimensionalInput*>(&other);
+    const auto* o = dynamic_cast<const MultiDimensionalInput*>(&other);
 
     if ((o == nullptr) || dimensions() != o->dimensions()) {
         return false;
@@ -126,8 +126,8 @@ bool MultiDimensionalInput::sameAs(const MIRInput& other) const {
 void MultiDimensionalInput::print(std::ostream& out) const {
     out << "MultiDimensionalInput[";
 
-    auto sep = "";
-    for (auto& d : dimensions_) {
+    const auto* sep = "";
+    for (const auto& d : dimensions_) {
         out << sep << *d;
         sep = ",";
     }

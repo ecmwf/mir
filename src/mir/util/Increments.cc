@@ -104,7 +104,7 @@ bool Increments::isShifted(const PointLatLon& p) const {
 
 
 bool Increments::isLatitudeShifted(const PointLatLon& p) const {
-    auto& inc = south_north_.latitude();
+    const auto& inc = south_north_.latitude();
     if (inc == 0) {
         return false;
     }
@@ -113,7 +113,7 @@ bool Increments::isLatitudeShifted(const PointLatLon& p) const {
 
 
 bool Increments::isLongitudeShifted(const PointLatLon& p) const {
-    auto& inc = west_east_.longitude();
+    const auto& inc = west_east_.longitude();
     if (inc == 0) {
         return false;
     }

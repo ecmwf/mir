@@ -73,7 +73,7 @@ CASE("PGEN-412") {
         auto result = graph_dump(*in, *out, mj1, mj2);
         Log::info() << "ActionGraph:\n" << result << std::endl;
 
-        auto reference =
+        const auto* reference =
             "   Set[accuracy=12,output=GribFileOutput[path=]]\n"
             "   Set[accuracy=16,output=GribFileOutput[path=]]\n";
 
@@ -91,7 +91,7 @@ CASE("PGEN-412") {
         auto result = graph_dump(*in, *out, mj1, mj2);
         Log::info() << "ActionGraph:\n" << result << std::endl;
 
-        auto reference =
+        const auto* reference =
             "   ShTruncate[truncation=20]\n"
             "      Save[accuracy=12,output=GribFileOutput[path=]]\n"
             "      Save[accuracy=16,output=GribFileOutput[path=]]\n";

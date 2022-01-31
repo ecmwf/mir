@@ -41,7 +41,7 @@ void OutputVariable::create(int nc) const {
 
     int dims[NC_MAX_VAR_DIMS];
     int ndims = 0;
-    for (auto& j : dimensions_) {
+    for (const auto& j : dimensions_) {
         if (j->inUse()) {
             dims[ndims++] = j->id();
         }
@@ -59,7 +59,7 @@ void OutputVariable::create(int nc) const {
 
     created_ = true;
 
-    for (auto& j : attributes_) {
+    for (const auto& j : attributes_) {
         (j.second)->create(nc);
     }
 }

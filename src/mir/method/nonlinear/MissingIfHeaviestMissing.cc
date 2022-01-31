@@ -36,7 +36,7 @@ bool MissingIfHeaviestMissing::treatment(MethodWeighted::Matrix&, MethodWeighted
     // correct matrix weigths for the missing values
     ASSERT(W.cols() == values.size());
 
-    auto data  = const_cast<WeightMatrix::Scalar*>(W.data());
+    auto* data = const_cast<WeightMatrix::Scalar*>(W.data());
     bool modif = false;
 
     WeightMatrix::Size i = 0;
@@ -98,7 +98,7 @@ bool MissingIfHeaviestMissing::treatment(MethodWeighted::Matrix&, MethodWeighted
 
 
 bool MissingIfHeaviestMissing::sameAs(const NonLinear& other) const {
-    auto o = dynamic_cast<const MissingIfHeaviestMissing*>(&other);
+    const auto* o = dynamic_cast<const MissingIfHeaviestMissing*>(&other);
     return (o != nullptr);
 }
 
@@ -115,7 +115,7 @@ void MissingIfHeaviestMissing::hash(eckit::MD5& h) const {
 }
 
 
-static NonLinearBuilder<MissingIfHeaviestMissing> __nonlinear("missing-if-heaviest-missing");
+static const NonLinearBuilder<MissingIfHeaviestMissing> __nonlinear("missing-if-heaviest-missing");
 
 
 }  // namespace nonlinear

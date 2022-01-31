@@ -18,7 +18,7 @@ namespace data {
 namespace space {
 
 
-static SpaceChoice<Space1DLinear> __space("1d-linear");
+static const SpaceChoice<Space1DLinear> __space("1d-linear");
 
 
 size_t Space1DLinear::dimensions() const {

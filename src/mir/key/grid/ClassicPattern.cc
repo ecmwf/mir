@@ -47,7 +47,7 @@ std::string ClassicPattern::canonical(const std::string& name, const param::MIRP
 }
 
 
-static ClassicPattern __pattern("^[nN][1-9][0-9]*$");
+static const ClassicPattern __pattern("^[nN][1-9][0-9]*$");
 
 
 }  // namespace grid

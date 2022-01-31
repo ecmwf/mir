@@ -49,7 +49,7 @@ GridBoxMethod::~GridBoxMethod() = default;
 
 
 bool GridBoxMethod::sameAs(const Method& other) const {
-    auto o = dynamic_cast<const GridBoxMethod*>(&other);
+    const auto* o = dynamic_cast<const GridBoxMethod*>(&other);
     return (o != nullptr) && name() == o->name() && MethodWeighted::sameAs(*o);
 }
 

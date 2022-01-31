@@ -80,7 +80,7 @@ Variable* SimpleInputVariable::addMissingCoordinates() {
         return this;
     }
 
-    for (auto d : dimensions_) {
+    for (auto* d : dimensions_) {
         if (!dataset_.hasVariable(d->name())) {
             return this;
         }

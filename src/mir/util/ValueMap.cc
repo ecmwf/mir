@@ -25,7 +25,7 @@ ValueMap::ValueMap(const eckit::Value& value) : eckit::ValueMap(value) {}
 
 
 void ValueMap::set(eckit::Configured& config) const {
-    for (auto& kv : *this) {
+    for (const auto& kv : *this) {
         kv.second.isDouble()   ? config.set(kv.first, kv.second.as<double>())
         : kv.second.isNumber() ? config.set(kv.first, long(kv.second))
         : kv.second.isBool()   ? config.set(kv.first, kv.second.as<bool>())
@@ -35,7 +35,7 @@ void ValueMap::set(eckit::Configured& config) const {
 
 
 void ValueMap::set(param::SimpleParametrisation& config) const {
-    for (auto& kv : *this) {
+    for (const auto& kv : *this) {
         kv.second.isDouble()   ? config.set(kv.first, kv.second.as<double>())
         : kv.second.isNumber() ? config.set(kv.first, long(kv.second))
         : kv.second.isBool()   ? config.set(kv.first, kv.second.as<bool>())

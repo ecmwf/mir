@@ -34,7 +34,7 @@ void None::print(std::ostream& out) const {
 }
 
 
-static RepresentationBuilder<None> builder("none");
+static const RepresentationBuilder<None> builder("none");
 
 
 }  // namespace other

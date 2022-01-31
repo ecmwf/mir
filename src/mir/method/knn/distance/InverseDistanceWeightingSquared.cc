@@ -59,7 +59,7 @@ void InverseDistanceWeightingSquared::operator()(size_t ip, const Point3& point,
 
 
 bool InverseDistanceWeightingSquared::sameAs(const DistanceWeighting& other) const {
-    auto o = dynamic_cast<const InverseDistanceWeightingSquared*>(&other);
+    const auto* o = dynamic_cast<const InverseDistanceWeightingSquared*>(&other);
     return (o != nullptr);
 }
 

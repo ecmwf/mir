@@ -438,8 +438,8 @@ void TSettings<std::vector<int>>::get(const std::string& name, std::string& valu
     conversion_warning("vector<int>", "string", name, value_);
     value.clear();
 
-    auto sep = "";
-    for (auto& entry : value_) {
+    const auto* sep = "";
+    for (const auto& entry : value_) {
         value += sep + std::to_string(entry);
         sep = "/";
     }
@@ -451,8 +451,8 @@ void TSettings<std::vector<long>>::get(const std::string& name, std::string& val
     conversion_warning("vector<long>", "string", name, value_);
     value.clear();
 
-    auto sep = "";
-    for (auto& entry : value_) {
+    const auto* sep = "";
+    for (const auto& entry : value_) {
         value += sep + std::to_string(entry);
         sep = "/";
     }
@@ -464,8 +464,8 @@ void TSettings<std::vector<size_t>>::get(const std::string& name, std::string& v
     conversion_warning("vector<size_t>", "string", name, value_);
     value.clear();
 
-    auto sep = "";
-    for (auto& entry : value_) {
+    const auto* sep = "";
+    for (const auto& entry : value_) {
         value += sep + std::to_string(entry);
         sep = "/";
     }
@@ -477,8 +477,8 @@ void TSettings<std::vector<float>>::get(const std::string& name, std::string& va
     conversion_warning("vector<float>", "string", name, value_);
     value.clear();
 
-    auto sep = "";
-    for (auto& entry : value_) {
+    const auto* sep = "";
+    for (const auto& entry : value_) {
         value += sep + std::to_string(entry);
         sep = "/";
     }
@@ -490,8 +490,8 @@ void TSettings<std::vector<double>>::get(const std::string& name, std::string& v
     conversion_warning("vector<double>", "string", name, value_);
     value.clear();
 
-    auto sep = "";
-    for (auto& entry : value_) {
+    const auto* sep = "";
+    for (const auto& entry : value_) {
         value += sep + std::to_string(entry);
         sep = "/";
     }
@@ -503,7 +503,7 @@ void TSettings<std::vector<std::string>>::get(const std::string& name, std::stri
     conversion_warning("vector<string>", "string", name, value_);
     value.clear();
     std::string sep;
-    for (auto& entry : value_) {
+    for (const auto& entry : value_) {
         value += sep + entry;
         sep = "/";
     }

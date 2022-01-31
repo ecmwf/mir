@@ -30,7 +30,7 @@ bool Key::postProcess(const param::MIRParametrisation& param) {
         "accuracy", "bitmap",  "checkerboard", "compatibility", "edition", "filter",  "format",  "formula",
         "frame",    "griddef", "latitudes",    "longitudes",    "nabla",   "packing", "pattern", "vod2uv",
     };
-    auto& config = LibMir::instance().configuration();
+    const auto& config = LibMir::instance().configuration();
 
     static const auto& keywords = config.getStringVector("post-process", defaultKeywords);
     return std::any_of(keywords.begin(), keywords.end(), [&param](const std::string& key) { return param.has(key); });

@@ -37,7 +37,7 @@ ActionGraph::~ActionGraph() {
 
 
 void ActionGraph::execute(context::Context& ctx, const Executor& executor) const {
-    for (auto& j : *this) {
+    for (const auto& j : *this) {
         context::Context local(ctx);
         executor.execute(local, *j);
     }
@@ -80,7 +80,7 @@ ActionNode* ActionGraph::add(const Action& action, api::MIRWatcher* watcher) {
 
 
 void ActionGraph::dump(std::ostream& out, size_t depth) const {
-    for (auto& j : *this) {
+    for (const auto& j : *this) {
         j->dump(out, depth);
     }
 }
@@ -100,7 +100,7 @@ void ActionGraph::notifyFailure(std::exception& e, const Action& action, api::MI
             rethrow = watcher->failure(e, action) && rethrow;
         }
     }
-    for (auto& j : *this) {
+    for (const auto& j : *this) {
         j->notifyFailure(e, action, watcher, rethrow);
     }
 }

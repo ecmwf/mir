@@ -22,7 +22,7 @@ namespace mir {
 namespace lsm {
 
 
-static NoneLSM __lsm_selection("none");
+static const NoneLSM __lsm_selection("none");
 
 
 NoneLSM::NoneLSM(const std::string& name) : LSMSelection(name) {}

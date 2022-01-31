@@ -31,7 +31,7 @@ GribFileOutput::~GribFileOutput() {
 
 
 bool GribFileOutput::sameAs(const MIROutput& other) const {
-    auto o = dynamic_cast<const GribFileOutput*>(&other);
+    const auto* o = dynamic_cast<const GribFileOutput*>(&other);
     return (o != nullptr) && (path_ == o->path_) && (append_ == o->append_);
 }
 
@@ -55,7 +55,7 @@ eckit::DataHandle& GribFileOutput::dataHandle() {
 }
 
 
-static MIROutputBuilder<GribFileOutput> output("grib");
+static const MIROutputBuilder<GribFileOutput> output("grib");
 
 
 }  // namespace output

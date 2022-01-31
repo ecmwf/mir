@@ -48,7 +48,7 @@ StatisticsFilter::StatisticsFilter(const param::MIRParametrisation& param) : Act
 
 
 bool StatisticsFilter::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const StatisticsFilter*>(&other);
+    const auto* o = dynamic_cast<const StatisticsFilter*>(&other);
     if ((o == nullptr) || (statistics_.size() != o->statistics_.size())) {
         return false;
     }
@@ -79,8 +79,8 @@ const char* StatisticsFilter::name() const {
 
 void StatisticsFilter::print(std::ostream& out) const {
     out << "StatisticsFilter[";
-    auto sep = "";
-    for (auto& s : statistics_) {
+    const auto* sep = "";
+    for (const auto& s : statistics_) {
         out << sep << (*s);
         sep = ",";
     }
@@ -93,7 +93,7 @@ void StatisticsFilter::execute(context::Context& ctx) const {
     auto old  = log.precision(static_cast<decltype(log.precision())>(precision_));
 
     auto& field = ctx.field();
-    for (auto& s : statistics_) {
+    for (const auto& s : statistics_) {
         s->execute(field);
         log << *s << std::endl;
     }
@@ -102,7 +102,7 @@ void StatisticsFilter::execute(context::Context& ctx) const {
 }
 
 
-static ActionBuilder<StatisticsFilter> __action("filter.statistics");
+static const ActionBuilder<StatisticsFilter> __action("filter.statistics");
 
 
 }  // namespace filter

@@ -35,7 +35,7 @@ AdjustWindsScaleCosLatitude::AdjustWindsScaleCosLatitude(const param::MIRParamet
 
 
 bool AdjustWindsScaleCosLatitude::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const AdjustWindsScaleCosLatitude*>(&other);
+    const auto* o = dynamic_cast<const AdjustWindsScaleCosLatitude*>(&other);
     return (o != nullptr);
 }
 
@@ -83,7 +83,7 @@ const char* AdjustWindsScaleCosLatitude::name() const {
 }
 
 
-static ActionBuilder<AdjustWindsScaleCosLatitude> __action("filter.adjust-winds-scale-cos-latitude");
+static const ActionBuilder<AdjustWindsScaleCosLatitude> __action("filter.adjust-winds-scale-cos-latitude");
 
 
 }  // namespace action

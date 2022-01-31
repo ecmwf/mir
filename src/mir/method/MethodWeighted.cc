@@ -101,7 +101,7 @@ bool MethodWeighted::sameAs(const Method& other) const {
         return true;
     };
 
-    auto o = dynamic_cast<const MethodWeighted*>(&other);
+    const auto* o = dynamic_cast<const MethodWeighted*>(&other);
     return (o != nullptr) && (lsmWeightAdjustment_ == o->lsmWeightAdjustment_) && (pruneEpsilon_ == o->pruneEpsilon_) &&
            (sameNonLinearities(nonLinear_, o->nonLinear_)) && solver().sameAs(o->solver()) &&
            lsm::LandSeaMasks::sameLandSeaMasks(parametrisation_, o->parametrisation_) && cropping_.sameAs(o->cropping_);

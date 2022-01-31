@@ -70,7 +70,7 @@ HyperCube HyperCube::addToDimension(size_t which, size_t where, size_t howMuch, 
 std::ostream& operator<<(std::ostream& out, const HyperCube& cube) {
     out << "HyperCube[size=" << cube.count() << ",coordinates=";
     char sep = '(';
-    for (auto& j : cube.dimensions()) {
+    for (const auto& j : cube.dimensions()) {
         out << sep << j;
         sep = ',';
     }

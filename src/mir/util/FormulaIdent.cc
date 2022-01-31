@@ -61,7 +61,7 @@ void FormulaIdent::execute(context::Context& ctx) const {
 
 
 bool FormulaIdent::sameAs(const action::Action& other) const {
-    auto o = dynamic_cast<const FormulaIdent*>(&other);
+    const auto* o = dynamic_cast<const FormulaIdent*>(&other);
     return (o != nullptr) && (name_ == o->name_);
 }
 

@@ -20,10 +20,10 @@
 
 namespace mir {
 
-Latitude Latitude::GLOBE(180);
-Latitude Latitude::NORTH_POLE(90);
-Latitude Latitude::SOUTH_POLE(-90);
-Latitude Latitude::EQUATOR(0);
+Latitude const Latitude::GLOBE(180);
+Latitude const Latitude::NORTH_POLE(90);
+Latitude const Latitude::SOUTH_POLE(-90);
+Latitude const Latitude::EQUATOR(0);
 
 void Latitude::print(std::ostream& out) const {
     out << value_;

@@ -82,8 +82,8 @@ Mask& Mask::lookup(const param::MIRParametrisation& parametrisation, const repre
         }
     }
 
-    auto& chooser   = LSMSelection::lookup(name);
-    std::string key = chooser.cacheKey(parametrisation, representation, which);
+    const auto& chooser = LSMSelection::lookup(name);
+    std::string key     = chooser.cacheKey(parametrisation, representation, which);
 
     {
         // To protect cache

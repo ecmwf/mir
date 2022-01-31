@@ -28,10 +28,10 @@ namespace mir {
 
 class LongitudeFraction {
 public:
-    static LongitudeFraction GLOBE;            // 360
-    static LongitudeFraction DATE_LINE;        // 180
-    static LongitudeFraction MINUS_DATE_LINE;  // -180
-    static LongitudeFraction GREENWICH;        // 0
+    static const LongitudeFraction GLOBE;            // 360
+    static const LongitudeFraction DATE_LINE;        // 180
+    static const LongitudeFraction MINUS_DATE_LINE;  // -180
+    static const LongitudeFraction GREENWICH;        // 0
 
     // -- Exceptions
     // None

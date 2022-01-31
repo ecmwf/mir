@@ -162,8 +162,8 @@ void GregorianCalendar::updateAttributes(int nc, int varid, const std::string& p
 }
 
 
-static CodecBuilder<GregorianCalendar> builder1("gregorian");
-static CodecBuilder<GregorianCalendar> builder2("standard");
+static const CodecBuilder<GregorianCalendar> builder1("gregorian");
+static const CodecBuilder<GregorianCalendar> builder2("standard");
 
 
 }  // namespace netcdf

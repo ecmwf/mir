@@ -55,7 +55,7 @@ std::string RegularLLPattern::canonical(const std::string& name, const param::MI
 
 
 #define fp "[+]?([0-9]*[.])?[0-9]+([eE][-+][0-9]+)?"
-static RegularLLPattern __pattern("^" fp "/" fp "$");
+static const RegularLLPattern __pattern("^" fp "/" fp "$");
 #undef fp
 
 

@@ -50,7 +50,7 @@ struct case_t {
     std::vector<double> data;
     friend std::ostream& operator<<(std::ostream& s, const case_t& c) {
         s << "case: { statistic-disambiguate-max: " << c.disambiguateMax << ", data: [";
-        auto sep = "";
+        const auto* sep = "";
         for (auto d : c.data) {
             s << sep << d;
             sep = ", ";

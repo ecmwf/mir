@@ -208,7 +208,7 @@ void Rules::readConfigurationFiles() {
         SimpleParametrisation& config = Rules::lookup(paramId);
 
         const eckit::ValueList& options = i.second;
-        for (auto& j : options) {
+        for (const auto& j : options) {
             for (const auto& k : eckit::ValueMap(j)) {
                 const std::string& name  = k.first;
                 const std::string& value = k.second;

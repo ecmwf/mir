@@ -33,7 +33,7 @@ size_t EmptyOutput::save(const param::MIRParametrisation&, context::Context&) {
 
 
 bool EmptyOutput::sameAs(const MIROutput& other) const {
-    auto o = dynamic_cast<const EmptyOutput*>(&other);
+    const auto* o = dynamic_cast<const EmptyOutput*>(&other);
     return (o != nullptr);
 }
 
@@ -79,7 +79,7 @@ void EmptyOutput::print(std::ostream& out) const {
 }
 
 
-static MIROutputBuilder<EmptyOutput> output("empty");
+static const MIROutputBuilder<EmptyOutput> output("empty");
 
 
 }  // namespace output

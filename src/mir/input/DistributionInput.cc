@@ -23,7 +23,7 @@ namespace mir {
 namespace input {
 
 
-static ArtificialInputBuilder<DistributionInput> __artificial("distribution");
+static const ArtificialInputBuilder<DistributionInput> __artificial("distribution");
 
 
 MIRValuesVector DistributionInput::fill(size_t n) const {

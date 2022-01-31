@@ -28,14 +28,14 @@ namespace input {
 NetcdfFileInput::NetcdfFileInput(const eckit::PathName& path) :
     path_(path), cache_(*this), dataset_(path, *this), fields_(dataset_.fields()), current_(-1) {
 
-    for (auto field : fields_) {
+    for (auto* field : fields_) {
         Log::info() << "NC " << *field << std::endl;
     }
 }
 
 
 NetcdfFileInput::~NetcdfFileInput() {
-    for (auto field : fields_) {
+    for (auto* field : fields_) {
         delete field;
     }
 }
@@ -82,7 +82,7 @@ bool NetcdfFileInput::next() {
 
 
 data::MIRField NetcdfFileInput::field() const {
-    auto& ncField = currentField();
+    const auto& ncField = currentField();
 
     auto hasMissing         = ncField.hasMissing();
     auto mv                 = ncField.missingValue();
@@ -176,7 +176,7 @@ bool NetcdfFileInput::get(const std::string& name, std::vector<std::string>& val
 
 
 bool NetcdfFileInput::sameAs(const MIRInput& other) const {
-    auto o = dynamic_cast<const NetcdfFileInput*>(&other);
+    const auto* o = dynamic_cast<const NetcdfFileInput*>(&other);
     return (o != nullptr) && (path_ == o->path_);
 }
 
@@ -186,9 +186,9 @@ size_t NetcdfFileInput::dimensions() const {
 }
 
 
-static MIRInputBuilder<NetcdfFileInput> netcdf4(0x89484446);   // ".HDF"
-static MIRInputBuilder<NetcdfFileInput> netcdf31(0x43444601);  // "CDF."
-static MIRInputBuilder<NetcdfFileInput> netcdf32(0x43444602);  // "CDF."
+static const MIRInputBuilder<NetcdfFileInput> netcdf4(0x89484446);   // ".HDF"
+static const MIRInputBuilder<NetcdfFileInput> netcdf31(0x43444601);  // "CDF."
+static const MIRInputBuilder<NetcdfFileInput> netcdf32(0x43444602);  // "CDF."
 
 
 }  // namespace input

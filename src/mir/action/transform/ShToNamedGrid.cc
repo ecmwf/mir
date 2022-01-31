@@ -39,7 +39,7 @@ ShToNamedGrid<Invtrans>::~ShToNamedGrid() = default;
 
 template <class Invtrans>
 bool ShToNamedGrid<Invtrans>::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const ShToNamedGrid*>(&other);
+    const auto* o = dynamic_cast<const ShToNamedGrid*>(&other);
     return (o != nullptr) && (grid_ == o->grid_);
 }
 
@@ -74,8 +74,8 @@ const repres::Representation* ShToNamedGrid<Invtrans>::outputRepresentation() co
 }
 
 
-static ActionBuilder<ShToNamedGrid<InvtransScalar> > __action1("transform.sh-scalar-to-namedgrid");
-static ActionBuilder<ShToNamedGrid<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-namedgrid");
+static const ActionBuilder<ShToNamedGrid<InvtransScalar> > __action1("transform.sh-scalar-to-namedgrid");
+static const ActionBuilder<ShToNamedGrid<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-namedgrid");
 
 
 }  // namespace transform

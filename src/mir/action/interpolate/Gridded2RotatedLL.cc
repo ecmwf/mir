@@ -57,7 +57,7 @@ Gridded2RotatedLL::~Gridded2RotatedLL() = default;
 
 
 bool Gridded2RotatedLL::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const Gridded2RotatedLL*>(&other);
+    const auto* o = dynamic_cast<const Gridded2RotatedLL*>(&other);
     return (o != nullptr) && (increments_ == o->increments_) && (bbox_ == o->bbox_) && Gridded2RotatedGrid::sameAs(*o);
 }
 
@@ -87,7 +87,7 @@ const char* Gridded2RotatedLL::name() const {
 }
 
 
-static ActionBuilder<Gridded2RotatedLL> grid2grid("interpolate.grid2rotated-regular-ll");
+static const ActionBuilder<Gridded2RotatedLL> grid2grid("interpolate.grid2rotated-regular-ll");
 
 
 }  // namespace interpolate

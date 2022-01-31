@@ -71,7 +71,7 @@ size_t NearestNeighbourWithLowestIndex::n() const {
 
 
 bool NearestNeighbourWithLowestIndex::sameAs(const Pick& other) const {
-    auto o = dynamic_cast<const NearestNeighbourWithLowestIndex*>(&other);
+    const auto* o = dynamic_cast<const NearestNeighbourWithLowestIndex*>(&other);
     return (o != nullptr);
 }
 
@@ -88,7 +88,7 @@ void NearestNeighbourWithLowestIndex::hash(eckit::MD5& h) const {
 }
 
 
-static PickBuilder<NearestNeighbourWithLowestIndex> __pick("nearest-neighbour-with-lowest-index");
+static const PickBuilder<NearestNeighbourWithLowestIndex> __pick("nearest-neighbour-with-lowest-index");
 
 
 }  // namespace pick

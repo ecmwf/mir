@@ -67,7 +67,7 @@ void Function::list(std::ostream& out) {
     call_once(once, init);
     lock_guard<recursive_mutex> lock(*local_mutex);
 
-    auto sep = "";
+    const auto* sep = "";
     for (auto& j : *m) {
         out << sep << j.first;
         sep = ", ";

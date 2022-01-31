@@ -26,7 +26,7 @@ Noop::~Noop() = default;
 
 
 bool Noop::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const Noop*>(&other);
+    const auto* o = dynamic_cast<const Noop*>(&other);
     return (o != nullptr);
 }
 
@@ -44,7 +44,7 @@ const char* Noop::name() const {
 }
 
 
-static ActionBuilder<Noop> __action("noop");
+static const ActionBuilder<Noop> __action("noop");
 
 
 }  // namespace action

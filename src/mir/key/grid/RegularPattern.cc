@@ -47,7 +47,7 @@ std::string RegularPattern::canonical(const std::string& name, const param::MIRP
 }
 
 
-static RegularPattern __pattern("^[fF][1-9][0-9]*$");
+static const RegularPattern __pattern("^[fF][1-9][0-9]*$");
 
 
 }  // namespace grid

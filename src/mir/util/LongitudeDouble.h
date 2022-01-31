@@ -28,10 +28,10 @@ namespace mir {
 
 class LongitudeDouble {
 public:
-    static LongitudeDouble GLOBE;            // 360
-    static LongitudeDouble DATE_LINE;        // 180
-    static LongitudeDouble MINUS_DATE_LINE;  // -180
-    static LongitudeDouble GREENWICH;        // 0
+    static const LongitudeDouble GLOBE;            // 360
+    static const LongitudeDouble DATE_LINE;        // 180
+    static const LongitudeDouble MINUS_DATE_LINE;  // -180
+    static const LongitudeDouble GREENWICH;        // 0
 
     // -- Exceptions
     // None

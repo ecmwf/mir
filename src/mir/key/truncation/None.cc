@@ -18,8 +18,8 @@ namespace key {
 namespace truncation {
 
 
-static TruncationBuilder<None> __truncation1("none");
-static TruncationBuilder<None> __truncation2("NONE");
+static const TruncationBuilder<None> __truncation1("none");
+static const TruncationBuilder<None> __truncation2("NONE");
 
 
 None::None(const param::MIRParametrisation& parametrisation, long) : Truncation(parametrisation) {}

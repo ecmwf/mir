@@ -44,7 +44,7 @@ ShToRotatedRegularGG<Invtrans>::~ShToRotatedRegularGG() = default;
 
 template <class Invtrans>
 bool ShToRotatedRegularGG<Invtrans>::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const ShToRotatedRegularGG*>(&other);
+    const auto* o = dynamic_cast<const ShToRotatedRegularGG*>(&other);
     return (o != nullptr) && (N_ == o->N_) && (rotation_ == o->rotation_) && ShToGridded::sameAs(other);
 }
 
@@ -78,8 +78,10 @@ const repres::Representation* ShToRotatedRegularGG<Invtrans>::outputRepresentati
 }
 
 
-static ActionBuilder<ShToRotatedRegularGG<InvtransScalar> > __action1("transform.sh-scalar-to-rotated-regular-gg");
-static ActionBuilder<ShToRotatedRegularGG<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-rotated-regular-gg");
+static const ActionBuilder<ShToRotatedRegularGG<InvtransScalar> > __action1(
+    "transform.sh-scalar-to-rotated-regular-gg");
+static const ActionBuilder<ShToRotatedRegularGG<InvtransVodTouv> > __action2(
+    "transform.sh-vod-to-uv-rotated-regular-gg");
 
 
 }  // namespace transform

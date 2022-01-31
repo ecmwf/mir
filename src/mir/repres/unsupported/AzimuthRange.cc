@@ -28,7 +28,7 @@ void AzimuthRange::print(std::ostream& out) const {
 }
 
 
-static RepresentationBuilder<AzimuthRange> __repres("azimuth_range");
+static const RepresentationBuilder<AzimuthRange> __repres("azimuth_range");
 
 
 }  // namespace repres

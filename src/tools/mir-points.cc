@@ -19,7 +19,8 @@
 #include "mir/util/Log.h"
 
 
-using namespace mir;
+namespace mir {
+namespace tools {
 
 
 struct MIRPoints : tools::MIRTool {
@@ -31,7 +32,7 @@ struct MIRPoints : tools::MIRTool {
                     << tool << std::endl;
     }
 
-    void execute(const eckit::option::CmdArgs&) override;
+    void execute(const eckit::option::CmdArgs& args) override;
 };
 
 
@@ -64,7 +65,11 @@ void MIRPoints::execute(const eckit::option::CmdArgs& args) {
 }
 
 
+}  // namespace tools
+}  // namespace mir
+
+
 int main(int argc, char** argv) {
-    MIRPoints tool(argc, argv);
+    mir::tools::MIRPoints tool(argc, argv);
     return tool.start();
 }

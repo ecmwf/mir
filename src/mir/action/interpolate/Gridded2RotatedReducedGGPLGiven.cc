@@ -36,7 +36,7 @@ Gridded2RotatedReducedGGPLGiven::~Gridded2RotatedReducedGGPLGiven() = default;
 
 
 bool Gridded2RotatedReducedGGPLGiven::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const Gridded2RotatedReducedGGPLGiven*>(&other);
+    const auto* o = dynamic_cast<const Gridded2RotatedReducedGGPLGiven*>(&other);
     return (o != nullptr) && (pl_ == o->pl_) && Gridded2RotatedGrid::sameAs(other);
 }
 
@@ -64,7 +64,7 @@ const char* Gridded2RotatedReducedGGPLGiven::name() const {
 }
 
 
-static ActionBuilder<Gridded2RotatedReducedGGPLGiven> grid2grid("interpolate.grid2rotated-reduced-gg-pl-given");
+static const ActionBuilder<Gridded2RotatedReducedGGPLGiven> grid2grid("interpolate.grid2rotated-reduced-gg-pl-given");
 
 
 }  // namespace interpolate

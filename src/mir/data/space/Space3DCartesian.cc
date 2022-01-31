@@ -18,9 +18,9 @@ namespace data {
 namespace space {
 
 
-static SpaceChoice<Space3DCartesian> __space1("3d-cartesian-x", 0, 3);
-static SpaceChoice<Space3DCartesian> __space2("3d-cartesian-y", 1, 3);
-static SpaceChoice<Space3DCartesian> __space3("3d-cartesian-z", 2, 3);
+static const SpaceChoice<Space3DCartesian> __space1("3d-cartesian-x", 0, 3);
+static const SpaceChoice<Space3DCartesian> __space2("3d-cartesian-y", 1, 3);
+static const SpaceChoice<Space3DCartesian> __space3("3d-cartesian-z", 2, 3);
 
 
 size_t Space3DCartesian::dimensions() const {

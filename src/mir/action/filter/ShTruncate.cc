@@ -39,7 +39,7 @@ ShTruncate::~ShTruncate() = default;
 
 
 bool ShTruncate::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const ShTruncate*>(&other);
+    const auto* o = dynamic_cast<const ShTruncate*>(&other);
     return (o != nullptr) && (truncation_ == o->truncation_);
 }
 
@@ -83,7 +83,7 @@ const char* ShTruncate::name() const {
 }
 
 
-static ActionBuilder<ShTruncate> __action("filter.sh-truncate");
+static const ActionBuilder<ShTruncate> __action("filter.sh-truncate");
 
 
 }  // namespace filter

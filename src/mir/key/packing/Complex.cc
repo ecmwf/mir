@@ -20,7 +20,7 @@ namespace key {
 namespace packing {
 
 
-static PackingBuilder<Complex> __packing("complex", "co", true, true);
+static const PackingBuilder<Complex> __packing("complex", "co", true, true);
 
 
 Complex::Complex(const std::string& name, const param::MIRParametrisation& param) : Packing(name, param) {

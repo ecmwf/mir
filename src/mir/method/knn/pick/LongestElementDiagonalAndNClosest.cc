@@ -67,7 +67,7 @@ size_t LongestElementDiagonalAndNClosest::n() const {
 
 
 bool LongestElementDiagonalAndNClosest::sameAs(const Pick& other) const {
-    auto o = dynamic_cast<decltype(this)>(&other);
+    const auto* o = dynamic_cast<decltype(this)>(&other);
     return (o != nullptr) && nClosest_ == o->nClosest_ && eckit::types::is_approximately_equal(distance_, o->distance_);
 }
 
@@ -93,7 +93,7 @@ void LongestElementDiagonalAndNClosest::hash(eckit::MD5& h) const {
 }
 
 
-static PickBuilder<LongestElementDiagonalAndNClosest> __pick("longest-element-diagonal-and-nclosest");
+static const PickBuilder<LongestElementDiagonalAndNClosest> __pick("longest-element-diagonal-and-nclosest");
 
 
 }  // namespace pick

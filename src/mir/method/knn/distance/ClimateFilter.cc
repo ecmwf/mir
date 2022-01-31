@@ -88,7 +88,7 @@ void ClimateFilter::operator()(size_t ip, const Point3& point,
 
 
 bool ClimateFilter::sameAs(const DistanceWeighting& other) const {
-    auto o = dynamic_cast<const ClimateFilter*>(&other);
+    const auto* o = dynamic_cast<const ClimateFilter*>(&other);
     return (o != nullptr) && eckit::types::is_approximately_equal(halfDelta_, o->halfDelta_) &&
            eckit::types::is_approximately_equal(delta_, o->delta_);
 }

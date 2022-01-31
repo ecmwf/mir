@@ -23,12 +23,12 @@ namespace key {
 namespace packing {
 
 
-static PackingBuilder<IEEE> __packing("ieee", true, true);
+static const PackingBuilder<IEEE> __packing("ieee", true, true);
 
 
 IEEE::IEEE(const std::string& name, const param::MIRParametrisation& param) : Packing(name, param) {
-    auto& user  = param.userParametrisation();
-    auto& field = param.fieldParametrisation();
+    const auto& user  = param.userParametrisation();
+    const auto& field = param.fieldParametrisation();
 
     constexpr long L32  = 32;
     constexpr long L64  = 64;
@@ -86,7 +86,7 @@ void IEEE::set(const repres::Representation*, grib_handle* handle) const {
 
 
 bool IEEE::printParametrisation(std::ostream& out) const {
-    auto sep = Packing::printParametrisation(out) ? "," : "";
+    const auto* sep = Packing::printParametrisation(out) ? "," : "";
     if (definePrecision_) {
         out << sep << "precision=" << precision_;
     }

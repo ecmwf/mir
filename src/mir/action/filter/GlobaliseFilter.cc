@@ -34,7 +34,7 @@ GlobaliseFilter::~GlobaliseFilter() = default;
 
 
 bool GlobaliseFilter::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const GlobaliseFilter*>(&other);
+    const auto* o = dynamic_cast<const GlobaliseFilter*>(&other);
     return (o != nullptr);
 }
 
@@ -55,7 +55,7 @@ void GlobaliseFilter::execute(context::Context& ctx) const {
     auto& field = ctx.field();
     repres::RepresentationHandle in(field.representation());
 
-    auto out = in->globalise(field);
+    const auto* out = in->globalise(field);
     if (out == nullptr) {
         Log::warning() << "Globalise has no effect" << std::endl;
     }
@@ -70,7 +70,7 @@ const char* GlobaliseFilter::name() const {
 }
 
 
-static ActionBuilder<GlobaliseFilter> __action("filter.globalise");
+static const ActionBuilder<GlobaliseFilter> __action("filter.globalise");
 
 
 }  // namespace action

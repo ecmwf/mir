@@ -30,7 +30,8 @@
 #include "mir/util/Log.h"
 
 
-using namespace mir;
+namespace mir {
+namespace tools {
 
 
 struct MIRPlotLSM : tools::MIRTool {
@@ -55,7 +56,7 @@ struct MIRPlotLSM : tools::MIRTool {
                     << "Usage: " << tool << " --grid=1/1 output.pbm" << std::endl;
     }
 
-    void execute(const eckit::option::CmdArgs&) override;
+    void execute(const eckit::option::CmdArgs& args) override;
 };
 
 
@@ -70,7 +71,8 @@ void MIRPlotLSM::execute(const eckit::option::CmdArgs& args) {
     repres::RepresentationHandle repres(key::grid::Grid::lookup(grid).representation());
     ASSERT(repres != nullptr);
 
-    auto repres_ll = dynamic_cast<const repres::latlon::RegularLL*>(static_cast<const repres::Representation*>(repres));
+    const auto* repres_ll =
+        dynamic_cast<const repres::latlon::RegularLL*>(static_cast<const repres::Representation*>(repres));
     ASSERT(repres_ll != nullptr);
 
 
@@ -87,9 +89,8 @@ void MIRPlotLSM::execute(const eckit::option::CmdArgs& args) {
     eckit::StdFile out(args(0), "w");
     fprintf(out, "P5\n%zu %zu 255\n", repres_ll->Ni(), repres_ll->Nj());
 
-    const auto& m = mask.mask();
-    for (auto j = m.begin(); j != m.end(); ++j) {
-        unsigned char c = (*j) ? 0xff : 0;
+    for (const auto j : mask.mask()) {
+        unsigned char c = j ? 0xff : 0;
         ASSERT(fwrite(&c, 1, 1, out));
     }
 
@@ -97,7 +98,11 @@ void MIRPlotLSM::execute(const eckit::option::CmdArgs& args) {
 }
 
 
+}  // namespace tools
+}  // namespace mir
+
+
 int main(int argc, char** argv) {
-    MIRPlotLSM tool(argc, argv);
+    mir::tools::MIRPlotLSM tool(argc, argv);
     return tool.start();
 }

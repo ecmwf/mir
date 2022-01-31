@@ -52,7 +52,7 @@ VoronoiMethod::VoronoiMethod(const param::MIRParametrisation& param) : MethodWei
 
 
 bool VoronoiMethod::sameAs(const Method& other) const {
-    auto o = dynamic_cast<const VoronoiMethod*>(&other);
+    const auto* o = dynamic_cast<const VoronoiMethod*>(&other);
     return (o != nullptr) && name() == o->name() && MethodWeighted::sameAs(*o);
 }
 

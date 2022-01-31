@@ -46,7 +46,7 @@ std::string OctahedralPattern::canonical(const std::string& name, const param::M
 }
 
 
-static OctahedralPattern __pattern("^[oO][1-9][0-9]*$");
+static const OctahedralPattern __pattern("^[oO][1-9][0-9]*$");
 
 
 }  // namespace grid

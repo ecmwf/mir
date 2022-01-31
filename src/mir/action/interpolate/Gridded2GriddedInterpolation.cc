@@ -137,7 +137,7 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
 
 
 bool Gridded2GriddedInterpolation::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const Gridded2GriddedInterpolation*>(&other);
+    const auto* o = dynamic_cast<const Gridded2GriddedInterpolation*>(&other);
     return (o != nullptr) && (interpolation_ == o->interpolation_) && method_->sameAs(*o->method_) &&
            (inputIntersectsOutput_ == o->inputIntersectsOutput_);
 }

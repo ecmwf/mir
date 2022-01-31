@@ -211,7 +211,7 @@ void RegularLL::reorder(MIRValuesVector& values) const {
 }
 
 
-static GridSpecGuesserBuilder<RegularLL> builder(0);  // First choice
+static const GridSpecGuesserBuilder<RegularLL> builder(0);  // First choice
 
 
 }  // namespace netcdf

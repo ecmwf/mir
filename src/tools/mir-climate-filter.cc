@@ -49,9 +49,9 @@ using namespace mir;
 struct MIRClimateFilter : tools::MIRTool {
     MIRClimateFilter(int argc, char** argv) : MIRTool(argc, argv) {
         using eckit::linalg::LinearAlgebraDense;
-        using eckit::option::VectorOption;
-        using eckit::option::SimpleOption;
         using eckit::option::FactoryOption;
+        using eckit::option::SimpleOption;
+        using eckit::option::VectorOption;
 
         options_.push_back(
             new VectorOption<size_t>("k", "Range of neighbour points to weight (k, default [4, infty[)", 2));
@@ -143,7 +143,8 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
         size_t Nj = 0;
         repres::RepresentationHandle rep(ctx.field().representation());
         {
-            const auto *ll = dynamic_cast<const repres::latlon::RegularLL*>(static_cast<const repres::Representation*>(rep));
+            const auto* ll =
+                dynamic_cast<const repres::latlon::RegularLL*>(static_cast<const repres::Representation*>(rep));
             if ((ll == nullptr) || !rep->domain().isGlobal() || ctx.field().hasMissing()) {
                 throw exception::UserError(
                     "MIRClimateFilter: input field should be global regular_ll, no missing values");

@@ -34,7 +34,7 @@ bool NoNonLinear::treatment(MethodWeighted::Matrix&, MethodWeighted::WeightMatri
 
 
 bool NoNonLinear::sameAs(const NonLinear& other) const {
-    auto o = dynamic_cast<const NoNonLinear*>(&other);
+    const auto* o = dynamic_cast<const NoNonLinear*>(&other);
     return (o != nullptr);
 }
 
@@ -51,7 +51,7 @@ void NoNonLinear::hash(eckit::MD5& h) const {
 }
 
 
-static NonLinearBuilder<NoNonLinear> __nonlinear("no");
+static const NonLinearBuilder<NoNonLinear> __nonlinear("no");
 
 
 }  // namespace nonlinear

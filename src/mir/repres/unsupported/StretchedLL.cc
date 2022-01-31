@@ -28,7 +28,7 @@ void StretchedLL::print(std::ostream& out) const {
 }
 
 
-static RepresentationBuilder<StretchedLL> __repres("stretched_ll");
+static const RepresentationBuilder<StretchedLL> __repres("stretched_ll");
 
 
 }  // namespace repres

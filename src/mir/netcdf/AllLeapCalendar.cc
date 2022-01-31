@@ -30,8 +30,8 @@ void AllLeapCalendar::print(std::ostream& out) const {
 }
 
 
-static CodecBuilder<AllLeapCalendar> builder1("all_leap");
-static CodecBuilder<AllLeapCalendar> builder3("366_day");
+static const CodecBuilder<AllLeapCalendar> builder1("all_leap");
+static const CodecBuilder<AllLeapCalendar> builder3("366_day");
 
 
 }  // namespace netcdf

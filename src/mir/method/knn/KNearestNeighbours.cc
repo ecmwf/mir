@@ -41,7 +41,7 @@ KNearestNeighbours::~KNearestNeighbours() = default;
 
 
 bool KNearestNeighbours::sameAs(const Method& other) const {
-    auto o = dynamic_cast<const KNearestNeighbours*>(&other);
+    const auto* o = dynamic_cast<const KNearestNeighbours*>(&other);
     return (o != nullptr) && pick().sameAs(o->pick()) && distanceWeighting().sameAs(o->distanceWeighting());
 }
 

@@ -31,7 +31,7 @@ const char* FEBilinear::name() const {
 }
 
 
-static FiniteElementBuilder<FEBilinear> __builder("bilinear");
+static const FiniteElementBuilder<FEBilinear> __builder("bilinear");
 
 
 }  // namespace fe

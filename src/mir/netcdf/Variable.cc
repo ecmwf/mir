@@ -114,7 +114,7 @@ void Variable::setMatrix(Matrix* matrix) {
 
 size_t Variable::numberOfValues() const {
     size_t count = 1;
-    for (auto& j : dimensions_) {
+    for (const auto& j : dimensions_) {
         count *= j->count();
     }
     return count;
@@ -163,7 +163,7 @@ void Variable::dump(std::ostream& out) const {
 
     if (!dimensions_.empty()) {
         std::string sep = "(";
-        for (auto j : dimensions_) {
+        for (auto* j : dimensions_) {
             out << sep << j->name();
             sep = ", ";
         }
@@ -171,7 +171,7 @@ void Variable::dump(std::ostream& out) const {
     }
     out << " ;" << std::endl;
 
-    for (auto& j : attributes_) {
+    for (const auto& j : attributes_) {
         j.second->dump(out);
     }
 }
@@ -273,7 +273,7 @@ Variable* Variable::addMissingCoordinates() {
 See http://www.unidata.ucar.edu/software/netcdf/docs/netcdf/Attribute-Conventions.html
 */
 
-static const char* not_supported[] = {"signedness", "valid_range", nullptr};
+static const char* const not_supported[] = {"signedness", "valid_range", nullptr};
 
 
 void Variable::validate() const {
@@ -381,8 +381,8 @@ const std::string& Variable::ncname() const {
 
 
 bool Variable::sharesDimensions(const Variable& other) const {
-    for (auto& j : dimensions_) {
-        for (auto& k : other.dimensions_) {
+    for (const auto& j : dimensions_) {
+        for (const auto& k : other.dimensions_) {
             if (j == k) {
                 return true;
             }

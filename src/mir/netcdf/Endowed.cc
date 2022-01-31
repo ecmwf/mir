@@ -12,13 +12,14 @@
 
 #include "mir/netcdf/Endowed.h"
 
+#include <cstring>
+
+#include <netcdf.h>
+
 #include "mir/netcdf/Attribute.h"
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/InputAttribute.h"
 #include "mir/netcdf/Type.h"
-
-#include <netcdf.h>
-#include <cstring>
 
 
 namespace mir {
@@ -69,7 +70,7 @@ void Endowed::getAttributes(int nc, int i, int nattr) {
 
 
 void Endowed::copyAttributes(const Endowed& other) {
-    for (auto& j : other.attributes_) {
+    for (const auto& j : other.attributes_) {
         (j.second)->clone(*this);
     }
 }
@@ -77,7 +78,7 @@ void Endowed::copyAttributes(const Endowed& other) {
 
 void Endowed::mergeAttributes(const Endowed& other) {
 
-    for (auto& j : other.attributes_) {
+    for (const auto& j : other.attributes_) {
         for (auto& k : attributes_) {
             if ((k.second)->sameAs(*(j.second))) {
                 (k.second)->merge(*(j.second));
@@ -87,7 +88,7 @@ void Endowed::mergeAttributes(const Endowed& other) {
 
     for (auto& k : attributes_) {
         bool found = false;
-        for (auto& j : other.attributes_) {
+        for (const auto& j : other.attributes_) {
             if ((k.second)->sameAs(*(j.second))) {
                 found = true;
             }

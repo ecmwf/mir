@@ -17,7 +17,7 @@ namespace mir {
 namespace input {
 
 
-static ArtificialInputBuilder<ConstantInput> __artificial("constant");
+static const ArtificialInputBuilder<ConstantInput> __artificial("constant");
 
 
 MIRValuesVector ConstantInput::fill(size_t n) const {

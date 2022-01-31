@@ -329,7 +329,7 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         }
     }
 
-    auto key = name.c_str();
+    const auto* key = name.c_str();
     return key;
 }
 
@@ -526,7 +526,7 @@ static ProcessingT<std::vector<double>>* vector_double(std::initializer_list<std
 
         values.assign(keys_.size(), 0);
         size_t i = 0;
-        for (auto& key : keys_) {
+        for (const auto& key : keys_) {
             if (codes_is_defined(h, key.c_str()) == 0) {
                 return false;
             }
@@ -695,7 +695,7 @@ data::MIRField GribInput::field() const {
             values.swap(values_extended);
 
             ASSERT(get("pl", pl));
-            size_t pl_sum = size_t(std::accumulate(pl.begin(), pl.end(), 0));
+            size_t pl_sum = size_t(std::accumulate(pl.begin(), pl.end(), 0L));
             ASSERT(pl_sum == values.size());
         }
     }
@@ -1181,7 +1181,7 @@ void GribInput::marsRequest(std::ostream& out) const {
 
     static std::string gribToRequestNamespace = eckit::Resource<std::string>("gribToRequestNamespace", "mars");
 
-    auto keys = codes_keys_iterator_new(grib_, CODES_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
+    auto* keys = codes_keys_iterator_new(grib_, CODES_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
     ASSERT(keys);
 
     try {

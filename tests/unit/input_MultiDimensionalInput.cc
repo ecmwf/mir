@@ -120,7 +120,7 @@ CASE("MultiDimensionalInput") {
 
     SECTION("MultiDimensionalInput::append() different-sized fields") {
         std::unique_ptr<input::MIRInput> input([]() {
-            auto multi = new input::MultiDimensionalInput;
+            auto* multi = new input::MultiDimensionalInput;
             ASSERT(multi != nullptr);
 
             multi->append(new TestingSingleDimensionalInput(4));
@@ -148,7 +148,7 @@ CASE("MultiDimensionalInput") {
 
     SECTION("MultiDimensionalInput::append() include empty-sized fields") {
         std::unique_ptr<input::MIRInput> input([]() {
-            auto multi = new input::MultiDimensionalInput;
+            auto* multi = new input::MultiDimensionalInput;
             ASSERT(multi != nullptr);
 
             multi->append(new TestingSingleDimensionalInput(2));

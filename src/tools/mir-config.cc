@@ -31,7 +31,8 @@
 #include "mir/util/Log.h"
 
 
-using namespace mir;
+namespace mir {
+namespace tools {
 
 
 struct Param {
@@ -63,7 +64,7 @@ struct Map : std::map<long, std::string> {
 
     friend std::ostream& operator<<(std::ostream& out, const Map& m) {
         out << m.name << ":\n";
-        for (auto& p : m) {
+        for (const auto& p : m) {
             p.second.empty() ? (out << "- " << p.first << "\n")
                              : (out << "- " << p.first << "  # " << p.second << "\n");
         }
@@ -72,6 +73,22 @@ struct Map : std::map<long, std::string> {
 
     std::string name;
 };
+
+
+void display(const param::MIRParametrisation& metadata, const std::string& key) {
+    static param::SimpleParametrisation empty;
+    static param::DefaultParametrisation defaults;
+    const param::CombinedParametrisation combined(empty, metadata, defaults);
+    const param::MIRParametrisation& param(combined);
+
+    long paramId = 0;
+    ASSERT(metadata.get("paramId", paramId));
+
+    std::string value = "???";
+    param.get(key, value);
+
+    Log::info() << "paramId=" << paramId << ": " << key << "=" << value << std::endl;
+}
 
 
 struct MIRConfig : tools::MIRTool {
@@ -109,22 +126,7 @@ struct MIRConfig : tools::MIRTool {
                     << tool << " --key=lsm input1.grib input2.grib" << std::endl;
     }
 
-    void execute(const eckit::option::CmdArgs&) override;
-
-    void display(const param::MIRParametrisation& metadata, const std::string& key) const {
-        static param::SimpleParametrisation empty;
-        static param::DefaultParametrisation defaults;
-        const param::CombinedParametrisation combined(empty, metadata, defaults);
-        const param::MIRParametrisation& param(combined);
-
-        long paramId = 0;
-        ASSERT(metadata.get("paramId", paramId));
-
-        std::string value = "???";
-        param.get(key, value);
-
-        Log::info() << "paramId=" << paramId << ": " << key << "=" << value << std::endl;
-    }
+    void execute(const eckit::option::CmdArgs& args) override;
 };
 
 
@@ -182,7 +184,7 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
                 o << map.move_or_remove(param) << "\n";
             }
 
-            for (auto& name : param.classes) {
+            for (const auto& name : param.classes) {
                 map.reset(name);
                 o << map.move_or_remove(param) << "\n";
             }
@@ -200,7 +202,7 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
 
         class DummyField : public param::FieldParametrisation {
             long paramId_;
-            void print(std::ostream&) const override {}
+            void print(std::ostream& /*out*/) const override {}
             bool get(const std::string& name, long& value) const override {
                 if (name == "paramId") {
                     value = paramId_;
@@ -230,7 +232,11 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
 }
 
 
+}  // namespace tools
+}  // namespace mir
+
+
 int main(int argc, char** argv) {
-    MIRConfig tool(argc, argv);
+    mir::tools::MIRConfig tool(argc, argv);
     return tool.start();
 }

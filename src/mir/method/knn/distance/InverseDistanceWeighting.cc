@@ -78,7 +78,7 @@ void InverseDistanceWeighting::operator()(size_t ip, const Point3& point,
 
 
 bool InverseDistanceWeighting::sameAs(const DistanceWeighting& other) const {
-    auto o = dynamic_cast<const InverseDistanceWeighting*>(&other);
+    const auto* o = dynamic_cast<const InverseDistanceWeighting*>(&other);
     return (o != nullptr) && eckit::types::is_approximately_equal(power_, o->power_);
 }
 

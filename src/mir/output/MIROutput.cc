@@ -84,7 +84,7 @@ struct OutputFromExtension : public MIROutputFactory {
         m_extensions->clear();
     }
 
-} static _extension;
+} static const _extension;
 
 
 MIROutputFactory::MIROutputFactory(const std::string& name, const std::vector<std::string>& extensions) : name_(name) {
@@ -98,7 +98,7 @@ MIROutputFactory::MIROutputFactory(const std::string& name, const std::vector<st
     ASSERT(m_formats->find(name) == m_formats->end());
     (*m_formats)[name] = this;
 
-    for (auto& ext : extensions) {
+    for (const auto& ext : extensions) {
         ASSERT(!ext.empty());
         if (m_extensions->find(ext) != m_extensions->end()) {
             throw exception::SeriousBug("MIROutputFactory: duplicate extension '" + ext + "'");

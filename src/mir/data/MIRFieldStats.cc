@@ -30,7 +30,7 @@ MIRFieldStats::MIRFieldStats(const MIRValuesVector& vs, size_t missing) :
         min_ = max_ = vs[0];
 
         double sum = 0.;
-        for (auto& v : vs) {
+        for (const auto& v : vs) {
             min_ = std::min(v, min_);
             max_ = std::max(v, max_);
             sum += v;

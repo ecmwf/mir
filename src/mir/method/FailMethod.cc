@@ -22,7 +22,7 @@ namespace mir {
 namespace method {
 
 
-static MethodBuilder<FailMethod> __method("fail");
+static const MethodBuilder<FailMethod> __method("fail");
 
 
 bool FailMethod::canCrop() const {
@@ -36,7 +36,7 @@ bool FailMethod::hasCropping() const {
 
 
 bool FailMethod::sameAs(const Method& other) const {
-    auto o = dynamic_cast<const FailMethod*>(&other);
+    const auto* o = dynamic_cast<const FailMethod*>(&other);
     return (o != nullptr);
 }
 

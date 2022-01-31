@@ -109,7 +109,7 @@ void ArtificialInput::print(std::ostream& out) const {
 
 
 bool ArtificialInput::sameAs(const MIRInput& other) const {
-    auto o = dynamic_cast<const ArtificialInput*>(&other);
+    const auto* o = dynamic_cast<const ArtificialInput*>(&other);
     return (o != nullptr) && parametrisation_.matches(o->parametrisation_);
 }
 

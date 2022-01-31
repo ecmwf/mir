@@ -30,7 +30,7 @@ void ThreeSixtyCalendar::print(std::ostream& out) const {
 }
 
 
-static CodecBuilder<ThreeSixtyCalendar> builder("360_day");
+static const CodecBuilder<ThreeSixtyCalendar> builder("360_day");
 
 
 }  // namespace netcdf

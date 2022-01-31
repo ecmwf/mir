@@ -45,7 +45,7 @@ ShToPoints<Invtrans>::~ShToPoints() = default;
 
 template <class Invtrans>
 bool ShToPoints<Invtrans>::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const ShToPoints*>(&other);
+    const auto* o = dynamic_cast<const ShToPoints*>(&other);
     return (o != nullptr) && (latitudes_ == o->latitudes_) && (longitudes_ == o->longitudes_);
 }
 
@@ -79,8 +79,8 @@ const repres::Representation* ShToPoints<Invtrans>::outputRepresentation() const
 }
 
 
-static ActionBuilder<ShToPoints<InvtransScalar> > __action1("transform.sh-scalar-to-points");
-static ActionBuilder<ShToPoints<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-points");
+static const ActionBuilder<ShToPoints<InvtransScalar> > __action1("transform.sh-scalar-to-points");
+static const ActionBuilder<ShToPoints<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-points");
 
 
 }  // namespace transform

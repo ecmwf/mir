@@ -180,7 +180,7 @@ void PNGOutput::print(std::ostream& out) const {
     out << "PNGOutput[path=" << path_ << "]";
 }
 
-static MIROutputBuilder<PNGOutput> output1("png", {".png"});
+static const MIROutputBuilder<PNGOutput> output1("png", {".png"});
 
 static util::once_flag once;
 static util::recursive_mutex* local_mutex           = nullptr;
@@ -328,14 +328,14 @@ private:
     const bool hasMissing_;
 };
 
-static PNGEncoderBuilder<PNGEncoderT<1, 0, 1, uint_fast8_t>> encoder1("8-bit/g");
-static PNGEncoderBuilder<PNGEncoderT<1, 1, 1, uint_fast8_t>> encoder2("8-bit/ga");
-static PNGEncoderBuilder<PNGEncoderT<1, 0, 2, uint_fast16_t>> encoder3("16-bit/g");
-static PNGEncoderBuilder<PNGEncoderT<1, 1, 2, uint_fast16_t>> encoder4("16-bit/ga");
-static PNGEncoderBuilder<PNGEncoderT<3, 0, 1, uint_fast32_t>> encoder5("8-bit/rgb");
-static PNGEncoderBuilder<PNGEncoderT<3, 1, 1, uint_fast32_t>> encoder6("8-bit/rgba");
-static PNGEncoderBuilder<PNGEncoderT<3, 0, 2, uint_fast64_t>> encoder7("16-bit/rgb");
-static PNGEncoderBuilder<PNGEncoderT<3, 1, 2, uint_fast64_t>> encoder8("16-bit/rgba");
+static const PNGEncoderBuilder<PNGEncoderT<1, 0, 1, uint_fast8_t>> encoder1("8-bit/g");
+static const PNGEncoderBuilder<PNGEncoderT<1, 1, 1, uint_fast8_t>> encoder2("8-bit/ga");
+static const PNGEncoderBuilder<PNGEncoderT<1, 0, 2, uint_fast16_t>> encoder3("16-bit/g");
+static const PNGEncoderBuilder<PNGEncoderT<1, 1, 2, uint_fast16_t>> encoder4("16-bit/ga");
+static const PNGEncoderBuilder<PNGEncoderT<3, 0, 1, uint_fast32_t>> encoder5("8-bit/rgb");
+static const PNGEncoderBuilder<PNGEncoderT<3, 1, 1, uint_fast32_t>> encoder6("8-bit/rgba");
+static const PNGEncoderBuilder<PNGEncoderT<3, 0, 2, uint_fast64_t>> encoder7("16-bit/rgb");
+static const PNGEncoderBuilder<PNGEncoderT<3, 1, 2, uint_fast64_t>> encoder8("16-bit/rgba");
 
 }  // namespace output
 }  // namespace mir

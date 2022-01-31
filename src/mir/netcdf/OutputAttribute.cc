@@ -27,7 +27,7 @@ See http://www.unidata.ucar.edu/software/netcdf/docs/netcdf/Attribute-Convention
 */
 
 
-static const char* dont_drop[] = {"_FillValue", "missing_value", nullptr};
+static const char* const dont_drop[] = {"_FillValue", "missing_value", nullptr};
 
 
 OutputAttribute::OutputAttribute(Endowed& owner, const std::string& name, Value* value) :

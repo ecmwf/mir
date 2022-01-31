@@ -193,7 +193,7 @@ struct UVVorticity final : NablaOperation {
 
 template <typename T>
 bool NablaFilterFVMT<T>::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const NablaFilterFVMT<T>*>(&other);
+    const auto* o = dynamic_cast<const NablaFilterFVMT<T>*>(&other);
     return (o != nullptr) && meshGeneratorParams_.sameAs(o->meshGeneratorParams_);
 }
 
@@ -256,11 +256,11 @@ void NablaFilterFVMT<T>::estimate(context::Context&, api::MIREstimation& estimat
 }
 
 
-static NablaFilterBuilder<NablaFilterFVMT<ScalarGradient>> __nabla1("scalar-gradient");
-static NablaFilterBuilder<NablaFilterFVMT<ScalarLaplacian>> __nabla2("scalar-laplacian");
-static NablaFilterBuilder<NablaFilterFVMT<UVGradient>> __nabla3("uv-gradient");
-static NablaFilterBuilder<NablaFilterFVMT<UVDivergence>> __nabla4("uv-divergence");
-static NablaFilterBuilder<NablaFilterFVMT<UVVorticity>> __nabla5("uv-vorticity");
+static const NablaFilterBuilder<NablaFilterFVMT<ScalarGradient>> __nabla1("scalar-gradient");
+static const NablaFilterBuilder<NablaFilterFVMT<ScalarLaplacian>> __nabla2("scalar-laplacian");
+static const NablaFilterBuilder<NablaFilterFVMT<UVGradient>> __nabla3("uv-gradient");
+static const NablaFilterBuilder<NablaFilterFVMT<UVDivergence>> __nabla4("uv-divergence");
+static const NablaFilterBuilder<NablaFilterFVMT<UVVorticity>> __nabla5("uv-vorticity");
 
 
 }  // namespace action

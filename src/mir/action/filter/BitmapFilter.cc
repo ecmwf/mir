@@ -43,7 +43,7 @@ BitmapFilter::~BitmapFilter() = default;
 
 
 bool BitmapFilter::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const BitmapFilter*>(&other);
+    const auto* o = dynamic_cast<const BitmapFilter*>(&other);
     return (o != nullptr) && (path_ == o->path_);
 }
 
@@ -57,7 +57,7 @@ util::Bitmap& BitmapFilter::bitmap() const {
     static util::recursive_mutex local_mutex;
     util::lock_guard<util::recursive_mutex> lock(local_mutex);
 
-    auto j = cache.find(path_);
+    auto* j = cache.find(path_);
     if (j != cache.end()) {
         return *j;
     }
@@ -139,7 +139,7 @@ const char* BitmapFilter::name() const {
 }
 
 
-static ActionBuilder<BitmapFilter> __action("filter.bitmap");
+static const ActionBuilder<BitmapFilter> __action("filter.bitmap");
 
 
 }  // namespace action

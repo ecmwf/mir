@@ -24,9 +24,9 @@ namespace key {
 namespace truncation {
 
 
-static TruncationBuilder<Automatic> __truncation1("automatic");
-static TruncationBuilder<Automatic> __truncation2("auto");
-static TruncationBuilder<Automatic> __truncation3("AUTO");
+static const TruncationBuilder<Automatic> __truncation1("automatic");
+static const TruncationBuilder<Automatic> __truncation2("auto");
+static const TruncationBuilder<Automatic> __truncation3("AUTO");
 
 
 Automatic::Automatic(const param::MIRParametrisation& parametrisation, long targetGaussianN) :

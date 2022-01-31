@@ -24,8 +24,8 @@ namespace key {
 namespace intgrid {
 
 
-static IntgridBuilder<Source> __intgrid1("source");
-static IntgridBuilder<Source> __intgrid2("SOURCE");
+static const IntgridBuilder<Source> __intgrid1("source");
+static const IntgridBuilder<Source> __intgrid2("SOURCE");
 
 
 Source::Source(const param::MIRParametrisation& parametrisation, long) : Intgrid(parametrisation) {

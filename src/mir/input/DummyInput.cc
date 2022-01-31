@@ -21,7 +21,7 @@ namespace mir {
 namespace input {
 
 
-static ArtificialInputBuilder<DummyInput> __artificial("dummy");
+static const ArtificialInputBuilder<DummyInput> __artificial("dummy");
 
 
 static const param::SimpleParametrisation empty;

@@ -203,7 +203,7 @@ MIRFieldStats Field::statistics(size_t i) const {
         tmp.reserve(vals.size());
         size_t missing = 0;
 
-        for (auto& value : vals) {
+        for (const auto& value : vals) {
             if (value != missingValue_) {
                 tmp.push_back(value);
             }

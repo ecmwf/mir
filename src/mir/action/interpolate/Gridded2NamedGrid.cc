@@ -34,7 +34,7 @@ Gridded2NamedGrid::~Gridded2NamedGrid() = default;
 
 
 bool Gridded2NamedGrid::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const Gridded2NamedGrid*>(&other);
+    const auto* o = dynamic_cast<const Gridded2NamedGrid*>(&other);
     return (o != nullptr) && (grid_ == o->grid_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
@@ -47,7 +47,7 @@ void Gridded2NamedGrid::print(std::ostream& out) const {
 
 
 const repres::Representation* Gridded2NamedGrid::outputRepresentation() const {
-    auto& ng = key::grid::Grid::lookup(grid_, parametrisation_);
+    const auto& ng = key::grid::Grid::lookup(grid_, parametrisation_);
     return ng.representation();
 }
 
@@ -57,7 +57,7 @@ const char* Gridded2NamedGrid::name() const {
 }
 
 
-static ActionBuilder<Gridded2NamedGrid> grid2grid("interpolate.grid2namedgrid");
+static const ActionBuilder<Gridded2NamedGrid> grid2grid("interpolate.grid2namedgrid");
 
 
 }  // namespace interpolate

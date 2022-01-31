@@ -78,7 +78,7 @@ void NearestLSMWithLowestIndex::operator()(size_t ip, const Point3& point,
 
 
 bool NearestLSMWithLowestIndex::sameAs(const DistanceWeighting& other) const {
-    auto o = dynamic_cast<const NearestLSMWithLowestIndex*>(&other);
+    const auto* o = dynamic_cast<const NearestLSMWithLowestIndex*>(&other);
     return (o != nullptr);
 }
 

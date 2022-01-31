@@ -28,7 +28,7 @@ void TransverseMercator::print(std::ostream& out) const {
 }
 
 
-static RepresentationBuilder<TransverseMercator> __repres("transverse_mercator");
+static const RepresentationBuilder<TransverseMercator> __repres("transverse_mercator");
 
 
 }  // namespace repres

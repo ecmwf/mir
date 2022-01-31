@@ -20,7 +20,7 @@ namespace key {
 namespace packing {
 
 
-static PackingBuilder<Simple> __packing("simple", true, true);
+static const PackingBuilder<Simple> __packing("simple", true, true);
 
 
 void Simple::fill(const repres::Representation*, grib_info& info) const {

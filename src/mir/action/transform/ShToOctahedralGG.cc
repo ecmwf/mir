@@ -35,7 +35,7 @@ ShToOctahedralGG<Invtrans>::ShToOctahedralGG(const param::MIRParametrisation& pa
 
 template <class Invtrans>
 bool ShToOctahedralGG<Invtrans>::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const ShToOctahedralGG*>(&other);
+    const auto* o = dynamic_cast<const ShToOctahedralGG*>(&other);
     return (o != nullptr) && (N_ == o->N_);
 }
 
@@ -73,8 +73,8 @@ const repres::Representation* ShToOctahedralGG<Invtrans>::outputRepresentation()
 }
 
 
-static ActionBuilder<ShToOctahedralGG<InvtransScalar> > __action1("transform.sh-scalar-to-octahedral-gg");
-static ActionBuilder<ShToOctahedralGG<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-octahedral-gg");
+static const ActionBuilder<ShToOctahedralGG<InvtransScalar> > __action1("transform.sh-scalar-to-octahedral-gg");
+static const ActionBuilder<ShToOctahedralGG<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-octahedral-gg");
 
 
 }  // namespace transform

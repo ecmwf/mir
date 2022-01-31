@@ -262,7 +262,7 @@ size_t Bitmap::footprint() const {
     result += path_.capacity();
     result += bitmap_.capacity() * sizeof(std::vector<bool>);
 
-    for (auto& j : bitmap_) {
+    for (const auto& j : bitmap_) {
         result += j.capacity() * sizeof(bool);
     }
 

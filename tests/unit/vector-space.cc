@@ -84,7 +84,7 @@ CASE("vector-space") {
 
             EXPECT_NOT(space.empty());
 
-            auto& sp = data::SpaceChooser::lookup(space);
+            const auto& sp = data::SpaceChooser::lookup(space);
             Log::info() << "field-set: " << f.first << " dimensions = " << sp.dimensions()
                         << ", expected = " << f.second << std::endl;
 
@@ -109,7 +109,7 @@ CASE("vector-space") {
 
                 EXPECT_NOT(space.empty());
 
-                auto& sp = data::SpaceChooser::lookup(space);
+                const auto& sp = data::SpaceChooser::lookup(space);
                 Log::info() << "user-set: " << u.first << " dimensions = " << sp.dimensions()
                             << ", expected = " << u.second << std::endl;
 

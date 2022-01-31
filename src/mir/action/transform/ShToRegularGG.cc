@@ -39,7 +39,7 @@ ShToRegularGG<Invtrans>::~ShToRegularGG() = default;
 
 template <class Invtrans>
 bool ShToRegularGG<Invtrans>::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const ShToRegularGG*>(&other);
+    const auto* o = dynamic_cast<const ShToRegularGG*>(&other);
     return (o != nullptr) && (N_ == o->N_);
 }
 
@@ -73,8 +73,8 @@ const repres::Representation* ShToRegularGG<Invtrans>::outputRepresentation() co
 }
 
 
-static ActionBuilder<ShToRegularGG<InvtransScalar> > __action1("transform.sh-scalar-to-regular-gg");
-static ActionBuilder<ShToRegularGG<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-regular-gg");
+static const ActionBuilder<ShToRegularGG<InvtransScalar> > __action1("transform.sh-scalar-to-regular-gg");
+static const ActionBuilder<ShToRegularGG<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-regular-gg");
 
 
 }  // namespace transform

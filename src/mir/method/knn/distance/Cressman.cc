@@ -67,7 +67,7 @@ void Cressman::operator()(size_t ip, const Point3& point,
 
 
 bool Cressman::sameAs(const DistanceWeighting& other) const {
-    auto o = dynamic_cast<const Cressman*>(&other);
+    const auto* o = dynamic_cast<const Cressman*>(&other);
     return (o != nullptr) && eckit::types::is_approximately_equal(r_, o->r_);
 }
 

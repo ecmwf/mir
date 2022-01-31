@@ -82,7 +82,7 @@ static bool sameLsm(const param::MIRParametrisation& parametrisation1,
 
 
 bool NearestLSM::sameAs(const Method& other) const {
-    auto o = dynamic_cast<const NearestLSM*>(&other);
+    const auto* o = dynamic_cast<const NearestLSM*>(&other);
     return (o != nullptr) && KNearestNeighbours::sameAs(other) && sameLsm(parametrisation_, o->parametrisation_);
 }
 
@@ -103,7 +103,7 @@ const char* NearestLSM::name() const {
 }
 
 
-static MethodBuilder<NearestLSM> __method("nearest-lsm");
+static const MethodBuilder<NearestLSM> __method("nearest-lsm");
 
 
 }  // namespace knn

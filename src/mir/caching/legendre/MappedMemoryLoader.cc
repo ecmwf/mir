@@ -84,8 +84,8 @@ bool MappedMemoryLoader::shared() {
 }
 
 
-static LegendreLoaderBuilder<MappedMemoryLoader> loader1("mapped-memory");
-static LegendreLoaderBuilder<MappedMemoryLoader> loader2("mmap");
+static const LegendreLoaderBuilder<MappedMemoryLoader> loader1("mapped-memory");
+static const LegendreLoaderBuilder<MappedMemoryLoader> loader2("mmap");
 
 
 }  // namespace legendre

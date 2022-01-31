@@ -31,12 +31,14 @@
 #include "mir/util/Log.h"
 
 
-using namespace mir;
+namespace mir {
+namespace tools {
 
 
 struct MIRLoadMatrix : tools::MIRTool {
     MIRLoadMatrix(int argc, char** argv) : MIRTool(argc, argv) {
-        using namespace eckit::option;
+        using eckit::option::FactoryOption;
+        using eckit::option::SimpleOption;
 
         options_.push_back(
             new SimpleOption<bool>("load", "Load file into memory. If file is already loaded, does nothing."));
@@ -62,7 +64,7 @@ struct MIRLoadMatrix : tools::MIRTool {
                     << "Usage: " << tool << " [--load] [--unload] [--dump=path] <path>" << std::endl;
     }
 
-    void execute(const eckit::option::CmdArgs&) override;
+    void execute(const eckit::option::CmdArgs& args) override;
 };
 
 
@@ -119,7 +121,7 @@ void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
                            "load"
                         << std::endl;
 
-            auto loader = caching::matrix::MatrixLoaderFactory::build(matrixLoader, path);
+            auto* loader = caching::matrix::MatrixLoaderFactory::build(matrixLoader, path);
             WeightMatrix W(loader);
             display(Log::info(), loader, path);
 
@@ -153,26 +155,26 @@ void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
                     }
 
                     out.precision(std::numeric_limits<double>::digits10);
-                    static auto nl    = "\n";
-                    static auto space = " ";
+                    static const auto* nl    = "\n";
+                    static const auto* space = " ";
 
                     const auto nna = W.rows();
                     const auto nnz = W.nonZeros();
                     out << nna << nl << nnz;
 
-                    auto ia(W.outer());
-                    auto sep = nl;
+                    const auto* ia(W.outer());
+                    const auto* sep = nl;
                     for (WeightMatrix::Size i = 0; i <= nna; ++i, sep = space) {
                         out << sep << *(ia++);
                     }
 
-                    auto ja(W.inner());
+                    const auto* ja(W.inner());
                     sep = nl;
                     for (WeightMatrix::Size i = 0; i < nnz; ++i, sep = space) {
                         out << sep << *(ja++);
                     }
 
-                    auto a(W.data());
+                    const auto* a(W.data());
                     sep = nl;
                     for (WeightMatrix::Size i = 0; i < nnz; ++i, sep = space) {
                         out << sep << *(a++);
@@ -196,7 +198,7 @@ void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
                     }
 
                     out.precision(std::numeric_limits<double>::digits10);
-                    static auto nl = "\n";
+                    static const auto* nl = "\n";
 
                     out << "%%MatrixMarket matrix coordinate real general" << nl;
                     out << W.rows() << " " << W.cols() << " " << W.nonZeros() << nl;
@@ -229,7 +231,7 @@ void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
                         return str.str();
                     };
 
-                    static auto nl = "\n";
+                    static const auto* nl = "\n";
                     out << "# rows=" << W.rows() << nl << "# cols=" << W.cols() << nl << "# nonZeros=" << W.nonZeros()
                         << nl;
 
@@ -250,7 +252,7 @@ void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
             }
 
             if (unload) {
-                auto shmLoader = dynamic_cast<SharedMemoryLoader*>(loader);
+                auto* shmLoader = dynamic_cast<SharedMemoryLoader*>(loader);
                 if (shmLoader != nullptr) {
                     Log::info() << "---"
                                    "\n"
@@ -270,7 +272,11 @@ void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
 }
 
 
+}  // namespace tools
+}  // namespace mir
+
+
 int main(int argc, char** argv) {
-    MIRLoadMatrix tool(argc, argv);
+    mir::tools::MIRLoadMatrix tool(argc, argv);
     return tool.start();
 }

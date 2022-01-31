@@ -28,7 +28,7 @@ void EquatorialAzimuthalEquidistant::print(std::ostream& out) const {
 }
 
 
-static RepresentationBuilder<EquatorialAzimuthalEquidistant> __repres("equatorial_azimuthal_equidistant");
+static const RepresentationBuilder<EquatorialAzimuthalEquidistant> __repres("equatorial_azimuthal_equidistant");
 
 
 }  // namespace repres

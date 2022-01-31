@@ -19,7 +19,8 @@
 #include "mir/util/Log.h"
 
 
-using namespace mir;
+namespace mir {
+namespace tools {
 
 
 struct MIRMakeLSM : tools::MIRTool {
@@ -45,7 +46,7 @@ void MIRMakeLSM::execute(const eckit::option::CmdArgs&) {
     while (file.next()) {
         input::MIRInput& input = file;
 
-        auto& parametrisation = input.parametrisation();
+        const auto& parametrisation = input.parametrisation();
 
         size_t Ni = 0;
         size_t Nj = 0;
@@ -85,7 +86,11 @@ void MIRMakeLSM::execute(const eckit::option::CmdArgs&) {
 }
 
 
+}  // namespace tools
+}  // namespace mir
+
+
 int main(int argc, char** argv) {
-    MIRMakeLSM tool(argc, argv);
+    mir::tools::MIRMakeLSM tool(argc, argv);
     return tool.start();
 }

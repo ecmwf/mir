@@ -137,7 +137,7 @@ bool GribField::canCompareFieldValues() const {
 
 
 void GribField::compareExtra(std::ostream& out, const FieldBase& o) const {
-    auto& other = dynamic_cast<const GribField&>(o);
+    const auto& other = dynamic_cast<const GribField&>(o);
 
     if (!area_ || !other.area_) {
         return;
@@ -363,7 +363,7 @@ bool GribField::sameRotation(const GribField& other) const {
 
 
 bool GribField::less_than(const FieldBase& o) const {
-    auto& other = dynamic_cast<const GribField&>(o);
+    const auto& other = dynamic_cast<const GribField&>(o);
 
     if (param_ < other.param_) {
         return true;
@@ -657,7 +657,7 @@ void GribField::print(std::ostream& out) const {
         out << ",rotation=" << rotation_latitude_ << "/" << rotation_longitude_;
     }
 
-    for (auto& j : values_) {
+    for (const auto& j : values_) {
         out << "," << j.first << "=" << j.second;
     }
     // out << " - " << info_;
@@ -720,7 +720,7 @@ bool GribField::sameField(const GribField& other) const {
 
 
 bool GribField::match(const FieldBase& o) const {
-    const GribField& other = dynamic_cast<const GribField&>(o);
+    const auto& other = dynamic_cast<const GribField&>(o);
 
     return sameParam(other) && sameField(other);
     // &&
@@ -739,7 +739,7 @@ bool GribField::same(const FieldBase& o) const {
 
 
 size_t GribField::differences(const FieldBase& o) const {
-    auto& other = dynamic_cast<const GribField&>(o);
+    const auto& other = dynamic_cast<const GribField&>(o);
 
     size_t result = (sameParam(other) ? 0 : 100) + (sameField(other) ? 0 : 1) + (sameNumberOfPoints(other) ? 0 : 1) +
                     (sameGrid(other) ? 0 : 1) + (sameAccuracy(other) ? 0 : 1) + (samePacking(other) ? 0 : 1) +
@@ -819,7 +819,7 @@ std::ostream& GribField::printDifference(std::ostream& out, const FieldBase& o) 
 
     out << std::setprecision(12);
 
-    auto& other = dynamic_cast<const GribField&>(o);
+    const auto& other = dynamic_cast<const GribField&>(o);
 
     out << "[param=";
     pdiff(out, param_, other.param_);
@@ -892,7 +892,7 @@ std::ostream& GribField::printDifference(std::ostream& out, const FieldBase& o) 
         pdiff(out, rotation_longitude_, other.rotation_longitude_);
     }
 
-    for (auto& j : values_) {
+    for (const auto& j : values_) {
         out << "," << j.first << "=";
         auto k = other.values_.find(j.first);
         pdiff(out, j.second, k == other.values_.end() ? std::string() : k->second);
@@ -1015,15 +1015,15 @@ bool GribField::match(const std::string& name, const std::string& value) const {
 Field GribField::field(const char* buffer, size_t size, const std::string& path, off_t offset,
                        const std::vector<std::string>& ignore) {
 
-    auto field = new GribField(path, offset, size);
+    auto* field = new GribField(path, offset, size);
     Field result(field);
 
-    auto h = codes_handle_new_from_message(nullptr, buffer, size);
+    auto* h = codes_handle_new_from_message(nullptr, buffer, size);
     HandleDeleter delh(h);
 
     static std::string gribToRequestNamespace = eckit::Resource<std::string>("gribToRequestNamespace", "mars");
 
-    auto ks = codes_keys_iterator_new(h, CODES_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
+    auto* ks = codes_keys_iterator_new(h, CODES_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
     ASSERT(ks);
     GKeyIteratorDeleter delk(ks);
 
@@ -1034,7 +1034,7 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
     std::map<std::string, std::string> req;
 
     while (codes_keys_iterator_next(ks) != 0) {
-        auto name = codes_keys_iterator_get_name(ks);
+        const auto* name = codes_keys_iterator_get_name(ks);
         ASSERT(name);
 
         if ((name[0] == '_') || (::strcmp(name, "param") == 0)) {
@@ -1266,7 +1266,7 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
         }
     }
 
-    for (auto& j : ignore) {
+    for (const auto& j : ignore) {
         field->erase(j);
     }
 

@@ -321,10 +321,10 @@ bool SharedMemoryLoader::shared() {
 }
 
 
-static LegendreLoaderBuilder<SharedMemoryLoader> loader1("shared-memory");
-static LegendreLoaderBuilder<SharedMemoryLoader> loader2("shmem");
-static LegendreLoaderBuilder<SharedMemoryLoader> loader3("tmp-shmem");
-static LegendreLoaderBuilder<SharedMemoryLoader> loader5("tmp-shared-memory");
+static const LegendreLoaderBuilder<SharedMemoryLoader> loader1("shared-memory");
+static const LegendreLoaderBuilder<SharedMemoryLoader> loader2("shmem");
+static const LegendreLoaderBuilder<SharedMemoryLoader> loader3("tmp-shmem");
+static const LegendreLoaderBuilder<SharedMemoryLoader> loader5("tmp-shared-memory");
 
 
 }  // namespace legendre

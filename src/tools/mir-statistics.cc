@@ -132,7 +132,7 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
         std::unique_ptr<stats::Method> pps(stats::MethodFactory::build(statistics, *param));
         pps->resize(Nfirst);
 
-        for (auto& arg : args) {
+        for (const auto& arg : args) {
             input::GribFileInput grib(arg);
             const input::MIRInput& input = grib;
 
@@ -182,7 +182,7 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
     }
 
     // per-field statistics
-    for (auto& arg : args) {
+    for (const auto& arg : args) {
         input::GribFileInput grib(arg);
         const input::MIRInput& input = grib;
 

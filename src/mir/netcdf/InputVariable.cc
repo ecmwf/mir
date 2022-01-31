@@ -41,14 +41,14 @@ Variable* InputVariable::clone(Dataset& owner) const {
     std::vector<Dimension*> dimensions;
     dimensions.reserve(dimensions_.size());
 
-    for (auto& j : dimensions_) {
+    for (const auto& j : dimensions_) {
         dimensions.push_back(owner.findDimension(j->name()));
     }
 
     Variable* v = makeOutputVariable(owner, name_, dimensions);
     v->setMatrix(matrix_);
 
-    for (auto& j : attributes_) {
+    for (const auto& j : attributes_) {
         (j.second)->clone(*v);
     }
 

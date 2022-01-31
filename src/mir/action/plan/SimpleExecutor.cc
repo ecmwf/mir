@@ -40,7 +40,7 @@ void SimpleExecutor::execute(context::Context& ctx, const ActionNode& node) cons
 void SimpleExecutor::parametrisation(const param::MIRParametrisation&) {}
 
 
-static SimpleExecutor executor("simple");
+static const SimpleExecutor executor("simple");
 
 
 }  // namespace action

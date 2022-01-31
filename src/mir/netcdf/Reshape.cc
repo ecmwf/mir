@@ -69,7 +69,7 @@ void Reshape::print(std::ostream& out) const {
 
     out << ",";
     char sep = '{';
-    for (auto& j : cube_) {
+    for (const auto& j : cube_) {
         out << sep << j;
         sep = ',';
     }

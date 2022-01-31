@@ -35,7 +35,7 @@ bool MissingIfAnyMissing::treatment(MethodWeighted::Matrix&, MethodWeighted::Wei
     // (force a missing value only if any row values is missing)
     ASSERT(W.cols() == values.size());
 
-    auto data  = const_cast<WeightMatrix::Scalar*>(W.data());
+    auto* data = const_cast<WeightMatrix::Scalar*>(W.data());
     bool modif = false;
 
     WeightMatrix::Size i = 0;
@@ -74,7 +74,7 @@ bool MissingIfAnyMissing::treatment(MethodWeighted::Matrix&, MethodWeighted::Wei
 
 
 bool MissingIfAnyMissing::sameAs(const NonLinear& other) const {
-    auto o = dynamic_cast<const MissingIfAnyMissing*>(&other);
+    const auto* o = dynamic_cast<const MissingIfAnyMissing*>(&other);
     return (o != nullptr);
 }
 
@@ -91,7 +91,7 @@ void MissingIfAnyMissing::hash(eckit::MD5& h) const {
 }
 
 
-static NonLinearBuilder<MissingIfAnyMissing> __nonlinear("missing-if-any-missing");
+static const NonLinearBuilder<MissingIfAnyMissing> __nonlinear("missing-if-any-missing");
 
 
 }  // namespace nonlinear

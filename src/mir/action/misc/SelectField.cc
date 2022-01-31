@@ -33,7 +33,7 @@ SelectField::~SelectField() = default;
 
 
 bool SelectField::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const SelectField*>(&other);
+    const auto* o = dynamic_cast<const SelectField*>(&other);
     return (o != nullptr) && (which_ == o->which_);
 }
 
@@ -54,7 +54,7 @@ const char* SelectField::name() const {
 }
 
 
-static ActionBuilder<SelectField> __action("select.field");
+static const ActionBuilder<SelectField> __action("select.field");
 
 
 }  // namespace action

@@ -81,7 +81,7 @@ void ThreadExecutor::parametrisation(const param::MIRParametrisation& parametris
 }
 
 
-static ThreadExecutor executor("thread");
+static const ThreadExecutor executor("thread");
 
 
 }  // namespace action

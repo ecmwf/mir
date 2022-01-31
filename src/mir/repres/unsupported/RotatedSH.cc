@@ -28,7 +28,7 @@ void RotatedSH::print(std::ostream& out) const {
 }
 
 
-static RepresentationBuilder<RotatedSH> __repres("rotated_sh");
+static const RepresentationBuilder<RotatedSH> __repres("rotated_sh");
 
 
 }  // namespace repres

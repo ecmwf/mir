@@ -117,7 +117,7 @@ const char* ReferencePattern::name() const {
 }
 
 
-static ActionBuilder<ReferencePattern> __action("misc.pattern");
+static const ActionBuilder<ReferencePattern> __action("misc.pattern");
 
 
 }  // namespace action

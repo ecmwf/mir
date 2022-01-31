@@ -17,7 +17,8 @@
 #include "mir/util/Log.h"
 
 
-using namespace mir;
+namespace mir {
+namespace tools {
 
 
 struct MIRCompare : tools::MIRTool {
@@ -30,7 +31,7 @@ struct MIRCompare : tools::MIRTool {
                     << "Usage: " << tool << " [options] file1 file2" << std::endl;
     }
 
-    void execute(const eckit::option::CmdArgs&) override;
+    void execute(const eckit::option::CmdArgs& args) override;
 };
 
 
@@ -42,7 +43,12 @@ void MIRCompare::execute(const eckit::option::CmdArgs& args) {
     c.compare(args(0), args(1));
 }
 
+
+}  // namespace tools
+}  // namespace mir
+
+
 int main(int argc, char** argv) {
-    MIRCompare tool(argc, argv);
+    mir::tools::MIRCompare tool(argc, argv);
     return tool.start();
 }

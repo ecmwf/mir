@@ -20,7 +20,7 @@ namespace key {
 namespace packing {
 
 
-static PackingBuilder<ArchivedValue> __packing("archived-value", "av", true, true);
+static const PackingBuilder<ArchivedValue> __packing("archived-value", "av", true, true);
 
 
 ArchivedValue::ArchivedValue(const std::string& name, const param::MIRParametrisation& param) : Packing(name, param) {

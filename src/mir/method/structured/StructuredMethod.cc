@@ -30,7 +30,7 @@ StructuredMethod::StructuredMethod(const param::MIRParametrisation& param) : Met
 StructuredMethod::~StructuredMethod() = default;
 
 bool StructuredMethod::sameAs(const Method& other) const {
-    auto o = dynamic_cast<const StructuredMethod*>(&other);
+    const auto* o = dynamic_cast<const StructuredMethod*>(&other);
     return (o != nullptr) && MethodWeighted::sameAs(other);
 }
 

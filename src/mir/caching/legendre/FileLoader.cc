@@ -59,7 +59,7 @@ bool FileLoader::shared() {
 }
 
 
-static LegendreLoaderBuilder<FileLoader> loader("file-io");
+static const LegendreLoaderBuilder<FileLoader> loader("file-io");
 
 
 }  // namespace legendre

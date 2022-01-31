@@ -45,7 +45,7 @@ std::string ClenshawCurtisPattern::canonical(const std::string& name, const para
 }
 
 
-static ClenshawCurtisPattern __pattern("^[rR][cC][cC][1-9][0-9]*$");
+static const ClenshawCurtisPattern __pattern("^[rR][cC][cC][1-9][0-9]*$");
 
 
 }  // namespace grid

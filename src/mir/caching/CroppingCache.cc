@@ -57,7 +57,7 @@ void CroppingCacheEntry::save(const eckit::PathName& path) const {
     f << bbox_.east();
 
     f << mapping_.size();
-    for (auto& i : mapping_) {
+    for (const auto& i : mapping_) {
         f << i;
     }
 }

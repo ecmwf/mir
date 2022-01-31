@@ -22,7 +22,7 @@ namespace key {
 namespace packing {
 
 
-static PackingBuilder<CCSDS> __packing("ccsds", false, true);
+static const PackingBuilder<CCSDS> __packing("ccsds", false, true);
 
 
 CCSDS::CCSDS(const std::string& name, const param::MIRParametrisation& param) : Packing(name, param) {

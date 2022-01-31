@@ -35,7 +35,7 @@ GribFileInput::~GribFileInput() {
 }
 
 bool GribFileInput::sameAs(const MIRInput& other) const {
-    auto o = dynamic_cast<const GribFileInput*>(&other);
+    const auto* o = dynamic_cast<const GribFileInput*>(&other);
     return (o != nullptr) && (skip_ == o->skip_) && (step_ == o->step_) && (path_ == o->path_);
 }
 
@@ -51,7 +51,7 @@ eckit::DataHandle& GribFileInput::dataHandle() {
     return *handle_;
 }
 
-static MIRInputBuilder<GribFileInput> input(0x47524942);  // "GRIB"
+static const MIRInputBuilder<GribFileInput> input(0x47524942);  // "GRIB"
 
 
 }  // namespace input

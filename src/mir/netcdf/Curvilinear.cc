@@ -270,7 +270,7 @@ void Curvilinear::reorder(MIRValuesVector& /*values*/) const {
 }
 
 
-static GridSpecGuesserBuilder<Curvilinear> builder(3);
+static const GridSpecGuesserBuilder<Curvilinear> builder(3);
 
 
 }  // namespace netcdf

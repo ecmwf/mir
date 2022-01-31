@@ -39,7 +39,7 @@ void FormulaString::execute(context::Context&) const {
 
 
 bool FormulaString::sameAs(const action::Action& other) const {
-    auto o = dynamic_cast<const FormulaString*>(&other);
+    const auto* o = dynamic_cast<const FormulaString*>(&other);
     return (o != nullptr) && (value_ == o->value_);
 }
 

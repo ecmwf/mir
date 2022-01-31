@@ -38,14 +38,14 @@ void NoDistanceWeighting::operator()(size_t ip, const Point3&,
 
     // average neighbour points
     auto weight = 1. / double(neighbours.size());
-    for (auto& n : neighbours) {
+    for (const auto& n : neighbours) {
         triplets.emplace_back(WeightMatrix::Triplet(ip, n.payload(), weight));
     }
 }
 
 
 bool NoDistanceWeighting::sameAs(const DistanceWeighting& other) const {
-    auto o = dynamic_cast<const NoDistanceWeighting*>(&other);
+    const auto* o = dynamic_cast<const NoDistanceWeighting*>(&other);
     return (o != nullptr);
 }
 

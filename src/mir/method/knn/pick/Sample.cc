@@ -63,7 +63,7 @@ size_t Sample::n() const {
 
 
 bool Sample::sameAs(const Pick& other) const {
-    auto o = dynamic_cast<const Sample*>(&other);
+    const auto* o = dynamic_cast<const Sample*>(&other);
     return (o != nullptr) && eckit::types::is_approximately_equal(distance_, o->distance_);
 }
 
@@ -80,7 +80,7 @@ void Sample::hash(eckit::MD5& h) const {
 }
 
 
-static PickBuilder<Sample> __pick("sample");
+static const PickBuilder<Sample> __pick("sample");
 
 
 }  // namespace pick

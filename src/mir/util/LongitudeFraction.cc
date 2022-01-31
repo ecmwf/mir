@@ -21,10 +21,10 @@
 namespace mir {
 
 
-LongitudeFraction LongitudeFraction::GLOBE(360);
-LongitudeFraction LongitudeFraction::DATE_LINE(180);
-LongitudeFraction LongitudeFraction::MINUS_DATE_LINE(-180);
-LongitudeFraction LongitudeFraction::GREENWICH(0);
+const LongitudeFraction LongitudeFraction::GLOBE(360);
+const LongitudeFraction LongitudeFraction::DATE_LINE(180);
+const LongitudeFraction LongitudeFraction::MINUS_DATE_LINE(-180);
+const LongitudeFraction LongitudeFraction::GREENWICH(0);
 
 
 void LongitudeFraction::print(std::ostream& out) const {
