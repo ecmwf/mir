@@ -23,7 +23,7 @@ namespace mir {
 namespace tools {
 
 
-struct MIRList : tools::MIRTool {
+struct MIRList : MIRTool {
     MIRList(int argc, char** argv) : MIRTool(argc, argv) {
         options_.push_back(new eckit::option::SimpleOption<bool>("json", "JSON output"));
         compare::FieldComparator::addOptions(options_);

@@ -59,7 +59,7 @@ void KNearestNeighbours::assemble(util::MIRStatistics& stats, WeightMatrix& W, c
 }
 
 
-void KNearestNeighbours::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& in,
+void KNearestNeighbours::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, const repres::Representation& in,
                                   const repres::Representation& out, const pick::Pick& pick,
                                   const distance::DistanceWeighting& distanceWeighting) const {
     auto& log = Log::debug();

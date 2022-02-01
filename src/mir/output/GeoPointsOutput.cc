@@ -41,12 +41,14 @@ bool GeoPointsOutput::once() {
 }
 
 
-bool GeoPointsOutput::sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const {
+bool GeoPointsOutput::sameParametrisation(const param::MIRParametrisation& /*unused*/,
+                                          const param::MIRParametrisation& /*unused*/) const {
     return true;
 }
 
 
-bool GeoPointsOutput::printParametrisation(std::ostream&, const param::MIRParametrisation&) const {
+bool GeoPointsOutput::printParametrisation(std::ostream& /*unused*/,
+                                           const param::MIRParametrisation& /*unused*/) const {
     return false;
 }
 

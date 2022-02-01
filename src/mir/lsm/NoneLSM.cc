@@ -39,13 +39,14 @@ void NoneLSM::print(std::ostream& out) const {
 }
 
 
-Mask* NoneLSM::create(const param::MIRParametrisation&, const repres::Representation&, const std::string&) const {
+Mask* NoneLSM::create(const param::MIRParametrisation& /*unused*/, const repres::Representation& /*unused*/,
+                      const std::string& /*which*/) const {
     return new NoMask();
 }
 
 
-std::string NoneLSM::cacheKey(const param::MIRParametrisation&, const repres::Representation&,
-                              const std::string&) const {
+std::string NoneLSM::cacheKey(const param::MIRParametrisation& /*unused*/, const repres::Representation& /*unused*/,
+                              const std::string& /*which*/) const {
     return "none";
 }
 

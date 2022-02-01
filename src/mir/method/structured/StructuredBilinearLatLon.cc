@@ -98,8 +98,8 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
         for (std::unique_ptr<repres::Iterator> it(out.iterator()); it->next();) {
             ++progress;
 
-            auto& p = it->pointUnrotated();
-            auto ip = it->index();
+            const auto& p = it->pointUnrotated();
+            auto ip       = it->index();
             ASSERT(ip < nbOutputPoints);
 
             const bool too_much_north = p.lat() > max_lat;

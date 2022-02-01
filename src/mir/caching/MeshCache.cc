@@ -41,12 +41,14 @@ const char* MeshCacheTraits::extension() {
 }
 
 
-void MeshCacheTraits::save(const eckit::CacheManagerBase&, const value_type&, const eckit::PathName&) {
+void MeshCacheTraits::save(const eckit::CacheManagerBase& /*unused*/, const value_type& /*unused*/,
+                           const eckit::PathName& /*unused*/) {
     NOTIMP;
 }
 
 
-void MeshCacheTraits::load(const eckit::CacheManagerBase&, value_type&, const eckit::PathName&) {
+void MeshCacheTraits::load(const eckit::CacheManagerBase& /*unused*/, value_type& /*unused*/,
+                           const eckit::PathName& /*unused*/) {
     NOTIMP;
 }
 

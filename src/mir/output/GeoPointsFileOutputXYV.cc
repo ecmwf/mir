@@ -95,8 +95,8 @@ size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param, 
         longitudes.reserve(values.size());
 
         for (const std::unique_ptr<repres::Iterator> it(field.representation()->iterator()); it->next();) {
-            auto& p = it->pointUnrotated();
-            auto v  = values.at(it->index());
+            const auto& p = it->pointUnrotated();
+            auto v        = values.at(it->index());
 
             if (v != mv) {
                 out << "\n" << p.lon().value() << ' ' << p.lat().value() << ' ' << v;
@@ -167,8 +167,8 @@ size_t GeoPointsFileOutputXYV::saveBinary(const param::MIRParametrisation& param
         longitudes.reserve(values.size());
 
         for (const std::unique_ptr<repres::Iterator> it(field.representation()->iterator()); it->next();) {
-            auto& p = it->pointUnrotated();
-            auto v  = values.at(it->index());
+            const auto& p = it->pointUnrotated();
+            auto v        = values.at(it->index());
 
             // NOTE: no check for missing value, consider changing
             out << p.lon().value() << p.lat().value() << v;

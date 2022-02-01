@@ -26,7 +26,7 @@ namespace knn {
 namespace distance {
 
 
-PseudoLaplace::PseudoLaplace(const param::MIRParametrisation&) {}
+PseudoLaplace::PseudoLaplace(const param::MIRParametrisation& /*unused*/) {}
 
 
 void PseudoLaplace::operator()(size_t ip, const Point3& point,

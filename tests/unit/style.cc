@@ -59,8 +59,8 @@ struct TestingInput : input::MIRInput, InputOutput {
     TestingInput(bool gridded) : InputOutput(gridded) {}
 
 private:
-    const param::MIRParametrisation& parametrisation(size_t) const override { return *this; }
-    bool sameAs(const MIRInput&) const override { return false; }
+    const param::MIRParametrisation& parametrisation(size_t /*which*/) const override { return *this; }
+    bool sameAs(const MIRInput& /*unused*/) const override { return false; }
     data::MIRField field() const override { NOTIMP; }
     void print(std::ostream& out) const override { InputOutput::print(out); }
     friend std::ostream& operator<<(std::ostream& s, const TestingInput& p) {

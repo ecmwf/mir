@@ -36,13 +36,16 @@
 #include "mir/util/Log.h"
 
 
-using namespace mir;
+namespace mir {
+namespace tools {
+
+
 using coord_t      = std::vector<double>;
 using neighbours_t = std::vector<search::PointSearch::PointValueType>;
 using prec_t       = decltype(Log::info().precision());
 
 
-struct MIRGetData : tools::MIRTool {
+struct MIRGetData : MIRTool {
     MIRGetData(int argc, char** argv) : MIRTool(argc, argv) {
         using namespace eckit::option;
 
@@ -72,7 +75,7 @@ struct MIRGetData : tools::MIRTool {
                     << tool << " --diff-atlas 1.grib 2.grib 3.grib" << std::endl;
     }
 
-    void execute(const eckit::option::CmdArgs&) override;
+    void execute(const eckit::option::CmdArgs& /*args*/) override;
 };
 
 
@@ -81,7 +84,9 @@ struct Coordinates {
     virtual ~Coordinates() = default;
 
     Coordinates(const Coordinates&) = delete;
+    Coordinates(Coordinates&&)      = delete;
     Coordinates& operator=(const Coordinates&) = delete;
+    Coordinates& operator=(Coordinates&&) = delete;
 
     virtual const coord_t& latitudes() const  = 0;
     virtual const coord_t& longitudes() const = 0;
@@ -243,8 +248,8 @@ const neighbours_t& getNeighbours(Point2 p, size_t n, const repres::Representati
                                   const param::MIRParametrisation& param) {
     static std::map<std::string, neighbours_t> cache;
 
-    auto& key   = rep.uniqueName();
-    auto cached = cache.find(key);
+    const auto& key = rep.uniqueName();
+    auto cached     = cache.find(key);
     if (cached != cache.end()) {
         return cached->second;
     }
@@ -313,7 +318,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
             auto field = input->field();
             ASSERT(field.dimensions() == 1);
 
-            auto& values = field.values(0);
+            const auto& values = field.values(0);
 
             repres::RepresentationHandle rep(field.representation());
 
@@ -331,7 +336,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
             if (nclosest > 0) {
                 size_t c = 1;
-                for (auto& n : getNeighbours(p, nclosest, *rep, args_wrap)) {
+                for (const auto& n : getNeighbours(p, nclosest, *rep, args_wrap)) {
                     size_t i = n.payload();
                     Point2 q(crd->longitudes()[i], crd->latitudes()[i]);
                     ASSERT(i < values.size());
@@ -365,7 +370,11 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 }
 
 
+}  // namespace tools
+}  // namespace mir
+
+
 int main(int argc, char** argv) {
-    MIRGetData tool(argc, argv);
+    mir::tools::MIRGetData tool(argc, argv);
     return tool.start();
 }

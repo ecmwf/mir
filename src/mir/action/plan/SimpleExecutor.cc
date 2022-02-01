@@ -37,7 +37,7 @@ void SimpleExecutor::execute(context::Context& ctx, const ActionNode& node) cons
 }
 
 
-void SimpleExecutor::parametrisation(const param::MIRParametrisation&) {}
+void SimpleExecutor::parametrisation(const param::MIRParametrisation& /*unused*/) {}
 
 
 static const SimpleExecutor executor("simple");

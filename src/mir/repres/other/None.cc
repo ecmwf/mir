@@ -23,7 +23,7 @@ namespace other {
 None::None() = default;
 
 
-None::None(const param::MIRParametrisation&) {}
+None::None(const param::MIRParametrisation& /*unused*/) {}
 
 
 None::~None() = default;

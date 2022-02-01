@@ -46,14 +46,15 @@ const util::BoundingBox& FailMethod::getCropping() const {
 }
 
 
-void FailMethod::execute(context::Context&, const repres::Representation&, const repres::Representation&) const {
+void FailMethod::execute(context::Context& /*unused*/, const repres::Representation& /*in*/,
+                         const repres::Representation& /*out*/) const {
     std::string msg = "FailMethod: this interpolation method fails intentionally";
     Log::error() << msg << std::endl;
     throw exception::UserError(msg);
 }
 
 
-void FailMethod::hash(eckit::MD5&) const {}
+void FailMethod::hash(eckit::MD5& /*unused*/) const {}
 
 
 int FailMethod::version() const {
@@ -66,7 +67,7 @@ void FailMethod::print(std::ostream& out) const {
 }
 
 
-void FailMethod::setCropping(const util::BoundingBox&) {
+void FailMethod::setCropping(const util::BoundingBox& /*unused*/) {
     NOTIMP;
 }
 

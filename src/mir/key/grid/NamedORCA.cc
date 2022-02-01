@@ -36,7 +36,7 @@ const repres::Representation* NamedORCA::representation() const {
 }
 
 
-const repres::Representation* NamedORCA::representation(const util::Rotation&) const {
+const repres::Representation* NamedORCA::representation(const util::Rotation& /*unused*/) const {
     NOTIMP;
 }
 

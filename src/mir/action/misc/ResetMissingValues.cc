@@ -87,7 +87,7 @@ const char* ResetMissingValues::name() const {
 }
 
 
-void ResetMissingValues::estimate(context::Context&, api::MIREstimation&) const {
+void ResetMissingValues::estimate(context::Context& /*unused*/, api::MIREstimation& /*unused*/) const {
     // do nothing
 }
 

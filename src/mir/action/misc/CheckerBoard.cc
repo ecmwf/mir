@@ -34,7 +34,7 @@ CheckerBoard::CheckerBoard(const param::MIRParametrisation& parametrisation) : A
 CheckerBoard::~CheckerBoard() = default;
 
 
-bool CheckerBoard::sameAs(const Action&) const {
+bool CheckerBoard::sameAs(const Action& /*unused*/) const {
     return false;
 }
 
@@ -111,7 +111,7 @@ void CheckerBoard::execute(context::Context& ctx) const {
         for (const std::unique_ptr<repres::Iterator> it(representation->iterator()); it->next();) {
             auto& v = values.at(it->index());
             if (!hasMissing || v != missingValue) {
-                auto& p = it->pointUnrotated();
+                const auto& p = it->pointUnrotated();
 
                 Latitude lat  = Latitude::NORTH_POLE - p.lat();
                 Longitude lon = p.lon().normalise(Longitude::GREENWICH);

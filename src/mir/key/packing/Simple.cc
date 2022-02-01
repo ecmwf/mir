@@ -23,12 +23,12 @@ namespace packing {
 static const PackingBuilder<Simple> __packing("simple", true, true);
 
 
-void Simple::fill(const repres::Representation*, grib_info& info) const {
+void Simple::fill(const repres::Representation* /*unused*/, grib_info& info) const {
     Packing::fill(info, gridded() ? CODES_UTIL_PACKING_TYPE_GRID_SIMPLE : CODES_UTIL_PACKING_TYPE_SPECTRAL_SIMPLE);
 }
 
 
-void Simple::set(const repres::Representation*, grib_handle* handle) const {
+void Simple::set(const repres::Representation* /*unused*/, grib_handle* handle) const {
     Packing::set(handle, gridded() ? "grid_simple" : "spectral_simple");
 }
 

@@ -52,7 +52,9 @@ public:
     Condition() = default;
 
     Condition(const Condition&) = delete;
+    Condition(Condition&&)      = delete;
     Condition& operator=(const Condition&) = delete;
+    Condition& operator=(Condition&&) = delete;
 
     virtual ~Condition()                  = default;
     virtual bool eval(grib_handle*) const = 0;
@@ -63,7 +65,7 @@ template <class T>
 class ConditionT : public Condition {
     const char* key_;
     T value_;
-    bool eval(grib_handle*) const override;
+    bool eval(grib_handle* /*unused*/) const override;
 
 public:
     ConditionT(const char* key, const T& value) : key_(key), value_(value) {}
@@ -142,6 +144,11 @@ class ConditionOR : public Condition {
 
 public:
     ConditionOR(const Condition* left, const Condition* right) : left_(left), right_(right) {}
+
+    ConditionOR(const ConditionOR&) = delete;
+    ConditionOR(ConditionOR&&)      = delete;
+    ConditionOR& operator=(const ConditionOR&) = delete;
+    ConditionOR& operator=(ConditionOR&&) = delete;
 };
 
 
@@ -153,6 +160,11 @@ class ConditionAND : public Condition {
 
 public:
     ConditionAND(const Condition* left, const Condition* right) : left_(left), right_(right) {}
+
+    ConditionAND(const ConditionAND&) = delete;
+    ConditionAND( ConditionAND&&) = delete;
+    ConditionAND& operator=(const ConditionAND&) = delete;
+    ConditionAND& operator=( ConditionAND&&) = delete;
 };
 */
 
@@ -339,8 +351,11 @@ struct ProcessingT {
     using fun_t = std::function<bool(grib_handle*, T&)>;
     fun_t fun_;
     ProcessingT(fun_t&& fun) : fun_(fun) {}
+    ~ProcessingT()                  = default;
     ProcessingT(const ProcessingT&) = delete;
+    ProcessingT(ProcessingT&&)      = delete;
     void operator=(const ProcessingT&) = delete;
+    void operator=(ProcessingT&&) = delete;
     bool eval(grib_handle* h, T& v) const { return fun_(h, v); }
 };
 
@@ -873,7 +888,7 @@ bool GribInput::get(const std::string& name, double& value) const {
 }
 
 
-bool GribInput::get(const std::string&, std::vector<int>&) const {
+bool GribInput::get(const std::string& /*name*/, std::vector<int>& /*value*/) const {
     NOTIMP;
 }
 
@@ -1049,7 +1064,7 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
     return true;
 }
 
-bool GribInput::get(const std::string&, std::vector<std::string>&) const {
+bool GribInput::get(const std::string& /*name*/, std::vector<std::string>& /*value*/) const {
     NOTIMP;
 }
 

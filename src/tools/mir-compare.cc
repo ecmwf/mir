@@ -21,7 +21,7 @@ namespace mir {
 namespace tools {
 
 
-struct MIRCompare : tools::MIRTool {
+struct MIRCompare : MIRTool {
     MIRCompare(int argc, char** argv) : MIRTool(argc, argv) { compare::FieldComparator::addOptions(options_); }
 
     int numberOfPositionalArguments() const override { return 2; }

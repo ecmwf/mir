@@ -109,12 +109,13 @@ const char* CroppingCacheTraits::extension() {
 }
 
 
-void CroppingCacheTraits::save(const eckit::CacheManagerBase&, const value_type& c, const eckit::PathName& path) {
+void CroppingCacheTraits::save(const eckit::CacheManagerBase& /*unused*/, const value_type& c,
+                               const eckit::PathName& path) {
     c.save(path);
 }
 
 
-void CroppingCacheTraits::load(const eckit::CacheManagerBase&, value_type& c, const eckit::PathName& path) {
+void CroppingCacheTraits::load(const eckit::CacheManagerBase& /*unused*/, value_type& c, const eckit::PathName& path) {
     c.load(path);
 }
 

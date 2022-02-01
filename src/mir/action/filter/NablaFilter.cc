@@ -66,7 +66,7 @@ void NablaFilterFactory::list(std::ostream& out) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-    auto sep = "";
+    const auto* sep = "";
     for (const auto& j : *m) {
         out << sep << j;
         sep = ", ";

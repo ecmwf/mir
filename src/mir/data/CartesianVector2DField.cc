@@ -56,7 +56,7 @@ void CartesianVector2DField::rotate(const util::Rotation& rotation, MIRValuesVec
     // setup results vectors
     ASSERT(valuesX.size() == valuesY.size());
     ASSERT(valuesX.size());
-    const size_t N = valuesX.size();
+    // const size_t N = valuesX.size();
 
     // determine angle between meridians (c) using the (first) spherical law of cosines:
     // https://en.wikipedia.org/wiki/Spherical_law_of_cosines

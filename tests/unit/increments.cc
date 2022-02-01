@@ -92,7 +92,7 @@ CASE("MIR-351") {
         std::unique_ptr<input::MIRInput> input(new input::GribFileInput(file));
         ASSERT(input->next());
 
-        auto& param = input->parametrisation();
+        const auto& param = input->parametrisation();
 
         double encoded_west = 0.;
         ASSERT(param.get("west", encoded_west));
@@ -133,7 +133,7 @@ CASE("Increments::correctBoundingBox") {
             PointLatLon ref{shiftLat ? 0.5 : 0., shiftLon ? 0.5 : 0.};
 
             repres::RepresentationHandle repres(new repres::latlon::RegularLL(inc, box, ref));
-            auto& ll = dynamic_cast<const repres::latlon::RegularLL&>(*repres);
+            const auto& ll = dynamic_cast<const repres::latlon::RegularLL&>(*repres);
 
             static size_t c = 1;
             log << "Test " << c++ << ":"
@@ -147,7 +147,7 @@ CASE("Increments::correctBoundingBox") {
             EXPECT(ll.Ni() == Ni);
             EXPECT(ll.Nj() == Nj);
 
-            auto& bbox = repres->boundingBox();
+            const auto& bbox = repres->boundingBox();
             EXPECT(bbox.west() == ref.lon());
             EXPECT(bbox.east() == bbox.west() + double(ll.Ni() - 1));
             EXPECT(bbox.north() == bbox.south() + double(ll.Nj() - 1));
@@ -224,7 +224,7 @@ CASE("Increments::correctBoundingBox") {
     SECTION("equator") {
         BoundingBox equator(0, -1, 0, 359);
 
-        for (auto& inc : {
+        for (const auto& inc : {
                  Increments{3, 3},
                  Increments{7, 0},
              }) {
@@ -346,7 +346,7 @@ struct UserAndGlobalisedCase {
         // check if Ni/Nj and shifts are well calculated, for the user-provided area
         PointLatLon ref(user_.boundingBox_.south(), user_.boundingBox_.west());
         repres::RepresentationHandle user = new RegularLL(increments_, user_.boundingBox_, ref);
-        auto& user_ll                     = dynamic_cast<const RegularLL&>(*user);
+        const auto& user_ll               = dynamic_cast<const RegularLL&>(*user);
 
         if (!user_.compare(Case("calculated", user_.boundingBox_, user_ll.Ni(), user_ll.Nj()))) {
             return false;
@@ -357,7 +357,7 @@ struct UserAndGlobalisedCase {
         repres::latlon::LatLon::globaliseBoundingBox(global, increments_, ref);
 
         repres::RepresentationHandle globalised = new RegularLL(increments_, global, ref);
-        auto& globalised_ll                     = dynamic_cast<const RegularLL&>(*globalised);
+        const auto& globalised_ll               = dynamic_cast<const RegularLL&>(*globalised);
 
         // check if Ni/Nj and shifts are well calculated, for the 'globalised' area
         if (!globalised_.compare(Case("calculated", global, globalised_ll.Ni(), globalised_ll.Nj()))) {
@@ -387,7 +387,7 @@ struct UserAndGlobalisedCase {
             BoundingBox maybe_box(n, w, s, e);
 
             repres::RepresentationHandle maybe = new RegularLL(increments_, maybe_box, ref);
-            auto& maybe_ll                     = dynamic_cast<const repres::latlon::RegularLL&>(*maybe);
+            const auto& maybe_ll               = dynamic_cast<const repres::latlon::RegularLL&>(*maybe);
 
             log << "globaliseBoundingBox should maybe result in (CONFIRM FIRST!):"
                 << "\n\t" << maybe_box

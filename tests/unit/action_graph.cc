@@ -33,7 +33,7 @@ namespace unit {
 
 
 struct TestWatcher : api::MIRWatcher {
-    void print(std::ostream&) const override {}
+    void print(std::ostream& /*unused*/) const override {}
     bool failure(std::exception& e, const mir::action::Action& action) override {
         Log::error() << "Exception: '" << e.what() << "' on " << action << std::endl;
         throw;

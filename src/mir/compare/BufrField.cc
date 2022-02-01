@@ -627,7 +627,7 @@ std::ostream& BufrField::printGrid(std::ostream& out) const {
     return out;
 }
 
-bool BufrField::match(const std::string&, const std::string&) const {
+bool BufrField::match(const std::string& /*unused*/, const std::string& /*unused*/) const {
     NOTIMP;
 }
 

@@ -104,21 +104,21 @@ const repres::Representation* Grid::representation() const {
 }
 
 
-const repres::Representation* Grid::representation(const util::Rotation&) const {
+const repres::Representation* Grid::representation(const util::Rotation& /*unused*/) const {
     std::ostringstream os;
     os << "Grid::representation(Rotation&) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-const repres::Representation* Grid::representation(const param::MIRParametrisation&) const {
+const repres::Representation* Grid::representation(const param::MIRParametrisation& /*unused*/) const {
     std::ostringstream os;
     os << "Grid::representation(MIRParametrisation&) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void Grid::parametrisation(const std::string&, param::SimpleParametrisation&) const {
+void Grid::parametrisation(const std::string& /*unused*/, param::SimpleParametrisation& /*unused*/) const {
     std::ostringstream os;
     os << "Grid::parametrisation() not implemented for " << *this;
     throw exception::SeriousBug(os.str());

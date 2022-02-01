@@ -35,7 +35,10 @@
 #include "mir/util/Types.h"
 
 
-using namespace mir;
+namespace mir {
+namespace tools {
+
+
 using prec_t = decltype(Log::info().precision());
 
 
@@ -45,7 +48,7 @@ struct PerPointStatistics {
 };
 
 
-struct MIRStatistics : tools::MIRTool {
+struct MIRStatistics : MIRTool {
     MIRStatistics(int argc, char** argv) : MIRTool(argc, argv) {
         using namespace eckit::option;
 
@@ -89,7 +92,7 @@ struct MIRStatistics : tools::MIRTool {
     }
 
 
-    void execute(const eckit::option::CmdArgs&) override;
+    void execute(const eckit::option::CmdArgs& /*args*/) override;
 };
 
 
@@ -208,7 +211,11 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
 }
 
 
+}  // namespace tools
+}  // namespace mir
+
+
 int main(int argc, char** argv) {
-    MIRStatistics tool(argc, argv);
+    mir::tools::MIRStatistics tool(argc, argv);
     return tool.start();
 }

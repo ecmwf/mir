@@ -36,7 +36,7 @@ void Noop::print(std::ostream& out) const {
 }
 
 
-void Noop::execute(context::Context&) const {}
+void Noop::execute(context::Context& /*unused*/) const {}
 
 
 const char* Noop::name() const {

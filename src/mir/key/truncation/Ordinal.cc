@@ -26,7 +26,7 @@ Ordinal::Ordinal(long truncation, const param::MIRParametrisation& parametrisati
 }
 
 
-bool Ordinal::truncation(long& T, long) const {
+bool Ordinal::truncation(long& T, long /*inputTrucation*/) const {
     T = truncation_;
     return true;
 }

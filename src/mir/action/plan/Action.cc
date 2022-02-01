@@ -44,12 +44,12 @@ void Action::perform(context::Context& ctx) const {
 }
 
 
-bool Action::mergeWithNext(const Action&) {
+bool Action::mergeWithNext(const Action& /*unused*/) {
     return false;
 }
 
 
-bool Action::deleteWithNext(const Action&) {
+bool Action::deleteWithNext(const Action& /*unused*/) {
     return false;
 }
 
@@ -73,14 +73,14 @@ util::BoundingBox Action::outputBoundingBox() const {
     NOTIMP;
 }
 
-void Action::estimate(context::Context&, api::MIREstimation& /*estimation*/) const {
+void Action::estimate(context::Context& /*unused*/, api::MIREstimation& /*estimation*/) const {
     std::ostringstream oss;
     oss << "Action::estimate not implemented for " << *this;
     throw exception::SeriousBug(oss.str());
 }
 
 
-void Action::estimateNumberOfGridPoints(context::Context&, api::MIREstimation& estimation,
+void Action::estimateNumberOfGridPoints(context::Context& /*unused*/, api::MIREstimation& estimation,
                                         const repres::Representation& out) {
     // trace::Timer timer("estimateNumberOfGridPoints");
     estimation.numberOfGridPoints(out.numberOfPoints());

@@ -256,7 +256,7 @@ Dimension* Variable::getVirtualDimension() {
 }
 
 
-void Variable::addCoordinateVariable(const Variable*) {
+void Variable::addCoordinateVariable(const Variable* /*unused*/) {
     std::ostringstream os;
     os << "Variable::addCoordinateVariable() not implemented for " << *this;
     throw exception::SeriousBug(os.str());
@@ -368,7 +368,7 @@ bool Variable::dummy() const {
 }
 
 
-bool Variable::sameAsDummy(const Variable&) const {
+bool Variable::sameAsDummy(const Variable& /*unused*/) const {
     std::ostringstream os;
     os << "Variable::sameAsDummy() not implemented for " << *this;
     throw exception::SeriousBug(os.str());
@@ -397,7 +397,7 @@ bool Variable::timeAxis() const {
 }
 
 
-void Variable::collectField(std::vector<Field*>&) const {
+void Variable::collectField(std::vector<Field*>& /*unused*/) const {
     // Ignore
 }
 
@@ -438,7 +438,7 @@ void Variable::values(std::vector<double>& v) const {
 }
 
 
-void Variable::get2DValues(MIRValuesVector&, size_t) const {
+void Variable::get2DValues(MIRValuesVector& /*unused*/, size_t /*unused*/) const {
     std::ostringstream os;
     os << "Variable::get2DValues() not implemented for " << *this;
     throw exception::SeriousBug(os.str());

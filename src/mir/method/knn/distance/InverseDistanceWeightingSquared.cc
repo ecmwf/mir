@@ -25,7 +25,7 @@ namespace knn {
 namespace distance {
 
 
-InverseDistanceWeightingSquared::InverseDistanceWeightingSquared(const param::MIRParametrisation&) {}
+InverseDistanceWeightingSquared::InverseDistanceWeightingSquared(const param::MIRParametrisation& /*unused*/) {}
 
 
 void InverseDistanceWeightingSquared::operator()(size_t ip, const Point3& point,

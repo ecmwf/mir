@@ -45,7 +45,7 @@ void Statistics::solve(const MethodWeighted::Matrix& A, const MethodWeighted::We
 
     WeightMatrix::const_iterator it(W);
     for (WeightMatrix::Size r = 0; r < W.rows(); ++r) {
-        stats_->reset(missingValue, !std::isnan(missingValue));
+        stats_->reset(missingValue, std::isnan(missingValue) != 0);
 
         for (; it != W.end(r); ++it) {
             ASSERT(it.col() < N);
@@ -53,7 +53,7 @@ void Statistics::solve(const MethodWeighted::Matrix& A, const MethodWeighted::We
         }
 
         auto value = stats_->value();
-        B(r, 0)    = static_cast<WeightMatrix::Scalar>(std::isnan(value) ? missingValue : value);
+        B(r, 0)    = static_cast<WeightMatrix::Scalar>(std::isnan(value) != 0 ? missingValue : value);
     }
 }
 
@@ -62,7 +62,7 @@ void Statistics::print(std::ostream& out) const {
 }
 
 
-bool Statistics::sameAs(const Solver&) const {
+bool Statistics::sameAs(const Solver& /*unused*/) const {
     return false; /* data-dependant */
 }
 

@@ -79,6 +79,11 @@ struct OutputFromExtension : public MIROutputFactory {
 
     OutputFromExtension() : MIROutputFactory("extension") {}
 
+    OutputFromExtension(const OutputFromExtension&) = delete;
+    OutputFromExtension(OutputFromExtension&&)      = delete;
+    OutputFromExtension& operator=(const OutputFromExtension&) = delete;
+    OutputFromExtension& operator=(OutputFromExtension&&) = delete;
+
     ~OutputFromExtension() override {
         util::lock_guard<util::recursive_mutex> lock(*ext_mutex);
         m_extensions->clear();
@@ -172,7 +177,8 @@ void MIROutput::prepare(const param::MIRParametrisation& param, action::ActionPl
 }
 
 
-void MIROutput::estimate(const param::MIRParametrisation&, api::MIREstimation&, context::Context&) const {
+void MIROutput::estimate(const param::MIRParametrisation& /*unused*/, api::MIREstimation& /*unused*/,
+                         context::Context& /*unused*/) const {
     std::ostringstream oss;
     oss << "MIROutput::estimate not implemented for " << *this;
     throw exception::SeriousBug(oss.str());

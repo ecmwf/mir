@@ -24,12 +24,13 @@ namespace output {
 ValuesOutput::ValuesOutput() : missingValue_(9999), hasMissing_(false) {}
 
 
-bool ValuesOutput::sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const {
+bool ValuesOutput::sameParametrisation(const param::MIRParametrisation& /*unused*/,
+                                       const param::MIRParametrisation& /*unused*/) const {
     return true;
 }
 
 
-bool ValuesOutput::printParametrisation(std::ostream&, const param::MIRParametrisation&) const {
+bool ValuesOutput::printParametrisation(std::ostream& /*unused*/, const param::MIRParametrisation& /*unused*/) const {
     return false;
 }
 
@@ -45,7 +46,7 @@ void ValuesOutput::print(std::ostream& out) const {
 }
 
 
-size_t ValuesOutput::save(const param::MIRParametrisation&, context::Context& ctx) {
+size_t ValuesOutput::save(const param::MIRParametrisation& /*unused*/, context::Context& ctx) {
     data::MIRField& field = ctx.field();
 
     ASSERT(field.dimensions() == 1);

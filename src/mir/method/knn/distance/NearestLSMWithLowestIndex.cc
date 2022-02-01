@@ -32,16 +32,20 @@ namespace distance {
 struct Choice {
     explicit Choice(bool sameType, double distance, size_t index) :
         sameType_(size_t(sameType)), distance_(distance), index_(index) {}
-    size_t sameType_;
-    double distance_;
-    size_t index_;
 
-    bool operator<(const Choice& other) {
+    size_t index() const { return index_; }
+
+    bool operator<(const Choice& other) const {
         return sameType_ > other.sameType_ ||
                (sameType_ == other.sameType_ &&
                 (eckit::types::is_strictly_greater(other.distance_, distance_) ||
                  (eckit::types::is_approximately_equal(other.distance_, distance_) && index_ < other.index_)));
     }
+
+private:
+    size_t sameType_;
+    double distance_;
+    size_t index_;
 };
 
 
@@ -70,8 +74,8 @@ void NearestLSMWithLowestIndex::operator()(size_t ip, const Point3& point,
         }
     }
 
-    ASSERT(choice.index_ < imask_.size());
-    size_t jp = choice.index_;
+    ASSERT(choice.index() < imask_.size());
+    size_t jp = choice.index();
 
     triplets.assign(1, WeightMatrix::Triplet(ip, jp, 1.));
 }

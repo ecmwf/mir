@@ -35,7 +35,7 @@ namespace mir {
 namespace tools {
 
 
-struct MIRLoadMatrix : tools::MIRTool {
+struct MIRLoadMatrix : MIRTool {
     MIRLoadMatrix(int argc, char** argv) : MIRTool(argc, argv) {
         using eckit::option::FactoryOption;
         using eckit::option::SimpleOption;

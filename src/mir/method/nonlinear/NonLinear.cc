@@ -33,7 +33,7 @@ static void init() {
 }
 
 
-NonLinear::NonLinear(const param::MIRParametrisation&) {}
+NonLinear::NonLinear(const param::MIRParametrisation& /*unused*/) {}
 
 
 NonLinear::~NonLinear() = default;

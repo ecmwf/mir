@@ -14,6 +14,7 @@
 
 #include <fcntl.h>
 #include <sys/mman.h>
+
 #include <memory>
 
 #include "eckit/memory/MMap.h"
@@ -44,7 +45,9 @@ class FDClose {
 public:
     FDClose(int fd) : fd_(fd) {}
     FDClose(const FDClose&) = delete;
+    FDClose(FDClose&&)      = delete;
     FDClose& operator=(const FDClose&) = delete;
+    FDClose& operator=(FDClose&&) = delete;
     ~FDClose() { SYSCALL(::close(fd_)); }
 };
 
@@ -55,7 +58,9 @@ class Unmapper {
 public:
     Unmapper(void* address, size_t size) : address_(address), size_(size) {}
     Unmapper(const Unmapper&) = delete;
+    Unmapper(Unmapper&&)      = delete;
     Unmapper& operator=(const Unmapper&) = delete;
+    Unmapper& operator=(Unmapper&&) = delete;
     ~Unmapper() { SYSCALL(MMap::munmap(address_, size_)); }
 };
 
@@ -70,8 +75,9 @@ namespace mir {
 namespace lsm {
 
 
-MappedMask::MappedMask(const std::string& name, const eckit::PathName& path, const param::MIRParametrisation&,
-                       const repres::Representation& representation, const std::string&) :
+MappedMask::MappedMask(const std::string& name, const eckit::PathName& path,
+                       const param::MIRParametrisation& /*unused*/, const repres::Representation& representation,
+                       const std::string& /*unused*/) :
     name_(name), path_(path) {
 
     int fd = ::open(path_.localPath(), O_RDONLY);

@@ -40,7 +40,7 @@ const Grid* OctahedralPattern::make(const std::string& name) const {
     return new NamedOctahedral(name, eckit::Translator<std::string, size_t>()(name.substr(1)));
 }
 
-std::string OctahedralPattern::canonical(const std::string& name, const param::MIRParametrisation&) const {
+std::string OctahedralPattern::canonical(const std::string& name, const param::MIRParametrisation& /*unused*/) const {
     ASSERT(name.size() > 1);
     return "O" + name.substr(1);
 }

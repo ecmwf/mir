@@ -25,10 +25,10 @@ namespace knn {
 namespace distance {
 
 
-NoDistanceWeighting::NoDistanceWeighting(const param::MIRParametrisation&) {}
+NoDistanceWeighting::NoDistanceWeighting(const param::MIRParametrisation& /*unused*/) {}
 
 
-void NoDistanceWeighting::operator()(size_t ip, const Point3&,
+void NoDistanceWeighting::operator()(size_t ip, const Point3& /*point*/,
                                      const std::vector<search::PointSearch::PointValueType>& neighbours,
                                      std::vector<WeightMatrix::Triplet>& triplets) const {
     ASSERT(!neighbours.empty());

@@ -22,7 +22,7 @@ namespace distance {
 
 
 /**
-/* Calculates the mean of the values weighted (multiplied) by the following:
+ * Calculates the mean of the values weighted (multiplied) by the following:
  * - if tolerance is not zero: exp(−distance2/tolerance2)
  * - if tolerance is zero: 1. if the point is on the target point, 0. otherwise
  * @note With a tolerance of zero, it calculates the number of input points that lie exactly on each target point.

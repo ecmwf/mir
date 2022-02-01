@@ -137,7 +137,9 @@ public:
     }
 
     EncodeTest(const EncodeTest&) = delete;
+    EncodeTest(EncodeTest&&)      = delete;
     EncodeTest& operator=(const EncodeTest&) = delete;
+    EncodeTest& operator=(EncodeTest&&) = delete;
 
     virtual size_t numberOfValues() const = 0;
 
@@ -272,6 +274,11 @@ public:
 
     ~EncodeRegular() override = default;
 
+    EncodeRegular(const EncodeRegular&) = delete;
+    EncodeRegular(EncodeRegular&&)      = delete;
+    EncodeRegular& operator=(const EncodeRegular&) = delete;
+    EncodeRegular& operator=(EncodeRegular&&) = delete;
+
     size_t NiEncodedInGrib(long edition) {
         util::lock_guard<util::recursive_mutex> lock(local_mutex);
 
@@ -368,7 +375,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
 
     for (auto& test : _test) {
 
-        auto& ng = key::grid::Grid::lookup(test.grid);
+        const auto& ng = key::grid::Grid::lookup(test.grid);
         const RepresentationHandle rep(ng.representation());
 
         log << "Test " << *rep << " with " << test.bbox << "..." << std::endl;
@@ -434,7 +441,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
 
     for (auto& test : _test) {
 
-        auto& ng = key::grid::Grid::lookup(test.grid);
+        const auto& ng = key::grid::Grid::lookup(test.grid);
         const RepresentationHandle rep(ng.representation());
 
         log << "Test " << *rep << " with " << test.bbox << "..." << std::endl;

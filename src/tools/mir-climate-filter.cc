@@ -43,10 +43,11 @@
 #include "mir/util/Types.h"
 
 
-using namespace mir;
+namespace mir {
+namespace tools {
 
 
-struct MIRClimateFilter : tools::MIRTool {
+struct MIRClimateFilter : MIRTool {
     MIRClimateFilter(int argc, char** argv) : MIRTool(argc, argv) {
         using eckit::linalg::LinearAlgebraDense;
         using eckit::option::FactoryOption;
@@ -327,7 +328,11 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
 }
 
 
+}  // namespace tools
+}  // namespace mir
+
+
 int main(int argc, char** argv) {
-    MIRClimateFilter tool(argc, argv);
+    mir::tools::MIRClimateFilter tool(argc, argv);
     return tool.start();
 }

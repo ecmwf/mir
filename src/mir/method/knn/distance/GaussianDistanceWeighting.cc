@@ -53,7 +53,7 @@ void GaussianDistanceWeighting::operator()(size_t ip, const Point3& point,
 
     // calculate neighbour points weights, and their total (for normalisation)
     double sum = 0.;
-    for (auto& n : neighbours) {
+    for (const auto& n : neighbours) {
         const double d2     = Point3::distance2(point, n.point());
         const double weight = std::exp(d2 * exponentFactor_);
 

@@ -91,7 +91,7 @@ void display(const param::MIRParametrisation& metadata, const std::string& key) 
 }
 
 
-struct MIRConfig : tools::MIRTool {
+struct MIRConfig : MIRTool {
     MIRConfig(int argc, char** argv) : MIRTool(argc, argv) {
         using eckit::option::SimpleOption;
 

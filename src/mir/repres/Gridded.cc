@@ -48,7 +48,7 @@ const util::BoundingBox& Gridded::boundingBox() const {
 }
 
 
-bool Gridded::getLongestElementDiagonal(double&) const {
+bool Gridded::getLongestElementDiagonal(double& /*unused*/) const {
     return false;
 }
 
@@ -59,7 +59,7 @@ void Gridded::estimate(api::MIREstimation& estimation) const {
 }
 
 
-bool Gridded::crop(util::BoundingBox&, util::AreaCropperMapping&) const {
+bool Gridded::crop(util::BoundingBox& /*unused*/, util::AreaCropperMapping& /*unused*/) const {
     return false;
 }
 

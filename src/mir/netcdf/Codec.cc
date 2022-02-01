@@ -31,91 +31,91 @@ Codec::Codec() = default;
 Codec::~Codec() = default;
 
 
-void Codec::decode(std::vector<double>&) const {
+void Codec::decode(std::vector<double>& /*unused*/) const {
     std::ostringstream os;
     os << "Variable::decode(std::vector<double> &) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void Codec::decode(std::vector<float>&) const {
+void Codec::decode(std::vector<float>& /*unused*/) const {
     std::ostringstream os;
     os << "Variable::decode(std::vector<float> &) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void Codec::decode(std::vector<long>&) const {
+void Codec::decode(std::vector<long>& /*unused*/) const {
     std::ostringstream os;
     os << "Variable::decode(std::vector<long> &) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void Codec::decode(std::vector<short>&) const {
+void Codec::decode(std::vector<short>& /*unused*/) const {
     std::ostringstream os;
     os << "Variable::decode(std::vector<short> &) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void Codec::decode(std::vector<unsigned char>&) const {
+void Codec::decode(std::vector<unsigned char>& /*unused*/) const {
     std::ostringstream os;
     os << "Variable::decode(std::vector<unsigned char> &) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void Codec::decode(std::vector<long long>&) const {
+void Codec::decode(std::vector<long long>& /*unused*/) const {
     std::ostringstream os;
     os << "Variable::decode(std::vector<long long> &) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void Codec::encode(std::vector<double>&) const {
+void Codec::encode(std::vector<double>& /*unused*/) const {
     std::ostringstream os;
     os << "Variable::encode(std::vector<double> &) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void Codec::encode(std::vector<float>&) const {
+void Codec::encode(std::vector<float>& /*unused*/) const {
     std::ostringstream os;
     os << "Variable::encode(std::vector<float> &) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void Codec::encode(std::vector<long>&) const {
+void Codec::encode(std::vector<long>& /*unused*/) const {
     std::ostringstream os;
     os << "Variable::encode(std::vector<long> &) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void Codec::encode(std::vector<short>&) const {
+void Codec::encode(std::vector<short>& /*unused*/) const {
     std::ostringstream os;
     os << "Variable::encode(std::vector<short> &) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void Codec::encode(std::vector<unsigned char>&) const {
+void Codec::encode(std::vector<unsigned char>& /*unused*/) const {
     std::ostringstream os;
     os << "Variable::encode(std::vector<unsigned char> &) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void Codec::encode(std::vector<long long>&) const {
+void Codec::encode(std::vector<long long>& /*unused*/) const {
     std::ostringstream os;
     os << "Variable::encode(std::vector<long long> &) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void Codec::addAttributes(Variable&) const {
+void Codec::addAttributes(Variable& /*unused*/) const {
     std::ostringstream os;
     os << "Variable::addAttributes() not implemented for " << *this;
     throw exception::SeriousBug(os.str());

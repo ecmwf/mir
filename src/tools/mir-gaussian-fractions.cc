@@ -25,11 +25,14 @@
 #include "mir/util/Types.h"
 
 
-using namespace mir;
+namespace mir {
+namespace tools {
+
+
 using statistics_t = stats::detail::PNormsT<double>;
 
 
-struct MIRGaussianFractions : tools::MIRTool {
+struct MIRGaussianFractions : MIRTool {
     MIRGaussianFractions(int argc, char** argv) : MIRTool(argc, argv) {
         using eckit::option::SimpleOption;
 
@@ -47,17 +50,17 @@ struct MIRGaussianFractions : tools::MIRTool {
                     << tool << " [--N=ordinal]" << std::endl;
     }
 
-    void execute(const eckit::option::CmdArgs&) override;
+    void execute(const eckit::option::CmdArgs& /*args*/) override;
 };
 
 
-statistics_t* evaluateGaussianN(const size_t N, const param::MIRParametrisation&) {
+statistics_t* evaluateGaussianN(const size_t N, const param::MIRParametrisation& /*unused*/) {
 
     // This returns the Gaussian latitudes of the North hemisphere
     std::vector<double> latitudes(N);
     atlas::util::gaussian_latitudes_npole_equator(N, latitudes.data());
 
-    auto stats = new statistics_t;
+    auto* stats = new statistics_t;
     for (const double& l : latitudes) {
         const double f = double(eckit::Fraction(l));
         stats->operator()(f - l);
@@ -114,7 +117,11 @@ void MIRGaussianFractions::execute(const eckit::option::CmdArgs& args) {
 }
 
 
+}  // namespace tools
+}  // namespace mir
+
+
 int main(int argc, char** argv) {
-    MIRGaussianFractions tool(argc, argv);
+    mir::tools::MIRGaussianFractions tool(argc, argv);
     return tool.start();
 }

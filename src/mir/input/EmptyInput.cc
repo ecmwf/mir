@@ -58,10 +58,10 @@ void EmptyInput::print(std::ostream& out) const {
 }
 
 
-void EmptyInput::latitudes(std::vector<double>&) const {}
+void EmptyInput::latitudes(std::vector<double>& /*unused*/) const {}
 
 
-void EmptyInput::longitudes(std::vector<double>&) const {}
+void EmptyInput::longitudes(std::vector<double>& /*unused*/) const {}
 
 
 }  // namespace input

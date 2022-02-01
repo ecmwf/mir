@@ -41,7 +41,7 @@ const repres::Representation* NamedClenshawCurtis::representation() const {
 }
 
 
-const repres::Representation* NamedClenshawCurtis::representation(const util::Rotation&) const {
+const repres::Representation* NamedClenshawCurtis::representation(const util::Rotation& /*unused*/) const {
     NOTIMP;
 }
 

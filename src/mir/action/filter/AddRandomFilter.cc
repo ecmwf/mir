@@ -35,7 +35,7 @@ AddRandomFilter::AddRandomFilter(const param::MIRParametrisation& param) : Actio
 }
 
 
-bool AddRandomFilter::sameAs(const Action&) const {
+bool AddRandomFilter::sameAs(const Action& /*unused*/) const {
     return false;
 }
 

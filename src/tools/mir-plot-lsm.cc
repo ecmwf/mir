@@ -34,7 +34,7 @@ namespace mir {
 namespace tools {
 
 
-struct MIRPlotLSM : tools::MIRTool {
+struct MIRPlotLSM : MIRTool {
     MIRPlotLSM(int argc, char** argv) : MIRTool(argc, argv) {
         using eckit::option::FactoryOption;
         using eckit::option::SimpleOption;

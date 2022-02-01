@@ -34,7 +34,7 @@ void InvtransScalar::print(std::ostream& out) const {
 
 
 void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
-                             const param::MIRParametrisation&) const {
+                             const param::MIRParametrisation& /*unused*/) const {
     trace::Timer mainTimer("InvtransScalar::sh2grid");
 
 

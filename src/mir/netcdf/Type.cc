@@ -174,11 +174,11 @@ private:
 
     bool coordinateOutputVariableMerge(Variable& out, const Variable& in, MergePlan& plan) override;
     bool cellMethodOutputVariableMerge(Variable& out, const Variable& in, MergePlan& plan) override;
-    void save(const Matrix&, int nc, int varid, const std::string& path) const override;
+    void save(const Matrix& /*unused*/, int nc, int varid, const std::string& path) const override;
 
     void print(std::ostream& out) const override;
-    void dump(std::ostream& out, const Matrix&) const override;
-    void printValues(std::ostream& out, const Matrix&) const override;
+    void dump(std::ostream& out, const Matrix& /*matrix*/) const override;
+    void printValues(std::ostream& out, const Matrix& /*matrix*/) const override;
 };
 
 template <class T>
@@ -266,7 +266,7 @@ static void save_values(const Matrix& matrix, int nc, int varid, const std::stri
 
 
 template <>
-void TypeT<std::string>::save(const Matrix&, int /*nc*/, int /*varid*/, const std::string& /*path*/) const {
+void TypeT<std::string>::save(const Matrix& /*unused*/, int /*nc*/, int /*varid*/, const std::string& /*path*/) const {
     std::ostringstream os;
     os << "TypeT<std::string>::save() not implemented for " << *this;
     throw exception::SeriousBug(os.str());

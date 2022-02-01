@@ -37,11 +37,11 @@ const char* LegendreCacheTraits::extension() {
     return ".leg";
 }
 
-void LegendreCacheTraits::save(const eckit::CacheManagerBase&, const LegendreCacheTraits::value_type&,
-                               const eckit::PathName&) {}
+void LegendreCacheTraits::save(const eckit::CacheManagerBase& /*unused*/,
+                               const LegendreCacheTraits::value_type& /*unused*/, const eckit::PathName& /*unused*/) {}
 
-void LegendreCacheTraits::load(const eckit::CacheManagerBase&, LegendreCacheTraits::value_type&,
-                               const eckit::PathName&) {}
+void LegendreCacheTraits::load(const eckit::CacheManagerBase& /*unused*/, LegendreCacheTraits::value_type& /*unused*/,
+                               const eckit::PathName& /*unused*/) {}
 
 
 }  // namespace caching

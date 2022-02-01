@@ -41,7 +41,7 @@ const Grid* RegularPattern::make(const std::string& name) const {
 }
 
 
-std::string RegularPattern::canonical(const std::string& name, const param::MIRParametrisation&) const {
+std::string RegularPattern::canonical(const std::string& name, const param::MIRParametrisation& /*unused*/) const {
     ASSERT(name.size() > 1);
     return "F" + name.substr(1);
 }

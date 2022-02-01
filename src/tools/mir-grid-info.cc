@@ -27,10 +27,11 @@
 #include "mir/util/Log.h"
 
 
-using namespace mir;
+namespace mir {
+namespace tools {
 
 
-struct MIRGridInfo : tools::MIRTool {
+struct MIRGridInfo : MIRTool {
     MIRGridInfo(int argc, char** argv) : MIRTool(argc, argv) {
         using namespace eckit::option;
 
@@ -43,7 +44,7 @@ struct MIRGridInfo : tools::MIRTool {
         Log::info() << tool << " --area=n/w/s/e --gridname=name|--grid=we/sn" << std::endl;
     }
 
-    void execute(const eckit::option::CmdArgs&) override;
+    void execute(const eckit::option::CmdArgs& /*args*/) override;
 };
 
 
@@ -147,7 +148,11 @@ void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
 }
 
 
+}  // namespace tools
+}  // namespace mir
+
+
 int main(int argc, char** argv) {
-    MIRGridInfo tool(argc, argv);
+    mir::tools::MIRGridInfo tool(argc, argv);
     return tool.start();
 }

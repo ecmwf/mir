@@ -41,8 +41,9 @@ From EMOSLIB:
 
     ~mir/share/mir/masks/lsm.10min.mask is a copy of ~emos/tables/interpolation/lsm_32_lsm10m01
 */
-TenMinutesMask::TenMinutesMask(const std::string& name, const eckit::PathName& path, const param::MIRParametrisation&,
-                               const repres::Representation& representation, const std::string&) :
+TenMinutesMask::TenMinutesMask(const std::string& name, const eckit::PathName& path,
+                               const param::MIRParametrisation& /*unused*/,
+                               const repres::Representation& representation, const std::string& /*unused*/) :
     name_(name), path_(path) {
     static util::recursive_mutex local_mutex;
     static std::vector<std::vector<bool> > ten_minutes_;

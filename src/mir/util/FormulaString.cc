@@ -33,7 +33,7 @@ void FormulaString::print(std::ostream& out) const {
 }
 
 
-void FormulaString::execute(context::Context&) const {
+void FormulaString::execute(context::Context& /*unused*/) const {
     NOTIMP;
 }
 

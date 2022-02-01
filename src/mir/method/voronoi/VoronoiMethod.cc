@@ -57,7 +57,7 @@ bool VoronoiMethod::sameAs(const Method& other) const {
 }
 
 
-void VoronoiMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& in,
+void VoronoiMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, const repres::Representation& in,
                              const repres::Representation& out) const {
     auto& log = Log::debug();
     log << "VoronoiMethod::assemble (input: " << in << ", output: " << out << ")" << std::endl;

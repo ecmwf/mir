@@ -62,7 +62,7 @@ void ShTruncate::execute(context::Context& ctx) const {
         const MIRValuesVector& values = field.values(i);
         MIRValuesVector result;
 
-        auto* repres = representation->truncate(truncation_, values, result);
+        const auto* repres = representation->truncate(truncation_, values, result);
         if (repres != nullptr) {           // NULL if nothing happend
             field.representation(repres);  // Assumes representation will be the same
             field.update(result, i);

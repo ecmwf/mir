@@ -23,7 +23,7 @@ namespace mir {
 namespace tools {
 
 
-struct MIRPoints : tools::MIRTool {
+struct MIRPoints : MIRTool {
     using MIRTool::MIRTool;
 
     void usage(const std::string& tool) const override {

@@ -43,6 +43,11 @@ struct NablaOperation {
 
     virtual ~NablaOperation() = default;
 
+    NablaOperation(const NablaOperation&) = delete;
+    NablaOperation(NablaOperation&&)      = delete;
+    NablaOperation& operator=(const NablaOperation&) = delete;
+    NablaOperation& operator=(NablaOperation&&) = delete;
+
     virtual void operator()(data::MIRField&) const = 0;
 
 protected:
@@ -64,7 +69,7 @@ protected:
 
         // Copy input field (not great, but there you go)
         for (atlas::idx_t v = 0; v < atlas::idx_t(variables); ++v) {
-            auto& values = data.values(size_t(v));
+            const auto& values = data.values(size_t(v));
             ASSERT(values.size() <= size_t(nodes_.size()));
 
             size_t m = 0;
@@ -251,7 +256,7 @@ const char* NablaFilterFVMT<T>::name() const {
 
 
 template <typename T>
-void NablaFilterFVMT<T>::estimate(context::Context&, api::MIREstimation& estimation) const {
+void NablaFilterFVMT<T>::estimate(context::Context& /*unused*/, api::MIREstimation& estimation) const {
     estimation.sameAsInput();
 }
 

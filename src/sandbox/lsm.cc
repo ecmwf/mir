@@ -19,6 +19,10 @@
 #include "mir/util/Types.h"
 
 
+namespace mir {
+namespace sandbox {
+
+
 struct LSM : eckit::Tool {
     using Tool::Tool;
     void run() override;
@@ -90,7 +94,11 @@ void LSM::run() {
 }
 
 
+}  // namespace sandbox
+}  // namespace mir
+
+
 int main(int argc, char** argv) {
-    LSM tool(argc, argv);
+    mir::sandbox::LSM tool(argc, argv);
     return tool.start();
 }

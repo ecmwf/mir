@@ -43,15 +43,15 @@ TypedGrid::~TypedGrid() = default;
 
 void TypedGrid::print(std::ostream& out) const {
     out << "TypedGrid[key=" << key_ << ",requiredKeys=[";
-    auto sep = "";
-    for (auto& k : requiredKeys_) {
+    const auto* sep = "";
+    for (const auto& k : requiredKeys_) {
         out << sep << k;
         sep = ",";
     }
     out << "]";
     out << ",optionalKeys=[";
     sep = "";
-    for (auto& k : optionalKeys_) {
+    for (const auto& k : optionalKeys_) {
         out << sep << k;
         sep = ",";
     }
@@ -94,8 +94,8 @@ size_t TypedGrid::gaussianNumber() const {
 void TypedGrid::checkRequiredKeys(const param::MIRParametrisation& param) const {
     std::string missingKeys;
 
-    auto sep = "";
-    for (auto& key : requiredKeys_) {
+    const auto* sep = "";
+    for (const auto& key : requiredKeys_) {
         if (!param.has(key)) {
             missingKeys += sep + key;
             sep = ", ";
@@ -129,39 +129,44 @@ struct TypedGenericPattern final : public GridPattern {
                         const std::set<std::string>& optionalKeys = {}) :
         GridPattern(name), requiredKeys_(requiredKeys), optionalKeys_(optionalKeys) {}
 
+    ~TypedGenericPattern() override = default;
+
     TypedGenericPattern(const TypedGenericPattern&) = delete;
+    TypedGenericPattern(TypedGenericPattern&&)      = delete;
     TypedGenericPattern& operator=(const TypedGenericPattern&) = delete;
+    TypedGenericPattern& operator=(TypedGenericPattern&&) = delete;
 
     const Grid* make(const std::string& name) const override { return new TYPE(name, requiredKeys_, optionalKeys_); }
 
-    std::string canonical(const std::string& name, const param::MIRParametrisation&) const override {
+    std::string canonical(const std::string& name, const param::MIRParametrisation& /*unused*/) const override {
         // FIXME not implemented
         return name;
     }
 
     void print(std::ostream& out) const override {
         out << "TypedGenericPattern[pattern=" << pattern_ << ",requiredKeys=[";
-        auto sep = "";
-        for (auto& k : requiredKeys_) {
+        const auto* sep = "";
+        for (const auto& k : requiredKeys_) {
             out << sep << k;
             sep = ",";
         }
         out << "]";
         out << ",optionalKeys=[";
         sep = "";
-        for (auto& k : optionalKeys_) {
+        for (const auto& k : optionalKeys_) {
             out << sep << k;
             sep = ",";
         }
         out << "]]";
     }
 
+private:
     std::set<std::string> requiredKeys_;
     std::set<std::string> optionalKeys_;
 };
 
 
-static TypedGenericPattern<TypedGeneric<repres::regular::Lambert>> __pattern1(
+static const TypedGenericPattern<TypedGeneric<repres::regular::Lambert>> __pattern1(
     "^gridType=lambert;.*$",
     {"LaDInDegrees", "LoVInDegrees", "Ni", "Nj", "grid", "latitudeOfFirstGridPointInDegrees",
      "longitudeOfFirstGridPointInDegrees"},
@@ -169,7 +174,7 @@ static TypedGenericPattern<TypedGeneric<repres::regular::Lambert>> __pattern1(
      "radius", "earthMajorAxis", "earthMinorAxis"});
 
 
-static TypedGenericPattern<TypedGeneric<repres::regular::LambertAzimuthalEqualArea>> __pattern2(
+static const TypedGenericPattern<TypedGeneric<repres::regular::LambertAzimuthalEqualArea>> __pattern2(
     "^gridType=lambert_azimuthal_equal_area;.*$",
     {"standardParallelInDegrees", "centralLongitudeInDegrees", "Ni", "Nj", "grid", "latitudeOfFirstGridPointInDegrees",
      "longitudeOfFirstGridPointInDegrees"},

@@ -35,7 +35,7 @@ ReferencePattern::ReferencePattern(const param::MIRParametrisation& parametrisat
 ReferencePattern::~ReferencePattern() = default;
 
 
-bool ReferencePattern::sameAs(const Action&) const {
+bool ReferencePattern::sameAs(const Action& /*unused*/) const {
     return false;
 }
 
@@ -102,8 +102,8 @@ void ReferencePattern::execute(context::Context& ctx) const {
         for (const std::unique_ptr<repres::Iterator> it(representation->iterator()); it->next();) {
             auto& v = values[it->index()];
             if (!hasMissing || v != missingValue) {
-                auto& p = it->pointUnrotated();
-                v       = range * std::sin(f1 * util::degree_to_radian(p.lon().value())) *
+                const auto& p = it->pointUnrotated();
+                v             = range * std::sin(f1 * util::degree_to_radian(p.lon().value())) *
                         std::cos(f2 * util::degree_to_radian(p.lat().value())) * 0.5 +
                     median;
             }

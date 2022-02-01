@@ -39,7 +39,8 @@ const Grid* ClenshawCurtisPattern::make(const std::string& name) const {
 }
 
 
-std::string ClenshawCurtisPattern::canonical(const std::string& name, const param::MIRParametrisation&) const {
+std::string ClenshawCurtisPattern::canonical(const std::string& name,
+                                             const param::MIRParametrisation& /*unused*/) const {
     ASSERT(name.size() > 3);
     return "RCC" + name.substr(3);
 }

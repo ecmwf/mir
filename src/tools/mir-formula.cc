@@ -24,7 +24,7 @@ namespace mir {
 namespace tools {
 
 
-struct MIRFormula : tools::MIRTool {
+struct MIRFormula : MIRTool {
     using MIRTool::MIRTool;
 
     void usage(const std::string& tool) const override {

@@ -57,7 +57,7 @@ IEEE::IEEE(const std::string& name, const param::MIRParametrisation& param) : Pa
 }
 
 
-void IEEE::fill(const repres::Representation*, grib_info& info) const {
+void IEEE::fill(const repres::Representation* /*unused*/, grib_info& info) const {
     info.packing.packing = CODES_UTIL_PACKING_SAME_AS_INPUT;
     // (Representation can set edition, so it isn't reset)
 
@@ -76,7 +76,7 @@ void IEEE::fill(const repres::Representation*, grib_info& info) const {
 }
 
 
-void IEEE::set(const repres::Representation*, grib_handle* handle) const {
+void IEEE::set(const repres::Representation* /*unused*/, grib_handle* handle) const {
     Packing::set(handle, gridded() ? "grid_ieee" : "spectral_ieee");
 
     if (definePrecision_) {

@@ -28,10 +28,11 @@
 #include "mir/util/Types.h"
 
 
-using namespace mir;
+namespace mir {
+namespace tools {
 
 
-struct MIRLoadLegendre : tools::MIRTool {
+struct MIRLoadLegendre : MIRTool {
     MIRLoadLegendre(int argc, char** argv) : MIRTool(argc, argv) {
         using namespace eckit::option;
 
@@ -52,7 +53,7 @@ struct MIRLoadLegendre : tools::MIRTool {
                     << "Usage: " << tool << " [--load] [--unload] <path>" << std::endl;
     }
 
-    void execute(const eckit::option::CmdArgs&) override;
+    void execute(const eckit::option::CmdArgs& /*args*/) override;
 };
 
 
@@ -107,7 +108,7 @@ void MIRLoadLegendre::execute(const eckit::option::CmdArgs& args) {
             display(Log::info(), loader.get(), path);
 
             if (unload) {
-                auto shmLoader = dynamic_cast<SharedMemoryLoader*>(loader.get());
+                auto* shmLoader = dynamic_cast<SharedMemoryLoader*>(loader.get());
                 if (shmLoader != nullptr) {
                     Log::info() << "---"
                                    "\n"
@@ -127,7 +128,11 @@ void MIRLoadLegendre::execute(const eckit::option::CmdArgs& args) {
 }
 
 
+}  // namespace tools
+}  // namespace mir
+
+
 int main(int argc, char** argv) {
-    MIRLoadLegendre tool(argc, argv);
+    mir::tools::MIRLoadLegendre tool(argc, argv);
     return tool.start();
 }

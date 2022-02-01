@@ -91,7 +91,7 @@ const char* CesaroSummationFilter::name() const {
 }
 
 
-void CesaroSummationFilter::estimate(context::Context&, api::MIREstimation& estimation) const {
+void CesaroSummationFilter::estimate(context::Context& /*unused*/, api::MIREstimation& estimation) const {
     estimation.sameAsInput();
 }
 

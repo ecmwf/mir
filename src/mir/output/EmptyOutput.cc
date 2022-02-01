@@ -24,10 +24,10 @@ namespace output {
 EmptyOutput::EmptyOutput() = default;
 
 
-EmptyOutput::EmptyOutput(const std::string&) {}
+EmptyOutput::EmptyOutput(const std::string& /*unused*/) {}
 
 
-size_t EmptyOutput::save(const param::MIRParametrisation&, context::Context&) {
+size_t EmptyOutput::save(const param::MIRParametrisation& /*unused*/, context::Context& /*unused*/) {
     return 0;
 }
 
@@ -38,7 +38,8 @@ bool EmptyOutput::sameAs(const MIROutput& other) const {
 }
 
 
-bool EmptyOutput::sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const {
+bool EmptyOutput::sameParametrisation(const param::MIRParametrisation& /*unused*/,
+                                      const param::MIRParametrisation& /*unused*/) const {
     return false;
 }
 

@@ -25,10 +25,10 @@ namespace knn {
 namespace distance {
 
 
-NearestNeighbour::NearestNeighbour(const param::MIRParametrisation&) {}
+NearestNeighbour::NearestNeighbour(const param::MIRParametrisation& /*unused*/) {}
 
 
-void NearestNeighbour::operator()(size_t ip, const Point3&,
+void NearestNeighbour::operator()(size_t ip, const Point3& /*point*/,
                                   const std::vector<search::PointSearch::PointValueType>& neighbours,
                                   std::vector<WeightMatrix::Triplet>& triplets) const {
 

@@ -110,56 +110,56 @@ Codec* Matrix::codec() const {
 }
 
 
-void Matrix::read(std::vector<double>&) const {
+void Matrix::read(std::vector<double>& /*unused*/) const {
     std::ostringstream os;
     os << "Matrix::read(std::vector<double>) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void Matrix::read(std::vector<float>&) const {
+void Matrix::read(std::vector<float>& /*unused*/) const {
     std::ostringstream os;
     os << "Matrix::read(std::vector<float>) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void Matrix::read(std::vector<long>&) const {
+void Matrix::read(std::vector<long>& /*unused*/) const {
     std::ostringstream os;
     os << "Matrix::read(std::vector<long>) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void Matrix::read(std::vector<short>&) const {
+void Matrix::read(std::vector<short>& /*unused*/) const {
     std::ostringstream os;
     os << "Matrix::read(std::vector<short>) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void Matrix::read(std::vector<unsigned char>&) const {
+void Matrix::read(std::vector<unsigned char>& /*unused*/) const {
     std::ostringstream os;
     os << "Matrix::read(std::vector<unsigned char>) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void Matrix::read(std::vector<long long>&) const {
+void Matrix::read(std::vector<long long>& /*unused*/) const {
     std::ostringstream os;
     os << "Matrix::read(std::vector<long long>) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void Matrix::read(std::vector<std::string>&) const {
+void Matrix::read(std::vector<std::string>& /*unused*/) const {
     std::ostringstream os;
     os << "Matrix::read(std::vector<std::string>) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void Matrix::read(std::vector<double>&, const std::vector<size_t>& /*start*/,
+void Matrix::read(std::vector<double>& /*unused*/, const std::vector<size_t>& /*start*/,
                   const std::vector<size_t>& /*count*/) const {
     std::ostringstream os;
     os << "Matrix::read() not implemented for " << *this;
@@ -167,7 +167,7 @@ void Matrix::read(std::vector<double>&, const std::vector<size_t>& /*start*/,
 }
 
 
-void Matrix::read(std::vector<float>&, const std::vector<size_t>& /*start*/,
+void Matrix::read(std::vector<float>& /*unused*/, const std::vector<size_t>& /*start*/,
                   const std::vector<size_t>& /*count*/) const {
     std::ostringstream os;
     os << "Matrix::read() not implemented for " << *this;
@@ -175,7 +175,7 @@ void Matrix::read(std::vector<float>&, const std::vector<size_t>& /*start*/,
 }
 
 
-void Matrix::read(std::vector<long>&, const std::vector<size_t>& /*start*/,
+void Matrix::read(std::vector<long>& /*unused*/, const std::vector<size_t>& /*start*/,
                   const std::vector<size_t>& /*count*/) const {
     std::ostringstream os;
     os << "Matrix::read() not implemented for " << *this;
@@ -183,7 +183,7 @@ void Matrix::read(std::vector<long>&, const std::vector<size_t>& /*start*/,
 }
 
 
-void Matrix::read(std::vector<short>&, const std::vector<size_t>& /*start*/,
+void Matrix::read(std::vector<short>& /*unused*/, const std::vector<size_t>& /*start*/,
                   const std::vector<size_t>& /*count*/) const {
     std::ostringstream os;
     os << "Matrix::read() not implemented for " << *this;
@@ -191,7 +191,7 @@ void Matrix::read(std::vector<short>&, const std::vector<size_t>& /*start*/,
 }
 
 
-void Matrix::read(std::vector<unsigned char>&, const std::vector<size_t>& /*start*/,
+void Matrix::read(std::vector<unsigned char>& /*unused*/, const std::vector<size_t>& /*start*/,
                   const std::vector<size_t>& /*count*/) const {
     std::ostringstream os;
     os << "Matrix::read() not implemented for " << *this;
@@ -199,7 +199,7 @@ void Matrix::read(std::vector<unsigned char>&, const std::vector<size_t>& /*star
 }
 
 
-void Matrix::read(std::vector<long long>&, const std::vector<size_t>& /*start*/,
+void Matrix::read(std::vector<long long>& /*unused*/, const std::vector<size_t>& /*start*/,
                   const std::vector<size_t>& /*count*/) const {
     std::ostringstream os;
     os << "Matrix::read() not implemented for " << *this;

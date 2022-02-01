@@ -199,9 +199,12 @@ static const caching::CroppingCacheEntry& getMapping(const std::string& key,
         public:
             CroppingCacheCreator(const repres::Representation* representation, const util::BoundingBox& bbox) :
                 representation_(representation), bbox_(bbox) {}
+            ~CroppingCacheCreator() override = default;
 
             CroppingCacheCreator(const CroppingCacheCreator&) = delete;
+            CroppingCacheCreator(CroppingCacheCreator&&)      = delete;
             CroppingCacheCreator& operator=(const CroppingCacheCreator&) = delete;
+            CroppingCacheCreator& operator=(CroppingCacheCreator&&) = delete;
         };
 
         CroppingCacheCreator creator(representation, bbox);
@@ -248,7 +251,7 @@ void AreaCropper::execute(context::Context& ctx) const {
     auto& field = ctx.field();
     repres::RepresentationHandle representation(field.representation());
 
-    auto& c = getMapping(representation, bbox_, caching_);
+    const auto& c = getMapping(representation, bbox_, caching_);
     ASSERT_NONEMPTY_AREA_CROP("AreaCropper", !c.mapping_.empty());
 
     for (size_t i = 0; i < field.dimensions(); i++) {

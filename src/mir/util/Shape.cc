@@ -49,16 +49,10 @@ Shape::Shape(const Projection::Spec& spec) {
 }
 
 
-Shape::Shape(const Shape& other) : code(other.code), a(other.a), b(other.b), provided(other.provided) {}
+Shape::Shape(const Shape& other) = default;
 
 
-Shape& Shape::operator=(const Shape& other) {
-    code     = other.code;
-    a        = other.a;
-    b        = other.b;
-    provided = other.provided;
-    return *this;
-}
+Shape& Shape::operator=(const Shape& other) = default;
 
 
 void Shape::fill(grib_info& info, const Projection::Spec& spec) const {

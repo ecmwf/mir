@@ -47,9 +47,12 @@ class MatrixCacheCreator : public caching::WeightCache::CacheContentCreator {
 public:
     MatrixCacheCreator(const MethodWeighted& owner, context::Context&, const repres::Representation& in,
                        const repres::Representation& out, const lsm::LandSeaMasks&, const Cropping&);
+    ~MatrixCacheCreator() = default;
 
     MatrixCacheCreator(const MatrixCacheCreator&) = delete;
+    MatrixCacheCreator(MatrixCacheCreator&&)      = delete;
     MatrixCacheCreator& operator=(const MatrixCacheCreator&) = delete;
+    MatrixCacheCreator& operator=(MatrixCacheCreator&&) = delete;
 
 private:
     const MethodWeighted& owner_;

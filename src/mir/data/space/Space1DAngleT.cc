@@ -67,12 +67,12 @@ struct NormaliseAngle {
 };
 
 template <int SCALE>
-double convert_to_angle(complex_t) {
+double convert_to_angle(complex_t /*unused*/) {
     NOTIMP; /* ensure specialisation */
 }
 
 template <int SCALE>
-complex_t convert_to_complex(double) {
+complex_t convert_to_complex(double /*unused*/) {
     NOTIMP; /* ensure specialisation */
 }
 

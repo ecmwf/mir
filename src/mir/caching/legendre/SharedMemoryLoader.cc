@@ -75,7 +75,9 @@ public:
     void add(const eckit::PathName& path) { paths_.push_back(path); }
 
     Unloader(const Unloader&) = delete;
+    Unloader(Unloader&&)      = delete;
     Unloader& operator=(const Unloader&) = delete;
+    Unloader& operator=(Unloader&&) = delete;
 
     ~Unloader() {
         for (auto& path : paths_) {
@@ -199,8 +201,8 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
 
     try {
 
-        auto addr = reinterpret_cast<char*>(address_);
-        auto nfo  = reinterpret_cast<SHMInfo*>(addr + (((size_ + page_size - 1) / page_size) * page_size));
+        auto* addr = reinterpret_cast<char*>(address_);
+        auto* nfo  = reinterpret_cast<SHMInfo*>(addr + (((size_ + page_size - 1) / page_size) * page_size));
 
         // Check if the file has been loaded in memory
         if (nfo->ready != 0) {

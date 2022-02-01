@@ -22,7 +22,7 @@ namespace mir {
 namespace input {
 
 
-MultiStreamInput::MultiStreamInput() {}
+MultiStreamInput::MultiStreamInput() = default;
 
 
 MultiStreamInput::~MultiStreamInput() = default;

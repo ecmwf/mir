@@ -48,11 +48,11 @@ void NearestLSM::assemble(util::MIRStatistics& stats, WeightMatrix& W, const rep
 }
 
 
-void NearestLSM::applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const {
+void NearestLSM::applyMasks(WeightMatrix& /*unused*/, const lsm::LandSeaMasks& /*unused*/) const {
     // FIXME this function should not be overriding to do nothing
 }
 
-static void setParametrisation(const param::MIRParametrisation&, param::RuntimeParametrisation& runtime) {
+static void setParametrisation(const param::MIRParametrisation& /*unused*/, param::RuntimeParametrisation& runtime) {
 
     // Force use of LSM (unless it is already set)
     runtime.set("lsm", true);

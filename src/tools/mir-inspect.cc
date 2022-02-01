@@ -52,11 +52,11 @@ class MIRInspect : public tools::MIRTool {
                     << tool << " octahedral file.grib" << std::endl;
     }
 
-    void execute(const eckit::option::CmdArgs&) override;
+    void execute(const eckit::option::CmdArgs& /*unused*/) override;
 };
 
 
-void MIRInspect::execute(const eckit::option::CmdArgs&) {
+void MIRInspect::execute(const eckit::option::CmdArgs& /*unused*/) {
     input::GribFileInput file(argv(argc() - 1));
 
     while (file.next()) {

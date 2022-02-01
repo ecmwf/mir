@@ -151,14 +151,14 @@ bool FieldParametrisation::_get(const std::string& name, T& value) const {
 }
 
 
-void FieldParametrisation::latitudes(std::vector<double>&) const {
+void FieldParametrisation::latitudes(std::vector<double>& /*unused*/) const {
     std::ostringstream os;
     os << "FieldParametrisation::latitudes() not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void FieldParametrisation::longitudes(std::vector<double>&) const {
+void FieldParametrisation::longitudes(std::vector<double>& /*unused*/) const {
     std::ostringstream os;
     os << "FieldParametrisation::longitudes() not implemented for " << *this;
     throw exception::SeriousBug(os.str());

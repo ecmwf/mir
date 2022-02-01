@@ -65,10 +65,11 @@
 #endif
 
 
-using namespace mir;
+namespace mir {
+namespace tools {
 
 
-struct MIR : tools::MIRTool {
+struct MIR : MIRTool {
     MIR(int argc, char** argv) : MIRTool(argc, argv) {
         using namespace eckit::option;
 
@@ -395,11 +396,13 @@ struct MIR : tools::MIRTool {
                     << tool << " --truncation=63 input.grib output.grib" << std::endl;
     }
 
-    void execute(const eckit::option::CmdArgs&) override;
+    void execute(const eckit::option::CmdArgs& /*args*/) override;
 
-    void process(const api::MIRJob&, input::MIRInput&, output::MIROutput&, const std::string&);
+    void process(const api::MIRJob& /*job*/, input::MIRInput& /*input*/, output::MIROutput& /*output*/,
+                 const std::string& /*what*/);
 
-    void only(const api::MIRJob&, input::MIRInput&, output::MIROutput&, const std::string&, size_t);
+    void only(const api::MIRJob& /*job*/, input::MIRInput& /*input*/, output::MIROutput& /*output*/,
+              const std::string& /*what*/, size_t /*paramId*/);
 };
 
 
@@ -495,7 +498,11 @@ void MIR::only(const api::MIRJob& job, input::MIRInput& input, output::MIROutput
 }
 
 
+}  // namespace tools
+}  // namespace mir
+
+
 int main(int argc, char** argv) {
-    MIR tool(argc, argv);
+    mir::tools::MIR tool(argc, argv);
     return tool.start();
 }

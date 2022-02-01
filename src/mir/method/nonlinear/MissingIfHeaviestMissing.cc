@@ -29,8 +29,8 @@ namespace nonlinear {
 MissingIfHeaviestMissing::MissingIfHeaviestMissing(const param::MIRParametrisation& param) : NonLinear(param) {}
 
 
-bool MissingIfHeaviestMissing::treatment(MethodWeighted::Matrix&, MethodWeighted::WeightMatrix& W,
-                                         MethodWeighted::Matrix&, const MIRValuesVector& values,
+bool MissingIfHeaviestMissing::treatment(MethodWeighted::Matrix& /*A*/, MethodWeighted::WeightMatrix& W,
+                                         MethodWeighted::Matrix& /*B*/, const MIRValuesVector& values,
                                          const double& missingValue) const {
 
     // correct matrix weigths for the missing values

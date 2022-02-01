@@ -56,21 +56,21 @@ size_t Dimension::count() const {
 }
 
 
-void Dimension::grow(size_t) {
+void Dimension::grow(size_t /*unused*/) {
     std::ostringstream os;
     os << "Dimension::grow() not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void Dimension::clone(Dataset&) const {
+void Dimension::clone(Dataset& /*unused*/) const {
     std::ostringstream os;
     os << "Dimension::clone() not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void Dimension::create(int) const {
+void Dimension::create(int /*unused*/) const {
     std::ostringstream os;
     os << "Dimension::create() not implemented for " << *this;
     throw exception::SeriousBug(os.str());

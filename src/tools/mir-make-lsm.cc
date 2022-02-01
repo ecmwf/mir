@@ -23,7 +23,7 @@ namespace mir {
 namespace tools {
 
 
-struct MIRMakeLSM : tools::MIRTool {
+struct MIRMakeLSM : MIRTool {
     using MIRTool::MIRTool;
 
     int minimumPositionalArguments() const override { return 2; }
@@ -33,11 +33,11 @@ struct MIRMakeLSM : tools::MIRTool {
                     << "Usage: " << tool << " file.grib file.lsm" << std::endl;
     }
 
-    void execute(const eckit::option::CmdArgs&) override;
+    void execute(const eckit::option::CmdArgs& /*unused*/) override;
 };
 
 
-void MIRMakeLSM::execute(const eckit::option::CmdArgs&) {
+void MIRMakeLSM::execute(const eckit::option::CmdArgs& /*unused*/) {
 
     input::GribFileInput file(argv(1));
 

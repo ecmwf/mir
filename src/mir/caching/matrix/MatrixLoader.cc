@@ -22,7 +22,7 @@ namespace caching {
 namespace matrix {
 
 
-MatrixLoader::MatrixLoader(const std::string&, const eckit::PathName& path) : path_(path.realName()) {}
+MatrixLoader::MatrixLoader(const std::string& /*unused*/, const eckit::PathName& path) : path_(path.realName()) {}
 
 
 MatrixLoader::~MatrixLoader() = default;
@@ -36,7 +36,8 @@ eckit::linalg::SparseMatrix::Layout MatrixLoader::allocate(eckit::linalg::Sparse
 }
 
 
-void MatrixLoader::deallocate(eckit::linalg::SparseMatrix::Layout, eckit::linalg::SparseMatrix::Shape) {
+void MatrixLoader::deallocate(eckit::linalg::SparseMatrix::Layout /*unused*/,
+                              eckit::linalg::SparseMatrix::Shape /*unused*/) {
     // We assume that the MatrixLoader is deleted at the same time as the matrix
     // and release the memory in its destructor
 }

@@ -33,7 +33,8 @@ bool RawOutput::sameAs(const MIROutput& other) const {
 }
 
 
-bool RawOutput::sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const {
+bool RawOutput::sameParametrisation(const param::MIRParametrisation& /*unused*/,
+                                    const param::MIRParametrisation& /*unused*/) const {
     NOTIMP;
 }
 
