@@ -179,6 +179,7 @@ struct Spacing : protected std::vector<double> {
 struct LinearSpacing : public Spacing {
     LinearSpacing(value_type a, value_type b, long n, bool endpoint = true);
     LinearSpacing() = default;
+    value_type step() const { return size() > 1 ? operator[](1) - operator[](0) : 0; }
 };
 
 

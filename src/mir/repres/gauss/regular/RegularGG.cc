@@ -26,27 +26,11 @@ namespace gauss {
 namespace regular {
 
 
-RegularGG::RegularGG(const param::MIRParametrisation& parametrisation) : Regular(parametrisation), k_(0) {
-    Latitude n = bbox_.north();
-    for (double lat : latitudes()) {
-        Latitude ll(lat);
-        if (n < ll && !angleApproximatelyEqual(n, ll)) {
-            ++k_;
-        }
-    }  
-}
+RegularGG::RegularGG(const param::MIRParametrisation& parametrisation) : Regular(parametrisation) {}
 
 
 RegularGG::RegularGG(size_t N, const util::BoundingBox& bbox, double angularPrecision) :
-    Regular(N, bbox, angularPrecision), k_(0) {
-    Latitude n = bbox_.north();
-    for (double lat : latitudes()) {
-        Latitude ll(lat);
-        if (n < ll && !angleApproximatelyEqual(n, ll)) {
-            ++k_;
-        }
-    }
-}
+    Regular(N, bbox, angularPrecision) {}
 
 
 void RegularGG::print(std::ostream& out) const {

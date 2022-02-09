@@ -105,12 +105,12 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     // set input k-d tree for grid boxes indices
     std::unique_ptr<search::PointSearch> tree;
     {
-        trace::ResourceUsage usage("GridBoxMethod::assemble create k-d tree", log);
+        trace::ResourceUsage usage("GridBoxMethod::assemble create k-d tree");
         tree.reset(new search::PointSearch(parametrisation_, in));
     }
 
     {
-        trace::ProgressTimer progress("Intersecting", outBoxes.size(), gridBoxes, log);
+        trace::ProgressTimer progress("Intersecting", outBoxes.size(), gridBoxes);
 
         for (const std::unique_ptr<repres::Iterator> it(out.iterator()); it->next();) {
             if (++progress) {

@@ -17,19 +17,21 @@
 #include "eckit/log/ResourceUsage.h"
 
 #include "mir/config/LibMir.h"
-#include "mir/util/Log.h"
 
 
 namespace mir {
 namespace trace {
 
 
-ResourceUsage::ResourceUsage(const char* name, Log::Channel& log) : Timer(name, log) {
+Timer::Timer(const std::string& name) : eckit::Timer(name, Log::debug()) {}
+
+
+ResourceUsage::ResourceUsage(const std::string& name) : Timer(name) {
     static bool usage = eckit::LibResource<bool, LibMir>(
         "mir-trace-resource-usage;"
         "$MIR_TRACE_RESOURCE_USAGE",
         false);
-    info_ = usage ? new eckit::ResourceUsage(name, log) : nullptr;
+    info_ = usage ? new eckit::ResourceUsage(name, Log::debug()) : nullptr;
 }
 
 
@@ -38,9 +40,8 @@ ResourceUsage::~ResourceUsage() {
 }
 
 
-ProgressTimer::ProgressTimer(const std::string& name, size_t limit, const Log::Plural& units, Log::Channel& out,
-                             double time) :
-    Timer(name, out), lastTime_(0.), counter_(0), units_(units), limit_(limit), time_(time) {}
+ProgressTimer::ProgressTimer(const std::string& name, size_t limit, const Log::Plural& units, double time) :
+    Timer(name), lastTime_(0.), counter_(0), units_(units), limit_(limit), time_(time) {}
 
 
 bool ProgressTimer::operator++() {

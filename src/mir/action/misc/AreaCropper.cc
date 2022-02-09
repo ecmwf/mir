@@ -73,7 +73,8 @@ AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation, const
 }
 
 
-void AreaCropper::crop(const repres::Representation& repres, util::BoundingBox& bbox, std::vector<size_t>& mapping) {
+void AreaCropper::crop(const repres::Representation& repres, util::BoundingBox& bbox,
+                       util::AreaCropperMapping& mapping) {
     std::map<LL, size_t> m;
 
     Latitude n  = 0;
@@ -161,6 +162,12 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c, const repre
     Log::debug() << "Creating cropping cache entry for " << bbox << std::endl;
     c.bbox_ = bbox;
     c.mapping_.clear();
+
+    // Give a chance to representation-specialised cropping
+    if (representation->crop(c.bbox_, c.mapping_)) {
+        return;
+    }
+
     AreaCropper::crop(*representation, c.bbox_, c.mapping_);
 }
 

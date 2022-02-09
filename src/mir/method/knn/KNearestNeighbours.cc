@@ -82,7 +82,7 @@ void KNearestNeighbours::assemble(util::MIRStatistics&, WeightMatrix& W, const r
     std::vector<WeightMatrix::Triplet> triplets;
 
     {
-        trace::ProgressTimer progress("Locating", nbOutputPoints, {"point"}, log);
+        trace::ProgressTimer progress("Locating", nbOutputPoints, {"point"});
         double search = 0;
         double insert = 0;
 

@@ -1,0 +1,12 @@
+# mars
+param=t,level=1000
+# mir
+--truncation=none --intgrid=none --grid=F640 --area=54/-16.5/50.5/-3
+# grib_get
+gridType=regular_gg
+Ni=96
+Nj=25
+latitudeOfFirstGridPointInDegrees=53.909
+longitudeOfFirstGridPointInDegrees=-16.454
+latitudeOfLastGridPointInDegrees=50.534
+longitudeOfLastGridPointInDegrees=-3.093

@@ -369,6 +369,10 @@ list(APPEND mir_srcs
     method/knn/distance/DistanceWeighting.h
     method/knn/distance/DistanceWeightingWithLSM.cc
     method/knn/distance/DistanceWeightingWithLSM.h
+    method/knn/distance/ExponentialMean.cc
+    method/knn/distance/ExponentialMean.h
+    method/knn/distance/ExponentialSum.cc
+    method/knn/distance/ExponentialSum.h
     method/knn/distance/GaussianDistanceWeighting.cc
     method/knn/distance/GaussianDistanceWeighting.h
     method/knn/distance/InverseDistanceWeighting.cc
@@ -385,6 +389,8 @@ list(APPEND mir_srcs
     method/knn/distance/NoDistanceWeighting.h
     method/knn/distance/PseudoLaplace.cc
     method/knn/distance/PseudoLaplace.h
+    method/knn/distance/Reciprocal.cc
+    method/knn/distance/Reciprocal.h
     method/knn/pick/Distance.cc
     method/knn/pick/Distance.h
     method/knn/pick/DistanceAndNClosest.cc
@@ -627,6 +633,7 @@ list(APPEND mir_srcs
     tools/MIRTool.cc
     tools/MIRTool.h
     util/Angles.h
+    util/AreaCropperMapping.h
     util/Atlas.h
     util/Bitmap.cc
     util/Bitmap.h
@@ -677,6 +684,7 @@ list(APPEND mir_srcs
     util/MIRStatistics.h
     util/MeshGeneratorParameters.cc
     util/MeshGeneratorParameters.h
+    util/Mutex.h
     util/PlanParser.cc
     util/PlanParser.h
     util/PointLatLonT.h
@@ -684,11 +692,12 @@ list(APPEND mir_srcs
     util/Regex.h
     util/Rotation.cc
     util/Rotation.h
+    util/Shape.cc
+    util/Shape.h
     util/SpectralOrder.cc
     util/SpectralOrder.h
     util/SpectralOrderT.cc
     util/SpectralOrderT.h
-    util/Mutex.h
     util/Trace.cc
     util/Trace.h
     util/Types.h

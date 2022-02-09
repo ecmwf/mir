@@ -166,6 +166,8 @@ struct MIR : tools::MIRTool {
                                      "Distance weighting Gaussian function standard deviation [m] (default 1.)"));
         options_.push_back(new SimpleOption<double>("distance-weighting-shepard-power",
                                                     "Distance weighting Shepard power parameter (default 2.)"));
+        options_.push_back(new SimpleOption<double>("distance-weighting-exponential-tolerance",
+                                                    "Distance weighting exponential tolerance (default 0.)"));
         options_.push_back(new SimpleOption<double>("climate-filter-delta",
                                                     "Climate filter (topographic data smoothing operator) width of "
                                                     "filter edge, must be greater than 'distance' (default 1000.)"));

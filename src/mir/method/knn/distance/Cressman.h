@@ -20,8 +20,11 @@ namespace method {
 namespace knn {
 namespace distance {
 
-// Cressman, George P., An operational objective analysis system. Mon. Wea. Rev., 87, 367-374 (01 Oct 1959),
-// http://dx.doi.org/10.1175/1520-0493(1959)087<0367:AOOAS>2.0.CO;2
+
+/**
+ * Cressman, George P., An operational objective analysis system. Mon. Wea. Rev., 87, 367-374 (01 Oct 1959),
+ * @ref http://dx.doi.org/10.1175/1520-0493(1959)087<0367:AOOAS>2.0.CO;2
+ */
 struct Cressman : DistanceWeighting {
     Cressman(const param::MIRParametrisation&);
     void operator()(size_t ip, const Point3& point, const std::vector<search::PointSearch::PointValueType>& neighbours,

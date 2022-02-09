@@ -106,7 +106,7 @@ void ClimateFilter::hash(eckit::MD5& h) const {
 }
 
 
-static DistanceWeightingBuilder<ClimateFilter> __distance("climate-filter");
+static const DistanceWeightingBuilder<ClimateFilter> __distance("climate-filter");
 
 
 }  // namespace distance

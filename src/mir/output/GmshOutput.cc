@@ -28,7 +28,6 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
-#include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/MeshGeneratorParameters.h"
 #include "mir/util/Trace.h"
@@ -103,7 +102,7 @@ size_t GmshOutput::save(const param::MIRParametrisation& param, context::Context
 
     for (size_t d = 0; d < field.dimensions(); d++) {
         auto path = get_path(path_, overwrite);
-        trace::Timer time("GmshOutput: writing to '" + path + "'", Log::debug());
+        trace::Timer time("GmshOutput: writing to '" + path + "'");
 
         atlas::output::Gmsh out(path, config);
 

@@ -65,7 +65,7 @@ void VoronoiMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
 
     std::unique_ptr<search::PointSearch> tree;
     {
-        trace::ResourceUsage usage("assemble: create output k-d tree", log);
+        trace::ResourceUsage usage("assemble: create output k-d tree");
         tree.reset(new search::PointSearch(parametrisation_, out));
     }
 
@@ -80,7 +80,7 @@ void VoronoiMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
 
 
     {
-        trace::ProgressTimer progress("assemble: input-based assign", Nin, {"point"}, log);
+        trace::ProgressTimer progress("assemble: input-based assign", Nin, {"point"});
 
         std::vector<search::PointSearch::PointValueType> closest;
         for (const std::unique_ptr<repres::Iterator> it(in.iterator()); it->next();) {
@@ -105,12 +105,12 @@ void VoronoiMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
                      << std::endl;
 
         {
-            trace::ResourceUsage usage("assemble: create input k-d tree", log);
+            trace::ResourceUsage usage("assemble: create input k-d tree");
             tree.reset(new search::PointSearch(parametrisation_, in));
         }
 
         {
-            trace::ProgressTimer progress("assemble: output-based assign", Nout - Nassigned, {"point"}, log);
+            trace::ProgressTimer progress("assemble: output-based assign", Nout - Nassigned, {"point"});
 
             std::vector<search::PointSearch::PointValueType> closest;
             for (const std::unique_ptr<repres::Iterator> it(out.iterator()); it->next();) {
@@ -133,7 +133,7 @@ void VoronoiMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     }
 
     {
-        trace::Timer time("assemble: fill sparse matrix", log);
+        trace::Timer time("assemble: fill sparse matrix");
 
         // TODO: triplets, really? why not writing to the matrix directly?
         ASSERT_NONEMPTY_INTERPOLATION("VoronoiMethod", !biplets.empty());

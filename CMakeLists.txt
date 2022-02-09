@@ -12,7 +12,7 @@ cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 
 find_package(ecbuild 3.4 REQUIRED HINTS ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild)
 
-project(mir VERSION 1.10.2 LANGUAGES CXX)
+project(mir VERSION 1.11.0 LANGUAGES CXX)
 
 set(PERSISTENT_NAMESPACE "eckit" CACHE INTERNAL "") # needed for generating .b files for persistent support
 set(CMAKE_CXX_STANDARD 11)
@@ -30,7 +30,7 @@ if(NOT TARGET OpenMP::OpenMP_CXX)
     set(mir_HAVE_OMP 0)
 endif()
 
-ecbuild_find_package(NAME eccodes VERSION 2.22 REQUIRED)
+ecbuild_find_package(NAME eccodes VERSION 2.24 REQUIRED)
 ecbuild_find_package(NAME eckit   VERSION 1.14 REQUIRED)
 
 ecbuild_add_option(FEATURE ATLAS DEFAULT ON DESCRIPTION "support for Atlas" REQUIRED_PACKAGES "atlas VERSION 0.25")
@@ -44,6 +44,7 @@ else()
     set(mir_INSTALL_TOOLS NOINSTALL)
 endif()
 
+include(cmake/compiler_warnings.cmake) # optionally handle compiler specific warnings
 
 add_subdirectory(src)
 add_subdirectory(etc)

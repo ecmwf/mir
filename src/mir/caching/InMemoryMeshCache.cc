@@ -47,7 +47,7 @@ atlas::Mesh InMemoryMeshCache::atlasMesh(util::MIRStatistics& statistics, const 
     util::lock_guard<util::recursive_mutex> guard(local_mutex);
 
     auto& log = Log::debug();
-    trace::ResourceUsage usage_mesh("Mesh for grid " + grid.name() + " (" + grid.uid() + ")", log);
+    trace::ResourceUsage usage_mesh("Mesh for grid " + grid.name() + " (" + grid.uid() + ")");
     auto cacheUse(statistics.cacheUser(mesh_cache));
 
     // generate signature including the mesh generation settings

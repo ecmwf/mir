@@ -49,7 +49,9 @@ using namespace mir;
 struct MIRClimateFilter : tools::MIRTool {
     MIRClimateFilter(int argc, char** argv) : MIRTool(argc, argv) {
         using eckit::linalg::LinearAlgebra;
-        using namespace eckit::option;
+        using eckit::option::VectorOption;
+        using eckit::option::SimpleOption;
+        using eckit::option::FactoryOption;
 
         options_.push_back(
             new VectorOption<size_t>("k", "Range of neighbour points to weight (k, default [4, infty[)", 2));
@@ -80,7 +82,7 @@ struct MIRClimateFilter : tools::MIRTool {
             << tool << " --delta=1000 --distance=5000 --k=4/100 lsm lsm-filtered" << std::endl;
     }
 
-    void execute(const eckit::option::CmdArgs&) override;
+    void execute(const eckit::option::CmdArgs& args) override;
 };
 
 
@@ -141,7 +143,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
         size_t Nj = 0;
         repres::RepresentationHandle rep(ctx.field().representation());
         {
-            auto ll = dynamic_cast<const repres::latlon::RegularLL*>(static_cast<const repres::Representation*>(rep));
+            const auto *ll = dynamic_cast<const repres::latlon::RegularLL*>(static_cast<const repres::Representation*>(rep));
             if ((ll == nullptr) || !rep->domain().isGlobal() || ctx.field().hasMissing()) {
                 throw exception::UserError(
                     "MIRClimateFilter: input field should be global regular_ll, no missing values");
@@ -153,7 +155,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
         ASSERT(Ni > 1);
         ASSERT(Ni * Nj == rep->numberOfPoints());
 
-        auto& input = ctx.field().values(0);
+        const auto& input = ctx.field().values(0);
         MIRValuesVector output(input.size());
 
         log << "input/output field values: " << timer.elapsedSeconds(t) << std::endl;
@@ -170,14 +172,14 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
         std::vector<double> lat(Nj);
         std::vector<double> lon(Ni);
         {
-            long scan;
+            long scan = 0L;
             param->get("scanningMode", scan);
             ASSERT(scan == 0L);
 
-            double max;
-            double min;
-            ASSERT(param->get("south", min = 0));
-            ASSERT(param->get("north", max = 0));
+            double max = 0.;
+            double min = 0.;
+            ASSERT(param->get("south", min));
+            ASSERT(param->get("north", max));
             ASSERT(min < max);
             for (size_t j = 0; j < Nj; ++j) {
                 lat[Nj - j - 1] = (max * double(j) + min * double(Nj - 1 - j)) / double(Nj - 1);
@@ -194,7 +196,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
 
 
         {
-            trace::ProgressTimer progress("Locating", Nj, {"row"}, log);
+            trace::ProgressTimer progress("Locating", Nj, {"row"});
             double farthest = 0;
             double tClosest = 0;
             double tMatrixA = 0;
