@@ -14,8 +14,7 @@
 #include <ostream>
 #include <string>
 
-#include "eckit/linalg/LinearAlgebraDense.h"
-#include "eckit/linalg/LinearAlgebraSparse.h"
+#include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/Separator.h"
@@ -177,13 +176,8 @@ struct MIR : MIRTool {
             new SimpleOption<double>("cressman-model-extension-power", "Cressman Model Extension power (default 1.)"));
 
         options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and k-d trees (default 1)"));
-        options_.push_back(new SimpleOption<std::string>("backend", "Linear algebra dense/sparse backend"));
-        options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebraDense>(
-            "dense-backend",
-            "Linear algebra dense backend (default '" + eckit::linalg::LinearAlgebraDense::backend().name() + "')"));
-        options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebraDense>(
-            "sparse-backend",
-            "Linear algebra sparse backend (default '" + eckit::linalg::LinearAlgebraSparse::backend().name() + "')"));
+        options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebra>(
+            "backend", "Linear algebra backend (default '" + eckit::linalg::LinearAlgebra::backend().name() + "')"));
         options_.push_back(new FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
 
 #if defined(mir_HAVE_ATLAS)
@@ -410,13 +404,10 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
     trace::ResourceUsage usage("mir");
     const param::ConfigurationWrapper args_wrap(args);
 
-    // If we want to control the backends in MARS/PRODGEN, we can move that to MIRJob
+    // If we want to control the backend in MARS/PRODGEN, we can move that to MIRJob
     std::string backend;
-    if (args.get("sparse-backend", backend) || args.get("backend", backend)) {
-        eckit::linalg::LinearAlgebraSparse::backend(backend);
-    }
-    if (args.get("dense-backend", backend) || args.get("backend", backend)) {
-        eckit::linalg::LinearAlgebraDense::backend(backend);
+    if (args.get("backend", backend)) {
+        eckit::linalg::LinearAlgebra::backend(backend);
     }
 
     api::MIRJob job;
@@ -459,9 +450,7 @@ void MIR::process(const api::MIRJob& job, input::MIRInput& input, output::MIROut
     trace::Timer timer("Total time");
 
     util::MIRStatistics statistics;
-    Log::debug() << "Using '" << eckit::linalg::LinearAlgebraDense::backend().name() << "' dense backend." << std::endl;
-    Log::debug() << "Using '" << eckit::linalg::LinearAlgebraSparse::backend().name() << "' sparse backend."
-                 << std::endl;
+    Log::debug() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;
 
     size_t i = 0;
     while (input.next()) {
@@ -481,9 +470,7 @@ void MIR::only(const api::MIRJob& job, input::MIRInput& input, output::MIROutput
     trace::Timer timer("Total time");
 
     util::MIRStatistics statistics;
-    Log::debug() << "Using '" << eckit::linalg::LinearAlgebraDense::backend().name() << "' dense backend." << std::endl;
-    Log::debug() << "Using '" << eckit::linalg::LinearAlgebraSparse::backend().name() << "' sparse backend."
-                 << std::endl;
+    Log::debug() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;
 
     size_t i = 0;
     while (input.only(paramId)) {
