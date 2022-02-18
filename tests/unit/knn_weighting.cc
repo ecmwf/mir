@@ -50,8 +50,6 @@ CASE("distance-weighting") {
 
     auto methods = {"climate-filter",
                     "cressman",
-                    "exponential-mean",
-                    "exponential-sum",
                     "gaussian",
                     "inverse-distance-weighting",
                     "inverse-distance-weighting-squared",

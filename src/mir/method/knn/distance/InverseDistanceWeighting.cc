@@ -27,12 +27,17 @@ namespace knn {
 namespace distance {
 
 
-InverseDistanceWeighting::InverseDistanceWeighting(const param::MIRParametrisation& parametrisation) {
+namespace {
+double power_from_key(const param::MIRParametrisation& param, const std::string& key) {
+    double power = 2.;
+    param.get(key, power);
+    return power;
+}
+}  // namespace
 
-    power_ = 2.;
-    parametrisation.get("distance-weighting-shepard-power", power_);
-    ASSERT(power_ >= 0.);
 
+InverseDistanceWeighting::InverseDistanceWeighting(const param::MIRParametrisation& /*param*/, double power) :
+    power_(power) {
     // half power is used to avoid the Point3::distance extra srqt
     halfPower_ = power_ * 0.5;
     ASSERT(halfPower_ >= 0.);
@@ -42,7 +47,6 @@ InverseDistanceWeighting::InverseDistanceWeighting(const param::MIRParametrisati
 void InverseDistanceWeighting::operator()(size_t ip, const Point3& point,
                                           const std::vector<search::PointSearch::PointValueType>& neighbours,
                                           std::vector<WeightMatrix::Triplet>& triplets) const {
-
     const size_t nbPoints = neighbours.size();
     ASSERT(nbPoints);
 
@@ -54,17 +58,14 @@ void InverseDistanceWeighting::operator()(size_t ip, const Point3& point,
     double sum = 0.;
     for (size_t j = 0; j < nbPoints; ++j) {
         const double d2 = Point3::distance2(point, neighbours[j].point());
-        if (eckit::types::is_strictly_greater(d2, 0.)) {
-
-            weights[j] = 1. / std::pow(d2, halfPower_);
-            sum += weights[j];
-        }
-        else {
-
+        if (eckit::types::is_approximately_equal(d2, 0.)) {
             // exact match found, use this neighbour only (inverse distance tends to infinity)
             triplets.assign(1, WeightMatrix::Triplet(ip, neighbours[j].payload(), 1.));
             return;
         }
+
+        weights[j] = 1. / std::pow(d2, halfPower_);
+        sum += weights[j];
     }
 
     ASSERT(sum > 0.);
@@ -95,8 +96,25 @@ void InverseDistanceWeighting::hash(eckit::MD5& h) const {
 }
 
 
-static const DistanceWeightingBuilder<InverseDistanceWeighting> __distance1("inverse-distance-weighting");
-static const DistanceWeightingBuilder<InverseDistanceWeighting> __distance2("shepard");
+struct IDWClassic final : InverseDistanceWeighting {
+    explicit IDWClassic(const param::MIRParametrisation& param) : InverseDistanceWeighting(param, 1.) {}
+};
+
+
+struct IDWReciprocal final : InverseDistanceWeighting {
+    explicit IDWReciprocal(const param::MIRParametrisation& param) : InverseDistanceWeighting(param, 2.) {}
+};
+
+
+struct IDWShepard final : InverseDistanceWeighting {
+    explicit IDWShepard(const param::MIRParametrisation& param) :
+        InverseDistanceWeighting(param, power_from_key(param, "distance-weighting-shepard-power")) {}
+};
+
+
+static const DistanceWeightingBuilder<IDWClassic> __weighting1("inverse-distance-weighting");
+static const DistanceWeightingBuilder<IDWReciprocal> __weighting2("reciprocal");
+static const DistanceWeightingBuilder<IDWShepard> __weighting3("shepard");
 
 
 }  // namespace distance
