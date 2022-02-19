@@ -357,6 +357,8 @@ list(APPEND mir_srcs
     method/knn/KNearest.h
     method/knn/KNearestNeighbours.cc
     method/knn/KNearestNeighbours.h
+    method/knn/KNearestStatistics.cc
+    method/knn/KNearestStatistics.h
     method/knn/NearestLSM.cc
     method/knn/NearestLSM.h
     method/knn/NearestNeighbour.cc
