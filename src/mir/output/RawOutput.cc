@@ -59,7 +59,7 @@ size_t RawOutput::save(const param::MIRParametrisation& /*param*/, context::Cont
 
     size_ = values.size();
     ASSERT(size_ <= count_);
-    ::memcpy(values_, &values[0], size_ * sizeof(double));
+    std::memcpy(values_, &values[0], size_ * sizeof(double));
 
     return size_ * sizeof(double);
 }

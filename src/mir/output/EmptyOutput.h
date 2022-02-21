@@ -27,7 +27,7 @@ public:
     // -- Constructors
 
     EmptyOutput();
-    EmptyOutput(const ::std::string& path);
+    EmptyOutput(const std::string& path);
 
     // -- Destructor
     // None

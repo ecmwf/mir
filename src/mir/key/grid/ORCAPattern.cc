@@ -48,7 +48,7 @@ std::string ORCAPattern::canonical(const std::string& name, const param::MIRPara
         n += "_" + arrangement;
     }
 
-    std::transform(n.begin(), n.end(), n.begin(), ::toupper);
+    std::transform(n.begin(), n.end(), n.begin(), [](std::string::value_type c) { return std::toupper(c); });
     if (n.front() == 'E') {
         n.front() = 'e';
     }

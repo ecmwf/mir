@@ -34,7 +34,7 @@ bool GribMemoryOutput::sameAs(const MIROutput& other) const {
 void GribMemoryOutput::out(const void* message, size_t length, bool /*interpolated*/) {
     ASSERT(length <= size_);
     length_ = length;
-    ::memcpy(message_, message, length);
+    std::memcpy(message_, message, length);
 }
 
 

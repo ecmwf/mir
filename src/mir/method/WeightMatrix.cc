@@ -64,8 +64,8 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
 
         for (iterator it = begin(i); it != end(i); ++it) {
             double a = *it;
-            if (std::fabs(a) < pruneEpsilon) {
-                if (std::fabs(a) > 0) {
+            if (std::abs(a) < pruneEpsilon) {
+                if (0. < std::abs(a)) {
                     removed += a;
                     *it = 0;
                     fixed++;

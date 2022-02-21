@@ -26,7 +26,7 @@ public:
 
     // -- Constructors
 
-    GeoPointsFileOutputXYV(const ::std::string& path, bool binary = false);
+    GeoPointsFileOutputXYV(const std::string& path, bool binary = false);
 
     // -- Destructor
     // None

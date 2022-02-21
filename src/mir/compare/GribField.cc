@@ -24,6 +24,7 @@
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/serialisation/MemoryStream.h"
+#include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/util/Grib.h"
@@ -153,15 +154,10 @@ void GribField::compareExtra(std::ostream& out, const FieldBase& o) const {
     double n2 = other.north_;
     double s2 = other.south_;
 
-    out << ::fabs(n1 - n2) << '/' << ::fabs(w1 - w2) << '/' << ::fabs(s1 - s2) << '/' << ::fabs(e1 - e2);
+    out << std::abs(n1 - n2) << '/' << std::abs(w1 - w2) << '/' << std::abs(s1 - s2) << '/' << std::abs(e1 - e2);
 
-    out << " [" << (::fabs(n1 - n2) - areaPrecisionN_) << '/' << (::fabs(w1 - w2) - areaPrecisionW_) << '/'
-        << (::fabs(s1 - s2) - areaPrecisionS_) << '/' << (::fabs(e1 - e2) - areaPrecisionE_) << "]";
-}
-
-
-inline bool sameLatLon(double a, double b, double e) {
-    return ::fabs(a - b) <= e;
+    out << " [" << (std::abs(n1 - n2) - areaPrecisionN_) << '/' << (std::abs(w1 - w2) - areaPrecisionW_) << '/'
+        << (std::abs(s1 - s2) - areaPrecisionS_) << '/' << (std::abs(e1 - e2) - areaPrecisionE_) << "]";
 }
 
 
@@ -175,33 +171,11 @@ bool GribField::sameArea(const GribField& other) const {
         return false;
     }
 
-    double w1 = normaliseLongitude(west_);
-    double e1 = normaliseLongitude(east_);
-    double n1 = north_;
-    double s1 = south_;
-
-    double w2 = normaliseLongitude(other.west_);
-    double e2 = normaliseLongitude(other.east_);
-    double n2 = other.north_;
-    double s2 = other.south_;
-
-    if (!sameLatLon(n1, n2, areaPrecisionN_)) {
-        return false;
-    }
-
-    if (!sameLatLon(w1, w2, areaPrecisionW_)) {
-        return false;
-    }
-
-    if (!sameLatLon(s1, s2, areaPrecisionS_)) {
-        return false;
-    }
-
-    if (!sameLatLon(e1, e2, areaPrecisionE_)) {
-        return false;
-    }
-
-    return true;
+    using eckit::types::is_approximately_equal;
+    return is_approximately_equal(north_, other.north_, areaPrecisionN_) &&
+           is_approximately_equal(south_, other.south_, areaPrecisionS_) &&
+           is_approximately_equal(normaliseLongitude(west_), normaliseLongitude(other.west_), areaPrecisionW_) &&
+           is_approximately_equal(normaliseLongitude(east_), normaliseLongitude(other.east_), areaPrecisionE_);
 
     // return compareExtra(other) > areaComparisonThreshold_;
 }

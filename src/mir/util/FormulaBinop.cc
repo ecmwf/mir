@@ -103,7 +103,7 @@ class Unop : public Function {
 
         std::ostringstream oss;
         oss << "Cannot compute " << *this << " with " << a;
-        throw new eckit::SeriousBug(oss.str());
+        throw exception::SeriousBug(oss.str());
     }
 
 
@@ -274,7 +274,7 @@ class Binop : public Function {
 
         std::ostringstream oss;
         oss << "Cannot compute " << *this << " with " << ctx1 << " and " << ctx2;
-        throw new eckit::SeriousBug(oss.str());
+        throw exception::SeriousBug(oss.str());
     }
 
 
@@ -284,72 +284,72 @@ public:
 
 
 struct round {
-    double operator()(double x) const { return ::round(x); }
+    double operator()(double x) const { return std::round(x); }
 };
 
 
 struct sqrt {
-    double operator()(double x) const { return ::sqrt(x); }
+    double operator()(double x) const { return std::sqrt(x); }
 };
 
 
 struct sin {
-    double operator()(double x) const { return ::sin(x); }
+    double operator()(double x) const { return std::sin(x); }
 };
 
 
 struct cos {
-    double operator()(double x) const { return ::cos(x); }
+    double operator()(double x) const { return std::cos(x); }
 };
 
 
 struct tan {
-    double operator()(double x) const { return ::tan(x); }
+    double operator()(double x) const { return std::tan(x); }
 };
 
 
 struct asin {
-    double operator()(double x) const { return ::asin(x); }
+    double operator()(double x) const { return std::asin(x); }
 };
 
 
 struct acos {
-    double operator()(double x) const { return ::acos(x); }
+    double operator()(double x) const { return std::acos(x); }
 };
 
 
 struct atan {
-    double operator()(double x) const { return ::atan(x); }
+    double operator()(double x) const { return std::atan(x); }
 };
 
 
 struct log {
-    double operator()(double x) const { return ::log(x); }
+    double operator()(double x) const { return std::log(x); }
 };
 
 
 struct log2 {
-    double operator()(double x) const { return ::log2(x); }
+    double operator()(double x) const { return std::log2(x); }
 };
 
 
 struct log10 {
-    double operator()(double x) const { return ::log10(x); }
+    double operator()(double x) const { return std::log10(x); }
 };
 
 
 struct exp {
-    double operator()(double x) const { return ::exp(x); }
+    double operator()(double x) const { return std::exp(x); }
 };
 
 
 struct abs {
-    double operator()(double x) const { return ::fabs(x); }
+    double operator()(double x) const { return std::abs(x); }
 };
 
 
 struct atan2 {
-    double operator()(double x, double y) const { return ::atan2(x, y); }
+    double operator()(double x, double y) const { return std::atan2(x, y); }
 };
 
 
@@ -364,7 +364,7 @@ struct max {
 
 
 struct pow {
-    double operator()(double x, double y) const { return ::pow(x, y); }
+    double operator()(double x, double y) const { return std::pow(x, y); }
 };
 
 

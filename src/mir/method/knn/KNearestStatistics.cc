@@ -37,6 +37,7 @@ KNearestStatistics::KNearestStatistics(const param::MIRParametrisation& param) :
     setSolver(new solver::Statistics(param, stats::FieldFactory::build(stats, param)));
 }
 
+
 const char* KNearestStatistics::name() const {
     return "k-nearest-statistics";
 }
