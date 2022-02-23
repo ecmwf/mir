@@ -1083,8 +1083,8 @@ bool GribInput::handle(grib_handle* h) {
         GRIB_CALL(codes_get_long(h, "7777", &value));
 
         // apply user-defined fixes, if any
-        static GribFixes gribFixes;
-        gribFixes.fix(*this, cache_.cache_);
+        static const GribFixes gribFixes;
+        gribFixes.find(parametrisation(0)).copyValuesTo(cache_.cache_);
 
         return true;
     }
