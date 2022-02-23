@@ -12,12 +12,14 @@
 
 #include "mir/input/GribFixes.h"
 
+#include <algorithm>
 #include <string>
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/JSON.h"
 #include "eckit/parser/YAMLParser.h"
 #include "eckit/utils/StringTools.h"
+#include "eckit/utils/Translator.h"
 
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Exceptions.h"
@@ -82,14 +84,35 @@ void GribFixes::readConfigurationFiles() {
     static util::recursive_mutex mtx;
     util::lock_guard<util::recursive_mutex> lock(mtx);
 
-    using eckit::StringTools;
-
     ASSERT(fixes_.empty());
 
     const eckit::PathName path = "~mir/etc/mir/GRIB.yaml";
     if (!path.exists()) {
         return;
     }
+
+    // value type conversions
+    using eckit::StringTools;
+
+    eckit::Translator<std::string, long> i;
+    eckit::Translator<std::string, double> d;
+
+    auto k = [](const std::string& key) {
+        ASSERT(key.size() >= 2);
+        return key.substr(0, key.size() - 2);
+    };
+
+    auto vi = [&i](const std::vector<std::string>& values) {
+        std::vector<long> v(values.size());
+        std::transform(values.begin(), values.end(), v.begin(), [&i](const std::string& s) { return i(s); });
+        return v;
+    };
+
+    auto vd = [&d](const std::vector<std::string>& values) {
+        std::vector<long> v(values.size());
+        std::transform(values.begin(), values.end(), v.begin(), [&d](const std::string& s) { return d(s); });
+        return v;
+    };
 
     eckit::ValueMap rules(eckit::YAMLParser::decodeFile(path));
     for (const auto& rule : rules) {
@@ -107,10 +130,14 @@ void GribFixes::readConfigurationFiles() {
 
             if (value.find('/') != std::string::npos) {
                 auto values = StringTools::split("/", value);
-                id->set(key, values);
+                StringTools::endsWith(key, ":i")   ? id->set(k(key), vi(values))
+                : StringTools::endsWith(key, ":d") ? id->set(k(key), vd(values))
+                                                   : id->set(key, values);
             }
             else {
-                id->set(key, value);
+                StringTools::endsWith(key, ":i")   ? id->set(k(key), i(value))
+                : StringTools::endsWith(key, ":d") ? id->set(k(key), d(value))
+                                                   : id->set(key, value);
             }
         }
 
