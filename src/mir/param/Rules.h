@@ -33,19 +33,56 @@ namespace param {
 
 class Rules {
 public:
-    // -- Operators
+    // -- Types
+    // None
 
-    static const MIRParametrisation& lookup(const std::string& ruleName, long ruleValue);
+    // -- Exceptions
+    // None
 
-private:
     // -- Constructors
 
     Rules();
 
     // -- Destructor
 
-    virtual ~Rules();
+    ~Rules();
 
+    // -- Convertors
+    // None
+
+    // -- Operators
+    // None
+
+    // -- Methods
+
+    const MIRParametrisation* find(const param::MIRParametrisation&) const;
+
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+protected:
+    // -- Members
+    // None
+
+    // -- Methods
+    // None
+
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+private:
     // -- Members
 
     util::recursive_mutex mutex_;
@@ -55,14 +92,20 @@ private:
 
     // -- Methods
 
-    static Rules& instance() {
-        static Rules fileRules;
-        return fileRules;
-    }
+    const MIRParametrisation& lookup(const std::string& ruleName, long ruleValue);
+    SimpleParametrisation& lookup(long paramId);
 
     void readConfigurationFiles();
-    SimpleParametrisation& lookup(long paramId);
-    virtual void print(std::ostream&) const;
+    void print(std::ostream&) const;
+
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
 
     // -- Friends
 
