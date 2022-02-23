@@ -129,8 +129,8 @@ protected:
 private:
     // -- Members
 
-    std::string dumpPlanFile_;
-    std::string dumpStatisticsFile_;
+    const std::string dumpPlanFile_;
+    const std::string dumpStatisticsFile_;
 
     // -- Methods
     // None
