@@ -144,17 +144,23 @@ void ActionPlan::execute(context::Context& ctx) const {
     const char* sep = "###################################################################################";
 
     for (const auto& p : *this) {
-        Log::debug() << "Executing:"
-                     << "\n"
-                     << sep << "\n"
-                     << *p << "\n"
-                     << sep << std::endl;
+        if (Log::debug_active()) {
+            Log::debug() << "Executing:"
+                         << "\n"
+                         << sep << "\n"
+                         << *p << "\n"
+                         << sep << std::endl;
+        }
+
         p->perform(ctx);
-        Log::debug() << "Result:"
-                     << "\n"
-                     << sep << "\n"
-                     << ctx << "\n"
-                     << sep << std::endl;
+
+        if (Log::debug_active()) {
+            Log::debug() << "Result:"
+                         << "\n"
+                         << sep << "\n"
+                         << ctx << "\n"
+                         << sep << std::endl;
+        }
     }
 
     if (!dumpStatisticsFile_.empty()) {

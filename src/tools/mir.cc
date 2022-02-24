@@ -337,7 +337,7 @@ struct MIR : MIRTool {
 
         //==============================================
         // Only show these options if debug channel is active
-        if (Log::debug()) {
+        if (Log::debug_active()) {
             options_.push_back(new Separator("Debugging"));
             options_.push_back(new SimpleOption<bool>(
                 "dryrun", "Only read data from source, no interpolation done or output produced"));

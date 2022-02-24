@@ -121,10 +121,12 @@ void WeightMatrix::validate(const char* when) const {
         }
 
         ok &= (eckit::types::is_approximately_equal(sum, 0.) || eckit::types::is_approximately_equal(sum, 1.));
+        if (ok) {
+            continue;
+        }
 
         // log issues, per row
-        if (!ok && Log::debug()) {
-
+        if (Log::debug_active()) {
             if (errors < Nerrors) {
                 if (errors == 0) {
                     Log::debug() << "WeightMatrix::validate(" << when << ") failed " << std::endl;
