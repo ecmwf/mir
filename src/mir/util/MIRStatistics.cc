@@ -13,6 +13,8 @@
 #include "mir/util/MIRStatistics.h"
 
 #include <sstream>
+#include <utility>
+#include <vector>
 
 #include "eckit/log/JSON.h"
 #include "eckit/serialisation/Stream.h"
@@ -22,53 +24,49 @@ namespace mir {
 namespace util {
 
 
-static const char* const all_caches[] = {"mirBitmap", "mirArea", "mirCoefficient", "mirMatrix", "mirMesh", nullptr};
+static const std::vector<std::string> all_caches{"mirBitmap", "mirArea", "mirCoefficient", "mirMatrix", "mirMesh"};
 
 
-static const char* const all_timings[] = {"crop",          "Time in area-crop",
-                                          "frame",         "Time in extracting frames",
-                                          "globalise",     "Time in extending to globe",
-                                          "bitmap",        "Time applying bitmaps",
-                                          "coefficient",   "Time loading/building coeff.",
-                                          "sh2grid",       "Time in SH to grid transform",
-                                          "grid2grid",     "Time in grid to grid interp.",
-                                          "vod2uv",        "Time in VO/D to U/V",
-                                          "computeMatrix", "Time compute matrices",
-                                          "matrix",        "Time matrix multiply",
-                                          "loadCoeff",     "Time loading coefficients",
-                                          "createCoeff",   "Time creating coefficients",
-                                          "calc",          "Time in basic computations",
-                                          "nabla",         "Time in nabla calculations",
-                                          "save",          "Time saving",
-                                          "gribEncoding",  "Time in GRIB encoding",
-                                          "gribDecoding",  "Time in GRIB decoding",
-                                          nullptr};
+static const std::vector<std::pair<std::string, std::string>> all_timings{
+    {"crop", "Time in area-crop"},
+    {"frame", "Time in extracting frames"},
+    {"globalise", "Time in extending to globe"},
+    {"bitmap", "Time applying bitmaps"},
+    {"coefficient", "Time loading/building coeff."},
+    {"sh2grid", "Time in SH to grid transform"},
+    {"grid2grid", "Time in grid to grid interp."},
+    {"vod2uv", "Time in VO/D to U/V"},
+    {"computeMatrix", "Time compute matrices"},
+    {"matrix", "Time matrix multiply"},
+    {"loadCoeff", "Time loading coefficients"},
+    {"createCoeff", "Time creating coefficients"},
+    {"calc", "Time in basic computations"},
+    {"nabla", "Time in nabla calculations"},
+    {"save", "Time saving"},
+    {"gribEncoding", "Time in GRIB encoding"},
+    {"gribDecoding", "Time in GRIB decoding"}};
 
 
 MIRStatistics::MIRStatistics() {
-    for (size_t i = 0; all_caches[i] != nullptr;) {
-        caches_.insert({all_caches[i++], {}});
+    for (const auto& c : all_caches) {
+        caches_.insert({c, {}});
     }
 
-    for (size_t i = 0; all_timings[i] != nullptr;) {
-        std::string key  = all_timings[i++];
-        std::string desc = all_timings[i++];
-        timings_.insert({key, {}});
-        descriptions_[key] = desc;
+    for (const auto& td : all_timings) {
+        timings_.insert({td.first, {}});
+        descriptions_[td.first] = td.second;
     }
 }
 
 
 MIRStatistics::MIRStatistics(eckit::Stream& s) {
-    for (size_t i = 0; all_caches[i] != nullptr;) {
-        caches_.insert({all_caches[i++], s});
+    for (const auto& c : all_caches) {
+        caches_.insert({c, s});
     }
 
-    for (size_t i = 0; all_timings[i] != nullptr;) {
-        std::string key  = all_timings[i++];
-        std::string desc = all_timings[i++];
-        s >> timings_[key];
-        descriptions_[key] = desc;
+    for (const auto& td : all_timings) {
+        s >> timings_[td.first];
+        descriptions_[td.first] = td.second;
     }
 }
 
