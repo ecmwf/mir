@@ -1,19 +1,21 @@
 ---
 
-md5GridSection=51ea7dcd62e71c9707157a2d15247593, centre=ecmf, gridName=N640, edition=2:
+# (centre=ecmf)
+md5GridSection=51ea7dcd62e71c9707157a2d15247593, centre:i=98, gridName=N640, edition=2:
 - east: 359.859375
 
-md5GridSection=8a6f6c4cc9ad3f64546773b87566bc72, centre=ecmf, gridName=O2560, edition=1, experimentVersionNumber=h5xa/h5zi:
+# (centre=ecmf)
+md5GridSection=8a6f6c4cc9ad3f64546773b87566bc72, centre:i=98, gridName=O2560, edition=1, experimentVersionNumber=h5xa/h5zi:
 - north: 89.973091
 - south: -89.973091
 
-# IFS-828: Tco639 single precision
-md5GridSection=f5dc74ec36353f4c83f7de3bf46e1aef, centre=ecmf, gridName=O640, edition=1, experimentVersionNumber=h5wk/h6en/hc9k:
+# IFS-828: Tco639 single precision (centre=ecmf)
+md5GridSection=f5dc74ec36353f4c83f7de3bf46e1aef, centre:i=98, gridName=O640, edition=1, experimentVersionNumber=h5wk/h6en/hc9k:
 - north: 89.892396
 - south: -89.892396
 
-# climate.v014 files (md5GridSection for lsm, clake)
-md5GridSection=ffa89d4755e4c0b06f712279d96d0dde/0e622d0d974f9f7e24ac408a31eadb3d, centre=ecmf, gridType=regular_ll, edition=2:
+# climate.v014 files (md5GridSection for lsm, clake) (centre=ecmf)
+md5GridSection=ffa89d4755e4c0b06f712279d96d0dde/0e622d0d974f9f7e24ac408a31eadb3d, centre:i=98, gridType=regular_ll, edition=2:
 - west_east_increment: 0.008333333
 - south_north_increment: 0.008333333
 - north: 89.995833333
@@ -21,13 +23,13 @@ md5GridSection=ffa89d4755e4c0b06f712279d96d0dde/0e622d0d974f9f7e24ac408a31eadb3d
 - south: -89.995833333
 - east: 359.995833333
 
-# Clenshaw-Curtis grids (temporary)
-md5GridSection=383b1a933ea4e23c83773251155b3abf/6fcea9a744c0c8f139b43cd69c43b1bb/f07196bdb74e986c005a51452598b37f, centre=ecmf, gridType=reduced_gg, edition=1:
+# Clenshaw-Curtis grids (temporary) (centre=ecmf)
+md5GridSection=383b1a933ea4e23c83773251155b3abf/6fcea9a744c0c8f139b43cd69c43b1bb/f07196bdb74e986c005a51452598b37f, centre:i=98, gridType=reduced_gg, edition=1:
 - gridType: reduced_cc
 - gridname: ?
 
-# Lambert conformal conic projection, non-standard interpretation (Toulouse, RSMC)
-md5GridSection=6ae0076681a2541abe053ab52fa60f30, centre=lfpw, gridType=lambert, edition=1:
+# Lambert conformal conic projection, non-standard interpretation (Toulouse, RSMC, centre=lfpw)
+md5GridSection=6ae0076681a2541abe053ab52fa60f30, centre:i=84/85, gridType=lambert, edition=1:
 - first_point_bottom_left: true
 
 # gridType=space_view does not support the default interpolation method

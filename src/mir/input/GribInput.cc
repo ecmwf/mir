@@ -13,12 +13,14 @@
 #include "mir/input/GribInput.h"
 
 #include <algorithm>
+#include <cstring>
 #include <functional>
 #include <iterator>
 #include <memory>
 #include <numeric>
 #include <ostream>
 #include <sstream>
+#include <vector>
 
 #include "eckit/config/Resource.h"
 #include "eckit/io/Buffer.h"
@@ -257,12 +259,13 @@ static Condition *_not(const Condition *c) {
 
 
 static const char* get_key(const std::string& name, grib_handle* h) {
-
-    static struct {
-        const char* name;
+    struct P {
+        const std::string name;
         const char* key;
         const Condition* condition;
-    } mappings[] = {
+    };
+
+    static const std::vector<P> mappings{
         {"west_east_increment", "iDirectionIncrementInDegrees_fix_for_periodic_regular_grids",
          is("gridType", "regular_ll")},
         {"west_east_increment", "iDirectionIncrementInDegrees", nullptr},
@@ -329,14 +332,12 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         /// TODO: is that a good idea?
         {"param", "paramId", nullptr},
         {"statistics", "", nullptr},  // (avoid ecCodes error "statistics: Function not yet implemented")
-
-        {nullptr, nullptr, nullptr},
     };
 
-    for (size_t i = 0; mappings[i].name != nullptr; ++i) {
-        if (name == mappings[i].name) {
-            if (mappings[i].condition == nullptr || mappings[i].condition->eval(h)) {
-                return mappings[i].key;
+    for (const auto& m : mappings) {
+        if (name == m.name) {
+            if (m.condition == nullptr || m.condition->eval(h)) {
+                return m.key;
             }
         }
     }
@@ -585,8 +586,7 @@ static ProcessingT<std::string>* packing() {
 
 template <typename T, typename P>
 static bool get_value(const std::string& name, grib_handle* h, T& value, const P& process) {
-    for (size_t i = 0; process[i].name != nullptr; ++i) {
-        auto& p = process[i];
+    for (auto& p : process) {
         if (name == p.name) {
             if (p.condition == nullptr || p.condition->eval(h)) {
                 ASSERT(p.processing);
@@ -741,8 +741,10 @@ bool GribInput::has(const std::string& name) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
-    const char* key = get_key(name, grib_);
-    if (std::string(key).empty()) {
+    const auto* key = get_key(name, grib_);
+
+    ASSERT(key != nullptr);
+    if (std::strlen(key) == 0) {
         return false;
     }
 
@@ -758,8 +760,10 @@ bool GribInput::get(const std::string& name, bool& value) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
-    const char* key = get_key(name, grib_);
-    if (std::string(key).empty()) {
+    const auto* key = get_key(name, grib_);
+
+    ASSERT(key != nullptr);
+    if (std::strlen(key) == 0) {
         return false;
     }
 
@@ -798,7 +802,7 @@ bool GribInput::get(const std::string& name, long& value) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
-    std::string key = get_key(name, grib_);
+    const std::string key = get_key(name, grib_);
     if (key.empty()) {
         return false;
     }
@@ -816,14 +820,15 @@ bool GribInput::get(const std::string& name, long& value) const {
     // FIXME: make sure that 'value' is not set if CODES_MISSING_LONG
     int err = codes_get_long(grib_, key.c_str(), &value);
     if (err == CODES_NOT_FOUND || codes_is_missing(grib_, key.c_str(), &err) != 0) {
-        static struct {
-            const char* name;
+        struct P {
+            const std::string name;
             const ProcessingT<long>* processing;
             const Condition* condition;
-        } process[] = {
+        };
+
+        static const std::vector<P> process = {
             {"is_wind_component_uv", is_wind_component_uv(), nullptr},
             {"is_wind_component_vod", is_wind_component_vod(), nullptr},
-            {nullptr, nullptr, nullptr},
         };
 
         return get_value(key, grib_, value, process) || FieldParametrisation::get(name, value);
@@ -853,25 +858,28 @@ bool GribInput::get(const std::string& name, double& value) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
-    const char* key = get_key(name, grib_);
-    if (std::string(key).empty()) {
+    const auto* key = get_key(name, grib_);
+
+    ASSERT(key != nullptr);
+    if (std::strlen(key) == 0) {
         return false;
     }
 
     // FIXME: make sure that 'value' is not set if CODES_MISSING_DOUBLE
     int err = codes_get_double(grib_, key, &value);
     if (err == CODES_NOT_FOUND || codes_is_missing(grib_, key, &err) != 0) {
-        static struct {
-            const char* name;
+        struct P {
+            const std::string name;
             const ProcessingT<double>* processing;
             const Condition* condition;
-        } process[] = {
+        };
+
+        static const std::vector<P> process = {
             {"angular_precision", angular_precision(), nullptr},
             {"longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids",
              longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids(), nullptr},
             {"iDirectionIncrementInDegrees_fix_for_periodic_regular_grids",
              iDirectionIncrementInDegrees_fix_for_periodic_regular_grids(), nullptr},
-            {nullptr, nullptr, nullptr},
         };
 
         return get_value(key, grib_, value, process) || FieldParametrisation::get(name, value);
@@ -897,8 +905,10 @@ bool GribInput::get(const std::string& name, std::vector<long>& value) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
-    const char* key = get_key(name, grib_);
-    if (std::string(key).empty()) {
+    const auto* key = get_key(name, grib_);
+
+    ASSERT(key != nullptr);
+    if (std::strlen(key) == 0) {
         return false;
     }
 
@@ -958,8 +968,10 @@ bool GribInput::get(const std::string& name, std::string& value) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
-    const char* key = get_key(name, grib_);
-    if (std::string(key).empty()) {
+    const auto* key = get_key(name, grib_);
+
+    ASSERT(key != nullptr);
+    if (std::strlen(key) == 0) {
         return false;
     }
 
@@ -968,13 +980,14 @@ bool GribInput::get(const std::string& name, std::string& value) const {
     int err     = codes_get_string(grib_, key, buffer, &size);
 
     if (err == CODES_NOT_FOUND) {
-        static struct {
-            const char* name;
+        struct P {
+            const std::string name;
             const ProcessingT<std::string>* processing;
             const Condition* condition;
-        } process[] = {
+        };
+
+        static const std::vector<P> process = {
             {"packing", packing(), nullptr},
-            {nullptr, nullptr, nullptr},
         };
 
         return get_value(key, grib_, value, process) || FieldParametrisation::get(name, value);
@@ -1006,18 +1019,21 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
-    const char* key = get_key(name, grib_);
+    const auto* key = get_key(name, grib_);
 
     // NOTE: MARS client sets 'grid=vector' (deprecated) which needs to be compared against GRIB gridName
-    if (std::string(key).empty() || std::string(key) == "gridName") {
+    ASSERT(key != nullptr);
+    if (std::strlen(key) == 0 || std::strncmp(key, "gridName", 8) == 0) {
         return false;
     }
 
-    static struct {
-        const char* name;
+    struct P {
+        const std::string name;
         const ProcessingT<std::vector<double>>* processing;
         const Condition* condition;
-    } process[] = {
+    };
+
+    static const std::vector<P> process = {
         {"grid", vector_double({"iDirectionIncrementInDegrees", "jDirectionIncrementInDegrees"}),
          _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll"))},
         {"grid", vector_double({"xDirectionGridLengthInMetres", "yDirectionGridLengthInMetres"}),
@@ -1029,7 +1045,6 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
         {"rotation", vector_double({"latitudeOfSouthernPoleInDegrees", "longitudeOfSouthernPoleInDegrees"}),
          _or(_or(_or(is("gridType", "rotated_ll"), is("gridType", "rotated_gg")), is("gridType", "rotated_sh")),
              is("gridType", "reduced_rotated_gg"))},
-        {nullptr, nullptr, nullptr},
     };
 
     if (get_value(key, grib_, value, process)) {
@@ -1064,6 +1079,7 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
     return true;
 }
 
+
 bool GribInput::get(const std::string& /*name*/, std::vector<std::string>& /*value*/) const {
     NOTIMP;
 }
@@ -1083,8 +1099,8 @@ bool GribInput::handle(grib_handle* h) {
         GRIB_CALL(codes_get_long(h, "7777", &value));
 
         // apply user-defined fixes, if any
-        static GribFixes gribFixes;
-        gribFixes.fix(*this, cache_.cache_);
+        static const GribFixes gribFixes;
+        gribFixes.find(parametrisation(0)).copyValuesTo(cache_.cache_);
 
         return true;
     }

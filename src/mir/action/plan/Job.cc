@@ -54,7 +54,7 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
         }
     }
 
-    if (Log::debug()) {
+    if (Log::debug_active()) {
         plan_->dump(Log::debug() << "Action plan is:"
                                     "\n");
     }

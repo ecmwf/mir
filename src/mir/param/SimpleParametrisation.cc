@@ -18,6 +18,7 @@
 #include <sstream>
 
 #include "eckit/log/JSON.h"
+#include "eckit/types/FloatCompare.h"
 #include "eckit/utils/Tokenizer.h"
 #include "eckit/utils/Translator.h"
 #include "eckit/value/Value.h"
@@ -226,10 +227,7 @@ public:
 
     bool match(const std::string& name, const MIRParametrisation& other) const override {
         T value;
-        if (other.get(name, value)) {
-            return value_ == value;
-        }
-        return false;
+        return other.get(name, value) && value_ == value;
     }
 
     void copyValueTo(const std::string& name, SimpleParametrisation& param) const override { param.set(name, value_); }
@@ -266,16 +264,30 @@ void TSettings<std::vector<double>>::print(std::ostream& out) const {
 }
 
 
-template <class T>
-bool any_of(const std::vector<T>& values, const T& value) {
-    return std::find(values.begin(), values.end(), value) != values.end();
+template <>
+bool TSettings<std::vector<long>>::match(const std::string& name, const MIRParametrisation& other) const {
+    // if any of "these values" matches "other value"
+    long value;
+    return other.get(name, value) && std::any_of(value_.begin(), value_.end(), [&value](long v) { return value == v; });
 }
+
+
+template <>
+bool TSettings<std::vector<double>>::match(const std::string& name, const MIRParametrisation& other) const {
+    // if any of "these values" matches "other value"
+    double value;
+    return other.get(name, value) && std::any_of(value_.begin(), value_.end(), [value](double v) {
+               return eckit::types::is_approximately_equal(v, value);
+           });
+}
+
 
 template <>
 bool TSettings<std::vector<std::string>>::match(const std::string& name, const MIRParametrisation& other) const {
     // if any of "these values" matches "other value"
     std::string value;
-    return other.get(name, value) && any_of(value_, value);
+    return other.get(name, value) &&
+           std::any_of(value_.begin(), value_.end(), [&value](const std::string v) { return value == v; });
 }
 
 
