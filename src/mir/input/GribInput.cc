@@ -20,6 +20,7 @@
 #include <numeric>
 #include <ostream>
 #include <sstream>
+#include <utility>
 #include <vector>
 
 #include "eckit/config/Resource.h"
@@ -158,7 +159,11 @@ public:
 class ConditionAND : public Condition {
     const Condition* left_;
     const Condition* right_;
-     bool eval(grib_handle* h) const override  { return left_->eval(h) && right_->eval(h); }
+    bool eval(grib_handle* h) const override  { return left_->eval(h) && right_->eval(h); }
+    ~ConditionAND() override {
+        delete right_;
+        delete left_;
+    }
 
 public:
     ConditionAND(const Condition* left, const Condition* right) : left_(left), right_(right) {}
@@ -174,7 +179,10 @@ public:
 /*
 class ConditionNOT : public Condition {
     const Condition* c_;
-     bool eval(grib_handle* h) const  override { return !c_->eval(h); }
+    bool eval(grib_handle* h) const  override { return !c_->eval(h); }
+    ~ConditionNOT() override {
+        delete c_;
+    }
 
 public:
     ConditionNOT(const Condition* c) : c_(c) {}
@@ -262,10 +270,12 @@ static const char* get_key(const std::string& name, grib_handle* h) {
     struct P {
         const std::string name;
         const char* key;
-        const Condition* condition;
+        const std::unique_ptr<const Condition> condition;
+        P(const std::string _name, const char* _key, const Condition* _condition) :
+            name(_name), key(_key), condition(_condition) {}
     };
 
-    static const std::vector<P> mappings{
+    static const std::initializer_list<P> mappings{
         {"west_east_increment", "iDirectionIncrementInDegrees_fix_for_periodic_regular_grids",
          is("gridType", "regular_ll")},
         {"west_east_increment", "iDirectionIncrementInDegrees", nullptr},
@@ -584,6 +594,16 @@ static ProcessingT<std::string>* packing() {
 }
 
 
+template <class T>
+struct ConditionedProcessingT {
+    const std::string name;
+    const std::unique_ptr<const T> processing;
+    const std::unique_ptr<const Condition> condition;
+    ConditionedProcessingT(const std::string& _name, const T* _processing, const Condition* _condition) :
+        name(_name), processing(_processing), condition(_condition) {}
+};
+
+
 template <typename T, typename P>
 static bool get_value(const std::string& name, grib_handle* h, T& value, const P& process) {
     for (auto& p : process) {
@@ -820,13 +840,7 @@ bool GribInput::get(const std::string& name, long& value) const {
     // FIXME: make sure that 'value' is not set if CODES_MISSING_LONG
     int err = codes_get_long(grib_, key.c_str(), &value);
     if (err == CODES_NOT_FOUND || codes_is_missing(grib_, key.c_str(), &err) != 0) {
-        struct P {
-            const std::string name;
-            const ProcessingT<long>* processing;
-            const Condition* condition;
-        };
-
-        static const std::vector<P> process = {
+        static const std::initializer_list<ConditionedProcessingT<ProcessingT<long>>> process = {
             {"is_wind_component_uv", is_wind_component_uv(), nullptr},
             {"is_wind_component_vod", is_wind_component_vod(), nullptr},
         };
@@ -868,13 +882,7 @@ bool GribInput::get(const std::string& name, double& value) const {
     // FIXME: make sure that 'value' is not set if CODES_MISSING_DOUBLE
     int err = codes_get_double(grib_, key, &value);
     if (err == CODES_NOT_FOUND || codes_is_missing(grib_, key, &err) != 0) {
-        struct P {
-            const std::string name;
-            const ProcessingT<double>* processing;
-            const Condition* condition;
-        };
-
-        static const std::vector<P> process = {
+        static const std::initializer_list<ConditionedProcessingT<ProcessingT<double>>> process = {
             {"angular_precision", angular_precision(), nullptr},
             {"longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids",
              longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids(), nullptr},
@@ -980,13 +988,7 @@ bool GribInput::get(const std::string& name, std::string& value) const {
     int err     = codes_get_string(grib_, key, buffer, &size);
 
     if (err == CODES_NOT_FOUND) {
-        struct P {
-            const std::string name;
-            const ProcessingT<std::string>* processing;
-            const Condition* condition;
-        };
-
-        static const std::vector<P> process = {
+        static const std::initializer_list<ConditionedProcessingT<ProcessingT<std::string>>> process = {
             {"packing", packing(), nullptr},
         };
 
@@ -1027,13 +1029,7 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
         return false;
     }
 
-    struct P {
-        const std::string name;
-        const ProcessingT<std::vector<double>>* processing;
-        const Condition* condition;
-    };
-
-    static const std::vector<P> process = {
+    static const std::initializer_list<ConditionedProcessingT<ProcessingT<std::vector<double>>>> process = {
         {"grid", vector_double({"iDirectionIncrementInDegrees", "jDirectionIncrementInDegrees"}),
          _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll"))},
         {"grid", vector_double({"xDirectionGridLengthInMetres", "yDirectionGridLengthInMetres"}),
