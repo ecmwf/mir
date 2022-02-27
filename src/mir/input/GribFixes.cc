@@ -111,7 +111,7 @@ void GribFixes::readConfigurationFiles() {
     };
 
     auto vd = [&d](const std::vector<std::string>& values) {
-        std::vector<long> v(values.size());
+        std::vector<double> v(values.size());
         std::transform(values.begin(), values.end(), v.begin(), [&d](const std::string& s) { return d(s); });
         return v;
     };
