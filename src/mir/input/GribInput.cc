@@ -271,37 +271,37 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         const std::string name;
         const char* key;
         const std::unique_ptr<const Condition> condition;
-        P(const std::string _name, const char* _key, const Condition* _condition) :
+        P(const std::string _name, const char* _key, const Condition* _condition = nullptr) :
             name(_name), key(_key), condition(_condition) {}
     };
 
     static const std::initializer_list<P> mappings{
         {"west_east_increment", "iDirectionIncrementInDegrees_fix_for_periodic_regular_grids",
          is("gridType", "regular_ll")},
-        {"west_east_increment", "iDirectionIncrementInDegrees", nullptr},
-        {"south_north_increment", "jDirectionIncrementInDegrees", nullptr},
+        {"west_east_increment", "iDirectionIncrementInDegrees"},
+        {"south_north_increment", "jDirectionIncrementInDegrees"},
 
-        {"west", "longitudeOfFirstGridPointInDegrees", nullptr},
+        {"west", "longitudeOfFirstGridPointInDegrees"},
         {"east", "longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids", is("gridType", "reduced_gg")},
-        {"east", "longitudeOfLastGridPointInDegrees", nullptr},
+        {"east", "longitudeOfLastGridPointInDegrees"},
 
         {"north", "latitudeOfFirstGridPointInDegrees", is("scanningMode", 0L)},
         {"south", "latitudeOfLastGridPointInDegrees", is("scanningMode", 0L)},
 
         {"north", "latitudeOfLastGridPointInDegrees", is("jScansPositively", 1L)},
         {"south", "latitudeOfFirstGridPointInDegrees", is("jScansPositively", 1L)},
-        {"north", "latitudeOfFirstGridPointInDegrees", nullptr},
-        {"south", "latitudeOfLastGridPointInDegrees", nullptr},
+        {"north", "latitudeOfFirstGridPointInDegrees"},
+        {"south", "latitudeOfLastGridPointInDegrees"},
 
-        {"truncation", "pentagonalResolutionParameterJ", nullptr},  // Assumes triangular truncation
-        {"accuracy", "bitsPerValue", nullptr},
+        {"truncation", "pentagonalResolutionParameterJ"},  // Assumes triangular truncation
+        {"accuracy", "bitsPerValue"},
 
-        {"south_pole_latitude", "latitudeOfSouthernPoleInDegrees", nullptr},
-        {"south_pole_longitude", "longitudeOfSouthernPoleInDegrees", nullptr},
-        {"south_pole_rotation_angle", "angleOfRotationInDegrees", nullptr},
+        {"south_pole_latitude", "latitudeOfSouthernPoleInDegrees"},
+        {"south_pole_longitude", "longitudeOfSouthernPoleInDegrees"},
+        {"south_pole_rotation_angle", "angleOfRotationInDegrees"},
 
-        {"proj", "projTargetString", nullptr},
-        {"projSource", "projSourceString", nullptr},
+        {"proj", "projTargetString"},
+        {"projSource", "projSourceString"},
 
         // This will be just called for has()
         {
@@ -321,16 +321,16 @@ static const char* get_key(const std::string& name, grib_handle* h) {
             "numberOfGridInReference" /*just a dummy*/,
             is("gridType", "unstructured_grid"),
         },
-        {"gridded", "numberOfPointsAlongAMeridian", nullptr},  // Is that always true?
+        {"gridded", "numberOfPointsAlongAMeridian"},  // Is that always true?
         {"gridded_regular_ll", "Ni", _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll"))},
-        {"gridded_named", "gridName", nullptr},
+        {"gridded_named", "gridName"},
 
         {"grid", "gridName",
          _or(_or(_or(_or(is("gridType", "regular_gg"), is("gridType", "reduced_gg")), is("gridType", "rotated_gg")),
                  is("gridType", "reduced_rotated_gg")),
              is("gridType", "unstructured_grid"))},
 
-        {"spectral", "pentagonalResolutionParameterJ", nullptr},
+        {"spectral", "pentagonalResolutionParameterJ"},
 
         {"uid", "uuidOfHGrid", is("gridType", "unstructured_grid")},
 
@@ -340,13 +340,13 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         {"octahedral", "numberOfParallelsBetweenAPoleAndTheEquator", is("isOctahedral", 1L)},
 
         /// TODO: is that a good idea?
-        {"param", "paramId", nullptr},
-        {"statistics", "", nullptr},  // (avoid ecCodes error "statistics: Function not yet implemented")
+        {"param", "paramId"},
+        {"statistics", ""},  // (avoid ecCodes error "statistics: Function not yet implemented")
     };
 
     for (const auto& m : mappings) {
         if (name == m.name) {
-            if (m.condition == nullptr || m.condition->eval(h)) {
+            if (!m.condition || m.condition->eval(h)) {
                 return m.key;
             }
         }
@@ -599,16 +599,20 @@ struct ConditionedProcessingT {
     const std::string name;
     const std::unique_ptr<const T> processing;
     const std::unique_ptr<const Condition> condition;
-    ConditionedProcessingT(const std::string& _name, const T* _processing, const Condition* _condition) :
+    ConditionedProcessingT(const std::string& _name, const T* _processing, const Condition* _condition = nullptr) :
         name(_name), processing(_processing), condition(_condition) {}
 };
 
 
-template <typename T, typename P>
-static bool get_value(const std::string& name, grib_handle* h, T& value, const P& process) {
+template <class T>
+using ProcessingList = std::initializer_list<ConditionedProcessingT<ProcessingT<T>>>;
+
+
+template <typename T>
+static bool get_value(const std::string& name, grib_handle* h, T& value, const ProcessingList<T>& process) {
     for (auto& p : process) {
         if (name == p.name) {
-            if (p.condition == nullptr || p.condition->eval(h)) {
+            if (!p.condition || p.condition->eval(h)) {
                 ASSERT(p.processing);
                 return p.processing->eval(h, value);
             }
@@ -840,9 +844,9 @@ bool GribInput::get(const std::string& name, long& value) const {
     // FIXME: make sure that 'value' is not set if CODES_MISSING_LONG
     int err = codes_get_long(grib_, key.c_str(), &value);
     if (err == CODES_NOT_FOUND || codes_is_missing(grib_, key.c_str(), &err) != 0) {
-        static const std::initializer_list<ConditionedProcessingT<ProcessingT<long>>> process = {
-            {"is_wind_component_uv", is_wind_component_uv(), nullptr},
-            {"is_wind_component_vod", is_wind_component_vod(), nullptr},
+        static const ProcessingList<long> process{
+            {"is_wind_component_uv", is_wind_component_uv()},
+            {"is_wind_component_vod", is_wind_component_vod()},
         };
 
         return get_value(key, grib_, value, process) || FieldParametrisation::get(name, value);
@@ -882,12 +886,12 @@ bool GribInput::get(const std::string& name, double& value) const {
     // FIXME: make sure that 'value' is not set if CODES_MISSING_DOUBLE
     int err = codes_get_double(grib_, key, &value);
     if (err == CODES_NOT_FOUND || codes_is_missing(grib_, key, &err) != 0) {
-        static const std::initializer_list<ConditionedProcessingT<ProcessingT<double>>> process = {
-            {"angular_precision", angular_precision(), nullptr},
+        static const ProcessingList<double> process{
+            {"angular_precision", angular_precision()},
             {"longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids",
-             longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids(), nullptr},
+             longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids()},
             {"iDirectionIncrementInDegrees_fix_for_periodic_regular_grids",
-             iDirectionIncrementInDegrees_fix_for_periodic_regular_grids(), nullptr},
+             iDirectionIncrementInDegrees_fix_for_periodic_regular_grids()},
         };
 
         return get_value(key, grib_, value, process) || FieldParametrisation::get(name, value);
@@ -988,8 +992,8 @@ bool GribInput::get(const std::string& name, std::string& value) const {
     int err     = codes_get_string(grib_, key, buffer, &size);
 
     if (err == CODES_NOT_FOUND) {
-        static const std::initializer_list<ConditionedProcessingT<ProcessingT<std::string>>> process = {
-            {"packing", packing(), nullptr},
+        static const ProcessingList<std::string> process{
+            {"packing", packing()},
         };
 
         return get_value(key, grib_, value, process) || FieldParametrisation::get(name, value);
@@ -1029,7 +1033,7 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
         return false;
     }
 
-    static const std::initializer_list<ConditionedProcessingT<ProcessingT<std::vector<double>>>> process = {
+    static const ProcessingList<std::vector<double>> process{
         {"grid", vector_double({"iDirectionIncrementInDegrees", "jDirectionIncrementInDegrees"}),
          _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll"))},
         {"grid", vector_double({"xDirectionGridLengthInMetres", "yDirectionGridLengthInMetres"}),
