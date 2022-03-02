@@ -39,7 +39,7 @@ ShToTypedGrid<Invtrans>::~ShToTypedGrid() = default;
 
 template <class Invtrans>
 bool ShToTypedGrid<Invtrans>::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const ShToTypedGrid*>(&other);
+    const auto* o = dynamic_cast<const ShToTypedGrid*>(&other);
     return (o != nullptr) && (grid_ == o->grid_);
 }
 
@@ -74,8 +74,8 @@ const repres::Representation* ShToTypedGrid<Invtrans>::outputRepresentation() co
 }
 
 
-static ActionBuilder<ShToTypedGrid<InvtransScalar> > __action1("transform.sh-scalar-to-typedgrid");
-static ActionBuilder<ShToTypedGrid<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-typedgrid");
+static const ActionBuilder<ShToTypedGrid<InvtransScalar> > __action1("transform.sh-scalar-to-typedgrid");
+static const ActionBuilder<ShToTypedGrid<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-typedgrid");
 
 
 }  // namespace transform

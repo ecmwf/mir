@@ -40,7 +40,7 @@ Pick::Pick() = default;
 Pick::~Pick() = default;
 
 
-void Pick::distance(const repres::Representation&) const {
+void Pick::distance(const repres::Representation& /*unused*/) const {
     // by default do nothing
 }
 

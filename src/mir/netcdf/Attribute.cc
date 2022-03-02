@@ -62,17 +62,17 @@ void Attribute::invalidate() {
     NOTIMP;
 }
 
-void Attribute::merge(const Attribute&) {
+void Attribute::merge(const Attribute& /*unused*/) {
     Log::info() << __func__ << " " << *this << std::endl;
     NOTIMP;
 }
 
-void Attribute::clone(Endowed&) const {
+void Attribute::clone(Endowed& /*unused*/) const {
     Log::info() << __func__ << " " << *this << std::endl;
     NOTIMP;
 }
 
-void Attribute::create(int) const {
+void Attribute::create(int /*unused*/) const {
     Log::info() << __func__ << " " << *this << std::endl;
     NOTIMP;
 }

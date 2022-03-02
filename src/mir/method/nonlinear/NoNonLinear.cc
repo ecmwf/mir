@@ -26,15 +26,16 @@ namespace nonlinear {
 NoNonLinear::NoNonLinear(const param::MIRParametrisation& param) : NonLinear(param) {}
 
 
-bool NoNonLinear::treatment(MethodWeighted::Matrix&, MethodWeighted::WeightMatrix&, MethodWeighted::Matrix&,
-                            const MIRValuesVector&, const double&) const {
+bool NoNonLinear::treatment(MethodWeighted::Matrix& /*A*/, MethodWeighted::WeightMatrix& /*W*/,
+                            MethodWeighted::Matrix& /*B*/, const MIRValuesVector& /*unused*/,
+                            const double& /*missingValue*/) const {
     // no non-linear treatment
     return false;
 }
 
 
 bool NoNonLinear::sameAs(const NonLinear& other) const {
-    auto o = dynamic_cast<const NoNonLinear*>(&other);
+    const auto* o = dynamic_cast<const NoNonLinear*>(&other);
     return (o != nullptr);
 }
 
@@ -51,7 +52,7 @@ void NoNonLinear::hash(eckit::MD5& h) const {
 }
 
 
-static NonLinearBuilder<NoNonLinear> __nonlinear("no");
+static const NonLinearBuilder<NoNonLinear> __nonlinear("no");
 
 
 }  // namespace nonlinear

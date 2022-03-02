@@ -25,7 +25,7 @@ GribStreamOutput::GribStreamOutput() = default;
 GribStreamOutput::~GribStreamOutput() = default;
 
 
-void GribStreamOutput::out(const void* message, size_t length, bool) {
+void GribStreamOutput::out(const void* message, size_t length, bool /*interpolated*/) {
     dataHandle().write(message, long(length));
 }
 

@@ -31,7 +31,7 @@ struct Log final : protected eckit::Log {
 
     using Channel = decltype(Log::debug());
     static Channel& debug();
-
+    static bool debug_active();
 
     using eckit::Log::applicationFormat;
     using eckit::Log::syserr;

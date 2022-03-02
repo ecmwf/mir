@@ -85,7 +85,7 @@ protected:
 private:
     // -- Members
 
-    mutable long paramId_;
+    mutable MIRParametrisation const* param_;
 
     // -- Methods
 

@@ -55,7 +55,7 @@ void GridPattern::list(std::ostream& out) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-    auto sep = "";
+    const auto* sep = "";
     for (auto& j : *m) {
         out << sep << j.first;
         sep = ", ";

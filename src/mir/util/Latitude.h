@@ -28,10 +28,10 @@ namespace mir {
 
 class Latitude {
 public:
-    static Latitude GLOBE;       // 180
-    static Latitude NORTH_POLE;  // 90
-    static Latitude SOUTH_POLE;  // -90
-    static Latitude EQUATOR;     // 0
+    static const Latitude GLOBE;       // 180
+    static const Latitude NORTH_POLE;  // 90
+    static const Latitude SOUTH_POLE;  // -90
+    static const Latitude EQUATOR;     // 0
 
     // -- Exceptions
     // None

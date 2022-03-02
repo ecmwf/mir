@@ -189,7 +189,7 @@ void UnstructuredGrid::reorder(MIRValuesVector& /*values*/) const {
 }
 
 
-static GridSpecGuesserBuilder<UnstructuredGrid> builder(99);
+static const GridSpecGuesserBuilder<UnstructuredGrid> builder(99);
 
 
 }  // namespace netcdf

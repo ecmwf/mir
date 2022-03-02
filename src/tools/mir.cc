@@ -64,10 +64,11 @@
 #endif
 
 
-using namespace mir;
+namespace mir {
+namespace tools {
 
 
-struct MIR : tools::MIRTool {
+struct MIR : MIRTool {
     MIR(int argc, char** argv) : MIRTool(argc, argv) {
         using namespace eckit::option;
 
@@ -166,8 +167,6 @@ struct MIR : tools::MIRTool {
                                      "Distance weighting Gaussian function standard deviation [m] (default 1.)"));
         options_.push_back(new SimpleOption<double>("distance-weighting-shepard-power",
                                                     "Distance weighting Shepard power parameter (default 2.)"));
-        options_.push_back(new SimpleOption<double>("distance-weighting-exponential-tolerance",
-                                                    "Distance weighting exponential tolerance (default 0.)"));
         options_.push_back(new SimpleOption<double>("climate-filter-delta",
                                                     "Climate filter (topographic data smoothing operator) width of "
                                                     "filter edge, must be greater than 'distance' (default 1000.)"));
@@ -338,7 +337,7 @@ struct MIR : tools::MIRTool {
 
         //==============================================
         // Only show these options if debug channel is active
-        if (Log::debug()) {
+        if (Log::debug_active()) {
             options_.push_back(new Separator("Debugging"));
             options_.push_back(new SimpleOption<bool>(
                 "dryrun", "Only read data from source, no interpolation done or output produced"));
@@ -389,11 +388,13 @@ struct MIR : tools::MIRTool {
                     << tool << " --truncation=63 input.grib output.grib" << std::endl;
     }
 
-    void execute(const eckit::option::CmdArgs&) override;
+    void execute(const eckit::option::CmdArgs& /*args*/) override;
 
-    void process(const api::MIRJob&, input::MIRInput&, output::MIROutput&, const std::string&);
+    void process(const api::MIRJob& /*job*/, input::MIRInput& /*input*/, output::MIROutput& /*output*/,
+                 const std::string& /*what*/);
 
-    void only(const api::MIRJob&, input::MIRInput&, output::MIROutput&, const std::string&, size_t);
+    void only(const api::MIRJob& /*job*/, input::MIRInput& /*input*/, output::MIROutput& /*output*/,
+              const std::string& /*what*/, size_t /*paramId*/);
 };
 
 
@@ -482,7 +483,11 @@ void MIR::only(const api::MIRJob& job, input::MIRInput& input, output::MIROutput
 }
 
 
+}  // namespace tools
+}  // namespace mir
+
+
 int main(int argc, char** argv) {
-    MIR tool(argc, argv);
+    mir::tools::MIR tool(argc, argv);
     return tool.start();
 }

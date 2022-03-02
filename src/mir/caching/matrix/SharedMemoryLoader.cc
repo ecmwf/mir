@@ -77,7 +77,9 @@ public:
     void add(const eckit::PathName& path) { paths_.push_back(path); }
 
     Unloader(const Unloader&) = delete;
+    Unloader(Unloader&&)      = delete;
     Unloader& operator=(const Unloader&) = delete;
+    Unloader& operator=(Unloader&&) = delete;
 
     ~Unloader() {
         for (auto& path : paths_) {
@@ -203,8 +205,8 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
     try {
 
-        auto addr = reinterpret_cast<char*>(address_);
-        auto nfo  = reinterpret_cast<SHMInfo*>(addr);
+        auto* addr = reinterpret_cast<char*>(address_);
+        auto* nfo  = reinterpret_cast<SHMInfo*>(addr);
 
         // Check if the file has been loaded in memory
         if (nfo->ready != 0) {
@@ -318,10 +320,10 @@ bool SharedMemoryLoader::inSharedMemory() const {
 }
 
 
-static MatrixLoaderBuilder<SharedMemoryLoader> loader1("shared-memory");
-static MatrixLoaderBuilder<SharedMemoryLoader> loader2("shmem");
-static MatrixLoaderBuilder<SharedMemoryLoader> loader3("tmp-shmem");
-static MatrixLoaderBuilder<SharedMemoryLoader> loader5("tmp-shared-memory");
+static const MatrixLoaderBuilder<SharedMemoryLoader> loader1("shared-memory");
+static const MatrixLoaderBuilder<SharedMemoryLoader> loader2("shmem");
+static const MatrixLoaderBuilder<SharedMemoryLoader> loader3("tmp-shmem");
+static const MatrixLoaderBuilder<SharedMemoryLoader> loader5("tmp-shared-memory");
 
 
 }  // namespace matrix

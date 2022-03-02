@@ -64,8 +64,8 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
 
         for (iterator it = begin(i); it != end(i); ++it) {
             double a = *it;
-            if (std::fabs(a) < pruneEpsilon) {
-                if (std::fabs(a) > 0) {
+            if (std::abs(a) < pruneEpsilon) {
+                if (0. < std::abs(a)) {
                     removed += a;
                     *it = 0;
                     fixed++;
@@ -121,10 +121,12 @@ void WeightMatrix::validate(const char* when) const {
         }
 
         ok &= (eckit::types::is_approximately_equal(sum, 0.) || eckit::types::is_approximately_equal(sum, 1.));
+        if (ok) {
+            continue;
+        }
 
         // log issues, per row
-        if (!ok && Log::debug()) {
-
+        if (Log::debug_active()) {
             if (errors < Nerrors) {
                 if (errors == 0) {
                     Log::debug() << "WeightMatrix::validate(" << when << ") failed " << std::endl;

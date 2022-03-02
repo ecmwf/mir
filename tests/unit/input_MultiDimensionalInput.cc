@@ -28,10 +28,10 @@ namespace unit {
 
 
 struct TestingInput : input::MIRInput {
-    const param::MIRParametrisation& parametrisation(size_t) const override { NOTIMP; }
-    bool sameAs(const MIRInput&) const override { return false; }
+    const param::MIRParametrisation& parametrisation(size_t /*which*/) const override { NOTIMP; }
+    bool sameAs(const MIRInput& /*unused*/) const override { return false; }
     data::MIRField field() const override { NOTIMP; }
-    void print(std::ostream&) const override { NOTIMP; }
+    void print(std::ostream& /*unused*/) const override { NOTIMP; }
 };
 
 
@@ -120,7 +120,7 @@ CASE("MultiDimensionalInput") {
 
     SECTION("MultiDimensionalInput::append() different-sized fields") {
         std::unique_ptr<input::MIRInput> input([]() {
-            auto multi = new input::MultiDimensionalInput;
+            auto* multi = new input::MultiDimensionalInput;
             ASSERT(multi != nullptr);
 
             multi->append(new TestingSingleDimensionalInput(4));
@@ -148,7 +148,7 @@ CASE("MultiDimensionalInput") {
 
     SECTION("MultiDimensionalInput::append() include empty-sized fields") {
         std::unique_ptr<input::MIRInput> input([]() {
-            auto multi = new input::MultiDimensionalInput;
+            auto* multi = new input::MultiDimensionalInput;
             ASSERT(multi != nullptr);
 
             multi->append(new TestingSingleDimensionalInput(2));

@@ -46,9 +46,12 @@ class ThreadExecutorTask : public eckit::ThreadPoolTask {
 public:
     ThreadExecutorTask(const ThreadExecutor& owner, context::Context& ctx, const ActionNode& node) :
         owner_(owner), ctx_(ctx), node_(node) {}
+    ~ThreadExecutorTask() override = default;
 
     ThreadExecutorTask(const ThreadExecutorTask&) = delete;
+    ThreadExecutorTask(ThreadExecutorTask&&)      = delete;
     ThreadExecutorTask& operator=(const ThreadExecutorTask&) = delete;
+    ThreadExecutorTask& operator=(ThreadExecutorTask&&) = delete;
 };
 
 
@@ -81,7 +84,7 @@ void ThreadExecutor::parametrisation(const param::MIRParametrisation& parametris
 }
 
 
-static ThreadExecutor executor("thread");
+static const ThreadExecutor executor("thread");
 
 
 }  // namespace action

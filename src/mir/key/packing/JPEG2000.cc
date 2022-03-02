@@ -20,15 +20,15 @@ namespace key {
 namespace packing {
 
 
-static PackingBuilder<JPEG2000> __packing("jpeg", false, true);
+static const PackingBuilder<JPEG2000> __packing("jpeg", false, true);
 
 
-void JPEG2000::fill(const repres::Representation*, grib_info& info) const {
+void JPEG2000::fill(const repres::Representation* /*unused*/, grib_info& info) const {
     Packing::fill(info, CODES_UTIL_PACKING_TYPE_JPEG);
 }
 
 
-void JPEG2000::set(const repres::Representation*, grib_handle* handle) const {
+void JPEG2000::set(const repres::Representation* /*unused*/, grib_handle* handle) const {
     Packing::set(handle, "grid_jpeg");
 }
 

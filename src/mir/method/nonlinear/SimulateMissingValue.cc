@@ -33,8 +33,9 @@ SimulateMissingValue::SimulateMissingValue(const param::MIRParametrisation& para
 }
 
 
-bool SimulateMissingValue::treatment(MethodWeighted::Matrix&, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix&,
-                                     const MIRValuesVector& values, const double& /*ignored*/) const {
+bool SimulateMissingValue::treatment(MethodWeighted::Matrix& /*A*/, MethodWeighted::WeightMatrix& W,
+                                     MethodWeighted::Matrix& /*B*/, const MIRValuesVector& values,
+                                     const double& /*ignored*/) const {
     using eckit::types::is_approximately_equal;
 
     auto missingValue = [this](double value) { return is_approximately_equal(value, missingValue_, epsilon_); };
@@ -43,7 +44,7 @@ bool SimulateMissingValue::treatment(MethodWeighted::Matrix&, MethodWeighted::We
     // (force a missing value only if any row values is missing)
     ASSERT(W.cols() == values.size());
 
-    auto data  = const_cast<WeightMatrix::Scalar*>(W.data());
+    auto* data = const_cast<WeightMatrix::Scalar*>(W.data());
     bool modif = false;
 
     WeightMatrix::Size i = 0;
@@ -106,7 +107,7 @@ bool SimulateMissingValue::treatment(MethodWeighted::Matrix&, MethodWeighted::We
 
 
 bool SimulateMissingValue::sameAs(const NonLinear& other) const {
-    auto o = dynamic_cast<const SimulateMissingValue*>(&other);
+    const auto* o = dynamic_cast<const SimulateMissingValue*>(&other);
     return (o != nullptr) && eckit::types::is_approximately_equal(missingValue_, o->missingValue_) &&
            eckit::types::is_approximately_equal(epsilon_, o->epsilon_);
 }
@@ -124,7 +125,7 @@ void SimulateMissingValue::hash(eckit::MD5& h) const {
 }
 
 
-static NonLinearBuilder<SimulateMissingValue> __nonlinear("simulated-missing-value");
+static const NonLinearBuilder<SimulateMissingValue> __nonlinear("simulated-missing-value");
 
 
 }  // namespace nonlinear

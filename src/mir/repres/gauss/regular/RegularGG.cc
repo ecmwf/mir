@@ -41,7 +41,7 @@ void RegularGG::print(std::ostream& out) const {
 
 
 bool RegularGG::sameAs(const Representation& other) const {
-    auto o = dynamic_cast<const RegularGG*>(&other);
+    const auto* o = dynamic_cast<const RegularGG*>(&other);
     return (o != nullptr) && Regular::sameAs(other);
 }
 
@@ -105,7 +105,7 @@ std::vector<util::GridBox> RegularGG::gridBoxes() const {
 }
 
 
-static RepresentationBuilder<RegularGG> reducedGG("regular_gg");
+static const RepresentationBuilder<RegularGG> reducedGG("regular_gg");
 
 
 }  // namespace regular

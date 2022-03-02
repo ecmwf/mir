@@ -55,7 +55,7 @@ static void read_configuration_files() {
         for (const auto& g : grids) {
 
             // This registers a new Grid (don't delete pointer)
-            auto ng = new NamedFromFile(g.first);
+            auto* ng = new NamedFromFile(g.first);
             ASSERT(ng);
 
             util::ValueMap map(g.second);
@@ -88,7 +88,7 @@ void Grid::list(std::ostream& out) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-    auto sep = "";
+    const auto* sep = "";
     for (auto& j : *m) {
         out << sep << j.first;
         sep = ", ";
@@ -104,21 +104,21 @@ const repres::Representation* Grid::representation() const {
 }
 
 
-const repres::Representation* Grid::representation(const util::Rotation&) const {
+const repres::Representation* Grid::representation(const util::Rotation& /*unused*/) const {
     std::ostringstream os;
     os << "Grid::representation(Rotation&) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-const repres::Representation* Grid::representation(const param::MIRParametrisation&) const {
+const repres::Representation* Grid::representation(const param::MIRParametrisation& /*unused*/) const {
     std::ostringstream os;
     os << "Grid::representation(MIRParametrisation&) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void Grid::parametrisation(const std::string&, param::SimpleParametrisation&) const {
+void Grid::parametrisation(const std::string& /*unused*/, param::SimpleParametrisation& /*unused*/) const {
     std::ostringstream os;
     os << "Grid::parametrisation() not implemented for " << *this;
     throw exception::SeriousBug(os.str());
@@ -174,7 +174,7 @@ const Grid& Grid::lookup(const std::string& key, const param::MIRParametrisation
     // This will automatically add the new Grid to the map
     auto match = GridPattern::match(key, param);
     if (!match.empty()) {
-        auto gp = GridPattern::lookup(match);
+        const auto* gp = GridPattern::lookup(match);
         ASSERT(gp != nullptr);
         return *gp;
     }

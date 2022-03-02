@@ -43,7 +43,7 @@ const Grid* RegularLLPattern::make(const std::string& name) const {
 }
 
 
-std::string RegularLLPattern::canonical(const std::string& name, const param::MIRParametrisation&) const {
+std::string RegularLLPattern::canonical(const std::string& name, const param::MIRParametrisation& /*unused*/) const {
     auto split = eckit::StringTools::split("/", name);
     ASSERT(split.size() == 2);
 
@@ -55,7 +55,7 @@ std::string RegularLLPattern::canonical(const std::string& name, const param::MI
 
 
 #define fp "[+]?([0-9]*[.])?[0-9]+([eE][-+][0-9]+)?"
-static RegularLLPattern __pattern("^" fp "/" fp "$");
+static const RegularLLPattern __pattern("^" fp "/" fp "$");
 #undef fp
 
 

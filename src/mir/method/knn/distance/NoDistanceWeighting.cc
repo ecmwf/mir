@@ -25,10 +25,10 @@ namespace knn {
 namespace distance {
 
 
-NoDistanceWeighting::NoDistanceWeighting(const param::MIRParametrisation&) {}
+NoDistanceWeighting::NoDistanceWeighting(const param::MIRParametrisation& /*unused*/) {}
 
 
-void NoDistanceWeighting::operator()(size_t ip, const Point3&,
+void NoDistanceWeighting::operator()(size_t ip, const Point3& /*point*/,
                                      const std::vector<search::PointSearch::PointValueType>& neighbours,
                                      std::vector<WeightMatrix::Triplet>& triplets) const {
     ASSERT(!neighbours.empty());
@@ -38,14 +38,14 @@ void NoDistanceWeighting::operator()(size_t ip, const Point3&,
 
     // average neighbour points
     auto weight = 1. / double(neighbours.size());
-    for (auto& n : neighbours) {
+    for (const auto& n : neighbours) {
         triplets.emplace_back(WeightMatrix::Triplet(ip, n.payload(), weight));
     }
 }
 
 
 bool NoDistanceWeighting::sameAs(const DistanceWeighting& other) const {
-    auto o = dynamic_cast<const NoDistanceWeighting*>(&other);
+    const auto* o = dynamic_cast<const NoDistanceWeighting*>(&other);
     return (o != nullptr);
 }
 

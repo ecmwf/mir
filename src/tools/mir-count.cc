@@ -32,11 +32,14 @@
 #include "mir/util/Log.h"
 
 
-using namespace mir;
+namespace mir {
+namespace tools {
+
+
 using prec_t = decltype(Log::info().precision());
 
 
-struct MIRCount : tools::MIRTool {
+struct MIRCount : MIRTool {
     MIRCount(int argc, char** argv) : MIRTool(argc, argv) {
         using namespace eckit::option;
 
@@ -86,7 +89,7 @@ struct MIRCount : tools::MIRTool {
                     << tool << " --area=6/0/0/6 --grid=1/1 --ni-nj" << std::endl;
     }
 
-    void execute(const eckit::option::CmdArgs&) override;
+    void execute(const eckit::option::CmdArgs& /*args*/) override;
 };
 
 
@@ -107,7 +110,7 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
     // setup a regular lat/lon representation and perform count
     std::string grid;
     if (key::grid::Grid::get("grid", grid, param)) {
-        auto& g = key::grid::Grid::lookup(grid, param);
+        const auto& g = key::grid::Grid::lookup(grid, param);
         repres::RepresentationHandle rep(g.representation());
 
         tools::Count counter(area);
@@ -148,7 +151,11 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
 }
 
 
+}  // namespace tools
+}  // namespace mir
+
+
 int main(int argc, char** argv) {
-    MIRCount tool(argc, argv);
+    mir::tools::MIRCount tool(argc, argv);
     return tool.start();
 }

@@ -39,7 +39,7 @@ ShToReducedGGPLGiven<Invtrans>::~ShToReducedGGPLGiven() = default;
 
 template <class Invtrans>
 bool ShToReducedGGPLGiven<Invtrans>::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const ShToReducedGGPLGiven*>(&other);
+    const auto* o = dynamic_cast<const ShToReducedGGPLGiven*>(&other);
     return (o != nullptr) && (pl_ == o->pl_);
 }
 
@@ -74,8 +74,10 @@ const repres::Representation* ShToReducedGGPLGiven<Invtrans>::outputRepresentati
 }
 
 
-static ActionBuilder<ShToReducedGGPLGiven<InvtransScalar> > __action1("transform.sh-scalar-to-reduced-gg-pl-given");
-static ActionBuilder<ShToReducedGGPLGiven<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-reduced-gg-pl-given");
+static const ActionBuilder<ShToReducedGGPLGiven<InvtransScalar> > __action1(
+    "transform.sh-scalar-to-reduced-gg-pl-given");
+static const ActionBuilder<ShToReducedGGPLGiven<InvtransVodTouv> > __action2(
+    "transform.sh-vod-to-uv-reduced-gg-pl-given");
 
 
 }  // namespace transform

@@ -23,7 +23,7 @@ namespace key {
 namespace packing {
 
 
-static PackingBuilder<SecondOrder> __packing("second-order", "so", false, true);
+static const PackingBuilder<SecondOrder> __packing("second-order", "so", false, true);
 
 
 static bool check(const repres::Representation* repres) {

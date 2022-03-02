@@ -183,7 +183,7 @@ void Rectilinear::reorder(MIRValuesVector& values) const {
 }
 
 
-static GridSpecGuesserBuilder<Rectilinear> builder(1);
+static const GridSpecGuesserBuilder<Rectilinear> builder(1);
 
 
 }  // namespace netcdf

@@ -77,7 +77,7 @@ void ResetMissingValues::print(std::ostream& out) const {
 
 
 bool ResetMissingValues::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const ResetMissingValues*>(&other);
+    const auto* o = dynamic_cast<const ResetMissingValues*>(&other);
     return (o != nullptr);
 }
 
@@ -87,12 +87,12 @@ const char* ResetMissingValues::name() const {
 }
 
 
-void ResetMissingValues::estimate(context::Context&, api::MIREstimation&) const {
+void ResetMissingValues::estimate(context::Context& /*unused*/, api::MIREstimation& /*unused*/) const {
     // do nothing
 }
 
 
-static ActionBuilder<ResetMissingValues> __action("misc.reset-missing-values");
+static const ActionBuilder<ResetMissingValues> __action("misc.reset-missing-values");
 
 
 }  // namespace action

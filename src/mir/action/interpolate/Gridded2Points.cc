@@ -40,7 +40,7 @@ Gridded2Points::~Gridded2Points() = default;
 
 
 bool Gridded2Points::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const Gridded2Points*>(&other);
+    const auto* o = dynamic_cast<const Gridded2Points*>(&other);
     return (o != nullptr) && (latitudes_ == o->latitudes_) && (longitudes_ == o->longitudes_) &&
            Gridded2GriddedInterpolation::sameAs(other);
 }
@@ -65,7 +65,7 @@ const char* Gridded2Points::name() const {
 }
 
 
-static ActionBuilder<Gridded2Points> grid2grid("interpolate.grid2points");
+static const ActionBuilder<Gridded2Points> grid2grid("interpolate.grid2points");
 
 
 }  // namespace interpolate

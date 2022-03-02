@@ -48,7 +48,7 @@ void PackingCodec::decode(std::vector<double>& v) const {
 }
 
 
-static CodecBuilder<PackingCodec> builder("packing");
+static const CodecBuilder<PackingCodec> builder("packing");
 
 
 }  // namespace netcdf

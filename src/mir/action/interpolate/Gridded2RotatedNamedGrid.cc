@@ -34,7 +34,7 @@ Gridded2RotatedNamedGrid::~Gridded2RotatedNamedGrid() = default;
 
 
 bool Gridded2RotatedNamedGrid::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const Gridded2RotatedNamedGrid*>(&other);
+    const auto* o = dynamic_cast<const Gridded2RotatedNamedGrid*>(&other);
     return (o != nullptr) && (grid_ == o->grid_) && Gridded2RotatedGrid::sameAs(other);
 }
 
@@ -57,7 +57,7 @@ const char* Gridded2RotatedNamedGrid::name() const {
 }
 
 
-static ActionBuilder<Gridded2RotatedNamedGrid> grid2grid("interpolate.grid2rotated-namedgrid");
+static const ActionBuilder<Gridded2RotatedNamedGrid> grid2grid("interpolate.grid2rotated-namedgrid");
 
 
 }  // namespace interpolate

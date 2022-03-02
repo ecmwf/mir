@@ -132,7 +132,7 @@ size_t MultiDimensionalOutput::set(const param::MIRParametrisation& param, conte
 
 
 bool MultiDimensionalOutput::sameAs(const MIROutput& other) const {
-    auto o = dynamic_cast<const MultiDimensionalOutput*>(&other);
+    const auto* o = dynamic_cast<const MultiDimensionalOutput*>(&other);
 
     if ((o == nullptr) || (dimensions_.size() != o->dimensions_.size())) {
         return false;
@@ -150,7 +150,7 @@ bool MultiDimensionalOutput::sameAs(const MIROutput& other) const {
 
 bool MultiDimensionalOutput::sameParametrisation(const param::MIRParametrisation& param1,
                                                  const param::MIRParametrisation& param2) const {
-    for (auto& d : dimensions_) {
+    for (const auto& d : dimensions_) {
         if (!(d->sameParametrisation(param1, param2))) {
             return false;
         }
@@ -178,8 +178,8 @@ void MultiDimensionalOutput::prepare(const param::MIRParametrisation& parametris
 void MultiDimensionalOutput::print(std::ostream& out) const {
     out << "MultiDimensionalOutput[";
 
-    auto sep = "";
-    for (auto& d : dimensions_) {
+    const auto* sep = "";
+    for (const auto& d : dimensions_) {
         out << sep << d;
         sep = ",";
     }

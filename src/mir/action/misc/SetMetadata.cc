@@ -54,7 +54,7 @@ SetMetadata::~SetMetadata() = default;
 
 
 bool SetMetadata::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const SetMetadata*>(&other);
+    const auto* o = dynamic_cast<const SetMetadata*>(&other);
     return (o != nullptr) && (metadata_ == o->metadata_);
 }
 
@@ -77,7 +77,7 @@ const char* SetMetadata::name() const {
 }
 
 
-static ActionBuilder<SetMetadata> __action("set.metadata");
+static const ActionBuilder<SetMetadata> __action("set.metadata");
 
 
 }  // namespace action

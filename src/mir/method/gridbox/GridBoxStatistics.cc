@@ -30,7 +30,7 @@ GridBoxStatistics::GridBoxStatistics(const param::MIRParametrisation& param) : G
 }
 
 
-static MethodBuilder<GridBoxStatistics> __builder("grid-box-statistics");
+static const MethodBuilder<GridBoxStatistics> __builder("grid-box-statistics");
 
 
 }  // namespace gridbox

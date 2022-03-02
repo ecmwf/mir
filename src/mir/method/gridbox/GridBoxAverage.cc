@@ -18,7 +18,7 @@ namespace method {
 namespace gridbox {
 
 
-static MethodBuilder<GridBoxAverage> __builder("grid-box-average");
+static const MethodBuilder<GridBoxAverage> __builder("grid-box-average");
 
 
 }  // namespace gridbox

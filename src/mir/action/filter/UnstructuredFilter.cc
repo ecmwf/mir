@@ -34,7 +34,7 @@ UnstructuredFilter::~UnstructuredFilter() = default;
 
 
 bool UnstructuredFilter::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const UnstructuredFilter*>(&other);
+    const auto* o = dynamic_cast<const UnstructuredFilter*>(&other);
     return (o != nullptr);
 }
 
@@ -55,7 +55,7 @@ void UnstructuredFilter::execute(context::Context& ctx) const {
     std::vector<double> longitudes(N);
 
     for (const std::unique_ptr<repres::Iterator> it(repres->iterator()); it->next();) {
-        auto& p                    = **it;
+        const auto& p              = **it;
         latitudes.at(it->index())  = p[0];
         longitudes.at(it->index()) = p[1];
     }
@@ -64,7 +64,7 @@ void UnstructuredFilter::execute(context::Context& ctx) const {
 }
 
 
-void UnstructuredFilter::estimate(context::Context&, api::MIREstimation& estimation) const {
+void UnstructuredFilter::estimate(context::Context& /*unused*/, api::MIREstimation& estimation) const {
     estimation.sameAsInput();
 }
 
@@ -74,7 +74,7 @@ const char* UnstructuredFilter::name() const {
 }
 
 
-static ActionBuilder<UnstructuredFilter> __action("filter.unstructured");
+static const ActionBuilder<UnstructuredFilter> __action("filter.unstructured");
 
 
 }  // namespace action

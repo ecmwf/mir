@@ -357,6 +357,8 @@ list(APPEND mir_srcs
     method/knn/KNearest.h
     method/knn/KNearestNeighbours.cc
     method/knn/KNearestNeighbours.h
+    method/knn/KNearestStatistics.cc
+    method/knn/KNearestStatistics.h
     method/knn/NearestLSM.cc
     method/knn/NearestLSM.h
     method/knn/NearestNeighbour.cc
@@ -369,10 +371,6 @@ list(APPEND mir_srcs
     method/knn/distance/DistanceWeighting.h
     method/knn/distance/DistanceWeightingWithLSM.cc
     method/knn/distance/DistanceWeightingWithLSM.h
-    method/knn/distance/ExponentialMean.cc
-    method/knn/distance/ExponentialMean.h
-    method/knn/distance/ExponentialSum.cc
-    method/knn/distance/ExponentialSum.h
     method/knn/distance/GaussianDistanceWeighting.cc
     method/knn/distance/GaussianDistanceWeighting.h
     method/knn/distance/InverseDistanceWeighting.cc
@@ -389,8 +387,6 @@ list(APPEND mir_srcs
     method/knn/distance/NoDistanceWeighting.h
     method/knn/distance/PseudoLaplace.cc
     method/knn/distance/PseudoLaplace.h
-    method/knn/distance/Reciprocal.cc
-    method/knn/distance/Reciprocal.h
     method/knn/pick/Distance.cc
     method/knn/pick/Distance.h
     method/knn/pick/DistanceAndNClosest.cc

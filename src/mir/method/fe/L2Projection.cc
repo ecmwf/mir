@@ -51,7 +51,7 @@ L2Projection::~L2Projection() = default;
 
 
 bool L2Projection::sameAs(const Method& other) const {
-    auto o = dynamic_cast<const L2Projection*>(&other);
+    const auto* o = dynamic_cast<const L2Projection*>(&other);
     return (o != nullptr) && inputMethod_->sameAs(*(o->inputMethod_)) && outputMethod_->sameAs(*(o->outputMethod_)) &&
            MethodWeighted::sameAs(*o);
 }
@@ -146,7 +146,7 @@ void L2Projection::print(std::ostream& out) const {
 }
 
 
-static MethodBuilder<L2Projection> __builder("l2-projection");
+static const MethodBuilder<L2Projection> __builder("l2-projection");
 
 
 }  // namespace fe

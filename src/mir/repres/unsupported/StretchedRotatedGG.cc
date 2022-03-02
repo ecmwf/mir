@@ -28,7 +28,7 @@ void StretchedRotatedGG::print(std::ostream& out) const {
 }
 
 
-static RepresentationBuilder<StretchedRotatedGG> __repres("stretched_rotated_gg");
+static const RepresentationBuilder<StretchedRotatedGG> __repres("stretched_rotated_gg");
 
 
 }  // namespace repres

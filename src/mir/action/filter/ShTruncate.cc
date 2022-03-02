@@ -39,7 +39,7 @@ ShTruncate::~ShTruncate() = default;
 
 
 bool ShTruncate::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const ShTruncate*>(&other);
+    const auto* o = dynamic_cast<const ShTruncate*>(&other);
     return (o != nullptr) && (truncation_ == o->truncation_);
 }
 
@@ -62,7 +62,7 @@ void ShTruncate::execute(context::Context& ctx) const {
         const MIRValuesVector& values = field.values(i);
         MIRValuesVector result;
 
-        auto* repres = representation->truncate(truncation_, values, result);
+        const auto* repres = representation->truncate(truncation_, values, result);
         if (repres != nullptr) {           // NULL if nothing happend
             field.representation(repres);  // Assumes representation will be the same
             field.update(result, i);
@@ -83,7 +83,7 @@ const char* ShTruncate::name() const {
 }
 
 
-static ActionBuilder<ShTruncate> __action("filter.sh-truncate");
+static const ActionBuilder<ShTruncate> __action("filter.sh-truncate");
 
 
 }  // namespace filter

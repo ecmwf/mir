@@ -67,13 +67,13 @@ class CombinedGribCompatibility : public GribCompatibility {
 
     void execute(const output::MIROutput& output, const param::MIRParametrisation& parametrisation, grib_handle* h,
                  grib_info& info) const override {
-        for (auto c : list_) {
+        for (const auto* c : list_) {
             c->execute(output, parametrisation, h, info);
         }
     }
 
     void printParametrisation(std::ostream& out, const param::MIRParametrisation& param) const override {
-        for (auto c : list_) {
+        for (const auto* c : list_) {
             c->printParametrisation(out, param);
         }
     }
@@ -81,7 +81,7 @@ class CombinedGribCompatibility : public GribCompatibility {
     bool sameParametrisation(const param::MIRParametrisation& param1,
                              const param::MIRParametrisation& param2) const override {
 
-        for (auto c : list_) {
+        for (const auto* c : list_) {
             if (!c->sameParametrisation(param1, param2)) {
                 return false;
             }
@@ -92,7 +92,7 @@ class CombinedGribCompatibility : public GribCompatibility {
 
     void initialise(const metkit::mars::MarsRequest& request,
                     std::map<std::string, std::string>& postproc) const override {
-        for (auto c : list_) {
+        for (const auto* c : list_) {
             c->initialise(request, postproc);
         }
     }
@@ -100,7 +100,7 @@ class CombinedGribCompatibility : public GribCompatibility {
     void print(std::ostream& out) const override {
         out << "CombinedGribCompatibility[";
         const char* sep = "";
-        for (auto c : list_) {
+        for (const auto* c : list_) {
             out << sep << *c;
             sep = ",";
         }
@@ -111,7 +111,7 @@ public:
     CombinedGribCompatibility(const std::string& name, const std::vector<std::string>& names) :
         GribCompatibility(name) {
         list_.reserve(names.size());
-        for (auto& n : names) {
+        for (const auto& n : names) {
             list_.push_back(&GribCompatibility::lookup(n));
         }
     }

@@ -48,9 +48,17 @@ CASE("distance-weighting") {
     param.set("climate-filter-delta", 1.);
 
 
-    auto methods = {"climate-filter", "cressman", "exponential-mean", "exponential-sum", "gaussian",
-                    "inverse-distance-weighting", "inverse-distance-weighting-squared", "nearest-neighbour", "no",
-                    "no-distance-weighting", "pseudo-laplace", "reciprocal", "shepard"};
+    auto methods = {"climate-filter",
+                    "cressman",
+                    "gaussian",
+                    "inverse-distance-weighting",
+                    "inverse-distance-weighting-squared",
+                    "nearest-neighbour",
+                    "no",
+                    "no-distance-weighting",
+                    "pseudo-laplace",
+                    "reciprocal",
+                    "shepard"};
 
 
     SECTION("methods") {

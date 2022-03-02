@@ -28,7 +28,7 @@ void StretchedRotatedSH::print(std::ostream& out) const {
 }
 
 
-static RepresentationBuilder<StretchedRotatedSH> __repres("stretched_rotated_sh");
+static const RepresentationBuilder<StretchedRotatedSH> __repres("stretched_rotated_sh");
 
 
 }  // namespace repres

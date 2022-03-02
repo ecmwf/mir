@@ -50,12 +50,12 @@ void ReducedFromPL::makeName(std::ostream& out) const {
 
 
 bool ReducedFromPL::sameAs(const Representation& other) const {
-    auto o = dynamic_cast<const ReducedFromPL*>(&other);
+    const auto* o = dynamic_cast<const ReducedFromPL*>(&other);
     return (o != nullptr) && FromPL::sameAs(other);
 }
 
 
-static RepresentationBuilder<ReducedFromPL> reducedFromPL("reduced_gg");
+static const RepresentationBuilder<ReducedFromPL> reducedFromPL("reduced_gg");
 
 
 }  // namespace reduced

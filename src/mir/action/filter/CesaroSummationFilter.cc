@@ -43,7 +43,7 @@ CesaroSummationFilter::~CesaroSummationFilter() = default;
 
 
 bool CesaroSummationFilter::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const CesaroSummationFilter*>(&other);
+    const auto* o = dynamic_cast<const CesaroSummationFilter*>(&other);
     return (o != nullptr) && (k_ == o->k_) && (Tmin_ == o->Tmin_);
 }
 
@@ -91,12 +91,12 @@ const char* CesaroSummationFilter::name() const {
 }
 
 
-void CesaroSummationFilter::estimate(context::Context&, api::MIREstimation& estimation) const {
+void CesaroSummationFilter::estimate(context::Context& /*unused*/, api::MIREstimation& estimation) const {
     estimation.sameAsInput();
 }
 
 
-static ActionBuilder<CesaroSummationFilter> __action("filter.sh-cesaro-summation-filter");
+static const ActionBuilder<CesaroSummationFilter> __action("filter.sh-cesaro-summation-filter");
 
 
 }  // namespace filter

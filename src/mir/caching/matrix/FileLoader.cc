@@ -53,7 +53,7 @@ bool FileLoader::inSharedMemory() const {
 }
 
 
-static MatrixLoaderBuilder<FileLoader> loader("file-io");
+static const MatrixLoaderBuilder<FileLoader> loader("file-io");
 
 
 }  // namespace matrix

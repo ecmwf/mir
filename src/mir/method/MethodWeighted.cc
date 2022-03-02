@@ -75,8 +75,8 @@ MethodWeighted::~MethodWeighted() = default;
 
 void MethodWeighted::print(std::ostream& out) const {
     out << "nonLinear[";
-    auto sep = "";
-    for (auto& n : nonLinear_) {
+    const auto* sep = "";
+    for (const auto& n : nonLinear_) {
         out << sep << (*n);
         sep = ",";
     }
@@ -101,7 +101,7 @@ bool MethodWeighted::sameAs(const Method& other) const {
         return true;
     };
 
-    auto o = dynamic_cast<const MethodWeighted*>(&other);
+    const auto* o = dynamic_cast<const MethodWeighted*>(&other);
     return (o != nullptr) && (lsmWeightAdjustment_ == o->lsmWeightAdjustment_) && (pruneEpsilon_ == o->pruneEpsilon_) &&
            (sameNonLinearities(nonLinear_, o->nonLinear_)) && solver().sameAs(o->solver()) &&
            lsm::LandSeaMasks::sameLandSeaMasks(parametrisation_, o->parametrisation_) && cropping_.sameAs(o->cropping_);
@@ -375,7 +375,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
             auto timing(ctx.statistics().matrixTimer());
             WeightMatrix M(W);  // modifiable matrix copy
 
-            for (auto& n : nonLinear_) {
+            for (const auto& n : nonLinear_) {
                 std::ostringstream str;
                 str << *n;
                 trace::Timer t(str.str());
@@ -497,7 +497,7 @@ void MethodWeighted::hash(eckit::MD5& md5) const {
     md5.add(name());
     md5 << pruneEpsilon_;
     md5 << lsmWeightAdjustment_;
-    for (auto& n : nonLinear_) {
+    for (const auto& n : nonLinear_) {
         n->hash(md5);
     }
 

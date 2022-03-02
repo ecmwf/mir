@@ -86,9 +86,12 @@ static atlas::trans::Cache getTransCache(atlas::trans::LegendreCacheCreator& cre
         public:
             LegendreCacheCreator(atlas::trans::LegendreCacheCreator& creator, context::Context& ctx) :
                 creator_(creator), ctx_(ctx) {}
+            ~LegendreCacheCreator() override = default;
 
             LegendreCacheCreator(const LegendreCacheCreator&) = delete;
+            LegendreCacheCreator(LegendreCacheCreator&&)      = delete;
             LegendreCacheCreator& operator=(const LegendreCacheCreator&) = delete;
+            LegendreCacheCreator& operator=(LegendreCacheCreator&&) = delete;
         };
 
         static caching::LegendreCache cache;
@@ -325,7 +328,7 @@ bool ShToGridded::mergeWithNext(const Action& next) {
 
 
 bool ShToGridded::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const ShToGridded*>(&other);
+    const auto* o = dynamic_cast<const ShToGridded*>(&other);
     return (o != nullptr) && atlasOptionsDigest(options_) == atlasOptionsDigest(o->options_);
 }
 

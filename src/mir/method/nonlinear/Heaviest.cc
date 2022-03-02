@@ -26,10 +26,10 @@ namespace nonlinear {
 Heaviest::Heaviest(const param::MIRParametrisation& param) : NonLinear(param) {}
 
 
-bool Heaviest::treatment(MethodWeighted::Matrix&, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix&,
-                         const MIRValuesVector&, const double&) const {
+bool Heaviest::treatment(MethodWeighted::Matrix& /*A*/, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& /*B*/,
+                         const MIRValuesVector& /*unused*/, const double& /*missingValue*/) const {
 
-    auto data = const_cast<WeightMatrix::Scalar*>(W.data());
+    auto* data = const_cast<WeightMatrix::Scalar*>(W.data());
 
     WeightMatrix::iterator it(W);
     for (WeightMatrix::Size r = 0, i = 0; r < W.rows(); ++r) {
@@ -59,7 +59,7 @@ bool Heaviest::treatment(MethodWeighted::Matrix&, MethodWeighted::WeightMatrix& 
 
 
 bool Heaviest::sameAs(const NonLinear& other) const {
-    auto o = dynamic_cast<const Heaviest*>(&other);
+    const auto* o = dynamic_cast<const Heaviest*>(&other);
     return (o != nullptr);
 }
 
@@ -76,7 +76,7 @@ void Heaviest::hash(eckit::MD5& h) const {
 }
 
 
-static NonLinearBuilder<Heaviest> __nonlinear("heaviest");
+static const NonLinearBuilder<Heaviest> __nonlinear("heaviest");
 
 
 }  // namespace nonlinear

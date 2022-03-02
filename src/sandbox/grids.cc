@@ -19,13 +19,14 @@
 #include "mir/util/Types.h"
 
 
-using namespace mir;
+namespace mir {
+namespace tools {
 
 
 struct Grids : eckit::Tool {
     using Tool::Tool;
     void run() override;
-    void grid(const atlas::StructuredGrid&);
+    void grid(const atlas::StructuredGrid& /*grid*/);
 };
 
 
@@ -71,7 +72,11 @@ void Grids::run() {
 }
 
 
+}  // namespace tools
+}  // namespace mir
+
+
 int main(int argc, char** argv) {
-    Grids tool(argc, argv);
+    mir::tools::Grids tool(argc, argv);
     return tool.start();
 }

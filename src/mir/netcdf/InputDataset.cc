@@ -199,7 +199,7 @@ void InputDataset::print(std::ostream& out) const {
 std::vector<Field*> InputDataset::fields() const {
     std::vector<Field*> result;
 
-    for (auto& j : variables_) {
+    for (const auto& j : variables_) {
         (j.second)->collectField(result);
     }
 

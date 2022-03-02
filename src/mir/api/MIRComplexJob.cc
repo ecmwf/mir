@@ -69,7 +69,7 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
 
     action::ActionGraph graph;
     size_t i = 0;
-    for (auto& j : jobs_) {
+    for (const auto& j : jobs_) {
         graph.add(j->plan(), watchers_[i++]);
     }
 
@@ -84,7 +84,7 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
 
     context::Context ctx(*input_, statistics);
 
-    auto& executor = action::Executor::lookup(jobs_.front()->parametrisation());
+    const auto& executor = action::Executor::lookup(jobs_.front()->parametrisation());
     graph.execute(ctx, executor);
     executor.wait();
 

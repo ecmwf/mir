@@ -111,7 +111,7 @@ void Area::list(std::ostream& out) {
 
     out << "North/West/South/East";
 
-    auto sep = ", ";
+    const auto* sep = ", ";
     for (auto& j : *m) {
         out << sep << j.first;
     }

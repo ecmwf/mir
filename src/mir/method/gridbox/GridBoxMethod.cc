@@ -49,12 +49,12 @@ GridBoxMethod::~GridBoxMethod() = default;
 
 
 bool GridBoxMethod::sameAs(const Method& other) const {
-    auto o = dynamic_cast<const GridBoxMethod*>(&other);
+    const auto* o = dynamic_cast<const GridBoxMethod*>(&other);
     return (o != nullptr) && name() == o->name() && MethodWeighted::sameAs(*o);
 }
 
 
-void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& in,
+void GridBoxMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, const repres::Representation& in,
                              const repres::Representation& out) const {
     auto& log = Log::debug();
     log << "GridBoxMethod::assemble (input: " << in << ", output: " << out << ")" << std::endl;
@@ -127,9 +127,9 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
             triplets.clear();
             triplets.reserve(closest.size());
 
-            auto i      = it->index();
-            auto& box   = outBoxes.at(i);
-            double area = box.area();
+            auto i          = it->index();
+            const auto& box = outBoxes.at(i);
+            double area     = box.area();
             ASSERT(area > 0.);
 
             double sumSmallAreas = 0.;

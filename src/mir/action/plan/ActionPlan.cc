@@ -30,10 +30,18 @@ namespace mir {
 namespace action {
 
 
-ActionPlan::ActionPlan(const param::MIRParametrisation& parametrisation) : parametrisation_(parametrisation) {
-    parametrisation_.get("dump-plan-file", dumpPlanFile_);
-    parametrisation_.get("dump-statistics-file", dumpStatisticsFile_);
+namespace {
+std::string get(const param::MIRParametrisation& param, const std::string& key) {
+    std::string value;
+    param.get(key, value);
+    return value;
 }
+}  // namespace
+
+ActionPlan::ActionPlan(const param::MIRParametrisation& param) :
+    parametrisation_(param),
+    dumpPlanFile_(get(param.userParametrisation(), "dump-plan-file")),
+    dumpStatisticsFile_(get(param.userParametrisation(), "dump-statistics-file")) {}
 
 
 ActionPlan::~ActionPlan() {
@@ -56,7 +64,7 @@ void ActionPlan::add(const std::string& name) {
 void ActionPlan::add(const std::string& name, const std::string& param, long value) {
     ASSERT(!ended());
 
-    auto runtime = new param::RuntimeParametrisation(parametrisation_);
+    auto* runtime = new param::RuntimeParametrisation(parametrisation_);
     runtimes_.push_back(runtime);
     runtime->set(param, value);
     push_back(ActionFactory::build(name, *runtime));
@@ -66,7 +74,7 @@ void ActionPlan::add(const std::string& name, const std::string& param, long val
 void ActionPlan::add(const std::string& name, const std::string& param, const std::string& value) {
     ASSERT(!ended());
 
-    auto runtime = new param::RuntimeParametrisation(parametrisation_);
+    auto* runtime = new param::RuntimeParametrisation(parametrisation_);
     runtimes_.push_back(runtime);
     runtime->set(param, value);
     push_back(ActionFactory::build(name, *runtime));
@@ -77,7 +85,7 @@ void ActionPlan::add(const std::string& name, const std::string& param1, const s
                      const std::string& param2, long value2) {
     ASSERT(!ended());
 
-    auto runtime = new param::RuntimeParametrisation(parametrisation_);
+    auto* runtime = new param::RuntimeParametrisation(parametrisation_);
     runtimes_.push_back(runtime);
     runtime->set(param1, value1);
     runtime->set(param2, value2);
@@ -89,7 +97,7 @@ void ActionPlan::add(const std::string& name, const std::string& param1, const s
                      const std::string& param2, const std::string& value2) {
     ASSERT(!ended());
 
-    auto runtime = new param::RuntimeParametrisation(parametrisation_);
+    auto* runtime = new param::RuntimeParametrisation(parametrisation_);
     runtimes_.push_back(runtime);
     runtime->set(param1, value1);
     runtime->set(param2, value2);
@@ -129,24 +137,30 @@ void ActionPlan::execute(context::Context& ctx) const {
     }
 
     bool dryrun = false;
-    if (parametrisation_.get("dryrun", dryrun) && dryrun) {
+    if (parametrisation_.userParametrisation().get("dryrun", dryrun) && dryrun) {
         return;
     }
 
     const char* sep = "###################################################################################";
 
     for (const auto& p : *this) {
-        Log::debug() << "Executing:"
-                     << "\n"
-                     << sep << "\n"
-                     << *p << "\n"
-                     << sep << std::endl;
+        if (Log::debug_active()) {
+            Log::debug() << "Executing:"
+                         << "\n"
+                         << sep << "\n"
+                         << *p << "\n"
+                         << sep << std::endl;
+        }
+
         p->perform(ctx);
-        Log::debug() << "Result:"
-                     << "\n"
-                     << sep << "\n"
-                     << ctx << "\n"
-                     << sep << std::endl;
+
+        if (Log::debug_active()) {
+            Log::debug() << "Result:"
+                         << "\n"
+                         << sep << "\n"
+                         << ctx << "\n"
+                         << sep << std::endl;
+        }
     }
 
     if (!dumpStatisticsFile_.empty()) {

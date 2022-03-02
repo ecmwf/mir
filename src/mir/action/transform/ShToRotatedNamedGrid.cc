@@ -45,7 +45,7 @@ ShToRotatedNamedGrid<Invtrans>::~ShToRotatedNamedGrid() = default;
 
 template <class Invtrans>
 bool ShToRotatedNamedGrid<Invtrans>::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const ShToRotatedNamedGrid*>(&other);
+    const auto* o = dynamic_cast<const ShToRotatedNamedGrid*>(&other);
     return (o != nullptr) && (grid_ == o->grid_) && (rotation_ == o->rotation_) && ShToGridded::sameAs(other);
 }
 
@@ -80,8 +80,9 @@ const repres::Representation* ShToRotatedNamedGrid<Invtrans>::outputRepresentati
 }
 
 
-static ActionBuilder<ShToRotatedNamedGrid<InvtransScalar> > __action1("transform.sh-scalar-to-rotated-namedgrid");
-static ActionBuilder<ShToRotatedNamedGrid<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-rotated-namedgrid");
+static const ActionBuilder<ShToRotatedNamedGrid<InvtransScalar> > __action1("transform.sh-scalar-to-rotated-namedgrid");
+static const ActionBuilder<ShToRotatedNamedGrid<InvtransVodTouv> > __action2(
+    "transform.sh-vod-to-uv-rotated-namedgrid");
 
 
 }  // namespace transform

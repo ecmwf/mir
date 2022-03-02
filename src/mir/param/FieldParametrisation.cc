@@ -15,6 +15,7 @@
 #include <sstream>
 
 #include "mir/param/Rules.h"
+#include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 
@@ -23,15 +24,20 @@ namespace mir {
 namespace param {
 
 
-FieldParametrisation::FieldParametrisation() : paramId_(-1) {}
+static const MIRParametrisation* find_param_rules(const param::MIRParametrisation& param) {
+    static const Rules rules;
+    return rules.find(param);
+}
+
+
+FieldParametrisation::FieldParametrisation() : param_(nullptr) {}
 
 
 FieldParametrisation::~FieldParametrisation() = default;
 
 
-bool FieldParametrisation::has(const std::string& name) const {
-
-    Log::debug() << "FieldParametrisation::has(" << name << ") " << *this << std::endl;
+bool FieldParametrisation::has(const std::string& /*name*/) const {
+    // Log::debug() << "FieldParametrisation::has(" << name << ") " << *this << std::endl;
     return false;
 }
 
@@ -126,39 +132,35 @@ bool FieldParametrisation::get(const std::string& name, std::vector<std::string>
 
 void FieldParametrisation::reset() {
     // Reset cached values
-    paramId_ = -1;
+    param_ = nullptr;
 }
 
 
 template <class T>
 bool FieldParametrisation::_get(const std::string& name, T& value) const {
-    static std::string PARAM_ID("paramId");
+    static const SimpleParametrisation empty;
+    static const std::string PARAM_ID("paramId");
 
     ASSERT(name != PARAM_ID);
 
-    // return paramId-specific setting
-    // This assumes that other input (NetCDF, etc) also return a paramId
-
-    if (paramId_ <= 0) {
-        get(PARAM_ID, paramId_);
+    // return paramId-specific setting (classification)
+    if (param_ == nullptr && (param_ = find_param_rules(*this)) == nullptr) {
+        param_ = &empty;
+        ASSERT(param_ != nullptr);
     }
 
-    if (paramId_ <= 0) {
-        return false;
-    }
-
-    return Rules::lookup(PARAM_ID, paramId_).get(name, value);
+    return param_->get(name, value);
 }
 
 
-void FieldParametrisation::latitudes(std::vector<double>&) const {
+void FieldParametrisation::latitudes(std::vector<double>& /*unused*/) const {
     std::ostringstream os;
     os << "FieldParametrisation::latitudes() not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-void FieldParametrisation::longitudes(std::vector<double>&) const {
+void FieldParametrisation::longitudes(std::vector<double>& /*unused*/) const {
     std::ostringstream os;
     os << "FieldParametrisation::longitudes() not implemented for " << *this;
     throw exception::SeriousBug(os.str());

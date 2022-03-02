@@ -33,13 +33,13 @@ void FormulaString::print(std::ostream& out) const {
 }
 
 
-void FormulaString::execute(context::Context&) const {
+void FormulaString::execute(context::Context& /*unused*/) const {
     NOTIMP;
 }
 
 
 bool FormulaString::sameAs(const action::Action& other) const {
-    auto o = dynamic_cast<const FormulaString*>(&other);
+    const auto* o = dynamic_cast<const FormulaString*>(&other);
     return (o != nullptr) && (value_ == o->value_);
 }
 

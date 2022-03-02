@@ -30,7 +30,7 @@ EndAction::~EndAction() = default;
 
 
 bool EndAction::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const EndAction*>(&other);
+    const auto* o = dynamic_cast<const EndAction*>(&other);
     return (o != nullptr) && output_.sameAs(o->output_) &&
            o->output_.sameParametrisation(parametrisation_, o->parametrisation_);
 }

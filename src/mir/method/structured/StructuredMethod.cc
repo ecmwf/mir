@@ -30,7 +30,7 @@ StructuredMethod::StructuredMethod(const param::MIRParametrisation& param) : Met
 StructuredMethod::~StructuredMethod() = default;
 
 bool StructuredMethod::sameAs(const Method& other) const {
-    auto o = dynamic_cast<const StructuredMethod*>(&other);
+    const auto* o = dynamic_cast<const StructuredMethod*>(&other);
     return (o != nullptr) && MethodWeighted::sameAs(other);
 }
 
@@ -88,10 +88,10 @@ void StructuredMethod::getRepresentationPoints(const repres::Representation& r, 
     bool first = true;
 
     for (const std::unique_ptr<repres::Iterator> it(r.iterator()); it->next();) {
-        auto& p                = it->pointUnrotated();
+        const auto& p          = it->pointUnrotated();
         points.at(it->index()) = p;
 
-        auto& lat = p.lat();
+        const auto& lat = p.lat();
         if (first || lat < minimum) {
             minimum = lat;
         }
@@ -160,7 +160,7 @@ void StructuredMethod::boundWestEast(const Longitude& lon, const size_t& Ni, con
     iEast += iStart;
 }
 
-void StructuredMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& in,
+void StructuredMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, const repres::Representation& in,
                                 const repres::Representation& out) const {
     Log::debug() << "StructuredMethod::assemble (input: " << in << ", output: " << out << ")..." << std::endl;
 

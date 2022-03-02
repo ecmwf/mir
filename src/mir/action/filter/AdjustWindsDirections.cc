@@ -40,7 +40,7 @@ AdjustWindsDirections::~AdjustWindsDirections() = default;
 
 
 bool AdjustWindsDirections::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const AdjustWindsDirections*>(&other);
+    const auto* o = dynamic_cast<const AdjustWindsDirections*>(&other);
     return (o != nullptr) && (rotation_ == o->rotation_);
 }
 
@@ -74,7 +74,7 @@ const char* AdjustWindsDirections::name() const {
 }
 
 
-static ActionBuilder<AdjustWindsDirections> __action("filter.adjust-winds-directions");
+static const ActionBuilder<AdjustWindsDirections> __action("filter.adjust-winds-directions");
 
 
 }  // namespace action

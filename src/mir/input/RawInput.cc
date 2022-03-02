@@ -241,7 +241,7 @@ bool RawInput::get(const std::string& name, std::vector<double>& value) const {
 }
 
 
-bool RawInput::get(const std::string&, std::vector<std::string>&) const {
+bool RawInput::get(const std::string& /*name*/, std::vector<std::string>& /*value*/) const {
     NOTIMP;
 }
 

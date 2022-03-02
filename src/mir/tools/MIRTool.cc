@@ -53,7 +53,7 @@ void MIRTool::run() {
         using eckit::system::LibraryManager;
 
         for (const auto& lib_name : LibraryManager::list()) {
-            auto& lib = LibraryManager::lookup(lib_name);
+            const auto& lib = LibraryManager::lookup(lib_name);
             Log::info() << lib.name() << " " << lib.version() << " git-sha1:" << lib.gitsha1(sha1len)
                         << " home:" << lib.libraryHome() << std::endl;
         }
@@ -71,7 +71,7 @@ void MIRTool::init(const eckit::option::CmdArgs& args) {
     atlas::Library::instance().initialise(args);
 }
 
-void MIRTool::finish(const eckit::option::CmdArgs&) {
+void MIRTool::finish(const eckit::option::CmdArgs& /*unused*/) {
     atlas::Library::instance().finalise();
 }
 

@@ -38,7 +38,7 @@ ShToGridDef<Invtrans>::~ShToGridDef() = default;
 
 template <class Invtrans>
 bool ShToGridDef<Invtrans>::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const ShToGridDef*>(&other);
+    const auto* o = dynamic_cast<const ShToGridDef*>(&other);
     return (o != nullptr) && (griddef_ == o->griddef_);
 }
 
@@ -72,8 +72,8 @@ const repres::Representation* ShToGridDef<Invtrans>::outputRepresentation() cons
 }
 
 
-static ActionBuilder<ShToGridDef<InvtransScalar> > __action1("transform.sh-scalar-to-griddef");
-static ActionBuilder<ShToGridDef<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-griddef");
+static const ActionBuilder<ShToGridDef<InvtransScalar> > __action1("transform.sh-scalar-to-griddef");
+static const ActionBuilder<ShToGridDef<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-griddef");
 
 
 }  // namespace transform

@@ -53,7 +53,7 @@ public:
 
     // -- Methods
 
-    void fix(const param::MIRParametrisation& input, param::SimpleParametrisation& fixed);
+    const param::SimpleParametrisation& find(const param::MIRParametrisation&) const;
 
     // -- Overridden methods
     // None

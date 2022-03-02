@@ -29,7 +29,7 @@ DummyInputVariable::DummyInputVariable(Dataset& owner, const Variable& parent) :
     Log::info() << "DummmyInputVariable " << parent_ << std::endl;
     setMatrix(new DummyMatrix(parent));
 
-    for (auto& j : parent.attributes()) {
+    for (const auto& j : parent.attributes()) {
         (j.second)->clone(*this);
     }
 }

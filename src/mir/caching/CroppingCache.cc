@@ -57,7 +57,7 @@ void CroppingCacheEntry::save(const eckit::PathName& path) const {
     f << bbox_.east();
 
     f << mapping_.size();
-    for (auto& i : mapping_) {
+    for (const auto& i : mapping_) {
         f << i;
     }
 }
@@ -109,12 +109,13 @@ const char* CroppingCacheTraits::extension() {
 }
 
 
-void CroppingCacheTraits::save(const eckit::CacheManagerBase&, const value_type& c, const eckit::PathName& path) {
+void CroppingCacheTraits::save(const eckit::CacheManagerBase& /*unused*/, const value_type& c,
+                               const eckit::PathName& path) {
     c.save(path);
 }
 
 
-void CroppingCacheTraits::load(const eckit::CacheManagerBase&, value_type& c, const eckit::PathName& path) {
+void CroppingCacheTraits::load(const eckit::CacheManagerBase& /*unused*/, value_type& c, const eckit::PathName& path) {
     c.load(path);
 }
 

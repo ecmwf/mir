@@ -50,7 +50,7 @@ ShToRotatedRegularLL<Invtrans>::~ShToRotatedRegularLL() = default;
 
 template <class Invtrans>
 bool ShToRotatedRegularLL<Invtrans>::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const ShToRotatedRegularLL*>(&other);
+    const auto* o = dynamic_cast<const ShToRotatedRegularLL*>(&other);
     return (o != nullptr) && (increments_ == o->increments_) && (rotation_ == o->rotation_) &&
            ShToGridded::sameAs(other);
 }
@@ -91,8 +91,10 @@ const repres::Representation* ShToRotatedRegularLL<Invtrans>::outputRepresentati
 }
 
 
-static ActionBuilder<ShToRotatedRegularLL<InvtransScalar> > __action1("transform.sh-scalar-to-rotated-regular-ll");
-static ActionBuilder<ShToRotatedRegularLL<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-rotated-regular-ll");
+static const ActionBuilder<ShToRotatedRegularLL<InvtransScalar> > __action1(
+    "transform.sh-scalar-to-rotated-regular-ll");
+static const ActionBuilder<ShToRotatedRegularLL<InvtransVodTouv> > __action2(
+    "transform.sh-vod-to-uv-rotated-regular-ll");
 
 
 }  // namespace transform

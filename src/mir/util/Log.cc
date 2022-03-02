@@ -14,6 +14,7 @@
 
 #include <ostream>
 
+#include "eckit/config/Resource.h"
 #include "eckit/log/BigNum.h"
 
 #include "mir/config/LibMir.h"
@@ -24,6 +25,12 @@ namespace mir {
 
 Log::Channel& Log::debug() {
     return eckit::Log::debug<LibMir>();
+}
+
+
+bool Log::debug_active() {
+    static const bool active = eckit::LibResource<bool, LibMir>("$MIR_DEBUG", false);
+    return active;
 }
 
 

@@ -52,12 +52,12 @@ VoronoiMethod::VoronoiMethod(const param::MIRParametrisation& param) : MethodWei
 
 
 bool VoronoiMethod::sameAs(const Method& other) const {
-    auto o = dynamic_cast<const VoronoiMethod*>(&other);
+    const auto* o = dynamic_cast<const VoronoiMethod*>(&other);
     return (o != nullptr) && name() == o->name() && MethodWeighted::sameAs(*o);
 }
 
 
-void VoronoiMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& in,
+void VoronoiMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, const repres::Representation& in,
                              const repres::Representation& out) const {
     auto& log = Log::debug();
     log << "VoronoiMethod::assemble (input: " << in << ", output: " << out << ")" << std::endl;

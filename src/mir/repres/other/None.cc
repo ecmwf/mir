@@ -23,7 +23,7 @@ namespace other {
 None::None() = default;
 
 
-None::None(const param::MIRParametrisation&) {}
+None::None(const param::MIRParametrisation& /*unused*/) {}
 
 
 None::~None() = default;
@@ -34,7 +34,7 @@ void None::print(std::ostream& out) const {
 }
 
 
-static RepresentationBuilder<None> builder("none");
+static const RepresentationBuilder<None> builder("none");
 
 
 }  // namespace other

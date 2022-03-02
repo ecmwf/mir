@@ -30,7 +30,7 @@ void JulianCalendar::print(std::ostream& out) const {
 }
 
 
-static CodecBuilder<JulianCalendar> builder("julian");
+static const CodecBuilder<JulianCalendar> builder("julian");
 
 
 }  // namespace netcdf

@@ -29,10 +29,11 @@
 #include "mir/util/Log.h"
 
 
-using namespace mir;
+namespace mir {
+namespace tools {
 
 
-struct MIRWeightMatrixDiff : tools::MIRTool {
+struct MIRWeightMatrixDiff : MIRTool {
     MIRWeightMatrixDiff(int argc, char** argv) : MIRTool(argc, argv) {
         using eckit::option::SimpleOption;
 
@@ -53,7 +54,7 @@ struct MIRWeightMatrixDiff : tools::MIRTool {
             << std::endl;
     }
 
-    void execute(const eckit::option::CmdArgs&) override;
+    void execute(const eckit::option::CmdArgs& /*args*/) override;
 };
 
 
@@ -63,7 +64,9 @@ struct diff_t {
     virtual bool operator()(double a, double b) const = 0;
 
     diff_t(const diff_t&) = delete;
+    diff_t(diff_t&&)      = delete;
     diff_t& operator=(const diff_t&) = delete;
+    diff_t& operator=(diff_t&&) = delete;
 };
 
 
@@ -165,7 +168,11 @@ void MIRWeightMatrixDiff::execute(const eckit::option::CmdArgs& args) {
 }
 
 
+}  // namespace tools
+}  // namespace mir
+
+
 int main(int argc, char** argv) {
-    MIRWeightMatrixDiff tool(argc, argv);
+    mir::tools::MIRWeightMatrixDiff tool(argc, argv);
     return tool.start();
 }

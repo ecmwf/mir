@@ -46,15 +46,15 @@ void OutputDataset::merge(Dataset& other) {
 
     if (dimensions_.empty() && attributes_.empty() && variables_.empty()) {
         // First time, just adopt
-        for (auto& j : other.dimensions()) {
+        for (const auto& j : other.dimensions()) {
             (j.second)->clone(*this);
         }
 
-        for (auto& j : other.attributes()) {
+        for (const auto& j : other.attributes()) {
             (j.second)->clone(*this);
         }
 
-        for (auto& j : other.variables()) {
+        for (const auto& j : other.variables()) {
             (j.second)->clone(*this);
         }
         return;
@@ -63,7 +63,7 @@ void OutputDataset::merge(Dataset& other) {
     bool more = true;
     while (more) {
         more = false;
-        for (auto& j : other.variables()) {
+        for (const auto& j : other.variables()) {
             bool found = false;
             for (auto& k : variables_) {
                 if ((k.second)->sameAs(*(j.second))) {
@@ -87,7 +87,7 @@ void OutputDataset::merge(Dataset& other) {
         more = false;
         for (auto& k : variables_) {
             bool found = false;
-            for (auto& j : other.variables()) {
+            for (const auto& j : other.variables()) {
                 if ((k.second)->sameAs(*(j.second))) {
                     found = true;
                     break;
@@ -107,7 +107,7 @@ void OutputDataset::merge(Dataset& other) {
 
     mergeAttributes(other);
 
-    for (auto& j : other.variables()) {
+    for (const auto& j : other.variables()) {
         bool found = false;
         for (auto& k : variables_) {
             if ((k.second)->sameAs(*(j.second))) {
@@ -149,7 +149,7 @@ void OutputDataset::save() const {
 
 
     // Log::info() << "Save dimensions" << std::endl;
-    for (auto& j : dimensions_) {
+    for (const auto& j : dimensions_) {
         if ((j.second)->inUse()) {
             // Log::info() << "Define " << *(j.second) << std::endl;
             (j.second)->create(nc);
@@ -157,21 +157,21 @@ void OutputDataset::save() const {
     }
 
     // Log::info() << "Save attributes" << std::endl;
-    for (auto& j : attributes_) {
+    for (const auto& j : attributes_) {
         // Log::info() << "Define " << *(j.second) << std::endl;
         (j.second)->create(nc);
     }
 
     // Log::info() << "Save variables" << std::endl;
 
-    for (auto& j : variables_) {
+    for (const auto& j : variables_) {
         // Log::info() << "Define " << *(j.second) << std::endl;
         (j.second)->create(nc);
     }
 
     NC_CALL(nc_enddef(nc), path_);
 
-    for (auto& j : variables_) {
+    for (const auto& j : variables_) {
         Log::info() << "Save " << *(j.second) << std::endl;
         (j.second)->save(nc);
     }

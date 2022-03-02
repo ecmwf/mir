@@ -45,7 +45,7 @@ const std::string& DataOutputVariable::ncname() const {
 }
 
 
-void DataOutputVariable::collectField(std::vector<Field*>&) const {
+void DataOutputVariable::collectField(std::vector<Field*>& /*unused*/) const {
     NOTIMP;
 }
 

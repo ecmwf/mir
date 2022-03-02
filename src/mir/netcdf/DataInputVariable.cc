@@ -57,7 +57,7 @@ const std::string& DataInputVariable::ncname() const {
 
 
 void DataInputVariable::addCoordinateVariable(const Variable* v) {
-    for (auto j : coordinates_) {
+    for (const auto* j : coordinates_) {
         if (j == v) {
             return;
         }
@@ -67,7 +67,7 @@ void DataInputVariable::addCoordinateVariable(const Variable* v) {
 
 
 Variable* DataInputVariable::addMissingCoordinates() {
-    for (auto d : dimensions_) {
+    for (auto* d : dimensions_) {
         bool found = false;
         for (auto c = coordinates_.begin(); !found && c != coordinates_.end(); ++c) {
             found = (d->name() == (*c)->name());
@@ -93,7 +93,7 @@ void DataInputVariable::collectField(std::vector<Field*>& fields) const {
 size_t DataInputVariable::count2DValues() const {
 
     std::vector<size_t> dims;
-    for (auto d : dimensions_) {
+    for (auto* d : dimensions_) {
         d->realDimensions(dims);
     }
 
@@ -110,7 +110,7 @@ size_t DataInputVariable::count2DValues() const {
 void DataInputVariable::get2DValues(MIRValuesVector& values, size_t index) const {
 
     std::vector<size_t> dims;
-    for (auto d : dimensions_) {
+    for (auto* d : dimensions_) {
         d->realDimensions(dims);
     }
 
@@ -155,7 +155,7 @@ const char* DataInputVariable::kind() const {
 
 void DataInputVariable::dumpAttributes(std::ostream& s, const char* prefix) const {
     s << prefix << "Coordinates:" << std::endl;
-    for (auto c : coordinates_) {
+    for (const auto* c : coordinates_) {
         s << prefix << "    " << *c << std::endl;
     }
 }
@@ -165,7 +165,7 @@ std::vector<std::string> DataInputVariable::coordinates() const {
     std::vector<std::string> result;
     result.reserve(coordinates_.size());
 
-    for (auto c : coordinates_) {
+    for (const auto* c : coordinates_) {
         result.push_back(c->name());
     }
     return result;

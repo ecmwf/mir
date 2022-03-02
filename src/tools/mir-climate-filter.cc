@@ -14,7 +14,7 @@
 #include <limits>
 #include <memory>
 
-#include "eckit/linalg/LinearAlgebra.h"
+#include "eckit/linalg/LinearAlgebraDense.h"
 #include "eckit/linalg/Matrix.h"
 #include "eckit/linalg/Vector.h"
 #include "eckit/option/CmdArgs.h"
@@ -43,15 +43,16 @@
 #include "mir/util/Types.h"
 
 
-using namespace mir;
+namespace mir {
+namespace tools {
 
 
-struct MIRClimateFilter : tools::MIRTool {
+struct MIRClimateFilter : MIRTool {
     MIRClimateFilter(int argc, char** argv) : MIRTool(argc, argv) {
-        using eckit::linalg::LinearAlgebra;
-        using eckit::option::VectorOption;
-        using eckit::option::SimpleOption;
+        using eckit::linalg::LinearAlgebraDense;
         using eckit::option::FactoryOption;
+        using eckit::option::SimpleOption;
+        using eckit::option::VectorOption;
 
         options_.push_back(
             new VectorOption<size_t>("k", "Range of neighbour points to weight (k, default [4, infty[)", 2));
@@ -62,9 +63,9 @@ struct MIRClimateFilter : tools::MIRTool {
         options_.push_back(new SimpleOption<double>(
             "weight-min", "Climate filter point minimum relative weight ([0, 1], default 0.001)"));
         options_.push_back(
-            new SimpleOption<bool>("no-backend", "No linear algebra backend (minimum memory requirements)"));
-        options_.push_back(new FactoryOption<LinearAlgebra>(
-            "backend", "Linear algebra backend (default '" + LinearAlgebra::backend().name() + "')"));
+            new SimpleOption<bool>("no-backend", "No linear algebra dense backend (minimum memory requirements)"));
+        options_.push_back(new FactoryOption<LinearAlgebraDense>(
+            "dense-backend", "Linear algebra dense backend (default '" + LinearAlgebraDense::backend().name() + "')"));
         options_.push_back(new FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
     }
 
@@ -143,7 +144,8 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
         size_t Nj = 0;
         repres::RepresentationHandle rep(ctx.field().representation());
         {
-            const auto *ll = dynamic_cast<const repres::latlon::RegularLL*>(static_cast<const repres::Representation*>(rep));
+            const auto* ll =
+                dynamic_cast<const repres::latlon::RegularLL*>(static_cast<const repres::Representation*>(rep));
             if ((ll == nullptr) || !rep->domain().isGlobal() || ctx.field().hasMissing()) {
                 throw exception::UserError(
                     "MIRClimateFilter: input field should be global regular_ll, no missing values");
@@ -307,7 +309,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
                 // x = A y: set weights vector y and output values vector x
                 t = timer.elapsed();
                 eckit::linalg::Vector x(output.data() + j * Ni, Ni);
-                static const auto& la(eckit::linalg::LinearAlgebra::backend());
+                static const auto& la(eckit::linalg::LinearAlgebraDense::backend());
                 la.gemv(A, y, x);
 
                 tVectorX += timer.elapsed(t);
@@ -326,7 +328,11 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
 }
 
 
+}  // namespace tools
+}  // namespace mir
+
+
 int main(int argc, char** argv) {
-    MIRClimateFilter tool(argc, argv);
+    mir::tools::MIRClimateFilter tool(argc, argv);
     return tool.start();
 }

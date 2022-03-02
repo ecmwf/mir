@@ -34,10 +34,11 @@
 #include "mir/util/Types.h"
 
 
-using namespace mir;
+namespace mir {
+namespace tools {
 
 
-struct MIRTriangulate : tools::MIRTool {
+struct MIRTriangulate : MIRTool {
     MIRTriangulate(int argc, char** argv) : MIRTool(argc, argv) {
         options_.push_back(new eckit::option::SimpleOption<std::string>("output", "Gmsh output file"));
     }
@@ -52,7 +53,7 @@ struct MIRTriangulate : tools::MIRTool {
                     << tool << " [--output=example.msh] file.grib [file.grib [...]]" << std::endl;
     }
 
-    void execute(const eckit::option::CmdArgs&) override;
+    void execute(const eckit::option::CmdArgs& /*args*/) override;
 };
 
 
@@ -419,7 +420,11 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
 }
 
 
+}  // namespace tools
+}  // namespace mir
+
+
 int main(int argc, char** argv) {
-    MIRTriangulate tool(argc, argv);
+    mir::tools::MIRTriangulate tool(argc, argv);
     return tool.start();
 }

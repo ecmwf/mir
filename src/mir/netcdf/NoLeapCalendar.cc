@@ -30,8 +30,8 @@ void NoLeapCalendar::print(std::ostream& out) const {
 }
 
 
-static CodecBuilder<NoLeapCalendar> builder1("noleap");
-static CodecBuilder<NoLeapCalendar> builder2("365_day");
+static const CodecBuilder<NoLeapCalendar> builder1("noleap");
+static const CodecBuilder<NoLeapCalendar> builder2("365_day");
 
 
 }  // namespace netcdf

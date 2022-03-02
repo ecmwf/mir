@@ -31,15 +31,14 @@ namespace {
 class MissingInput final : public input::MIRInput {
     const param::MIRParametrisation& parametrisation(size_t /*which*/ = 0) const override { NOTIMP; }
 
-    bool sameAs(const MIRInput&) const override { NOTIMP; }
+    bool sameAs(const MIRInput& /*unused*/) const override { NOTIMP; }
 
     void print(std::ostream& out) const override { out << "MissingInput[]"; }
 
     data::MIRField field() const override { NOTIMP; }
 
 public:
-    MissingInput()           = default;
-    ~MissingInput() override = default;
+    MissingInput() = default;
 };
 }  // namespace
 
@@ -57,7 +56,9 @@ public:
     virtual ~Content() = default;
 
     Content(const Content&) = delete;
+    Content(Content&&)      = delete;
     Content& operator=(const Content&) = delete;
+    Content& operator=(Content&&) = delete;
 
     virtual data::MIRField& field() {
         std::ostringstream oss;

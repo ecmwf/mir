@@ -30,7 +30,7 @@ void NoneCalendar::print(std::ostream& out) const {
 }
 
 
-static CodecBuilder<NoneCalendar> builder("none");
+static const CodecBuilder<NoneCalendar> builder("none");
 
 
 }  // namespace netcdf

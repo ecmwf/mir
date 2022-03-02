@@ -55,14 +55,14 @@ bool option(const param::MIRParametrisation& param, const std::string& key, bool
 }  // namespace
 
 
-static MIRStyleBuilder<ECMWFStyle> __style("ecmwf");
+static const MIRStyleBuilder<ECMWFStyle> __style("ecmwf");
 
-static MIRStyleBuilder<DeprecatedStyle> __deprecated_style("dissemination");
+static const MIRStyleBuilder<DeprecatedStyle> __deprecated_style("dissemination");
 
 
 static std::string target_gridded_from_parametrisation(const param::MIRParametrisation& param, bool checkRotation) {
-    auto& user  = param.userParametrisation();
-    auto& field = param.fieldParametrisation();
+    const auto& user  = param.userParametrisation();
+    const auto& field = param.fieldParametrisation();
     std::unique_ptr<const param::MIRParametrisation> same(new param::SameParametrisation(user, field, true));
 
     std::vector<double> rotation;
@@ -75,7 +75,7 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
 
     std::string grid;
     if (grid::Grid::get("grid", grid, param)) {
-        auto& g = grid::Grid::lookup(grid, field);
+        const auto& g = grid::Grid::lookup(grid, field);
 
         if (g.isRegularLL()) {
             std::vector<double> grid_v;
@@ -147,7 +147,7 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
 static void add_formula(action::ActionPlan& plan, const param::MIRParametrisation& param,
                         const std::vector<std::string>&& whens) {
     std::string formula;
-    for (auto& when : whens) {
+    for (const auto& when : whens) {
         if (param.get("formula." + when, formula)) {
             std::string metadata;  // paramId for the results of formulas
             param.get("formula." + when + ".metadata", metadata);
@@ -166,7 +166,7 @@ ECMWFStyle::~ECMWFStyle() = default;
 
 
 void ECMWFStyle::prologue(action::ActionPlan& plan) const {
-    auto& user = parametrisation_.userParametrisation();
+    const auto& user = parametrisation_.userParametrisation();
 
     std::string prologue;
     if (parametrisation_.get("prologue", prologue)) {
@@ -196,7 +196,7 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
 
 
 void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
-    auto& user = parametrisation_.userParametrisation();
+    const auto& user = parametrisation_.userParametrisation();
 
     add_formula(plan, user, {"spectral", "raw"});
 
@@ -253,7 +253,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
 
 void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
-    auto& user = parametrisation_.userParametrisation();
+    const auto& user = parametrisation_.userParametrisation();
 
     resol::Resol resol(parametrisation_, true);
     Log::debug() << "ECMWFStyle: resol=" << resol << std::endl;
@@ -272,7 +272,7 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
 
 
 void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
-    auto& user = parametrisation_.userParametrisation();
+    const auto& user = parametrisation_.userParametrisation();
 
     bool rotation = user.has("rotation");
     bool vod2uv   = option(user, "vod2uv", false);
@@ -301,7 +301,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
 
 void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
-    auto& user = parametrisation_.userParametrisation();
+    const auto& user = parametrisation_.userParametrisation();
 
     bool vod2uv = option(user, "vod2uv", false);
     bool uv2uv  = option(user, "uv2uv", false);
@@ -351,7 +351,7 @@ void ECMWFStyle::print(std::ostream& out) const {
 
 
 void ECMWFStyle::prepare(action::ActionPlan& plan, output::MIROutput& output) const {
-    auto& user = parametrisation_.userParametrisation();
+    const auto& user = parametrisation_.userParametrisation();
 
     // All the nasty logic goes there
     prologue(plan);

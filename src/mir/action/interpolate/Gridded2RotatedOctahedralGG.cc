@@ -35,7 +35,7 @@ Gridded2RotatedOctahedralGG::~Gridded2RotatedOctahedralGG() = default;
 
 
 bool Gridded2RotatedOctahedralGG::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const Gridded2RotatedOctahedralGG*>(&other);
+    const auto* o = dynamic_cast<const Gridded2RotatedOctahedralGG*>(&other);
     return (o != nullptr) && (N_ == o->N_) && Gridded2RotatedGrid::sameAs(other);
 }
 
@@ -62,7 +62,7 @@ const char* Gridded2RotatedOctahedralGG::name() const {
 }
 
 
-static ActionBuilder<Gridded2RotatedOctahedralGG> grid2grid("interpolate.grid2rotated-octahedral-gg");
+static const ActionBuilder<Gridded2RotatedOctahedralGG> grid2grid("interpolate.grid2rotated-octahedral-gg");
 
 
 }  // namespace interpolate

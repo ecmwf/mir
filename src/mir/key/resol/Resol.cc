@@ -112,7 +112,7 @@ bool Resol::resultIsSpectral() const {
 
 void Resol::print(std::ostream& out) const {
     out << "Resol[";
-    auto sep = "";
+    const auto* sep = "";
 
     long T = 0;
     if (truncation_->truncation(T, inputTruncation_)) {
@@ -136,7 +136,7 @@ const std::string& Resol::gridname() const {
 
 
 long Resol::getTargetGaussianNumber() const {
-    auto& user = parametrisation_.userParametrisation();
+    const auto& user = parametrisation_.userParametrisation();
 
     // get Gaussian N from interpreting grid
     std::string grid;

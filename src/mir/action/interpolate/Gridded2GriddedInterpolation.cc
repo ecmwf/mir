@@ -108,7 +108,7 @@ method::Cropping Gridded2GriddedInterpolation::cropping(context::Context& ctx) c
 
     if (crop) {
         // disable cropping if global and West aligned with input (no "renumbering")
-        auto& bbox = crop.boundingBox();
+        const auto& bbox = crop.boundingBox();
         const util::Domain domain(bbox.north(), bbox.west(), bbox.south(), bbox.east());
         if (domain.isGlobal() && bbox.west() == input.west()) {
             return method::Cropping();
@@ -137,7 +137,7 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
 
 
 bool Gridded2GriddedInterpolation::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const Gridded2GriddedInterpolation*>(&other);
+    const auto* o = dynamic_cast<const Gridded2GriddedInterpolation*>(&other);
     return (o != nullptr) && (interpolation_ == o->interpolation_) && method_->sameAs(*o->method_) &&
            (inputIntersectsOutput_ == o->inputIntersectsOutput_);
 }

@@ -36,7 +36,7 @@ Gridded2GridDef::~Gridded2GridDef() = default;
 
 
 bool Gridded2GridDef::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const Gridded2GridDef*>(&other);
+    const auto* o = dynamic_cast<const Gridded2GridDef*>(&other);
     return (o != nullptr) && (griddef_ == o->griddef_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
@@ -66,7 +66,7 @@ const char* Gridded2GridDef::name() const {
 }
 
 
-static ActionBuilder<Gridded2GridDef> grid2grid("interpolate.grid2griddef");
+static const ActionBuilder<Gridded2GridDef> grid2grid("interpolate.grid2griddef");
 
 
 }  // namespace interpolate

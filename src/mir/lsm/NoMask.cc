@@ -31,7 +31,7 @@ bool NoMask::cacheable() const {
 }
 
 
-void NoMask::hash(eckit::MD5&) const {
+void NoMask::hash(eckit::MD5& /*unused*/) const {
     NOTIMP;
 }
 

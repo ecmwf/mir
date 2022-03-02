@@ -75,7 +75,9 @@ public:
     void add(const eckit::PathName& path) { paths_.push_back(path); }
 
     Unloader(const Unloader&) = delete;
+    Unloader(Unloader&&)      = delete;
     Unloader& operator=(const Unloader&) = delete;
+    Unloader& operator=(Unloader&&) = delete;
 
     ~Unloader() {
         for (auto& path : paths_) {
@@ -199,8 +201,8 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
 
     try {
 
-        auto addr = reinterpret_cast<char*>(address_);
-        auto nfo  = reinterpret_cast<SHMInfo*>(addr + (((size_ + page_size - 1) / page_size) * page_size));
+        auto* addr = reinterpret_cast<char*>(address_);
+        auto* nfo  = reinterpret_cast<SHMInfo*>(addr + (((size_ + page_size - 1) / page_size) * page_size));
 
         // Check if the file has been loaded in memory
         if (nfo->ready != 0) {
@@ -321,10 +323,10 @@ bool SharedMemoryLoader::shared() {
 }
 
 
-static LegendreLoaderBuilder<SharedMemoryLoader> loader1("shared-memory");
-static LegendreLoaderBuilder<SharedMemoryLoader> loader2("shmem");
-static LegendreLoaderBuilder<SharedMemoryLoader> loader3("tmp-shmem");
-static LegendreLoaderBuilder<SharedMemoryLoader> loader5("tmp-shared-memory");
+static const LegendreLoaderBuilder<SharedMemoryLoader> loader1("shared-memory");
+static const LegendreLoaderBuilder<SharedMemoryLoader> loader2("shmem");
+static const LegendreLoaderBuilder<SharedMemoryLoader> loader3("tmp-shmem");
+static const LegendreLoaderBuilder<SharedMemoryLoader> loader5("tmp-shared-memory");
 
 
 }  // namespace legendre

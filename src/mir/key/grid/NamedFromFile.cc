@@ -45,7 +45,7 @@ const repres::Representation* NamedFromFile::representation() const {
 }
 
 
-const repres::Representation* NamedFromFile::representation(const util::Rotation&) const {
+const repres::Representation* NamedFromFile::representation(const util::Rotation& /*unused*/) const {
     NOTIMP;
 }
 

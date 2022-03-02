@@ -41,7 +41,7 @@ KNearest::~KNearest() = default;
 
 
 bool KNearest::sameAs(const Method& other) const {
-    auto o = dynamic_cast<const KNearest*>(&other);
+    const auto* o = dynamic_cast<const KNearest*>(&other);
     return (o != nullptr) && KNearestNeighbours::sameAs(other);
 }
 
@@ -63,9 +63,9 @@ const char* KNearest::name() const {
 }
 
 
-static MethodBuilder<KNearest> __method1("k-nearest");
-static MethodBuilder<KNearest> __method2("k-nearest-neighbours");
-static MethodBuilder<KNearest> __method3("k-nearest-neighbors");
+static const MethodBuilder<KNearest> __method1("k-nearest");
+static const MethodBuilder<KNearest> __method2("k-nearest-neighbours");
+static const MethodBuilder<KNearest> __method3("k-nearest-neighbors");
 
 
 }  // namespace knn

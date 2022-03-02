@@ -30,7 +30,7 @@ VoronoiStatistics::VoronoiStatistics(const param::MIRParametrisation& param) : V
 }
 
 
-static MethodBuilder<VoronoiStatistics> __builder("voronoi-statistics");
+static const MethodBuilder<VoronoiStatistics> __builder("voronoi-statistics");
 
 
 }  // namespace voronoi

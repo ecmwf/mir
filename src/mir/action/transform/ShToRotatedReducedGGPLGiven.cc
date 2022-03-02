@@ -44,7 +44,7 @@ ShToRotatedReducedGGPLGiven<Invtrans>::~ShToRotatedReducedGGPLGiven() = default;
 
 template <class Invtrans>
 bool ShToRotatedReducedGGPLGiven<Invtrans>::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const ShToRotatedReducedGGPLGiven*>(&other);
+    const auto* o = dynamic_cast<const ShToRotatedReducedGGPLGiven*>(&other);
     return (o != nullptr) && (pl_ == o->pl_) && (rotation_ == o->rotation_) && ShToGridded::sameAs(other);
 }
 
@@ -79,9 +79,9 @@ const repres::Representation* ShToRotatedReducedGGPLGiven<Invtrans>::outputRepre
 }
 
 
-static ActionBuilder<ShToRotatedReducedGGPLGiven<InvtransScalar> > __action1(
+static const ActionBuilder<ShToRotatedReducedGGPLGiven<InvtransScalar> > __action1(
     "transform.sh-scalar-to-rotated-reduced-gg-pl-given");
-static ActionBuilder<ShToRotatedReducedGGPLGiven<InvtransVodTouv> > __action2(
+static const ActionBuilder<ShToRotatedReducedGGPLGiven<InvtransVodTouv> > __action2(
     "transform.sh-vod-to-uv-rotated-reduced-gg-pl-given");
 
 

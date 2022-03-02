@@ -53,8 +53,8 @@ FormulaFunction::~FormulaFunction() {
 
 void FormulaFunction::print(std::ostream& out) const {
     out << function_ << "(";
-    auto sep = "";
-    for (auto& j : args_) {
+    const auto* sep = "";
+    for (const auto& j : args_) {
         out << sep << *j;
         sep = ",";
     }
@@ -63,7 +63,7 @@ void FormulaFunction::print(std::ostream& out) const {
 
 
 void FormulaFunction::execute(context::Context& ctx) const {
-    for (auto& j : args_) {
+    for (const auto& j : args_) {
         j->perform(ctx.push());
     }
     function_.execute(ctx);
@@ -71,7 +71,7 @@ void FormulaFunction::execute(context::Context& ctx) const {
 
 
 bool FormulaFunction::sameAs(const action::Action& other) const {
-    auto o = dynamic_cast<const FormulaFunction*>(&other);
+    const auto* o = dynamic_cast<const FormulaFunction*>(&other);
     if ((o != nullptr) && (&function_ == &(o->function_)) && (args_.size() == o->args_.size())) {
         for (size_t i = 0; i < args_.size(); ++i) {
             if (!args_[i]->sameAs(*(o->args_[i]))) {

@@ -41,8 +41,8 @@ static void init() {
 
 Packing::Packing(const std::string& name, const param::MIRParametrisation& param) :
     gridded_(param.userParametrisation().has("grid") || param.fieldParametrisation().has("gridded")) {
-    auto& user  = param.userParametrisation();
-    auto& field = param.fieldParametrisation();
+    const auto& user  = param.userParametrisation();
+    const auto& field = param.fieldParametrisation();
 
     ASSERT(!name.empty());
     packing_ = name;
@@ -206,8 +206,8 @@ Packing* PackingFactory::build(const param::MIRParametrisation& param) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-    auto& user  = param.userParametrisation();
-    auto& field = param.fieldParametrisation();
+    const auto& user  = param.userParametrisation();
+    const auto& field = param.fieldParametrisation();
 
 
     // When converting from spectral to gridded, default to simple packing

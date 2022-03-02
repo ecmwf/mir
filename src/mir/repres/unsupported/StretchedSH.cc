@@ -28,7 +28,7 @@ void StretchedSH::print(std::ostream& out) const {
 }
 
 
-static RepresentationBuilder<StretchedSH> __repres("stretched_sh");
+static const RepresentationBuilder<StretchedSH> __repres("stretched_sh");
 
 
 }  // namespace repres

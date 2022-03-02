@@ -53,7 +53,7 @@ void GaussianDistanceWeighting::operator()(size_t ip, const Point3& point,
 
     // calculate neighbour points weights, and their total (for normalisation)
     double sum = 0.;
-    for (auto& n : neighbours) {
+    for (const auto& n : neighbours) {
         const double d2     = Point3::distance2(point, n.point());
         const double weight = std::exp(d2 * exponentFactor_);
 
@@ -70,7 +70,7 @@ void GaussianDistanceWeighting::operator()(size_t ip, const Point3& point,
 
 
 bool GaussianDistanceWeighting::sameAs(const DistanceWeighting& other) const {
-    auto o = dynamic_cast<const GaussianDistanceWeighting*>(&other);
+    const auto* o = dynamic_cast<const GaussianDistanceWeighting*>(&other);
     return (o != nullptr) && eckit::types::is_approximately_equal(stddev_, o->stddev_);
 }
 

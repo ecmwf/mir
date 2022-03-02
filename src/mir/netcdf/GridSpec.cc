@@ -43,7 +43,7 @@ GridSpec::~GridSpec() = default;
 
 GridSpec* GridSpec::create(const Variable& variable) {
 
-    auto spec = GridSpecGuesser::guess(variable);
+    auto* spec = GridSpecGuesser::guess(variable);
     if (spec == nullptr) {
         std::ostringstream oss;
         oss << "Cannot guess GridSpec for " << variable;
@@ -78,7 +78,7 @@ GridSpec* GridSpecGuesser::guess(const Variable& variable) {
     const Variable& longitudes = variable.lookupInDataset("longitude", "degrees_east", 1);
 
     for (auto& j : *m) {
-        auto spec = j.second->guess(variable, latitudes, longitudes);
+        auto* spec = j.second->guess(variable, latitudes, longitudes);
         if (spec != nullptr) {
             Log::info() << "GRIDSPEC is " << *spec << std::endl;
             return spec;

@@ -20,7 +20,7 @@ namespace key {
 namespace packing {
 
 
-static PackingBuilder<ArchivedValue> __packing("archived-value", "av", true, true);
+static const PackingBuilder<ArchivedValue> __packing("archived-value", "av", true, true);
 
 
 ArchivedValue::ArchivedValue(const std::string& name, const param::MIRParametrisation& param) : Packing(name, param) {
@@ -28,12 +28,12 @@ ArchivedValue::ArchivedValue(const std::string& name, const param::MIRParametris
 }
 
 
-void ArchivedValue::fill(const repres::Representation*, grib_info& info) const {
+void ArchivedValue::fill(const repres::Representation* /*unused*/, grib_info& info) const {
     Packing::fill(info, 0 /* dummy, protected by ASSERT */);
 }
 
 
-void ArchivedValue::set(const repres::Representation*, grib_handle* handle) const {
+void ArchivedValue::set(const repres::Representation* /*unused*/, grib_handle* handle) const {
     Packing::set(handle, "" /* dummy, protected by ASSERT */);
 }
 

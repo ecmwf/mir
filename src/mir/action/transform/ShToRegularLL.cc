@@ -46,7 +46,7 @@ ShToRegularLL<Invtrans>::~ShToRegularLL() = default;
 
 template <class Invtrans>
 bool ShToRegularLL<Invtrans>::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const ShToRegularLL*>(&other);
+    const auto* o = dynamic_cast<const ShToRegularLL*>(&other);
     return (o != nullptr) && (increments_ == o->increments_);
 }
 
@@ -86,8 +86,8 @@ const repres::Representation* ShToRegularLL<Invtrans>::outputRepresentation() co
 }
 
 
-static ActionBuilder<ShToRegularLL<InvtransScalar> > __action1("transform.sh-scalar-to-regular-ll");
-static ActionBuilder<ShToRegularLL<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-regular-ll");
+static const ActionBuilder<ShToRegularLL<InvtransScalar> > __action1("transform.sh-scalar-to-regular-ll");
+static const ActionBuilder<ShToRegularLL<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-regular-ll");
 
 
 }  // namespace transform

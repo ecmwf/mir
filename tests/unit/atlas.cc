@@ -114,8 +114,8 @@ CASE("MIR-374") {
 
     const std::string names[] = {"O16", "O640"};
 
-    for (auto& domain : domains) {
-        for (auto& name : names) {
+    for (const auto& domain : domains) {
+        for (const auto& name : names) {
             Handle repr = key::grid::Grid::lookup(name).representation();
             Handle crop = repr->croppedRepresentation(domain);
 

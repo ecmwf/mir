@@ -47,7 +47,7 @@ size_t DistanceOrNClosest::n() const {
 
 
 bool DistanceOrNClosest::sameAs(const Pick& other) const {
-    auto o = dynamic_cast<const DistanceOrNClosest*>(&other);
+    const auto* o = dynamic_cast<const DistanceOrNClosest*>(&other);
     return (o != nullptr) && nClosest_.sameAs(o->nClosest_) &&
            eckit::types::is_approximately_equal(distance_, o->distance_);
 }
@@ -65,7 +65,7 @@ void DistanceOrNClosest::hash(eckit::MD5& h) const {
 }
 
 
-static PickBuilder<DistanceOrNClosest> __pick("distance-or-nclosest");
+static const PickBuilder<DistanceOrNClosest> __pick("distance-or-nclosest");
 
 
 }  // namespace pick

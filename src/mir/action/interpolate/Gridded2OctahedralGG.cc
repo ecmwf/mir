@@ -34,7 +34,7 @@ Gridded2OctahedralGG::~Gridded2OctahedralGG() = default;
 
 
 bool Gridded2OctahedralGG::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const Gridded2OctahedralGG*>(&other);
+    const auto* o = dynamic_cast<const Gridded2OctahedralGG*>(&other);
     return (o != nullptr) && (N_ == o->N_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
@@ -58,7 +58,7 @@ const char* Gridded2OctahedralGG::name() const {
 }
 
 
-static ActionBuilder<Gridded2OctahedralGG> grid2grid("interpolate.grid2octahedral-gg");
+static const ActionBuilder<Gridded2OctahedralGG> grid2grid("interpolate.grid2octahedral-gg");
 
 
 }  // namespace interpolate

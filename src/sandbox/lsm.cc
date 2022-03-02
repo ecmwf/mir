@@ -19,7 +19,8 @@
 #include "mir/util/Types.h"
 
 
-using namespace mir;
+namespace mir {
+namespace sandbox {
 
 
 struct LSM : eckit::Tool {
@@ -29,16 +30,17 @@ struct LSM : eckit::Tool {
 
 
 void LSM::run() {
+    using mir::Log;
 
-    input::GribFileInput file("/tmp/lsm.grib");
-    const input::MIRInput& input = file;
+    mir::input::GribFileInput file("/tmp/lsm.grib");
+    const mir::input::MIRInput& input = file;
 
     while (file.next()) {
 
         input.parametrisation();  //
-        data::MIRField field(input.field());
+        auto field(input.field());
 
-        const MIRValuesVector& v = field.values(0);
+        const auto& v = field.values(0);
         std::vector<int32_t> p(v.size());
 
         eckit::AutoStdFile f("zzzzz", "w");
@@ -92,7 +94,11 @@ void LSM::run() {
 }
 
 
+}  // namespace sandbox
+}  // namespace mir
+
+
 int main(int argc, char** argv) {
-    LSM tool(argc, argv);
+    mir::sandbox::LSM tool(argc, argv);
     return tool.start();
 }

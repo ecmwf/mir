@@ -61,6 +61,11 @@ using failed_projection_t = std::pair<size_t, PointLatLon>;
 struct element_t : std::vector<size_t> {
     using vector::vector;
 
+    element_t(const element_t&) = delete;
+    element_t(element_t&&)      = delete;
+    element_t& operator=(const element_t&) = delete;
+    element_t& operator=(element_t&&) = delete;
+
     virtual ~element_t() = default;
 
     virtual bool intersects(const atlas::interpolation::method::Ray&) = 0;
@@ -217,7 +222,7 @@ void FiniteElement::print(std::ostream& out) const {
 
 
 bool FiniteElement::sameAs(const Method& other) const {
-    auto o = dynamic_cast<const FiniteElement*>(&other);
+    const auto* o = dynamic_cast<const FiniteElement*>(&other);
     return (o != nullptr) && meshGeneratorParams_.sameAs(o->meshGeneratorParams_) &&
            validateMesh_ == o->validateMesh_ && missingValueOnProjectionFail_ == o->missingValueOnProjectionFail_ &&
            MethodWeighted::sameAs(other);

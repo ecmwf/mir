@@ -59,7 +59,8 @@ const char* WeightCacheTraits::extension() {
 }
 
 
-void WeightCacheTraits::save(const eckit::CacheManagerBase&, const value_type& W, const eckit::PathName& path) {
+void WeightCacheTraits::save(const eckit::CacheManagerBase& /*unused*/, const value_type& W,
+                             const eckit::PathName& path) {
     Log::debug() << "Inserting weights in cache : " << path << "" << std::endl;
     trace::Timer timer("Saving weights to cache");
 

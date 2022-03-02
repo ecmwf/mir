@@ -45,34 +45,46 @@ Rules::~Rules() {
 }
 
 
+const MIRParametrisation* Rules::find(const MIRParametrisation& param) const {
+    long paramId = 0;
+    if (param.get(PARAM_ID, paramId) && 0 < paramId) {
+        auto p = rules_.find(paramId);
+        if (p != rules_.end()) {
+            return p->second;
+        }
+    }
+
+    return nullptr;
+}
+
+
 SimpleParametrisation& Rules::lookup(long paramId) {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     auto p = rules_.find(paramId);
-    if (p == rules_.end()) {
-        return *(rules_[paramId] = new SimpleParametrisation());
+    if (p != rules_.end()) {
+        return *(p->second);
     }
 
-    return *(p->second);
+    return *(rules_[paramId] = new SimpleParametrisation());
 }
 
 
 const MIRParametrisation& Rules::lookup(const std::string& ruleName, long ruleValue) {
     ASSERT(ruleName == PARAM_ID);
 
-    auto& r               = instance();
-    MIRParametrisation& s = r.lookup(ruleValue);
+    MIRParametrisation& s = lookup(ruleValue);
 
     auto msg = [&]() -> std::string { return ruleName + "=" + std::to_string(ruleValue) + ": "; };
 
-    auto w = r.warning_.find(ruleValue);
-    if (w != r.warning_.end()) {
-        r.warning_.erase(w);
+    auto w = warning_.find(ruleValue);
+    if (w != warning_.end()) {
+        warning_.erase(w);
         Log::warning() << "Warning: " << msg() << "post-processing defaults might not be appropriate" << std::endl;
         return s;
     }
 
-    if (!s.has(KLASS) && r.noted_.insert(ruleValue).second) {
+    if (!s.has(KLASS) && noted_.insert(ruleValue).second) {
         std::string m = msg() + "no class defined";
 
         static bool abortIfUnknownParameterClass =
@@ -203,12 +215,11 @@ void Rules::readConfigurationFiles() {
 
 
     for (const auto& i : parameters.map()) {
-
         long paramId                  = translate_to_long(i.first);
-        SimpleParametrisation& config = Rules::lookup(paramId);
+        SimpleParametrisation& config = lookup(paramId);
 
         const eckit::ValueList& options = i.second;
-        for (auto& j : options) {
+        for (const auto& j : options) {
             for (const auto& k : eckit::ValueMap(j)) {
                 const std::string& name  = k.first;
                 const std::string& value = k.second;

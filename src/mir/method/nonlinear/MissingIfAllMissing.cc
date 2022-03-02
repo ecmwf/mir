@@ -30,14 +30,15 @@ namespace nonlinear {
 MissingIfAllMissing::MissingIfAllMissing(const param::MIRParametrisation& param) : NonLinear(param) {}
 
 
-bool MissingIfAllMissing::treatment(MethodWeighted::Matrix&, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix&,
-                                    const MIRValuesVector& values, const double& missingValue) const {
+bool MissingIfAllMissing::treatment(MethodWeighted::Matrix& /*A*/, MethodWeighted::WeightMatrix& W,
+                                    MethodWeighted::Matrix& /*B*/, const MIRValuesVector& values,
+                                    const double& missingValue) const {
 
     // correct matrix weigths for the missing values
     // (force a missing value only if all row values are missing)
     ASSERT(W.cols() == values.size());
 
-    auto data  = const_cast<WeightMatrix::Scalar*>(W.data());
+    auto* data = const_cast<WeightMatrix::Scalar*>(W.data());
     bool modif = false;
 
     WeightMatrix::Size i = 0;
@@ -92,7 +93,7 @@ bool MissingIfAllMissing::treatment(MethodWeighted::Matrix&, MethodWeighted::Wei
 
 
 bool MissingIfAllMissing::sameAs(const NonLinear& other) const {
-    auto o = dynamic_cast<const MissingIfAllMissing*>(&other);
+    const auto* o = dynamic_cast<const MissingIfAllMissing*>(&other);
     return (o != nullptr);
 }
 
@@ -109,7 +110,7 @@ void MissingIfAllMissing::hash(eckit::MD5& h) const {
 }
 
 
-static NonLinearBuilder<MissingIfAllMissing> __nonlinear("missing-if-all-missing");
+static const NonLinearBuilder<MissingIfAllMissing> __nonlinear("missing-if-all-missing");
 
 
 }  // namespace nonlinear

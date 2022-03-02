@@ -29,10 +29,11 @@
 #include "mir/util/Types.h"
 
 
-using namespace mir;
+namespace mir {
+namespace tools {
 
 
-struct MIRSpectralTransformPoints : tools::MIRTool {
+struct MIRSpectralTransformPoints : MIRTool {
     MIRSpectralTransformPoints(int argc, char** argv) : MIRTool(argc, argv) {
         options_.push_back(
             new eckit::option::SimpleOption<std::string>("point", "lat/lon coordinate pair(s), space-separated"));
@@ -56,7 +57,7 @@ struct MIRSpectralTransformPoints : tools::MIRTool {
                     << tool << " --pont=\"1/1 2/2\" input.grib" << std::endl;
     }
 
-    void execute(const eckit::option::CmdArgs&) override;
+    void execute(const eckit::option::CmdArgs& /*args*/) override;
 };
 
 
@@ -67,7 +68,7 @@ void MIRSpectralTransformPoints::execute(const eckit::option::CmdArgs& args) {
     std::string point = args.getString("point");
     auto points       = eckit::StringTools::split(" ", point);
 
-    auto pts = new std::vector<atlas::PointXY>;  // pointer, to transfer ownership to UnstructuredGrid
+    auto* pts = new std::vector<atlas::PointXY>;  // pointer, to transfer ownership to UnstructuredGrid
     pts->reserve(points.size());
 
     for (auto& pt : points) {
@@ -106,7 +107,11 @@ void MIRSpectralTransformPoints::execute(const eckit::option::CmdArgs& args) {
 }
 
 
+}  // namespace tools
+}  // namespace mir
+
+
 int main(int argc, char** argv) {
-    MIRSpectralTransformPoints tool(argc, argv);
+    mir::tools::MIRSpectralTransformPoints tool(argc, argv);
     return tool.start();
 }

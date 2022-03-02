@@ -180,7 +180,7 @@ GridSpec* Curvilinear::guess(const Variable& variable, const Variable& latitudes
     struct Index {
         size_t ni_;
         size_t nj_;
-        size_t operator()(size_t i, size_t j) { return i + j * ni_; }
+        size_t operator()(size_t i, size_t j) const { return i + j * ni_; }
     };
 
     Index index;
@@ -270,7 +270,7 @@ void Curvilinear::reorder(MIRValuesVector& /*values*/) const {
 }
 
 
-static GridSpecGuesserBuilder<Curvilinear> builder(3);
+static const GridSpecGuesserBuilder<Curvilinear> builder(3);
 
 
 }  // namespace netcdf

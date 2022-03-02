@@ -24,21 +24,22 @@ namespace output {
 EmptyOutput::EmptyOutput() = default;
 
 
-EmptyOutput::EmptyOutput(const std::string&) {}
+EmptyOutput::EmptyOutput(const std::string& /*unused*/) {}
 
 
-size_t EmptyOutput::save(const param::MIRParametrisation&, context::Context&) {
+size_t EmptyOutput::save(const param::MIRParametrisation& /*unused*/, context::Context& /*unused*/) {
     return 0;
 }
 
 
 bool EmptyOutput::sameAs(const MIROutput& other) const {
-    auto o = dynamic_cast<const EmptyOutput*>(&other);
+    const auto* o = dynamic_cast<const EmptyOutput*>(&other);
     return (o != nullptr);
 }
 
 
-bool EmptyOutput::sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const {
+bool EmptyOutput::sameParametrisation(const param::MIRParametrisation& /*unused*/,
+                                      const param::MIRParametrisation& /*unused*/) const {
     return false;
 }
 
@@ -79,7 +80,7 @@ void EmptyOutput::print(std::ostream& out) const {
 }
 
 
-static MIROutputBuilder<EmptyOutput> output("empty");
+static const MIROutputBuilder<EmptyOutput> output("empty");
 
 
 }  // namespace output

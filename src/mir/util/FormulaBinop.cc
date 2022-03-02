@@ -103,7 +103,7 @@ class Unop : public Function {
 
         std::ostringstream oss;
         oss << "Cannot compute " << *this << " with " << a;
-        throw new eckit::SeriousBug(oss.str());
+        throw exception::SeriousBug(oss.str());
     }
 
 
@@ -274,7 +274,7 @@ class Binop : public Function {
 
         std::ostringstream oss;
         oss << "Cannot compute " << *this << " with " << ctx1 << " and " << ctx2;
-        throw new eckit::SeriousBug(oss.str());
+        throw exception::SeriousBug(oss.str());
     }
 
 
@@ -284,72 +284,72 @@ public:
 
 
 struct round {
-    double operator()(double x) const { return ::round(x); }
+    double operator()(double x) const { return std::round(x); }
 };
 
 
 struct sqrt {
-    double operator()(double x) const { return ::sqrt(x); }
+    double operator()(double x) const { return std::sqrt(x); }
 };
 
 
 struct sin {
-    double operator()(double x) const { return ::sin(x); }
+    double operator()(double x) const { return std::sin(x); }
 };
 
 
 struct cos {
-    double operator()(double x) const { return ::cos(x); }
+    double operator()(double x) const { return std::cos(x); }
 };
 
 
 struct tan {
-    double operator()(double x) const { return ::tan(x); }
+    double operator()(double x) const { return std::tan(x); }
 };
 
 
 struct asin {
-    double operator()(double x) const { return ::asin(x); }
+    double operator()(double x) const { return std::asin(x); }
 };
 
 
 struct acos {
-    double operator()(double x) const { return ::acos(x); }
+    double operator()(double x) const { return std::acos(x); }
 };
 
 
 struct atan {
-    double operator()(double x) const { return ::atan(x); }
+    double operator()(double x) const { return std::atan(x); }
 };
 
 
 struct log {
-    double operator()(double x) const { return ::log(x); }
+    double operator()(double x) const { return std::log(x); }
 };
 
 
 struct log2 {
-    double operator()(double x) const { return ::log2(x); }
+    double operator()(double x) const { return std::log2(x); }
 };
 
 
 struct log10 {
-    double operator()(double x) const { return ::log10(x); }
+    double operator()(double x) const { return std::log10(x); }
 };
 
 
 struct exp {
-    double operator()(double x) const { return ::exp(x); }
+    double operator()(double x) const { return std::exp(x); }
 };
 
 
 struct abs {
-    double operator()(double x) const { return ::fabs(x); }
+    double operator()(double x) const { return std::abs(x); }
 };
 
 
 struct atan2 {
-    double operator()(double x, double y) const { return ::atan2(x, y); }
+    double operator()(double x, double y) const { return std::atan2(x, y); }
 };
 
 
@@ -364,49 +364,49 @@ struct max {
 
 
 struct pow {
-    double operator()(double x, double y) const { return ::pow(x, y); }
+    double operator()(double x, double y) const { return std::pow(x, y); }
 };
 
 
-static Unop<std::negate<double> > negate("neg");
-static Unop<std::logical_not<double> > logical_not("not");
+static const Unop<std::negate<double> > negate("neg");
+static const Unop<std::logical_not<double> > logical_not("not");
 
-static Unop<log2> _log2("log2");
-static Unop<round> _round("round");
-static Unop<sqrt> _sqrt("sqrt");
-static Unop<sin> _sin("sin");
-static Unop<cos> _cos("cos");
-static Unop<tan> _tan("tan");
-static Unop<asin> _asin("asin");
-static Unop<acos> _acos("acos");
-static Unop<atan> _atan("atan");
-static Unop<log> _log("log");
-static Unop<log10> _log10("log10");
-static Unop<exp> _exp("exp");
-static Unop<abs> _abs("abs");
+static const Unop<log2> _log2("log2");
+static const Unop<round> _round("round");
+static const Unop<sqrt> _sqrt("sqrt");
+static const Unop<sin> _sin("sin");
+static const Unop<cos> _cos("cos");
+static const Unop<tan> _tan("tan");
+static const Unop<asin> _asin("asin");
+static const Unop<acos> _acos("acos");
+static const Unop<atan> _atan("atan");
+static const Unop<log> _log("log");
+static const Unop<log10> _log10("log10");
+static const Unop<exp> _exp("exp");
+static const Unop<abs> _abs("abs");
 
-static Binop<std::plus<double> > plus("+");
-static Binop<std::minus<double> > minus("-");
-static Binop<std::multiplies<double> > multiplies("*");
-static Binop<std::divides<double> > divides("/");
+static const Binop<std::plus<double> > plus("+");
+static const Binop<std::minus<double> > minus("-");
+static const Binop<std::multiplies<double> > multiplies("*");
+static const Binop<std::divides<double> > divides("/");
 // static Binop<std::modulus<double> > modulus1("%");
 // static Binop<std::modulus<double> > modulus2("mod");
-static Binop<std::equal_to<double> > equal_to("=");
-static Binop<std::not_equal_to<double> > not_equal_to("!=");
-static Binop<std::greater<double> > greater(">");
-static Binop<std::less<double> > less("<");
-static Binop<std::greater_equal<double> > greater_equal(">=");
-static Binop<std::less_equal<double> > less_equal("<=");
-static Binop<std::logical_and<double> > logical_and_1("&&");
-static Binop<std::logical_or<double> > logical_or_1("||");
-static Binop<std::logical_and<double> > logical_and_2("and");
-static Binop<std::logical_or<double> > logical_or_2("or");
+static const Binop<std::equal_to<double> > equal_to("=");
+static const Binop<std::not_equal_to<double> > not_equal_to("!=");
+static const Binop<std::greater<double> > greater(">");
+static const Binop<std::less<double> > less("<");
+static const Binop<std::greater_equal<double> > greater_equal(">=");
+static const Binop<std::less_equal<double> > less_equal("<=");
+static const Binop<std::logical_and<double> > logical_and_1("&&");
+static const Binop<std::logical_or<double> > logical_or_1("||");
+static const Binop<std::logical_and<double> > logical_and_2("and");
+static const Binop<std::logical_or<double> > logical_or_2("or");
 
-static Binop<atan2> _atan2("atan2");
-static Binop<min> _min("min");
-static Binop<max> _max("max");
-static Binop<pow> _pow_1("^");
-static Binop<pow> _pow_2("pow");
+static const Binop<atan2> _atan2("atan2");
+static const Binop<min> _min("min");
+static const Binop<max> _max("max");
+static const Binop<pow> _pow_1("^");
+static const Binop<pow> _pow_2("pow");
 
 
 }  // namespace util

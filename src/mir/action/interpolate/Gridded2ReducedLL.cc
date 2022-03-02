@@ -51,7 +51,7 @@ const char* Gridded2ReducedLL::name() const {
 }
 
 
-static ActionBuilder<Gridded2ReducedLL> grid2grid("interpolate.grid2reduced-ll");
+static const ActionBuilder<Gridded2ReducedLL> grid2grid("interpolate.grid2reduced-ll");
 
 
 }  // namespace interpolate

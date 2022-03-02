@@ -73,7 +73,7 @@ void CustomStyle::print(std::ostream& out) const {
 }
 
 
-static MIRStyleBuilder<CustomStyle> __style("custom");
+static const MIRStyleBuilder<CustomStyle> __style("custom");
 
 
 }  // namespace style

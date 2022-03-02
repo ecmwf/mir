@@ -35,7 +35,7 @@ Gridded2RotatedReducedGG::~Gridded2RotatedReducedGG() = default;
 
 
 bool Gridded2RotatedReducedGG::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const Gridded2RotatedReducedGG*>(&other);
+    const auto* o = dynamic_cast<const Gridded2RotatedReducedGG*>(&other);
     return (o != nullptr) && (N_ == o->N_) && Gridded2RotatedGrid::sameAs(other);
 }
 
@@ -62,7 +62,7 @@ const char* Gridded2RotatedReducedGG::name() const {
 }
 
 
-static ActionBuilder<Gridded2RotatedReducedGG> grid2grid("interpolate.grid2rotated-reduced-gg");
+static const ActionBuilder<Gridded2RotatedReducedGG> grid2grid("interpolate.grid2rotated-reduced-gg");
 
 
 }  // namespace interpolate

@@ -21,20 +21,20 @@ namespace space {
 SpaceLinear::SpaceLinear() = default;
 
 
-void SpaceLinear::linearise(const Space::Matrix& matrixIn, Space::Matrix& matrixOut, double) const {
+void SpaceLinear::linearise(const Space::Matrix& matrixIn, Space::Matrix& matrixOut, double /*missingValue*/) const {
 
     // shallow-copy input to output
-    auto data = const_cast<eckit::linalg::Scalar*>(matrixIn.data());
+    auto* data = const_cast<eckit::linalg::Scalar*>(matrixIn.data());
     Matrix shallow(data, matrixIn.rows(), matrixIn.cols());
 
     matrixOut.swap(shallow);
 }
 
 
-void SpaceLinear::unlinearise(const Space::Matrix& matrixIn, Space::Matrix& matrixOut, double) const {
+void SpaceLinear::unlinearise(const Space::Matrix& matrixIn, Space::Matrix& matrixOut, double /*missingValue*/) const {
 
     // shallow-copy input to output
-    auto data = const_cast<eckit::linalg::Scalar*>(matrixIn.data());
+    auto* data = const_cast<eckit::linalg::Scalar*>(matrixIn.data());
     Matrix shallow(data, matrixIn.rows(), matrixIn.cols());
 
     matrixOut.swap(shallow);

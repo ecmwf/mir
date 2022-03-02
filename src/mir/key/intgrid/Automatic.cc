@@ -18,9 +18,9 @@ namespace key {
 namespace intgrid {
 
 
-static IntgridBuilder<Automatic> __intgrid1("automatic");
-static IntgridBuilder<Automatic> __intgrid2("auto");
-static IntgridBuilder<Automatic> __intgrid3("AUTO");
+static const IntgridBuilder<Automatic> __intgrid1("automatic");
+static const IntgridBuilder<Automatic> __intgrid2("auto");
+static const IntgridBuilder<Automatic> __intgrid3("AUTO");
 
 
 Automatic::Automatic(const param::MIRParametrisation& parametrisation, long targetGaussianN) :

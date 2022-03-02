@@ -127,13 +127,13 @@ void ReshapeVariableStep::execute(MergePlan& /*plan*/) {
 }
 
 bool ReshapeVariableStep::merge(Step* other) {
-    auto o = dynamic_cast<ReshapeVariableStep*>(other);
+    const auto* o = dynamic_cast<ReshapeVariableStep*>(other);
     if (o != nullptr) {
         // Same variable
         if (&(o->out_) == &(out_)) {
 
-            auto next                 = new ReshapeVariableStep(o->out_, o->dimension_, o->growth_);
-            auto self                 = this;
+            auto* next                = new ReshapeVariableStep(o->out_, o->dimension_, o->growth_);
+            auto* self                = this;
             ReshapeVariableStep* prev = nullptr;
 
             while (self != nullptr) {

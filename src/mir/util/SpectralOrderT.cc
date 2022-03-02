@@ -17,10 +17,10 @@ namespace mir {
 namespace util {
 
 
-static SpectralOrderBuilder<SpectralOrderT<1> > __order1("linear");
-static SpectralOrderBuilder<SpectralOrderT<2> > __order2("quadratic");
-static SpectralOrderBuilder<SpectralOrderT<3> > __order3("cubic");
-static SpectralOrderBuilder<SpectralOrderT<4> > __order4("quartic");
+static const SpectralOrderBuilder<SpectralOrderT<1> > __order1("linear");
+static const SpectralOrderBuilder<SpectralOrderT<2> > __order2("quadratic");
+static const SpectralOrderBuilder<SpectralOrderT<3> > __order3("cubic");
+static const SpectralOrderBuilder<SpectralOrderT<4> > __order4("quartic");
 
 
 template <>

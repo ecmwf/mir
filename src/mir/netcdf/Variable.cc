@@ -114,7 +114,7 @@ void Variable::setMatrix(Matrix* matrix) {
 
 size_t Variable::numberOfValues() const {
     size_t count = 1;
-    for (auto& j : dimensions_) {
+    for (const auto& j : dimensions_) {
         count *= j->count();
     }
     return count;
@@ -163,7 +163,7 @@ void Variable::dump(std::ostream& out) const {
 
     if (!dimensions_.empty()) {
         std::string sep = "(";
-        for (auto j : dimensions_) {
+        for (auto* j : dimensions_) {
             out << sep << j->name();
             sep = ", ";
         }
@@ -171,7 +171,7 @@ void Variable::dump(std::ostream& out) const {
     }
     out << " ;" << std::endl;
 
-    for (auto& j : attributes_) {
+    for (const auto& j : attributes_) {
         j.second->dump(out);
     }
 }
@@ -256,7 +256,7 @@ Dimension* Variable::getVirtualDimension() {
 }
 
 
-void Variable::addCoordinateVariable(const Variable*) {
+void Variable::addCoordinateVariable(const Variable* /*unused*/) {
     std::ostringstream os;
     os << "Variable::addCoordinateVariable() not implemented for " << *this;
     throw exception::SeriousBug(os.str());
@@ -273,7 +273,7 @@ Variable* Variable::addMissingCoordinates() {
 See http://www.unidata.ucar.edu/software/netcdf/docs/netcdf/Attribute-Conventions.html
 */
 
-static const char* not_supported[] = {"signedness", "valid_range", nullptr};
+static const char* const not_supported[] = {"signedness", "valid_range", nullptr};
 
 
 void Variable::validate() const {
@@ -368,7 +368,7 @@ bool Variable::dummy() const {
 }
 
 
-bool Variable::sameAsDummy(const Variable&) const {
+bool Variable::sameAsDummy(const Variable& /*unused*/) const {
     std::ostringstream os;
     os << "Variable::sameAsDummy() not implemented for " << *this;
     throw exception::SeriousBug(os.str());
@@ -381,8 +381,8 @@ const std::string& Variable::ncname() const {
 
 
 bool Variable::sharesDimensions(const Variable& other) const {
-    for (auto& j : dimensions_) {
-        for (auto& k : other.dimensions_) {
+    for (const auto& j : dimensions_) {
+        for (const auto& k : other.dimensions_) {
             if (j == k) {
                 return true;
             }
@@ -397,7 +397,7 @@ bool Variable::timeAxis() const {
 }
 
 
-void Variable::collectField(std::vector<Field*>&) const {
+void Variable::collectField(std::vector<Field*>& /*unused*/) const {
     // Ignore
 }
 
@@ -438,7 +438,7 @@ void Variable::values(std::vector<double>& v) const {
 }
 
 
-void Variable::get2DValues(MIRValuesVector&, size_t) const {
+void Variable::get2DValues(MIRValuesVector& /*unused*/, size_t /*unused*/) const {
     std::ostringstream os;
     os << "Variable::get2DValues() not implemented for " << *this;
     throw exception::SeriousBug(os.str());

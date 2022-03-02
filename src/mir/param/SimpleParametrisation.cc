@@ -18,6 +18,7 @@
 #include <sstream>
 
 #include "eckit/log/JSON.h"
+#include "eckit/types/FloatCompare.h"
 #include "eckit/utils/Tokenizer.h"
 #include "eckit/utils/Translator.h"
 #include "eckit/value/Value.h"
@@ -36,7 +37,9 @@ public:
     virtual ~Setting() = default;
 
     Setting(const Setting&) = delete;
+    Setting(Setting&&)      = delete;
     Setting& operator=(const Setting&) = delete;
+    Setting& operator=(Setting&&) = delete;
 
     virtual void get(const std::string& name, std::string& value) const = 0;
     virtual void get(const std::string& name, bool& value) const        = 0;
@@ -170,64 +173,61 @@ class TSettings : public Setting {
 public:
     TSettings(const T& value) : value_(value) {}
 
-    void get(const std::string& name, std::string&) const override {
+    void get(const std::string& name, std::string& /*value*/) const override {
         throw exception::CannotConvert(TNamed<T>(), "string", name, value_);
     }
 
-    void get(const std::string& name, bool&) const override {
+    void get(const std::string& name, bool& /*value*/) const override {
         throw exception::CannotConvert(TNamed<T>(), "bool", name, value_);
     }
 
-    void get(const std::string& name, int&) const override {
+    void get(const std::string& name, int& /*value*/) const override {
         throw exception::CannotConvert(TNamed<T>(), "int", name, value_);
     }
 
-    void get(const std::string& name, long&) const override {
+    void get(const std::string& name, long& /*value*/) const override {
         throw exception::CannotConvert(TNamed<T>(), "long", name, value_);
     }
 
-    void get(const std::string& name, size_t&) const override {
+    void get(const std::string& name, size_t& /*value*/) const override {
         throw exception::CannotConvert(TNamed<T>(), "size_t", name, value_);
     }
 
-    void get(const std::string& name, float&) const override {
+    void get(const std::string& name, float& /*value*/) const override {
         throw exception::CannotConvert(TNamed<T>(), "float", name, value_);
     }
 
-    void get(const std::string& name, double&) const override {
+    void get(const std::string& name, double& /*value*/) const override {
         throw exception::CannotConvert(TNamed<T>(), "double", name, value_);
     }
 
-    void get(const std::string& name, std::vector<int>&) const override {
+    void get(const std::string& name, std::vector<int>& /*value*/) const override {
         throw exception::CannotConvert(TNamed<T>(), "vector<int>", name, value_);
     }
 
-    void get(const std::string& name, std::vector<long>&) const override {
+    void get(const std::string& name, std::vector<long>& /*value*/) const override {
         throw exception::CannotConvert(TNamed<T>(), "vector<long>", name, value_);
     }
 
-    void get(const std::string& name, std::vector<size_t>&) const override {
+    void get(const std::string& name, std::vector<size_t>& /*value*/) const override {
         throw exception::CannotConvert(TNamed<T>(), "vector<size_t>", name, value_);
     }
 
-    void get(const std::string& name, std::vector<float>&) const override {
+    void get(const std::string& name, std::vector<float>& /*value*/) const override {
         throw exception::CannotConvert(TNamed<T>(), "vector<float>", name, value_);
     }
 
-    void get(const std::string& name, std::vector<double>&) const override {
+    void get(const std::string& name, std::vector<double>& /*value*/) const override {
         throw exception::CannotConvert(TNamed<T>(), "vector<double>", name, value_);
     }
 
-    void get(const std::string& name, std::vector<std::string>&) const override {
+    void get(const std::string& name, std::vector<std::string>& /*value*/) const override {
         throw exception::CannotConvert(TNamed<T>(), "vector<string>", name, value_);
     }
 
     bool match(const std::string& name, const MIRParametrisation& other) const override {
         T value;
-        if (other.get(name, value)) {
-            return value_ == value;
-        }
-        return false;
+        return other.get(name, value) && value_ == value;
     }
 
     void copyValueTo(const std::string& name, SimpleParametrisation& param) const override { param.set(name, value_); }
@@ -264,22 +264,36 @@ void TSettings<std::vector<double>>::print(std::ostream& out) const {
 }
 
 
-template <class T>
-bool any_of(const std::vector<T>& values, const T& value) {
-    return std::find(values.begin(), values.end(), value) != values.end();
+template <>
+bool TSettings<std::vector<long>>::match(const std::string& name, const MIRParametrisation& other) const {
+    // if any of "these values" matches "other value"
+    long value;
+    return other.get(name, value) && std::any_of(value_.begin(), value_.end(), [&value](long v) { return value == v; });
 }
+
+
+template <>
+bool TSettings<std::vector<double>>::match(const std::string& name, const MIRParametrisation& other) const {
+    // if any of "these values" matches "other value"
+    double value;
+    return other.get(name, value) && std::any_of(value_.begin(), value_.end(), [value](double v) {
+               return eckit::types::is_approximately_equal(v, value);
+           });
+}
+
 
 template <>
 bool TSettings<std::vector<std::string>>::match(const std::string& name, const MIRParametrisation& other) const {
     // if any of "these values" matches "other value"
     std::string value;
-    return other.get(name, value) && any_of(value_, value);
+    return other.get(name, value) &&
+           std::any_of(value_.begin(), value_.end(), [&value](const std::string v) { return value == v; });
 }
 
 
 // implement conversion as needed
 template <>
-void TSettings<bool>::get(const std::string&, std::string& value) const {
+void TSettings<bool>::get(const std::string& /*name*/, std::string& value) const {
     std::ostringstream ss;
     ss << std::boolalpha << value_;
     value = ss.str();
@@ -287,37 +301,37 @@ void TSettings<bool>::get(const std::string&, std::string& value) const {
 
 
 template <>
-void TSettings<bool>::get(const std::string&, bool& value) const {
+void TSettings<bool>::get(const std::string& /*name*/, bool& value) const {
     value = value_;
 }
 
 
 template <>
-void TSettings<long>::get(const std::string&, long& value) const {
+void TSettings<long>::get(const std::string& /*name*/, long& value) const {
     value = value_;
 }
 
 
 template <>
-void TSettings<long>::get(const std::string&, int& value) const {
+void TSettings<long>::get(const std::string& /*name*/, int& value) const {
     value = int(value_);
 }
 
 
 template <>
-void TSettings<int>::get(const std::string&, long& value) const {
+void TSettings<int>::get(const std::string& /*name*/, long& value) const {
     value = value_;
 }
 
 
 template <>
-void TSettings<double>::get(const std::string&, double& value) const {
+void TSettings<double>::get(const std::string& /*name*/, double& value) const {
     value = value_;
 }
 
 
 template <>
-void TSettings<std::string>::get(const std::string&, std::string& value) const {
+void TSettings<std::string>::get(const std::string& /*name*/, std::string& value) const {
     value = value_;
 }
 
@@ -387,13 +401,13 @@ void TSettings<std::string>::get(const std::string& name, std::vector<double>& v
 
 
 template <>
-void TSettings<std::vector<long>>::get(const std::string&, std::vector<long>& value) const {
+void TSettings<std::vector<long>>::get(const std::string& /*name*/, std::vector<long>& value) const {
     value = value_;
 }
 
 
 template <>
-void TSettings<std::vector<double>>::get(const std::string&, std::vector<double>& value) const {
+void TSettings<std::vector<double>>::get(const std::string& /*name*/, std::vector<double>& value) const {
     value = value_;
 }
 
@@ -438,8 +452,8 @@ void TSettings<std::vector<int>>::get(const std::string& name, std::string& valu
     conversion_warning("vector<int>", "string", name, value_);
     value.clear();
 
-    auto sep = "";
-    for (auto& entry : value_) {
+    const auto* sep = "";
+    for (const auto& entry : value_) {
         value += sep + std::to_string(entry);
         sep = "/";
     }
@@ -451,8 +465,8 @@ void TSettings<std::vector<long>>::get(const std::string& name, std::string& val
     conversion_warning("vector<long>", "string", name, value_);
     value.clear();
 
-    auto sep = "";
-    for (auto& entry : value_) {
+    const auto* sep = "";
+    for (const auto& entry : value_) {
         value += sep + std::to_string(entry);
         sep = "/";
     }
@@ -464,8 +478,8 @@ void TSettings<std::vector<size_t>>::get(const std::string& name, std::string& v
     conversion_warning("vector<size_t>", "string", name, value_);
     value.clear();
 
-    auto sep = "";
-    for (auto& entry : value_) {
+    const auto* sep = "";
+    for (const auto& entry : value_) {
         value += sep + std::to_string(entry);
         sep = "/";
     }
@@ -477,8 +491,8 @@ void TSettings<std::vector<float>>::get(const std::string& name, std::string& va
     conversion_warning("vector<float>", "string", name, value_);
     value.clear();
 
-    auto sep = "";
-    for (auto& entry : value_) {
+    const auto* sep = "";
+    for (const auto& entry : value_) {
         value += sep + std::to_string(entry);
         sep = "/";
     }
@@ -490,8 +504,8 @@ void TSettings<std::vector<double>>::get(const std::string& name, std::string& v
     conversion_warning("vector<double>", "string", name, value_);
     value.clear();
 
-    auto sep = "";
-    for (auto& entry : value_) {
+    const auto* sep = "";
+    for (const auto& entry : value_) {
         value += sep + std::to_string(entry);
         sep = "/";
     }
@@ -503,7 +517,7 @@ void TSettings<std::vector<std::string>>::get(const std::string& name, std::stri
     conversion_warning("vector<string>", "string", name, value_);
     value.clear();
     std::string sep;
-    for (auto& entry : value_) {
+    for (const auto& entry : value_) {
         value += sep + entry;
         sep = "/";
     }
@@ -597,7 +611,7 @@ bool SimpleParametrisation::get(const std::string& name, std::vector<double>& va
 }
 
 
-bool SimpleParametrisation::get(const std::string&, std::vector<std::string>&) const {
+bool SimpleParametrisation::get(const std::string& /*name*/, std::vector<std::string>& /*value*/) const {
     NOTIMP;
 }
 

@@ -37,7 +37,7 @@ Gridded2TypedGrid::~Gridded2TypedGrid() = default;
 
 
 bool Gridded2TypedGrid::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const Gridded2TypedGrid*>(&other);
+    const auto* o = dynamic_cast<const Gridded2TypedGrid*>(&other);
 
     // NOTE: SimpleParametrisation::matches() is not commutative, and grid_ is not compared because gridParams_ contains
     // all useful information for building Representation
@@ -64,7 +64,7 @@ const char* Gridded2TypedGrid::name() const {
 }
 
 
-static ActionBuilder<Gridded2TypedGrid> grid2grid("interpolate.grid2typedgrid");
+static const ActionBuilder<Gridded2TypedGrid> grid2grid("interpolate.grid2typedgrid");
 
 
 }  // namespace interpolate

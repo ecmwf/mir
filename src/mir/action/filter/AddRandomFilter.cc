@@ -35,7 +35,7 @@ AddRandomFilter::AddRandomFilter(const param::MIRParametrisation& param) : Actio
 }
 
 
-bool AddRandomFilter::sameAs(const Action&) const {
+bool AddRandomFilter::sameAs(const Action& /*unused*/) const {
     return false;
 }
 
@@ -64,7 +64,7 @@ void AddRandomFilter::execute(context::Context& ctx) const {
 }
 
 
-static ActionBuilder<AddRandomFilter> __action("filter.add-random");
+static const ActionBuilder<AddRandomFilter> __action("filter.add-random");
 
 
 }  // namespace filter

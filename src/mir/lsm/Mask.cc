@@ -44,7 +44,7 @@ Mask::Mask() = default;
 Mask::~Mask() = default;
 
 
-void Mask::hash(eckit::MD5&) const {}
+void Mask::hash(eckit::MD5& /*unused*/) const {}
 
 
 void Mask::hashCacheKey(eckit::MD5& md5, const eckit::PathName& path, const param::MIRParametrisation& parametrisation,
@@ -82,8 +82,8 @@ Mask& Mask::lookup(const param::MIRParametrisation& parametrisation, const repre
         }
     }
 
-    auto& chooser   = LSMSelection::lookup(name);
-    std::string key = chooser.cacheKey(parametrisation, representation, which);
+    const auto& chooser = LSMSelection::lookup(name);
+    std::string key     = chooser.cacheKey(parametrisation, representation, which);
 
     {
         // To protect cache

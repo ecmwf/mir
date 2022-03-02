@@ -67,12 +67,12 @@ struct NormaliseAngle {
 };
 
 template <int SCALE>
-double convert_to_angle(complex_t) {
+double convert_to_angle(complex_t /*unused*/) {
     NOTIMP; /* ensure specialisation */
 }
 
 template <int SCALE>
-complex_t convert_to_complex(double) {
+complex_t convert_to_complex(double /*unused*/) {
     NOTIMP; /* ensure specialisation */
 }
 
@@ -118,10 +118,10 @@ complex_t convert_to_complex<DEGREE>(double a) {
 }  // namespace
 
 
-static SpaceChoice<Space1DAngleT<DEGREE, ASYMMETRIC> > __space1("1d-angle-degree-asymmetric");
-static SpaceChoice<Space1DAngleT<DEGREE, SYMMETRIC> > __space2("1d-angle-degree-symmetric");
-static SpaceChoice<Space1DAngleT<RADIAN, ASYMMETRIC> > __space3("1d-angle-radian-asymmetric");
-static SpaceChoice<Space1DAngleT<RADIAN, SYMMETRIC> > __space4("1d-angle-radian-symmetric");
+static const SpaceChoice<Space1DAngleT<DEGREE, ASYMMETRIC> > __space1("1d-angle-degree-asymmetric");
+static const SpaceChoice<Space1DAngleT<DEGREE, SYMMETRIC> > __space2("1d-angle-degree-symmetric");
+static const SpaceChoice<Space1DAngleT<RADIAN, ASYMMETRIC> > __space3("1d-angle-radian-asymmetric");
+static const SpaceChoice<Space1DAngleT<RADIAN, SYMMETRIC> > __space4("1d-angle-radian-symmetric");
 
 
 template <int SCALE, int SYMMETRY>

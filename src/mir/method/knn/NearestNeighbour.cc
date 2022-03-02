@@ -35,7 +35,7 @@ NearestNeighbour::~NearestNeighbour() = default;
 
 
 bool NearestNeighbour::sameAs(const Method& other) const {
-    auto o = dynamic_cast<const NearestNeighbour*>(&other);
+    const auto* o = dynamic_cast<const NearestNeighbour*>(&other);
     return (o != nullptr) && KNearestNeighbours::sameAs(other);
 }
 
@@ -56,9 +56,9 @@ const char* NearestNeighbour::name() const {
 }
 
 
-static MethodBuilder<NearestNeighbour> __method1("nearest-neighbour");
-static MethodBuilder<NearestNeighbour> __method2("nearest-neighbor");  // For the americans
-static MethodBuilder<NearestNeighbour> __method3("nn");                // For the lazy
+static const MethodBuilder<NearestNeighbour> __method1("nearest-neighbour");
+static const MethodBuilder<NearestNeighbour> __method2("nearest-neighbor");  // For the americans
+static const MethodBuilder<NearestNeighbour> __method3("nn");                // For the lazy
 
 
 }  // namespace knn

@@ -45,7 +45,7 @@ const char* Copy::name() const {
 }
 
 
-void Copy::estimate(context::Context&, api::MIREstimation& estimation) const {
+void Copy::estimate(context::Context& /*unused*/, api::MIREstimation& estimation) const {
     estimation.sameAsInput();
 }
 

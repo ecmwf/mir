@@ -23,12 +23,12 @@ namespace key {
 namespace packing {
 
 
-static PackingBuilder<IEEE> __packing("ieee", true, true);
+static const PackingBuilder<IEEE> __packing("ieee", true, true);
 
 
 IEEE::IEEE(const std::string& name, const param::MIRParametrisation& param) : Packing(name, param) {
-    auto& user  = param.userParametrisation();
-    auto& field = param.fieldParametrisation();
+    const auto& user  = param.userParametrisation();
+    const auto& field = param.fieldParametrisation();
 
     constexpr long L32  = 32;
     constexpr long L64  = 64;
@@ -57,7 +57,7 @@ IEEE::IEEE(const std::string& name, const param::MIRParametrisation& param) : Pa
 }
 
 
-void IEEE::fill(const repres::Representation*, grib_info& info) const {
+void IEEE::fill(const repres::Representation* /*unused*/, grib_info& info) const {
     info.packing.packing = CODES_UTIL_PACKING_SAME_AS_INPUT;
     // (Representation can set edition, so it isn't reset)
 
@@ -76,7 +76,7 @@ void IEEE::fill(const repres::Representation*, grib_info& info) const {
 }
 
 
-void IEEE::set(const repres::Representation*, grib_handle* handle) const {
+void IEEE::set(const repres::Representation* /*unused*/, grib_handle* handle) const {
     Packing::set(handle, gridded() ? "grid_ieee" : "spectral_ieee");
 
     if (definePrecision_) {
@@ -86,7 +86,7 @@ void IEEE::set(const repres::Representation*, grib_handle* handle) const {
 
 
 bool IEEE::printParametrisation(std::ostream& out) const {
-    auto sep = Packing::printParametrisation(out) ? "," : "";
+    const auto* sep = Packing::printParametrisation(out) ? "," : "";
     if (definePrecision_) {
         out << sep << "precision=" << precision_;
     }

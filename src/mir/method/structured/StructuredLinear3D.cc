@@ -36,7 +36,7 @@ namespace method {
 namespace structured {
 
 
-static MethodBuilder<StructuredLinear3D> __method("structured-linear-3d");
+static const MethodBuilder<StructuredLinear3D> __method("structured-linear-3d");
 
 
 StructuredLinear3D::StructuredLinear3D(const param::MIRParametrisation& param) : StructuredMethod(param) {}
@@ -46,7 +46,7 @@ StructuredLinear3D::~StructuredLinear3D() = default;
 
 
 bool StructuredLinear3D::sameAs(const Method& other) const {
-    auto o = dynamic_cast<const StructuredLinear3D*>(&other);
+    const auto* o = dynamic_cast<const StructuredLinear3D*>(&other);
     return (o != nullptr) && StructuredMethod::sameAs(other);
 }
 

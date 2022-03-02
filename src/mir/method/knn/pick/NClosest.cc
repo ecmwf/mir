@@ -43,7 +43,7 @@ size_t NClosest::n() const {
 
 
 bool NClosest::sameAs(const Pick& other) const {
-    auto o = dynamic_cast<const NClosest*>(&other);
+    const auto* o = dynamic_cast<const NClosest*>(&other);
     return (o != nullptr) && nClosest_ == o->nClosest_;
 }
 
@@ -58,7 +58,7 @@ void NClosest::hash(eckit::MD5& h) const {
 }
 
 
-static PickBuilder<NClosest> __pick("nclosest");
+static const PickBuilder<NClosest> __pick("nclosest");
 
 
 }  // namespace pick

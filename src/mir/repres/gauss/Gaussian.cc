@@ -66,7 +66,7 @@ Gaussian::~Gaussian() = default;
 
 
 bool Gaussian::sameAs(const Representation& other) const {
-    auto o = dynamic_cast<const Gaussian*>(&other);
+    const auto* o = dynamic_cast<const Gaussian*>(&other);
     return (o != nullptr) && (N_ == o->N_) && (domain() == o->domain());
 }
 
@@ -170,7 +170,7 @@ std::vector<double> Gaussian::calculateUnrotatedGridBoxLatitudeEdges() const {
     size_t Nj = N_ * 2;
     ASSERT(Nj > 1);
 
-    auto& w = weights();
+    const auto& w = weights();
     ASSERT(w.size() == Nj);
 
     std::vector<double> edges(Nj + 1);

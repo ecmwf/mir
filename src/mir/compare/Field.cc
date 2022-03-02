@@ -105,7 +105,7 @@ public:
 std::vector<Field> Field::bestMatches(const FieldSet& fields) const {
 
     std::vector<Field> matches;
-    for (auto& other : fields) {
+    for (const auto& other : fields) {
         if (match(other)) {
             matches.push_back(other);
         }

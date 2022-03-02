@@ -66,7 +66,7 @@ FormulaAction::~FormulaAction() = default;
 
 
 bool FormulaAction::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const FormulaAction*>(&other);
+    const auto* o = dynamic_cast<const FormulaAction*>(&other);
     return (o != nullptr) && (formula_->sameAs(*o->formula_)) && (metadata_ == o->metadata_);
 }
 
@@ -93,7 +93,7 @@ const char* FormulaAction::name() const {
 }
 
 
-static ActionBuilder<FormulaAction> __action("calc.formula");
+static const ActionBuilder<FormulaAction> __action("calc.formula");
 
 
 }  // namespace action

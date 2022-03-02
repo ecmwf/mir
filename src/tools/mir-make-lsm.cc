@@ -19,10 +19,11 @@
 #include "mir/util/Log.h"
 
 
-using namespace mir;
+namespace mir {
+namespace tools {
 
 
-struct MIRMakeLSM : tools::MIRTool {
+struct MIRMakeLSM : MIRTool {
     using MIRTool::MIRTool;
 
     int minimumPositionalArguments() const override { return 2; }
@@ -32,11 +33,11 @@ struct MIRMakeLSM : tools::MIRTool {
                     << "Usage: " << tool << " file.grib file.lsm" << std::endl;
     }
 
-    void execute(const eckit::option::CmdArgs&) override;
+    void execute(const eckit::option::CmdArgs& /*unused*/) override;
 };
 
 
-void MIRMakeLSM::execute(const eckit::option::CmdArgs&) {
+void MIRMakeLSM::execute(const eckit::option::CmdArgs& /*unused*/) {
 
     input::GribFileInput file(argv(1));
 
@@ -45,7 +46,7 @@ void MIRMakeLSM::execute(const eckit::option::CmdArgs&) {
     while (file.next()) {
         input::MIRInput& input = file;
 
-        auto& parametrisation = input.parametrisation();
+        const auto& parametrisation = input.parametrisation();
 
         size_t Ni = 0;
         size_t Nj = 0;
@@ -85,7 +86,11 @@ void MIRMakeLSM::execute(const eckit::option::CmdArgs&) {
 }
 
 
+}  // namespace tools
+}  // namespace mir
+
+
 int main(int argc, char** argv) {
-    MIRMakeLSM tool(argc, argv);
+    mir::tools::MIRMakeLSM tool(argc, argv);
     return tool.start();
 }

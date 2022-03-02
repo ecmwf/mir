@@ -56,7 +56,7 @@ InMemoryCacheUsage InMemoryCacheBase::totalFootprint() {
 
     InMemoryCacheUsage result;
 
-    for (auto& j : *m) {
+    for (const auto& j : *m) {
         result += j->footprint();
     }
 
@@ -83,7 +83,7 @@ void InMemoryCacheBase::checkTotalFootprint() {
         more = false;
 
         InMemoryCacheUsage totalFootprint;
-        for (auto& j : *m) {
+        for (const auto& j : *m) {
             totalFootprint += j->footprint();
         }
 
@@ -93,7 +93,7 @@ void InMemoryCacheBase::checkTotalFootprint() {
         if (totalFootprint > maximumCapacity) {
             InMemoryCacheUsage p = (totalFootprint - maximumCapacity) / m->size();
 
-            for (auto& j : *m) {
+            for (const auto& j : *m) {
                 InMemoryCacheUsage purged = j->purge(p);
                 if (purged) {
                     Log::debug() << "CACHE-checkTotalFootprint purged " << purged << " from " << j->name() << std::endl;

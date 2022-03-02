@@ -50,8 +50,8 @@ size_t GeoPointsFileOutputXYVector::save(const param::MIRParametrisation& param,
 
     ASSERT(field.dimensions() % 2 == 0);
     for (size_t j = 0; j < field.dimensions(); j += 2) {
-        auto& values_u = field.values(j);
-        auto& values_v = field.values(j + 1);
+        const auto& values_u = field.values(j);
+        const auto& values_v = field.values(j + 1);
         ASSERT(values_u.size() == values_v.size());
 
         out << "#GEO"
@@ -60,7 +60,7 @@ size_t GeoPointsFileOutputXYVector::save(const param::MIRParametrisation& param,
                "\n#DATA";
 
         std::string extra;
-        for (auto& key : {"height", "date", "time"}) {
+        for (const auto& key : {"height", "date", "time"}) {
             std::string v("0");
             param.get(key, v);
             extra += ' ' + v;
@@ -87,7 +87,7 @@ size_t GeoPointsFileOutputXYVector::save(const param::MIRParametrisation& param,
 }
 
 
-static MIROutputBuilder<GeoPointsFileOutputXYVector> output("geopoints-xy-vector");
+static const MIROutputBuilder<GeoPointsFileOutputXYVector> output("geopoints-xy-vector");
 
 
 }  // namespace output

@@ -21,10 +21,10 @@
 
 namespace mir {
 
-LongitudeDouble LongitudeDouble::GLOBE(360);
-LongitudeDouble LongitudeDouble::DATE_LINE(180);
-LongitudeDouble LongitudeDouble::MINUS_DATE_LINE(-180);
-LongitudeDouble LongitudeDouble::GREENWICH(0);
+LongitudeDouble const LongitudeDouble::GLOBE(360);
+LongitudeDouble const LongitudeDouble::DATE_LINE(180);
+LongitudeDouble const LongitudeDouble::MINUS_DATE_LINE(-180);
+LongitudeDouble const LongitudeDouble::GREENWICH(0);
 
 void LongitudeDouble::print(std::ostream& out) const {
     out << value_;

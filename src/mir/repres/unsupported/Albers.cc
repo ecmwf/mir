@@ -28,7 +28,7 @@ void Albers::print(std::ostream& out) const {
 }
 
 
-static RepresentationBuilder<Albers> __repres("albers");
+static const RepresentationBuilder<Albers> __repres("albers");
 
 
 }  // namespace repres

@@ -65,7 +65,7 @@ static void fill(std::vector<T>& value, const std::vector<std::string>& params) 
     eckit::Translator<std::string, T> t;
 
     value.clear();
-    for (auto& j : params) {
+    for (const auto& j : params) {
         value.push_back(t(j));
     }
 }

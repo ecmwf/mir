@@ -22,7 +22,7 @@ namespace mir {
 namespace input {
 
 
-MultiStreamInput::MultiStreamInput() {}
+MultiStreamInput::MultiStreamInput() = default;
 
 
 MultiStreamInput::~MultiStreamInput() = default;
@@ -66,7 +66,7 @@ bool MultiStreamInput::next() {
 
 
 bool MultiStreamInput::sameAs(const MIRInput& other) const {
-    auto o = dynamic_cast<const MultiStreamInput*>(&other);
+    const auto* o = dynamic_cast<const MultiStreamInput*>(&other);
 
     if ((o == nullptr) || streams_.size() != o->streams_.size()) {
         return false;
@@ -85,8 +85,8 @@ bool MultiStreamInput::sameAs(const MIRInput& other) const {
 void MultiStreamInput::print(std::ostream& out) const {
     out << "MultiStreamInput[";
 
-    auto sep = "";
-    for (auto& s : streams_) {
+    const auto* sep = "";
+    for (const auto& s : streams_) {
         ASSERT(s != nullptr);
         out << sep << *s;
         sep = ",";

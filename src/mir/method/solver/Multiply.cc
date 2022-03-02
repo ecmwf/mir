@@ -28,7 +28,7 @@ namespace solver {
 
 
 void Multiply::solve(const MethodWeighted::Matrix& A, const MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& B,
-                     const double&) const {
+                     const double& /*missingValue*/) const {
     ASSERT(A.rows() == W.cols());
     ASSERT(B.rows() == W.rows());
     ASSERT(A.cols() == B.cols());

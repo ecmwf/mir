@@ -30,7 +30,7 @@ void ProlepticCalendar::print(std::ostream& out) const {
 }
 
 
-static CodecBuilder<ProlepticCalendar> builder("proleptic_gregorian");
+static const CodecBuilder<ProlepticCalendar> builder("proleptic_gregorian");
 
 
 }  // namespace netcdf

@@ -303,7 +303,7 @@ bool GeoPointsFileInput::resetMissingValue(double& missingValue) {
 
 
 bool GeoPointsFileInput::sameAs(const MIRInput& other) const {
-    auto o = dynamic_cast<const GeoPointsFileInput*>(&other);
+    const auto* o = dynamic_cast<const GeoPointsFileInput*>(&other);
     return (o != nullptr) && (path_ == o->path_);
 }
 
@@ -363,7 +363,7 @@ size_t GeoPointsFileInput::footprint() const {
 }
 
 
-static MIRInputBuilder<GeoPointsFileInput> __mirinput(0x2347454f);  // "#GEO"
+static const MIRInputBuilder<GeoPointsFileInput> __mirinput(0x2347454f);  // "#GEO"
 
 
 }  // namespace input

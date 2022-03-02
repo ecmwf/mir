@@ -116,7 +116,7 @@ static const T& resolveAliases(const std::string& /*name*/, const T& value) {
 
 
 MIRJob& MIRJob::clear(const std::string& name) {
-    auto& rName = resolveAliases(name);
+    const auto& rName = resolveAliases(name);
     Log::debug() << "MIRJob: clear '" << rName << "'" << std::endl;
     SimpleParametrisation::clear(rName);
     return *this;

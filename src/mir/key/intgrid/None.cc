@@ -18,11 +18,11 @@ namespace key {
 namespace intgrid {
 
 
-static IntgridBuilder<None> __intgrid1("none");
-static IntgridBuilder<None> __intgrid2("NONE");
+static const IntgridBuilder<None> __intgrid1("none");
+static const IntgridBuilder<None> __intgrid2("NONE");
 
 
-None::None(const param::MIRParametrisation& parametrisation, long) : Intgrid(parametrisation) {}
+None::None(const param::MIRParametrisation& parametrisation, long /*unused*/) : Intgrid(parametrisation) {}
 
 
 const std::string& None::gridname() const {

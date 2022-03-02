@@ -68,7 +68,7 @@ bool VectorInput::next() {
 
 
 bool VectorInput::sameAs(const MIRInput& other) const {
-    auto o = dynamic_cast<const VectorInput*>(&other);
+    const auto* o = dynamic_cast<const VectorInput*>(&other);
     return (o != nullptr) && component1_.sameAs(o->component1_) && component2_.sameAs(o->component2_);
 }
 

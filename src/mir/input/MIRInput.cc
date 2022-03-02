@@ -39,7 +39,7 @@ MIRInput::MIRInput() = default;
 MIRInput::~MIRInput() = default;
 
 
-grib_handle* MIRInput::gribHandle(size_t) const {
+grib_handle* MIRInput::gribHandle(size_t /*unused*/) const {
     // ASSERT(which == 0);
     static grib_handle* handle = nullptr;
     if (handle == nullptr) {
@@ -53,7 +53,7 @@ grib_handle* MIRInput::gribHandle(size_t) const {
 }
 
 
-void MIRInput::setAuxiliaryInformation(const util::ValueMap&) {
+void MIRInput::setAuxiliaryInformation(const util::ValueMap& /*unused*/) {
     std::ostringstream os;
     os << "MIRInput::setAuxiliaryInformation() not implemented for " << *this;
     throw exception::SeriousBug(os.str());
@@ -67,14 +67,14 @@ bool MIRInput::next() {
 }
 
 
-bool MIRInput::only(size_t) {
+bool MIRInput::only(size_t /*unused*/) {
     std::ostringstream os;
     os << "MIRInput::only() not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-size_t MIRInput::copy(double*, size_t) const {
+size_t MIRInput::copy(double* /*unused*/, size_t /*unused*/) const {
     std::ostringstream os;
     os << "MIRInput::copy() not implemented for " << *this;
     throw exception::SeriousBug(os.str());

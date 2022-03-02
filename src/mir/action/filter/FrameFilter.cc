@@ -37,7 +37,7 @@ FrameFilter::~FrameFilter() = default;
 
 
 bool FrameFilter::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const FrameFilter*>(&other);
+    const auto* o = dynamic_cast<const FrameFilter*>(&other);
     return (o != nullptr) && (size_ == o->size_);
 }
 
@@ -57,7 +57,7 @@ void FrameFilter::execute(context::Context& ctx) const {
 
         MIRValuesVector& values = field.direct(i);
 
-        auto* representation = field.representation();
+        const auto* representation = field.representation();
         if (representation->frame(values, size_, missingValue) == 0) {
             Log::warning() << "Frame " << size_ << " has no effect" << std::endl;
         }
@@ -85,7 +85,7 @@ void FrameFilter::estimate(context::Context& ctx, api::MIREstimation& estimation
 }
 
 
-static ActionBuilder<FrameFilter> __action("filter.frame");
+static const ActionBuilder<FrameFilter> __action("filter.frame");
 
 
 }  // namespace action

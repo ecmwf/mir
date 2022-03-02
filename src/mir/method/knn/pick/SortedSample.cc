@@ -41,7 +41,7 @@ size_t SortedSample::n() const {
 
 
 bool SortedSample::sameAs(const Pick& other) const {
-    auto o = dynamic_cast<const SortedSample*>(&other);
+    const auto* o = dynamic_cast<const SortedSample*>(&other);
     return (o != nullptr) && sample_.sameAs(*o);
 }
 
@@ -57,7 +57,7 @@ void SortedSample::print(std::ostream& out) const {
 }
 
 
-static PickBuilder<SortedSample> __pick("sorted-sample");
+static const PickBuilder<SortedSample> __pick("sorted-sample");
 
 
 }  // namespace pick

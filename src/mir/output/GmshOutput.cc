@@ -112,7 +112,7 @@ size_t GmshOutput::save(const param::MIRParametrisation& param, context::Context
 
         if (writeValues) {
             for (size_t which = 0; which < field.dimensions(); ++which) {
-                auto& v = field.values(which);
+                const auto& v = field.values(which);
                 atlas::Field f("values", const_cast<double*>(v.data()), atlas::array::make_shape(v.size()));
                 if (field.hasMissing()) {
                     f.metadata().set("missing_value_type", "equals").set("missing_value", field.missingValue());
@@ -127,17 +127,18 @@ size_t GmshOutput::save(const param::MIRParametrisation& param, context::Context
 
 
 bool GmshOutput::sameAs(const MIROutput& other) const {
-    auto o = dynamic_cast<const GmshOutput*>(&other);
+    const auto* o = dynamic_cast<const GmshOutput*>(&other);
     return (o != nullptr) && eckit::PathName(path_) == eckit::PathName(o->path_);
 }
 
 
-bool GmshOutput::sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const {
+bool GmshOutput::sameParametrisation(const param::MIRParametrisation& /*unused*/,
+                                     const param::MIRParametrisation& /*unused*/) const {
     return false;
 }
 
 
-bool GmshOutput::printParametrisation(std::ostream&, const param::MIRParametrisation&) const {
+bool GmshOutput::printParametrisation(std::ostream& /*unused*/, const param::MIRParametrisation& /*unused*/) const {
     return false;
 }
 
@@ -147,7 +148,7 @@ void GmshOutput::print(std::ostream& out) const {
 }
 
 
-static MIROutputBuilder<GmshOutput> _output("gmsh", {".msh"});
+static const MIROutputBuilder<GmshOutput> _output("gmsh", {".msh"});
 
 
 }  // namespace output

@@ -1900,6 +1900,14 @@ intensity:
 - 260651  # Surface roughness length for heat
 - 261001  # Universal thermal climate index
 - 261002  # Mean radiant temperature
+- 261014  # Wet bulb globe temperature
+- 261015  # Globe temperature
+- 261016  # Humidex
+- 261017  # Effective temperature
+- 261018  # Normal effective temperature
+- 261019  # Standard effective temperature
+- 261020  # Physiological equivalent temperature
+- 261021  # Saturation water vapor pressure
 - 300001  # Pressure
 - 300002  # Pressure reduced to msl
 - 300003  # Pressure tendency

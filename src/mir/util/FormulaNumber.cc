@@ -36,7 +36,7 @@ void FormulaNumber::execute(context::Context& ctx) const {
 }
 
 bool FormulaNumber::sameAs(const action::Action& other) const {
-    auto o = dynamic_cast<const FormulaNumber*>(&other);
+    const auto* o = dynamic_cast<const FormulaNumber*>(&other);
     return (o != nullptr) && (value_ == o->value_);
 }
 
