@@ -15,7 +15,7 @@
 #include <ostream>
 #include <sstream>
 
-#include "eckit/linalg/LinearAlgebra.h"
+#include "eckit/linalg/LinearAlgebraSparse.h"
 #include "eckit/linalg/Vector.h"
 #include "eckit/utils/MD5.h"
 
@@ -39,10 +39,10 @@ void Multiply::solve(const MethodWeighted::Matrix& A, const MethodWeighted::Weig
         eckit::linalg::Vector a(const_cast<double*>(A.data()), A.rows());
         eckit::linalg::Vector b(B.data(), B.rows());
 
-        eckit::linalg::LinearAlgebra::backend().spmv(W, a, b);
+        eckit::linalg::LinearAlgebraSparse::backend().spmv(W, a, b);
     }
     else {
-        eckit::linalg::LinearAlgebra::backend().spmm(W, A, B);
+        eckit::linalg::LinearAlgebraSparse::backend().spmm(W, A, B);
     }
 }
 
