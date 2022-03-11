@@ -23,11 +23,6 @@ md5GridSection=ffa89d4755e4c0b06f712279d96d0dde/0e622d0d974f9f7e24ac408a31eadb3d
 - south: -89.995833333
 - east: 359.995833333
 
-# Clenshaw-Curtis grids (temporary) (centre=ecmf)
-md5GridSection=383b1a933ea4e23c83773251155b3abf/6fcea9a744c0c8f139b43cd69c43b1bb/f07196bdb74e986c005a51452598b37f, centre:i=98, gridType=reduced_gg, edition=1:
-- gridType: reduced_cc
-- gridname: ?
-
 # Lambert conformal conic projection, non-standard interpretation (Toulouse, RSMC, centre=lfpw)
 md5GridSection=6ae0076681a2541abe053ab52fa60f30, centre:i=84/85, gridType=lambert, edition=1:
 - first_point_bottom_left: true

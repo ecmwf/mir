@@ -240,16 +240,12 @@ list(APPEND mir_srcs
     key/Key.h
     key/grid/ClassicPattern.cc
     key/grid/ClassicPattern.h
-    key/grid/ClenshawCurtisPattern.cc
-    key/grid/ClenshawCurtisPattern.h
     key/grid/Grid.cc
     key/grid/Grid.h
     key/grid/GridPattern.cc
     key/grid/GridPattern.h
     key/grid/NamedClassic.cc
     key/grid/NamedClassic.h
-    key/grid/NamedClenshawCurtis.cc
-    key/grid/NamedClenshawCurtis.h
     key/grid/NamedFromFile.cc
     key/grid/NamedFromFile.h
     key/grid/NamedGrid.h
@@ -522,8 +518,6 @@ list(APPEND mir_srcs
     repres/latlon/RegularLL.h
     repres/latlon/RotatedLL.cc
     repres/latlon/RotatedLL.h
-    repres/other/ClenshawCurtis.cc
-    repres/other/ClenshawCurtis.h
     repres/other/None.cc
     repres/other/None.h
     repres/other/UnstructuredGrid.cc
