@@ -82,9 +82,6 @@ private:
     Iterator* iterator() const override;
     std::string factory() const override;
 
-    // From Representation
-    std::vector<util::GridBox> gridBoxes() const override;
-
     // -- Class members
     // None
 

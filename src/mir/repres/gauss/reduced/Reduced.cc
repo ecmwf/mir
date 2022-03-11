@@ -30,7 +30,6 @@
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
-#include "mir/util/GridBox.h"
 
 
 namespace mir {
@@ -286,50 +285,6 @@ void Reduced::estimate(api::MIREstimation& estimation) const {
     Gaussian::estimate(estimation);
     const auto& pl = pls();
     estimation.pl(pl.size());
-}
-
-
-std::vector<util::GridBox> Reduced::gridBoxes() const {
-    ASSERT(1 < Nj_);
-
-
-    // latitude edges
-    std::vector<double> latEdges = calculateUnrotatedGridBoxLatitudeEdges();
-
-
-    // grid boxes
-    std::vector<util::GridBox> r;
-    r.reserve(numberOfPoints());
-
-    bool periodic  = isPeriodicWestEast();
-    const auto& pl = pls();
-
-    for (size_t j = k_; j < k_ + Nj_; ++j) {
-        ASSERT(pl[j] > 0);
-        eckit::Fraction inc(360, pl[j]);
-
-        auto Ni = size_t(pl[j]);
-
-        // longitude edges
-        auto west = bbox_.west().fraction();
-        auto Nw   = (west / inc).integralPart();
-        if (Nw * inc < west) {
-            Nw += 1;
-        }
-        Longitude lon0 = (Nw * inc) - (inc / 2);
-        Longitude lon1 = lon0;
-
-        for (size_t i = 0; i < Ni; ++i) {
-            auto l = lon1;
-            lon1 += inc;
-            r.emplace_back(util::GridBox(latEdges[j], l.value(), latEdges[j + 1], lon1.value()));
-        }
-
-        ASSERT(periodic ? lon0 == lon1.normalise(lon0) : lon0 < lon1.normalise(lon0));
-    }
-
-    ASSERT(r.size() == numberOfPoints());
-    return r;
 }
 
 

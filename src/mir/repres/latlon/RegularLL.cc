@@ -19,7 +19,6 @@
 #include "mir/util/Atlas.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
-#include "mir/util/GridBox.h"
 
 
 namespace mir {
@@ -136,65 +135,6 @@ util::BoundingBox RegularLL::extendBoundingBox(const util::BoundingBox& bbox) co
     return extended;
 }
 
-std::vector<util::GridBox> RegularLL::gridBoxes() const {
-
-    auto dom   = domain();
-    auto north = dom.north().value();
-    auto south = dom.south().value();
-
-    auto lat0 = bbox_.north();
-    auto lon0 = bbox_.west();
-    auto sn   = increments_.south_north().latitude();
-    auto we   = increments_.west_east().longitude().fraction();
-
-    eckit::Fraction half(1, 2);
-
-
-    // latitude edges
-    std::vector<double> latEdges(nj_ + 1);
-
-    latEdges[0] = (lat0 + sn / 2).value();
-    for (size_t j = 0; j < nj_; ++j) {
-        latEdges[j + 1] = (lat0 - (j + half) * sn.fraction()).value();
-    }
-
-    latEdges.front() = std::min(north, std::max(south, latEdges.front()));
-    latEdges.back()  = std::min(north, std::max(south, latEdges.back()));
-
-
-    // longitude edges
-    std::vector<double> lonEdges(ni_ + 1);
-    lonEdges[0] = (lon0 - we / 2).value();
-    for (size_t i = 0; i < ni_; ++i) {
-        lonEdges[i + 1] = (lon0 + (i + half) * we).value();
-    }
-
-    bool periodic = isPeriodicWestEast();
-    if (!periodic) {
-        lonEdges.front() = std::max(lonEdges.front(), lon0.value());
-        lonEdges.back()  = std::min(lonEdges.back(), bbox_.east().value());
-    }
-
-
-    // grid boxes
-    std::vector<util::GridBox> r;
-    r.reserve(ni_ * nj_);
-
-    for (size_t j = 0; j < nj_; ++j) {
-        Longitude lon1 = lon0;
-
-        for (size_t i = 0; i < ni_; ++i) {
-            auto l = lon1;
-            lon1   = l + we * (i + half);
-            r.emplace_back(util::GridBox(latEdges[j], lonEdges[i], latEdges[j + 1], lonEdges[i + 1]));
-        }
-
-        ASSERT(periodic ? lon0 == lon1.normalise(lon0) : lon0 < lon1.normalise(lon0));
-    }
-
-    ASSERT(r.size() == numberOfPoints());
-    return r;
-}
 
 std::string RegularLL::factory() const {
     return "regular_ll";

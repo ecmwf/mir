@@ -98,9 +98,6 @@ private:
     size_t numberOfPoints() const override;
     bool getLongestElementDiagonal(double&) const override;
 
-    // From Representation
-    std::vector<util::GridBox> gridBoxes() const override;
-
     // -- Class members
     // None
 

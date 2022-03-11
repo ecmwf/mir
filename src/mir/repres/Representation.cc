@@ -57,13 +57,6 @@ RepresentationHandle::~RepresentationHandle() {
 }
 
 
-std::vector<util::GridBox> Representation::gridBoxes() const {
-    std::ostringstream os;
-    os << "Representation::gridBoxes() not implemented for " << *this;
-    throw exception::SeriousBug(os.str());
-}
-
-
 void Representation::estimate(api::MIREstimation& /*unused*/) const {
     std::ostringstream os;
     os << "Representation::estimate() not implemented for " << *this;

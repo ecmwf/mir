@@ -32,6 +32,7 @@
 #include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/interpolation/method/PointIndex3.h"
 #include "atlas/interpolation/method/Ray.h"
+#include "atlas/interpolation/method/knn/GridBox.h"
 #include "atlas/library/Library.h"
 #include "atlas/library/config.h"
 #include "atlas/mesh.h"

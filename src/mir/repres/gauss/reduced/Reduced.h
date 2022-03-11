@@ -92,7 +92,6 @@ protected:
     // from Representation
     bool isPeriodicWestEast() const override;
     void estimate(api::MIREstimation&) const override;
-    std::vector<util::GridBox> gridBoxes() const override;
 
     // -- Class members
 
