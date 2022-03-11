@@ -12,17 +12,15 @@
 
 #pragma once
 
-#include "mir/method/Cropping.h"
-#include "mir/method/Method.h"
+#include "mir/method/MethodWeighted.h"
 #include "mir/util/Atlas.h"
-#include "mir/util/Types.h"
 
 
 namespace mir {
 namespace method {
 
 
-class ProxyMatrixBased : public Method {
+class ProxyMatrixBased : public MethodWeighted {
 public:
     // -- Types
 
@@ -82,7 +80,7 @@ private:
     // -- Members
 
     atlas_config_t options_;
-    Cropping cropping_;
+    std::string name_;
 
     // -- Methods
     // None
@@ -90,15 +88,15 @@ private:
     // -- Overridden methods
 
     // From Method
-    void hash(eckit::MD5&) const override;
     int version() const override;
-    void execute(context::Context&, const repres::Representation& in, const repres::Representation& out) const override;
+
+    // From MethodWeighted
+    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                  const repres::Representation& out) const override;
+    void hash(eckit::MD5&) const override;
     bool sameAs(const Method&) const override;
-    bool canCrop() const override;
-    void setCropping(const util::BoundingBox&) override;
-    bool hasCropping() const override;
-    const util::BoundingBox& getCropping() const override;
     void print(std::ostream&) const override;
+    const char* name() const override { return name_.c_str(); }
 
     // -- Class members
     // None
