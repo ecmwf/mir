@@ -116,9 +116,6 @@ struct MIR : MIRTool {
         options_.push_back(
             new FactoryOption<stats::FieldFactory>("interpolation-statistics", "Statistics interpolation method"));
 
-        options_.push_back(
-            new SimpleOption<bool>("interpolation-matrix-free", "Matrix-free interpolation (proxy methods)"));
-
 #if defined(mir_HAVE_ATLAS)
         options_.push_back(new FactoryOption<method::fe::FiniteElementFactory>("l2-projection-input-method",
                                                                                "L2 Projection FE method for input"));

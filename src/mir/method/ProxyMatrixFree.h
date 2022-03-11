@@ -22,7 +22,7 @@ namespace mir {
 namespace method {
 
 
-class ProxyMethod : public Method {
+class ProxyMatrixFree : public Method {
 public:
     // -- Types
 
@@ -58,18 +58,16 @@ public:
 protected:
     // -- Constructors
 
-    ProxyMethod(const param::MIRParametrisation&, std::string type);
+    ProxyMatrixFree(const param::MIRParametrisation&, std::string type);
 
     // -- Destructor
-
-    virtual ~ProxyMethod() override;
+    // None
 
     // -- Members
     // None
 
     // -- Methods
-
-    const std::string& type() const { return type_; }
+    // None
 
     // -- Overridden methods
     // None
@@ -84,7 +82,6 @@ private:
     // -- Members
 
     atlas_config_t options_;
-    const std::string type_;
     Cropping cropping_;
 
     // -- Methods

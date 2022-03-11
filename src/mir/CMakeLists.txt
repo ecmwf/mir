@@ -747,8 +747,10 @@ if(mir_HAVE_ATLAS)
         key/grid/NamedORCA.h
         key/grid/ORCAPattern.cc
         key/grid/ORCAPattern.h
-        method/ProxyMethod.cc
-        method/ProxyMethod.h
+        method/ProxyMatrixBased.cc
+        method/ProxyMatrixBased.h
+        method/ProxyMatrixFree.cc
+        method/ProxyMatrixFree.h
         method/fe/BuildNodeLumpedMassMatrix.cc
         method/fe/BuildNodeLumpedMassMatrix.h
         method/fe/CalculateCellLongestDiagonal.cc
