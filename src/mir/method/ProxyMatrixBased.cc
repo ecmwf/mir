@@ -28,6 +28,24 @@ namespace mir {
 namespace method {
 
 
+struct StructuredBicubic final : public ProxyMatrixBased {
+    explicit StructuredBicubic(const param::MIRParametrisation& param) :
+        ProxyMatrixBased(param, "structured-bicubic") {}
+};
+
+
+struct StructuredBilinear final : public ProxyMatrixBased {
+    explicit StructuredBilinear(const param::MIRParametrisation& param) :
+        ProxyMatrixBased(param, "structured-bilinear") {}
+};
+
+
+struct StructuredBiquasicubic final : public ProxyMatrixBased {
+    explicit StructuredBiquasicubic(const param::MIRParametrisation& param) :
+        ProxyMatrixBased(param, "structured-biquasicubic") {}
+};
+
+
 struct GridBoxAverage final : public ProxyMatrixBased {
     explicit GridBoxAverage(const param::MIRParametrisation& param) : ProxyMatrixBased(param, "grid-box-average") {}
 };
@@ -43,8 +61,11 @@ struct GridBoxStatistics final : public ProxyMatrixBased {
 };
 
 
-static const MethodBuilder<GridBoxAverage> __method1("grid-box-average");
-static const MethodBuilder<GridBoxStatistics> __method2("grid-box-statistics");
+static const MethodBuilder<StructuredBilinear> __method1("structured-bicubic");
+static const MethodBuilder<StructuredBilinear> __method2("structured-bilinear");
+static const MethodBuilder<StructuredBilinear> __method3("structured-biquasicubic");
+static const MethodBuilder<GridBoxAverage> __method4("grid-box-average");
+static const MethodBuilder<GridBoxStatistics> __method5("grid-box-statistics");
 
 
 static eckit::Hash::digest_t atlasOptionsDigest(const ProxyMatrixBased::atlas_config_t& options) {
