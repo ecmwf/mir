@@ -69,9 +69,9 @@ struct ConservativeOrder final : public ProxyMatrixBased {
 };
 
 
-static const MethodBuilder<StructuredBilinear> __method1("structured-bicubic");
+static const MethodBuilder<StructuredBicubic> __method1("structured-bicubic");
 static const MethodBuilder<StructuredBilinear> __method2("structured-bilinear");
-static const MethodBuilder<StructuredBilinear> __method3("structured-biquasicubic");
+static const MethodBuilder<StructuredBiquasicubic> __method3("structured-biquasicubic");
 static const MethodBuilder<GridBoxAverage> __method4("grid-box-average");
 static const MethodBuilder<GridBoxStatistics> __method5("grid-box-statistics");
 static const MethodBuilder<ConservativeOrder<1>> __method6("conservative-order-1");
