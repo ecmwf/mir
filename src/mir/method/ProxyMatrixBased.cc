@@ -61,11 +61,21 @@ struct GridBoxStatistics final : public ProxyMatrixBased {
 };
 
 
+template <int ORDER>
+struct ConservativeOrder final : public ProxyMatrixBased {
+    explicit ConservativeOrder(const param::MIRParametrisation& param) : ProxyMatrixBased(param, "conservative") {
+        options().set("order", ORDER);
+    }
+};
+
+
 static const MethodBuilder<StructuredBilinear> __method1("structured-bicubic");
 static const MethodBuilder<StructuredBilinear> __method2("structured-bilinear");
 static const MethodBuilder<StructuredBilinear> __method3("structured-biquasicubic");
 static const MethodBuilder<GridBoxAverage> __method4("grid-box-average");
 static const MethodBuilder<GridBoxStatistics> __method5("grid-box-statistics");
+static const MethodBuilder<ConservativeOrder<1>> __method6("conservative-order-1");
+static const MethodBuilder<ConservativeOrder<2>> __method7("conservative-order-2");
 
 
 static eckit::Hash::digest_t atlasOptionsDigest(const ProxyMatrixBased::atlas_config_t& options) {
@@ -75,7 +85,7 @@ static eckit::Hash::digest_t atlasOptionsDigest(const ProxyMatrixBased::atlas_co
 }
 
 
-ProxyMatrixBased::ProxyMatrixBased(const param::MIRParametrisation& param, std::string type) :
+ProxyMatrixBased::ProxyMatrixBased(const param::MIRParametrisation& param, const std::string& type) :
     MethodWeighted(param), name_(type) {
     options_.set("type", type);
     options_.set("matrix_free", false);

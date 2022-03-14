@@ -56,7 +56,7 @@ public:
 protected:
     // -- Constructors
 
-    ProxyMatrixBased(const param::MIRParametrisation&, std::string type);
+    ProxyMatrixBased(const param::MIRParametrisation&, const std::string& type);
 
     // -- Destructor
     // None
@@ -65,7 +65,9 @@ protected:
     // None
 
     // -- Methods
-    // None
+
+    const atlas_config_t& options() const { return options_; }
+    atlas_config_t& options() { return options_; }
 
     // -- Overridden methods
     // None
