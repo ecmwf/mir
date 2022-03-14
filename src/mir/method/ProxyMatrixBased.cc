@@ -58,6 +58,7 @@ ProxyMatrixBased::ProxyMatrixBased(const param::MIRParametrisation& param, std::
     MethodWeighted(param), name_(type) {
     options_.set("type", type);
     options_.set("matrix_free", false);
+    options_.set("matrix_global", true);
 }
 
 
