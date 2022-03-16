@@ -65,6 +65,8 @@ template <int ORDER>
 struct ConservativeOrder final : public ProxyMatrixBased {
     explicit ConservativeOrder(const param::MIRParametrisation& param) : ProxyMatrixBased(param, "conservative") {
         options().set("order", ORDER);
+        options().set("src_cell_data", false);
+        options().set("tgt_cell_data", false);
     }
 };
 
