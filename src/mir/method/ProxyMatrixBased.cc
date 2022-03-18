@@ -111,9 +111,13 @@ void ProxyMatrixBased::assemble(util::MIRStatistics&, MethodWeighted::WeightMatr
     trace::Timer timer("ProxyMatrixBased::assemble");
 
     atlas::Interpolation interpol(options_, in.atlasGrid(), out.atlasGrid());
+    ASSERT(interpol);
 
-    atlas::interpolation::MatrixCache mc(interpol);
-    W.swap(const_cast<eckit::linalg::SparseMatrix&>(mc.matrix()));  // removing constness is necessary for the swap
+    atlas::GridRenumber renumber(atlas::util::Config("type", "serial"));
+    ASSERT(renumber);
+
+    auto M = renumber.execute(interpol);
+    W.swap(M);
 }
 
 
