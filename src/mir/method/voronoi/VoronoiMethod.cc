@@ -137,7 +137,9 @@ void VoronoiMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, c
 
         // TODO: triplets, really? why not writing to the matrix directly?
         ASSERT_NONEMPTY_INTERPOLATION("VoronoiMethod", !biplets.empty());
-        W.setFromTriplets({biplets.begin(), biplets.end()});
+
+        WeightMatrix M(Nout, Nin, std::vector<WeightMatrix::Triplet>(biplets.begin(), biplets.end()));
+        W.swap(M);
     }
 }
 

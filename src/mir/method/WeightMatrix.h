@@ -32,15 +32,11 @@ public:  // types
     using Scalar  = eckit::linalg::Scalar;
     using Size    = eckit::linalg::Size;
 
-public:  // methods
-    WeightMatrix(SparseMatrix::Allocator* = nullptr);
-
+public:  // constructors
+    using SparseMatrix::SparseMatrix;
     WeightMatrix(const eckit::PathName&);
 
-    WeightMatrix(Size rows, Size cols);
-
-    void setFromTriplets(const std::vector<Triplet>&);
-
+public:  // methods
     void cleanup(const double& pruneEpsilon = 0);
 
     void validate(const char* when) const;

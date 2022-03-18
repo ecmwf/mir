@@ -67,6 +67,7 @@ void KNearestNeighbours::assemble(util::MIRStatistics& /*unused*/, WeightMatrix&
     log << *this << "::assemble (input: " << in << ", output: " << out << ")" << std::endl;
     trace::Timer timer("KNearestNeighbours::assemble");
 
+    const size_t nbInputPoints  = in.numberOfPoints();
     const size_t nbOutputPoints = out.numberOfPoints();
 
     const search::PointSearch sptree(parametrisation_, in);
@@ -140,7 +141,9 @@ void KNearestNeighbours::assemble(util::MIRStatistics& /*unused*/, WeightMatrix&
 
     // fill-in sparse matrix
     ASSERT_NONEMPTY_INTERPOLATION("KNearestNeighbours", !weights_triplets.empty());
-    W.setFromTriplets(weights_triplets);
+
+    WeightMatrix M(nbOutputPoints, nbInputPoints, weights_triplets);
+    W.swap(M);
 }
 
 

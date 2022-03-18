@@ -25,24 +25,8 @@ namespace mir {
 namespace method {
 
 
-WeightMatrix::WeightMatrix(SparseMatrix::Allocator* alloc) : SparseMatrix(alloc) {}
-
-
 WeightMatrix::WeightMatrix(const eckit::PathName& path) {
     load(path);
-}
-
-
-WeightMatrix::WeightMatrix(WeightMatrix::Size rows, WeightMatrix::Size cols) : SparseMatrix(rows, cols) {}
-
-
-void WeightMatrix::setFromTriplets(const std::vector<WeightMatrix::Triplet>& triplets) {
-    ASSERT(rows());
-    ASSERT(cols());
-
-    SparseMatrix M(rows(), cols(), triplets);
-
-    swap(M);
 }
 
 
