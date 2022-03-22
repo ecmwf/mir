@@ -1,0 +1,115 @@
+/*
+ * (C) Copyright 1996- ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
+
+
+#pragma once
+
+#include <memory>
+
+#include "mir/method/MethodWeighted.h"
+#include "mir/method/geo/GeographyMethod.h"
+#include "mir/repres/other/Geography.h"
+
+
+namespace mir {
+namespace method {
+namespace geo {
+
+
+class GeographyStatistics : public Method {
+public:
+    // -- Types
+    // None
+
+    // -- Exceptions
+    // None
+
+    // -- Constructors
+
+    explicit GeographyStatistics(const param::MIRParametrisation&);
+
+    // -- Destructor
+
+    virtual ~GeographyStatistics() override = default;
+
+    // -- Convertors
+    // None
+
+    // -- Operators
+    // None
+
+    // -- Methods
+    // None
+
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+protected:
+    // -- Members
+    // None
+
+    // -- Methods
+    // None
+
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+private:
+    // -- Members
+
+    std::unique_ptr<GeographyMethod> r2g_;  ///< Interpolation from (input) Representation to geography regions
+    std::unique_ptr<GeographyMethod> g2r_;  ///< Interpolation from geography regions to (output) Representation
+    repres::other::Geography geography_;    ///< Geography regions
+
+    // -- Methods
+    // None
+
+    // -- Overridden methods
+
+    // From Method
+    void hash(eckit::MD5&) const override;
+    int version() const override;
+    void execute(context::Context&, const repres::Representation& in, const repres::Representation& out) const override;
+    bool sameAs(const Method&) const override;
+
+    bool canCrop() const override;
+    void setCropping(const util::BoundingBox&) override;
+    bool hasCropping() const override;
+    const util::BoundingBox& getCropping() const override;
+
+    void print(std::ostream&) const override;
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+    // -- Friends
+    // None
+};
+
+
+}  // namespace geo
+}  // namespace method
+}  // namespace mir

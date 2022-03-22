@@ -753,6 +753,10 @@ if(mir_HAVE_ATLAS)
         caching/legendre/NoLoader.h
         caching/legendre/SharedMemoryLoader.cc
         caching/legendre/SharedMemoryLoader.h
+        geography/GeoJSON.cc
+        geography/GeoJSON.h
+        geography/GeographyInput.cc
+        geography/GeographyInput.h
         key/grid/NamedORCA.cc
         key/grid/NamedORCA.h
         key/grid/ORCAPattern.cc
@@ -771,6 +775,14 @@ if(mir_HAVE_ATLAS)
         method/fe/FiniteElement.h
         method/fe/L2Projection.cc
         method/fe/L2Projection.h
+        method/geo/GeographyMethod.cc
+        method/geo/GeographyMethod.h
+        method/geo/GeographyStatistics.cc
+        method/geo/GeographyStatistics.h
+        method/geo/GeographyToRepresentation.cc
+        method/geo/GeographyToRepresentation.h
+        method/geo/RepresentationToGeography.cc
+        method/geo/RepresentationToGeography.h
         method/structured/StructuredBilinearLatLon.cc
         method/structured/StructuredBilinearLatLon.h
         method/structured/StructuredLinear3D.cc
@@ -779,6 +791,8 @@ if(mir_HAVE_ATLAS)
         method/structured/StructuredMethod.h
         output/GmshOutput.cc
         output/GmshOutput.h
+        repres/other/Geography.cc
+        repres/other/Geography.h
         repres/other/ORCA.cc
         repres/other/ORCA.h
         stats/statistics/Integral.cc

@@ -327,6 +327,15 @@ struct MIR : MIRTool {
         options_.push_back(new SimpleOption<eckit::PathName>("plan-script", "File containing a plan definition"));
 
         //==============================================
+        options_.push_back(new Separator("Geography"));
+        options_.push_back(new SimpleOption<std::string>(
+            "geography-geometry", "Geographycal regions polygons geometry, \"lonlat\" (default) or \"spherical\""));
+        options_.push_back(new SimpleOption<std::string>(
+            "geography-geojson", "GeoJSON string with geographical regions as Polygon/MultiPolygon"));
+        options_.push_back(new SimpleOption<eckit::PathName>(
+            "geography-geojson-file", "GeoJSON file with geographical regions as Polygon/MultiPolygon"));
+
+        //==============================================
         options_.push_back(new Separator("Caching"));
         options_.push_back(new FactoryOption<caching::matrix::MatrixLoaderFactory>(
             "matrix-loader", "Select how to load matrices in memory"));
