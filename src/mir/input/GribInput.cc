@@ -834,9 +834,11 @@ bool GribInput::get(const std::string& name, long& value) const {
     std::string packing;
     if (key == "bitsPerValue" && get("packing", packing) && packing == "ieee") {
         // GRIB2 Section 5 Code Table 7
-        // NOTE: has to be done here as GRIBs packingType=grid_ieee ignores bitsPerValue (usually 0?)
+        // NOTE:
+        // - has to be done here as GRIBs packingType=grid_ieee ignores bitsPerValue (usually 0?)
+        // - packingType=grid_ieee has "precision", but "spectral_ieee" doesn't
         long precision = 0;
-        GRIB_CALL(codes_get_long(grib_, "precision", &precision));
+        codes_get_long(grib_, "precision", &precision);
         value = precision == 1 ? 32 : precision == 2 ? 64 : precision == 3 ? 128 : 0;
         return value != 0;
     }
