@@ -3,4 +3,4 @@ stream=espd,param=ci,class=e2,date=19600201,expver=0003,levtype=sfc,number=0
 # mir
 --grid=0.25/0.25
 # plan
-Copy[...]
+Copy[]
