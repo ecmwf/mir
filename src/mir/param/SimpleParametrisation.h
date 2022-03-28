@@ -79,7 +79,10 @@ public:
     size_t size() const;
 
     // Used by Job
-    bool matches(const MIRParametrisation&) const;
+    bool matchAll(const MIRParametrisation&) const;
+
+    // Used by GribFixes
+    bool matchAny(const MIRParametrisation&) const;
 
     // -- Overridden methods
 

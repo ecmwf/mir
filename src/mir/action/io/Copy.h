@@ -84,6 +84,7 @@ private:
     const char* name() const override;
 
     // From EndAction
+    void print(std::ostream&) const override;
     void custom(std::ostream&) const override;
 
     // -- Class members

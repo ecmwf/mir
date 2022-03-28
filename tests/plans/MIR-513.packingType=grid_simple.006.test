@@ -3,4 +3,4 @@ packingType=grid_simple.grib2
 # mir
 --packing=av
 # plan
-Copy[...]
+Copy[]

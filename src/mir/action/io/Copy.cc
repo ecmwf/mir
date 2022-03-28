@@ -45,13 +45,18 @@ const char* Copy::name() const {
 }
 
 
+void Copy::print(std::ostream& out) const {
+    out << "Copy[]";
+}
+
+
 void Copy::estimate(context::Context& /*unused*/, api::MIREstimation& estimation) const {
     estimation.sameAsInput();
 }
 
 
 void Copy::custom(std::ostream& out) const {
-    out << "Copy[...]";
+    out << "Copy[]";
 }
 
 

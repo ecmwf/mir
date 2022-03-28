@@ -42,7 +42,7 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
 
 
     // skip preparing an Action plan if nothing to do, or input is already what was specified
-    if (!key::Key::postProcess(job) && job.matches(metadata)) {
+    if (!key::Key::postProcess(job) && job.matchAll(metadata)) {
         plan_->add(new io::Copy(*combined_, output_));
     }
     else {
