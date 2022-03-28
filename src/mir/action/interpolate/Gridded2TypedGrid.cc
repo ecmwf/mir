@@ -41,7 +41,7 @@ bool Gridded2TypedGrid::sameAs(const Action& other) const {
 
     // NOTE: SimpleParametrisation::matches() is not commutative, and grid_ is not compared because gridParams_ contains
     // all useful information for building Representation
-    return (o != nullptr) && gridParams_.matches(o->gridParams_) && o->gridParams_.matches(gridParams_) &&
+    return (o != nullptr) && gridParams_.matchAll(o->gridParams_) && o->gridParams_.matchAll(gridParams_) &&
            Gridded2GriddedInterpolation::sameAs(other);
 }
 

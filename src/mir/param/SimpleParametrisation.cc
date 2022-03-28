@@ -56,7 +56,9 @@ public:
     virtual void get(const std::string& name, std::vector<double>& value) const      = 0;
     virtual void get(const std::string& name, std::vector<std::string>& value) const = 0;
 
-    virtual bool match(const std::string& name, const MIRParametrisation&) const    = 0;
+    virtual bool matchAll(const std::string& name, const MIRParametrisation&) const = 0;
+    virtual bool matchAny(const std::string& name, const MIRParametrisation&) const = 0;
+
     virtual void copyValueTo(const std::string& name, SimpleParametrisation&) const = 0;
 
     virtual void print(std::ostream&) const = 0;
@@ -225,7 +227,12 @@ public:
         throw exception::CannotConvert(TNamed<T>(), "vector<string>", name, value_);
     }
 
-    bool match(const std::string& name, const MIRParametrisation& other) const override {
+    bool matchAll(const std::string& name, const MIRParametrisation& other) const override {
+        T value;
+        return other.get(name, value) && value_ == value;
+    }
+
+    bool matchAny(const std::string& name, const MIRParametrisation& other) const override {
         T value;
         return other.get(name, value) && value_ == value;
     }
@@ -265,16 +272,34 @@ void TSettings<std::vector<double>>::print(std::ostream& out) const {
 
 
 template <>
-bool TSettings<std::vector<long>>::match(const std::string& name, const MIRParametrisation& other) const {
-    // if any of "these values" matches "other value"
+bool TSettings<std::vector<long>>::matchAll(const std::string& name, const MIRParametrisation& other) const {
+    // if all of "this" values match "other" values
+    std::vector<long> values;
+    return other.get(name, values) && std::equal(value_.begin(), value_.end(), values.begin());
+}
+
+
+template <>
+bool TSettings<std::vector<long>>::matchAny(const std::string& name, const MIRParametrisation& other) const {
+    // if any of "this" values matches "other" values
     long value;
     return other.get(name, value) && std::any_of(value_.begin(), value_.end(), [&value](long v) { return value == v; });
 }
 
 
 template <>
-bool TSettings<std::vector<double>>::match(const std::string& name, const MIRParametrisation& other) const {
-    // if any of "these values" matches "other value"
+bool TSettings<std::vector<double>>::matchAll(const std::string& name, const MIRParametrisation& other) const {
+    // if all of "this" values match "other" values
+    std::vector<double> values;
+    return other.get(name, values) && std::equal(value_.begin(), value_.end(), values.begin(), [](double a, double b) {
+               return eckit::types::is_approximately_equal(a, b);
+           });
+}
+
+
+template <>
+bool TSettings<std::vector<double>>::matchAny(const std::string& name, const MIRParametrisation& other) const {
+    // if any of "this" values matches "other" values
     double value;
     return other.get(name, value) && std::any_of(value_.begin(), value_.end(), [value](double v) {
                return eckit::types::is_approximately_equal(v, value);
@@ -283,8 +308,16 @@ bool TSettings<std::vector<double>>::match(const std::string& name, const MIRPar
 
 
 template <>
-bool TSettings<std::vector<std::string>>::match(const std::string& name, const MIRParametrisation& other) const {
-    // if any of "these values" matches "other value"
+bool TSettings<std::vector<std::string>>::matchAll(const std::string& name, const MIRParametrisation& other) const {
+    // if all of "this" values match "other" values
+    std::vector<std::string> values;
+    return other.get(name, values) && std::equal(value_.begin(), value_.end(), values.begin());
+}
+
+
+template <>
+bool TSettings<std::vector<std::string>>::matchAny(const std::string& name, const MIRParametrisation& other) const {
+    // if any of "this" values matches "other" values
     std::string value;
     return other.get(name, value) &&
            std::any_of(value_.begin(), value_.end(), [&value](const std::string v) { return value == v; });
@@ -773,15 +806,28 @@ void SimpleParametrisation::json(eckit::JSON& s) const {
 }
 
 
-bool SimpleParametrisation::matches(const MIRParametrisation& other) const {
+bool SimpleParametrisation::matchAll(const MIRParametrisation& other) const {
     for (const auto& j : settings_) {
-        if (!j.second->match(j.first, other)) {
-            // Log::debug() << "SimpleParametrisation::matches: no (" << j.first << " different to " << *(j.second) <<
+        if (!j.second->matchAll(j.first, other)) {
+            // Log::debug() << "SimpleParametrisation::matchAll: no (" << j.first << " different to " << *(j.second) <<
             // ")" << std::endl;
             return false;
         }
     }
-    // Log::debug() << "SimpleParametrisation::matches: yes" << std::endl;
+    // Log::debug() << "SimpleParametrisation::matchAll: yes" << std::endl;
+    return true;
+}
+
+
+bool SimpleParametrisation::matchAny(const MIRParametrisation& other) const {
+    for (const auto& j : settings_) {
+        if (!j.second->matchAny(j.first, other)) {
+            // Log::debug() << "SimpleParametrisation::matchAny: no (" << j.first << " different to " << *(j.second) <<
+            // ")" << std::endl;
+            return false;
+        }
+    }
+    // Log::debug() << "SimpleParametrisation::matchAny: yes" << std::endl;
     return true;
 }
 

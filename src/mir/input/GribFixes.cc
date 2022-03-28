@@ -55,7 +55,7 @@ const param::SimpleParametrisation& GribFixes::find(const param::MIRParametrisat
     const auto* fixes = &empty;
 
     for (const auto& f : fixes_) {
-        if ((f.first)->matches(param) && match < (f.first)->size()) {
+        if ((f.first)->matchAny(param) && match < (f.first)->size()) {
             ASSERT(f.second);
             match = (f.first)->size();
             fixes = f.second;
