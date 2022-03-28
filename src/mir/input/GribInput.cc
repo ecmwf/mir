@@ -876,6 +876,9 @@ bool GribInput::get(const std::string& name, double& value) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
+
+    ASSERT(name != "grid");
+
     const auto* key = get_key(name, grib_);
 
     ASSERT(key != nullptr);
