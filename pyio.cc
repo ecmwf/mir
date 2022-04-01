@@ -1,3 +1,14 @@
+/*
+ * (C) Copyright 1996- ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
+
 
 #include "Python.h"
 
@@ -5,18 +16,22 @@
 
 #include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/util/Grib.h"
+
 
 static size_t buffer_size() {
     static size_t size = eckit::Resource<size_t>("$MIR_GRIB_INPUT_BUFFER_SIZE", 64 * 1024 * 1024);
     return size;
 }
 
+
 static long pyio_readcb(void* data, void* buf, long len) {
-    auto obj = reinterpret_cast<PyObject*>(data);
+    auto obj      = reinterpret_cast<PyObject*>(data);
     PyObject* res = PyObject_CallMethod(obj, "read", "l", len);
-    if (res == nullptr)
+    if (res == nullptr) {
         return -2;
+    }
 
     Py_buffer read;
     if (PyObject_GetBuffer(res, &read, PyBUF_SIMPLE) < 0) {
@@ -34,18 +49,21 @@ static long pyio_readcb(void* data, void* buf, long len) {
     }
 
     PyBuffer_Release(&read);
-    return (l > 0)? l : -1;
+    return (l > 0) ? l : -1;
 }
+
 
 GribPyIOInput::GribPyIOInput(PyObject* obj) : obj_(obj), buffer_(buffer_size()) {
     ASSERT(obj_ != nullptr);
     Py_INCREF(obj_);
 }
 
+
 GribPyIOInput::~GribPyIOInput() {
     ASSERT(obj_ != nullptr);
     Py_DECREF(obj_);
 }
+
 
 bool GribPyIOInput::next() {
     ASSERT(obj_ != nullptr);
@@ -53,7 +71,7 @@ bool GribPyIOInput::next() {
     handle(nullptr);
 
     size_t len = buffer_.size();
-    int e = wmo_read_any_from_stream(obj_, &pyio_readcb, buffer_, &len);
+    int e      = wmo_read_any_from_stream(obj_, &pyio_readcb, buffer_, &len);
 
     if (e == CODES_SUCCESS) {
         ASSERT(handle(codes_handle_new_from_message(nullptr, buffer_, len)));
@@ -79,9 +97,11 @@ bool GribPyIOInput::next() {
     return false;
 }
 
+
 bool GribPyIOInput::sameAs(const mir::input::MIRInput& other) const {
     return this == &other;
 }
+
 
 void GribPyIOInput::print(std::ostream& out) const {
     out << "GribPyIOInput[]";
@@ -93,13 +113,15 @@ GribPyIOOutput::GribPyIOOutput(PyObject* obj) : obj_(obj) {
     Py_INCREF(obj_);
 }
 
+
 GribPyIOOutput::~GribPyIOOutput() {
     ASSERT(obj_ != nullptr);
     Py_DECREF(obj_);
 }
 
+
 void GribPyIOOutput::out(const void* message, size_t length, bool) {
-    auto buf = const_cast<char*>(reinterpret_cast<const char*>(message));
+    auto buf       = const_cast<char*>(reinterpret_cast<const char*>(message));
     PyObject* view = PyMemoryView_FromMemory(buf, length, PyBUF_READ);
     ASSERT(view != nullptr);
     PyObject* res = PyObject_CallMethod(obj_, "write", "O", view);
@@ -108,9 +130,11 @@ void GribPyIOOutput::out(const void* message, size_t length, bool) {
     Py_DECREF(view);
 }
 
+
 bool GribPyIOOutput::sameAs(const mir::output::MIROutput& other) const {
     return this == &other;
 }
+
 
 void GribPyIOOutput::print(std::ostream& out) const {
     out << "GribPyIOOutput[]";

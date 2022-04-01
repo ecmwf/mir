@@ -1,36 +1,50 @@
+/*
+ * (C) Copyright 1996- ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
+
+
 #pragma once
 
 #include "Python.h"
 
 #include "eckit/io/Buffer.h"
+
 #include "mir/input/GribInput.h"
-#include "mir/input/MIRInput.h"
 #include "mir/output/GribOutput.h"
-#include "mir/output/MIROutput.h"
+
 
 class GribPyIOInput : public mir::input::GribInput {
 public:
-    GribPyIOInput(PyObject* obj);
+    GribPyIOInput(PyObject*);
     virtual ~GribPyIOInput();
-    virtual bool next();
+
+    bool next() override;
+
 private:
     PyObject* obj_;
     eckit::Buffer buffer_;
 
-    virtual void print(std::ostream&) const;
-    virtual bool sameAs(const mir::input::MIRInput& other) const;
+    void print(std::ostream&) const override;
+    bool sameAs(const mir::input::MIRInput&) const override;
 };
+
 
 class GribPyIOOutput : public mir::output::GribOutput {
 public:
-    GribPyIOOutput(PyObject* obj);
+    GribPyIOOutput(PyObject*);
     virtual ~GribPyIOOutput();
+
 private:
     PyObject* obj_;
 
     void out(const void* message, size_t length, bool interpolated) override;
-
-    virtual void print(std::ostream&) const;
-    virtual bool sameAs(const mir::output::MIROutput& other) const;
+    void print(std::ostream&) const override;
+    bool sameAs(const mir::output::MIROutput&) const override;
 };
-
