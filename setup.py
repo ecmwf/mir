@@ -6,8 +6,12 @@ from Cython.Build import cythonize
 from Cython.Distutils import build_ext
 
 home = os.environ.get("HOME")
-source = os.path.join(home, "git", "mir-bundle")
-build = os.path.join(home, "build", "mir-bundle")
+source = os.environ.get(
+    "MIR_BUNDLE_SOURCE_DIR", os.path.join(home, "git", "mir-bundle")
+)
+build = os.environ.get(
+    "MIR_BUNDLE_BUILD_DIR", os.path.join(home, "build", "mir-bundle")
+)
 
 library_dirs = (
     os.environ.get("MIR_LIB_DIR").split(":")
