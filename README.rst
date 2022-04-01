@@ -10,7 +10,7 @@ Requires a recent version of Cython_ and Python 3::
   export MIR_LIB_DIR=<path1>:<path2>:...
   python3 setup.py build_ext -i
 
-Or from a bundle (mir-bundle, mars-bundle, pgen-bundle, ...) ::
+Or from a bundle (mir-bundle, mars-client-bundle, pgen-bundle, ...) ::
 
   MIR_BUNDLE_SOURCE_DIR=<path> MIR_BUNDLE_BUILD_DIR=<path> python3 setup.py build_ext -i
 
