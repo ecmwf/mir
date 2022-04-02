@@ -5,3 +5,5 @@ packingType=spectral_complex.grib1
 # grib_get assertions
 packingType=spectral_simple
 edition=1
+numberOfDataPoints=506
+numberOfValues=506
