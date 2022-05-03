@@ -51,6 +51,11 @@ const LibMir& LibMir::instance() {
 }
 
 
+std::string LibMir::homeDir() {
+    return LibMir::instance().libraryHome();
+}
+
+
 const void* LibMir::addr() const {
     return this;
 }
