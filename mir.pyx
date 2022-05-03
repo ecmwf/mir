@@ -20,6 +20,12 @@ cdef init():
     free(argv)
 init()
 
+def home():
+    return mir.LibMir.homeDir().decode()
+
+def cache():
+    return mir.LibMir.cacheDir().decode()
+
 cdef class MIRInput:
     cdef mir.MIRInput* _input
 
