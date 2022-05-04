@@ -34,10 +34,10 @@ print("include_dirs:", " ".join(include_dirs))
 
 # FIXME: sort out how to discover MIR libraries
 setup(
-    name="mir",
+    name="mir-python",
     ext_modules=cythonize(
         Extension(
-            "mir-python",
+            "mir",
             ["mir.pyx", "pyio.cc"],
             language="c++",
             libraries=["mir"],
