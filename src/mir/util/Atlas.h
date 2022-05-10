@@ -50,9 +50,7 @@
 #include "atlas/util/Earth.h"
 #include "atlas/util/GaussianLatitudes.h"
 #include "atlas/util/Point.h"
-#include "atlas/util/PolygonXY.h"
 #include "atlas/util/Rotation.h"
-#include "atlas/util/SphericalPolygon.h"
 #else
 
 

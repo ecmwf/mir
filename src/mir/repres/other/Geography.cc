@@ -16,7 +16,6 @@
 #include "eckit/utils/MD5.h"
 
 #include "mir/geography/GeoJSON.h"
-#include "mir/geography/GeographyInput.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
 
@@ -59,7 +58,7 @@ Geography::Geography(const param::MIRParametrisation& param) : geometry_("lonlat
 
 
 bool Geography::inRegion(const Point2& p, size_t& index) const {
-    const atlas::PointLonLat q{p[1], p[0]};
+    const Point2 q{p[1], p[0]};
 
     // Note: one region per point, overlapping region polygons cancel out
     for (size_t i = 0; i < regions_.size(); ++i) {

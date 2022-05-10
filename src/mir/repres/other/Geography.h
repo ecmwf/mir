@@ -17,8 +17,8 @@
 
 #include "eckit/utils/Hash.h"
 
+#include "mir/geography/GeographyInput.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/Atlas.h"
 #include "mir/util/BoundingBox.h"
 
 
@@ -37,14 +37,14 @@ public:
 
     // Geographical regions can have more than one polygon
     // Note: this should be the same type as GeoJSON::Polygons
-    using Region = std::vector<std::unique_ptr<atlas::util::PolygonCoordinates>>;
+    using Region = geography::GeographyInput::Polygons;
 
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    Geography(const param::MIRParametrisation&);
+    explicit Geography(const param::MIRParametrisation&);
 
     // -- Destructor
     // None
