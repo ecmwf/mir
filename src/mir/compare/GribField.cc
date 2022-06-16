@@ -1214,9 +1214,9 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
         }
     }
 
-    long bitsPerValue;
-    if (codes_get_long(h, "bitsPerValue", &bitsPerValue) == 0) {
-        field->accuracy(bitsPerValue);
+    long accuracy;
+    if (codes_get_long(h, "accuracy", &accuracy) == 0) {
+        field->accuracy(accuracy);
     }
 
     long decimalScaleFactor;

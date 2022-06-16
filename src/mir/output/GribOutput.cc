@@ -82,8 +82,8 @@ size_t GribOutput::copy(const param::MIRParametrisation& /*unused*/, context::Co
         auto* h = input.gribHandle(i);  // Base class throws if input cannot provide handle
         ASSERT(h);
 
-        const void* message;
-        size_t size;
+        const void* message = nullptr;
+        size_t size         = 0;
 
         GRIB_CALL(codes_get_message(h, &message, &size));
 
@@ -103,9 +103,9 @@ void GribOutput::estimate(const param::MIRParametrisation& param, api::MIREstima
 
     field.representation()->estimate(estimator);
 
-    long bits = 0;
-    if (param.get("accuracy", bits)) {
-        estimator.accuracy(size_t(bits));
+    long accuracy = 0;
+    if (param.get("accuracy", accuracy)) {
+        estimator.accuracy(static_cast<size_t>(accuracy));
     }
 
     std::string packing;
@@ -115,9 +115,9 @@ void GribOutput::estimate(const param::MIRParametrisation& param, api::MIREstima
         // packer.estimate(estimator, *field.representation());
     }
 
-    long edition;
+    long edition = 0;
     if (param.get("edition", edition)) {
-        estimator.edition(size_t(edition));
+        estimator.edition(static_cast<size_t>(edition));
     }
 }
 
@@ -226,9 +226,9 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
             auto* h = codes_handle_clone(input.gribHandle(i));
             HandleDeleter hf(h);
 
-            long n;
+            long n = 0;
             GRIB_CALL(codes_get_long(h, "numberOfDataPoints", &n));
-            if (size_t(n) != field.values(i).size()) {
+            if (static_cast<size_t>(n) != field.values(i).size()) {
                 throw exception::UserError("Using 'filter' requires preserving the number of points from input");
             }
 
@@ -236,8 +236,8 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
             GRIB_CALL(codes_set_long(h, "bitmapPresent", field.hasMissing()));
             GRIB_CALL(codes_set_double_array(h, "values", field.values(i).data(), field.values(i).size()));
 
-            const void* message;
-            size_t size;
+            const void* message = nullptr;
+            size_t size         = 0;
             GRIB_CALL(codes_get_message(h, &message, &size));
 
             GRIB_CALL(codes_check_message_header(message, size, PRODUCT_GRIB));
@@ -352,7 +352,8 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
         int flags          = 0;
         int err            = 0;
 
-        auto* result = codes_grib_util_set_spec(h, &info.grid, &info.packing, flags, &values[0], values.size(), &err);
+        auto* result =
+            codes_grib_util_set_spec(h, &info.grid, &info.packing, flags, values.data(), values.size(), &err);
         HandleDeleter hf(result);  // Make sure handle deleted even in case of exception
 
 
@@ -376,8 +377,8 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
 
         GRIB_CALL(err);
 
-        const void* message;
-        size_t size;
+        const void* message = nullptr;
+        size_t size         = 0;
         GRIB_CALL(codes_get_message(result, &message, &size));
 
         GRIB_CALL(codes_check_message_header(message, size, PRODUCT_GRIB));
@@ -461,8 +462,8 @@ size_t GribOutput::set(const param::MIRParametrisation& param, context::Context&
         GRIB_CALL(codes_set_double_array(h, "values", field.values(i).data(), field.values(i).size()));
 
 
-        const void* message;
-        size_t size;
+        const void* message = nullptr;
+        size_t size         = 0;
         GRIB_CALL(codes_get_message(h, &message, &size));
 
         GRIB_CALL(codes_check_message_header(message, size, PRODUCT_GRIB));

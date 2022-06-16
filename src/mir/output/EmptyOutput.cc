@@ -47,9 +47,9 @@ bool EmptyOutput::sameParametrisation(const param::MIRParametrisation& /*unused*
 bool EmptyOutput::printParametrisation(std::ostream& out, const param::MIRParametrisation& param) const {
     bool ok = false;
 
-    long bits;
-    if (param.userParametrisation().get("accuracy", bits)) {
-        out << "accuracy=" << bits;
+    long accuracy = 0;
+    if (param.userParametrisation().get("accuracy", accuracy)) {
+        out << "accuracy=" << accuracy;
         ok = true;
     }
 
@@ -62,7 +62,7 @@ bool EmptyOutput::printParametrisation(std::ostream& out, const param::MIRParame
         ok = true;
     }
 
-    long edition;
+    long edition = 0;
     if (param.userParametrisation().get("edition", edition)) {
         if (ok) {
             out << ",";
