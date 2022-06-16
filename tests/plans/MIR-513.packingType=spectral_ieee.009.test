@@ -1,6 +1,0 @@
-# mars
-packingType=spectral_ieee.grib1
-# mir
---packing=simple
-# grib_get assertions
-Set[packing=simple,output=...]

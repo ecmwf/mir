@@ -74,12 +74,12 @@ private:
     // None
 
     // -- Methods
+    // None
+
+    // -- Overridden methods
 
     void fill(const repres::Representation*, grib_info&) const override;
     void set(const repres::Representation*, grib_handle*) const override;
-
-    // -- Overridden methods
-    // None
 
     // -- Class members
     // None

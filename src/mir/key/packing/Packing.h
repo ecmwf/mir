@@ -43,6 +43,9 @@ public:
 
     Packing(const std::string& name, const param::MIRParametrisation&);
 
+    Packing(const Packing&) = delete;
+    Packing(Packing&&)      = delete;
+
     // -- Destructor
 
     virtual ~Packing();
@@ -51,17 +54,18 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    Packing& operator=(const Packing&) = delete;
+    Packing& operator=(Packing&&)      = delete;
 
     // -- Methods
 
     virtual void fill(const repres::Representation*, grib_info&) const  = 0;
     virtual void set(const repres::Representation*, grib_handle*) const = 0;
 
-    virtual bool sameAs(const Packing*) const;
-    virtual bool printParametrisation(std::ostream&) const;
-
-    virtual bool empty() const;
+    bool sameAs(const Packing*) const;
+    bool printParametrisation(std::ostream&) const;
+    bool empty() const;
 
     // -- Overridden methods
     // None
@@ -73,14 +77,6 @@ public:
     // None
 
 protected:
-    // -- Constructors
-
-    Packing(const Packing&) = delete;
-
-    // -- Operators
-
-    void operator=(const Packing&) = delete;
-
     // -- Members
 
     long accuracy_;
@@ -88,7 +84,6 @@ protected:
     std::string packing_;
 
     bool defineAccuracy_;
-    bool defineAccuracyBeforePacking_;
     bool defineEdition_;
     bool definePacking_;
 
@@ -135,14 +130,16 @@ class PackingFactory {
 
     virtual Packing* make(const std::string& name, const param::MIRParametrisation&) = 0;
 
-    PackingFactory(const PackingFactory&) = delete;
-    PackingFactory& operator=(const PackingFactory&) = delete;
-
 protected:
     PackingFactory(const std::string&, const std::string&, bool spectral, bool gridded);
     virtual ~PackingFactory();
 
 public:
+    PackingFactory(const PackingFactory&)            = delete;
+    PackingFactory(PackingFactory&&)                 = delete;
+    PackingFactory& operator=(const PackingFactory&) = delete;
+    PackingFactory& operator=(PackingFactory&&)      = delete;
+
     static Packing* build(const param::MIRParametrisation&);
     static void list(std::ostream&);
 };

@@ -40,6 +40,8 @@ static void init() {
 
 
 Packing::Packing(const std::string& name, const param::MIRParametrisation& param) :
+    accuracy_(0),
+    edition_(0),
     gridded_(param.userParametrisation().has("grid") || param.fieldParametrisation().has("gridded")) {
     const auto& user  = param.userParametrisation();
     const auto& field = param.fieldParametrisation();
@@ -50,23 +52,17 @@ Packing::Packing(const std::string& name, const param::MIRParametrisation& param
 
     bool gridded = false;
     field.get("gridded", gridded);
-
-    definePacking_               = !field.get("packing", packing) || packing_ != packing || gridded_ != gridded;
-    defineAccuracyBeforePacking_ = definePacking_ && packing == "ieee";
+    definePacking_ = !field.get("packing", packing) || packing_ != packing;
 
     defineAccuracy_ = false;
-    if (defineAccuracyBeforePacking_) {
-        ASSERT(param.get("accuracy", accuracy_));
-        defineAccuracy_ = true;
-    }
-    else if (user.get("accuracy", accuracy_)) {
-        long accuracy;
+    if (user.get("accuracy", accuracy_)) {
+        long accuracy   = 0;
         defineAccuracy_ = !field.get("accuracy", accuracy) || accuracy_ != accuracy;
     }
 
     defineEdition_ = false;
     if (user.get("edition", edition_)) {
-        long edition;
+        long edition   = 0;
         defineEdition_ = !field.get("edition", edition) || edition_ != edition;
     }
 }
@@ -154,10 +150,6 @@ void Packing::set(grib_handle* h, const std::string& type) const {
 
     if (defineEdition_) {
         GRIB_CALL(codes_set_long(h, "edition", edition_));
-    }
-
-    if (defineAccuracyBeforePacking_) {
-        GRIB_CALL(codes_set_long(h, "accuracy", accuracy_));
     }
 
     if (definePacking_) {

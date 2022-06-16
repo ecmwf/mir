@@ -1,5 +1,5 @@
 # mars
-packingType=spectral_ieee.grib1
+packingType=spectral_ieee.grib2
 # mir
 --grid=1/1 --intgrid=none --packing=so
 # plan

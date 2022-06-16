@@ -3,4 +3,4 @@ param=t,level=1000,resol=20
 # mir
 --packing=ieee
 # plan
-Set[packing=ieee,precision=1,output=...]
+Set[packing=ieee,accuracy=32,output=...]

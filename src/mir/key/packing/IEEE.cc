@@ -13,9 +13,7 @@
 #include "mir/key/packing/IEEE.h"
 
 #include "mir/param/MIRParametrisation.h"
-#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
-#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -27,28 +25,17 @@ static const PackingBuilder<IEEE> __packing("ieee", true, true);
 
 
 IEEE::IEEE(const std::string& name, const param::MIRParametrisation& param) : Packing(name, param) {
-    const auto& user  = param.userParametrisation();
-    const auto& field = param.fieldParametrisation();
-
     constexpr long L32  = 32;
     constexpr long L64  = 64;
     constexpr long L128 = 128;
 
     // Accuracy set by user, otherwise by field (rounded up to a supported precision)
-    long bits = L32;
-    field.get("accuracy", bits);
+    if (!defineAccuracy_) {
+        long accuracy = L32;
+        param.fieldParametrisation().get("accuracy", accuracy);
 
-    if (!user.get("accuracy", accuracy_)) {
-        accuracy_ = bits <= L32 ? L32 : bits <= L64 ? L64 : L128;
-    }
-
-    definePrecision_ = accuracy_ != bits || definePacking_ || !field.has("accuracy");
-    precision_       = accuracy_ == L32 ? 1 : accuracy_ == L64 ? 2 : accuracy_ == L128 ? 3 : 0;
-
-    if (precision_ == 0) {
-        std::string msg = "packing=ieee: only supports accuracy=32, 64 and 128";
-        Log::error() << msg << std::endl;
-        throw exception::UserError(msg);
+        accuracy_       = accuracy <= L32 ? L32 : accuracy <= L64 ? L64 : L128;
+        defineAccuracy_ = accuracy != accuracy_;
     }
 
     if (gridded()) {
@@ -58,44 +45,12 @@ IEEE::IEEE(const std::string& name, const param::MIRParametrisation& param) : Pa
 
 
 void IEEE::fill(const repres::Representation* /*unused*/, grib_info& info) const {
-    info.packing.packing = CODES_UTIL_PACKING_SAME_AS_INPUT;
-    // (Representation can set edition, so it isn't reset)
-
-    if (definePacking_) {
-        info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
-        info.packing.packing_type = CODES_UTIL_PACKING_TYPE_IEEE;
-    }
-
-    if (defineEdition_) {
-        info.packing.editionNumber = edition_;
-    }
-
-    if (definePrecision_) {
-        info.extra_set("precision", precision_);
-    }
+    Packing::fill(info, CODES_UTIL_PACKING_TYPE_IEEE);
 }
 
 
 void IEEE::set(const repres::Representation* /*unused*/, grib_handle* handle) const {
     Packing::set(handle, gridded() ? "grid_ieee" : "spectral_ieee");
-
-    if (definePrecision_) {
-        GRIB_CALL(codes_set_long(handle, "precision", precision_));
-    }
-}
-
-
-bool IEEE::printParametrisation(std::ostream& out) const {
-    const auto* sep = Packing::printParametrisation(out) ? "," : "";
-    if (definePrecision_) {
-        out << sep << "precision=" << precision_;
-    }
-    return true;
-}
-
-
-bool IEEE::empty() const {
-    return Packing::empty() && !definePrecision_;
 }
 
 

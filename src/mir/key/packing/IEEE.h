@@ -71,9 +71,7 @@ protected:
 
 private:
     // -- Members
-
-    long precision_;
-    bool definePrecision_;
+    // None
 
     // -- Methods
     // None
@@ -82,8 +80,6 @@ private:
 
     void fill(const repres::Representation*, grib_info&) const override;
     void set(const repres::Representation*, grib_handle*) const override;
-    bool printParametrisation(std::ostream&) const override;
-    bool empty() const override;
 
     // -- Class members
     // None

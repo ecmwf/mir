@@ -3,4 +3,4 @@ packingType=grid_ieee.grib2
 # mir
 --accuracy=64
 # plan
-Set[accuracy=64,precision=2,output=...]
+Set[accuracy=64,output=...]
