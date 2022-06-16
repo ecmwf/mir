@@ -1,0 +1,6 @@
+# mars
+packingType=spectral_ieee.grib2
+# mir
+--truncation=21 --packing=simple
+# grib_get assertions
+ShTruncate[truncation=21]|Save[packing=simple,output=...]
