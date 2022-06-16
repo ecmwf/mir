@@ -1,6 +1,6 @@
 # handle wrongly-encoded latitudeOfFirstGridPointInDegrees, latitudeOfLastGridPointInDegrees (GRIB1, O2560)
 # domain=g,levtype=pl,levelist=850,date=20160801,time=0000,step=24,param=133.128,class=rd,type=fc,stream=lwda,expver=h5xa,anoffset=9
-# correct latitude range should be [-89.974, 89.974], however metadata is preserved from input (unless more than change of bitsPerValue/packingType/edition is requested)
+# correct latitude range should be [-89.974, 89.974], however metadata is preserved from input (unless more than change of accuracy/packingType/edition is requested)
 MIR-375.grib1
 # mir
 $MIR_ABORT_IF_WRONGLY_ENCODED_GRIB=0

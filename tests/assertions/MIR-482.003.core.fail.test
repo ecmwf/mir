@@ -1,4 +1,4 @@
-# input has two GRIB at bitsPerValue=16
+# input has two GRIB at accuracy=16
 tiny.grib
 # Mir tool options
 --accuracy=24 --packing=ieee

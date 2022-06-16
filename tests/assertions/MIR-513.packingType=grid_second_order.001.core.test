@@ -5,4 +5,4 @@ packingType=grid_second_order.grib2
 # grib_get assertions
 packingType=grid_simple
 edition=2
-bitsPerValue=16
+accuracy=16

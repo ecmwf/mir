@@ -4,4 +4,4 @@ packingType=grid_simple.grib2
 --accuracy=16
 # grib_get
 packingType=grid_simple
-bitsPerValue=16
+accuracy=16

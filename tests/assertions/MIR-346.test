@@ -3,4 +3,4 @@ param=vo/d,level=1000,resol=20
 # mir
 --vod2uv --accuracy=24
 # grib_get
-bitsPerValue=24
+accuracy=24

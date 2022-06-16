@@ -4,5 +4,5 @@ stream=wave,param=2dfd,direction=1,frequency=1
 --accuracy=10
 # grib_get assertions
 gridType=reduced_ll
-bitsPerValue=10
+accuracy=10
 packingType=grid_simple_matrix

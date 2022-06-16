@@ -4,6 +4,6 @@ PGEN-413.grib
 # mir
 --grid=.25/.25 --area=.25/7/-.25/7 --caching=0
 # grib_get assertions
-bitsPerValue=16
+accuracy=16
 bitmapPresent=0
 missingValuesPresent=0

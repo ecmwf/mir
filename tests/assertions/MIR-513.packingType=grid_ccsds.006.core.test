@@ -5,4 +5,4 @@ packingType=grid_ccsds.grib2
 # grib_get assertions
 packingType=grid_ccsds
 edition=2
-bitsPerValue=16
+accuracy=16
