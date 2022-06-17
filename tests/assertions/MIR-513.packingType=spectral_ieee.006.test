@@ -1,0 +1,8 @@
+# mars
+packingType=spectral_ieee.grib2
+# mir
+--grid=1/1 --intgrid=none
+# grib_get assertions
+accuracy=32
+edition=2
+packingType=grid_simple
