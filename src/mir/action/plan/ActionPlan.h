@@ -76,7 +76,7 @@ public:
     void execute(context::Context&) const;
     void dump(std::ostream&) const;
     void custom(std::ostream&) const;
-    void compress();
+    bool compress();
     bool ended() const;
 
     void estimate(context::Context&, api::MIREstimation&) const;

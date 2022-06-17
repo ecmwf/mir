@@ -35,7 +35,7 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
 
     // get input and parameter-specific parametrisations
     static param::DefaultParametrisation defaults;
-    const param::MIRParametrisation& metadata = input.parametrisation();
+    const auto& metadata = input.parametrisation();
 
     combined_.reset(new param::CombinedParametrisation(job, metadata, defaults));
     plan_.reset(new ActionPlan(*combined_));
@@ -50,13 +50,17 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
         style->prepare(*plan_, output_);
 
         if (compress) {
-            plan_->compress();
+            std::ostringstream old;
+            plan_->dump(old);
+
+            if (plan_->compress()) {
+                Log::debug() << "Action plan was (uncompressed):\n" << old.str();
+            }
         }
     }
 
     if (Log::debug_active()) {
-        plan_->dump(Log::debug() << "Action plan is:"
-                                    "\n");
+        plan_->dump(Log::debug() << "Action plan is:\n");
     }
 
     ASSERT(plan_->ended());

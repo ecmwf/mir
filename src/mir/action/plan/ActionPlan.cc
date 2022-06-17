@@ -186,14 +186,8 @@ void ActionPlan::estimate(context::Context& ctx, api::MIREstimation& estimation)
     }
 }
 
-void ActionPlan::compress() {
-    const char* sep = "#########";
-
-    Log::debug() << "Compress:"
-                 << "\n"
-                 << sep << "\n"
-                 << *this << "\n"
-                 << sep << std::endl;
+bool ActionPlan::compress() {
+    const auto* sep = "#########";
 
     bool hasCompressed = false;
     bool more          = true;
@@ -230,18 +224,7 @@ void ActionPlan::compress() {
         }
     }
 
-    if (hasCompressed) {
-        Log::debug() << "Compress result:"
-                     << "\n"
-                     << sep << "\n"
-                     << *this << "\n"
-                     << sep << std::endl;
-    }
-    else {
-        Log::debug() << "Compress result: unable to compress"
-                     << "\n"
-                     << sep << std::endl;
-    }
+    return hasCompressed;
 }
 
 
