@@ -27,10 +27,17 @@ CASE("test_spectral_order") {
     using util::SpectralOrder;
     using util::SpectralOrderFactory;
 
-    // Cases from hsh2gg.F
+    // Cases from hsh2gg.F and gaussgr (ifs-scripts/production suite)
 
-    const long order1_cases[][2] = {{2047, 1024},
+    const long order1_cases[][2] = {{15999, 8000},
+                                    {7999, 4000},
+                                    {3999, 2000},
+                                    {3199, 1600},
+                                    {2559, 1280},
+                                    {2047, 1024},
+                                    {1599, 800},
                                     {1279, 640},
+                                    {1023, 512},
                                     {799, 400},
                                     {639, 320},
                                     {511, 256},
@@ -40,18 +47,48 @@ CASE("test_spectral_order") {
                                     {191, 96},
                                     {159, 80},
                                     {95, 48},
+                                    {63, 32},
+                                    {31, 16},
                                     {
                                         0,
                                     }};
 
-    const long order2_cases[][2] = {{106, 80},
+    // (*1) gaussgr: introduced in ifs-scripts commit cd22bde5, works if N=1365
+    const long order2_cases[][2] = {{1706, 1280},
+                                    // (*1) {1364, 1024},
+                                    {853, 640},
+                                    {341, 256},
+                                    {213, 160},
+                                    {170, 128},
+                                    {106, 80},
                                     {63, 48},
+                                    {42, 32},
+                                    {21, 16},
                                     {
                                         0,
                                     }};
 
-    const long order3_cases[][2] = {{1279, 1280},
+    const long order3_cases[][2] = {{7999, 8000},
+                                    {3999, 4000},
+                                    {2559, 2560},
+                                    {2047, 2048},
+                                    {1999, 2000},
+                                    {1599, 1600},
+                                    {1279, 1280},
+                                    {1023, 1024},
+                                    {911, 912},
+                                    {799, 800},
                                     {639, 640},
+                                    {511, 512},
+                                    {399, 400},
+                                    {319, 320},
+                                    {255, 256},
+                                    {199, 200},
+                                    {191, 192},
+                                    {159, 160},
+                                    {95, 96},
+                                    {79, 80},
+                                    {63, 64},
                                     {
                                         0,
                                     }};
@@ -129,5 +166,5 @@ CASE("test_spectral_order") {
 
 
 int main(int argc, char** argv) {
-    return eckit::testing::run_tests(argc, argv, false);
+    return eckit::testing::run_tests(argc, argv);
 }
