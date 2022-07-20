@@ -29,7 +29,7 @@ public:
     // None
 
     // -- Constructors
-    SpectralOrderT() { ASSERT(ORDER); }
+    SpectralOrderT() { ASSERT(ORDER > 0); }
 
     // -- Destructor
     // None
@@ -45,19 +45,19 @@ public:
 
     // -- Overridden methods
     long getTruncationFromGaussianNumber(long N) const override {
-        ASSERT(N);
+        ASSERT(N > 0);
 
-        long T = long(ceil(4. / double(ORDER + 1) * double(N)) - 1);
-        ASSERT(T);
+        const auto T = static_cast<long>(std::ceil(4. / static_cast<double>(ORDER + 1) * static_cast<double>(N)) - 1);
+        ASSERT(T > 0);
 
         return T;
     }
 
     long getGaussianNumberFromTruncation(long T) const override {
-        ASSERT(T);
+        ASSERT(T > 0);
 
-        long N = long(double(T + 1) * double(ORDER + 1) / 4.);
-        ASSERT(N);
+        const auto N = static_cast<long>(static_cast<double>(T + 1) * static_cast<double>(ORDER + 1) / 4.);
+        ASSERT(N > 0);
 
         return N;
     }
