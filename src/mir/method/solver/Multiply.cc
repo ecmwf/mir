@@ -27,6 +27,10 @@ namespace method {
 namespace solver {
 
 
+Multiply::Multiply(const param::MIRParametrisation& param) :
+    Solver(param), backend_(eckit::linalg::LinearAlgebraSparse::backend()) {}
+
+
 void Multiply::solve(const MethodWeighted::Matrix& A, const MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& B,
                      const double& /*missingValue*/) const {
     ASSERT(A.rows() == W.cols());
@@ -39,10 +43,10 @@ void Multiply::solve(const MethodWeighted::Matrix& A, const MethodWeighted::Weig
         eckit::linalg::Vector a(const_cast<double*>(A.data()), A.rows());
         eckit::linalg::Vector b(B.data(), B.rows());
 
-        eckit::linalg::LinearAlgebraSparse::backend().spmv(W, a, b);
+        backend_.spmv(W, a, b);
     }
     else {
-        eckit::linalg::LinearAlgebraSparse::backend().spmm(W, A, B);
+        backend_.spmm(W, A, B);
     }
 }
 
