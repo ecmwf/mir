@@ -127,14 +127,14 @@ void Increments::print(std::ostream& out) const {
 }
 
 
-void Increments::fill(grib_info& info) const {
+void Increments::fillGrib(grib_info& info) const {
     // Warning: scanning mode not considered
     info.grid.iDirectionIncrementInDegrees = west_east_.longitude().value();
     info.grid.jDirectionIncrementInDegrees = south_north_.latitude().value();
 }
 
 
-void Increments::fill(api::MIRJob& job) const {
+void Increments::fillJob(api::MIRJob& job) const {
     job.set("grid", west_east_.longitude().value(), south_north_.latitude().value());
 }
 

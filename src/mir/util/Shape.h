@@ -37,7 +37,7 @@ struct Shape {
     virtual ~Shape() = default;
 
     Shape& operator=(const Shape& other);
-    void fill(grib_info& info, const Projection::Spec&) const;
+    void fillGrib(grib_info& info, const Projection::Spec&) const;
 
     long code;
     double a;

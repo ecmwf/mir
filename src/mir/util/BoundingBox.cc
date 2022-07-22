@@ -104,7 +104,7 @@ void BoundingBox::print(std::ostream& out) const {
 }
 
 
-void BoundingBox::fill(grib_info& info) const {
+void BoundingBox::fillGrib(grib_info& info) const {
     // Warning: scanning mode not considered
     info.grid.latitudeOfFirstGridPointInDegrees  = north_.value();
     info.grid.longitudeOfFirstGridPointInDegrees = west_.value();
@@ -126,7 +126,7 @@ void BoundingBox::hash(eckit::MD5& md5) const {
 }
 
 
-void BoundingBox::fill(api::MIRJob& job) const {
+void BoundingBox::fillJob(api::MIRJob& job) const {
     job.set("area", north_.value(), west_.value(), south_.value(), east_.value());
 }
 

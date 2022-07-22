@@ -81,8 +81,8 @@ private:
     // -- Overridden methods
 
     Iterator* iterator() const override;
-    void fill(grib_info&) const override;
-    void fill(api::MIRJob&) const override;
+    void fillGrib(grib_info&) const override;
+    void fillJob(api::MIRJob&) const override;
     atlas::Grid atlasGrid() const override;
     const Gridded* croppedRepresentation(const util::BoundingBox&) const override;
     void makeName(std::ostream&) const override;

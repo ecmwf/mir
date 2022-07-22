@@ -272,7 +272,7 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
             repres::RepresentationHandle rep(field.representation());
 
             util::MeshGeneratorParameters param;
-            rep->fill(param);
+            rep->fillMeshGen(param);
             param.set("triangulate", true);
 
 

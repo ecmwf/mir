@@ -77,9 +77,9 @@ protected:
 
     // -- Overridden methods
 
-    void fill(grib_info&) const override;
+    void fillGrib(grib_info&) const override;
 
-    void fill(api::MIRJob&) const override;
+    void fillJob(api::MIRJob&) const override;
 
     void print(std::ostream&) const override;
 
@@ -136,7 +136,7 @@ private:
 
     // -- Overridden methods
 
-    void fill(util::MeshGeneratorParameters&) const override;
+    void fillMeshGen(util::MeshGeneratorParameters&) const override;
 
     size_t frame(MIRValuesVector& values, size_t size, double missingValue, bool estimate = false) const override;
 

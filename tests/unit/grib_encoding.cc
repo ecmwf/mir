@@ -76,7 +76,7 @@ protected:
 
             info.grid.missingValue = 2.;
 
-            representation_->fill(info);
+            representation_->fillGrib(info);
 
             size_t n = numberOfValues();
             ASSERT(n);
@@ -579,7 +579,7 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
             // this test!
             info.packing.deleteLocalDefinition = remove ? 1 : 0;
 
-            repres->fill(info);
+            repres->fillGrib(info);
 
             size_t n = repres->numberOfPoints();
             ASSERT(n);

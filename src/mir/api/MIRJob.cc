@@ -272,7 +272,7 @@ MIRJob& MIRJob::representationFrom(const input::MIRInput& input) {
     ASSERT(repres);
 
     // Log::debug() << "Copy from " << *repres << std::endl;
-    repres->fill(*this);
+    repres->fillJob(*this);
 
     return *this;
 }

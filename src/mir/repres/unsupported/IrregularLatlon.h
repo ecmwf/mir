@@ -91,8 +91,8 @@ private:
     bool getLongestElementDiagonal(double&) const override;
     void validate(const MIRValuesVector&) const override;
 
-    void fill(grib_info&) const override;
-    void fill(util::MeshGeneratorParameters&) const override;
+    void fillGrib(grib_info&) const override;
+    void fillMeshGen(util::MeshGeneratorParameters&) const override;
 
     void makeName(std::ostream&) const override;
     bool sameAs(const Representation&) const override;

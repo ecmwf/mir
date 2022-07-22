@@ -43,10 +43,10 @@ struct NablaOperation {
 
     virtual ~NablaOperation() = default;
 
-    NablaOperation(const NablaOperation&) = delete;
-    NablaOperation(NablaOperation&&)      = delete;
+    NablaOperation(const NablaOperation&)            = delete;
+    NablaOperation(NablaOperation&&)                 = delete;
     NablaOperation& operator=(const NablaOperation&) = delete;
-    NablaOperation& operator=(NablaOperation&&) = delete;
+    NablaOperation& operator=(NablaOperation&&)      = delete;
 
     virtual void operator()(data::MIRField&) const = 0;
 
@@ -214,7 +214,7 @@ void NablaFilterFVMT<T>::execute(context::Context& ctx) const {
     }
 
     auto params = meshGeneratorParams_;
-    field.representation()->fill(params);
+    field.representation()->fillMeshGen(params);
     params.set("3d", false);
     params.set("force_include_north_pole", false);
     params.set("force_include_south_pole", false);

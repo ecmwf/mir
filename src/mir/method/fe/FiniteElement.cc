@@ -61,10 +61,10 @@ using failed_projection_t = std::pair<size_t, PointLatLon>;
 struct element_t : std::vector<size_t> {
     using vector::vector;
 
-    element_t(const element_t&) = delete;
-    element_t(element_t&&)      = delete;
+    element_t(const element_t&)            = delete;
+    element_t(element_t&&)                 = delete;
     element_t& operator=(const element_t&) = delete;
-    element_t& operator=(element_t&&) = delete;
+    element_t& operator=(element_t&&)      = delete;
 
     virtual ~element_t() = default;
 
@@ -161,7 +161,7 @@ atlas::Mesh FiniteElement::atlasMesh(util::MIRStatistics& statistics, const repr
 
     // let representation set mesh generator parameters
     auto params = meshGeneratorParams_;
-    repres.fill(params);
+    repres.fillMeshGen(params);
 
     double d;
     if (!repres.getLongestElementDiagonal(d)) {

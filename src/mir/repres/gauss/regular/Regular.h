@@ -70,8 +70,8 @@ protected:
 
     // -- Overridden methods
 
-    virtual void fill(grib_info&) const override;
-    virtual void fill(api::MIRJob&) const override;
+    virtual void fillGrib(grib_info&) const override;
+    virtual void fillJob(api::MIRJob&) const override;
     bool sameAs(const Representation&) const override;
     atlas::Grid atlasGrid() const override;
     void makeName(std::ostream&) const override;

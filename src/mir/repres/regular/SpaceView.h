@@ -98,7 +98,7 @@ private:
 
     // -- Overridden methods
 
-    void fill(grib_info&) const override;
+    void fillGrib(grib_info&) const override;
     Iterator* iterator() const override;
     bool getLongestElementDiagonal(double&) const override;
 
