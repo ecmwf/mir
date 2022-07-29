@@ -13,7 +13,7 @@
 #pragma once
 
 #include "mir/api/mir_config.h"
-#if defined(mir_HAVE_NETCDF)
+#if mir_HAVE_NETCDF
 
 #include <string>
 

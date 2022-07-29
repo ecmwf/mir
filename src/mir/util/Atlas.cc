@@ -11,7 +11,7 @@
 
 
 #include "mir/util/Atlas.h"
-#if defined(mir_HAVE_ATLAS)
+#if mir_HAVE_ATLAS
 #error "mir/util/Atlas.cc cannot be included with Atlas present"
 #endif
 

@@ -24,7 +24,7 @@
 #include "mir/api/mir_config.h"
 #include "mir/util/Types.h"
 
-#if defined(mir_HAVE_ATLAS)
+#if mir_HAVE_ATLAS
 #include "atlas/functionspace.h"
 #include "atlas/grid.h"
 #include "atlas/interpolation.h"
