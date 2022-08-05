@@ -46,9 +46,10 @@ static const NamedMaskBuilder<TenMinutesMask> __NamedTenMinutesMask("10min", "~m
 static const NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_1("N128", "~mir/share/mir/masks/lsm.N128.grib");
 static const NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_2("N256", "~mir/share/mir/masks/lsm.N256.grib");
 static const NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_3("N320", "~mir/share/mir/masks/lsm.N320.grib");
-static const NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_4("O320", "~mir/share/mir/masks/lsm.O320.grib");
-static const NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_5("O640", "~mir/share/mir/masks/lsm.O640.grib");
-static const NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_6("O1280", "~mir/share/mir/masks/lsm.O1280.grib");
+static const NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_4("N640", "~mir/share/mir/masks/lsm.N640.grib");
+static const NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_5("O320", "~mir/share/mir/masks/lsm.O320.grib");
+static const NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_6("O640", "~mir/share/mir/masks/lsm.O640.grib");
+static const NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_7("O1280", "~mir/share/mir/masks/lsm.O1280.grib");
 
 
 static util::once_flag once;
