@@ -11,17 +11,15 @@
 
 
 #include <memory>
-#include <sstream>
+#include <string>
 
 #include "eckit/testing/Test.h"
 
-#include "mir/action/plan/ActionGraph.h"
-#include "mir/action/plan/Job.h"
 #include "mir/api/MIRJob.h"
+#include "mir/api/mir_config.h"
 #include "mir/input/MIRInput.h"
-#include "mir/output/GribFileOutput.h"
+#include "mir/output/EmptyOutput.h"
 #include "mir/param/SimpleParametrisation.h"
-#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -30,79 +28,85 @@ namespace unit {
 
 
 CASE("interpolations") {
-    // for _in in ("F640", "N640", "O640", "regular_ll_1-1", "regular_ll_2-2", "regular_ll_3-3", "vo-d_sh", "z_sh"):
-    //     for _pproc in ("", "--grid=1/1 --area=40/20/20/40", "--grid=1/1 --area=40/20/20/40 --frame=2", "--grid=2/2", "--grid=3/3", "--rotation=-90/0", "--rotation=-89/1"):
-    //         fail = NOT mir_HAVE_ATLAS AND "_sh_to_grid_" OR _label MATCHES "[123]_to_rotation_89_1"
-    //         env ${_testEnvironment} mir-tool --caching=0 ${_in} ${_out} ${_pproc}
+    api::MIRJob jobs[7];  // jobs[0]: no post-processing
 
-#if 0
-    // setup input/output
-    param::SimpleParametrisation field;
-    field.set("input",
-              "{"
-              "artificialInput:constant,"
-              "constant:0.,"
-              "spectral:1279,"
-              "gridType:sh,"
-              "packing:spectral_complex,"
-              "edition:2,"
-              "accuracy:24"
-              "}");
+    jobs[1].set("caching", false);
+    jobs[1].set("grid", "2/2");
 
-    std::unique_ptr<input::MIRInput> in(input::MIRInputFactory::build("constant", field));
-    std::unique_ptr<output::MIROutput> out(new output::GribFileOutput(""));
+    jobs[2].set("caching", false);
+    jobs[2].set("grid", "3/3");
 
+    jobs[3].set("caching", false);
+    jobs[3].set("grid", "1/1");
+    jobs[3].set("area", "40/20/20/40");
 
-    auto graph_dump = [](input::MIRInput& in, output::MIROutput& out, const api::MIRJob& mj1, const api::MIRJob& mj2) {
-        // prepare ActionPlan(s)
-        std::unique_ptr<action::Job> aj1(new action::Job(mj1, in, out, false));
-        std::unique_ptr<action::Job> aj2(new action::Job(mj2, in, out, false));
+    jobs[4].set("caching", false);
+    jobs[4].set("grid", "1/1");
+    jobs[4].set("area", "40/20/20/40");
+    jobs[4].set("frame", 2);
 
-        // coallesce ActionPlan(s)
-        action::ActionGraph graph;
-        graph.add(aj1->plan(), nullptr);
-        graph.add(aj2->plan(), nullptr);
+#if mir_HAVE_ATLAS
+    jobs[5].set("caching", false);
+    jobs[5].set("rotation", "-90/0");
 
-        std::ostringstream ss;
-        graph.dump(ss, 1);
-        return ss.str();
-    };
+    jobs[6].set("caching", false);
+    jobs[6].set("rotation", "-89/10");
+#endif
 
 
-    SECTION("GribOutput::set()") {
-        api::MIRJob mj1;
-        mj1.set("accuracy", 12);
+    SECTION("gridded to gridded (GRIB)") {
+        param::SimpleParametrisation args;
 
-        api::MIRJob mj2;
-        mj2.set("accuracy", 16);
+        for (const std::string& in : {
+                 "../data/param=2t,levtype=sfc,grid=F640",
+                 "../data/param=2t,levtype=sfc,grid=N640",
+                 "../data/param=2t,levtype=sfc,grid=O640",
+                 "../data/regular_ll.2-2.grib2",
+                 "../data/regular_ll.2-4.grib1",
+             }) {
+            for (const auto& job : jobs) {
+                std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build(in, args));
+                output::EmptyOutput output;
 
-        auto result = graph_dump(*in, *out, mj1, mj2);
-        Log::info() << "ActionGraph:\n" << result << std::endl;
-
-        const auto* reference =
-            "   Set[accuracy=12,output=GribFileOutput[path=]]\n"
-            "   Set[accuracy=16,output=GribFileOutput[path=]]\n";
-
-        EXPECT(result == reference);
+                while (input->next()) {
+                    job.execute(*input, output);
+                }
+            }
+        }
     }
 
 
-    SECTION("GribOutput::save()") {
-        api::MIRJob mj1;
-        mj1.set("accuracy", 12).set("truncation", 20);
+#if mir_HAVE_ATLAS
+    SECTION("spectral to gridded (scalar)") {
+        param::SimpleParametrisation args;
 
-        api::MIRJob mj2;
-        mj2.set("accuracy", 16).set("truncation", 20);
+        for (const auto& job : jobs) {
+            std::unique_ptr<input::MIRInput> input(
+                input::MIRInputFactory::build("../data/param=t,level=1000,resol=20", args));
+            output::EmptyOutput output;
 
-        auto result = graph_dump(*in, *out, mj1, mj2);
-        Log::info() << "ActionGraph:\n" << result << std::endl;
+            while (input->next()) {
+                job.execute(*input, output);
+            }
+        }
+    }
 
-        const auto* reference =
-            "   ShTruncate[truncation=20]\n"
-            "      Save[accuracy=12,output=GribFileOutput[path=]]\n"
-            "      Save[accuracy=16,output=GribFileOutput[path=]]\n";
 
-        EXPECT(result == reference);
+    SECTION("spectral to gridded (vod2uv)") {
+        param::SimpleParametrisation args;
+        args.set("vod2uv", true);
+
+        for (auto& job : jobs) {
+            std::unique_ptr<input::MIRInput> input(
+                input::MIRInputFactory::build("../data/param=vo_d,level=1000,resol=20", args));
+            output::EmptyOutput output;
+
+            job.set("vod2uv", true);
+
+            while (input->next()) {
+                job.execute(*input, output);
+            }
+        }
     }
 #endif
 }
