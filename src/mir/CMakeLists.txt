@@ -629,6 +629,8 @@ list(APPEND mir_srcs
     util/Bitmap.h
     util/BoundingBox.cc
     util/BoundingBox.h
+    util/CheckDuplicatePoints.cc
+    util/CheckDuplicatePoints.h
     util/DeprecatedFunctionality.cc
     util/DeprecatedFunctionality.h
     util/Domain.cc

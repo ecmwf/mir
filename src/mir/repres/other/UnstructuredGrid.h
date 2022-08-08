@@ -34,10 +34,13 @@ public:
 
     // -- Constructors
 
-    UnstructuredGrid(const eckit::PathName&);
-    UnstructuredGrid(const param::MIRParametrisation&);
+    explicit UnstructuredGrid(const eckit::PathName&);
+    explicit UnstructuredGrid(const param::MIRParametrisation&);
     UnstructuredGrid(const std::vector<double>& latitudes, const std::vector<double>& longitudes,
                      const util::BoundingBox& = util::BoundingBox());
+
+    UnstructuredGrid(const UnstructuredGrid&) = delete;
+    UnstructuredGrid(UnstructuredGrid&&)      = delete;
 
     // -- Destructor
 
@@ -47,15 +50,14 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const UnstructuredGrid&)  = delete;
+    void operator=(const UnstructuredGrid&&) = delete;
 
     // -- Methods
 
     static void save(const eckit::PathName&, const std::vector<double>& latitudes,
                      const std::vector<double>& longitudes, bool binary);
-
-    static void check(const std::string& title, const std::vector<double>& latitudes,
-                      const std::vector<double>& longitudes);
 
     // -- Overridden methods
 

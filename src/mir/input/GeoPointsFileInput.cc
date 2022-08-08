@@ -26,6 +26,7 @@
 
 #include "mir/data/MIRField.h"
 #include "mir/repres/other/UnstructuredGrid.h"
+#include "mir/util/CheckDuplicatePoints.h"
 #include "mir/util/Exceptions.h"
 
 
@@ -51,7 +52,7 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
         throw exception::CantOpenFile(path_);
     }
 
-    auto magic   = char(in.peek());
+    auto magic   = static_cast<char>(in.peek());
     size_t count = (magic == '#' ? readText(in) : readBinary(in));
 
     if (count == 0) {
@@ -66,18 +67,17 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
         throw exception::SeriousBug(oss.str());
     }
 
-    if (which_ >= int(count)) {
+    if (which_ >= static_cast<int>(count)) {
         std::ostringstream oss;
         oss << path_ << " contains " << count << " fields, requested index is " << which_;
         throw exception::SeriousBug(oss.str());
     }
 
     // set dimensions
-    dimensions_ = size_t(count);
+    dimensions_ = count;
     ASSERT(dimensions_);
 
-
-    repres::other::UnstructuredGrid::check(std::string("GeoPointsFileInput from ") + path, latitudes_, longitudes_);
+    util::check_duplicate_points("GeoPointsFileInput from " + path, latitudes_, longitudes_);
 }
 
 
@@ -194,12 +194,11 @@ size_t GeoPointsFileInput::readText(std::ifstream& in) {
         }
     }
 
-    return size_t(count);
+    return count;
 }
 
 
 size_t GeoPointsFileInput::readBinary(std::ifstream& in) {
-
     eckit::IfstreamStream s(in);
     size_t count = 0;
 
@@ -215,7 +214,7 @@ size_t GeoPointsFileInput::readBinary(std::ifstream& in) {
         ASSERT(what == "GEO");
 
         count++;
-        if (which_ >= 0 && int(count) > which_ + 1) {
+        if (which_ >= 0 && static_cast<int>(count) > which_ + 1) {
             break;
         }
 
@@ -243,7 +242,7 @@ size_t GeoPointsFileInput::readBinary(std::ifstream& in) {
             fieldParametrisation_.set(key, value);
         }
 
-        size_t n;
+        size_t n = 0;
         s >> n;
         latitudes_.resize(n);
         longitudes_.resize(n);
@@ -259,7 +258,6 @@ size_t GeoPointsFileInput::readBinary(std::ifstream& in) {
 
 
 bool GeoPointsFileInput::resetMissingValue(double& missingValue) {
-
     // geopoints hard-coded value, all values have to be below
     missingValue    = missingValueGeoPoints;
     bool hasMissing = (values_.end() != std::find(values_.begin(), values_.end(), missingValue));
@@ -325,7 +323,6 @@ const param::MIRParametrisation& GeoPointsFileInput::parametrisation(size_t whic
 
 
 data::MIRField GeoPointsFileInput::field() const {
-
     data::MIRField field(new repres::other::UnstructuredGrid(latitudes_, longitudes_), hasMissing_, missingValue_);
 
     // copy, to preserve consistent internal state
