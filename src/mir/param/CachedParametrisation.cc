@@ -119,6 +119,11 @@ void CachedParametrisation::reset() {
 }
 
 
+void CachedParametrisation::set(const std::string& name, bool value) {
+    _set(name, value);
+}
+
+
 void CachedParametrisation::set(const std::string& name, int value) {
     _set(name, value);
 }

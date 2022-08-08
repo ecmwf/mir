@@ -19,6 +19,7 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
+#include "mir/util/ValueMap.h"
 
 
 namespace mir {
@@ -26,7 +27,12 @@ namespace input {
 
 
 NetcdfFileInput::NetcdfFileInput(const eckit::PathName& path) :
-    path_(path), cache_(*this), dataset_(path, *this), fields_(dataset_.fields()), current_(-1) {
+    path_(path),
+    cache_(*this),
+    dataset_(path, *this),
+    fields_(dataset_.fields()),
+    current_(-1),
+    checkDuplicatePoints_(false) {
 
     for (auto* field : fields_) {
         Log::info() << "NC " << *field << std::endl;
@@ -61,6 +67,14 @@ grib_handle* NetcdfFileInput::gribHandle(size_t /*which*/) const {
 }
 
 
+void NetcdfFileInput::setAuxiliaryInformation(const util::ValueMap& map) {
+    auto it = map.find("checkDuplicatePoints");
+    if (it != map.end()) {
+        checkDuplicatePoints_ = it->second;
+    }
+}
+
+
 void NetcdfFileInput::print(std::ostream& out) const {
     out << "NetcdfFileInput[path=" << path_ << "]";
 }
@@ -74,6 +88,8 @@ const param::MIRParametrisation& NetcdfFileInput::parametrisation(size_t which) 
 
 bool NetcdfFileInput::next() {
     cache_.reset();
+    cache_.set("checkDuplicatePoints", checkDuplicatePoints_);
+
     FieldParametrisation::reset();
 
     current_++;

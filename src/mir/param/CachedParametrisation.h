@@ -52,6 +52,7 @@ public:
 
     void reset();
 
+    void set(const std::string& name, bool value);
     void set(const std::string& name, int value);
     void set(const std::string& name, long value);
     void set(const std::string& name, double value);
