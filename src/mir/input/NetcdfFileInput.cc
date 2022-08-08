@@ -93,7 +93,7 @@ data::MIRField NetcdfFileInput::field() const {
         Log::warning() << "Modifying missing value from NaN to " << mv << std::endl;
     }
 
-    data::MIRField field(*this, hasMissing, mv);
+    data::MIRField field(cache_, hasMissing, mv);
 
     for (size_t i = 0; i < ncField.count2DValues(); ++i) {
         MIRValuesVector values;
