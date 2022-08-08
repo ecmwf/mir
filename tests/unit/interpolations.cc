@@ -76,6 +76,23 @@ CASE("interpolations") {
     }
 
 
+#if mir_HAVE_NETCDF
+    SECTION("gridded to gridded (netCDF)") {
+        param::SimpleParametrisation args;
+        args.set("input", "checkDuplicatePoints: False");
+
+        for (const auto& job : jobs) {
+            std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build("../data/nemo.nc", args));
+            output::EmptyOutput output;
+
+            while (input->next()) {
+                job.execute(*input, output);
+            }
+        }
+    }
+#endif
+
+
 #if mir_HAVE_ATLAS
     SECTION("spectral to gridded (scalar)") {
         param::SimpleParametrisation args;
