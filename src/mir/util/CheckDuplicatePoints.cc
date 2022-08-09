@@ -14,7 +14,6 @@
 
 #include <set>
 #include <sstream>
-#include <string>
 #include <utility>
 
 #include "eckit/config/Resource.h"
