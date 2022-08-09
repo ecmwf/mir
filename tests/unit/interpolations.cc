@@ -20,6 +20,7 @@
 #include "mir/input/MIRInput.h"
 #include "mir/output/EmptyOutput.h"
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/util/Atlas.h"
 
 
 namespace mir {
@@ -77,6 +78,7 @@ CASE("interpolations") {
 
 
 #if mir_HAVE_NETCDF
+#if atlas_HAVE_TESSELATION
     SECTION("gridded to gridded (netCDF)") {
         param::SimpleParametrisation args;
         args.set("input", "checkDuplicatePoints: False");
@@ -90,6 +92,7 @@ CASE("interpolations") {
             }
         }
     }
+#endif
 #endif
 
 

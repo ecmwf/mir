@@ -52,6 +52,7 @@
 #include "atlas/util/Point.h"
 #include "atlas/util/Rotation.h"
 #else
+#define atlas_HAVE_TESSELATION 0
 
 
 namespace eckit {
