@@ -63,13 +63,13 @@ bool projection::ProjectionFactory::has(const std::string&) {
 
 void util::gaussian_latitudes_npole_equator(size_t N, double* latitudes) {
     std::vector<double> tmp(2 * N);
-    codes_get_gaussian_latitudes(long(N), tmp.data());
+    codes_get_gaussian_latitudes(static_cast<long>(N), tmp.data());
     std::copy_n(tmp.begin(), N, latitudes);
 }
 
 
 void util::gaussian_latitudes_npole_spole(size_t N, double* latitudes) {
-    codes_get_gaussian_latitudes(long(N), latitudes);
+    codes_get_gaussian_latitudes(static_cast<long>(N), latitudes);
 }
 
 
@@ -86,12 +86,12 @@ util::Rotation::Rotation(const PointLonLat& southPole) :
 
 
 namespace grid {
-LinearSpacing::LinearSpacing(value_type a, value_type b, long n, bool endpoint) : Spacing(size_t(n)) {
+LinearSpacing::LinearSpacing(value_type a, value_type b, long n, bool endpoint) : Spacing(static_cast<size_t>(n)) {
     ASSERT(n > 1);
-    eckit::Fraction dx((b - a) / value_type(n - (endpoint ? 1 : 0)));
+    eckit::Fraction dx((b - a) / static_cast<double>(n - (endpoint ? 1 : 0)));
     eckit::Fraction x(a);
 
-    resize(size_t(n));
+    resize(static_cast<size_t>(n));
     for (auto& v : *this) {
         v = x;
         x += dx;
@@ -128,12 +128,12 @@ GaussianGrid::GaussianGrid(const std::string& name, const Domain& domain) {
     ASSERT(n > 0);
 
     if (c == 'F' || c == 'f') {
-        pl_.assign(size_t(2 * n), 4 * n);
+        pl_.assign(static_cast<size_t>(2 * n), 4 * n);
         return;
     }
 
     if (c == 'O' || c == 'o') {
-        pl_.resize(size_t(2 * n));
+        pl_.resize(static_cast<size_t>(2 * n));
 
         auto a = pl_.begin();
         auto b = pl_.rbegin();
