@@ -70,23 +70,23 @@ public:
         return {cache, caches_.at(cache.name())};
     }
 
-    AutoTiming cropTimer() { return {timings_.at("crop")}; }
-    AutoTiming frameTimer() { return {timings_.at("frame")}; }
-    AutoTiming globaliseTimer() { return {timings_.at("globalise")}; }
-    AutoTiming bitmapTimer() { return {timings_.at("bitmap")}; }
-    AutoTiming coefficientTimer() { return {timings_.at("coefficient")}; }
-    AutoTiming sh2gridTimer() { return {timings_.at("sh2grid")}; }
-    AutoTiming grid2gridTimer() { return {timings_.at("grid2grid")}; }
-    AutoTiming vod2uvTimer() { return {timings_.at("vod2uv")}; }
-    AutoTiming computeMatrixTimer() { return {timings_.at("computeMatrix")}; }
-    AutoTiming matrixTimer() { return {timings_.at("matrix")}; }
-    AutoTiming loadCoeffTimer() { return {timings_.at("loadCoeff")}; }
-    AutoTiming createCoeffTimer() { return {timings_.at("createCoeff")}; }
-    AutoTiming calcTimer() { return {timings_.at("calc")}; }
-    AutoTiming nablaTimer() { return {timings_.at("nabla")}; }
-    AutoTiming saveTimer() { return {timings_.at("save")}; }
-    AutoTiming gribEncodingTimer() { return {timings_.at("gribEncoding")}; }
-    AutoTiming gribDecodingTimer() { return {timings_.at("gribDecoding")}; }
+    AutoTiming cropTimer() { return timings_.at("crop"); }
+    AutoTiming frameTimer() { return timings_.at("frame"); }
+    AutoTiming globaliseTimer() { return timings_.at("globalise"); }
+    AutoTiming bitmapTimer() { return timings_.at("bitmap"); }
+    AutoTiming coefficientTimer() { return timings_.at("coefficient"); }
+    AutoTiming sh2gridTimer() { return timings_.at("sh2grid"); }
+    AutoTiming grid2gridTimer() { return timings_.at("grid2grid"); }
+    AutoTiming vod2uvTimer() { return timings_.at("vod2uv"); }
+    AutoTiming computeMatrixTimer() { return timings_.at("computeMatrix"); }
+    AutoTiming matrixTimer() { return timings_.at("matrix"); }
+    AutoTiming loadCoeffTimer() { return timings_.at("loadCoeff"); }
+    AutoTiming createCoeffTimer() { return timings_.at("createCoeff"); }
+    AutoTiming calcTimer() { return timings_.at("calc"); }
+    AutoTiming nablaTimer() { return timings_.at("nabla"); }
+    AutoTiming saveTimer() { return timings_.at("save"); }
+    AutoTiming gribEncodingTimer() { return timings_.at("gribEncoding"); }
+    AutoTiming gribDecodingTimer() { return timings_.at("gribDecoding"); }
 
     Timing& gribEncodingTiming() { return timings_.at("gribEncoding"); }
     Timing& gribDecodingTiming() { return timings_.at("gribDecoding"); }

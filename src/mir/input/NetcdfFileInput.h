@@ -13,7 +13,7 @@
 #pragma once
 
 #include "mir/api/mir_config.h"
-#if defined(mir_HAVE_NETCDF)
+#if mir_HAVE_NETCDF
 
 #include <string>
 
@@ -86,6 +86,7 @@ private:
     netcdf::InputDataset dataset_;
     std::vector<netcdf::Field*> fields_;
     int current_;
+    bool checkDuplicatePoints_;
 
     // mutable std::vector<double> latitude_;
     // mutable std::vector<double> longitude_;
@@ -104,6 +105,7 @@ private:
     bool next() override;
     size_t dimensions() const override;
     grib_handle* gribHandle(size_t which) const override;
+    void setAuxiliaryInformation(const util::ValueMap&) override;
 
     // From FieldParametrisation
     bool has(const std::string& name) const override;

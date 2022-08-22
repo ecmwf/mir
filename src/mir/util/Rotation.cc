@@ -68,7 +68,7 @@ void Rotation::print(std::ostream& out) const {
 }
 
 
-void Rotation::fill(grib_info& info) const {
+void Rotation::fillGrib(grib_info& info) const {
     // Warning: scanning mode not considered
 
     info.grid.grid_type = CODES_UTIL_GRID_SPEC_ROTATED_LL;
@@ -87,7 +87,7 @@ void Rotation::fill(grib_info& info) const {
 }
 
 
-void Rotation::fill(api::MIRJob& job) const {
+void Rotation::fillJob(api::MIRJob& job) const {
     job.set("rotation", south_pole_latitude_.value(), south_pole_longitude_.value());
 }
 

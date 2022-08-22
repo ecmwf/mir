@@ -194,7 +194,7 @@ std::vector<double> Gaussian::calculateUnrotatedGridBoxLatitudeEdges() const {
 }
 
 
-void Gaussian::fill(util::MeshGeneratorParameters& params) const {
+void Gaussian::fillMeshGen(util::MeshGeneratorParameters& params) const {
     if (params.meshGenerator_.empty()) {
         params.meshGenerator_ = "structured";
     }
@@ -211,10 +211,10 @@ void Gaussian::fill(util::MeshGeneratorParameters& params) const {
 }
 
 
-void Gaussian::fill(api::MIRJob& job) const {
+void Gaussian::fillJob(api::MIRJob& job) const {
     auto d = domain();
     if (!d.isGlobal() || d.west() != Longitude::GREENWICH) {
-        bbox_.fill(job);
+        bbox_.fillJob(job);
     }
 }
 

@@ -76,7 +76,7 @@ protected:
 
             info.grid.missingValue = 2.;
 
-            representation_->fill(info);
+            representation_->fillGrib(info);
 
             size_t n = numberOfValues();
             ASSERT(n);
@@ -136,10 +136,10 @@ public:
         delete grib2Input_;
     }
 
-    EncodeTest(const EncodeTest&) = delete;
-    EncodeTest(EncodeTest&&)      = delete;
+    EncodeTest(const EncodeTest&)            = delete;
+    EncodeTest(EncodeTest&&)                 = delete;
     EncodeTest& operator=(const EncodeTest&) = delete;
-    EncodeTest& operator=(EncodeTest&&) = delete;
+    EncodeTest& operator=(EncodeTest&&)      = delete;
 
     virtual size_t numberOfValues() const = 0;
 
@@ -274,10 +274,10 @@ public:
 
     ~EncodeRegular() override = default;
 
-    EncodeRegular(const EncodeRegular&) = delete;
-    EncodeRegular(EncodeRegular&&)      = delete;
+    EncodeRegular(const EncodeRegular&)            = delete;
+    EncodeRegular(EncodeRegular&&)                 = delete;
     EncodeRegular& operator=(const EncodeRegular&) = delete;
-    EncodeRegular& operator=(EncodeRegular&&) = delete;
+    EncodeRegular& operator=(EncodeRegular&&)      = delete;
 
     size_t NiEncodedInGrib(long edition) {
         util::lock_guard<util::recursive_mutex> lock(local_mutex);
@@ -348,7 +348,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
             test_t{"O1280", {-10.017, -85, -38.981, -56}, 124577},
             test_t{"O1280", {-10.017, 275, -38.981, 304}, 124577}, test_t{"O1280", {-10, -85, -39, -56.1}, 124143},
 
-#if defined(mir_HAVE_ATLAS)
+#if mir_HAVE_ATLAS
             // ECC-576
             test_t{"N256", {90, 0, -90, 359.6489}, 348528}, test_t{"N256", {90, 0, -90, 359.9}, 348528},
             test_t{"N640", {90, 0, -90, 359.9}, 2140702}, test_t{"N640", {90, 0, -90, 359.99}, 2140702},
@@ -579,7 +579,7 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
             // this test!
             info.packing.deleteLocalDefinition = remove ? 1 : 0;
 
-            repres->fill(info);
+            repres->fillGrib(info);
 
             size_t n = repres->numberOfPoints();
             ASSERT(n);

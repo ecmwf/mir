@@ -8,6 +8,7 @@ if(HAVE_MIR_DOWNLOAD_MASKS)
         "lsm.N128.grib"
         "lsm.N256.grib"
         "lsm.N320.grib"
+        "lsm.N640.grib"
         "lsm.O1280.grib"
         "lsm.O320.grib"
         "lsm.O640.grib")
@@ -19,7 +20,7 @@ if(HAVE_MIR_DOWNLOAD_MASKS)
       # get mask into the build dir
       ecbuild_download_resource(
         "${CMAKE_BINARY_DIR}/${_dir}/${_f}"
-        "http://download.ecmwf.org/test-data/mir/${_dir}/${_f}")
+        "https://get.ecmwf.int/repository/mir/${_dir}/${_f}")
 
       # install mask
       install(

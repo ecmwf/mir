@@ -82,9 +82,9 @@ public:
 
     const LatitudeIncrement& south_north() const { return south_north_; }
 
-    void fill(grib_info&) const;
+    void fillGrib(grib_info&) const;
 
-    void fill(api::MIRJob&) const;
+    void fillJob(api::MIRJob&) const;
 
     void makeName(std::ostream&) const;
 

@@ -74,7 +74,7 @@ size_t GmshOutput::save(const param::MIRParametrisation& param, context::Context
     atlas::Mesh mesh;
     if (writeMesh) {
         util::MeshGeneratorParameters meshGenParams(param);
-        rep->fill(meshGenParams);
+        rep->fillMeshGen(meshGenParams);
         meshGenParams.set("3d", config.getString("coordinates") == "xyz");
 
         trace::Timer time("Generating mesh");

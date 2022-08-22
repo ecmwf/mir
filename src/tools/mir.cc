@@ -14,7 +14,8 @@
 #include <ostream>
 #include <string>
 
-#include "eckit/linalg/LinearAlgebra.h"
+#include "eckit/linalg/LinearAlgebraDense.h"
+#include "eckit/linalg/LinearAlgebraSparse.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/Separator.h"
@@ -54,12 +55,12 @@
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
-#if defined mir_HAVE_ATLAS
+#if mir_HAVE_ATLAS
 #include "mir/caching/legendre/LegendreLoader.h"
 #include "mir/method/fe/FiniteElement.h"
 #endif
 
-#if defined(mir_HAVE_PNG)
+#if mir_HAVE_PNG
 #include "mir/output/PNGOutput.h"
 #endif
 
@@ -118,7 +119,7 @@ struct MIR : MIRTool {
         options_.push_back(
             new SimpleOption<bool>("interpolation-matrix-free", "Matrix-free interpolation (proxy methods)"));
 
-#if defined(mir_HAVE_ATLAS)
+#if mir_HAVE_ATLAS
         options_.push_back(new FactoryOption<method::fe::FiniteElementFactory>("l2-projection-input-method",
                                                                                "L2 Projection FE method for input"));
         options_.push_back(new FactoryOption<method::fe::FiniteElementFactory>("l2-projection-output-method",
@@ -174,11 +175,15 @@ struct MIR : MIRTool {
             new SimpleOption<double>("cressman-model-extension-power", "Cressman Model Extension power (default 1.)"));
 
         options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and k-d trees (default 1)"));
-        options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebra>(
-            "backend", "Linear algebra backend (default '" + eckit::linalg::LinearAlgebra::backend().name() + "')"));
+        options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebraDense>(
+            "dense-backend",
+            "Linear algebra dense backend (default '" + eckit::linalg::LinearAlgebraDense::backend().name() + "')"));
+        options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebraDense>(
+            "sparse-backend",
+            "Linear algebra sparse backend (default '" + eckit::linalg::LinearAlgebraSparse::backend().name() + "')"));
         options_.push_back(new FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
 
-#if defined(mir_HAVE_ATLAS)
+#if mir_HAVE_ATLAS
         for (const std::string& which : {"input", "output"}) {
             options_.push_back(
                 new SimpleOption<std::string>(which + "-mesh-generator", "Mesh generator for " + which + " grid"));
@@ -325,12 +330,12 @@ struct MIR : MIRTool {
         options_.push_back(new Separator("Caching"));
         options_.push_back(new FactoryOption<caching::matrix::MatrixLoaderFactory>(
             "matrix-loader", "Select how to load matrices in memory"));
-#if defined(mir_HAVE_ATLAS)
+#if mir_HAVE_ATLAS
         options_.push_back(new FactoryOption<caching::legendre::LegendreLoaderFactory>(
             "legendre-loader", "Select how to load Legendre coefficients in memory"));
 #endif
 
-#if defined(mir_HAVE_OMP)
+#if mir_HAVE_OMP
         options_.push_back(
             new SimpleOption<size_t>("parallel-omp-num-threads", "Set number of threads for OMP parallel regions"));
 #endif
@@ -354,7 +359,7 @@ struct MIR : MIRTool {
             options_.push_back(new FactoryOption<output::MIROutputFactory>("format", "Output format"));
             options_.push_back(
                 new SimpleOption<bool>("reset-missing-values", "Use first encoded value to set missing value"));
-#if defined(mir_HAVE_PNG)
+#if mir_HAVE_PNG
             options_.push_back(
                 new FactoryOption<output::PNGEncoderFactory>("png-output-encoder", "PNG output encoder"));
             options_.push_back(new VectorOption<double>("png-output-minmax", "PNG output minimum/maximum", 2));
@@ -362,7 +367,9 @@ struct MIR : MIRTool {
         }
     }
 
-    int minimumPositionalArguments() const override { return 2; }
+    int minimumPositionalArguments() const override {
+        return 2;
+    }
 
     void usage(const std::string& tool) const override {
         Log::info() << "\n"
@@ -402,10 +409,13 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
     trace::ResourceUsage usage("mir");
     const param::ConfigurationWrapper args_wrap(args);
 
-    // If we want to control the backend in MARS/PRODGEN, we can move that to MIRJob
+    // If we want to control the backends in MARS/PRODGEN, we can move that to MIRJob
     std::string backend;
-    if (args.get("backend", backend)) {
-        eckit::linalg::LinearAlgebra::backend(backend);
+    if (args.get("sparse-backend", backend)) {
+        eckit::linalg::LinearAlgebraSparse::backend(backend);
+    }
+    if (args.get("dense-backend", backend)) {
+        eckit::linalg::LinearAlgebraDense::backend(backend);
     }
 
     api::MIRJob job;
@@ -448,7 +458,9 @@ void MIR::process(const api::MIRJob& job, input::MIRInput& input, output::MIROut
     trace::Timer timer("Total time");
 
     util::MIRStatistics statistics;
-    Log::debug() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;
+    Log::debug() << "Using '" << eckit::linalg::LinearAlgebraDense::backend().name() << "' dense backend." << std::endl;
+    Log::debug() << "Using '" << eckit::linalg::LinearAlgebraSparse::backend().name() << "' sparse backend."
+                 << std::endl;
 
     size_t i = 0;
     while (input.next()) {
@@ -468,7 +480,9 @@ void MIR::only(const api::MIRJob& job, input::MIRInput& input, output::MIROutput
     trace::Timer timer("Total time");
 
     util::MIRStatistics statistics;
-    Log::debug() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;
+    Log::debug() << "Using '" << eckit::linalg::LinearAlgebraDense::backend().name() << "' dense backend." << std::endl;
+    Log::debug() << "Using '" << eckit::linalg::LinearAlgebraSparse::backend().name() << "' sparse backend."
+                 << std::endl;
 
     size_t i = 0;
     while (input.only(paramId)) {

@@ -88,9 +88,9 @@ public:
 
     bool empty() const;
 
-    void fill(grib_info&) const;
+    void fillGrib(grib_info&) const;
 
-    void fill(api::MIRJob&) const;
+    void fillJob(api::MIRJob&) const;
 
     void hash(eckit::MD5&) const;
 

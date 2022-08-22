@@ -24,7 +24,7 @@
 #include "mir/api/mir_config.h"
 #include "mir/util/Types.h"
 
-#if defined(mir_HAVE_ATLAS)
+#if mir_HAVE_ATLAS
 #include "atlas/functionspace.h"
 #include "atlas/grid.h"
 #include "atlas/interpolation.h"
@@ -52,6 +52,7 @@
 #include "atlas/util/Point.h"
 #include "atlas/util/Rotation.h"
 #else
+#define atlas_HAVE_TESSELATION 0
 
 
 namespace eckit {
@@ -95,7 +96,7 @@ struct Domain {
     bool zonal_band() const;
     bool global() const;
     bool operator==(const Domain&) const;
-    operator bool() const { return true; }
+    explicit operator bool() const { return true; }
 };
 
 
@@ -198,7 +199,8 @@ struct MeshGenerator {
 };
 
 
-struct Projection {
+class Projection {
+public:
     using Spec = util::Config;
     Spec spec_;
     Spec spec() const { return spec_; }
@@ -207,7 +209,7 @@ struct Projection {
     // no projection supported
     Projection() = default;
     Projection(const Spec& spec) : spec_(spec) {}
-    operator bool() const { return true; }
+    explicit operator bool() const { return true; }
     mir::Point2 xy(const mir::Point2& p) const { return p; }
     mir::Point2 lonlat(const mir::Point2& p) const { return p; }
     Domain lonlatBoundingBox(const Domain& r) const { return r; }
@@ -217,7 +219,8 @@ struct Projection {
 using idx_t = long;
 
 
-struct Grid {
+class Grid {
+public:
     using Spec = util::Config;
     Spec spec_;
     Spec spec() const { return spec_; }
@@ -227,7 +230,7 @@ struct Grid {
 
     Grid() = default;
     Grid(const Spec& spec) : spec_(spec) {}
-    operator bool() const { return true; }
+    explicit operator bool() const { return true; }
     Projection projection() const;
 };
 
@@ -239,9 +242,9 @@ struct StructuredGrid : Grid {
     StructuredGrid(const Grid&);
     StructuredGrid(const XSpace& lon, const YSpace& lat, const Projection& = Projection(), const Domain& = Domain()) :
         lon_(lon), lat_(lat) {}
-    idx_t nx(idx_t j) const { return pl_.at(size_t(j)); }
+    idx_t nx(idx_t j) const { return pl_.at(static_cast<size_t>(j)); }
     idx_t nx() const;
-    idx_t ny() const { return idx_t(pl_.size()); }
+    idx_t ny() const { return static_cast<idx_t>(pl_.size()); }
 
 protected:
     std::vector<long> pl_;
@@ -259,7 +262,7 @@ struct GaussianGrid : StructuredGrid {
 
 struct UnstructuredGrid : Grid {
     std::vector<PointXY> points_;
-    UnstructuredGrid(std::vector<PointXY>&& points);
+    UnstructuredGrid(std::vector<PointXY>&&);
 };
 
 
@@ -269,7 +272,8 @@ using ReducedGaussianGrid = GaussianGrid;
 
 
 namespace trans {
-struct LegendreCache {
+class LegendreCache {
+public:
     LegendreCache(const void*, size_t);
 };
 }  // namespace trans

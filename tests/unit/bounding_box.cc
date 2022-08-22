@@ -305,7 +305,7 @@ CASE("Representation::extendBoundingBox") {
     SECTION("Gaussian") {
 
         std::vector<std::string> _name{"F16", "O16", "F21", "O21"};
-#if defined(mir_HAVE_ATLAS)
+#if mir_HAVE_ATLAS
         _name.emplace_back("N16");
 #endif
 

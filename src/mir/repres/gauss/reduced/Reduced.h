@@ -84,8 +84,8 @@ protected:
 
     // -- Overridden methods
 
-    virtual void fill(grib_info&) const override;
-    virtual void fill(api::MIRJob&) const override;
+    virtual void fillGrib(grib_info&) const override;
+    virtual void fillJob(api::MIRJob&) const override;
     bool sameAs(const Representation&) const override;
     util::BoundingBox extendBoundingBox(const util::BoundingBox&) const override;
 

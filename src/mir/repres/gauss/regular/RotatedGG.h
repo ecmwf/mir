@@ -80,8 +80,8 @@ private:
 
     // -- Overridden methods
 
-    void fill(grib_info&) const override;
-    void fill(api::MIRJob&) const override;
+    void fillGrib(grib_info&) const override;
+    void fillJob(api::MIRJob&) const override;
 
     atlas::Grid atlasGrid() const override;
     Iterator* iterator() const override;

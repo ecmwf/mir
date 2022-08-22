@@ -88,9 +88,9 @@ public:
 
     virtual void validate(const MIRValuesVector&) const;
 
-    virtual void fill(grib_info&) const;
-    virtual void fill(api::MIRJob&) const;
-    virtual void fill(util::MeshGeneratorParameters&) const;
+    virtual void fillGrib(grib_info&) const;
+    virtual void fillJob(api::MIRJob&) const;
+    virtual void fillMeshGen(util::MeshGeneratorParameters&) const;
     virtual void estimate(api::MIREstimation&) const;
 
     // Return a cropped version
@@ -206,7 +206,7 @@ class RepresentationFactory {
     std::string name_;
     virtual Representation* make(const param::MIRParametrisation&) = 0;
 
-    RepresentationFactory(const RepresentationFactory&) = delete;
+    RepresentationFactory(const RepresentationFactory&)            = delete;
     RepresentationFactory& operator=(const RepresentationFactory&) = delete;
 
 protected:

@@ -86,7 +86,7 @@ CASE("NamedGrid") {
         }
     }
 
-#if defined(mir_HAVE_ATLAS)
+#if mir_HAVE_ATLAS
     SECTION("numberOfPoints (N)") {
         std::vector<test_t> tests{
             {"N128", 88838, 88838, {90, 0, -90, 359.297}},

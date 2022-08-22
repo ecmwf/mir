@@ -15,6 +15,13 @@
 #include "mir/method/solver/Solver.h"
 
 
+namespace eckit {
+namespace linalg {
+class LinearAlgebraSparse;
+}
+}  // namespace eckit
+
+
 namespace mir {
 namespace method {
 namespace solver {
@@ -22,7 +29,8 @@ namespace solver {
 
 /// Linear system solving by matrix multiplication
 struct Multiply : Solver {
-    using Solver::Solver;
+    explicit Multiply(const param::MIRParametrisation&);
+
     void solve(const MethodWeighted::Matrix& A, const MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& B,
                const double& missingValue) const override;
 
@@ -30,6 +38,8 @@ private:
     bool sameAs(const Solver&) const override;
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;
+
+    const eckit::linalg::LinearAlgebraSparse& backend_;
 };
 
 

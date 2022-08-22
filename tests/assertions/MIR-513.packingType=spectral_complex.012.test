@@ -1,0 +1,9 @@
+# mars
+packingType=spectral_complex.grib2
+# mir
+--truncation=21 --packing=simple
+# grib_get assertions
+packingType=spectral_simple
+edition=2
+numberOfDataPoints=506
+numberOfValues=506

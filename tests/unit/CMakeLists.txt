@@ -16,6 +16,7 @@ foreach(_t
     grib_encoding
     increments
     input_MultiDimensionalInput
+    interpolations
     iterator
     knn_weighting
     spectral_order

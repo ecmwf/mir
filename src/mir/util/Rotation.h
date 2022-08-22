@@ -98,8 +98,8 @@ public:
 
     double south_pole_rotation_angle() const { return south_pole_rotation_angle_; }
 
-    void fill(grib_info&) const;
-    void fill(api::MIRJob&) const;
+    void fillGrib(grib_info&) const;
+    void fillJob(api::MIRJob&) const;
     void makeName(std::ostream&) const;
 
     // -- Overridden methods

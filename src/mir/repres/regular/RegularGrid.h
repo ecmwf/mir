@@ -98,8 +98,8 @@ protected:
     bool includesSouthPole() const override;
     bool isPeriodicWestEast() const override;
 
-    void fill(grib_info&) const override;
-    void fill(util::MeshGeneratorParameters&) const override;
+    void fillGrib(grib_info&) const override;
+    void fillMeshGen(util::MeshGeneratorParameters&) const override;
     void reorder(long scanningMode, MIRValuesVector&) const override;
     void validate(const MIRValuesVector&) const override;
     void makeName(std::ostream&) const override;

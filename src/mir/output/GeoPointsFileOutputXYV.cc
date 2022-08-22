@@ -24,7 +24,7 @@
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/repres/other/UnstructuredGrid.h"
+#include "mir/util/CheckDuplicatePoints.h"
 #include "mir/util/Exceptions.h"
 
 
@@ -111,8 +111,7 @@ size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param, 
 
     std::ostringstream oss;
     oss << "GeoPointsFileOutputXYV save " << handle;
-
-    repres::other::UnstructuredGrid::check(oss.str(), latitudes, longitudes);
+    util::check_duplicate_points(oss.str(), latitudes, longitudes);
 
     delete out.rdbuf();
 
@@ -183,8 +182,7 @@ size_t GeoPointsFileOutputXYV::saveBinary(const param::MIRParametrisation& param
 
     std::ostringstream oss;
     oss << "GeoPointsFileOutputXYV save " << handle;
-
-    repres::other::UnstructuredGrid::check(oss.str(), latitudes, longitudes);
+    util::check_duplicate_points(oss.str(), latitudes, longitudes);
 
 
     // Log::info() << "GeoPointsFileOutputXYV::save <= " << handle.position() - position << std::endl;

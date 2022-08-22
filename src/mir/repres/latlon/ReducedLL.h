@@ -84,9 +84,9 @@ private:
 
     // -- Overridden methods
 
-    void fill(grib_info&) const override;
-    void fill(api::MIRJob&) const override;
-    void fill(util::MeshGeneratorParameters&) const override;
+    void fillGrib(grib_info&) const override;
+    void fillJob(api::MIRJob&) const override;
+    void fillMeshGen(util::MeshGeneratorParameters&) const override;
 
     void validate(const MIRValuesVector&) const override;
 

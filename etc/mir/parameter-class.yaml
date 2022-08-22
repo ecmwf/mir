@@ -708,6 +708,8 @@ index:
 - 260319  # Precipitation type (most severe) in the last 3 hours
 - 260320  # Precipitation type (most frequent) in the last 1 hour
 - 260321  # Precipitation type (most frequent) in the last 3 hours
+- 260338  # Precipitation type (most severe) in the last 6 hours
+- 260339  # Precipitation type (most frequent) in the last 6 hours
 - 260380  # Categorical Ozone Concentration
 - 260394  # Slight risk convective outlook
 - 260395  # Moderate risk convective outlook
@@ -1908,6 +1910,7 @@ intensity:
 - 261019  # Standard effective temperature
 - 261020  # Physiological equivalent temperature
 - 261021  # Saturation water vapor pressure
+- 261022  # Wet-bulb potential temperature
 - 300001  # Pressure
 - 300002  # Pressure reduced to msl
 - 300003  # Pressure tendency
@@ -6218,4 +6221,10 @@ unknown.to-classify-from-dgov:
 - 228072  # SMOS radio frequency interference probability
 - 228073  # SMOS number of observations per grid point
 - 228074  # SMOS observation time for the satellite soil moisture data
+- 260318  # Precipitation type (most severe) in the last 1 hour
+- 260319  # Precipitation type (most severe) in the last 3 hours
+- 260320  # Precipitation type (most frequent) in the last 1 hour
+- 260321  # Precipitation type (most frequent) in the last 3 hours
+- 260338  # Precipitation type (most severe) in the last 6 hours
+- 260339  # Precipitation type (most frequent) in the last 6 hours
 

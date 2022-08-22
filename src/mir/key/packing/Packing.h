@@ -135,7 +135,7 @@ class PackingFactory {
 
     virtual Packing* make(const std::string& name, const param::MIRParametrisation&) = 0;
 
-    PackingFactory(const PackingFactory&) = delete;
+    PackingFactory(const PackingFactory&)            = delete;
     PackingFactory& operator=(const PackingFactory&) = delete;
 
 protected:

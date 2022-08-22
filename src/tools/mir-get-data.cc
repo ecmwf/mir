@@ -83,10 +83,10 @@ struct Coordinates {
     Coordinates(const std::string&& name) : name_(name) {}
     virtual ~Coordinates() = default;
 
-    Coordinates(const Coordinates&) = delete;
-    Coordinates(Coordinates&&)      = delete;
+    Coordinates(const Coordinates&)            = delete;
+    Coordinates(Coordinates&&)                 = delete;
     Coordinates& operator=(const Coordinates&) = delete;
-    Coordinates& operator=(Coordinates&&) = delete;
+    Coordinates& operator=(Coordinates&&)      = delete;
 
     virtual const coord_t& latitudes() const  = 0;
     virtual const coord_t& longitudes() const = 0;
@@ -159,7 +159,7 @@ private:
 
 struct CoordinatesFromAtlas : Coordinates {
     CoordinatesFromAtlas(const atlas::Grid& grid) : Coordinates("atlas") {
-#if defined(mir_HAVE_ATLAS)
+#if mir_HAVE_ATLAS
         auto N = size_t(grid.size());
         lats_.assign(N, std::numeric_limits<double>::signaling_NaN());
         lons_.assign(N, std::numeric_limits<double>::signaling_NaN());
@@ -175,8 +175,12 @@ struct CoordinatesFromAtlas : Coordinates {
         NOTIMP;
 #endif
     }
-    const coord_t& latitudes() const override { return lats_; }
-    const coord_t& longitudes() const override { return lons_; }
+    const coord_t& latitudes() const override {
+        return lats_;
+    }
+    const coord_t& longitudes() const override {
+        return lons_;
+    }
 
 private:
     coord_t lats_;

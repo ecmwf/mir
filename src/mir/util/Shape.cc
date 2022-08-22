@@ -55,7 +55,7 @@ Shape::Shape(const Shape& other) = default;
 Shape& Shape::operator=(const Shape& other) = default;
 
 
-void Shape::fill(grib_info& info, const Projection::Spec& spec) const {
+void Shape::fillGrib(grib_info& info, const Projection::Spec& spec) const {
     // shape given by radius or semi-major/minor axis
     if (provided) {
         info.extra_set("shapeOfTheEarth", code);
