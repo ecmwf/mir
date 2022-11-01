@@ -145,7 +145,7 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
 
 
 static void add_formula(action::ActionPlan& plan, const param::MIRParametrisation& param,
-                        const std::vector<std::string>&& whens) {
+                        const std::vector<std::string>& whens) {
     std::string formula;
     for (const auto& when : whens) {
         if (param.get("formula." + when, formula)) {
