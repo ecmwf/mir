@@ -41,7 +41,7 @@ namespace fe {
 
 
 // epsilon used to scale edge tolerance when projecting ray to intersect element
-static constexpr double parametricEpsilon = 1e-15;
+static constexpr double parametricEpsilon = 2e-15;
 
 static constexpr size_t nbFailuresLogged = 10;
 
