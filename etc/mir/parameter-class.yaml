@@ -2506,6 +2506,10 @@ numerics.accumulated:
 - 230239  # Convective snowfall (variable resolution)
 - 230240  # Large-scale snowfall (variable resolution)
 - 230251  # Potential evaporation (variable resolution)
+- 231001  # Accumulated freezing rain water equivalent
+- 231002  # Runoff water equivalent
+- 231003  # Snow evaporation water equivalent
+- 231004  # Total snowfall water equivalent
 - 235015  # Time integral of rain flux
 - 235017  # Time integral of surface eastward momentum flux
 - 235018  # Time integral of surface northward momentum flux
@@ -3995,6 +3999,10 @@ rate.mass-flux:
 - 230044  # Snow evaporation (variable resolution)
 - 230045  # Snowmelt (variable resolution)
 - 230182  # Evaporation (variable resolution)
+- 231001  # Accumulated freezing rain water equivalent
+- 231002  # Runoff water equivalent
+- 231003  # Snow evaporation water equivalent
+- 231004  # Total snowfall water equivalent
 - 235009  # Mean updraught mass flux
 - 235010  # Mean downdraught mass flux
 - 235013  # Mean total precipitation flux
