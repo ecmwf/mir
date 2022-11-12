@@ -79,10 +79,10 @@ struct OutputFromExtension : public MIROutputFactory {
 
     OutputFromExtension() : MIROutputFactory("extension") {}
 
-    OutputFromExtension(const OutputFromExtension&) = delete;
-    OutputFromExtension(OutputFromExtension&&)      = delete;
+    OutputFromExtension(const OutputFromExtension&)            = delete;
+    OutputFromExtension(OutputFromExtension&&)                 = delete;
     OutputFromExtension& operator=(const OutputFromExtension&) = delete;
-    OutputFromExtension& operator=(OutputFromExtension&&) = delete;
+    OutputFromExtension& operator=(OutputFromExtension&&)      = delete;
 
     ~OutputFromExtension() override {
         util::lock_guard<util::recursive_mutex> lock(*ext_mutex);

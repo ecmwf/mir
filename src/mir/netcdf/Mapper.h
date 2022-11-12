@@ -34,7 +34,7 @@ public:
     void set(size_t i, T value);
 
 private:
-    Mapper(const Mapper&) = delete;
+    Mapper(const Mapper&)            = delete;
     Mapper& operator=(const Mapper&) = delete;
 
 private:

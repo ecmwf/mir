@@ -117,7 +117,7 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
                 const Longitude& l0 = icoords[l[0]].lon();
                 const Longitude& l1 = icoords[l[1]].lon();
                 trip                = {WeightMatrix::Triplet(i, l[0], (l1 - p.lon()).value()),
-                        WeightMatrix::Triplet(i, l[1], (p.lon() - l0).value())};
+                                       WeightMatrix::Triplet(i, l[1], (p.lon() - l0).value())};
             }
             else {
 

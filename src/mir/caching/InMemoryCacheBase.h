@@ -27,7 +27,7 @@ public:  // methods
     InMemoryCacheBase();
 
     InMemoryCacheBase(const InMemoryCacheBase&) = delete;
-    void operator=(const InMemoryCacheBase&) = delete;
+    void operator=(const InMemoryCacheBase&)    = delete;
 
     virtual ~InMemoryCacheBase();
 

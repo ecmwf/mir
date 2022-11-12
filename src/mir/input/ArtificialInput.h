@@ -120,7 +120,7 @@ private:
 
 
 class ArtificialInputFactory {
-    ArtificialInputFactory(const ArtificialInputFactory&) = delete;
+    ArtificialInputFactory(const ArtificialInputFactory&)           = delete;
     void operator=(const ArtificialInputFactory&)                   = delete;
     virtual ArtificialInput* make(const param::MIRParametrisation&) = 0;
     const std::string name_;

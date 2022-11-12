@@ -55,10 +55,10 @@ public:
     Content()          = default;
     virtual ~Content() = default;
 
-    Content(const Content&) = delete;
-    Content(Content&&)      = delete;
+    Content(const Content&)            = delete;
+    Content(Content&&)                 = delete;
     Content& operator=(const Content&) = delete;
-    Content& operator=(Content&&) = delete;
+    Content& operator=(Content&&)      = delete;
 
     virtual data::MIRField& field() {
         std::ostringstream oss;

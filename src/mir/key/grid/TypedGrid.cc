@@ -131,10 +131,10 @@ struct TypedGenericPattern final : public GridPattern {
 
     ~TypedGenericPattern() override = default;
 
-    TypedGenericPattern(const TypedGenericPattern&) = delete;
-    TypedGenericPattern(TypedGenericPattern&&)      = delete;
+    TypedGenericPattern(const TypedGenericPattern&)            = delete;
+    TypedGenericPattern(TypedGenericPattern&&)                 = delete;
     TypedGenericPattern& operator=(const TypedGenericPattern&) = delete;
-    TypedGenericPattern& operator=(TypedGenericPattern&&) = delete;
+    TypedGenericPattern& operator=(TypedGenericPattern&&)      = delete;
 
     const Grid* make(const std::string& name) const override { return new TYPE(name, requiredKeys_, optionalKeys_); }
 

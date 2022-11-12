@@ -39,7 +39,7 @@ namespace mir {
 namespace compare {
 
 class WhiteLister {
-    WhiteLister(const WhiteLister&) = delete;
+    WhiteLister(const WhiteLister&)            = delete;
     WhiteLister& operator=(const WhiteLister&) = delete;
 
 public:

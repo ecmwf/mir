@@ -39,7 +39,7 @@ class Solver {
 public:
     Solver(const param::MIRParametrisation&) {}
 
-    Solver(const Solver&) = delete;
+    Solver(const Solver&)         = delete;
     void operator=(const Solver&) = delete;
 
     virtual ~Solver() = default;

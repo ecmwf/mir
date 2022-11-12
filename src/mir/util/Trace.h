@@ -41,7 +41,7 @@ struct ResourceUsage : public Timer {
     ~ResourceUsage();
 
 private:
-    ResourceUsage(const ResourceUsage&) = delete;
+    ResourceUsage(const ResourceUsage&)            = delete;
     ResourceUsage& operator=(const ResourceUsage&) = delete;
 
     eckit::ResourceUsage* info_;

@@ -24,7 +24,7 @@ namespace pick {
 struct NearestNeighbourWithLowestIndex : Pick {
     NearestNeighbourWithLowestIndex(const param::MIRParametrisation&);
 
-    NearestNeighbourWithLowestIndex(const NearestNeighbourWithLowestIndex&) = delete;
+    NearestNeighbourWithLowestIndex(const NearestNeighbourWithLowestIndex&)            = delete;
     NearestNeighbourWithLowestIndex& operator=(const NearestNeighbourWithLowestIndex&) = delete;
 
     void pick(const search::PointSearch&, const Point3&, neighbours_t&) const override;

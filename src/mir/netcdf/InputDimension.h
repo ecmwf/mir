@@ -20,7 +20,7 @@ namespace netcdf {
 
 
 class InputDimension : public Dimension {
-    InputDimension(const InputDimension&) = delete;
+    InputDimension(const InputDimension&)            = delete;
     InputDimension& operator=(const InputDimension&) = delete;
 
 public:

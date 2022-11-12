@@ -76,10 +76,10 @@ public:
 
     void add(const eckit::PathName& path) { paths_.push_back(path); }
 
-    Unloader(const Unloader&) = delete;
-    Unloader(Unloader&&)      = delete;
+    Unloader(const Unloader&)            = delete;
+    Unloader(Unloader&&)                 = delete;
     Unloader& operator=(const Unloader&) = delete;
-    Unloader& operator=(Unloader&&) = delete;
+    Unloader& operator=(Unloader&&)      = delete;
 
     ~Unloader() {
         for (auto& path : paths_) {

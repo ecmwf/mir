@@ -102,7 +102,7 @@ private:
 
 class SpaceChooser {
 private:
-    SpaceChooser(const SpaceChooser&) = delete;
+    SpaceChooser(const SpaceChooser&)            = delete;
     SpaceChooser& operator=(const SpaceChooser&) = delete;
 
     std::string name_;
