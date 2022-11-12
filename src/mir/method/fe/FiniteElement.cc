@@ -239,6 +239,11 @@ void FiniteElement::hash(eckit::MD5& md5) const {
 }
 
 
+int FiniteElement::version() const {
+    return 1;
+}
+
+
 void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, const repres::Representation& in,
                              const repres::Representation& out) const {
     auto& log = Log::debug();
