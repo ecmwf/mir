@@ -35,12 +35,12 @@ bool RawOutput::sameAs(const MIROutput& other) const {
 
 bool RawOutput::sameParametrisation(const param::MIRParametrisation& /*unused*/,
                                     const param::MIRParametrisation& /*unused*/) const {
-    NOTIMP;
+    return true;
 }
 
 
 bool RawOutput::printParametrisation(std::ostream& /*out*/, const param::MIRParametrisation& /*param*/) const {
-    NOTIMP;
+    return false;
 }
 
 

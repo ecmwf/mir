@@ -15,6 +15,7 @@
 #include <cmath>
 
 #include "mir/data/MIRField.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -27,7 +28,7 @@ static const ArtificialInputBuilder<DummyInput> __artificial("dummy");
 static const param::SimpleParametrisation empty;
 
 
-DummyInput::DummyInput(const param::MIRParametrisation& /*ignored*/) : ArtificialInput(empty) {
+DummyInput::DummyInput(const param::MIRParametrisation& /*ignored*/) {
     parametrisation().set("gridded", true);
     parametrisation().set("gridType", "regular_ll");
     parametrisation().set("north", 90.0);
@@ -41,7 +42,10 @@ DummyInput::DummyInput(const param::MIRParametrisation& /*ignored*/) : Artificia
 }
 
 
-MIRValuesVector DummyInput::fill(size_t /*ignored*/) const {
+data::MIRField DummyInput::field() const {
+    ASSERT(dimensions() > 0);
+
+    data::MIRField field(parametrisation(0), false, 9999.);
     MIRValuesVector values(360 * 181, 42.);
 
     size_t k = 0;
@@ -51,7 +55,11 @@ MIRValuesVector DummyInput::fill(size_t /*ignored*/) const {
         }
     }
 
-    return values;
+    for (size_t which = 0; which < dimensions(); ++which) {
+        field.update(values, which);
+    }
+
+    return field;
 }
 
 

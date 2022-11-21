@@ -227,8 +227,6 @@ list(APPEND mir_srcs
     input/MultiStreamInput.h
     input/RawInput.cc
     input/RawInput.h
-    input/RawMetadata.cc
-    input/RawMetadata.h
     input/VectorInput.cc
     input/VectorInput.h
     iterator/UnstructuredIterator.h
