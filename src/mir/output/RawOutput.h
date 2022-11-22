@@ -13,6 +13,7 @@
 #pragma once
 
 #include "mir/output/MIROutput.h"
+#include "mir/param/SimpleParametrisation.h"
 
 
 namespace mir {
@@ -26,7 +27,7 @@ public:
 
     // -- Constructors
 
-    RawOutput(double* const values, size_t count);
+    RawOutput(double* const values, size_t count, param::SimpleParametrisation& metadata);
 
     // -- Destructor
     // None
@@ -55,6 +56,7 @@ private:
 
     double* const values_;
     size_t count_;
+    param::SimpleParametrisation& metadata_;
     size_t size_;
 
     // -- Methods
