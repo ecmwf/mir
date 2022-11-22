@@ -19,14 +19,14 @@ namespace mir {
 namespace output {
 
 
-class RawOutput : public MIROutput {
+class RawOutput final : public MIROutput {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    RawOutput(double* values, size_t count);
+    RawOutput(double* const values, size_t count);
 
     // -- Destructor
     // None
@@ -50,26 +50,10 @@ public:
     // -- Class methods
     // None
 
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
 private:
     // -- Members
 
-    double* values_;
+    double* const values_;
     size_t count_;
     size_t size_;
 
