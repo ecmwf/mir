@@ -49,7 +49,7 @@ public:
 protected:
     // -- Constructors
 
-    ArtificialInput() = default;
+    ArtificialInput() : calls_(0) {}
 
     // -- Members
     // None
