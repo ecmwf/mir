@@ -18,6 +18,7 @@
 #include "eckit/testing/Test.h"
 
 #include "mir/api/MIRJob.h"
+#include "mir/data/MIRField.h"
 #include "mir/input/RawInput.h"
 #include "mir/output/RawOutput.h"
 #include "mir/param/SimpleParametrisation.h"

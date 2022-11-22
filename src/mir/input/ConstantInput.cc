@@ -12,6 +12,7 @@
 
 #include "mir/input/ConstantInput.h"
 
+#include "mir/data/MIRField.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Types.h"

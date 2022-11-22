@@ -16,6 +16,7 @@
 #include <cmath>
 #include <memory>
 
+#include "mir/data/MIRField.h"
 #include "mir/repres/Representation.h"
 #include "mir/stats/Distribution.h"
 #include "mir/util/Exceptions.h"

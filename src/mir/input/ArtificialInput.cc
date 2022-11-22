@@ -16,7 +16,6 @@
 #include <sstream>
 
 #include "mir/param/SimpleParametrisation.h"
-#include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
