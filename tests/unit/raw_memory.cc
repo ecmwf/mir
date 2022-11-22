@@ -12,7 +12,7 @@
 
 #include <memory>
 #include <numeric>
-#include <ostream>
+#include <sstream>
 #include <vector>
 
 #include "eckit/testing/Test.h"
@@ -108,26 +108,27 @@ CASE("Example") {
     // - 20 x 0.
     // - South Pole
 
-    param::SimpleParametrisation meta;
-    meta.set("gridded", true);
-    meta.set("gridType", "reduced_gg");
-    meta.set("north", 90.);
-    meta.set("west", 0.);
-    meta.set("south", -90.);
-    meta.set("east", 360.);
-    meta.set("N", 4);
-    meta.set("pl", std::vector<long>{20, 24, 28, 32, 32, 28, 24, 20});
+    param::SimpleParametrisation meta1;
+    meta1.set("gridded", true);
+    meta1.set("gridType", "reduced_gg");
+    meta1.set("north", 90.);
+    meta1.set("west", 0.);
+    meta1.set("south", -90.);
+    meta1.set("east", 360.);
+    meta1.set("N", 4);
+    meta1.set("pl", std::vector<long>{20, 24, 28, 32, 32, 28, 24, 20});
 
-    std::vector<double> values(208 /*sum(pl)*/, 0.);
-    std::fill_n(values.begin() + 20 + 24 + 28, 32, 42.);
-    std::fill_n(values.begin() + 20 + 24 + 28 + 32, 32, -42.);
+    std::vector<double> values1(208 /*sum(pl)*/, 0.);
+    std::fill_n(values1.begin() + 20 + 24 + 28, 32, 42.);
+    std::fill_n(values1.begin() + 20 + 24 + 28 + 32, 32, -42.);
 
-    std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
+    std::unique_ptr<input::MIRInput> input(new input::RawInput(values1.data(), values1.size(), meta1));
 
 
     // output
-    std::vector<double> out(4, 0);
-    std::unique_ptr<output::MIROutput> output(new output::RawOutput(out.data(), out.size()));
+    param::SimpleParametrisation meta2;
+    std::vector<double> values2(4, 0);
+    std::unique_ptr<output::MIROutput> output(new output::RawOutput(values2.data(), values2.size(), meta2));
 
 
     // job
@@ -140,10 +141,16 @@ CASE("Example") {
     log << job << std::endl;
     job.execute(*input, *output);
 
-    EXPECT_EQUAL(out[0], 42.);
-    EXPECT_EQUAL(out[1], 42.);
-    EXPECT_EQUAL(out[2], -42.);
-    EXPECT_EQUAL(out[3], -42.);
+    EXPECT_EQUAL(values2[0], 42.);
+    EXPECT_EQUAL(values2[1], 42.);
+    EXPECT_EQUAL(values2[2], -42.);
+    EXPECT_EQUAL(values2[3], -42.);
+
+    log << "output metadata: " << meta2 << std::endl;
+
+    std::ostringstream ss;
+    ss << meta2;
+    EXPECT(ss.str() == "{\"area\":[1,-1,-1,1],\"grid\":[2,2]}");
 }
 
 
