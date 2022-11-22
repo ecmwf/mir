@@ -12,7 +12,6 @@
 
 #include "mir/input/RawInput.h"
 
-#include <cstring>
 #include <ostream>
 
 #include "mir/data/MIRField.h"
@@ -24,32 +23,65 @@ namespace mir {
 namespace input {
 
 
-RawInput::RawInput(const double* values, size_t count, const param::SimpleParametrisation& metadata) :
-    values_(values), count_(count) {
-    ASSERT_MSG(count > 0, "RawInput count > 0");
-    ASSERT_MSG(values != nullptr, "RawInput count > 0");
-    metadata.copyValuesTo(parametrisation());
+RawInput::RawInput(const double* const values, size_t count, const param::SimpleParametrisation& metadata) :
+    values_(values), count_(count), metadata_(metadata), dimensions_(1), calls_(0) {
+    ASSERT_MSG(values != nullptr, "RawInput: values != nullptr");
+    ASSERT_MSG(count > 0, "RawInput: count > 0");
+
+    long dimensions = 1;
+    metadata_.get("dimensions", dimensions);
+    ASSERT(dimensions >= 1);
+
+    dimensions_ = static_cast<size_t>(dimensions);
+}
+
+
+bool RawInput::next() {
+    return calls_++ == 0;
+}
+
+
+size_t RawInput::dimensions() const {
+    return dimensions_;
+}
+
+
+const param::MIRParametrisation& RawInput::parametrisation(size_t which) const {
+    ASSERT(which == 0);
+
+    return metadata_;
 }
 
 
 data::MIRField RawInput::field() const {
-    ASSERT(dimensions() == 1);  // TODO support dimensions > 1, missing values
+    double missingValue = 9999.;
+    bool hasMissing     = metadata_.get("missing_value", missingValue);
 
-    data::MIRField field(parametrisation(0), false, 9999.);
+    // TODO support parametrisation for dimensions > 1
+    data::MIRField field(parametrisation(0), hasMissing, missingValue);
 
     repres::RepresentationHandle repres(field.representation());
     auto n = repres->numberOfPoints();
     ASSERT_VALUES_SIZE_EQ_ITERATOR_COUNT("RawInput", count_, n);
 
-    MIRValuesVector values(values_, values_ + count_);
-    field.update(values, 0, true);
+    const auto* here = values_;
+    for (size_t which = 0; which < dimensions(); ++which, here += count_) {
+        MIRValuesVector values(here, here + count_);
+        field.update(values, which);
+    }
 
     return field;
 }
 
 
+bool RawInput::sameAs(const MIRInput& other) const {
+    const auto* o = dynamic_cast<const RawInput*>(&other);
+    return (o != nullptr) && metadata_.matchAll(o->metadata_);
+}
+
+
 void RawInput::print(std::ostream& out) const {
-    out << "RawInput[&values=" << values_ << ",count=" << count_ << ",metadata=" << parametrisation() << "]";
+    out << "RawInput[&values=" << values_ << ",count=" << count_ << ",metadata=" << metadata_ << "]";
 }
 
 

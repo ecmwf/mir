@@ -12,21 +12,22 @@
 
 #pragma once
 
-#include "mir/input/ArtificialInput.h"
+#include "mir/input/MIRInput.h"
+#include "mir/param/SimpleParametrisation.h"
 
 
 namespace mir {
 namespace input {
 
 
-class RawInput final : public ArtificialInput {
+class RawInput final : public MIRInput {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    RawInput(const double* values, size_t count, const param::SimpleParametrisation& metadata);
+    RawInput(const double* const values, size_t count, const param::SimpleParametrisation& metadata);
 
     // -- Destructor
     // None
@@ -52,18 +53,24 @@ public:
 private:
     // -- Members
 
-    const double* values_;
-    size_t count_;
+    const double* const values_;
+    const size_t count_;
+    const param::SimpleParametrisation& metadata_;
+    size_t dimensions_;
+    size_t calls_;
 
     // -- Methods
+    // None
 
     // -- Overridden methods
 
     // From MIRInput
+    bool next() override;
+    size_t dimensions() const override;
+    const param::MIRParametrisation& parametrisation(size_t which = 0) const override;
     data::MIRField field() const override;
-
-    // From ArtificialInput
     void print(std::ostream&) const override;
+    bool sameAs(const MIRInput&) const override;
 
     // -- Class members
     // None
@@ -72,7 +79,11 @@ private:
     // None
 
     // -- Friends
-    // None
+
+    friend std::ostream& operator<<(std::ostream& s, const RawInput& p) {
+        p.print(s);
+        return s;
+    }
 };
 
 
