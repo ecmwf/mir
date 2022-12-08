@@ -1,0 +1,11 @@
+# input
+MIR-587.grib2
+# mir tool options
+--interpolation=grid-box-average --grid=0.5/0.5
+# grib_get assertions (not checking results)
+Ni=25
+Nj=15
+latitudeOfFirstGridPointInDegrees=30.5
+longitudeOfFirstGridPointInDegrees=337
+latitudeOfLastGridPointInDegrees=23.5
+longitudeOfLastGridPointInDegrees=349
