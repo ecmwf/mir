@@ -88,10 +88,32 @@ CASE("RawInput") {
         auto field = input->field();
         log << field << std::endl;
     }
+
+
+    SECTION("sh truncation=21") {
+        // metadata
+        param::SimpleParametrisation meta;
+
+        meta.set("spectral", true);
+        meta.set("gridType", "sh");
+        meta.set("truncation", 21);
+
+
+        // data
+        std::vector<double> values(506, 0.);
+        std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
+
+
+        // access a field (in the post-processing context)
+        log << *input << std::endl;
+
+        auto field = input->field();
+        log << field << std::endl;
+    }
 }
 
 
-CASE("Example") {
+CASE("Example 1") {
     auto& log = Log::info();
 
 
@@ -145,6 +167,49 @@ CASE("Example") {
     EXPECT_EQUAL(values2[1], 42.);
     EXPECT_EQUAL(values2[2], -42.);
     EXPECT_EQUAL(values2[3], -42.);
+
+    log << "output metadata: " << meta2 << std::endl;
+
+    std::ostringstream ss;
+    ss << meta2;
+    EXPECT(ss.str() == "{\"area\":[1,-1,-1,1],\"grid\":[2,2]}");
+}
+
+
+CASE("Example 2") {
+    auto& log = Log::info();
+
+
+    // input, with a values vector representing spherical harmonics scalar field
+    param::SimpleParametrisation meta1;
+
+    meta1.set("spectral", true);
+    meta1.set("gridType", "sh");
+    meta1.set("truncation", 21);
+
+
+    std::vector<double> values1(506, 0.);
+    std::unique_ptr<input::MIRInput> input(new input::RawInput(values1.data(), values1.size(), meta1));
+
+    // output
+    param::SimpleParametrisation meta2;
+    std::vector<double> values2(4, 0);
+    std::unique_ptr<output::MIROutput> output(new output::RawOutput(values2.data(), values2.size(), meta2));
+
+
+    // job
+    api::MIRJob job;
+    job.set("grid", std::vector<double>{2., 2.});
+    job.set("area", std::vector<double>{1., -1., -1., 1.});
+    job.set("caching", false);
+
+    log << job << std::endl;
+    job.execute(*input, *output);
+
+    EXPECT_EQUAL(values2[0], 0.);  // TODO: improve results check
+    EXPECT_EQUAL(values2[1], 0.);
+    EXPECT_EQUAL(values2[2], 0.);
+    EXPECT_EQUAL(values2[3], 0.);
 
     log << "output metadata: " << meta2 << std::endl;
 
