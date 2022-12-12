@@ -100,6 +100,7 @@ private:
     void comparison(std::string&) const override;
 
     void validate(const MIRValuesVector&) const override;
+    size_t numberOfValues() const override;
 
     void makeName(std::ostream&) const override;
     bool sameAs(const Representation&) const override;

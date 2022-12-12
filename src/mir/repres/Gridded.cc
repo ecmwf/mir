@@ -64,5 +64,10 @@ bool Gridded::crop(util::BoundingBox& /*unused*/, util::AreaCropperMapping& /*un
 }
 
 
+size_t Gridded::numberOfValues() const {
+    return numberOfPoints();
+}
+
+
 }  // namespace repres
 }  // namespace mir

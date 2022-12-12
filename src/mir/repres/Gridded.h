@@ -86,7 +86,8 @@ private:
     // None
 
     // -- Overridden methods
-    // None
+
+    size_t numberOfValues() const override;
 
     // -- Class members
     // None

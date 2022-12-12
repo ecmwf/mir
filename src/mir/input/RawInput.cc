@@ -61,7 +61,7 @@ data::MIRField RawInput::field() const {
     data::MIRField field(parametrisation(0), hasMissing, missingValue);
 
     repres::RepresentationHandle repres(field.representation());
-    auto n = repres->numberOfPoints();
+    auto n = repres->numberOfValues();
     ASSERT_VALUES_SIZE_EQ_ITERATOR_COUNT("RawInput", count_, n);
 
     const auto* here = values_;
