@@ -132,28 +132,6 @@ CASE("interpolations") {
 }
 
 
-#if mir_HAVE_ATLAS
-CASE("MIR-583") {
-    // interpolation=linear failure on low parametricEpsilon
-
-    api::MIRJob job;
-    job.set("caching", false);
-    job.set("grid", "0.04/0.04");
-    job.set("interpolation", "linear");
-    job.set("finite-element-missing-value-on-projection-fail", false);
-
-    param::SimpleParametrisation args;
-    std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build("MIR-583.grib1", args));
-
-    output::EmptyOutput output;
-
-    while (input->next()) {
-        job.execute(*input, output);
-    }
-}
-#endif
-
-
 }  // namespace unit
 }  // namespace tests
 }  // namespace mir

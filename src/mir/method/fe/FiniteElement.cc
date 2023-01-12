@@ -41,7 +41,7 @@ namespace fe {
 
 
 // epsilon used to scale edge tolerance when projecting ray to intersect element
-static constexpr double parametricEpsilon = 2e-15;
+static constexpr double parametricEpsilon = 1e-15;
 
 static constexpr size_t nbFailuresLogged = 10;
 
@@ -236,11 +236,6 @@ void FiniteElement::hash(eckit::MD5& md5) const {
     // FIXME uncomment on cache version increase
     // md5 << validateMesh_;
     // md5 << missingValueOnProjectionFail_;
-}
-
-
-int FiniteElement::version() const {
-    return 1;
 }
 
 
