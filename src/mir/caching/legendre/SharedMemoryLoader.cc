@@ -27,10 +27,10 @@
 #include <cstring>
 #include <sstream>
 
-//#include "eckit/config/Resource.h"
+// #include "eckit/config/Resource.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/memory/Shmget.h"
-//#include "eckit/os/SemLocker.h"
+// #include "eckit/os/SemLocker.h"
 #include "eckit/runtime/Main.h"
 
 #include "mir/param/SimpleParametrisation.h"

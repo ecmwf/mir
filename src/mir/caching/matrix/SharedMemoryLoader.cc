@@ -26,11 +26,11 @@
 #include <cstring>
 #include <sstream>
 
-//#include "eckit/config/Resource.h"
+// #include "eckit/config/Resource.h"
 #include "eckit/maths/Functions.h"
 #include "eckit/memory/Padded.h"
 #include "eckit/memory/Shmget.h"
-//#include "eckit/os/SemLocker.h"
+// #include "eckit/os/SemLocker.h"
 #include "eckit/runtime/Main.h"
 
 #include "mir/method/WeightMatrix.h"

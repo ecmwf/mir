@@ -175,12 +175,8 @@ struct CoordinatesFromAtlas : Coordinates {
         NOTIMP;
 #endif
     }
-    const coord_t& latitudes() const override {
-        return lats_;
-    }
-    const coord_t& longitudes() const override {
-        return lons_;
-    }
+    const coord_t& latitudes() const override { return lats_; }
+    const coord_t& longitudes() const override { return lons_; }
 
 private:
     coord_t lats_;
