@@ -11,11 +11,13 @@
 
 
 #include <algorithm>
+#include <memory>
 #include <vector>
 
 #include "eckit/testing/Test.h"
 
 #include "mir/api/mir_config.h"
+#include "mir/input/GribFileInput.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
@@ -31,7 +33,6 @@ namespace unit {
 
 
 CASE("BoundingBox") {
-
     using util::BoundingBox;
 
     auto& log = Log::info();
@@ -97,7 +98,6 @@ CASE("BoundingBox") {
     };
 
     SECTION("operator==") {
-
         std::vector<Longitude> _delta{Longitude::GLOBE * -2, Longitude::GLOBE * -1, Longitude::GREENWICH,
                                       Longitude::GLOBE, Longitude::GLOBE * 2};
 
@@ -214,7 +214,6 @@ CASE("BoundingBox") {
     }
 
     SECTION("intersects (point)") {
-
         std::vector<Latitude> _lat{-90, -89, -88, 2, 1, 0, 1, 2, 88, 89, 90};
         std::vector<Longitude> _lon{
             -360, -358, -182, -180, -178, -2, 0, 2, 178, 180, 182, 358, 360, 362, 718, 720, 722,
@@ -295,7 +294,6 @@ CASE("BoundingBox") {
 
 
 CASE("Representation::extendBoundingBox") {
-
     using key::grid::Grid;
     using util::BoundingBox;
 
@@ -328,6 +326,24 @@ CASE("Representation::extendBoundingBox") {
     }
 
     log.precision(old);
+}
+
+
+CASE("IFS climate files") {
+    std::unique_ptr<input::MIRInput> in(new input::GribFileInput("orog_1km.grib2"));
+    ASSERT(in->next());
+
+    util::BoundingBox bbox(in->parametrisation());
+
+    for (const auto& test : {
+             std::make_pair(bbox.north().fraction(), eckit::Fraction(21599, 240)),
+             std::make_pair(bbox.west().fraction(), eckit::Fraction(1, 240)),
+             std::make_pair(bbox.south().fraction(), eckit::Fraction(-21599, 240)),
+             std::make_pair(bbox.east().fraction(), eckit::Fraction(86399, 240)),
+         }) {
+        Log::info() << test.first << " == " << test.second << std::endl;
+        EXPECT_EQUAL(test.first, test.second);
+    }
 }
 
 
