@@ -1,0 +1,14 @@
+# mars
+regular_ll.2-2.grib1
+# mir
+--area=11/-1/-1/11 --same-points-ll=1
+# grib_get assertions
+gridType=regular_ll
+Ni=6
+Nj=6
+iDirectionIncrementInDegrees=2
+jDirectionIncrementInDegrees=2
+latitudeOfFirstGridPointInDegrees=10
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=0
+longitudeOfLastGridPointInDegrees=10
