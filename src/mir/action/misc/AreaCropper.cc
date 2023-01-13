@@ -61,6 +61,7 @@ AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation) :
     Action(parametrisation), caching_(LibMir::caching()) {
     ASSERT(key::Area::get(parametrisation_.userParametrisation(), bbox_));
     parametrisation_.get("caching", caching_);
+    parametrisation_.get("same-points-ll", samePointsLL_ = false);
 }
 
 
@@ -133,7 +134,7 @@ AreaCropper::~AreaCropper() = default;
 
 bool AreaCropper::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const AreaCropper*>(&other);
-    return (o != nullptr) && (bbox_ == o->bbox_);
+    return (o != nullptr) && (bbox_ == o->bbox_) && (samePointsLL_ == o->samePointsLL_);
 }
 
 
@@ -212,9 +213,9 @@ static const caching::CroppingCacheEntry& getMapping(const std::string& key,
 
 
 static const caching::CroppingCacheEntry& getMapping(const repres::Representation* representation,
-                                                     const util::BoundingBox& bbox, bool caching) {
+                                                     const util::BoundingBox& bbox, bool caching, bool samePointsLL) {
     eckit::MD5 md5;
-    md5 << representation->uniqueName() << bbox;
+    md5 << representation->uniqueName() << bbox << samePointsLL;
 
     std::string key(md5);
 
@@ -223,7 +224,7 @@ static const caching::CroppingCacheEntry& getMapping(const repres::Representatio
     }
     catch (...) {
 
-        // Make sure we don't this entry lying around
+        // Make sure we don't keep this entry lying around
         cache.erase(key);
 
         throw;
@@ -242,7 +243,7 @@ void AreaCropper::execute(context::Context& ctx) const {
     auto& field = ctx.field();
     repres::RepresentationHandle representation(field.representation());
 
-    const auto& c = getMapping(representation, bbox_, caching_);
+    const auto& c = getMapping(representation, bbox_, caching_, samePointsLL_);
     ASSERT_NONEMPTY_AREA_CROP("AreaCropper", !c.mapping_.empty());
 
     for (size_t i = 0; i < field.dimensions(); i++) {
