@@ -57,18 +57,9 @@ struct LL {
 };
 
 
-AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation) : Action(parametrisation), caching_(true) {
+AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation) :
+    Action(parametrisation), caching_(LibMir::caching()) {
     ASSERT(key::Area::get(parametrisation_.userParametrisation(), bbox_));
-
-    caching_ = LibMir::caching();
-    parametrisation_.get("caching", caching_);
-}
-
-
-AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation, const util::BoundingBox& bbox) :
-    Action(parametrisation), bbox_(bbox), caching_(true) {
-
-    caching_ = LibMir::caching();
     parametrisation_.get("caching", caching_);
 }
 

@@ -35,8 +35,7 @@ public:
 
     // -- Constructors
 
-    AreaCropper(const param::MIRParametrisation&);
-    AreaCropper(const param::MIRParametrisation&, const util::BoundingBox&);
+    explicit AreaCropper(const param::MIRParametrisation&);
 
     // -- Destructor
 

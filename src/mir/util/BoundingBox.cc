@@ -111,10 +111,7 @@ void BoundingBox::fillGrib(grib_info& info) const {
     info.grid.latitudeOfLastGridPointInDegrees   = south_.value();
     info.grid.longitudeOfLastGridPointInDegrees  = east_.value();
 
-    const long c                              = info.packing.extra_settings_count++;
-    info.packing.extra_settings[c].type       = CODES_TYPE_LONG;
-    info.packing.extra_settings[c].name       = "expandBoundingBox";
-    info.packing.extra_settings[c].long_value = 1;
+    info.extra_set("expandBoundingBox", 1L);
 }
 
 
