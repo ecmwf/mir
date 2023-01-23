@@ -13,27 +13,21 @@
 #pragma once
 
 #include "mir/input/MIRInput.h"
-#include "mir/param/MIRParametrisation.h"
-
-
-namespace mir {
-namespace input {
-class RawMetadata;
-}
-}  // namespace mir
+#include "mir/param/SimpleParametrisation.h"
 
 
 namespace mir {
 namespace input {
 
 
-class RawInput : public MIRInput, public param::MIRParametrisation {
+class RawInput final : public MIRInput {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
-    RawInput(const RawMetadata& metadata, const double* values, size_t count);
+
+    RawInput(const double* const values, size_t count, const param::SimpleParametrisation& metadata);
 
     // -- Destructor
     // None
@@ -56,56 +50,27 @@ public:
     // -- Class methods
     // None
 
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
 private:
     // -- Members
 
-    const RawMetadata& metadata_;
-    const double* values_;
-    size_t count_;
+    const double* const values_;
+    const size_t count_;
+    const param::SimpleParametrisation& metadata_;
+    size_t dimensions_;
+    size_t calls_;
 
     // -- Methods
+    // None
 
     // -- Overridden methods
 
     // From MIRInput
-    void print(std::ostream&) const override;
-    const param::MIRParametrisation& parametrisation(size_t which) const override;
-    data::MIRField field() const override;
     bool next() override;
-    size_t copy(double* values, size_t size) const override;
+    size_t dimensions() const override;
+    const param::MIRParametrisation& parametrisation(size_t which = 0) const override;
+    data::MIRField field() const override;
+    void print(std::ostream&) const override;
     bool sameAs(const MIRInput&) const override;
-
-    // From MIRParametrisation
-    bool has(const std::string& name) const override;
-
-    bool get(const std::string& name, std::string& value) const override;
-    bool get(const std::string& name, bool& value) const override;
-    bool get(const std::string& name, int& value) const override;
-    bool get(const std::string& name, long& value) const override;
-    bool get(const std::string& name, float& value) const override;
-    bool get(const std::string& name, double& value) const override;
-
-    bool get(const std::string& name, std::vector<int>& value) const override;
-    bool get(const std::string& name, std::vector<long>& value) const override;
-    bool get(const std::string& name, std::vector<float>& value) const override;
-    bool get(const std::string& name, std::vector<double>& value) const override;
-    bool get(const std::string& name, std::vector<std::string>& value) const override;
 
     // -- Class members
     // None
@@ -114,7 +79,11 @@ private:
     // None
 
     // -- Friends
-    // None
+
+    friend std::ostream& operator<<(std::ostream& s, const RawInput& p) {
+        p.print(s);
+        return s;
+    }
 };
 
 

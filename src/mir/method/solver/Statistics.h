@@ -33,7 +33,7 @@ namespace solver {
 struct Statistics final : solver::Solver {
     Statistics(const param::MIRParametrisation&, stats::Field*);
 
-    Statistics(const Statistics&) = delete;
+    Statistics(const Statistics&)     = delete;
     void operator=(const Statistics&) = delete;
 
     void solve(const MethodWeighted::Matrix& A, const MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& B,

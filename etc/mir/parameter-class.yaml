@@ -2506,6 +2506,10 @@ numerics.accumulated:
 - 230239  # Convective snowfall (variable resolution)
 - 230240  # Large-scale snowfall (variable resolution)
 - 230251  # Potential evaporation (variable resolution)
+- 231001  # Accumulated freezing rain water equivalent
+- 231002  # Runoff water equivalent
+- 231003  # Snow evaporation water equivalent
+- 231004  # Total snowfall water equivalent
 - 235015  # Time integral of rain flux
 - 235017  # Time integral of surface eastward momentum flux
 - 235018  # Time integral of surface northward momentum flux
@@ -3995,6 +3999,10 @@ rate.mass-flux:
 - 230044  # Snow evaporation (variable resolution)
 - 230045  # Snowmelt (variable resolution)
 - 230182  # Evaporation (variable resolution)
+- 231001  # Accumulated freezing rain water equivalent
+- 231002  # Runoff water equivalent
+- 231003  # Snow evaporation water equivalent
+- 231004  # Total snowfall water equivalent
 - 235009  # Mean updraught mass flux
 - 235010  # Mean downdraught mass flux
 - 235013  # Mean total precipitation flux
@@ -5341,6 +5349,77 @@ ratio.random:
 - 213148  # Random pattern 48 for SPP scheme
 - 213149  # Random pattern 49 for SPP scheme
 - 213150  # Random pattern 50 for SPP scheme
+- 213151  # Random pattern 51 for SPP scheme
+- 213152  # Random pattern 52 for SPP scheme
+- 213153  # Random pattern 53 for SPP scheme
+- 213154  # Random pattern 54 for SPP scheme
+- 213155  # Random pattern 55 for SPP scheme
+- 213156  # Random pattern 56 for SPP scheme
+- 213157  # Random pattern 57 for SPP scheme
+- 213158  # Random pattern 58 for SPP scheme
+- 213159  # Random pattern 59 for SPP scheme
+- 213160  # Random pattern 60 for SPP scheme
+- 213161  # Random pattern 61 for SPP scheme
+- 213162  # Random pattern 62 for SPP scheme
+- 213163  # Random pattern 63 for SPP scheme
+- 213164  # Random pattern 64 for SPP scheme
+- 213165  # Random pattern 65 for SPP scheme
+- 213166  # Random pattern 66 for SPP scheme
+- 213167  # Random pattern 67 for SPP scheme
+- 213168  # Random pattern 68 for SPP scheme
+- 213169  # Random pattern 69 for SPP scheme
+- 213170  # Random pattern 70 for SPP scheme
+- 213171  # Random pattern 71 for SPP scheme
+- 213172  # Random pattern 72 for SPP scheme
+- 213173  # Random pattern 73 for SPP scheme
+- 213174  # Random pattern 74 for SPP scheme
+- 213175  # Random pattern 75 for SPP scheme
+- 213176  # Random pattern 76 for SPP scheme
+- 213177  # Random pattern 77 for SPP scheme
+- 213178  # Random pattern 78 for SPP scheme
+- 213179  # Random pattern 79 for SPP scheme
+- 213180  # Random pattern 80 for SPP scheme
+- 213181  # Random pattern 81 for SPP scheme
+- 213182  # Random pattern 82 for SPP scheme
+- 213183  # Random pattern 83 for SPP scheme
+- 213184  # Random pattern 84 for SPP scheme
+- 213185  # Random pattern 85 for SPP scheme
+- 213186  # Random pattern 86 for SPP scheme
+- 213187  # Random pattern 87 for SPP scheme
+- 213188  # Random pattern 88 for SPP scheme
+- 213189  # Random pattern 89 for SPP scheme
+- 213190  # Random pattern 90 for SPP scheme
+- 213191  # Random pattern 91 for SPP scheme
+- 213192  # Random pattern 92 for SPP scheme
+- 213193  # Random pattern 93 for SPP scheme
+- 213194  # Random pattern 94 for SPP scheme
+- 213195  # Random pattern 95 for SPP scheme
+- 213196  # Random pattern 96 for SPP scheme
+- 213197  # Random pattern 97 for SPP scheme
+- 213198  # Random pattern 98 for SPP scheme
+- 213199  # Random pattern 99 for SPP scheme
+- 213200  # Random pattern 100 for SPP scheme
+- 213201  # Random pattern 101 for SPP scheme
+- 213202  # Random pattern 102 for SPP scheme
+- 213203  # Random pattern 103 for SPP scheme
+- 213204  # Random pattern 104 for SPP scheme
+- 213205  # Random pattern 105 for SPP scheme
+- 213206  # Random pattern 106 for SPP scheme
+- 213207  # Random pattern 107 for SPP scheme
+- 213208  # Random pattern 108 for SPP scheme
+- 213209  # Random pattern 109 for SPP scheme
+- 213210  # Random pattern 110 for SPP scheme
+- 213211  # Random pattern 111 for SPP scheme
+- 213212  # Random pattern 112 for SPP scheme
+- 213213  # Random pattern 113 for SPP scheme
+- 213214  # Random pattern 114 for SPP scheme
+- 213215  # Random pattern 115 for SPP scheme
+- 213216  # Random pattern 116 for SPP scheme
+- 213217  # Random pattern 117 for SPP scheme
+- 213218  # Random pattern 118 for SPP scheme
+- 213219  # Random pattern 119 for SPP scheme
+- 213220  # Random pattern 120 for SPP scheme
+- 213221  # Random pattern 121 for SPP scheme
 
 spectrum:
 - 3021  # Radar spectra (1)

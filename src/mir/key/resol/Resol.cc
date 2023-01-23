@@ -34,10 +34,12 @@ namespace resol {
 
 Resol::Resol(const param::MIRParametrisation& parametrisation, bool forceNoIntermediateGrid) :
     parametrisation_(parametrisation) {
+    bool spectral = false;
+    ASSERT(parametrisation_.fieldParametrisation().get("spectral", spectral) && spectral);
 
     // Get input truncation and a Gaussian grid number based on input (truncation) and output (grid)
     inputTruncation_ = 0;
-    ASSERT(parametrisation_.fieldParametrisation().get("spectral", inputTruncation_));
+    ASSERT(parametrisation_.fieldParametrisation().get("truncation", inputTruncation_));
     ASSERT(inputTruncation_ > 0);
 
     long N = std::min(getTargetGaussianNumber(), getSourceGaussianNumber());

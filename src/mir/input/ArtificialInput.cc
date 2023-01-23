@@ -16,7 +16,6 @@
 #include <sstream>
 
 #include "mir/param/SimpleParametrisation.h"
-#include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
@@ -34,9 +33,6 @@ static void init() {
     local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, ArtificialInputFactory*>();
 }
-
-
-ArtificialInput::ArtificialInput(const param::MIRParametrisation& /*ignored*/) : calls_(0) {}
 
 
 ArtificialInput::~ArtificialInput() = default;
@@ -61,24 +57,6 @@ param::SimpleParametrisation& ArtificialInput::parametrisation(size_t which) {
 const param::MIRParametrisation& ArtificialInput::parametrisation(size_t which) const {
     ASSERT(which == 0);
     return parametrisation_;
-}
-
-
-data::MIRField ArtificialInput::field() const {
-    ASSERT(dimensions());
-
-    data::MIRField field(parametrisation(0), false, 9999.);
-
-    repres::RepresentationHandle repres(field.representation());
-    auto n = repres->numberOfPoints();
-    ASSERT(n);
-
-    for (size_t which = 0; which < dimensions(); ++which) {
-        auto values = fill(n);
-        field.update(values, which);
-    }
-
-    return field;
 }
 
 

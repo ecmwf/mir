@@ -25,7 +25,7 @@ public:
     MIREstimation()          = default;
     virtual ~MIREstimation() = default;
 
-    MIREstimation(const MIREstimation&) = delete;
+    MIREstimation(const MIREstimation&)            = delete;
     MIREstimation& operator=(const MIREstimation&) = delete;
 
     virtual void numberOfGridPoints(size_t count)                  = 0;

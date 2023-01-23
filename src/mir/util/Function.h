@@ -31,7 +31,7 @@ class Function {
 public:
     Function(const std::string&);
 
-    Function(const Function&) = delete;
+    Function(const Function&)       = delete;
     void operator=(const Function&) = delete;
 
     virtual ~Function();

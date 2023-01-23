@@ -51,7 +51,9 @@ class InputOutput : public param::SimpleParametrisation {
     const std::vector<double> grid{1, 1};
 
 protected:
-    InputOutput(bool gridded) { gridded ? set("grid", grid).set("gridded", true) : set("spectral", 1); }
+    InputOutput(bool gridded) {
+        gridded ? set("grid", grid).set("gridded", true) : set("truncation", 1).set("spectral", true);
+    }
 };
 
 

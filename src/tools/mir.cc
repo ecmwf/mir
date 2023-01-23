@@ -367,9 +367,7 @@ struct MIR : MIRTool {
         }
     }
 
-    int minimumPositionalArguments() const override {
-        return 2;
-    }
+    int minimumPositionalArguments() const override { return 2; }
 
     void usage(const std::string& tool) const override {
         Log::info() << "\n"

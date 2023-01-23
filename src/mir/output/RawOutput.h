@@ -13,20 +13,22 @@
 #pragma once
 
 #include "mir/output/MIROutput.h"
+#include "mir/param/SimpleParametrisation.h"
 
 
 namespace mir {
 namespace output {
 
 
-class RawOutput : public MIROutput {
+class RawOutput final : public MIROutput {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    RawOutput(double* values, size_t count);
+    RawOutput(double* values, size_t count, param::SimpleParametrisation& metadata);
+    explicit RawOutput(param::SimpleParametrisation& metadata);
 
     // -- Destructor
     // None
@@ -39,23 +41,8 @@ public:
 
     // -- Methods
 
-    size_t size() const;
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
+    size_t size() const { return size_; }
+    double* values() const { return values_; }
 
     // -- Overridden methods
     // None
@@ -70,6 +57,7 @@ private:
     // -- Members
 
     double* values_;
+    param::SimpleParametrisation& metadata_;
     size_t count_;
     size_t size_;
 

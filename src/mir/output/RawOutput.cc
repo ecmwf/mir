@@ -16,7 +16,9 @@
 #include <ostream>
 
 #include "mir/action/context/Context.h"
+#include "mir/api/MIRJob.h"
 #include "mir/data/MIRField.h"
+#include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 
@@ -25,53 +27,75 @@ namespace mir {
 namespace output {
 
 
-RawOutput::RawOutput(double* values, size_t count) : values_(values), count_(count), size_(0) {}
+RawOutput::RawOutput(double* values, size_t count, param::SimpleParametrisation& metadata) :
+    values_(values), metadata_(metadata), count_(count), size_(0) {}
 
 
-bool RawOutput::sameAs(const MIROutput& other) const {
-    return this == &other;
-}
-
-
-bool RawOutput::sameParametrisation(const param::MIRParametrisation& /*unused*/,
-                                    const param::MIRParametrisation& /*unused*/) const {
-    NOTIMP;
-}
-
-
-bool RawOutput::printParametrisation(std::ostream& /*out*/, const param::MIRParametrisation& /*param*/) const {
-    NOTIMP;
-}
+RawOutput::RawOutput(param::SimpleParametrisation& metadata) :
+    values_(nullptr), metadata_(metadata), count_(0), size_(0) {}
 
 
 size_t RawOutput::save(const param::MIRParametrisation& /*param*/, context::Context& ctx) {
-    const data::MIRField& field = ctx.field();
-
+    const auto& field = ctx.field();
     field.validate();
-    // field.hasMissing();
-    // field.missingValue();
 
 
+    // save metadata
+    {
+        Log::debug() << "RawOutput::save metadata" << std::endl;
+        repres::RepresentationHandle repres(field.representation());
+
+        // (a hack)
+        api::MIRJob job;
+        repres->fillJob(job);
+        job.copyValuesTo(metadata_);
+
+        if (field.hasMissing()) {
+            metadata_.set("missing_value", field.missingValue());
+        }
+    }
+
+
+    // save data
     ASSERT(field.dimensions() == 1);
-    const MIRValuesVector& values = field.values(0);
+    const auto& values = field.values(0);
 
     Log::debug() << "RawOutput::save values: " << values.size() << ", user: " << count_ << std::endl;
 
     size_ = values.size();
+    ASSERT(size_ > 0);
+
+    if (values_ == nullptr) {
+        Log::debug() << "RawOutput::save allocating " << size_ << " values" << std::endl;
+        values_ = new double[size_];
+        count_  = size_;
+    }
+
     ASSERT(size_ <= count_);
-    std::memcpy(values_, &values[0], size_ * sizeof(double));
+    std::memcpy(values_, values.data(), size_ * sizeof(double));
 
     return size_ * sizeof(double);
 }
 
 
-void RawOutput::print(std::ostream& out) const {
-    out << "RawOutput[count=" << count_ << ", size=" << size_ << "]";
+bool RawOutput::sameAs(const MIROutput& other) const {
+    return dynamic_cast<const MIROutput*>(this) == &other;
 }
 
 
-size_t RawOutput::size() const {
-    return size_;
+bool RawOutput::sameParametrisation(const param::MIRParametrisation& /*unused*/,
+                                    const param::MIRParametrisation& /*unused*/) const {
+    return true;
+}
+
+
+bool RawOutput::printParametrisation(std::ostream& /*out*/, const param::MIRParametrisation& /*param*/) const {
+    return false;
+}
+
+
+void RawOutput::print(std::ostream& out) const {
+    out << "RawOutput[count=" << count_ << ", size=" << size_ << "]";
 }
 
 

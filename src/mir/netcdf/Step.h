@@ -26,7 +26,7 @@ namespace mir {
 namespace netcdf {
 
 class Step {
-    Step(const Step&) = delete;
+    Step(const Step&)            = delete;
     Step& operator=(const Step&) = delete;
 
 public:

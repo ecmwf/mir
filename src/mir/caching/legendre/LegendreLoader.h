@@ -44,7 +44,7 @@ public:
     LegendreLoader(const param::MIRParametrisation&, const eckit::PathName&);
     virtual ~LegendreLoader();
 
-    LegendreLoader(const LegendreLoader&) = delete;
+    LegendreLoader(const LegendreLoader&)            = delete;
     LegendreLoader& operator=(const LegendreLoader&) = delete;
 
     virtual const void* address() const = 0;
@@ -72,7 +72,7 @@ class LegendreLoaderFactory {
     virtual LegendreLoader* make(const param::MIRParametrisation&, const eckit::PathName& path) = 0;
     virtual bool shared() const                                                                 = 0;
 
-    LegendreLoaderFactory(const LegendreLoaderFactory&) = delete;
+    LegendreLoaderFactory(const LegendreLoaderFactory&)            = delete;
     LegendreLoaderFactory& operator=(const LegendreLoaderFactory&) = delete;
 
 protected:

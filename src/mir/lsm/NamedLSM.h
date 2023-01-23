@@ -86,7 +86,7 @@ class NamedMaskFactory {
     virtual void hashCacheKey(eckit::MD5&, const param::MIRParametrisation&, const repres::Representation&,
                               const std::string& which)                                                           = 0;
 
-    NamedMaskFactory(const NamedMaskFactory&) = delete;
+    NamedMaskFactory(const NamedMaskFactory&)            = delete;
     NamedMaskFactory& operator=(const NamedMaskFactory&) = delete;
 
 protected:

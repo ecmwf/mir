@@ -23,7 +23,7 @@ namespace voronoi {
 struct VoronoiStatistics final : VoronoiMethod {
     explicit VoronoiStatistics(const param::MIRParametrisation&);
     VoronoiStatistics(const VoronoiStatistics&) = delete;
-    void operator=(const VoronoiStatistics&) = delete;
+    void operator=(const VoronoiStatistics&)    = delete;
 };
 
 

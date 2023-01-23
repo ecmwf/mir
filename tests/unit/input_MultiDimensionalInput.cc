@@ -15,6 +15,7 @@
 
 #include "eckit/testing/Test.h"
 
+#include "mir/data/MIRField.h"
 #include "mir/input/DummyInput.h"
 #include "mir/input/MultiDimensionalInput.h"
 #include "mir/param/DefaultParametrisation.h"

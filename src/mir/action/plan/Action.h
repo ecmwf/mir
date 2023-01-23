@@ -140,7 +140,7 @@ class ActionFactory {
 
     virtual Action* make(const param::MIRParametrisation&) = 0;
 
-    ActionFactory(const ActionFactory&) = delete;
+    ActionFactory(const ActionFactory&)            = delete;
     ActionFactory& operator=(const ActionFactory&) = delete;
 
 protected:

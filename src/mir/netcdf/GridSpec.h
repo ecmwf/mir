@@ -34,7 +34,7 @@ public:
     GridSpec(const Variable&);
     virtual ~GridSpec();
 
-    GridSpec(const GridSpec&) = delete;
+    GridSpec(const GridSpec&)       = delete;
     void operator=(const GridSpec&) = delete;
 
     // -- Methods
@@ -71,7 +71,7 @@ private:
 
 
 class GridSpecGuesser {
-    GridSpecGuesser(const GridSpecGuesser&) = delete;
+    GridSpecGuesser(const GridSpecGuesser&)            = delete;
     GridSpecGuesser& operator=(const GridSpecGuesser&) = delete;
 
 public:

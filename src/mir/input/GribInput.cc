@@ -54,10 +54,10 @@ class Condition {
 public:
     Condition() = default;
 
-    Condition(const Condition&) = delete;
-    Condition(Condition&&)      = delete;
+    Condition(const Condition&)            = delete;
+    Condition(Condition&&)                 = delete;
     Condition& operator=(const Condition&) = delete;
-    Condition& operator=(Condition&&) = delete;
+    Condition& operator=(Condition&&)      = delete;
 
     virtual ~Condition()                  = default;
     virtual bool eval(grib_handle*) const = 0;
@@ -148,10 +148,10 @@ class ConditionOR : public Condition {
 public:
     ConditionOR(const Condition* left, const Condition* right) : left_(left), right_(right) {}
 
-    ConditionOR(const ConditionOR&) = delete;
-    ConditionOR(ConditionOR&&)      = delete;
+    ConditionOR(const ConditionOR&)            = delete;
+    ConditionOR(ConditionOR&&)                 = delete;
     ConditionOR& operator=(const ConditionOR&) = delete;
-    ConditionOR& operator=(ConditionOR&&) = delete;
+    ConditionOR& operator=(ConditionOR&&)      = delete;
 };
 
 
@@ -362,11 +362,11 @@ struct ProcessingT {
     using fun_t = std::function<bool(grib_handle*, T&)>;
     fun_t fun_;
     ProcessingT(fun_t&& fun) : fun_(fun) {}
-    ~ProcessingT()                  = default;
-    ProcessingT(const ProcessingT&) = delete;
-    ProcessingT(ProcessingT&&)      = delete;
+    ~ProcessingT()                     = default;
+    ProcessingT(const ProcessingT&)    = delete;
+    ProcessingT(ProcessingT&&)         = delete;
     void operator=(const ProcessingT&) = delete;
-    void operator=(ProcessingT&&) = delete;
+    void operator=(ProcessingT&&)      = delete;
     bool eval(grib_handle* h, T& v) const { return fun_(h, v); }
 };
 

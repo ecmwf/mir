@@ -44,7 +44,7 @@ class NonLinear {
 public:
     NonLinear(const param::MIRParametrisation&);
 
-    NonLinear(const NonLinear&) = delete;
+    NonLinear(const NonLinear&)      = delete;
     void operator=(const NonLinear&) = delete;
 
     virtual ~NonLinear();
@@ -74,7 +74,7 @@ private:
     std::string name_;
     virtual NonLinear* make(const param::MIRParametrisation&) = 0;
 
-    NonLinearFactory(const NonLinearFactory&) = delete;
+    NonLinearFactory(const NonLinearFactory&)            = delete;
     NonLinearFactory& operator=(const NonLinearFactory&) = delete;
 
 protected:

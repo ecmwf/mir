@@ -19,14 +19,14 @@ namespace mir {
 namespace input {
 
 
-class DummyInput : public ArtificialInput {
+class DummyInput final : public ArtificialInput {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    DummyInput(const param::MIRParametrisation&);
+    explicit DummyInput(const param::MIRParametrisation&);
 
     // -- Destructor
     // None
@@ -74,8 +74,8 @@ private:
 
     // -- Overridden methods
 
-    // From ArtificialInput
-    MIRValuesVector fill(size_t) const override;
+    // From MIRInput
+    data::MIRField field() const override;
 
     // -- Class members
     // None

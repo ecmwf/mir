@@ -306,23 +306,35 @@ std::vector<util::GridBox> Reduced::gridBoxes() const {
 
     for (size_t j = k_; j < k_ + Nj_; ++j) {
         ASSERT(pl[j] > 0);
-        eckit::Fraction inc(360, pl[j]);
+        const auto inc = eckit::Fraction(360, pl[j]);
 
-        auto Ni = size_t(pl[j]);
+        // latitude edges
+        const auto n = includesNorthPole() ? latEdges[j] : std::min(bbox_.north().value(), latEdges[j]);
+        const auto s = includesSouthPole() ? latEdges[j + 1] : std::max(bbox_.south().value(), latEdges[j + 1]);
+        ASSERT(n >= s);
 
         // longitude edges
-        auto west = bbox_.west().fraction();
-        auto Nw   = (west / inc).integralPart();
+        const auto west = bbox_.west().fraction();
+        auto Nw         = (west / inc).integralPart();
         if (Nw * inc < west) {
             Nw += 1;
         }
+
+        const auto east = bbox_.east().fraction();
+        auto Ne         = (east / inc).integralPart();
+        if (Ne * inc > east) {
+            Ne -= 1;
+        }
+
+        const auto N = std::min(static_cast<size_t>(pl[j]), static_cast<size_t>(Ne - Nw + 1));
+
         Longitude lon0 = (Nw * inc) - (inc / 2);
         Longitude lon1 = lon0;
 
-        for (size_t i = 0; i < Ni; ++i) {
-            auto l = lon1;
+        for (size_t i = 0; i < N; ++i) {
+            auto w = std::max(bbox_.west().value(), lon1.value());
             lon1 += inc;
-            r.emplace_back(util::GridBox(latEdges[j], l.value(), latEdges[j + 1], lon1.value()));
+            r.emplace_back(n, w, s, std::min(bbox_.east().value(), lon1.value()));
         }
 
         ASSERT(periodic ? lon0 == lon1.normalise(lon0) : lon0 < lon1.normalise(lon0));

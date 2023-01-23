@@ -44,7 +44,7 @@ public:
     virtual void hash(eckit::MD5&) const = 0;
 
 private:
-    DistanceWeighting(const DistanceWeighting&) = delete;
+    DistanceWeighting(const DistanceWeighting&)            = delete;
     DistanceWeighting& operator=(const DistanceWeighting&) = delete;
 
     virtual void print(std::ostream&) const = 0;
@@ -61,7 +61,7 @@ private:
     std::string name_;
     virtual DistanceWeighting* make(const param::MIRParametrisation&) = 0;
 
-    DistanceWeightingFactory(const DistanceWeightingFactory&) = delete;
+    DistanceWeightingFactory(const DistanceWeightingFactory&)            = delete;
     DistanceWeightingFactory& operator=(const DistanceWeightingFactory&) = delete;
 
 protected:

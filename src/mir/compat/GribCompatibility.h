@@ -43,7 +43,7 @@ namespace compat {
 class GribCompatibility {
 public:
     GribCompatibility(const GribCompatibility&) = delete;
-    void operator=(const GribCompatibility&) = delete;
+    void operator=(const GribCompatibility&)    = delete;
 
     virtual void execute(const output::MIROutput&, const param::MIRParametrisation&, grib_handle*,
                          grib_info&) const = 0;

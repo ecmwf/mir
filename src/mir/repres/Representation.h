@@ -104,6 +104,7 @@ public:
     virtual const Representation* globalise(data::MIRField&) const;
 
     virtual size_t numberOfPoints() const;
+    virtual size_t numberOfValues() const;
     virtual bool getLongestElementDiagonal(double&) const;
 
     virtual const Representation* truncate(size_t truncation, const MIRValuesVector&, MIRValuesVector&) const;

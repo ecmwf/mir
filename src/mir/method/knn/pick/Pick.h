@@ -41,7 +41,7 @@ public:
     Pick();
     virtual ~Pick();
 
-    Pick(const Pick&) = delete;
+    Pick(const Pick&)            = delete;
     Pick& operator=(const Pick&) = delete;
 
     virtual void pick(const search::PointSearch&, const Point3&, neighbours_t&) const = 0;
@@ -66,7 +66,7 @@ private:
     std::string name_;
     virtual Pick* make(const param::MIRParametrisation&) = 0;
 
-    PickFactory(const PickFactory&) = default;
+    PickFactory(const PickFactory&)            = default;
     PickFactory& operator=(const PickFactory&) = default;
 
 protected:

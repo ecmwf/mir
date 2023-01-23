@@ -110,7 +110,7 @@ class PNGEncoderFactory {
     std::string name_;
     virtual PNGOutput::PNGEncoder* make(const param::MIRParametrisation&, const data::MIRField&) = 0;
 
-    PNGEncoderFactory(const PNGEncoderFactory&) = delete;
+    PNGEncoderFactory(const PNGEncoderFactory&)            = delete;
     PNGEncoderFactory& operator=(const PNGEncoderFactory&) = delete;
 
 protected:

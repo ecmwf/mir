@@ -48,10 +48,10 @@ public:
         owner_(owner), ctx_(ctx), node_(node) {}
     ~ThreadExecutorTask() override = default;
 
-    ThreadExecutorTask(const ThreadExecutorTask&) = delete;
-    ThreadExecutorTask(ThreadExecutorTask&&)      = delete;
+    ThreadExecutorTask(const ThreadExecutorTask&)            = delete;
+    ThreadExecutorTask(ThreadExecutorTask&&)                 = delete;
     ThreadExecutorTask& operator=(const ThreadExecutorTask&) = delete;
-    ThreadExecutorTask& operator=(ThreadExecutorTask&&) = delete;
+    ThreadExecutorTask& operator=(ThreadExecutorTask&&)      = delete;
 };
 
 

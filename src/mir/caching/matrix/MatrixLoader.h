@@ -29,7 +29,7 @@ public:
     MatrixLoader(const std::string&, const eckit::PathName&);
     ~MatrixLoader() override;
 
-    MatrixLoader(const MatrixLoader&) = delete;
+    MatrixLoader(const MatrixLoader&)            = delete;
     MatrixLoader& operator=(const MatrixLoader&) = delete;
 
     virtual const void* address() const = 0;
@@ -48,7 +48,7 @@ class MatrixLoaderFactory {
     std::string name_;
     virtual MatrixLoader* make(const std::string& name, const eckit::PathName&) = 0;
 
-    MatrixLoaderFactory(const MatrixLoaderFactory&) = delete;
+    MatrixLoaderFactory(const MatrixLoaderFactory&)            = delete;
     MatrixLoaderFactory& operator=(const MatrixLoaderFactory&) = delete;
 
 protected:

@@ -35,7 +35,7 @@ public:
     Codec();
     ~Codec() override;
 
-    Codec(const Codec&) = delete;
+    Codec(const Codec&)          = delete;
     void operator=(const Codec&) = delete;
 
     virtual void decode(std::vector<double>&) const;
@@ -74,7 +74,7 @@ class CodecFactory {
     std::string name_;
     virtual Codec* make(const Variable&) = 0;
 
-    CodecFactory(const CodecFactory&) = delete;
+    CodecFactory(const CodecFactory&)            = delete;
     CodecFactory& operator=(const CodecFactory&) = delete;
 
 protected:

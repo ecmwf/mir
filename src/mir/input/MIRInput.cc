@@ -146,7 +146,7 @@ MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParame
     }
 
     // attach information after construction (pe. extra files), so virtual methods are specific to child class
-    auto aux = [&map](MIRInput* in) {
+    auto aux = [](MIRInput* in, const util::ValueMap& map) {
         ASSERT(in);
         if (!map.empty()) {
             in->setAuxiliaryInformation(map);
@@ -157,7 +157,7 @@ MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParame
     // Special case: artificial input
     auto ai = map.find("artificialInput");
     if (ai != map.end() && ai->second.isString()) {
-        return aux(ArtificialInputFactory::build(ai->second, param));
+        return aux(ArtificialInputFactory::build(ai->second, param), map);
     }
 
     // Special case: multi-dimensional input
@@ -176,7 +176,7 @@ MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParame
     }
 
     if (N > 1) {
-        return aux(new MultiDimensionalGribFileInput(path, N));
+        return aux(new MultiDimensionalGribFileInput(path, N), map);
     }
 
     eckit::AutoStdFile f(path);
@@ -203,10 +203,10 @@ MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParame
         Log::warning() << std::endl;
 
         Log::warning() << "MIRInputFactory: assuming 'GRIB'" << std::endl;
-        return aux(new GribFileInput(path));
+        return aux(new GribFileInput(path), map);
     }
 
-    return aux(j->second->make(path));
+    return aux(j->second->make(path), map);
 }
 
 

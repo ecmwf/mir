@@ -201,10 +201,10 @@ static const caching::CroppingCacheEntry& getMapping(const std::string& key,
                 representation_(representation), bbox_(bbox) {}
             ~CroppingCacheCreator() override = default;
 
-            CroppingCacheCreator(const CroppingCacheCreator&) = delete;
-            CroppingCacheCreator(CroppingCacheCreator&&)      = delete;
+            CroppingCacheCreator(const CroppingCacheCreator&)            = delete;
+            CroppingCacheCreator(CroppingCacheCreator&&)                 = delete;
             CroppingCacheCreator& operator=(const CroppingCacheCreator&) = delete;
-            CroppingCacheCreator& operator=(CroppingCacheCreator&&) = delete;
+            CroppingCacheCreator& operator=(CroppingCacheCreator&&)      = delete;
         };
 
         CroppingCacheCreator creator(representation, bbox);

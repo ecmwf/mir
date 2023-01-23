@@ -155,7 +155,7 @@ class FieldFactory {
     std::string name_;
     virtual MIRField* make(const param::MIRParametrisation&, bool hasMissing, double missingValue) = 0;
 
-    FieldFactory(const FieldFactory&) = delete;
+    FieldFactory(const FieldFactory&)            = delete;
     FieldFactory& operator=(const FieldFactory&) = delete;
 
 protected:

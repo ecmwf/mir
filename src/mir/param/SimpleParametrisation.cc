@@ -36,10 +36,10 @@ public:
     Setting()          = default;
     virtual ~Setting() = default;
 
-    Setting(const Setting&) = delete;
-    Setting(Setting&&)      = delete;
+    Setting(const Setting&)            = delete;
+    Setting(Setting&&)                 = delete;
     Setting& operator=(const Setting&) = delete;
-    Setting& operator=(Setting&&) = delete;
+    Setting& operator=(Setting&&)      = delete;
 
     virtual void get(const std::string& name, std::string& value) const = 0;
     virtual void get(const std::string& name, bool& value) const        = 0;

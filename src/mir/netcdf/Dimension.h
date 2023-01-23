@@ -33,7 +33,7 @@ public:
     Dimension(Dataset& owner, const std::string& name, size_t len);
     virtual ~Dimension();
 
-    Dimension(const Dimension&) = delete;
+    Dimension(const Dimension&)            = delete;
     Dimension& operator=(const Dimension&) = delete;
 
     const std::string& name() const;

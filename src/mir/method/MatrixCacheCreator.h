@@ -49,10 +49,10 @@ public:
                        const repres::Representation& out, const lsm::LandSeaMasks&, const Cropping&);
     ~MatrixCacheCreator() = default;
 
-    MatrixCacheCreator(const MatrixCacheCreator&) = delete;
-    MatrixCacheCreator(MatrixCacheCreator&&)      = delete;
+    MatrixCacheCreator(const MatrixCacheCreator&)            = delete;
+    MatrixCacheCreator(MatrixCacheCreator&&)                 = delete;
     MatrixCacheCreator& operator=(const MatrixCacheCreator&) = delete;
-    MatrixCacheCreator& operator=(MatrixCacheCreator&&) = delete;
+    MatrixCacheCreator& operator=(MatrixCacheCreator&&)      = delete;
 
 private:
     const MethodWeighted& owner_;
