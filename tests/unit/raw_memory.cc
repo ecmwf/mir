@@ -147,12 +147,6 @@ CASE("Example 1") {
     std::unique_ptr<input::MIRInput> input(new input::RawInput(values1.data(), values1.size(), meta1));
 
 
-    // output
-    param::SimpleParametrisation meta2;
-    std::vector<double> values2(4, 0);
-    std::unique_ptr<output::MIROutput> output(new output::RawOutput(values2.data(), values2.size(), meta2));
-
-
     // job
     api::MIRJob job;
     job.set("grid", std::vector<double>{2., 2.});
@@ -161,18 +155,54 @@ CASE("Example 1") {
     job.set("caching", false);
 
     log << job << std::endl;
-    job.execute(*input, *output);
 
-    EXPECT_EQUAL(values2[0], 42.);
-    EXPECT_EQUAL(values2[1], 42.);
-    EXPECT_EQUAL(values2[2], -42.);
-    EXPECT_EQUAL(values2[3], -42.);
 
-    log << "output metadata: " << meta2 << std::endl;
+    SECTION("process with output of static size") {
+        // output
+        param::SimpleParametrisation meta2;
+        std::vector<double> values2(4, 0);
+        std::unique_ptr<output::MIROutput> output(new output::RawOutput(values2.data(), values2.size(), meta2));
 
-    std::ostringstream ss;
-    ss << meta2;
-    EXPECT(ss.str() == "{\"area\":[1,-1,-1,1],\"grid\":[2,2]}");
+
+        // process
+        job.execute(*input, *output);
+
+        EXPECT_EQUAL(values2[0], 42.);
+        EXPECT_EQUAL(values2[1], 42.);
+        EXPECT_EQUAL(values2[2], -42.);
+        EXPECT_EQUAL(values2[3], -42.);
+
+        log << "output metadata: " << meta2 << std::endl;
+
+        std::ostringstream ss;
+        ss << meta2;
+        EXPECT(ss.str() == "{\"area\":[1,-1,-1,1],\"grid\":[2,2]}");
+    }
+
+
+    SECTION("process with output of dynamic size") {
+        // output (RawOutput instead of MIROutput to access specific methods)
+        param::SimpleParametrisation meta2;
+        output::RawOutput output(meta2);
+
+
+        // process
+        job.execute(*input, output);
+
+        EXPECT(output.size() == 4);
+        const auto* values2 = output.values();
+
+        EXPECT_EQUAL(values2[0], 42.);
+        EXPECT_EQUAL(values2[1], 42.);
+        EXPECT_EQUAL(values2[2], -42.);
+        EXPECT_EQUAL(values2[3], -42.);
+
+        log << "output metadata: " << meta2 << std::endl;
+
+        std::ostringstream ss;
+        ss << meta2;
+        EXPECT(ss.str() == "{\"area\":[1,-1,-1,1],\"grid\":[2,2]}");
+    }
 }
 
 
@@ -182,19 +212,12 @@ CASE("Example 2") {
 
     // input, with a values vector representing spherical harmonics scalar field
     param::SimpleParametrisation meta1;
-
     meta1.set("spectral", true);
     meta1.set("gridType", "sh");
     meta1.set("truncation", 21);
 
-
     std::vector<double> values1(506, 0.);
     std::unique_ptr<input::MIRInput> input(new input::RawInput(values1.data(), values1.size(), meta1));
-
-    // output
-    param::SimpleParametrisation meta2;
-    std::vector<double> values2(4, 0);
-    std::unique_ptr<output::MIROutput> output(new output::RawOutput(values2.data(), values2.size(), meta2));
 
 
     // job
@@ -203,19 +226,55 @@ CASE("Example 2") {
     job.set("area", std::vector<double>{1., -1., -1., 1.});
     job.set("caching", false);
 
-    log << job << std::endl;
-    job.execute(*input, *output);
 
-    EXPECT_EQUAL(values2[0], 0.);  // TODO: improve results check
-    EXPECT_EQUAL(values2[1], 0.);
-    EXPECT_EQUAL(values2[2], 0.);
-    EXPECT_EQUAL(values2[3], 0.);
+    SECTION("process with output of static size") {
+        // output
+        param::SimpleParametrisation meta2;
+        std::vector<double> values2(4, 0);
+        std::unique_ptr<output::MIROutput> output(new output::RawOutput(values2.data(), values2.size(), meta2));
 
-    log << "output metadata: " << meta2 << std::endl;
+        log << job << std::endl;
 
-    std::ostringstream ss;
-    ss << meta2;
-    EXPECT(ss.str() == "{\"area\":[1,-1,-1,1],\"grid\":[2,2]}");
+
+        // process
+        job.execute(*input, *output);
+
+        EXPECT_EQUAL(values2[0], 0.);  // TODO: improve results check
+        EXPECT_EQUAL(values2[1], 0.);
+        EXPECT_EQUAL(values2[2], 0.);
+        EXPECT_EQUAL(values2[3], 0.);
+
+        log << "output metadata: " << meta2 << std::endl;
+
+        std::ostringstream ss;
+        ss << meta2;
+        EXPECT(ss.str() == "{\"area\":[1,-1,-1,1],\"grid\":[2,2]}");
+    }
+
+
+    SECTION("process with output of dynamic size") {
+        // output (RawOutput instead of MIROutput to access specific methods)
+        param::SimpleParametrisation meta2;
+        output::RawOutput output(meta2);
+
+
+        // process
+        job.execute(*input, output);
+
+        EXPECT(output.size() == 4);
+        const auto* values2 = output.values();
+
+        EXPECT_EQUAL(values2[0], 0.);
+        EXPECT_EQUAL(values2[1], 0.);
+        EXPECT_EQUAL(values2[2], 0.);
+        EXPECT_EQUAL(values2[3], 0.);
+
+        log << "output metadata: " << meta2 << std::endl;
+
+        std::ostringstream ss;
+        ss << meta2;
+        EXPECT(ss.str() == "{\"area\":[1,-1,-1,1],\"grid\":[2,2]}");
+    }
 }
 
 

@@ -27,7 +27,8 @@ public:
 
     // -- Constructors
 
-    RawOutput(double* const values, size_t count, param::SimpleParametrisation& metadata);
+    RawOutput(double* values, size_t count, param::SimpleParametrisation& metadata);
+    explicit RawOutput(param::SimpleParametrisation& metadata);
 
     // -- Destructor
     // None
@@ -40,7 +41,8 @@ public:
 
     // -- Methods
 
-    size_t size() const;
+    size_t size() const { return size_; }
+    double* values() const { return values_; }
 
     // -- Overridden methods
     // None
@@ -54,9 +56,9 @@ public:
 private:
     // -- Members
 
-    double* const values_;
-    size_t count_;
+    double* values_;
     param::SimpleParametrisation& metadata_;
+    size_t count_;
     size_t size_;
 
     // -- Methods
