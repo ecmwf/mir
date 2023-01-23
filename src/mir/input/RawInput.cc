@@ -12,237 +12,76 @@
 
 #include "mir/input/RawInput.h"
 
-#include <cstring>
 #include <ostream>
 
 #include "mir/data/MIRField.h"
-#include "mir/input/RawMetadata.h"
-#include "mir/util/BoundingBox.h"
+#include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
-#include "mir/util/Log.h"
 
 
 namespace mir {
 namespace input {
 
 
-RawInput::RawInput(const RawMetadata& metadata, const double* values, size_t count) :
-    metadata_(metadata), values_(values), count_(count) {}
+RawInput::RawInput(const double* const values, size_t count, const param::SimpleParametrisation& metadata) :
+    values_(values), count_(count), metadata_(metadata), dimensions_(1), calls_(0) {
+    ASSERT_MSG(values != nullptr, "RawInput: values != nullptr");
+    ASSERT_MSG(count > 0, "RawInput: count > 0");
 
+    long dimensions = 1;
+    metadata_.get("dimensions", dimensions);
+    ASSERT(dimensions >= 1);
 
-bool RawInput::sameAs(const MIRInput& other) const {
-    return this == &other;
+    dimensions_ = static_cast<size_t>(dimensions);
 }
 
 
 bool RawInput::next() {
-    NOTIMP;
+    return calls_++ == 0;
+}
+
+
+size_t RawInput::dimensions() const {
+    return dimensions_;
 }
 
 
 const param::MIRParametrisation& RawInput::parametrisation(size_t which) const {
     ASSERT(which == 0);
-    return *this;
+
+    return metadata_;
 }
 
 
 data::MIRField RawInput::field() const {
+    double missingValue = 9999.;
+    bool hasMissing     = metadata_.get("missing_value", missingValue);
 
-    data::MIRField field(*this, metadata_.hasMissing(), metadata_.missingValue());
+    // TODO support parametrisation for dimensions > 1
+    data::MIRField field(parametrisation(0), hasMissing, missingValue);
 
-    MIRValuesVector values(count_);
-    std::memcpy(&values[0], values_, sizeof(double) * count_);
-    field.update(values, 0);
+    repres::RepresentationHandle repres(field.representation());
+    auto n = repres->numberOfValues();
+    ASSERT_VALUES_SIZE_EQ_ITERATOR_COUNT("RawInput", count_, n);
 
-    // Log::debug() << "RawInput::field: " << field << std::endl;
+    const auto* here = values_;
+    for (size_t which = 0; which < dimensions(); ++which, here += count_) {
+        MIRValuesVector values(here, here + count_);
+        field.update(values, which);
+    }
 
     return field;
 }
 
 
+bool RawInput::sameAs(const MIRInput& other) const {
+    const auto* o = dynamic_cast<const RawInput*>(&other);
+    return (o != nullptr) && metadata_.matchAll(o->metadata_);
+}
+
+
 void RawInput::print(std::ostream& out) const {
-    out << "RawInput[count=" << count_ << "]";
-}
-
-
-size_t RawInput::copy(double* values, size_t size) const {
-    ASSERT(count_ <= size);
-    std::memcpy(values, values_, sizeof(double) * count_);
-    return count_;
-}
-
-
-bool RawInput::has(const std::string& name) const {
-    Log::debug() << ">>>>>>>>>>>>> RawInput::has (" << name << ")" << std::endl;
-
-    if (name == "gridded") {
-        return metadata_.gridded();
-    }
-
-    if (name == "spectral") {
-        return metadata_.spectral();
-    }
-
-    return false;
-}
-
-
-bool RawInput::get(const std::string& name, std::string& value) const {
-    Log::debug() << ">>>>>>>>>>>>> RawInput::get string (" << name << ")" << std::endl;
-
-    if (name == "gridType") {
-        value = metadata_.gridType();
-        return true;
-    }
-
-    return false;
-}
-
-
-bool RawInput::get(const std::string& name, bool& /*value*/) const {
-    Log::debug() << ">>>>>>>>>>>>> RawInput::get bool (" << name << ")" << std::endl;
-    return false;
-}
-
-
-bool RawInput::get(const std::string& name, int& value) const {
-    long v;
-    if (get(name, v)) {
-        ASSERT(long(int(v)) == v);
-        value = int(v);
-        return true;
-    }
-    return false;
-}
-
-
-bool RawInput::get(const std::string& name, long& value) const {
-    Log::debug() << ">>>>>>>>>>>>> RawInput::get long (" << name << ")" << std::endl;
-
-    if (name == "N") {
-        value = long(metadata_.N());
-        return true;
-    }
-
-    if (name == "Nj") {
-        value = long(metadata_.nj());
-        return true;
-    }
-
-    if (name == "truncation") {
-        value = long(metadata_.truncation());
-        return true;
-    }
-
-    if (name == "paramId") {
-        value = long(metadata_.paramId());
-        return true;
-    }
-
-    return false;
-}
-
-
-bool RawInput::get(const std::string& name, float& value) const {
-    double v;
-    if (get(name, v)) {
-        value = float(v);
-        return true;
-    }
-    return false;
-}
-
-
-bool RawInput::get(const std::string& name, double& value) const {
-    Log::debug() << ">>>>>>>>>>>>> RawInput::get double (" << name << ")" << std::endl;
-
-    if (name == "north") {
-        value = metadata_.bbox().north().value();
-        return true;
-    }
-
-    if (name == "south") {
-        value = metadata_.bbox().south().value();
-        return true;
-    }
-
-    if (name == "west") {
-        value = metadata_.bbox().west().value();
-        return true;
-    }
-
-    if (name == "east") {
-        value = metadata_.bbox().east().value();
-        return true;
-    }
-
-    return false;
-}
-
-
-bool RawInput::get(const std::string& name, std::vector<int>& value) const {
-    std::vector<long> v;
-    if (get(name, v)) {
-        value.clear();
-        value.reserve(v.size());
-        for (const long& l : v) {
-            ASSERT(long(int(l)) == l);
-            value.push_back(int(l));
-        }
-        return true;
-    }
-    return false;
-}
-
-
-bool RawInput::get(const std::string& name, std::vector<long>& value) const {
-    Log::debug() << ">>>>>>>>>>>>> RawInput::get vector<long> (" << name << ")" << std::endl;
-
-    if (name == "pl") {
-        value = metadata_.pl();
-        return true;
-    }
-
-    return false;
-}
-
-
-bool RawInput::get(const std::string& name, std::vector<float>& value) const {
-    std::vector<double> v;
-    if (get(name, v)) {
-        value.clear();
-        value.reserve(v.size());
-        for (const double& l : v) {
-            value.push_back(float(l));
-        }
-        return true;
-    }
-    return false;
-}
-
-
-bool RawInput::get(const std::string& name, std::vector<double>& value) const {
-
-    if (name == "area") {
-        value.resize(4);
-        value[0] = metadata_.bbox().north().value();  // North
-        value[1] = metadata_.bbox().west().value();   // West
-        value[2] = metadata_.bbox().south().value();  // South
-        value[3] = metadata_.bbox().east().value();   // East
-        return true;
-    }
-
-    if (name == "grid") {
-        return false;
-    }
-
-    Log::debug() << ">>>>>>>>>>>>> RawInput::get vector<double> (" << name << ")" << std::endl;
-    return false;
-}
-
-
-bool RawInput::get(const std::string& /*name*/, std::vector<std::string>& /*value*/) const {
-    NOTIMP;
+    out << "RawInput[&values=" << values_ << ",count=" << count_ << ",metadata=" << metadata_ << "]";
 }
 
 

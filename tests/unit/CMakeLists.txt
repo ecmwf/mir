@@ -19,6 +19,7 @@ foreach(_t
     interpolations
     iterator
     knn_weighting
+    raw_memory
     spectral_order
     statistics
     style

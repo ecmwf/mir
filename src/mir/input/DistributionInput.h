@@ -26,14 +26,14 @@ namespace mir {
 namespace input {
 
 
-class DistributionInput : public ArtificialInput {
+class DistributionInput final : public ArtificialInput {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    DistributionInput(const param::MIRParametrisation& param) : ArtificialInput(param) {}
+    explicit DistributionInput(const param::MIRParametrisation& /*ignored*/);
 
     // -- Destructor
     // None
@@ -82,8 +82,8 @@ private:
 
     // -- Overridden methods
 
-    // From ArtificialInput
-    MIRValuesVector fill(size_t) const override;
+    // From MIRInput
+    data::MIRField field() const override;
 
     // -- Class members
     // None

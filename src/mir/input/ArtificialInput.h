@@ -12,7 +12,6 @@
 
 #pragma once
 
-#include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
 #include "mir/param/FieldParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
@@ -24,6 +23,11 @@ namespace input {
 
 class ArtificialInput : public MIRInput, protected param::FieldParametrisation {
 public:
+    // -- Constructors
+
+    ArtificialInput(const ArtificialInput&) = delete;
+    ArtificialInput(ArtificialInput&&)      = delete;
+
     // -- Destructor
 
     ~ArtificialInput() override;
@@ -35,7 +39,9 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    void operator=(const ArtificialInput&) = delete;
+    void operator=(ArtificialInput&&)      = delete;
 
     // -- Overridden methods
     // None
@@ -49,14 +55,13 @@ public:
 protected:
     // -- Constructors
 
-    ArtificialInput(const param::MIRParametrisation&);
+    ArtificialInput() : calls_(0) {}
 
     // -- Members
     // None
 
     // -- Methods
 
-    virtual MIRValuesVector fill(size_t) const = 0;
     param::SimpleParametrisation& parametrisation(size_t which = 0);
 
     // -- Overridden methods
@@ -65,7 +70,6 @@ protected:
     bool next() override;
     size_t dimensions() const override;
     const param::MIRParametrisation& parametrisation(size_t which = 0) const override;
-    data::MIRField field() const override;
     void setAuxiliaryInformation(const util::ValueMap&) override;
     void print(std::ostream&) const override;
     bool sameAs(const MIRInput&) const override;
@@ -120,16 +124,19 @@ private:
 
 
 class ArtificialInputFactory {
-    ArtificialInputFactory(const ArtificialInputFactory&)           = delete;
-    void operator=(const ArtificialInputFactory&)                   = delete;
     virtual ArtificialInput* make(const param::MIRParametrisation&) = 0;
     const std::string name_;
 
 protected:
-    ArtificialInputFactory(const std::string& name);
+    explicit ArtificialInputFactory(const std::string& name);
     virtual ~ArtificialInputFactory();
 
 public:
+    ArtificialInputFactory(const ArtificialInputFactory&) = delete;
+    ArtificialInputFactory(ArtificialInputFactory&&)      = delete;
+    void operator=(const ArtificialInputFactory&)         = delete;
+    void operator=(ArtificialInputFactory&&)              = delete;
+
     static ArtificialInput* build(const std::string&, const param::MIRParametrisation&);
     static void list(std::ostream&);
 };
@@ -140,7 +147,7 @@ class ArtificialInputBuilder : public ArtificialInputFactory {
     ArtificialInput* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
-    ArtificialInputBuilder(const std::string& name) : ArtificialInputFactory(name) {}
+    explicit ArtificialInputBuilder(const std::string& name) : ArtificialInputFactory(name) {}
 };
 
 

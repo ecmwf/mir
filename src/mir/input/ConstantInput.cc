@@ -12,6 +12,11 @@
 
 #include "mir/input/ConstantInput.h"
 
+#include "mir/data/MIRField.h"
+#include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Types.h"
+
 
 namespace mir {
 namespace input {
@@ -20,12 +25,28 @@ namespace input {
 static const ArtificialInputBuilder<ConstantInput> __artificial("constant");
 
 
-MIRValuesVector ConstantInput::fill(size_t n) const {
+ConstantInput::ConstantInput(const param::MIRParametrisation& /*ignored*/) {}
+
+
+data::MIRField ConstantInput::field() const {
+    ASSERT(dimensions() > 0);
+
     double constant = 0;
     parametrisation().get("constant", constant);
 
+    data::MIRField field(parametrisation(0), false, 9999.);
+
+    repres::RepresentationHandle repres(field.representation());
+    auto n = repres->numberOfPoints();
+    ASSERT(n > 0);
+
     MIRValuesVector values(n, constant);
-    return values;
+
+    for (size_t which = 0; which < dimensions(); ++which) {
+        field.update(values, which);
+    }
+
+    return field;
 }
 
 
