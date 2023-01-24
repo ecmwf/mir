@@ -28,11 +28,7 @@ namespace output {
 
 
 RawOutput::RawOutput(double* values, size_t count, param::SimpleParametrisation& metadata) :
-    values_(values), metadata_(metadata), count_(count), size_(0) {}
-
-
-RawOutput::RawOutput(param::SimpleParametrisation& metadata) :
-    values_(nullptr), metadata_(metadata), count_(0), size_(0) {}
+    values_(values), count_(count), metadata_(metadata), size_(0) {}
 
 
 size_t RawOutput::save(const param::MIRParametrisation& /*param*/, context::Context& ctx) {
@@ -63,14 +59,6 @@ size_t RawOutput::save(const param::MIRParametrisation& /*param*/, context::Cont
     Log::debug() << "RawOutput::save values: " << values.size() << ", user: " << count_ << std::endl;
 
     size_ = values.size();
-    ASSERT(size_ > 0);
-
-    if (values_ == nullptr) {
-        Log::debug() << "RawOutput::save allocating " << size_ << " values" << std::endl;
-        values_ = new double[size_];
-        count_  = size_;
-    }
-
     ASSERT(size_ <= count_);
     std::memcpy(values_, values.data(), size_ * sizeof(double));
 
@@ -79,7 +67,7 @@ size_t RawOutput::save(const param::MIRParametrisation& /*param*/, context::Cont
 
 
 bool RawOutput::sameAs(const MIROutput& other) const {
-    return dynamic_cast<const MIROutput*>(this) == &other;
+    return this == &other;
 }
 
 
@@ -96,6 +84,11 @@ bool RawOutput::printParametrisation(std::ostream& /*out*/, const param::MIRPara
 
 void RawOutput::print(std::ostream& out) const {
     out << "RawOutput[count=" << count_ << ", size=" << size_ << "]";
+}
+
+
+size_t RawOutput::size() const {
+    return size_;
 }
 
 
