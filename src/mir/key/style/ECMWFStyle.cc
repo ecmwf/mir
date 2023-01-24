@@ -39,7 +39,7 @@ namespace style {
 
 
 struct DeprecatedStyle : ECMWFStyle, util::DeprecatedFunctionality {
-    DeprecatedStyle(const param::MIRParametrisation& p) :
+    explicit DeprecatedStyle(const param::MIRParametrisation& p) :
         ECMWFStyle(p), util::DeprecatedFunctionality("style 'dissemination' now known as 'ecmwf'") {}
 };
 
@@ -99,6 +99,11 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
     const auto& field = param.fieldParametrisation();
     std::unique_ptr<const param::MIRParametrisation> same(new param::SameParametrisation(user, field, true));
 
+    std::string interpolation;
+    if (user.get("interpolation", interpolation) && interpolation == "none") {
+        return "";
+    }
+
     std::vector<double> rotation;
     const bool rotated = checkRotation && user.has("rotation") && !same->get("rotation", rotation);
 
@@ -128,17 +133,17 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
     }
 
     if (user.has("reduced")) {
-        long N;
+        long N = 0;
         return forced || !same->get("reduced", N) ? prefix + "reduced-gg" : "";
     }
 
     if (user.has("regular")) {
-        long N;
+        long N = 0;
         return forced || !same->get("regular", N) ? prefix + "regular-gg" : "";
     }
 
     if (user.has("octahedral")) {
-        long N;
+        long N = 0;
         return forced || !same->get("octahedral", N) ? prefix + "octahedral-gg" : "";
     }
 
@@ -346,12 +351,12 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
 
         if (u_only) {
             ASSERT(!v_only);
-            plan.add("select.field", "which", long(0));
+            plan.add("select.field", "which", 0L);
         }
 
         if (v_only) {
             ASSERT(!u_only);
-            plan.add("select.field", "which", long(1));
+            plan.add("select.field", "which", 1L);
         }
     }
 

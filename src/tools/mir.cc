@@ -27,7 +27,7 @@
 #include "mir/api/MIRJob.h"
 #include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/data/Space.h"
-#include "mir/input/MultiDimensionalGribFileInput.h"
+#include "mir/input/MIRInput.h"
 #include "mir/key/Area.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/intgrid/Intgrid.h"
