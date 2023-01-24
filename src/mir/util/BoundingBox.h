@@ -134,8 +134,7 @@ private:
     Longitude east_;
 
     // -- Methods
-
-    void normalise();
+    // None
 
     // -- Overridden methods
     // None
