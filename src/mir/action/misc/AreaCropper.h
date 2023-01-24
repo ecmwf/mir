@@ -83,7 +83,6 @@ private:
 
     util::BoundingBox bbox_;
     bool caching_;
-    bool samePointsLL_;
 
     // -- Methods
     // None
