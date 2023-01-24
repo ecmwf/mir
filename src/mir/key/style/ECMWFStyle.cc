@@ -56,11 +56,6 @@ bool option(const param::MIRParametrisation& param, const std::string& key, bool
 
 
 bool same_points(const param::MIRParametrisation& user, const param::MIRParametrisation& field) {
-    bool samePoints = false;
-    if (user.get("same-points-ll", samePoints) && samePoints) {
-        return true;
-    }
-
     std::unique_ptr<const param::MIRParametrisation> same(new param::SameParametrisation(user, field, true));
 
     std::vector<double> rotation;
@@ -103,6 +98,11 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
     const auto& user  = param.userParametrisation();
     const auto& field = param.fieldParametrisation();
     std::unique_ptr<const param::MIRParametrisation> same(new param::SameParametrisation(user, field, true));
+
+    std::string interpolation;
+    if (user.get("interpolation", interpolation) && interpolation == "none") {
+        return "";
+    }
 
     std::vector<double> rotation;
     const bool rotated = checkRotation && user.has("rotation") && !same->get("rotation", rotation);

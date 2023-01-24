@@ -183,10 +183,6 @@ struct MIR : MIRTool {
             "Linear algebra sparse backend (default '" + eckit::linalg::LinearAlgebraSparse::backend().name() + "')"));
         options_.push_back(new FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
 
-        options_.push_back(new SimpleOption<bool>(
-            "same-points-ll",
-            "Regular lat/lon points independent of area (necessary for no-interpolation cropping, default false)"));
-
 #if mir_HAVE_ATLAS
         for (const std::string& which : {"input", "output"}) {
             options_.push_back(

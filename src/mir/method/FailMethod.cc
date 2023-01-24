@@ -22,7 +22,8 @@ namespace mir {
 namespace method {
 
 
-static const MethodBuilder<FailMethod> __method("fail");
+static const MethodBuilder<FailMethod> __method_1("fail");
+static const MethodBuilder<FailMethod> __method_2("none");
 
 
 bool FailMethod::canCrop() const {
