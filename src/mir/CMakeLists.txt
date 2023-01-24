@@ -448,6 +448,8 @@ list(APPEND mir_srcs
     output/MultiDimensionalOutput.h
     output/RawOutput.cc
     output/RawOutput.h
+    output/ResizableOutput.cc
+    output/ResizableOutput.h
     output/ValuesOutput.cc
     output/ValuesOutput.h
     output/VectorOutput.cc

@@ -12,6 +12,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include "mir/output/MIROutput.h"
 #include "mir/param/SimpleParametrisation.h"
 
@@ -20,14 +22,14 @@ namespace mir {
 namespace output {
 
 
-class RawOutput final : public MIROutput {
+class ResizableOutput final : public MIROutput {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    RawOutput(double* const values, size_t count, param::SimpleParametrisation& metadata);
+    ResizableOutput(std::vector<double>&, param::SimpleParametrisation& metadata);
 
     // -- Destructor
     // None
@@ -54,10 +56,8 @@ public:
 private:
     // -- Members
 
-    double* const values_;
-    size_t count_;
+    std::vector<double>& values_;
     param::SimpleParametrisation& metadata_;
-    size_t size_;
 
     // -- Methods
     // None
