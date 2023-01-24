@@ -1,7 +1,7 @@
 # mars
 regular_ll.2-2.grib1
 # mir
---area=11/-1/-1/11 --same-points-ll=1
+--area=11/-1/-1/11 --interpolation=none
 # grib_get assertions
 gridType=regular_ll
 Ni=6
