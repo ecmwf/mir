@@ -21,6 +21,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/input/RawInput.h"
 #include "mir/output/RawOutput.h"
+#include "mir/output/ResizableOutput.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Log.h"
 
@@ -183,14 +184,14 @@ CASE("Example 1") {
     SECTION("process with output of dynamic size") {
         // output (RawOutput instead of MIROutput to access specific methods)
         param::SimpleParametrisation meta2;
-        output::RawOutput output(meta2);
+        std::vector<double> values2;
+        std::unique_ptr<output::MIROutput> output(new output::ResizableOutput(values2, meta2));
 
 
         // process
-        job.execute(*input, output);
+        job.execute(*input, *output);
 
-        EXPECT(output.size() == 4);
-        const auto* values2 = output.values();
+        EXPECT(values2.size() == 4);
 
         EXPECT_EQUAL(values2[0], 42.);
         EXPECT_EQUAL(values2[1], 42.);
@@ -255,14 +256,14 @@ CASE("Example 2") {
     SECTION("process with output of dynamic size") {
         // output (RawOutput instead of MIROutput to access specific methods)
         param::SimpleParametrisation meta2;
-        output::RawOutput output(meta2);
+        std::vector<double> values2;
+        std::unique_ptr<output::MIROutput> output(new output::ResizableOutput(values2, meta2));
 
 
         // process
-        job.execute(*input, output);
+        job.execute(*input, *output);
 
-        EXPECT(output.size() == 4);
-        const auto* values2 = output.values();
+        EXPECT(values2.size() == 4);
 
         EXPECT_EQUAL(values2[0], 0.);
         EXPECT_EQUAL(values2[1], 0.);
