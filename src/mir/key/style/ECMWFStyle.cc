@@ -100,7 +100,8 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
     std::unique_ptr<const param::MIRParametrisation> same(new param::SameParametrisation(user, field, true));
 
     std::string interpolation;
-    if (user.get("interpolation", interpolation) && interpolation == "none") {
+    user.get("interpolation", interpolation);
+    if (interpolation == "none") {
         return "";
     }
 
