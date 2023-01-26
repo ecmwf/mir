@@ -1,0 +1,22 @@
+# mars
+ukmo-tigge.count=4.grib
+# mir
+--area=1/-1/-1/1 --interpolation=none --basic-angle=decimal
+# grib_get assertions
+gridType=regular_ll
+Ni=2
+Nj=2
+basicAngleOfTheInitialProductionDomain=0
+subdivisionsOfBasicAngle=MISSING
+iDirectionIncrement=1250000
+jDirectionIncrement=833333
+latitudeOfFirstGridPoint=416667
+longitudeOfFirstGridPoint=359375000
+latitudeOfLastGridPoint=-416667
+longitudeOfLastGridPoint=625000
+iDirectionIncrementInDegrees=1.25
+jDirectionIncrementInDegrees=0.833333
+latitudeOfFirstGridPointInDegrees=0.416667
+longitudeOfFirstGridPointInDegrees=359.375
+latitudeOfLastGridPointInDegrees=-0.416667
+longitudeOfLastGridPointInDegrees=0.625

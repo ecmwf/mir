@@ -49,6 +49,7 @@
 #include "mir/stats/Statistics.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Grib.h"
 #include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/SpectralOrder.h"
@@ -300,6 +301,8 @@ struct MIR : MIRTool {
         options_.push_back(new SimpleOption<size_t>("edition", "GRIB edition number"));
 
         options_.push_back(new SimpleOption<bool>("delete-local-definition", "Remove GRIB local extension"));
+        options_.push_back(new FactoryOption<util::grib::BasicAngle>(
+            "basic-angle", "GRIB basic angle and subdivisions (bounding box and grid increments, default false)"));
         options_.push_back(
             new SimpleOption<std::string>("metadata", "Set eccodes keys to integer values (a=b,c=d,..)"));
 
