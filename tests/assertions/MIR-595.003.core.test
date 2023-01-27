@@ -1,7 +1,7 @@
 # mars
 ukmo-tigge.count=4.grib
 # mir
---area=43/-1/-10/3 --interpolation=none --basic-angle=fraction
+--area=43/-2/-10/1 --interpolation=none --basic-angle=fraction
 # grib_get assertions
 gridType=regular_ll
 Ni=3
@@ -11,12 +11,12 @@ subdivisionsOfBasicAngle=24
 iDirectionIncrement=6
 jDirectionIncrement=4
 latitudeOfFirstGridPoint=206
-longitudeOfFirstGridPoint=-3
+longitudeOfFirstGridPoint=1719
 latitudeOfLastGridPoint=-46
-longitudeOfLastGridPoint=9
+longitudeOfLastGridPoint=3
 iDirectionIncrementInDegrees=1.25
 jDirectionIncrementInDegrees=0.833333
 latitudeOfFirstGridPointInDegrees=42.9167
-longitudeOfFirstGridPointInDegrees=-0.625
+longitudeOfFirstGridPointInDegrees=358.125
 latitudeOfLastGridPointInDegrees=-9.58333
-longitudeOfLastGridPointInDegrees=1.875
+longitudeOfLastGridPointInDegrees=0.625
