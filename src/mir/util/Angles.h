@@ -14,7 +14,7 @@
 
 #include <cmath>
 
-#include "mir/util/Types.h"
+#include "mir/util/LongitudeDouble.h"
 
 
 namespace mir {
@@ -35,7 +35,7 @@ inline double radian_to_degree(const double& a) {
 
 /// @return longitude in degree within range [minimum, minimum + 360[
 inline double normalise_longitude(const double& lon, const double& minimum) {
-    return Longitude(lon).normalise(minimum).value();
+    return LongitudeDouble(lon).normalise(minimum).value();
 }
 
 
