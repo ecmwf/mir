@@ -16,6 +16,7 @@
 
 #include "eckit/parser/YAMLParser.h"
 
+#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/netcdf/GridSpec.h"
 #include "mir/netcdf/Variable.h"
@@ -108,7 +109,7 @@ static eckit::Value standard_names;
 
 
 static void init() {
-    standard_names = eckit::YAMLParser::decodeFile("~mir/etc/mir/netcdf.yaml");
+    standard_names = eckit::YAMLParser::decodeFile(LibMir::configFile(LibMir::config_file::NETCDF));
     standard_names.dump(Log::info()) << std::endl;
 }
 

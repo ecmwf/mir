@@ -22,6 +22,7 @@
 #include "eckit/utils/Tokenizer.h"
 #include "eckit/utils/Translator.h"
 
+#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Exceptions.h"
@@ -32,12 +33,9 @@ namespace mir {
 namespace key {
 
 
-static const std::string key  = "area";
-static const std::string path = "~mir/etc/mir/area.yaml";
-
 struct map_t : std::map<std::string, std::array<double, 4>> {
-    map_t(const std::string& p) {
-        const eckit::PathName path(p);
+    map_t() {
+        const auto path = LibMir::configFile(LibMir::config_file::AREA);
         if (!path.exists()) {
             return;
         }
@@ -59,7 +57,7 @@ static util::once_flag once;
 
 static void init() {
     mtx = new util::recursive_mutex();
-    m   = new map_t(path);
+    m   = new map_t;
 }
 
 
@@ -67,12 +65,10 @@ bool Area::get(const param::MIRParametrisation& param, util::BoundingBox& bbox) 
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*mtx);
 
-    if (!param.has(key)) {
+    std::string value;
+    if (!param.get("area", value)) {
         return false;
     }
-
-    std::string value;
-    ASSERT(param.get(key, value));
 
     if (match(value, bbox)) {
         return true;
