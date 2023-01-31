@@ -61,16 +61,20 @@ Iterator& Iterator::next() {
 }
 
 
-Point3 Iterator::point3D() const {
-    ASSERT(valid_);
-
+Point3 Iterator::point_3D(const Point2& point) {
     // notice the order
-    const atlas::PointLonLat pll(point_[1], point_[0]);
+    const atlas::PointLonLat pll(point[1], point[0]);
 
     atlas::PointXYZ pxyz;
     util::Earth::convertSphericalToCartesian(pll, pxyz);
 
     return pxyz;
+}
+
+
+Point3 Iterator::point3D() const {
+    ASSERT(valid_);
+    return point_3D(point_);
 }
 
 
