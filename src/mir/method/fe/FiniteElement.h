@@ -90,6 +90,7 @@ private:
 
     util::MeshGeneratorParameters meshGeneratorParams_;
     ProjectionFail::type projectionFail_;
+    Latitude poleDisplacement_;
     bool validateMesh_;
 
     // -- Methods
