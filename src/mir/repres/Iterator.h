@@ -48,6 +48,8 @@ public:
 
     // -- Methods
 
+    static Point3 point_3D(const Point2&);
+
     const Point2& pointRotated() const;
     const PointLatLon& pointUnrotated() const;
     Point3 point3D() const;
