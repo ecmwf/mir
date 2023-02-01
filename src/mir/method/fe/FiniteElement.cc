@@ -40,10 +40,7 @@ namespace method {
 namespace fe {
 
 
-// epsilon used to scale edge tolerance when projecting ray to intersect element
-static constexpr double parametricEpsilon = 1e-15;
-
-static constexpr size_t nbFailuresLogged = 10;
+static constexpr size_t nbMaxFailures = 10;
 
 static util::once_flag once;
 static util::recursive_mutex* mtx                      = nullptr;
@@ -68,7 +65,7 @@ struct element_t : std::vector<size_t> {
 
     virtual ~element_t() = default;
 
-    virtual bool intersects(const atlas::interpolation::method::Ray&) = 0;
+    virtual bool intersects(const atlas::interpolation::method::Ray&, double eps) = 0;
 
     void append_triplets(size_t i, size_t nbRealPoints, triplet_vector_t& t) const {
         ASSERT(size() == weights.size());
@@ -117,8 +114,8 @@ struct triag_t : element_t, atlas::interpolation::element::Triag3D {
                 atlas::PointXYZ{coords(i2, XYZCOORDS::XX), coords(i2, XYZCOORDS::YY), coords(i2, XYZCOORDS::ZZ)},
                 atlas::PointXYZ{coords(i3, XYZCOORDS::XX), coords(i3, XYZCOORDS::YY), coords(i3, XYZCOORDS::ZZ)}) {}
 
-    bool intersects(const atlas::interpolation::method::Ray& r) override {
-        auto is = Triag3D::intersects(r, parametricEpsilon * std::sqrt(area()));
+    bool intersects(const atlas::interpolation::method::Ray& r, double eps) override {
+        auto is = Triag3D::intersects(r, eps * std::sqrt(area()));
         if (is) {
             weights.assign({1. - is.u - is.v, is.u, is.v});
             return true;
@@ -136,8 +133,8 @@ struct quad_t : element_t, atlas::interpolation::element::Quad3D {
                atlas::PointXYZ{coords(i3, XYZCOORDS::XX), coords(i3, XYZCOORDS::YY), coords(i3, XYZCOORDS::ZZ)},
                atlas::PointXYZ{coords(i4, XYZCOORDS::XX), coords(i4, XYZCOORDS::YY), coords(i4, XYZCOORDS::ZZ)}) {}
 
-    bool intersects(const atlas::interpolation::method::Ray& r) override {
-        auto is = Quad3D::intersects(r, parametricEpsilon * std::sqrt(area()));
+    bool intersects(const atlas::interpolation::method::Ray& r, double eps) override {
+        auto is = Quad3D::intersects(r, eps * std::sqrt(area()));
         if (is) {
             weights.assign({(1. - is.u) * (1. - is.v), is.u * (1. - is.v), is.u * is.v, (1. - is.u) * is.v});
             return true;
@@ -150,10 +147,17 @@ struct quad_t : element_t, atlas::interpolation::element::Quad3D {
 FiniteElement::FiniteElement(const param::MIRParametrisation& param, const std::string& label) :
     MethodWeighted(param), meshGeneratorParams_(param, label) {
     param.get("finite-element-validate-mesh", validateMesh_ = false);
-    param.get("finite-element-missing-value-on-projection-fail", missingValueOnProjectionFail_ = true);
 
     // mesh requirements
     meshGeneratorParams_.meshCellCentres_ = true;
+
+    // projection fail
+    std::string projectionFail = "missing-value";
+    param.get("finite-element-projection-fail", projectionFail);
+    projectionFail_ = projectionFail == "failure"            ? ProjectionFail::failure
+                      : projectionFail == "increase-epsilon" ? ProjectionFail::increaseEpsilon
+                      : projectionFail == "missing-value"    ? ProjectionFail::missingValue
+                                                             : NOTIMP;
 }
 
 
@@ -216,7 +220,11 @@ FiniteElement::~FiniteElement() = default;
 void FiniteElement::print(std::ostream& out) const {
     out << "FiniteElement[name=" << name() << ",";
     MethodWeighted::print(out);
-    out << ",validateMesh=" << validateMesh_ << ",missingValueOnProjectionFail=" << missingValueOnProjectionFail_
+    out << ",validateMesh=" << validateMesh_ << ",projectionFail="
+        << (projectionFail_ == ProjectionFail::failure           ? "fail"
+            : projectionFail_ == ProjectionFail::increaseEpsilon ? "increase-epsilon"
+            : projectionFail_ == ProjectionFail::missingValue    ? "missing-value"
+                                                                 : NOTIMP)
         << "]";
 }
 
@@ -224,7 +232,7 @@ void FiniteElement::print(std::ostream& out) const {
 bool FiniteElement::sameAs(const Method& other) const {
     const auto* o = dynamic_cast<const FiniteElement*>(&other);
     return (o != nullptr) && meshGeneratorParams_.sameAs(o->meshGeneratorParams_) &&
-           validateMesh_ == o->validateMesh_ && missingValueOnProjectionFail_ == o->missingValueOnProjectionFail_ &&
+           validateMesh_ == o->validateMesh_ && projectionFail_ == o->projectionFail_ &&
            MethodWeighted::sameAs(other);
 }
 
@@ -235,7 +243,7 @@ void FiniteElement::hash(eckit::MD5& md5) const {
 
     // FIXME uncomment on cache version increase
     // md5 << validateMesh_;
-    // md5 << missingValueOnProjectionFail_;
+    // md5 << static_cast<unsigned int>(projectionFail_);
 }
 
 
@@ -294,7 +302,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
         for (const std::unique_ptr<repres::Iterator> it(out.iterator()); it->next(); ++progress) {
             if (inDomain.contains(it->pointRotated())) {
 
-                // 3D projection, trying elements closest to p (if this fails, consider lowering parametricEpsilon)
+                // 3D projection, trying elements closest to p
                 Point3 p(it->point3D());
                 size_t nbProjectionAttempts = 0;
 
@@ -305,36 +313,44 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
 
                 atlas::interpolation::method::Ray ray(p.data());
 
+                // epsilon used to scale edge tolerance when projecting ray to intersect elements
+                // (if it fails consider increasing eps, or use ProjectionFail::increaseEpsilon)
+                double eps = 1e-15;
+
                 bool success = false;
-                for (const auto& close : closest) {
-                    ++nbProjectionAttempts;
+                for (size_t a = 0;
+                     a == 0 || (!success && a < nbMaxFailures && projectionFail_ == ProjectionFail::increaseEpsilon);
+                     eps *= 2., ++a) {
+                    for (const auto& close : closest) {
+                        ++nbProjectionAttempts;
 
-                    /*
-                     * Assumes:
-                     * - nb_cols == 3 implies triangle
-                     * - nb_cols == 4 implies quadrilateral
-                     * - no other element is supported at the time
-                     */
-                    const auto e = atlas::idx_t(close.value().payload());
-                    ASSERT(e < connectivity.rows());
+                        /*
+                         * Assumes:
+                         * - nb_cols == 3 implies triangle
+                         * - nb_cols == 4 implies quadrilateral
+                         * - no other element is supported at the time
+                         */
+                        const auto e = atlas::idx_t(close.value().payload());
+                        ASSERT(e < connectivity.rows());
 
-                    auto idx = [e, nbInputPoints, &connectivity](atlas::idx_t j) {
-                        auto x = size_t(connectivity(e, j));
-                        ASSERT(x < nbInputPoints);
-                        return x;
-                    };
+                        auto idx = [e, nbInputPoints, &connectivity](atlas::idx_t j) {
+                            auto x = size_t(connectivity(e, j));
+                            ASSERT(x < nbInputPoints);
+                            return x;
+                        };
 
-                    const auto nb_cols = connectivity.cols(e);
+                        const auto nb_cols = connectivity.cols(e);
 
-                    std::unique_ptr<element_t> elem(
-                        nb_cols == 3   ? static_cast<element_t*>(new triag_t(inCoords, idx(0), idx(1), idx(2)))
-                        : nb_cols == 4 ? new quad_t(inCoords, idx(0), idx(1), idx(2), idx(3))
-                                       : NOTIMP);
+                        std::unique_ptr<element_t> elem(
+                            nb_cols == 3   ? static_cast<element_t*>(new triag_t(inCoords, idx(0), idx(1), idx(2)))
+                            : nb_cols == 4 ? new quad_t(inCoords, idx(0), idx(1), idx(2), idx(3))
+                                           : NOTIMP);
 
-                    if (elem->intersects(ray)) {
-                        elem->append_triplets(ip, nbRealPts, weights_triplets);
-                        success = true;
-                        break;
+                        if (elem->intersects(ray, eps)) {
+                            elem->append_triplets(ip, nbRealPts, weights_triplets);
+                            success = true;
+                            break;
+                        }
                     }
                 }
 
@@ -345,7 +361,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
                 if (success) {
                     ++nbProjections;
                 }
-                else if (!missingValueOnProjectionFail_) {
+                else if (projectionFail_ != ProjectionFail::missingValue) {
                     failures.emplace_front(ip, it->pointUnrotated());
                     ++nbFailures;
                 }
@@ -365,7 +381,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
         size_t count = 0;
         for (const auto& f : failures) {
             log << "\n\tpoint " << f.first << " " << f.second;
-            if (++count > nbFailuresLogged) {
+            if (++count > nbMaxFailures) {
                 log << "\n\t...";
                 break;
             }
@@ -430,6 +446,11 @@ FiniteElement* FiniteElementFactory::build(std::string& names, const std::string
 
     list(Log::error() << "FiniteElementFactory: unknown '" << names << "', choices are: ");
     throw exception::SeriousBug("FiniteElementFactory: unknown '" + names + "'");
+}
+
+
+void FiniteElement::ProjectionFail::list(std::ostream& out) {
+    out << "failure, increase-epsilon, missing-value";
 }
 
 
