@@ -256,6 +256,9 @@ struct MIR : MIRTool {
         options_.push_back(new SimpleOption<double>("cesaro-k", "Cesàro summation k (default 2.)"));
         options_.push_back(new SimpleOption<size_t>(
             "cesaro-truncation", "Cesàro summation filtering minimum truncation (1 <= Tmin < T, default 1)"));
+        options_.push_back(new VectorOption<long>(
+            "bandpass",
+            "spectral bandpass filter on zonal/meridional minimum/maximum wave numbers (M min/M max/N min/N max)", 4));
 
         //==============================================
         options_.push_back(new Separator("Compute"));

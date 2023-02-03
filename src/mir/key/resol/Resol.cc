@@ -87,10 +87,13 @@ void Resol::prepare(action::ActionPlan& plan) const {
         plan.add("filter.sh-truncate", "truncation", T);
     }
 
-    // filter
-    bool cesaro;
-    if (parametrisation_.get("cesaro", cesaro)) {
+    // filter(s)
+    if (parametrisation_.userParametrisation().has("cesaro")) {
         plan.add("filter.sh-cesaro-summation-filter");
+    }
+
+    if (parametrisation_.userParametrisation().has("bandpass")) {
+        plan.add("filter.sh-bandpass");
     }
 
     // transform, if specified
