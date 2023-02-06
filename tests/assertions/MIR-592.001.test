@@ -1,0 +1,6 @@
+# mars
+param=vo_d,level=1000,resol=20
+# mir
+--grid=3/3 --interpolation=linear --vod2uv
+# grib_get (placeholder until values can be checked)
+numberOfPoints=7320
