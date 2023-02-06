@@ -262,7 +262,10 @@ struct MIR : MIRTool {
 
         //==============================================
         options_.push_back(new Separator("Compute"));
-        options_.push_back(new SimpleOption<std::string>("formula", "Formula to apply on field"));
+        for (const std::string& when : {"prologue", "raw", "spectral", "gridded", "epilogue"}) {
+            options_.push_back(new SimpleOption<std::string>("formula." + when, "Formula"));
+            options_.push_back(new SimpleOption<std::string>("formula." + when + ".metadata", "Formula metadata"));
+        }
 
         //==============================================
         options_.push_back(new Separator("Land-sea mask handling"));
