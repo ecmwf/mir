@@ -4,6 +4,7 @@ ecbuild_add_executable(TARGET mir-tool OUTPUT_NAME mir SOURCES mir.cc LIBS mir $
 foreach(tool IN ITEMS
     mir-climate-filter
     mir-compare  # NOTE: set in the testing scripts, however not used
+    mir-compute
     mir-config
     mir-count
     mir-formula
