@@ -655,6 +655,10 @@ vector-space.2d-vector-v:
 - 300231  # Time mean surface meridional wind (v)
 - 300241  # Time mean meridional wind (v)
 
+vector-space.2d-vector.associated:
+- 138  # Vorticity (relative)
+- 155  # Divergence
+
 vector-space.3d-vector-u:
 - 150133  # Ocean U wind component
 - 151131  # Ocean current zonal component
