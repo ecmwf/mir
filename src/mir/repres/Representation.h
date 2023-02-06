@@ -111,10 +111,13 @@ public:
 
     virtual atlas::Grid atlasGrid() const;
 
+    // Domain operations
     virtual util::Domain domain() const;
     virtual const util::BoundingBox& boundingBox() const;
-
     virtual bool isGlobal() const;
+    virtual bool isPeriodicWestEast() const;
+    virtual bool includesNorthPole() const;
+    virtual bool includesSouthPole() const;
 
     virtual size_t truncation() const;
 
@@ -147,11 +150,6 @@ protected:
 
     virtual void print(std::ostream&) const = 0;
     virtual void makeName(std::ostream&) const;
-
-    // Domain operations
-    virtual bool isPeriodicWestEast() const;
-    virtual bool includesNorthPole() const;
-    virtual bool includesSouthPole() const;
 
     // -- Overridden methods
     // None
