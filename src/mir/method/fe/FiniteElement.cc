@@ -151,7 +151,6 @@ struct quad_t : element_t, atlas::interpolation::element::Quad3D {
 struct point_3d_t {
     virtual Point3 point_3d(const Point2&) = 0;
     virtual ~point_3d_t()                  = default;
-    static point_3d_t* build(Latitude poleDisplacement);
 };
 
 
@@ -174,12 +173,6 @@ struct point_3d_pole_displacement_t final : point_3d_t {
 
     const double eps_;
 };
-
-
-point_3d_t* point_3d_t::build(Latitude poleDisplacement) {
-    return poleDisplacement > 0. ? static_cast<point_3d_t*>(new point_3d_pole_displacement_t(poleDisplacement))
-                                 : new point_3d_simple_t;
-}
 
 
 }  // namespace
@@ -328,7 +321,10 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
     const auto nbRealPts =
         inNodes.metadata().has("NbRealPts") ? inNodes.metadata().get<size_t>("NbRealPts") : nbInputPoints;
 
-    std::unique_ptr<point_3d_t> point_3d(point_3d_t::build(poleDisplacement_));
+    std::unique_ptr<point_3d_t> point_3d(
+        (poleDisplacement_ > 0.) && (out.includesNorthPole() || out.includesSouthPole())
+            ? static_cast<point_3d_t*>(new point_3d_pole_displacement_t(poleDisplacement_))
+            : new point_3d_simple_t);
 
     // some statistics
     size_t nbMaxElementsSearched   = 0;
