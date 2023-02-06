@@ -13,6 +13,7 @@ foreach(_t
     action_graph
     bounding_box
     gaussian_grid
+    formula
     grib_basic_angle
     grib_encoding
     increments
