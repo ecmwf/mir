@@ -32,6 +32,7 @@
 #include "mir/util/Domain.h"
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
+#include "mir/util/Point2ToPoint3.h"
 #include "mir/util/Trace.h"
 
 
@@ -148,38 +149,11 @@ struct quad_t : element_t, atlas::interpolation::element::Quad3D {
 };
 
 
-struct point_3d_t {
-    virtual Point3 point_3d(const Point2&) = 0;
-    virtual ~point_3d_t()                  = default;
-};
-
-
-struct point_3d_simple_t final : point_3d_t {
-    Point3 point_3d(const Point2& p) override { return repres::Iterator::point_3D(p); }
-};
-
-
-struct point_3d_pole_displacement_t final : point_3d_t {
-    explicit point_3d_pole_displacement_t(Latitude poleDisplacement) : eps_(poleDisplacement.value()) {
-        ASSERT(eps_ > 0.);
-    }
-
-    Point3 point_3d(const Point2& p) override {
-        // notice the order
-        return Latitude::NORTH_POLE == p[0]   ? repres::Iterator::point_3D({p[0] - eps_, p[1]})
-               : Latitude::SOUTH_POLE == p[0] ? repres::Iterator::point_3D({p[0] + eps_, p[1]})
-                                              : repres::Iterator::point_3D(p);
-    }
-
-    const double eps_;
-};
-
-
 }  // namespace
 
 
 FiniteElement::FiniteElement(const param::MIRParametrisation& param, const std::string& label) :
-    MethodWeighted(param), meshGeneratorParams_(param, label), poleDisplacement_(0.) {
+    MethodWeighted(param), meshGeneratorParams_(param, label) {
     param.get("finite-element-validate-mesh", validateMesh_ = false);
 
     // mesh requirements
@@ -192,9 +166,6 @@ FiniteElement::FiniteElement(const param::MIRParametrisation& param, const std::
                       : projectionFail == "increase-epsilon" ? ProjectionFail::increaseEpsilon
                       : projectionFail == "missing-value"    ? ProjectionFail::missingValue
                                                              : NOTIMP;
-
-    // pole displacement
-    param.get("pole-displacement-in-degree", poleDisplacement_);
 }
 
 
@@ -262,15 +233,14 @@ void FiniteElement::print(std::ostream& out) const {
             : projectionFail_ == ProjectionFail::increaseEpsilon ? "increase-epsilon"
             : projectionFail_ == ProjectionFail::missingValue    ? "missing-value"
                                                                  : NOTIMP)
-        << ",poleDisplacement=" << poleDisplacement_ << "]";
+        << "]";
 }
 
 
 bool FiniteElement::sameAs(const Method& other) const {
     const auto* o = dynamic_cast<const FiniteElement*>(&other);
     return (o != nullptr) && meshGeneratorParams_.sameAs(o->meshGeneratorParams_) &&
-           validateMesh_ == o->validateMesh_ && projectionFail_ == o->projectionFail_ &&
-           Latitude(poleDisplacement_) == Latitude(o->poleDisplacement_) && MethodWeighted::sameAs(other);
+           validateMesh_ == o->validateMesh_ && projectionFail_ == o->projectionFail_ && MethodWeighted::sameAs(other);
 }
 
 
@@ -280,7 +250,7 @@ void FiniteElement::hash(eckit::MD5& md5) const {
 
     md5 << validateMesh_;
     md5 << static_cast<unsigned int>(projectionFail_);
-    md5 << poleDisplacement_;
+    md5 << poleDisplacement();
 }
 
 
@@ -319,10 +289,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
     const auto nbRealPts =
         inNodes.metadata().has("NbRealPts") ? inNodes.metadata().get<size_t>("NbRealPts") : nbInputPoints;
 
-    std::unique_ptr<point_3d_t> point_3d(
-        (poleDisplacement_ > 0.) && (out.includesNorthPole() || out.includesSouthPole())
-            ? static_cast<point_3d_t*>(new point_3d_pole_displacement_t(poleDisplacement_))
-            : new point_3d_simple_t);
+    util::Point2ToPoint3 point3(out, poleDisplacement());
 
     // some statistics
     size_t nbMaxElementsSearched   = 0;
@@ -342,14 +309,13 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
         // iterate over output points
         for (const std::unique_ptr<repres::Iterator> it(out.iterator()); it->next(); ++progress) {
             if (inDomain.contains(it->pointRotated())) {
-
-                // 3D projection, trying elements closest to p
-                Point3 p(point_3d->point_3d(it->pointRotated()));
                 size_t nbProjectionAttempts = 0;
 
                 auto ip = it->index();
                 ASSERT(ip < nbOutputPoints);
 
+                // 3D projection, trying elements closest to p
+                const auto p = point3(*(*it));
                 auto closest = eTree->findInSphere(p, R);
 
                 atlas::interpolation::method::Ray ray(p.data());
