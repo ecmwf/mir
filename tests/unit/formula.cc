@@ -12,19 +12,23 @@
 
 #include "eckit/testing/Test.h"
 
+#include <algorithm>
 #include <cmath>
 #include <iomanip>
 #include <memory>
 #include <sstream>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/action/plan/Action.h"
+#include "mir/api/MIRJob.h"
+#include "mir/input/MIRInput.h"
+#include "mir/output/RawOutput.h"
 #include "mir/param/SimpleParametrisation.h"
-#include "mir/util/Exceptions.h"
 #include "mir/util/Formula.h"
 #include "mir/util/FormulaParser.h"
 #include "mir/util/Log.h"
@@ -190,6 +194,56 @@ CASE("Formula") {
             EXPECT_APPROX(eval(test.first), test.second);
         }
     }
+}
+
+
+CASE("Formula (pgen integration)") {
+    // pgen in production uses (integration test, however this list is not extensive):
+    // - use options like a=b=c (CmdArgs cannot use this, a CmdArgs::init parsing problem)
+    // - use options like a.b=c (CmdArgs cannot use this, because of LocalConfiguration default separator '.')
+    // - use formula with/without associated metadata
+
+    // setup input/output/job
+    param::SimpleParametrisation in;
+    in.set("input",
+           "{"
+           "artificialInput:constant,"
+           "constant:1.,"
+           "gridded:true,"
+           "gridType:regular_ll,"
+           "west_east_increment:1.,"
+           "south_north_increment:1.,"
+           "Ni:360,"
+           "Nj:181,"
+           "north:90.,"
+           "west:0.,"
+           "south:-90.,"
+           "east:360."
+           "}");
+
+    std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build("constant", in));
+
+    param::SimpleParametrisation out;
+    std::vector<double> values(7320, 0.);
+    std::unique_ptr<output::MIROutput> output(new output::RawOutput(values.data(), values.size(), out));
+
+    api::MIRJob job;
+    job.set("grid", std::vector<double>{3, 3});
+    job.set("formula.prologue", "3-f");
+    job.set("formula.epilogue", "f1*3");
+    job.set("formula.epilogue.metadata", "paramId=255");
+
+    job.execute(*input, *output);
+
+    auto is_approximately_equal = [](const std::vector<double>& values) -> bool {
+        return values.end() == std::adjacent_find(values.begin(), values.end(), [](double a, double b) {
+                   return !eckit::types::is_approximately_equal(a, b);
+               });
+    };
+
+    // (3 - 1) * 3 = 6
+    EXPECT(is_approximately_equal(values));
+    EXPECT_APPROX(6., values[0]);
 }
 
 
