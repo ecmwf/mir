@@ -1,0 +1,42 @@
+name: reusable-ci
+
+on:
+  workflow_call:
+    inputs:
+      eccodes:
+        required: false
+        type: string
+      eckit:
+        required: false
+        type: string
+      metkit:
+        required: false
+        type: string
+      atlas:
+        required: false
+        type: string
+      mir_sha:
+        required: true
+        type: string
+
+jobs:
+  ci:
+    name: ci
+    uses: ecmwf-actions/reusable-workflows/.github/workflows/ci.yml@v2
+    with:
+      repository: ecmwf/mir
+      ref: ${{ inputs.mir_sha }}
+      name_prefix: mir-
+      build_package_inputs: |
+        repository: ecmwf/mir
+        sha: ${{ inputs.mir_sha }}
+        dependencies: |
+            ecmwf/ecbuild
+            MathisRosenhauer/libaec@master
+            ${{ inputs.eccodes || 'ecmwf/eccodes' }}
+            ${{ inputs.eckit || 'ecmwf/eckit' }}
+            ${{ inputs.metkit || 'ecmwf/metkit' }}
+            ${{ inputs.atlas || 'ecmwf/atlas' }}
+        dependency_branch: develop
+        parallelism_factor: 8
+    secrets: inherit
