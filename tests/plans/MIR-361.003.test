@@ -3,4 +3,4 @@ MIR-360.grib
 # mir
 --area=85/-80/25/40
 # plan
-Gridded2RegularLL[increments=Increments[west_east=1,south_north=1],bbox=BoundingBox[north=90,west=0,south=-90,east=359],interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],Solver=Multiply[],cropping=BoundingBox[north=85,west=-80,south=25,east=40],lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,validateMesh=0,projectionFail=missing-value,poleDisplacement=0]]|Save[output=...]
+Gridded2RegularLL[increments=Increments[west_east=1,south_north=1],bbox=BoundingBox[north=90,west=0,south=-90,east=359],interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],Solver=Multiply[],cropping=BoundingBox[north=85,west=-80,south=25,east=40],lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|Save[output=...]

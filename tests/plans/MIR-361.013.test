@@ -3,4 +3,4 @@ regular_ll.2-4.grib1
 # mir
 --grid=2/2
 # plan
-Gridded2RegularLL[increments=Increments[west_east=2,south_north=2],bbox=BoundingBox[north=90,west=0,south=-90,east=358],interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],Solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,validateMesh=0,projectionFail=missing-value,poleDisplacement=0]]|Save[output=...]
+Gridded2RegularLL[increments=Increments[west_east=2,south_north=2],bbox=BoundingBox[north=90,west=0,south=-90,east=358],interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],Solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|Save[output=...]
