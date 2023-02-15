@@ -36,16 +36,16 @@ vector-space.1d-angle-radian-symmetric:
 # Vector in 2D Cartesian space, X component
 vector-space.2d-vector-u:
     vector-space: 2d-vector-u
-    finite-element-pole-displacement: 1e-6
+    pole-displacement-in-degree: 1e-6
 
 # Vector in 2D Cartesian space, Y component
 vector-space.2d-vector-v:
     vector-space: 2d-vector-v
-    finite-element-pole-displacement: 1e-6
+    pole-displacement-in-degree: 1e-6
 
 # Vector in 2D Cartesian space, associated parameters
 vector-space.2d-vector.associated:
-    finite-element-pole-displacement: 1e-6
+    pole-displacement-in-degree: 1e-6
 
 # Vector in 3D Cartesian space, X component
 vector-space.3d-vector-u:

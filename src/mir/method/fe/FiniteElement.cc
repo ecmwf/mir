@@ -179,7 +179,7 @@ struct point_3d_pole_displacement_t final : point_3d_t {
 
 
 FiniteElement::FiniteElement(const param::MIRParametrisation& param, const std::string& label) :
-    MethodWeighted(param), meshGeneratorParams_(param, label) {
+    MethodWeighted(param), meshGeneratorParams_(param, label), poleDisplacement_(0.) {
     param.get("finite-element-validate-mesh", validateMesh_ = false);
 
     // mesh requirements
@@ -194,9 +194,7 @@ FiniteElement::FiniteElement(const param::MIRParametrisation& param, const std::
                                                              : NOTIMP;
 
     // pole displacement
-    double poleDisplacement = 0.;
-    param.get("finite-element-pole-displacement", poleDisplacement);
-    poleDisplacement_ = poleDisplacement;
+    param.get("pole-displacement-in-degree", poleDisplacement_);
 }
 
 
@@ -272,7 +270,7 @@ bool FiniteElement::sameAs(const Method& other) const {
     const auto* o = dynamic_cast<const FiniteElement*>(&other);
     return (o != nullptr) && meshGeneratorParams_.sameAs(o->meshGeneratorParams_) &&
            validateMesh_ == o->validateMesh_ && projectionFail_ == o->projectionFail_ &&
-           poleDisplacement_ == o->poleDisplacement_ && MethodWeighted::sameAs(other);
+           Latitude(poleDisplacement_) == Latitude(o->poleDisplacement_) && MethodWeighted::sameAs(other);
 }
 
 
