@@ -1073,7 +1073,7 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
 
     value.resize(count);
 
-    GRIB_CALL(codes_get_double_array(grib_, key, value.data() & size));
+    GRIB_CALL(codes_get_double_array(grib_, key, value.data(), &size));
     ASSERT(count == size);
 
     // Log::debug() << "codes_get_double_array(" << name << ",key=" << key << ") size=" << value.size()
