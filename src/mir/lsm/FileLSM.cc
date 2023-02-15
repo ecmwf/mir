@@ -22,8 +22,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace lsm {
+namespace mir::lsm {
 
 
 static const FileLSM __lsm_selection("file");
@@ -66,5 +65,4 @@ std::string FileLSM::cacheKey(const param::MIRParametrisation& param, const repr
 }
 
 
-}  // namespace lsm
-}  // namespace mir
+}  // namespace mir::lsm

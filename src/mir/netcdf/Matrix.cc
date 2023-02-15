@@ -25,8 +25,7 @@
 #include "mir/netcdf/Value.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 Matrix::Matrix(Type& type, const std::string& name, size_t size) :
@@ -207,5 +206,4 @@ void Matrix::read(std::vector<long long>& /*unused*/, const std::vector<size_t>&
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

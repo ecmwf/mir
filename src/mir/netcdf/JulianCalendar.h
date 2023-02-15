@@ -15,8 +15,7 @@
 #include "mir/netcdf/Calendar.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class JulianCalendar : public Calendar {
@@ -29,5 +28,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

@@ -17,8 +17,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 
 
 SameParametrisation::SameParametrisation(const MIRParametrisation& parametrisation1,
@@ -111,5 +110,4 @@ bool SameParametrisation::get(const std::string& name, std::vector<std::string>&
 }
 
 
-}  // namespace param
-}  // namespace mir
+}  // namespace mir::param

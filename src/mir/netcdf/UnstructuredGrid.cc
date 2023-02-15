@@ -20,8 +20,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 UnstructuredGrid::UnstructuredGrid(const Variable& variable, const std::vector<double>& latitudes,
@@ -192,5 +191,4 @@ void UnstructuredGrid::reorder(MIRValuesVector& /*values*/) const {
 static const GridSpecGuesserBuilder<UnstructuredGrid> builder(99);
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

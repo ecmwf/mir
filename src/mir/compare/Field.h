@@ -29,15 +29,12 @@ class CmdArgs;
 }  // namespace option
 }  // namespace eckit
 
-namespace mir {
-namespace compare {
+namespace mir::compare {
 class FieldSet;
-}
-}  // namespace mir
+}  // namespace mir::compare
 
 
-namespace mir {
-namespace compare {
+namespace mir::compare {
 
 class FieldBase : public eckit::Counted {
 public:
@@ -144,5 +141,4 @@ private:
 };
 
 
-}  // namespace compare
-}  // namespace mir
+}  // namespace mir::compare

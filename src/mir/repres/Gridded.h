@@ -16,8 +16,7 @@
 #include "mir/util/BoundingBox.h"
 
 
-namespace mir {
-namespace repres {
+namespace mir::repres {
 
 
 class Gridded : public Representation {
@@ -100,5 +99,4 @@ private:
 };
 
 
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres

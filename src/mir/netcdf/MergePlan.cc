@@ -19,8 +19,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 MergePlan::MergePlan(Dataset& field) : field_(field) {}
@@ -74,5 +73,4 @@ Dataset& MergePlan::field() const {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

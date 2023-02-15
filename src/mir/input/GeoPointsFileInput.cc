@@ -30,8 +30,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 static constexpr double missingValueGeoPoints = 3e38;
@@ -363,5 +362,4 @@ size_t GeoPointsFileInput::footprint() const {
 static const MIRInputBuilder<GeoPointsFileInput> __mirinput(0x2347454f);  // "#GEO"
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

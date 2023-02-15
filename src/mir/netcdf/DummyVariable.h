@@ -15,8 +15,7 @@
 #include "mir/netcdf/Variable.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class DummyVariable : public Variable {
@@ -44,5 +43,4 @@ protected:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

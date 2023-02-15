@@ -17,8 +17,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 struct DeprecatedFunctionality {
@@ -29,5 +28,4 @@ private:
 };
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

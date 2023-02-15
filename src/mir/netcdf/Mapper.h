@@ -18,8 +18,7 @@
 #include "mir/netcdf/Reshape.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 template <class T>
@@ -51,23 +50,23 @@ template <class T>
 Mapper<T>::Mapper(Mapper<T>& parent, const std::vector<Reshape*>& reshapes) :
     v_(parent.v_), set_(parent.set_), overlap_(parent.overlap_) {
     Reshape* r = nullptr;
-    for (std::vector<Reshape*>::const_iterator j = reshapes.begin(); j != reshapes.end(); ++j) {
-        if (r && r->merge(*(*j))) {
+    for (auto* reshape : reshapes) {
+        if (r != nullptr && r->merge(*reshape)) {
             // Pass
         }
         else {
-            r = (*j);
+            r = reshape;
             r->attach();
             reshapes_.push_back(r);
         }
     }
 
-    for (std::vector<Reshape*>::iterator j = parent.reshapes_.begin(); j != parent.reshapes_.end(); ++j) {
-        if (r && r->merge(*(*j))) {
+    for (auto* reshape : parent.reshapes_) {
+        if (r != nullptr && r->merge(*reshape)) {
             // Pass
         }
         else {
-            r = (*j);
+            r = reshape;
             r->attach();
             reshapes_.push_back(r);
         }
@@ -77,8 +76,8 @@ Mapper<T>::Mapper(Mapper<T>& parent, const std::vector<Reshape*>& reshapes) :
 
 template <class T>
 Mapper<T>::~Mapper() {
-    for (std::vector<Reshape*>::iterator j = reshapes_.begin(); j != reshapes_.end(); ++j) {
-        (*j)->detach();
+    for (auto* reshape : reshapes_) {
+        reshape->detach();
     }
 }
 
@@ -86,9 +85,8 @@ Mapper<T>::~Mapper() {
 template <class T>
 void Mapper<T>::set(size_t i, T v) {
 
-    for (std::vector<Reshape*>::iterator j = reshapes_.begin(); j != reshapes_.end(); ++j) {
-        Reshape* m = (*j);
-        size_t k   = (*m)(i);
+    for (auto* reshape : reshapes_) {
+        size_t k = (*reshape)(i);
         ASSERT(k >= i);
         i = k;
     }
@@ -106,5 +104,4 @@ void Mapper<T>::set(size_t i, T v) {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

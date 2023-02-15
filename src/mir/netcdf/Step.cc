@@ -13,8 +13,7 @@
 #include "mir/netcdf/Step.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 bool Step::merge(Step* /*other*/) {
@@ -22,5 +21,4 @@ bool Step::merge(Step* /*other*/) {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

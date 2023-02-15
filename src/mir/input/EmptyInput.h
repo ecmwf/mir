@@ -16,8 +16,7 @@
 #include "mir/param/SimpleParametrisation.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 class EmptyInput : public MIRInput {
@@ -101,5 +100,4 @@ private:
 };
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

@@ -23,9 +23,7 @@
 #include "mir/util/Atlas.h"
 
 
-namespace mir {
-namespace tests {
-namespace unit {
+namespace mir::tests::unit {
 
 
 CASE("interpolations") {
@@ -154,9 +152,7 @@ CASE("MIR-583") {
 #endif
 
 
-}  // namespace unit
-}  // namespace tests
-}  // namespace mir
+}  // namespace mir::tests::unit
 
 
 int main(int argc, char** argv) {

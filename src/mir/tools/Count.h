@@ -24,15 +24,12 @@ namespace eckit {
 class JSON;
 }
 
-namespace mir {
-namespace repres {
+namespace mir::repres {
 class Representation;
-}
-}  // namespace mir
+}  // namespace mir::repres
 
 
-namespace mir {
-namespace tools {
+namespace mir::tools {
 
 
 class Count {
@@ -119,5 +116,4 @@ private:
 };
 
 
-}  // namespace tools
-}  // namespace mir
+}  // namespace mir::tools

@@ -19,9 +19,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace action {
-namespace interpolate {
+namespace mir::action::interpolate {
 
 
 Gridded2NamedGrid::Gridded2NamedGrid(const param::MIRParametrisation& parametrisation) :
@@ -60,6 +58,4 @@ const char* Gridded2NamedGrid::name() const {
 static const ActionBuilder<Gridded2NamedGrid> grid2grid("interpolate.grid2namedgrid");
 
 
-}  // namespace interpolate
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::interpolate

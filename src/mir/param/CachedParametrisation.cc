@@ -15,8 +15,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 
 
 CachedParametrisation::CachedParametrisation(MIRParametrisation& parametrisation) : parametrisation_(parametrisation) {}
@@ -149,5 +148,4 @@ void CachedParametrisation::set(const std::string& name, const char* value) {
 }
 
 
-}  // namespace param
-}  // namespace mir
+}  // namespace mir::param

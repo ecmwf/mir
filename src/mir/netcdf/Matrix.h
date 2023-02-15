@@ -18,17 +18,14 @@
 #include "eckit/memory/Counted.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 class Type;
 class Value;
 class Codec;
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class Matrix : public eckit::Counted {
@@ -104,5 +101,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

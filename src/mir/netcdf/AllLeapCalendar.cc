@@ -15,8 +15,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 AllLeapCalendar::AllLeapCalendar(const Variable& /*variable*/) {}
@@ -34,5 +33,4 @@ static const CodecBuilder<AllLeapCalendar> builder1("all_leap");
 static const CodecBuilder<AllLeapCalendar> builder3("366_day");
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

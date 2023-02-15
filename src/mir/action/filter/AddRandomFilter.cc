@@ -21,9 +21,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace action {
-namespace filter {
+namespace mir::action::filter {
 
 
 AddRandomFilter::AddRandomFilter(const param::MIRParametrisation& param) : Action(param) {
@@ -67,6 +65,4 @@ void AddRandomFilter::execute(context::Context& ctx) const {
 static const ActionBuilder<AddRandomFilter> __action("filter.add-random");
 
 
-}  // namespace filter
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::filter

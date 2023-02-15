@@ -13,12 +13,10 @@
 #include "mir/util/Formula.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 Formula::~Formula() = default;
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

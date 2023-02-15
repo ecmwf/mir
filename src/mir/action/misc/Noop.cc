@@ -15,8 +15,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 Noop::Noop(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {}
@@ -47,5 +46,4 @@ const char* Noop::name() const {
 static const ActionBuilder<Noop> __action("noop");
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

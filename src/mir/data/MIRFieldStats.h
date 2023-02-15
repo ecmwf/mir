@@ -17,8 +17,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace data {
+namespace mir::data {
 
 
 class MIRFieldStats {
@@ -47,5 +46,4 @@ private:
 };
 
 
-}  // namespace data
-}  // namespace mir
+}  // namespace mir::data

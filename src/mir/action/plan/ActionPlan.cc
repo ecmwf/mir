@@ -26,8 +26,7 @@
 #include "mir/util/MIRStatistics.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 namespace {
@@ -291,5 +290,4 @@ void ActionPlan::custom(std::ostream& out) const {
 }
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

@@ -44,8 +44,7 @@ class MIRStatistics;
 }  // namespace mir
 
 
-namespace mir {
-namespace method {
+namespace mir::method {
 
 
 class MethodWeighted : public Method {
@@ -168,5 +167,4 @@ private:
 };
 
 
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method

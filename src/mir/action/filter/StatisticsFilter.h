@@ -18,16 +18,12 @@
 #include "mir/action/plan/Action.h"
 
 
-namespace mir {
-namespace stats {
+namespace mir::stats {
 class Statistics;
-}
-}  // namespace mir
+}  // namespace mir::stats
 
 
-namespace mir {
-namespace action {
-namespace filter {
+namespace mir::action::filter {
 
 
 class StatisticsFilter : public Action {
@@ -109,6 +105,4 @@ private:
 };
 
 
-}  // namespace filter
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::filter

@@ -15,10 +15,7 @@
 #include "mir/repres/gauss/reduced/FromPL.h"
 
 
-namespace mir {
-namespace repres {
-namespace gauss {
-namespace reduced {
+namespace mir::repres::gauss::reduced {
 
 
 class ReducedFromPL : public FromPL {
@@ -95,7 +92,4 @@ private:
 };
 
 
-}  // namespace reduced
-}  // namespace gauss
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres::gauss::reduced

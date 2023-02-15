@@ -15,8 +15,7 @@
 #include "mir/netcdf/GridSpec.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class UnstructuredGrid : public GridSpec {
@@ -59,5 +58,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

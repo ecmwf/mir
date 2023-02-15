@@ -16,10 +16,7 @@
 #include "mir/method/knn/pick/Sample.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace pick {
+namespace mir::method::knn::pick {
 
 
 struct SortedSample : Pick {
@@ -35,7 +32,4 @@ private:
 };
 
 
-}  // namespace pick
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::pick

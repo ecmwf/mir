@@ -27,8 +27,7 @@ class Rotation;
 }  // namespace mir
 
 
-namespace mir {
-namespace data {
+namespace mir::data {
 
 
 class CartesianVector2DField {
@@ -111,5 +110,4 @@ private:
 };
 
 
-}  // namespace data
-}  // namespace mir
+}  // namespace mir::data

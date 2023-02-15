@@ -23,9 +23,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace key {
-namespace packing {
+namespace mir::key::packing {
 
 
 static util::once_flag once;
@@ -268,6 +266,4 @@ void PackingFactory::list(std::ostream& out) {
 }
 
 
-}  // namespace packing
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::packing

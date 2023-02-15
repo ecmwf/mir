@@ -15,9 +15,7 @@
 #include "mir/method/nonlinear/NonLinear.h"
 
 
-namespace mir {
-namespace method {
-namespace nonlinear {
+namespace mir::method::nonlinear {
 
 
 struct SimulateMissingValue : NonLinear {
@@ -37,6 +35,4 @@ private:
 };
 
 
-}  // namespace nonlinear
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::nonlinear

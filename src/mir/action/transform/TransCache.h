@@ -19,9 +19,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace action {
-namespace transform {
+namespace mir::action::transform {
 
 
 struct TransCache {
@@ -49,6 +47,4 @@ struct TransCache {
 };
 
 
-}  // namespace transform
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::transform

@@ -15,8 +15,7 @@
 #include "mir/lsm/Mask.h"
 
 
-namespace mir {
-namespace lsm {
+namespace mir::lsm {
 
 
 class NoMask : public Mask {
@@ -35,5 +34,4 @@ class NoMask : public Mask {
 };
 
 
-}  // namespace lsm
-}  // namespace mir
+}  // namespace mir::lsm

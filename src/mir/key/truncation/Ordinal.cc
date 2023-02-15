@@ -15,9 +15,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace key {
-namespace truncation {
+namespace mir::key::truncation {
 
 
 Ordinal::Ordinal(long truncation, const param::MIRParametrisation& parametrisation) :
@@ -32,6 +30,4 @@ bool Ordinal::truncation(long& T, long /*inputTrucation*/) const {
 }
 
 
-}  // namespace truncation
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::truncation

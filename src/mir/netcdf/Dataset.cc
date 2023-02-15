@@ -19,8 +19,7 @@
 
 #include <netcdf.h>
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 Dataset::Dataset(const std::string& path) : path_(path) {}
@@ -161,5 +160,4 @@ bool Dataset::hasVariable(const std::string& name) const {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

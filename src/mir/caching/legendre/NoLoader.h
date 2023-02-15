@@ -15,9 +15,7 @@
 #include "mir/caching/legendre/LegendreLoader.h"
 
 
-namespace mir {
-namespace caching {
-namespace legendre {
+namespace mir::caching::legendre {
 
 /// NoLoader turns off loading of coefficients but will not prevent the creation of the file
 class NoLoader : public LegendreLoader {
@@ -38,6 +36,4 @@ private:
 };
 
 
-}  // namespace legendre
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching::legendre

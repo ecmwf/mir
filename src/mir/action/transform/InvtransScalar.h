@@ -15,9 +15,7 @@
 #include "mir/action/transform/ShToGridded.h"
 
 
-namespace mir {
-namespace action {
-namespace transform {
+namespace mir::action::transform {
 
 
 class InvtransScalar {
@@ -88,6 +86,4 @@ private:
 };
 
 
-}  // namespace transform
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::transform

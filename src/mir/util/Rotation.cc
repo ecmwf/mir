@@ -25,8 +25,7 @@
 #include "mir/util/Grib.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 Rotation::Rotation(const Latitude& south_pole_latitude, const Longitude& south_pole_longitude,
@@ -141,5 +140,4 @@ void Rotation::makeName(std::ostream& out) const {
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

@@ -15,9 +15,7 @@
 #include "mir/method/gridbox/GridBoxMethod.h"
 
 
-namespace mir {
-namespace method {
-namespace gridbox {
+namespace mir::method::gridbox {
 
 
 class GridBoxAverage : public GridBoxMethod {
@@ -90,6 +88,4 @@ private:
 };
 
 
-}  // namespace gridbox
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::gridbox

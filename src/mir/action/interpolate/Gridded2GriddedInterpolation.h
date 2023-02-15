@@ -28,9 +28,7 @@ class Method;
 }  // namespace mir
 
 
-namespace mir {
-namespace action {
-namespace interpolate {
+namespace mir::action::interpolate {
 
 
 class Gridded2GriddedInterpolation : public Action {
@@ -115,6 +113,4 @@ private:
 };
 
 
-}  // namespace interpolate
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::interpolate

@@ -40,9 +40,7 @@
     };)
 
 
-namespace mir {
-namespace tests {
-namespace unit {
+namespace mir::tests::unit {
 
 
 CASE("Formula") {
@@ -247,9 +245,7 @@ CASE("Formula (pgen integration)") {
 }
 
 
-}  // namespace unit
-}  // namespace tests
-}  // namespace mir
+}  // namespace mir::tests::unit
 
 
 int main(int argc, char** argv) {

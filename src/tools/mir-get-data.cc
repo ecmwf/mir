@@ -36,8 +36,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace tools {
+namespace mir::tools {
 
 
 using coord_t      = std::vector<double>;
@@ -370,8 +369,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 }
 
 
-}  // namespace tools
-}  // namespace mir
+}  // namespace mir::tools
 
 
 int main(int argc, char** argv) {

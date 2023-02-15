@@ -20,8 +20,7 @@
 #include "mir/util/Regex.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 FormulaIdent::FormulaIdent(const param::MIRParametrisation& parametrisation, const std::string& name) :
@@ -74,5 +73,4 @@ const char* FormulaIdent::name() const {
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

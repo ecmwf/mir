@@ -33,8 +33,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 static Type* types_[NC_MAX_ATOMIC_TYPE + 1] = {
@@ -254,13 +253,13 @@ static void save_values(const Matrix& matrix, int nc, int varid, const std::stri
         codec->encode(values);
         ASSERT(varid >= 0);
         ASSERT(values.size());
-        NC_CALL(put(nc, varid, &values[0]), path);
+        NC_CALL(put(nc, varid, values.data()), path);
     }
     else {
         const std::vector<T>& values = matrix.values<T>();
         ASSERT(varid >= 0);
         ASSERT(values.size());
-        NC_CALL(put(nc, varid, &values[0]), path);
+        NC_CALL(put(nc, varid, values.data()), path);
     }
 }
 
@@ -446,5 +445,4 @@ T(double, NC_DOUBLE, -1);
 T(std::string, NC_STRING, -1);
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

@@ -17,8 +17,7 @@
 #include "mir/param/SimpleParametrisation.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 class ArtificialInput : public MIRInput, protected param::FieldParametrisation {
@@ -151,5 +150,4 @@ public:
 };
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

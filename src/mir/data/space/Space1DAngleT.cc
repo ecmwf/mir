@@ -21,9 +21,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace data {
-namespace space {
+namespace mir::data::space {
 
 
 namespace {
@@ -181,6 +179,4 @@ size_t Space1DAngleT<SCALE, SYMMETRY>::dimensions() const {
 }
 
 
-}  // namespace space
-}  // namespace data
-}  // namespace mir
+}  // namespace mir::data::space

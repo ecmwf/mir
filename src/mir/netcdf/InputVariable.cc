@@ -18,8 +18,7 @@
 #include "mir/netcdf/Exceptions.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 InputVariable::InputVariable(Dataset& owner, const std::string& name, int id,
@@ -63,5 +62,4 @@ void InputVariable::print(std::ostream& out) const {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

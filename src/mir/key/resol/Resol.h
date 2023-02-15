@@ -30,9 +30,7 @@ class MIRParametrisation;
 }  // namespace mir
 
 
-namespace mir {
-namespace key {
-namespace resol {
+namespace mir::key::resol {
 
 
 class Resol {
@@ -119,6 +117,4 @@ private:
 };
 
 
-}  // namespace resol
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::resol

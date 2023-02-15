@@ -26,8 +26,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 AdjustWindsScaleCosLatitude::AdjustWindsScaleCosLatitude(const param::MIRParametrisation& parametrisation) :
@@ -86,5 +85,4 @@ const char* AdjustWindsScaleCosLatitude::name() const {
 static const ActionBuilder<AdjustWindsScaleCosLatitude> __action("filter.adjust-winds-scale-cos-latitude");
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

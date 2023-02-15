@@ -18,8 +18,7 @@
 #include "mir/param/SimpleParametrisation.h"
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 
 
 class RuntimeParametrisation : public SimpleParametrisation {
@@ -139,5 +138,4 @@ private:
 };
 
 
-}  // namespace param
-}  // namespace mir
+}  // namespace mir::param

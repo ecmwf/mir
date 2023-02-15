@@ -17,8 +17,7 @@
 #include "mir/util/Formula.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 class FormulaIdent : public Formula {
@@ -37,5 +36,4 @@ private:  // members
 };
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

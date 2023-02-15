@@ -24,8 +24,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 SetMetadata::SetMetadata(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
@@ -80,5 +79,4 @@ const char* SetMetadata::name() const {
 static const ActionBuilder<SetMetadata> __action("set.metadata");
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

@@ -22,9 +22,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace method {
-namespace solver {
+namespace mir::method::solver {
 
 
 Multiply::Multiply(const param::MIRParametrisation& param) :
@@ -68,6 +66,4 @@ void Multiply::hash(eckit::MD5& h) const {
 }
 
 
-}  // namespace solver
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::solver

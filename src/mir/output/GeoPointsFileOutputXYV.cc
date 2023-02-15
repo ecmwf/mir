@@ -28,8 +28,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 // See https://software.ecmwf.int/wiki/display/METV/Geopoints
@@ -195,5 +194,4 @@ static const MIROutputBuilder<GeoPointsFileOutputXYV> output1("geopoints-xyv", {
 static const MIROutputBuilder<GeoPointsFileOutputXYV> output2("geopoints");
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

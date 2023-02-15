@@ -16,9 +16,7 @@
 #include "mir/util/Increments.h"
 
 
-namespace mir {
-namespace repres {
-namespace latlon {
+namespace mir::repres::latlon {
 
 
 class LatLon : public Gridded {
@@ -157,6 +155,4 @@ private:
 };
 
 
-}  // namespace latlon
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres::latlon

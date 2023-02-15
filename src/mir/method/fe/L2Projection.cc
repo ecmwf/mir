@@ -25,9 +25,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace method {
-namespace fe {
+namespace mir::method::fe {
 
 
 L2Projection::L2Projection(const param::MIRParametrisation& param) : MethodWeighted(param) {
@@ -149,6 +147,4 @@ void L2Projection::print(std::ostream& out) const {
 static const MethodBuilder<L2Projection> __builder("l2-projection");
 
 
-}  // namespace fe
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::fe

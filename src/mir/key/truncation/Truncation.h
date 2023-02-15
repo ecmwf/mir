@@ -16,16 +16,12 @@
 #include <string>
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 class MIRParametrisation;
-}
-}  // namespace mir
+}  // namespace mir::param
 
 
-namespace mir {
-namespace key {
-namespace truncation {
+namespace mir::key::truncation {
 
 
 class Truncation {
@@ -128,6 +124,4 @@ public:
 };
 
 
-}  // namespace truncation
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::truncation

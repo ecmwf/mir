@@ -15,9 +15,7 @@
 #include "mir/key/packing/Packing.h"
 
 
-namespace mir {
-namespace key {
-namespace packing {
+namespace mir::key::packing {
 
 
 class Complex : public Packing {
@@ -92,6 +90,4 @@ private:
 };
 
 
-}  // namespace packing
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::packing

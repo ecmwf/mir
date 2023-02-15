@@ -17,8 +17,7 @@
 #include "eckit/config/Parametrisation.h"
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 
 
 class MIRParametrisation : public eckit::Parametrisation {
@@ -118,5 +117,4 @@ private:
 };
 
 
-}  // namespace param
-}  // namespace mir
+}  // namespace mir::param

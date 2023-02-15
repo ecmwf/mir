@@ -20,9 +20,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace key {
-namespace grid {
+namespace mir::key::grid {
 
 
 OctahedralPattern::OctahedralPattern(const std::string& name) : GridPattern(name) {}
@@ -49,6 +47,4 @@ std::string OctahedralPattern::canonical(const std::string& name, const param::M
 static const OctahedralPattern __pattern("^[oO][1-9][0-9]*$");
 
 
-}  // namespace grid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::grid

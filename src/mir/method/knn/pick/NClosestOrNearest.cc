@@ -21,10 +21,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace pick {
+namespace mir::method::knn::pick {
 
 
 NClosestOrNearest::NClosestOrNearest(size_t nClosest, double distanceTolerance) :
@@ -98,7 +95,4 @@ static const PickBuilder<NClosestOrNearest> __pick1("nclosest-or-nearest");
 static const PickBuilder<NClosestOrNearest> __pick2("k");
 
 
-}  // namespace pick
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::pick

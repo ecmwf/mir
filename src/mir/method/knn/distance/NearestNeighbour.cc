@@ -19,10 +19,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace distance {
+namespace mir::method::knn::distance {
 
 
 NearestNeighbour::NearestNeighbour(const param::MIRParametrisation& /*unused*/) {}
@@ -58,7 +55,4 @@ void NearestNeighbour::hash(eckit::MD5& h) const {
 static const DistanceWeightingBuilder<NearestNeighbour> __distance("nearest-neighbour");
 
 
-}  // namespace distance
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::distance

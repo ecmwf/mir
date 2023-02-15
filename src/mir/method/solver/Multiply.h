@@ -15,16 +15,12 @@
 #include "mir/method/solver/Solver.h"
 
 
-namespace eckit {
-namespace linalg {
+namespace eckit::linalg {
 class LinearAlgebraSparse;
-}
-}  // namespace eckit
+}  // namespace eckit::linalg
 
 
-namespace mir {
-namespace method {
-namespace solver {
+namespace mir::method::solver {
 
 
 /// Linear system solving by matrix multiplication
@@ -43,6 +39,4 @@ private:
 };
 
 
-}  // namespace solver
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::solver

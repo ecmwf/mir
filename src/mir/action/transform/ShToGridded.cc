@@ -36,9 +36,7 @@
 #include "mir/util/Trace.h"
 
 
-namespace mir {
-namespace action {
-namespace transform {
+namespace mir::action::transform {
 
 
 constexpr size_t CAPACITY_MEMORY = 8L * 1024 * 1024 * 1024;
@@ -333,6 +331,4 @@ bool ShToGridded::sameAs(const Action& other) const {
 }
 
 
-}  // namespace transform
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::transform

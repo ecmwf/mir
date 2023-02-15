@@ -15,9 +15,7 @@
 #include "mir/method/gridbox/GridBoxMethod.h"
 
 
-namespace mir {
-namespace method {
-namespace gridbox {
+namespace mir::method::gridbox {
 
 
 struct GridBoxStatistics final : GridBoxMethod {
@@ -27,6 +25,4 @@ struct GridBoxStatistics final : GridBoxMethod {
 };
 
 
-}  // namespace gridbox
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::gridbox

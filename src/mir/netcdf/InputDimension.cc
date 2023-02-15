@@ -18,8 +18,7 @@
 #include "mir/netcdf/OutputDimension.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 InputDimension::InputDimension(Dataset& owner, const std::string& name, int id, size_t len) :
@@ -49,5 +48,4 @@ void InputDimension::realDimensions(std::vector<size_t>& dims) const {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

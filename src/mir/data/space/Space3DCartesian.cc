@@ -13,9 +13,7 @@
 #include "mir/data/space/Space3DCartesian.h"
 
 
-namespace mir {
-namespace data {
-namespace space {
+namespace mir::data::space {
 
 
 static const SpaceChoice<Space3DCartesian> __space1("3d-cartesian-x", 0, 3);
@@ -28,6 +26,4 @@ size_t Space3DCartesian::dimensions() const {
 }
 
 
-}  // namespace space
-}  // namespace data
-}  // namespace mir
+}  // namespace mir::data::space

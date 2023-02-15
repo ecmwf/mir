@@ -15,15 +15,12 @@
 #include "mir/netcdf/Dataset.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 class NCFileCache;
-}
-}  // namespace mir
+}  // namespace mir::netcdf
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class OutputDataset : public Dataset {
@@ -53,5 +50,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

@@ -29,8 +29,7 @@ class Mask;
 }  // namespace mir
 
 
-namespace mir {
-namespace lsm {
+namespace mir::lsm {
 
 
 class LSMSelection {
@@ -120,5 +119,4 @@ private:
 };
 
 
-}  // namespace lsm
-}  // namespace mir
+}  // namespace mir::lsm

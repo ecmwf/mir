@@ -18,8 +18,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 Rectilinear::Rectilinear(const Variable& variable, double north, double south, const std::vector<double>& latitudes,
@@ -186,5 +185,4 @@ void Rectilinear::reorder(MIRValuesVector& values) const {
 static const GridSpecGuesserBuilder<Rectilinear> builder(1);
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

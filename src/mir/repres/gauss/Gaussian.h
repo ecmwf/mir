@@ -16,8 +16,7 @@
 #include "mir/util/BoundingBox.h"
 
 
-namespace mir {
-namespace repres {
+namespace mir::repres {
 
 
 class Gaussian : public Gridded {
@@ -116,5 +115,4 @@ private:
 };
 
 
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres

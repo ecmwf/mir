@@ -34,8 +34,7 @@
 #include "mir/util/ValueMap.h"
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 GmshOutput::GmshOutput(std::string path) : path_(std::move(path)) {}
@@ -151,5 +150,4 @@ void GmshOutput::print(std::ostream& out) const {
 static const MIROutputBuilder<GmshOutput> _output("gmsh", {".msh"});
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

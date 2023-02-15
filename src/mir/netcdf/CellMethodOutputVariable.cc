@@ -18,8 +18,7 @@
 #include "mir/netcdf/MergePlan.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 CellMethodOutputVariable::CellMethodOutputVariable(Dataset& owner, const std::string& name,
                                                    const std::vector<Dimension*>& dimensions) :
@@ -40,5 +39,4 @@ void CellMethodOutputVariable::merge(const Variable& other, MergePlan& plan) {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

@@ -19,9 +19,7 @@
 #include "mir/util/SpectralOrder.h"
 
 
-namespace mir {
-namespace key {
-namespace truncation {
+namespace mir::key::truncation {
 
 
 static const TruncationBuilder<Automatic> __truncation1("automatic");
@@ -60,6 +58,4 @@ bool Automatic::truncation(long& T, long inputTruncation) const {
 }
 
 
-}  // namespace truncation
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::truncation

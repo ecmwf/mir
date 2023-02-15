@@ -24,8 +24,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 Field::Field(const Variable& variable) :
@@ -132,5 +131,4 @@ void Field::setMetadata(data::MIRField& mirField, size_t which) const {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

@@ -18,8 +18,7 @@
 #include <vector>
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 // Helper class to handle multi-dimension objects
@@ -97,13 +96,13 @@ inline  // For speed
 inline  // For speed
     void
     HyperCube::combine(Remapping& map1, Remapping& map2) {
-    if (map1.size() == 0) {
+    if (map1.empty()) {
         std::swap(map1, map2);
     }
     else {
-        for (Remapping::iterator i = map1.begin(); i != map1.end(); ++i) {
+        for (auto& i : map1) {
             // ASSERT(*i < map2.size());
-            *i = map2[*i];
+            i = map2[i];
         }
     }
 }
@@ -112,5 +111,4 @@ inline  // For speed
 std::ostream& operator<<(std::ostream&, const HyperCube&);
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

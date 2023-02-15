@@ -17,9 +17,7 @@
 #include <memory>
 
 
-namespace mir {
-namespace method {
-namespace knn {
+namespace mir::method::knn {
 
 
 class KNearest : public KNearestNeighbours {
@@ -39,6 +37,4 @@ private:
 };
 
 
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn

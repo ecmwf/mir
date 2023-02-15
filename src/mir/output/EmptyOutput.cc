@@ -17,8 +17,7 @@
 #include "mir/param/MIRParametrisation.h"
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 EmptyOutput::EmptyOutput() = default;
@@ -83,5 +82,4 @@ void EmptyOutput::print(std::ostream& out) const {
 static const MIROutputBuilder<EmptyOutput> output("empty");
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

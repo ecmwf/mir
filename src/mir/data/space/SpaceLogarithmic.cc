@@ -17,9 +17,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace data {
-namespace space {
+namespace mir::data::space {
 
 
 static const SpaceChoice<SpaceLogarithmic> __space("1d-logarithmic");
@@ -62,6 +60,4 @@ size_t SpaceLogarithmic::dimensions() const {
 }
 
 
-}  // namespace space
-}  // namespace data
-}  // namespace mir
+}  // namespace mir::data::space

@@ -17,16 +17,13 @@
 #include "eckit/runtime/Tool.h"
 
 
-namespace eckit {
-namespace option {
+namespace eckit::option {
 class CmdArgs;
 class Option;
-}  // namespace option
-}  // namespace eckit
+}  // namespace eckit::option
 
 
-namespace mir {
-namespace tools {
+namespace mir::tools {
 
 
 class MIRTool : public eckit::Tool {
@@ -54,5 +51,4 @@ public:
 };
 
 
-}  // namespace tools
-}  // namespace mir
+}  // namespace mir::tools

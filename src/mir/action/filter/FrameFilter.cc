@@ -24,8 +24,7 @@
 #include "mir/util/MIRStatistics.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 FrameFilter::FrameFilter(const param::MIRParametrisation& parametrisation) : Action(parametrisation), size_(0) {
@@ -88,5 +87,4 @@ void FrameFilter::estimate(context::Context& ctx, api::MIREstimation& estimation
 static const ActionBuilder<FrameFilter> __action("filter.frame");
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

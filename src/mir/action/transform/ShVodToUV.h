@@ -17,9 +17,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace action {
-namespace transform {
+namespace mir::action::transform {
 
 
 class ShVodToUV : public Action {
@@ -99,6 +97,4 @@ private:
 };
 
 
-}  // namespace transform
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::transform

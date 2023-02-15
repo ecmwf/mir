@@ -17,23 +17,17 @@
 #include "mir/method/MethodWeighted.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
+namespace mir::method::knn {
 namespace distance {
 class DistanceWeighting;
 }
 namespace pick {
 class Pick;
 }
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn
 
 
-namespace mir {
-namespace method {
-namespace knn {
+namespace mir::method::knn {
 
 
 class KNearestNeighbours : public MethodWeighted {
@@ -63,6 +57,4 @@ private:
 };
 
 
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn

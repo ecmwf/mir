@@ -40,9 +40,7 @@
 #include "mir/util/Trace.h"
 
 
-namespace mir {
-namespace caching {
-namespace legendre {
+namespace mir::caching::legendre {
 
 
 namespace {
@@ -329,6 +327,4 @@ static const LegendreLoaderBuilder<SharedMemoryLoader> loader3("tmp-shmem");
 static const LegendreLoaderBuilder<SharedMemoryLoader> loader5("tmp-shared-memory");
 
 
-}  // namespace legendre
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching::legendre

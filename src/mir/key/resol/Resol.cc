@@ -27,9 +27,7 @@
 #include "mir/util/SpectralOrder.h"
 
 
-namespace mir {
-namespace key {
-namespace resol {
+namespace mir::key::resol {
 
 
 Resol::Resol(const param::MIRParametrisation& parametrisation, bool forceNoIntermediateGrid) :
@@ -48,7 +46,7 @@ Resol::Resol(const param::MIRParametrisation& parametrisation, bool forceNoInter
     // Setup intermediate grid (before truncation)
     // NOTE: truncation can depend on the intermediate grid Gaussian number
     if (forceNoIntermediateGrid) {
-        intgrid_.reset(new intgrid::None(parametrisation_, N));
+        intgrid_ = std::make_unique<intgrid::None>(parametrisation_, N);
     }
     else {
         std::string intgrid = "automatic";
@@ -67,7 +65,7 @@ Resol::Resol(const param::MIRParametrisation& parametrisation, bool forceNoInter
     // NOTE: number takes priority over possible names
     long T = 0;
     if (parametrisation_.userParametrisation().get("truncation", T) && T > 0) {
-        truncation_.reset(new truncation::Ordinal(T, parametrisation_));
+        truncation_ = std::make_unique<truncation::Ordinal>(T, parametrisation_);
     }
     else {
         std::string name = "automatic";
@@ -179,6 +177,4 @@ long Resol::getSourceGaussianNumber() const {
 }
 
 
-}  // namespace resol
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::resol

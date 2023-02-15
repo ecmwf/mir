@@ -22,9 +22,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace caching {
-namespace legendre {
+namespace mir::caching::legendre {
 
 
 FileLoader::FileLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
@@ -62,6 +60,4 @@ bool FileLoader::shared() {
 static const LegendreLoaderBuilder<FileLoader> loader("file-io");
 
 
-}  // namespace legendre
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching::legendre

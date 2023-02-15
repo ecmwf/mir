@@ -25,8 +25,7 @@
 #include "mir/util/Trace.h"
 
 
-namespace mir {
-namespace method {
+namespace mir::method {
 
 
 struct StructuredBicubic final : public ProxyMethod {
@@ -193,5 +192,4 @@ void ProxyMethod::print(std::ostream& out) const {
 }
 
 
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method

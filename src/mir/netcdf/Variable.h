@@ -20,19 +20,16 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 class Dataset;
 class Dimension;
 class Matrix;
 class MergePlan;
 class Field;
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class Variable : public Endowed {
@@ -151,5 +148,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

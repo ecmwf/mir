@@ -19,9 +19,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace method {
-namespace nonlinear {
+namespace mir::method::nonlinear {
 
 
 static util::recursive_mutex* local_mutex          = nullptr;
@@ -86,6 +84,4 @@ void NonLinearFactory::list(std::ostream& out) {
 }
 
 
-}  // namespace nonlinear
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::nonlinear

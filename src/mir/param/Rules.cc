@@ -24,8 +24,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 
 
 static const std::string PARAM_ID("paramId");
@@ -231,5 +230,4 @@ void Rules::readConfigurationFiles() {
 }
 
 
-}  // namespace param
-}  // namespace mir
+}  // namespace mir::param

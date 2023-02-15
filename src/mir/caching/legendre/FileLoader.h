@@ -17,9 +17,7 @@
 #include "mir/caching/legendre/LegendreLoader.h"
 
 
-namespace mir {
-namespace caching {
-namespace legendre {
+namespace mir::caching::legendre {
 
 
 class FileLoader : public LegendreLoader {
@@ -42,6 +40,4 @@ private:
 };
 
 
-}  // namespace legendre
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching::legendre

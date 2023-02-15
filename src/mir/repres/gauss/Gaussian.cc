@@ -29,8 +29,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace repres {
+namespace mir::repres {
 
 
 static util::once_flag once;
@@ -283,5 +282,4 @@ const std::vector<double>& Gaussian::weights() const {
 }
 
 
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres

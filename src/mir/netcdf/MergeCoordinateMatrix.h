@@ -15,8 +15,7 @@
 #include "mir/netcdf/Matrix.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class MergeCoordinateMatrix : public Matrix {
@@ -34,5 +33,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

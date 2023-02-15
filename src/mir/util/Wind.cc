@@ -20,8 +20,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 constexpr long PARAMETER_ID_U  = 131;
@@ -74,5 +73,4 @@ void Wind::paramIds(const param::MIRParametrisation& parametrisation, long& u, l
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

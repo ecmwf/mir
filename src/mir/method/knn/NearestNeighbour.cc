@@ -17,9 +17,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
+namespace mir::method::knn {
 
 
 NearestNeighbour::NearestNeighbour(const param::MIRParametrisation& param) :
@@ -61,6 +59,4 @@ static const MethodBuilder<NearestNeighbour> __method2("nearest-neighbor");  // 
 static const MethodBuilder<NearestNeighbour> __method3("nn");                // For the lazy
 
 
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn

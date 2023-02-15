@@ -15,15 +15,12 @@
 #include "mir/input/ArtificialInput.h"
 
 
-namespace mir {
-namespace stats {
+namespace mir::stats {
 class Distribution;
-}
-}  // namespace mir
+}  // namespace mir::stats
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 class DistributionInput final : public ArtificialInput {
@@ -96,5 +93,4 @@ private:
 };
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

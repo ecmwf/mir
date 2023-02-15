@@ -43,8 +43,7 @@
 #include "mir/util/Wind.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 namespace {
@@ -946,10 +945,10 @@ bool GribInput::get(const std::string& name, std::vector<long>& value) const {
 
     value.resize(count);
 
-    GRIB_CALL(codes_get_long_array(grib_, key, &value[0], &size));
+    GRIB_CALL(codes_get_long_array(grib_, key, value.data(), &size));
     ASSERT(count == size);
 
-    ASSERT(value.size());
+    ASSERT(!value.empty());
 
     // Log::debug() << "codes_get_long_array(" << name << ",key=" << key << ") size=" << value.size() <<
     // std::endl;
@@ -1074,7 +1073,7 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
 
     value.resize(count);
 
-    GRIB_CALL(codes_get_double_array(grib_, key, &value[0], &size));
+    GRIB_CALL(codes_get_double_array(grib_, key, value.data() & size));
     ASSERT(count == size);
 
     // Log::debug() << "codes_get_double_array(" << name << ",key=" << key << ") size=" << value.size()
@@ -1286,5 +1285,4 @@ void GribInput::marsRequest(std::ostream& out) const {
 }
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

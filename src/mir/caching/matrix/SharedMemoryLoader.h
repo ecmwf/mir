@@ -15,9 +15,7 @@
 #include "mir/caching/matrix/MatrixLoader.h"
 
 
-namespace mir {
-namespace caching {
-namespace matrix {
+namespace mir::caching::matrix {
 
 
 class SharedMemoryLoader : public MatrixLoader {
@@ -43,6 +41,4 @@ private:
 };
 
 
-}  // namespace matrix
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching::matrix

@@ -33,8 +33,7 @@ class MIREstimation;
 }  // namespace mir
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 class MIROutput {
@@ -149,5 +148,4 @@ public:
 };
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

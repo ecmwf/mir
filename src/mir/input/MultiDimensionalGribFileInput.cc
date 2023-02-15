@@ -15,8 +15,7 @@
 #include "mir/input/GribFileInput.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 MultiDimensionalGribFileInput::MultiDimensionalGribFileInput(const eckit::PathName& path, size_t dim, size_t skip) {
@@ -26,5 +25,4 @@ MultiDimensionalGribFileInput::MultiDimensionalGribFileInput(const eckit::PathNa
 }
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

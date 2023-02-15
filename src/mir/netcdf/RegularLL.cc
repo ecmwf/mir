@@ -18,8 +18,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 RegularLL::RegularLL(const Variable& variable, double north, double south, double south_north_increment, double west,
@@ -214,5 +213,4 @@ void RegularLL::reorder(MIRValuesVector& values) const {
 static const GridSpecGuesserBuilder<RegularLL> builder(0);  // First choice
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

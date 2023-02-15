@@ -38,8 +38,7 @@ class MIRStatistics;
 }  // namespace mir
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 class Job {
@@ -120,5 +119,4 @@ private:
 };
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

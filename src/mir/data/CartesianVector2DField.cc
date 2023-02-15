@@ -23,8 +23,7 @@
 #include "mir/util/Rotation.h"
 
 
-namespace mir {
-namespace data {
+namespace mir::data {
 
 
 namespace {
@@ -54,8 +53,8 @@ CartesianVector2DField::~CartesianVector2DField() {
 void CartesianVector2DField::rotate(const util::Rotation& rotation, MIRValuesVector& valuesX,
                                     MIRValuesVector& valuesY) const {
     // setup results vectors
+    ASSERT(!valuesX.empty());
     ASSERT(valuesX.size() == valuesY.size());
-    ASSERT(valuesX.size());
     // const size_t N = valuesX.size();
 
     // determine angle between meridians (c) using the (first) spherical law of cosines:
@@ -101,5 +100,4 @@ void CartesianVector2DField::print(std::ostream& out) const {
 }
 
 
-}  // namespace data
-}  // namespace mir
+}  // namespace mir::data

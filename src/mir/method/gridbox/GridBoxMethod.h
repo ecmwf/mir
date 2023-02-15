@@ -15,9 +15,7 @@
 #include "mir/method/MethodWeighted.h"
 
 
-namespace mir {
-namespace method {
-namespace gridbox {
+namespace mir::method::gridbox {
 
 
 class GridBoxMethod : public MethodWeighted {
@@ -99,6 +97,4 @@ private:
 };
 
 
-}  // namespace gridbox
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::gridbox

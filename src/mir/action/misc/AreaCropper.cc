@@ -33,8 +33,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 constexpr size_t CAPACITY = 256 * 1024 * 1024;
@@ -302,5 +301,4 @@ bool AreaCropper::canCrop() const {
 static const ActionBuilder<AreaCropper> __action("crop.area");
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

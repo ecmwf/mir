@@ -21,9 +21,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace key {
-namespace style {
+namespace mir::key::style {
 
 
 CustomParametrisation::CustomParametrisation(const std::string& name,
@@ -168,6 +166,4 @@ void CustomParametrisation::print(std::ostream& out) const {
 }
 
 
-}  // namespace style
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::style

@@ -21,8 +21,7 @@ class JSON;
 }
 
 
-namespace mir {
-namespace compare {
+namespace mir::compare {
 
 
 class FieldInfo {
@@ -55,5 +54,4 @@ private:
 };
 
 
-}  // namespace compare
-}  // namespace mir
+}  // namespace mir::compare

@@ -45,8 +45,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace compare {
+namespace mir::compare {
 
 
 constexpr long bufferSize      = 5L * 1024 * 1024 * 1024;
@@ -859,5 +858,4 @@ void FieldComparator::compareCounts(const std::string& name, const MultiFile& mu
 }
 
 
-}  // namespace compare
-}  // namespace mir
+}  // namespace mir::compare

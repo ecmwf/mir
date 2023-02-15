@@ -15,8 +15,7 @@
 #include <iosfwd>
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 class GridBox {
@@ -101,5 +100,4 @@ private:
 };
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

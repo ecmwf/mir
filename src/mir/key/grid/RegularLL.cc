@@ -22,9 +22,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace key {
-namespace grid {
+namespace mir::key::grid {
 
 
 RegularLL::RegularLL(const std::string& key) : Grid(key, regular_ll_t) {}
@@ -61,6 +59,4 @@ void RegularLL::print(std::ostream& out) const {
 }
 
 
-}  // namespace grid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::grid

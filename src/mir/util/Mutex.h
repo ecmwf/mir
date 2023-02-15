@@ -22,8 +22,7 @@
 #endif
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 #if defined(mir_ECKIT_THREADS)
@@ -56,5 +55,4 @@ using std::recursive_mutex;
 #endif
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

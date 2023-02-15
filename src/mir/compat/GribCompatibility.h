@@ -20,11 +20,9 @@
 struct grib_info;
 struct grib_handle;
 
-namespace metkit {
-namespace mars {
+namespace metkit::mars {
 class MarsRequest;
-}
-}  // namespace metkit
+}  // namespace metkit::mars
 
 namespace mir {
 namespace param {
@@ -36,8 +34,7 @@ class MIROutput;
 }  // namespace mir
 
 
-namespace mir {
-namespace compat {
+namespace mir::compat {
 
 
 class GribCompatibility {
@@ -74,5 +71,4 @@ private:
 };
 
 
-}  // namespace compat
-}  // namespace mir
+}  // namespace mir::compat

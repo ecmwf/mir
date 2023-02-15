@@ -15,8 +15,7 @@
 #include "mir/param/MIRParametrisation.h"
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 
 
 class FieldParametrisation : public MIRParametrisation {
@@ -109,5 +108,4 @@ private:
 };
 
 
-}  // namespace param
-}  // namespace mir
+}  // namespace mir::param

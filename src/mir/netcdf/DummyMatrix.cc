@@ -17,8 +17,7 @@
 
 #include <ostream>
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 DummyMatrix::DummyMatrix(const Variable& v) :
     Matrix(v.matrix()->type(), v.name(), v.matrix()->size()), other_(v.matrix()) {
@@ -33,5 +32,4 @@ void DummyMatrix::print(std::ostream& out) const {
     out << "DummyMatrix[type=" << *type_ << ",name=" << name_ << ",other=" << *other_ << "]";
 }
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

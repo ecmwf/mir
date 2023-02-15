@@ -18,8 +18,7 @@
 #include "mir/util/BoundingBox.h"
 
 
-namespace mir {
-namespace caching {
+namespace mir::caching {
 
 
 struct CroppingCacheEntry {
@@ -64,5 +63,4 @@ public:  // methods
 };
 
 
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching

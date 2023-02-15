@@ -15,8 +15,7 @@
 #include "mir/netcdf/NCFile.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 NCFileCache::NCFileCache() = default;
@@ -38,5 +37,4 @@ NCFile& NCFileCache::lookUp(const std::string& path) {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

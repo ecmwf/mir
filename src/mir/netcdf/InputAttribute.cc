@@ -19,8 +19,7 @@
 #include "mir/netcdf/Value.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 InputAttribute::InputAttribute(Endowed& owner, const std::string& name, Value* value) : Attribute(owner, name, value) {}
@@ -39,5 +38,4 @@ void InputAttribute::print(std::ostream& out) const {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

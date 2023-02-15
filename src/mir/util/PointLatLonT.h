@@ -15,8 +15,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 template <typename LAT, typename LON>
@@ -50,5 +49,4 @@ private:
 };
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

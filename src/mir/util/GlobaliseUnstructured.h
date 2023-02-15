@@ -16,15 +16,12 @@
 #include <vector>
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 class MIRParametrisation;
-}
-}  // namespace mir
+}  // namespace mir::param
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 class GlobaliseUnstructured {
@@ -50,5 +47,4 @@ private:
 };
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

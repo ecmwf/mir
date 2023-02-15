@@ -27,15 +27,12 @@ namespace api {
 class MIRJob;
 }
 }  // namespace mir
-namespace mir {
-namespace util {
+namespace mir::util {
 class BoundingBox;
-}
-}  // namespace mir
+}  // namespace mir::util
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 class Increments {
@@ -141,5 +138,4 @@ private:
 };
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

@@ -22,8 +22,7 @@
 #include "mir/netcdf/Type.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 Endowed::Endowed() = default;
@@ -106,5 +105,4 @@ const std::map<std::string, Attribute*>& Endowed::attributes() const {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

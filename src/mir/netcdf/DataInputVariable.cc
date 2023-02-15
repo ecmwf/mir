@@ -23,8 +23,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 DataInputVariable::DataInputVariable(Dataset& owner, const std::string& name, int id,
@@ -172,5 +171,4 @@ std::vector<std::string> DataInputVariable::coordinates() const {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

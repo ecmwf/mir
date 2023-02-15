@@ -15,9 +15,7 @@
 #include "mir/action/plan/Action.h"
 
 
-namespace mir {
-namespace action {
-namespace filter {
+namespace mir::action::filter {
 
 
 class CesaroSummationFilter : public Action {
@@ -97,6 +95,4 @@ private:
 };
 
 
-}  // namespace filter
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::filter

@@ -15,8 +15,7 @@
 #include "mir/input/GribInput.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 class GribMemoryInput : public GribInput {
@@ -89,5 +88,4 @@ private:
 };
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

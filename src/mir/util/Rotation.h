@@ -36,8 +36,7 @@ class BoundingBox;
 }  // namespace mir
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 /**
@@ -158,5 +157,4 @@ private:
 };
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

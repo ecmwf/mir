@@ -29,8 +29,7 @@ void omp_set_num_threads(int);
 #endif
 
 
-namespace mir {
-namespace method {
+namespace mir::method {
 
 
 Method::Method(const param::MIRParametrisation& params) : parametrisation_(params) {
@@ -105,5 +104,4 @@ Method* MethodFactory::build(std::string& names, const param::MIRParametrisation
 }
 
 
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method

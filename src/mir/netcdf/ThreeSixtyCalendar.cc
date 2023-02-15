@@ -15,8 +15,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 ThreeSixtyCalendar::ThreeSixtyCalendar(const Variable& /*variable*/) {}
@@ -33,5 +32,4 @@ void ThreeSixtyCalendar::print(std::ostream& out) const {
 static const CodecBuilder<ThreeSixtyCalendar> builder("360_day");
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

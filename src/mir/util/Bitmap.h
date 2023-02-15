@@ -16,8 +16,7 @@
 #include <vector>
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 class Bitmap {
@@ -108,5 +107,4 @@ private:
 };
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

@@ -18,15 +18,12 @@
 #include "mir/util/Formula.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 class Function;
-}
-}  // namespace mir
+}  // namespace mir::util
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 class FormulaFunction : public Formula {
 public:
@@ -52,5 +49,4 @@ private:
 };
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

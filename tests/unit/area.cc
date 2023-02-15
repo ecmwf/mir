@@ -16,9 +16,7 @@
 #include "mir/util/BoundingBox.h"
 
 
-namespace mir {
-namespace tests {
-namespace unit {
+namespace mir::tests::unit {
 
 
 CASE("Area") {
@@ -48,9 +46,7 @@ CASE("Area") {
 }
 
 
-}  // namespace unit
-}  // namespace tests
-}  // namespace mir
+}  // namespace mir::tests::unit
 
 
 int main(int argc, char** argv) {

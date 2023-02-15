@@ -15,12 +15,10 @@
 #include <vector>
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 using AreaCropperMapping = std::vector<size_t>;
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

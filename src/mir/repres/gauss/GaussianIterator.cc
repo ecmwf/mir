@@ -17,9 +17,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace repres {
-namespace gauss {
+namespace mir::repres::gauss {
 
 
 GaussianIterator::GaussianIterator(const std::vector<double>& latitudes, std::vector<long>&& pl,
@@ -116,6 +114,4 @@ size_t GaussianIterator::index() const {
 }
 
 
-}  // namespace gauss
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres::gauss

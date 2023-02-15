@@ -16,8 +16,7 @@
 #include "mir/util/BoundingBox.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 class Domain : public BoundingBox {
@@ -102,5 +101,4 @@ private:
 };
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

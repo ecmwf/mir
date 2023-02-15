@@ -15,8 +15,7 @@
 #include "mir/lsm/LSMSelection.h"
 
 
-namespace mir {
-namespace lsm {
+namespace mir::lsm {
 
 
 class FileLSM : public LSMSelection {
@@ -93,5 +92,4 @@ private:
 };
 
 
-}  // namespace lsm
-}  // namespace mir
+}  // namespace mir::lsm

@@ -19,8 +19,7 @@
 #include "mir/input/MIRInput.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 class GribAllFileInput : public MIRInput {
@@ -103,5 +102,4 @@ private:
 };
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

@@ -29,8 +29,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace key {
+namespace mir::key {
 
 
 struct map_t : std::map<std::string, std::array<double, 4>> {
@@ -114,5 +113,4 @@ void Area::list(std::ostream& out) {
 }
 
 
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key

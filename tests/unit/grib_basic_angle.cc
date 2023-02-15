@@ -21,9 +21,7 @@
 #include "mir/util/Increments.h"
 
 
-namespace mir {
-namespace tests {
-namespace unit {
+namespace mir::tests::unit {
 
 
 CASE("lcm") {
@@ -117,9 +115,7 @@ CASE("Climate files <= v020 (1km)") {
 }
 
 
-}  // namespace unit
-}  // namespace tests
-}  // namespace mir
+}  // namespace mir::tests::unit
 
 
 int main(int argc, char** argv) {

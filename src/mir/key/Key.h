@@ -13,15 +13,12 @@
 #pragma once
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 class MIRParametrisation;
-}
-}  // namespace mir
+}  // namespace mir::param
 
 
-namespace mir {
-namespace key {
+namespace mir::key {
 
 
 class Key {
@@ -94,5 +91,4 @@ private:
 };
 
 
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key

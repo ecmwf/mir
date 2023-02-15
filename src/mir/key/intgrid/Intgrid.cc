@@ -23,9 +23,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace key {
-namespace intgrid {
+namespace mir::key::intgrid {
 
 
 static util::once_flag once;
@@ -98,6 +96,4 @@ void IntgridFactory::list(std::ostream& out) {
 }
 
 
-}  // namespace intgrid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::intgrid

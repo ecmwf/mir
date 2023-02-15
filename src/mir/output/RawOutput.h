@@ -16,8 +16,7 @@
 #include "mir/param/SimpleParametrisation.h"
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 class RawOutput final : public MIROutput {
@@ -82,5 +81,4 @@ private:
 };
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

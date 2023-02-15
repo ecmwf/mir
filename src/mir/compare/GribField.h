@@ -23,8 +23,7 @@
 struct grib_handle;
 
 
-namespace mir {
-namespace compare {
+namespace mir::compare {
 
 
 class GribField : public FieldBase {
@@ -148,5 +147,4 @@ private:
 };
 
 
-}  // namespace compare
-}  // namespace mir
+}  // namespace mir::compare

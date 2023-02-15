@@ -16,9 +16,7 @@
 #include "mir/param/SimpleParametrisation.h"
 
 
-namespace mir {
-namespace key {
-namespace grid {
+namespace mir::key::grid {
 
 
 class NamedFromFile : public NamedGrid, public param::SimpleParametrisation {
@@ -94,6 +92,4 @@ private:
 };
 
 
-}  // namespace grid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::grid

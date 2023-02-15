@@ -20,8 +20,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 long SpectralOrder::getTruncationFromGaussianNumber(long /*unused*/) const {
@@ -95,5 +94,4 @@ void SpectralOrderFactory::list(std::ostream& out) {
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

@@ -22,8 +22,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 MultiDimensionalOutput::MultiDimensionalOutput() = default;
@@ -188,5 +187,4 @@ void MultiDimensionalOutput::print(std::ostream& out) const {
 }
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

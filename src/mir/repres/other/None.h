@@ -15,9 +15,7 @@
 #include "mir/repres/Representation.h"
 
 
-namespace mir {
-namespace repres {
-namespace other {
+namespace mir::repres::other {
 
 
 class None : public Representation {
@@ -93,6 +91,4 @@ private:
 };
 
 
-}  // namespace other
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres::other

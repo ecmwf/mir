@@ -17,16 +17,13 @@
 #include <vector>
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 class MIRParametrisation;
 class SimpleParametrisation;
-}  // namespace param
-}  // namespace mir
+}  // namespace mir::param
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 class GribFixes {
@@ -112,5 +109,4 @@ private:
 };
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

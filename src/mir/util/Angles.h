@@ -17,8 +17,7 @@
 #include "mir/util/LongitudeDouble.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 /// @return degree to radian (no range check)
@@ -39,5 +38,4 @@ inline double normalise_longitude(const double& lon, const double& minimum) {
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

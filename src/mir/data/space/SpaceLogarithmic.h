@@ -15,9 +15,7 @@
 #include "mir/data/Space.h"
 
 
-namespace mir {
-namespace data {
-namespace space {
+namespace mir::data::space {
 
 
 class SpaceLogarithmic : public Space {
@@ -77,6 +75,4 @@ private:
 };
 
 
-}  // namespace space
-}  // namespace data
-}  // namespace mir
+}  // namespace mir::data::space

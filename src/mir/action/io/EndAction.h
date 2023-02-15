@@ -15,16 +15,12 @@
 #include "mir/action/plan/Action.h"
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 class MIROutput;
-}
-}  // namespace mir
+}  // namespace mir::output
 
 
-namespace mir {
-namespace action {
-namespace io {
+namespace mir::action::io {
 
 
 class EndAction : public Action {
@@ -105,6 +101,4 @@ private:
 };
 
 
-}  // namespace io
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::io

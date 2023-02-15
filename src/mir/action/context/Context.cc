@@ -23,8 +23,7 @@
 #include "mir/util/MIRStatistics.h"
 
 
-namespace mir {
-namespace context {
+namespace mir::context {
 
 
 namespace {
@@ -188,7 +187,7 @@ input::MIRInput& Context::input() {
 
 
 void Context::field(data::MIRField& other) {
-    content_.reset(new FieldContent(other));
+    content_ = std::make_unique<FieldContent>(other);
 }
 
 
@@ -202,7 +201,7 @@ data::MIRField& Context::field() {
 
     if (!content_) {
         auto timer(statistics().gribDecodingTimer());
-        content_.reset(new FieldContent(input_.field()));
+        content_ = std::make_unique<FieldContent>(input_.field());
     }
     return content_->field();
 }
@@ -216,7 +215,7 @@ Extension& Context::extension() {
 
 
 void Context::extension(Extension* e) {
-    content_.reset(new ExtensionContent(e));
+    content_ = std::make_unique<ExtensionContent>(e);
 }
 
 
@@ -230,7 +229,7 @@ void Context::select(size_t which) {
 void Context::scalar(double value) {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
-    content_.reset(new ScalarContent(value));
+    content_ = std::make_unique<ScalarContent>(value);
 }
 
 
@@ -267,7 +266,7 @@ Context& Context::push() {
 Context Context::pop() {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
-    ASSERT(stack_.size());
+    ASSERT(!stack_.empty());
     Context ctx = stack_.back();
     stack_.pop_back();
     return ctx;
@@ -284,5 +283,4 @@ void Context::unlock() const {
 }
 
 
-}  // namespace context
-}  // namespace mir
+}  // namespace mir::context

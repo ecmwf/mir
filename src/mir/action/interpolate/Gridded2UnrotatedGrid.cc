@@ -17,9 +17,7 @@
 #include "mir/util/Domain.h"
 
 
-namespace mir {
-namespace action {
-namespace interpolate {
+namespace mir::action::interpolate {
 
 
 Gridded2UnrotatedGrid::~Gridded2UnrotatedGrid() = default;
@@ -32,6 +30,4 @@ util::BoundingBox Gridded2UnrotatedGrid::outputBoundingBox() const {
 }
 
 
-}  // namespace interpolate
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::interpolate

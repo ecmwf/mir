@@ -33,9 +33,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace key {
-namespace style {
+namespace mir::key::style {
 
 
 struct DeprecatedStyle : ECMWFStyle, util::DeprecatedFunctionality {
@@ -499,6 +497,4 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, output::MIROutput& output) co
 }
 
 
-}  // namespace style
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::style

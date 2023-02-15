@@ -15,9 +15,7 @@
 #include "mir/method/fe/FiniteElement.h"
 
 
-namespace mir {
-namespace method {
-namespace fe {
+namespace mir::method::fe {
 
 
 class FELinear : public FiniteElement {
@@ -92,6 +90,4 @@ private:
 };
 
 
-}  // namespace fe
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::fe

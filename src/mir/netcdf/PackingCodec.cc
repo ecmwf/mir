@@ -24,8 +24,7 @@
 #include "mir/netcdf/Variable.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 PackingCodec::PackingCodec(const Variable& variable) :
@@ -51,5 +50,4 @@ void PackingCodec::decode(std::vector<double>& v) const {
 static const CodecBuilder<PackingCodec> builder("packing");
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

@@ -19,8 +19,7 @@
 #include "mir/config/LibMir.h"
 
 
-namespace mir {
-namespace trace {
+namespace mir::trace {
 
 
 Timer::Timer(const std::string& name) : eckit::Timer(name, Log::debug()) {}
@@ -63,5 +62,4 @@ bool ProgressTimer::operator++() {
 }
 
 
-}  // namespace trace
-}  // namespace mir
+}  // namespace mir::trace

@@ -21,10 +21,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace distance {
+namespace mir::method::knn::distance {
 
 
 namespace {
@@ -117,7 +114,4 @@ static const DistanceWeightingBuilder<IDWReciprocal> __weighting2("reciprocal");
 static const DistanceWeightingBuilder<IDWShepard> __weighting3("shepard");
 
 
-}  // namespace distance
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::distance

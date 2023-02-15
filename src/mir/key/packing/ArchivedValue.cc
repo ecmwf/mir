@@ -15,9 +15,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace key {
-namespace packing {
+namespace mir::key::packing {
 
 
 static const PackingBuilder<ArchivedValue> __packing("archived-value", "av", true, true);
@@ -38,6 +36,4 @@ void ArchivedValue::set(const repres::Representation* /*unused*/, grib_handle* h
 }
 
 
-}  // namespace packing
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::packing

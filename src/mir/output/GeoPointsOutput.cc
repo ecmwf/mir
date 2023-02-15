@@ -17,8 +17,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 // See https://software.ecmwf.int/wiki/display/METV/Geopoints
 
@@ -53,5 +52,4 @@ bool GeoPointsOutput::printParametrisation(std::ostream& /*unused*/,
 }
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

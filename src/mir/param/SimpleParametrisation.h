@@ -21,15 +21,12 @@
 namespace eckit {
 class JSON;
 }
-namespace mir {
-namespace param {
+namespace mir::param {
 class Setting;
-}
-}  // namespace mir
+}  // namespace mir::param
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 
 
 class SimpleParametrisation : public MIRParametrisation {
@@ -161,5 +158,4 @@ private:
 };
 
 
-}  // namespace param
-}  // namespace mir
+}  // namespace mir::param

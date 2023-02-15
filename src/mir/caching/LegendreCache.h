@@ -15,8 +15,7 @@
 #include "eckit/container/CacheManager.h"
 
 
-namespace mir {
-namespace caching {
+namespace mir::caching {
 
 
 struct LegendreCacheTraits {
@@ -38,5 +37,4 @@ public:  // methods
 };
 
 
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching

@@ -15,10 +15,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace repres {
-namespace gauss {
-namespace reduced {
+namespace mir::repres::gauss::reduced {
 
 
 ReducedOctahedral::ReducedOctahedral(size_t N, const util::BoundingBox& bbox, double angularPrecision) :
@@ -51,7 +48,4 @@ bool ReducedOctahedral::sameAs(const Representation& other) const {
 }
 
 
-}  // namespace reduced
-}  // namespace gauss
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres::gauss::reduced

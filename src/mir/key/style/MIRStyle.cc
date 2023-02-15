@@ -20,9 +20,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace key {
-namespace style {
+namespace mir::key::style {
 
 
 MIRStyle::MIRStyle(const param::MIRParametrisation& parametrisation) : parametrisation_(parametrisation) {}
@@ -93,6 +91,4 @@ void MIRStyleFactory::list(std::ostream& out) {
 }
 
 
-}  // namespace style
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::style

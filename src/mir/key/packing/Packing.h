@@ -29,9 +29,7 @@ class Representation;
 }  // namespace mir
 
 
-namespace mir {
-namespace key {
-namespace packing {
+namespace mir::key::packing {
 
 
 class Packing {
@@ -162,6 +160,4 @@ public:
 };
 
 
-}  // namespace packing
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::packing

@@ -24,8 +24,7 @@
 #include "mir/util/Grib.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 static double get(const param::MIRParametrisation& param, const char* key) {
@@ -198,5 +197,4 @@ void BoundingBox::makeName(std::ostream& out) const {
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

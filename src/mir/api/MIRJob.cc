@@ -25,8 +25,7 @@
 #include "mir/util/MIRStatistics.h"
 
 
-namespace mir {
-namespace api {
+namespace mir::api {
 
 
 MIRJob::MIRJob() = default;
@@ -288,5 +287,4 @@ void MIRJob::json(eckit::JSON& json) const {
     SimpleParametrisation::json(json);
 }
 
-}  // namespace api
-}  // namespace mir
+}  // namespace mir::api

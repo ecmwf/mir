@@ -15,9 +15,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace caching {
-namespace legendre {
+namespace mir::caching::legendre {
 
 
 NoLoader::NoLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
@@ -49,6 +47,4 @@ bool NoLoader::shared() {
 static const LegendreLoaderBuilder<NoLoader> loader("none");
 
 
-}  // namespace legendre
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching::legendre

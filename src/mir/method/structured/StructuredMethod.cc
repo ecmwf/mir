@@ -21,9 +21,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace method {
-namespace structured {
+namespace mir::method::structured {
 
 StructuredMethod::StructuredMethod(const param::MIRParametrisation& param) : MethodWeighted(param) {}
 
@@ -182,6 +180,4 @@ void StructuredMethod::print(std::ostream& out) const {
     out << "]";
 }
 
-}  // namespace structured
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::structured

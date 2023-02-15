@@ -18,15 +18,12 @@
 #include "mir/action/plan/Action.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 class Formula;
-}
-}  // namespace mir
+}  // namespace mir::util
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 class FormulaAction : public Action {
@@ -105,5 +102,4 @@ private:
 };
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

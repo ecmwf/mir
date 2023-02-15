@@ -15,9 +15,7 @@
 #include "mir/method/structured/StructuredMethod.h"
 
 
-namespace mir {
-namespace method {
-namespace structured {
+namespace mir::method::structured {
 
 
 class StructuredLinear3D : public StructuredMethod {
@@ -39,6 +37,4 @@ private:
 };
 
 
-}  // namespace structured
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::structured

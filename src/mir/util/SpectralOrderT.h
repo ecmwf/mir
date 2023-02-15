@@ -18,8 +18,7 @@
 #include "mir/util/SpectralOrder.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 template <int ORDER>
@@ -107,5 +106,4 @@ private:
 };
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

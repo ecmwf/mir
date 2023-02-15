@@ -25,9 +25,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace tests {
-namespace unit {
+namespace mir::tests::unit {
 
 
 using eckit::Fraction;
@@ -345,9 +343,7 @@ CASE("GaussianIterator") {
     log.precision(old);
 }
 
-}  // namespace unit
-}  // namespace tests
-}  // namespace mir
+}  // namespace mir::tests::unit
 
 
 int main(int argc, char** argv) {

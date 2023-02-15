@@ -13,9 +13,7 @@
 #include "mir/data/space/Space1DLinear.h"
 
 
-namespace mir {
-namespace data {
-namespace space {
+namespace mir::data::space {
 
 
 static const SpaceChoice<Space1DLinear> __space("1d-linear");
@@ -26,6 +24,4 @@ size_t Space1DLinear::dimensions() const {
 }
 
 
-}  // namespace space
-}  // namespace data
-}  // namespace mir
+}  // namespace mir::data::space

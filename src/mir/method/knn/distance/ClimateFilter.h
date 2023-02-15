@@ -15,10 +15,7 @@
 #include "mir/method/knn/distance/DistanceWeighting.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace distance {
+namespace mir::method::knn::distance {
 
 
 struct ClimateFilter : DistanceWeighting {
@@ -35,7 +32,4 @@ private:
 };
 
 
-}  // namespace distance
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::distance

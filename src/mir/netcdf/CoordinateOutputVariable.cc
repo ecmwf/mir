@@ -16,8 +16,7 @@
 #include "mir/netcdf/Type.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 CoordinateOutputVariable::CoordinateOutputVariable(Dataset& owner, const std::string& name,
@@ -56,5 +55,4 @@ void CoordinateOutputVariable::merge(const Variable& other, MergePlan& plan) {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

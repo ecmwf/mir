@@ -15,9 +15,7 @@
 #include "mir/util/Grib.h"
 
 
-namespace mir {
-namespace key {
-namespace packing {
+namespace mir::key::packing {
 
 
 static const PackingBuilder<Complex> __packing("complex", "co", true, true);
@@ -40,6 +38,4 @@ void Complex::set(const repres::Representation* /*unused*/, grib_handle* handle)
 }
 
 
-}  // namespace packing
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::packing

@@ -16,15 +16,12 @@
 #include <vector>
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 class MIRParametrisation;
-}
-}  // namespace mir
+}  // namespace mir::param
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 void check_duplicate_points(const std::string& title, const std::vector<double>& latitudes,
@@ -35,5 +32,4 @@ void check_duplicate_points(const std::string& title, const std::vector<double>&
                             const std::vector<double>& longitudes, const param::MIRParametrisation&);
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

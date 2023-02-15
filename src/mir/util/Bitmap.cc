@@ -25,8 +25,7 @@
 
 // TODO: Cache bitmaps
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 static void out(std::vector<std::vector<bool> >& bitmap, long row, const std::string& line, bool on, long& prev) {
 
@@ -270,5 +269,4 @@ size_t Bitmap::footprint() const {
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

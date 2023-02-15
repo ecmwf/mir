@@ -20,16 +20,13 @@ class Mesh;
 class Grid;
 }  // namespace atlas
 
-namespace mir {
-namespace util {
+namespace mir::util {
 class MIRStatistics;
 class MeshGeneratorParameters;
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util
 
 
-namespace mir {
-namespace caching {
+namespace mir::caching {
 
 
 class InMemoryMeshCache {
@@ -121,5 +118,4 @@ private:
 };
 
 
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching

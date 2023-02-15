@@ -17,8 +17,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 void Error::print(std::ostream& s) const {
@@ -29,5 +28,4 @@ void Error::print(std::ostream& s) const {
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

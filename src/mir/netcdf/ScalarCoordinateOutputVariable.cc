@@ -15,8 +15,7 @@
 #include "mir/netcdf/Matrix.h"
 #include "mir/netcdf/Type.h"
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 ScalarCoordinateOutputVariable::ScalarCoordinateOutputVariable(Dataset& owner, const std::string& name,
                                                                const std::vector<Dimension*>& dimensions) :
@@ -50,5 +49,4 @@ void ScalarCoordinateOutputVariable::merge(const Variable& other, MergePlan& pla
     }
 }
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

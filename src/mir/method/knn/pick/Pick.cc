@@ -19,10 +19,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace pick {
+namespace mir::method::knn::pick {
 
 
 static util::recursive_mutex* local_mutex     = nullptr;
@@ -92,7 +89,4 @@ void PickFactory::list(std::ostream& out) {
 }
 
 
-}  // namespace pick
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::pick

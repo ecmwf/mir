@@ -15,8 +15,7 @@
 #include "mir/netcdf/OutputVariable.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class CoordinateOutputVariable : public OutputVariable {
@@ -31,5 +30,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

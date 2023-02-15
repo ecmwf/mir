@@ -18,8 +18,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 MultiStreamInput::MultiStreamInput() = default;
@@ -102,5 +101,4 @@ grib_handle* MultiStreamInput::gribHandle(size_t which) const {
 }
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

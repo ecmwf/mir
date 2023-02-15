@@ -13,9 +13,7 @@
 #include "mir/key/intgrid/None.h"
 
 
-namespace mir {
-namespace key {
-namespace intgrid {
+namespace mir::key::intgrid {
 
 
 static const IntgridBuilder<None> __intgrid1("none");
@@ -31,6 +29,4 @@ const std::string& None::gridname() const {
 }
 
 
-}  // namespace intgrid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::intgrid

@@ -29,8 +29,7 @@
 #include "mir/util/MIRStatistics.h"
 
 
-namespace mir {
-namespace lsm {
+namespace mir::lsm {
 
 
 GribFileMask::GribFileMask(const eckit::PathName& path, const param::MIRParametrisation& parametrisation,
@@ -110,5 +109,4 @@ const std::vector<bool>& GribFileMask::mask() const {
 }
 
 
-}  // namespace lsm
-}  // namespace mir
+}  // namespace mir::lsm

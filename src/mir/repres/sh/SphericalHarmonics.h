@@ -16,9 +16,7 @@
 #include "mir/util/Domain.h"
 
 
-namespace mir {
-namespace repres {
-namespace sh {
+namespace mir::repres::sh {
 
 
 class SphericalHarmonics : public Representation {
@@ -120,6 +118,4 @@ private:
 };
 
 
-}  // namespace sh
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres::sh

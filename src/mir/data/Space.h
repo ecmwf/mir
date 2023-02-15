@@ -17,8 +17,7 @@
 #include "eckit/linalg/Matrix.h"
 
 
-namespace mir {
-namespace data {
+namespace mir::data {
 
 
 class Space {
@@ -128,5 +127,4 @@ public:
 };
 
 
-}  // namespace data
-}  // namespace mir
+}  // namespace mir::data

@@ -17,8 +17,7 @@
 #include "mir/caching/InMemoryCacheUsage.h"
 
 
-namespace mir {
-namespace caching {
+namespace mir::caching {
 
 
 class InMemoryCacheBase {
@@ -45,5 +44,4 @@ private:
 };
 
 
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching

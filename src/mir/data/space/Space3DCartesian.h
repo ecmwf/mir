@@ -15,9 +15,7 @@
 #include "mir/data/space/SpaceLinear.h"
 
 
-namespace mir {
-namespace data {
-namespace space {
+namespace mir::data::space {
 
 
 class Space3DCartesian : public SpaceLinear {
@@ -28,6 +26,4 @@ class Space3DCartesian : public SpaceLinear {
 };
 
 
-}  // namespace space
-}  // namespace data
-}  // namespace mir
+}  // namespace mir::data::space

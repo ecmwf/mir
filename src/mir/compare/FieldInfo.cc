@@ -17,8 +17,7 @@
 #include "eckit/log/JSON.h"
 
 
-namespace mir {
-namespace compare {
+namespace mir::compare {
 
 
 FieldInfo::FieldInfo(const std::string& path, off_t offset, size_t length) :
@@ -49,5 +48,4 @@ const std::string& FieldInfo::path() const {
 }
 
 
-}  // namespace compare
-}  // namespace mir
+}  // namespace mir::compare

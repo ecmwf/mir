@@ -20,8 +20,7 @@
 #include "mir/netcdf/Variable.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 MergeCoordinateStep::MergeCoordinateStep(Variable& out, const Variable& in) : out_(out), in_(in) {}
@@ -68,5 +67,4 @@ void MergeCoordinateStep::execute(MergePlan& /*plan*/) {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

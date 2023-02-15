@@ -15,8 +15,7 @@
 #include "mir/config/LibMir.h"
 
 
-namespace mir {
-namespace caching {
+namespace mir::caching {
 
 
 MeshCache::MeshCache() :
@@ -53,5 +52,4 @@ void MeshCacheTraits::load(const eckit::CacheManagerBase& /*unused*/, value_type
 }
 
 
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching

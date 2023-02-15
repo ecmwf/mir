@@ -15,9 +15,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace key {
-namespace intgrid {
+namespace mir::key::intgrid {
 
 
 NamedGrid::NamedGrid(const std::string& gridname, const param::MIRParametrisation& parametrisation) :
@@ -31,6 +29,4 @@ const std::string& NamedGrid::gridname() const {
 }
 
 
-}  // namespace intgrid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::intgrid

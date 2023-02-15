@@ -15,8 +15,7 @@
 #include "eckit/io/DataHandle.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 GribDataHandleInput::GribDataHandleInput(eckit::DataHandle& handle, size_t skip, size_t step) :
     GribStreamInput(skip, step), handle_(handle) {
@@ -48,5 +47,4 @@ eckit::DataHandle& GribDataHandleInput::dataHandle() {
     return handle_;
 }
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

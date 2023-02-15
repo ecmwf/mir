@@ -17,8 +17,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 GribMemoryOutput::GribMemoryOutput(void* message, size_t size) : message_(message), size_(size), length_(0) {}
@@ -43,5 +42,4 @@ void GribMemoryOutput::print(std::ostream& out) const {
 }
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

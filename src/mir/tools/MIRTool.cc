@@ -24,8 +24,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace tools {
+namespace mir::tools {
 
 
 static MIRTool* instance_ = nullptr;
@@ -76,5 +75,4 @@ void MIRTool::finish(const eckit::option::CmdArgs& /*unused*/) {
 }
 
 
-}  // namespace tools
-}  // namespace mir
+}  // namespace mir::tools

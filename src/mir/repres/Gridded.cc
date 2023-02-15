@@ -17,8 +17,7 @@
 #include "mir/util/Grib.h"
 
 
-namespace mir {
-namespace repres {
+namespace mir::repres {
 
 
 Gridded::Gridded(const param::MIRParametrisation& parametrisation) : bbox_(parametrisation) {}
@@ -69,5 +68,4 @@ size_t Gridded::numberOfValues() const {
 }
 
 
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres

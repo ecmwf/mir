@@ -25,8 +25,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 MIROutput::MIROutput() = default;
@@ -185,5 +184,4 @@ void MIROutput::estimate(const param::MIRParametrisation& /*unused*/, api::MIREs
 }
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

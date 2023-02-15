@@ -17,17 +17,12 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace lsm {
+namespace mir::lsm {
 class LandSeaMasks;
-}
-}  // namespace mir
+}  // namespace mir::lsm
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace distance {
+namespace mir::method::knn::distance {
 
 
 struct DistanceWeightingWithLSM : DistanceWeighting {
@@ -80,7 +75,4 @@ public:
 };
 
 
-}  // namespace distance
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::distance

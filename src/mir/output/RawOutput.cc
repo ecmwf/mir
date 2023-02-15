@@ -23,8 +23,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 RawOutput::RawOutput(double* values, size_t count, param::SimpleParametrisation& metadata) :
@@ -92,5 +91,4 @@ size_t RawOutput::size() const {
 }
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

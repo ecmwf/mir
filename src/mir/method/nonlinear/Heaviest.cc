@@ -18,9 +18,7 @@
 #include "eckit/utils/MD5.h"
 
 
-namespace mir {
-namespace method {
-namespace nonlinear {
+namespace mir::method::nonlinear {
 
 
 Heaviest::Heaviest(const param::MIRParametrisation& param) : NonLinear(param) {}
@@ -79,6 +77,4 @@ void Heaviest::hash(eckit::MD5& h) const {
 static const NonLinearBuilder<Heaviest> __nonlinear("heaviest");
 
 
-}  // namespace nonlinear
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::nonlinear

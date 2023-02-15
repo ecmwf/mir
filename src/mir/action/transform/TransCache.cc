@@ -15,9 +15,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace action {
-namespace transform {
+namespace mir::action::transform {
 
 
 TransCache::TransCache() : loader_(nullptr) {}
@@ -48,6 +46,4 @@ void TransCache::print(std::ostream& s) const {
 }
 
 
-}  // namespace transform
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::transform

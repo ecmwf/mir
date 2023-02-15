@@ -17,8 +17,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace method {
+namespace mir::method {
 
 
 Cropping::Cropping() : active_(false) {}
@@ -60,5 +59,4 @@ void Cropping::print(std::ostream& out) const {
 }
 
 
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method

@@ -22,8 +22,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 Curvilinear::Curvilinear(const Variable& variable, const std::vector<double>& latitudes,
@@ -273,5 +272,4 @@ void Curvilinear::reorder(MIRValuesVector& /*values*/) const {
 static const GridSpecGuesserBuilder<Curvilinear> builder(3);
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

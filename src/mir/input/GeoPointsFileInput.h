@@ -20,8 +20,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 class GeoPointsFileInput : public MIRInput {
@@ -123,5 +122,4 @@ private:
 };
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

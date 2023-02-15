@@ -15,8 +15,7 @@
 #include "mir/action/plan/Action.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 class GlobaliseFilter : public Action {
@@ -94,5 +93,4 @@ private:
 };
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

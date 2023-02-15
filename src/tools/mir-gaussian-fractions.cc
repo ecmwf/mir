@@ -25,8 +25,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace tools {
+namespace mir::tools {
 
 
 using statistics_t = stats::detail::PNormsT<double>;
@@ -117,8 +116,7 @@ void MIRGaussianFractions::execute(const eckit::option::CmdArgs& args) {
 }
 
 
-}  // namespace tools
-}  // namespace mir
+}  // namespace mir::tools
 
 
 int main(int argc, char** argv) {

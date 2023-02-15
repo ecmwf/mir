@@ -15,8 +15,7 @@
 #include "mir/lsm/GribFileMask.h"
 
 
-namespace mir {
-namespace lsm {
+namespace mir::lsm {
 
 
 class GribFileMaskFromMIR : public GribFileMask {
@@ -33,5 +32,4 @@ private:
 };
 
 
-}  // namespace lsm
-}  // namespace mir
+}  // namespace mir::lsm

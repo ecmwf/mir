@@ -15,9 +15,7 @@
 #include "mir/key/intgrid/Intgrid.h"
 
 
-namespace mir {
-namespace key {
-namespace intgrid {
+namespace mir::key::intgrid {
 
 
 class NamedGrid : public Intgrid {
@@ -73,6 +71,4 @@ private:
 };
 
 
-}  // namespace intgrid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::intgrid

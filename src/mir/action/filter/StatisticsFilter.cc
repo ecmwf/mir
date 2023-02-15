@@ -23,9 +23,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace action {
-namespace filter {
+namespace mir::action::filter {
 
 
 StatisticsFilter::StatisticsFilter(const param::MIRParametrisation& param) : Action(param) {
@@ -105,6 +103,4 @@ void StatisticsFilter::execute(context::Context& ctx) const {
 static const ActionBuilder<StatisticsFilter> __action("filter.statistics");
 
 
-}  // namespace filter
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::filter

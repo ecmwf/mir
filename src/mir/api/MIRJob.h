@@ -32,8 +32,7 @@ class MIRStatistics;
 }  // namespace mir
 
 
-namespace mir {
-namespace api {
+namespace mir::api {
 
 class MIREstimation;
 
@@ -148,5 +147,4 @@ private:
 };
 
 
-}  // namespace api
-}  // namespace mir
+}  // namespace mir::api

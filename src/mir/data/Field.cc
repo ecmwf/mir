@@ -23,8 +23,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace data {
+namespace mir::data {
 
 
 Field::Field(const param::MIRParametrisation& param, bool hasMissing, double missingValue) :
@@ -320,5 +319,4 @@ void Field::missingValue(double value) {
 }
 
 
-}  // namespace data
-}  // namespace mir
+}  // namespace mir::data

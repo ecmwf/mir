@@ -60,8 +60,7 @@ class MIREstimation;
 }  // namespace mir
 
 
-namespace mir {
-namespace repres {
+namespace mir::repres {
 
 
 class Representation : public eckit::Counted {
@@ -231,5 +230,4 @@ public:
 };
 
 
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres

@@ -15,8 +15,7 @@
 #include "mir/input/ArtificialInput.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 class ConstantInput final : public ArtificialInput {
@@ -88,5 +87,4 @@ private:
 };
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

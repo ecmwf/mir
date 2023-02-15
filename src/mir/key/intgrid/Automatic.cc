@@ -13,9 +13,7 @@
 #include "mir/key/intgrid/Automatic.h"
 
 
-namespace mir {
-namespace key {
-namespace intgrid {
+namespace mir::key::intgrid {
 
 
 static const IntgridBuilder<Automatic> __intgrid1("automatic");
@@ -36,6 +34,4 @@ const std::string& Automatic::gridname() const {
 }
 
 
-}  // namespace intgrid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::intgrid

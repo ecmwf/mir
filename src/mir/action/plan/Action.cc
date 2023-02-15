@@ -23,8 +23,7 @@
 #include "mir/util/Trace.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 Action::Action(const param::MIRParametrisation& parametrisation) : parametrisation_(parametrisation) {}
@@ -211,5 +210,4 @@ void ActionFactory::list(std::ostream& out) {
 }
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

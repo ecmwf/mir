@@ -20,8 +20,7 @@ class DataHandle;
 }
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 class GribStreamOutput : public GribOutput {
@@ -94,5 +93,4 @@ private:
 };
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

@@ -17,16 +17,12 @@
 #include <memory>
 
 
-namespace mir {
-namespace stats {
+namespace mir::stats {
 class Distribution;
-}
-}  // namespace mir
+}  // namespace mir::stats
 
 
-namespace mir {
-namespace action {
-namespace filter {
+namespace mir::action::filter {
 
 
 class AddRandomFilter : public Action {
@@ -107,6 +103,4 @@ private:
 };
 
 
-}  // namespace filter
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::filter

@@ -15,8 +15,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 
 
 CombinedParametrisation::CombinedParametrisation(const MIRParametrisation& user, const MIRParametrisation& metadata,
@@ -114,5 +113,4 @@ bool CombinedParametrisation::get(const std::string& name, std::vector<std::stri
 }
 
 
-}  // namespace param
-}  // namespace mir
+}  // namespace mir::param

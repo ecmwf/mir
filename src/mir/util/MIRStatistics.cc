@@ -20,8 +20,7 @@
 #include "eckit/serialisation/Stream.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 static const std::vector<std::string> all_caches{"mirBitmap", "mirArea", "mirCoefficient", "mirMatrix", "mirMesh"};
@@ -155,5 +154,4 @@ void MIRStatistics::csvRow(std::ostream& out) const {
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

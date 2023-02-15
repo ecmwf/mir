@@ -15,9 +15,7 @@
 #include "mir/method/voronoi/VoronoiMethod.h"
 
 
-namespace mir {
-namespace method {
-namespace voronoi {
+namespace mir::method::voronoi {
 
 
 struct VoronoiStatistics final : VoronoiMethod {
@@ -27,6 +25,4 @@ struct VoronoiStatistics final : VoronoiMethod {
 };
 
 
-}  // namespace voronoi
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::voronoi

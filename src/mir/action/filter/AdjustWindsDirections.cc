@@ -22,8 +22,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 AdjustWindsDirections::AdjustWindsDirections(const param::MIRParametrisation& parametrisation) :
@@ -77,5 +76,4 @@ const char* AdjustWindsDirections::name() const {
 static const ActionBuilder<AdjustWindsDirections> __action("filter.adjust-winds-directions");
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

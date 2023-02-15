@@ -23,8 +23,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 GlobaliseUnstructured::GlobaliseUnstructured(const param::MIRParametrisation& parametrisation) :
@@ -78,5 +77,4 @@ size_t GlobaliseUnstructured::appendGlobalPoints(std::vector<double>& latitudes,
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

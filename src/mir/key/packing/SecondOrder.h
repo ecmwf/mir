@@ -16,9 +16,7 @@
 #include "mir/key/packing/Simple.h"
 
 
-namespace mir {
-namespace key {
-namespace packing {
+namespace mir::key::packing {
 
 
 class SecondOrder : public Packing {
@@ -94,6 +92,4 @@ private:
 };
 
 
-}  // namespace packing
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::packing

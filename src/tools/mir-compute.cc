@@ -31,8 +31,7 @@
 #include "mir/util/MIRStatistics.h"
 
 
-namespace mir {
-namespace tools {
+namespace mir::tools {
 
 
 struct MIRCompute : MIRTool {
@@ -107,8 +106,7 @@ void MIRCompute::execute(const eckit::option::CmdArgs& args) {
 }
 
 
-}  // namespace tools
-}  // namespace mir
+}  // namespace mir::tools
 
 
 int main(int argc, char** argv) {

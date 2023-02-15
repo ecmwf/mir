@@ -26,8 +26,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 constexpr size_t CAPACITY = 256 * 1024 * 1024;
@@ -142,5 +141,4 @@ const char* BitmapFilter::name() const {
 static const ActionBuilder<BitmapFilter> __action("filter.bitmap");
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

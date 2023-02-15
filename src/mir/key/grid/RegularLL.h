@@ -14,16 +14,12 @@
 
 #include "mir/key/grid/Grid.h"
 
-namespace mir {
-namespace util {
+namespace mir::util {
 class Increments;
-}
-}  // namespace mir
+}  // namespace mir::util
 
 
-namespace mir {
-namespace key {
-namespace grid {
+namespace mir::key::grid {
 
 
 class RegularLL final : public Grid {
@@ -84,6 +80,4 @@ private:
 };
 
 
-}  // namespace grid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::grid

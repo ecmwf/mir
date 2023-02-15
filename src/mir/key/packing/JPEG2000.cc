@@ -15,9 +15,7 @@
 #include "mir/util/Grib.h"
 
 
-namespace mir {
-namespace key {
-namespace packing {
+namespace mir::key::packing {
 
 
 static const PackingBuilder<JPEG2000> __packing("jpeg", false, true);
@@ -33,6 +31,4 @@ void JPEG2000::set(const repres::Representation* /*unused*/, grib_handle* handle
 }
 
 
-}  // namespace packing
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::packing

@@ -19,10 +19,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace distance {
+namespace mir::method::knn::distance {
 
 
 NoDistanceWeighting::NoDistanceWeighting(const param::MIRParametrisation& /*unused*/) {}
@@ -66,7 +63,4 @@ static const DistanceWeightingBuilder<NoDistanceWeighting> __distance1("no-dista
 static const DistanceWeightingBuilder<NoDistanceWeighting> __distance2("no");
 
 
-}  // namespace distance
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::distance

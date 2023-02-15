@@ -22,9 +22,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace method {
-namespace nonlinear {
+namespace mir::method::nonlinear {
 
 
 MissingIfAllMissing::MissingIfAllMissing(const param::MIRParametrisation& param) : NonLinear(param) {}
@@ -113,6 +111,4 @@ void MissingIfAllMissing::hash(eckit::MD5& h) const {
 static const NonLinearBuilder<MissingIfAllMissing> __nonlinear("missing-if-all-missing");
 
 
-}  // namespace nonlinear
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::nonlinear

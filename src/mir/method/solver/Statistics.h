@@ -17,16 +17,12 @@
 #include "mir/method/solver/Solver.h"
 
 
-namespace mir {
-namespace stats {
+namespace mir::stats {
 class Field;
-}
-}  // namespace mir
+}  // namespace mir::stats
 
 
-namespace mir {
-namespace method {
-namespace solver {
+namespace mir::method::solver {
 
 
 /// Non-linear system solving by calculating statistics on sets of input points (substitutes matrix multiply)
@@ -50,6 +46,4 @@ private:
 };
 
 
-}  // namespace solver
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::solver

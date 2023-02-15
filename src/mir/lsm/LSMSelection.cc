@@ -19,8 +19,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace lsm {
+namespace mir::lsm {
 
 
 static util::once_flag once;
@@ -77,5 +76,4 @@ const LSMSelection& LSMSelection::lookup(const std::string& name) {
 }
 
 
-}  // namespace lsm
-}  // namespace mir
+}  // namespace mir::lsm

@@ -19,10 +19,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace distance {
+namespace mir::method::knn::distance {
 
 
 InverseDistanceWeightingSquared::InverseDistanceWeightingSquared(const param::MIRParametrisation& /*unused*/) {}
@@ -79,7 +76,4 @@ void InverseDistanceWeightingSquared::hash(eckit::MD5& h) const {
 static const DistanceWeightingBuilder<InverseDistanceWeightingSquared> __distance("inverse-distance-weighting-squared");
 
 
-}  // namespace distance
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::distance

@@ -22,8 +22,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 ResizableOutput::ResizableOutput(std::vector<double>& values, param::SimpleParametrisation& metadata) :
@@ -85,5 +84,4 @@ size_t ResizableOutput::size() const {
 }
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

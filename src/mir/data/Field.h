@@ -34,8 +34,7 @@ class Representation;
 }  // namespace mir
 
 
-namespace mir {
-namespace data {
+namespace mir::data {
 
 
 class Field : public eckit::Counted {
@@ -163,5 +162,4 @@ private:
 };
 
 
-}  // namespace data
-}  // namespace mir
+}  // namespace mir::data

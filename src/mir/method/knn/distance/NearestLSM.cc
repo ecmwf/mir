@@ -21,10 +21,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace distance {
+namespace mir::method::knn::distance {
 
 
 NearestLSM::NearestLSM(const param::MIRParametrisation& parametrisation, const lsm::LandSeaMasks& landSeaMasks) :
@@ -84,7 +81,4 @@ void NearestLSM::hash(eckit::MD5& h) const {
 static const DistanceWeightingWithLSMBuilder<NearestLSM> __distance("nearest-lsm");
 
 
-}  // namespace distance
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::distance

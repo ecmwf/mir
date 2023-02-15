@@ -22,8 +22,7 @@
 #include "mir/util/FormulaString.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 FormulaParser::FormulaParser(std::istream& in) : StreamParser(in, true) {}
@@ -246,5 +245,4 @@ Formula* FormulaParser::parse(const param::MIRParametrisation& parametrisation) 
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

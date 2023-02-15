@@ -13,9 +13,7 @@
 #include "mir/method/fe/FEBilinear.h"
 
 
-namespace mir {
-namespace method {
-namespace fe {
+namespace mir::method::fe {
 
 
 FEBilinear::FEBilinear(const param::MIRParametrisation& param, const std::string& label) : FiniteElement(param, label) {
@@ -34,6 +32,4 @@ const char* FEBilinear::name() const {
 static const FiniteElementBuilder<FEBilinear> __builder("bilinear");
 
 
-}  // namespace fe
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::fe

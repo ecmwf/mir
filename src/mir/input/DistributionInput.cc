@@ -22,8 +22,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 static const ArtificialInputBuilder<DistributionInput> __artificial("distribution");
@@ -59,5 +58,4 @@ data::MIRField DistributionInput::field() const {
 }
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

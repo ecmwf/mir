@@ -19,8 +19,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 RawInput::RawInput(const double* const values, size_t count, const param::SimpleParametrisation& metadata) :
@@ -85,5 +84,4 @@ void RawInput::print(std::ostream& out) const {
 }
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

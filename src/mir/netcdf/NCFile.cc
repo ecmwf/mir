@@ -15,8 +15,7 @@
 
 #include <netcdf.h>
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 NCFile::NCFile(const std::string& path) : path_(path), nc_(-1), open_(false) {}
 
@@ -49,5 +48,4 @@ const std::string& NCFile::path() const {
     return path_;
 }
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

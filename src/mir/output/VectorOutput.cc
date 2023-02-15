@@ -22,8 +22,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 VectorOutput::VectorOutput(MIROutput& component1, MIROutput& component2) :
@@ -144,5 +143,4 @@ void VectorOutput::print(std::ostream& out) const {
 }
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

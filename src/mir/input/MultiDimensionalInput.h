@@ -17,15 +17,12 @@
 #include "mir/input/MIRInput.h"
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 class MultiDimensionalOutput;
-}
-}  // namespace mir
+}  // namespace mir::output
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 class MultiDimensionalInput : public MIRInput {
@@ -108,5 +105,4 @@ private:
 };
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

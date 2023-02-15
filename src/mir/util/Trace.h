@@ -22,8 +22,7 @@ class ResourceUsage;
 }
 
 
-namespace mir {
-namespace trace {
+namespace mir::trace {
 
 
 class Timer : public eckit::Timer {
@@ -69,5 +68,4 @@ private:
 };
 
 
-}  // namespace trace
-}  // namespace mir
+}  // namespace mir::trace

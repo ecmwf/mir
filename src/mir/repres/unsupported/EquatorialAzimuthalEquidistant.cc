@@ -15,8 +15,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace repres {
+namespace mir::repres {
 
 
 EquatorialAzimuthalEquidistant::EquatorialAzimuthalEquidistant(const param::MIRParametrisation& /*parametrisation*/) {}
@@ -31,5 +30,4 @@ void EquatorialAzimuthalEquidistant::print(std::ostream& out) const {
 static const RepresentationBuilder<EquatorialAzimuthalEquidistant> __repres("equatorial_azimuthal_equidistant");
 
 
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres

@@ -13,9 +13,7 @@
 #include "mir/data/space/SpaceLinear.h"
 
 
-namespace mir {
-namespace data {
-namespace space {
+namespace mir::data::space {
 
 
 SpaceLinear::SpaceLinear() = default;
@@ -41,6 +39,4 @@ void SpaceLinear::unlinearise(const Space::Matrix& matrixIn, Space::Matrix& matr
 }
 
 
-}  // namespace space
-}  // namespace data
-}  // namespace mir
+}  // namespace mir::data::space

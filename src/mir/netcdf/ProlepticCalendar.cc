@@ -15,8 +15,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 ProlepticCalendar::ProlepticCalendar(const Variable& /*variable*/) {}
@@ -33,5 +32,4 @@ void ProlepticCalendar::print(std::ostream& out) const {
 static const CodecBuilder<ProlepticCalendar> builder("proleptic_gregorian");
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

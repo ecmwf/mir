@@ -16,8 +16,7 @@
 #include <string>
 
 
-namespace mir {
-namespace api {
+namespace mir::api {
 
 
 class MIREstimation {
@@ -40,5 +39,4 @@ public:
 };
 
 
-}  // namespace api
-}  // namespace mir
+}  // namespace mir::api

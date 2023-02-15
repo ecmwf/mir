@@ -15,8 +15,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace repres {
+namespace mir::repres {
 
 
 StretchedRotatedLL::StretchedRotatedLL(const param::MIRParametrisation& /*parametrisation*/) {}
@@ -31,5 +30,4 @@ void StretchedRotatedLL::print(std::ostream& out) const {
 static const RepresentationBuilder<StretchedRotatedLL> __repres("stretched_rotated_ll");
 
 
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres

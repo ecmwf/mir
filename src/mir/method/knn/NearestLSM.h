@@ -17,9 +17,7 @@
 #include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
+namespace mir::method::knn {
 
 
 class NearestLSM : public KNearestNeighbours {
@@ -48,6 +46,4 @@ private:
 };
 
 
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn

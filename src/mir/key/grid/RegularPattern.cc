@@ -20,9 +20,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace key {
-namespace grid {
+namespace mir::key::grid {
 
 
 RegularPattern::RegularPattern(const std::string& name) : GridPattern(name) {}
@@ -50,6 +48,4 @@ std::string RegularPattern::canonical(const std::string& name, const param::MIRP
 static const RegularPattern __pattern("^[fF][1-9][0-9]*$");
 
 
-}  // namespace grid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::grid

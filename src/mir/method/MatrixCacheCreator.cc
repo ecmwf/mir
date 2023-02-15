@@ -21,8 +21,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace method {
+namespace mir::method {
 
 
 MatrixCacheCreator::MatrixCacheCreator(const MethodWeighted& owner, context::Context& ctx,
@@ -79,5 +78,4 @@ void MatrixCacheCreator::create(const eckit::PathName& path, WeightMatrix& W, bo
     ASSERT(code == 0);
 }
 
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method

@@ -18,15 +18,12 @@
 #include "mir/param/SimpleParametrisation.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 class GribInput;
-}
-}  // namespace mir
+}  // namespace mir::input
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 
 
 class CachedParametrisation : public MIRParametrisation {
@@ -130,5 +127,4 @@ private:
 };
 
 
-}  // namespace param
-}  // namespace mir
+}  // namespace mir::param

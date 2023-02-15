@@ -23,8 +23,7 @@
 #include "mir/util/Grib.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 static void check(const Increments& inc) {
@@ -144,5 +143,4 @@ void Increments::makeName(std::ostream& out) const {
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

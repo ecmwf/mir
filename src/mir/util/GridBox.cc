@@ -37,8 +37,7 @@ double normalise(double lon, double minimum) {
 }
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 GridBox::GridBox(double north, double west, double south, double east) :
@@ -97,5 +96,4 @@ void GridBox::print(std::ostream& out) const {
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

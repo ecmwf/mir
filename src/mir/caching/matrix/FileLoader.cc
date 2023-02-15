@@ -19,9 +19,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace caching {
-namespace matrix {
+namespace mir::caching::matrix {
 
 
 FileLoader::FileLoader(const std::string& name, const eckit::PathName& path) :
@@ -56,6 +54,4 @@ bool FileLoader::inSharedMemory() const {
 static const MatrixLoaderBuilder<FileLoader> loader("file-io");
 
 
-}  // namespace matrix
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching::matrix

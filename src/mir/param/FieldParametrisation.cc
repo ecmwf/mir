@@ -20,8 +20,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 
 
 static const MIRParametrisation* find_param_rules(const param::MIRParametrisation& param) {
@@ -167,5 +166,4 @@ void FieldParametrisation::longitudes(std::vector<double>& /*unused*/) const {
 }
 
 
-}  // namespace param
-}  // namespace mir
+}  // namespace mir::param

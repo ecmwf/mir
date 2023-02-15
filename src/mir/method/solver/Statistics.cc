@@ -23,9 +23,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace method {
-namespace solver {
+namespace mir::method::solver {
 
 
 Statistics::Statistics(const param::MIRParametrisation& param, stats::Field* fieldStats) :
@@ -45,7 +43,7 @@ void Statistics::solve(const MethodWeighted::Matrix& A, const MethodWeighted::We
 
     WeightMatrix::const_iterator it(W);
     for (WeightMatrix::Size r = 0; r < W.rows(); ++r) {
-        stats_->reset(missingValue, std::isnan(missingValue) != 0);
+        stats_->reset(missingValue, std::isnan(missingValue));
 
         for (; it != W.end(r); ++it) {
             ASSERT(it.col() < N);
@@ -53,7 +51,7 @@ void Statistics::solve(const MethodWeighted::Matrix& A, const MethodWeighted::We
         }
 
         auto value = stats_->value();
-        B(r, 0)    = static_cast<WeightMatrix::Scalar>(std::isnan(value) != 0 ? missingValue : value);
+        B(r, 0)    = static_cast<WeightMatrix::Scalar>(std::isnan(value) ? missingValue : value);
     }
 }
 
@@ -74,6 +72,4 @@ void Statistics::hash(eckit::MD5& h) const {
 }
 
 
-}  // namespace solver
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::solver

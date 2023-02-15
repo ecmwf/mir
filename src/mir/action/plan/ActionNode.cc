@@ -19,8 +19,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 ActionNode::ActionNode(const Action& action, api::MIRWatcher* watcher) : action_(action), watcher_(watcher) {}
@@ -74,5 +73,4 @@ void ActionNode::dump(std::ostream& out, size_t depth) const {
 }
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

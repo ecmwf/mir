@@ -16,9 +16,7 @@
 #include "mir/method/knn/pick/NClosestOrNearest.h"
 
 
-namespace mir {
-namespace method {
-namespace voronoi {
+namespace mir::method::voronoi {
 
 
 class VoronoiMethod : public MethodWeighted {
@@ -101,6 +99,4 @@ private:
 };
 
 
-}  // namespace voronoi
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::voronoi

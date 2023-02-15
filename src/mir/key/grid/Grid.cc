@@ -26,9 +26,7 @@
 #include "mir/util/ValueMap.h"
 
 
-namespace mir {
-namespace key {
-namespace grid {
+namespace mir::key::grid {
 
 
 static util::once_flag once;
@@ -185,6 +183,4 @@ const Grid& Grid::lookup(const std::string& key, const param::MIRParametrisation
 }
 
 
-}  // namespace grid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::grid

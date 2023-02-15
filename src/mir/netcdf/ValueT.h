@@ -21,8 +21,7 @@
 #include "mir/netcdf/Value.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 template <class T>
@@ -119,5 +118,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

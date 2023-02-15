@@ -29,9 +29,7 @@ class MIRParametrisation;
 }  // namespace mir
 
 
-namespace mir {
-namespace key {
-namespace style {
+namespace mir::key::style {
 
 
 class MIRStyle {
@@ -137,6 +135,4 @@ public:
 };
 
 
-}  // namespace style
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::style

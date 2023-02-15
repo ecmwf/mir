@@ -29,8 +29,7 @@
 #include "mir/util/ValueMap.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 MIRInput::MIRInput() = default;
@@ -223,5 +222,4 @@ void MIRInputFactory::list(std::ostream& out) {
 }
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

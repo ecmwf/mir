@@ -25,8 +25,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 // See https://software.ecmwf.int/wiki/display/METV/Geopoints
@@ -90,5 +89,4 @@ size_t GeoPointsFileOutputXYVector::save(const param::MIRParametrisation& param,
 static const MIROutputBuilder<GeoPointsFileOutputXYVector> output("geopoints-xy-vector");
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

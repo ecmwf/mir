@@ -19,8 +19,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace tools {
+namespace mir::tools {
 
 
 struct MIRMakeLSM : MIRTool {
@@ -86,8 +85,7 @@ void MIRMakeLSM::execute(const eckit::option::CmdArgs& /*unused*/) {
 }
 
 
-}  // namespace tools
-}  // namespace mir
+}  // namespace mir::tools
 
 
 int main(int argc, char** argv) {

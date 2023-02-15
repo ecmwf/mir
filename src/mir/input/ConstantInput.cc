@@ -18,8 +18,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 static const ArtificialInputBuilder<ConstantInput> __artificial("constant");
@@ -50,5 +49,4 @@ data::MIRField ConstantInput::field() const {
 }
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

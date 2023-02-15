@@ -20,9 +20,7 @@
 #include "mir/util/BoundingBox.h"
 
 
-namespace mir {
-namespace repres {
-namespace gauss {
+namespace mir::repres::gauss {
 
 
 class GaussianIterator : public Iterator {
@@ -55,6 +53,4 @@ protected:
 };
 
 
-}  // namespace gauss
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres::gauss

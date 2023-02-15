@@ -15,8 +15,7 @@
 #include "eckit/io/BufferedHandle.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 GribFileInput::GribFileInput(const eckit::PathName& path, size_t skip, size_t step) :
@@ -54,5 +53,4 @@ eckit::DataHandle& GribFileInput::dataHandle() {
 static const MIRInputBuilder<GribFileInput> input(0x47524942);  // "GRIB"
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

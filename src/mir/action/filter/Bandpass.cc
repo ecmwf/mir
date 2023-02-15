@@ -22,9 +22,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace action {
-namespace filter {
+namespace mir::action::filter {
 
 
 Bandpass::Bandpass(const param::MIRParametrisation& param) : Action(param) {
@@ -90,6 +88,4 @@ void Bandpass::estimate(context::Context& /*unused*/, api::MIREstimation& estima
 static const ActionBuilder<Bandpass> __action("filter.sh-bandpass");
 
 
-}  // namespace filter
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::filter

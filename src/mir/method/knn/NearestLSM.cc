@@ -19,9 +19,7 @@
 #include "mir/param/RuntimeParametrisation.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
+namespace mir::method::knn {
 
 
 NearestLSM::NearestLSM(const param::MIRParametrisation& param) : KNearestNeighbours(param), distanceWeighting_(param) {
@@ -106,6 +104,4 @@ const char* NearestLSM::name() const {
 static const MethodBuilder<NearestLSM> __method("nearest-lsm");
 
 
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn
