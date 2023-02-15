@@ -129,9 +129,10 @@ struct MIR : MIRTool {
                                                   "FE method check mesh quadrilaterals validity (default false)"));
         options_.push_back(new FactoryOption<method::fe::FiniteElement::ProjectionFail>(
             "finite-element-projection-fail", "FE method failed projection handling (default missing-value)"));
-        options_.push_back(new SimpleOption<double>(
-            "finite-element-pole-displacement", "FE method pole infinitesimal displacement in [degree] (default 0.)"));
 #endif
+
+        options_.push_back(new SimpleOption<double>("pole-displacement-in-degree",
+                                                    "Infinitesimal displacement at the poles [degree] (default 0.)"));
 
         options_.push_back(new FactoryOption<method::nonlinear::NonLinearFactory>(
             "non-linear",
