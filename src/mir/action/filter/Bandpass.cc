@@ -37,8 +37,8 @@ Bandpass::Bandpass(const param::MIRParametrisation& param) : Action(param) {
     maxM_ = static_cast<size_t>(b[1]);
     minN_ = static_cast<size_t>(b[2]);
     maxN_ = static_cast<size_t>(b[3]);
-    ASSERT(0 <= minM_ && minM_ <= maxM_ <= truncation_);
-    ASSERT(0 <= minN_ && minN_ <= maxN_ <= truncation_);
+    ASSERT(minM_ <= maxM_ && maxM_ <= truncation_);
+    ASSERT(minN_ <= maxN_ && maxN_ <= truncation_);
 }
 
 
