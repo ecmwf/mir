@@ -37,7 +37,7 @@ data::MIRField ConstantInput::field() const {
     data::MIRField field(parametrisation(0), false, 9999.);
 
     repres::RepresentationHandle repres(field.representation());
-    auto n = repres->numberOfPoints();
+    auto n = repres->numberOfValues();
     ASSERT(n > 0);
 
     MIRValuesVector values(n, constant);
