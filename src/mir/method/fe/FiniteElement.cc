@@ -232,8 +232,7 @@ void FiniteElement::print(std::ostream& out) const {
 bool FiniteElement::sameAs(const Method& other) const {
     const auto* o = dynamic_cast<const FiniteElement*>(&other);
     return (o != nullptr) && meshGeneratorParams_.sameAs(o->meshGeneratorParams_) &&
-           validateMesh_ == o->validateMesh_ && projectionFail_ == o->projectionFail_ &&
-           MethodWeighted::sameAs(other);
+           validateMesh_ == o->validateMesh_ && projectionFail_ == o->projectionFail_ && MethodWeighted::sameAs(other);
 }
 
 

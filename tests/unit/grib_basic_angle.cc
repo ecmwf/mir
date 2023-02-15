@@ -14,17 +14,11 @@
 #include <vector>
 
 #include "eckit/testing/Test.h"
-#include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
 
-#include "mir/api/MIRJob.h"
-#include "mir/input/GribFileInput.h"
-#include "mir/input/GribMemoryInput.h"
-#include "mir/output/GribMemoryOutput.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Increments.h"
-#include "mir/util/Log.h"
 
 
 namespace mir {
