@@ -681,6 +681,8 @@ list(APPEND mir_srcs
     util/Mutex.h
     util/PlanParser.cc
     util/PlanParser.h
+    util/Point2ToPoint3.cc
+    util/Point2ToPoint3.h
     util/PointLatLonT.h
     util/Regex.cc
     util/Regex.h
