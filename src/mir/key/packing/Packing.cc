@@ -204,17 +204,22 @@ Packing* PackingFactory::build(const param::MIRParametrisation& param) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
+    std::string default_spectral;
+    std::string default_gridded;
+    param.get("default-spectral-packing", default_spectral);
+    param.get("default-gridded-packing", default_gridded);
+
     const auto& user  = param.userParametrisation();
     const auto& field = param.fieldParametrisation();
 
 
-    // When converting from spectral to gridded, default to simple packing
-    std::string name = user.has("grid") && field.has("spectral") ? "simple" : "av";
+    // When converting from spectral to gridded...
+    auto name = user.has("grid") && field.has("spectral") && !default_gridded.empty() ? default_gridded : "av";
     user.get("packing", name);
 
 
     // When converting formats, field packing needs a sensible default
-    std::string packing = field.has("spectral") ? "complex" : "simple";
+    std::string packing = field.has("spectral") ? default_spectral : default_gridded;
     field.get("packing", packing);
 
 
