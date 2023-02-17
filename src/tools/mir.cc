@@ -330,6 +330,10 @@ struct MIR : MIRTool {
         options_.push_back(new SimpleOption<size_t>("precision", "Statistics methods output precision"));
         options_.push_back(new SimpleOption<std::string>("input", "Input options YAML (lat, lon, etc.)"));
         options_.push_back(new SimpleOption<std::string>("output", "Output options YAML"));
+        options_.push_back(new SimpleOption<std::string>(
+            "default-gridded-packing", "On gridded/spectral conversions set the default gridded packing"));
+        options_.push_back(new SimpleOption<std::string>(
+            "default-spectral-packing", "On gridded/spectral conversions set the default spectral packing"));
         options_.push_back(new FactoryOption<action::Executor>("executor", "Select whether threads are used or not"));
         options_.push_back(new SimpleOption<std::string>("plan", "String containing a plan definition"));
         options_.push_back(new SimpleOption<eckit::PathName>("plan-script", "File containing a plan definition"));
