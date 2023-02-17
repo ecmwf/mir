@@ -22,9 +22,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace key {
-namespace grid {
+namespace mir::key::grid {
 
 
 RegularLLPattern::RegularLLPattern(const std::string& name) : GridPattern(name) {}
@@ -59,6 +57,4 @@ static const RegularLLPattern __pattern("^" fp "/" fp "$");
 #undef fp
 
 
-}  // namespace grid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::grid

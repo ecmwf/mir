@@ -18,15 +18,12 @@
 #include "mir/util/Atlas.h"
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 class MIRParametrisation;
-}  // namespace param
-}  // namespace mir
+}  // namespace mir::param
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 class MeshGeneratorParameters : public atlas::MeshGenerator::Parameters {
@@ -121,5 +118,4 @@ private:
 };
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

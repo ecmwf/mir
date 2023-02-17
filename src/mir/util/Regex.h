@@ -16,8 +16,7 @@
 #include <string>
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 class Regex {
@@ -110,5 +109,4 @@ private:
 };
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

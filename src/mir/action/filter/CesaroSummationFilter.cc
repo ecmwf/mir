@@ -24,9 +24,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace action {
-namespace filter {
+namespace mir::action::filter {
 
 
 CesaroSummationFilter::CesaroSummationFilter(const param::MIRParametrisation& parametrisation) :
@@ -99,6 +97,4 @@ void CesaroSummationFilter::estimate(context::Context& /*unused*/, api::MIREstim
 static const ActionBuilder<CesaroSummationFilter> __action("filter.sh-cesaro-summation-filter");
 
 
-}  // namespace filter
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::filter

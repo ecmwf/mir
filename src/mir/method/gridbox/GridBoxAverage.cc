@@ -13,14 +13,10 @@
 #include "mir/method/gridbox/GridBoxAverage.h"
 
 
-namespace mir {
-namespace method {
-namespace gridbox {
+namespace mir::method::gridbox {
 
 
 static const MethodBuilder<GridBoxAverage> __builder("grid-box-average");
 
 
-}  // namespace gridbox
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::gridbox

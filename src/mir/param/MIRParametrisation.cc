@@ -17,8 +17,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 
 
 MIRParametrisation::MIRParametrisation() = default;
@@ -90,5 +89,4 @@ bool MIRParametrisation::get(const std::string& name, std::vector<long long>& va
     return false;
 }
 
-}  // namespace param
-}  // namespace mir
+}  // namespace mir::param

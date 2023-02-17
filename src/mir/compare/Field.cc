@@ -23,8 +23,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace compare {
+namespace mir::compare {
 
 
 static bool normaliseLongitudes_ = false;
@@ -249,5 +248,4 @@ double FieldBase::normaliseLongitude(double longitude) {
 }
 
 
-}  // namespace compare
-}  // namespace mir
+}  // namespace mir::compare

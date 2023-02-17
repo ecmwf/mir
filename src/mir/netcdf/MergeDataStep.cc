@@ -20,8 +20,7 @@
 #include "mir/netcdf/Variable.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 MergeDataStep::MergeDataStep(Variable& out, const Variable& in) : out_(out), in_(in) {}
@@ -66,5 +65,4 @@ void MergeDataStep::execute(MergePlan& /*plan*/) {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

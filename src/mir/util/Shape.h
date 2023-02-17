@@ -16,15 +16,12 @@
 #include "mir/util/Grib.h"
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 class MIRParametrisation;
-}
-}  // namespace mir
+}  // namespace mir::param
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 struct Shape {
@@ -46,5 +43,4 @@ struct Shape {
 };
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

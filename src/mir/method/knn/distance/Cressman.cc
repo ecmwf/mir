@@ -21,10 +21,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace distance {
+namespace mir::method::knn::distance {
 
 
 Cressman::Cressman(const param::MIRParametrisation& parametrisation) {
@@ -87,7 +84,4 @@ void Cressman::hash(eckit::MD5& h) const {
 static const DistanceWeightingBuilder<Cressman> __distance("cressman");
 
 
-}  // namespace distance
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::distance

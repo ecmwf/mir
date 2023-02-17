@@ -18,9 +18,7 @@
 #include "mir/repres/gauss/reduced/RotatedClassic.h"
 
 
-namespace mir {
-namespace key {
-namespace grid {
+namespace mir::key::grid {
 
 
 NamedClassic::NamedClassic(const std::string& name, size_t N) : NamedGrid(name), N_(N) {}
@@ -46,6 +44,4 @@ size_t NamedClassic::gaussianNumber() const {
 }
 
 
-}  // namespace grid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::grid

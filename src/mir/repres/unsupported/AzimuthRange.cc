@@ -15,8 +15,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace repres {
+namespace mir::repres {
 
 
 AzimuthRange::AzimuthRange(const param::MIRParametrisation& /*parametrisation*/) {}
@@ -31,5 +30,4 @@ void AzimuthRange::print(std::ostream& out) const {
 static const RepresentationBuilder<AzimuthRange> __repres("azimuth_range");
 
 
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres

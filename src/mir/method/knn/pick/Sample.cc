@@ -21,10 +21,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace pick {
+namespace mir::method::knn::pick {
 
 
 Sample::Sample(const param::MIRParametrisation& param) {
@@ -83,7 +80,4 @@ void Sample::hash(eckit::MD5& h) const {
 static const PickBuilder<Sample> __pick("sample");
 
 
-}  // namespace pick
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::pick

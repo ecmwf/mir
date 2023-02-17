@@ -23,8 +23,7 @@
 #include "mir/util/Trace.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 void ResetMissingValues::execute(context::Context& ctx) const {
@@ -95,5 +94,4 @@ void ResetMissingValues::estimate(context::Context& /*unused*/, api::MIREstimati
 static const ActionBuilder<ResetMissingValues> __action("misc.reset-missing-values");
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

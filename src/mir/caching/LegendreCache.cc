@@ -15,8 +15,7 @@
 #include "mir/config/LibMir.h"
 
 
-namespace mir {
-namespace caching {
+namespace mir::caching {
 
 
 LegendreCache::LegendreCache() :
@@ -44,5 +43,4 @@ void LegendreCacheTraits::load(const eckit::CacheManagerBase& /*unused*/, Legend
                                const eckit::PathName& /*unused*/) {}
 
 
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching

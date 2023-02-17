@@ -15,9 +15,7 @@
 #include "mir/key/style/MIRStyle.h"
 
 
-namespace mir {
-namespace key {
-namespace style {
+namespace mir::key::style {
 
 
 class ECMWFStyle : public MIRStyle {
@@ -95,6 +93,4 @@ private:
 };
 
 
-}  // namespace style
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::style

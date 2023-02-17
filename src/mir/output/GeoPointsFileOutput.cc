@@ -16,8 +16,7 @@
 #include "eckit/io/DataHandle.h"
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 GeoPointsFileOutput::GeoPointsFileOutput(const std::string& path, bool binary) : path_(path), binary_(binary) {}
@@ -47,5 +46,4 @@ void GeoPointsFileOutput::print(std::ostream& out) const {
 }
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

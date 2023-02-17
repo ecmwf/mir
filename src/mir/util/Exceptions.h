@@ -32,8 +32,7 @@
 #define ASSERT_NONEMPTY_AREA_CROP(m, nonempty) ASSERT_MSG((nonempty), m ": non-empty area crop (to at least one point)")
 
 
-namespace mir {
-namespace exception {
+namespace mir::exception {
 
 
 using eckit::BadValue;
@@ -55,5 +54,4 @@ public:
 };
 
 
-}  // namespace exception
-}  // namespace mir
+}  // namespace mir::exception

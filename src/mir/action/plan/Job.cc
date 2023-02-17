@@ -26,8 +26,7 @@
 #include "mir/util/MIRStatistics.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output, bool compress) :
@@ -37,8 +36,8 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     static param::DefaultParametrisation defaults;
     const param::MIRParametrisation& metadata = input.parametrisation();
 
-    combined_.reset(new param::CombinedParametrisation(job, metadata, defaults));
-    plan_.reset(new ActionPlan(*combined_));
+    combined_ = std::make_unique<param::CombinedParametrisation>(job, metadata, defaults);
+    plan_     = std::make_unique<ActionPlan>(*combined_);
 
 
     // skip preparing an Action plan if nothing to do, or input is already what was specified
@@ -93,5 +92,4 @@ const param::MIRParametrisation& Job::parametrisation() const {
 }
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

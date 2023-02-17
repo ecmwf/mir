@@ -18,8 +18,7 @@
 #include "mir/netcdf/Type.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 MergeDataMatrix::MergeDataMatrix(Matrix* out, Matrix* in, size_t size) :
@@ -47,5 +46,4 @@ void MergeDataMatrix::dumpTree(std::ostream& out, size_t depth) const {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

@@ -18,9 +18,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace key {
-namespace packing {
+namespace mir::key::packing {
 
 
 static const PackingBuilder<IEEE> __packing("ieee", true, true);
@@ -99,6 +97,4 @@ bool IEEE::empty() const {
 }
 
 
-}  // namespace packing
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::packing

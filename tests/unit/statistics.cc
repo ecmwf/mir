@@ -35,9 +35,7 @@ constexpr double EPS = 1e-6;
     EXPECT(eckit::types::is_approximately_equal(static_cast<double>(a), static_cast<double>(b), EPS))
 
 
-namespace mir {
-namespace tests {
-namespace unit {
+namespace mir::tests::unit {
 
 
 struct case_t {
@@ -160,9 +158,7 @@ CASE("mir::stats::Field") {
 }
 
 
-}  // namespace unit
-}  // namespace tests
-}  // namespace mir
+}  // namespace mir::tests::unit
 
 
 int main(int argc, char** argv) {

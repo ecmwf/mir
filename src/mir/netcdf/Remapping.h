@@ -17,8 +17,7 @@
 #include "mir/netcdf/HyperCube.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class Remapping : public HyperCube::Remapping, public eckit::Counted {
@@ -43,5 +42,4 @@ public:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

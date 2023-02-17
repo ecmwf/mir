@@ -18,9 +18,7 @@
 #include "mir/method/knn/distance/NoDistanceWeighting.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
+namespace mir::method::knn {
 
 
 class KNearestStatistics : public KNearestNeighbours {
@@ -40,6 +38,4 @@ private:
 };
 
 
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn

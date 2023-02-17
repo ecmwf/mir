@@ -26,8 +26,7 @@ class BoundingBox;
 }  // namespace mir
 
 
-namespace mir {
-namespace key {
+namespace mir::key {
 
 
 class Area {
@@ -103,5 +102,4 @@ private:
 };
 
 
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key

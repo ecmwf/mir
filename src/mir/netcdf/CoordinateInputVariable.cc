@@ -18,8 +18,7 @@
 #include "mir/netcdf/ScalarCoordinateInputVariable.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 CoordinateInputVariable::CoordinateInputVariable(Dataset& owner, const std::string& name, int id,
@@ -59,5 +58,4 @@ const char* CoordinateInputVariable::kind() const {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

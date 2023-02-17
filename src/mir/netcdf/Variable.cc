@@ -27,8 +27,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 Variable::Variable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions) :
@@ -466,5 +465,4 @@ double Variable::missingValue() const {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

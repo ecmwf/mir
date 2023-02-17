@@ -24,8 +24,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 CheckerBoard::CheckerBoard(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {}
@@ -134,5 +133,4 @@ const char* CheckerBoard::name() const {
 static const ActionBuilder<CheckerBoard> __action("misc.checkerboard");
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

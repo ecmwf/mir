@@ -18,8 +18,7 @@
 #include "mir/util/Function.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 FormulaFunction::FormulaFunction(const param::MIRParametrisation& parametrisation, const std::string& name,
@@ -89,5 +88,4 @@ const char* FormulaFunction::name() const {
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

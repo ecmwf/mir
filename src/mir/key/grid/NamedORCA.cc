@@ -18,9 +18,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace key {
-namespace grid {
+namespace mir::key::grid {
 
 
 NamedORCA::NamedORCA(const std::string& name) : NamedGrid(name) {}
@@ -46,6 +44,4 @@ size_t NamedORCA::gaussianNumber() const {
 }
 
 
-}  // namespace grid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::grid

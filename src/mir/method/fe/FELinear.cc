@@ -13,9 +13,7 @@
 #include "mir/method/fe/FELinear.h"
 
 
-namespace mir {
-namespace method {
-namespace fe {
+namespace mir::method::fe {
 
 
 FELinear::FELinear(const param::MIRParametrisation& param, const std::string& label) : FiniteElement(param, label) {
@@ -33,6 +31,4 @@ const char* FELinear::name() const {
 static const FiniteElementBuilder<FELinear> __builder("linear");
 
 
-}  // namespace fe
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::fe

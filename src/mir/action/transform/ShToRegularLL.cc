@@ -22,9 +22,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace action {
-namespace transform {
+namespace mir::action::transform {
 
 
 template <class Invtrans>
@@ -90,6 +88,4 @@ static const ActionBuilder<ShToRegularLL<InvtransScalar> > __action1("transform.
 static const ActionBuilder<ShToRegularLL<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-regular-ll");
 
 
-}  // namespace transform
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::transform

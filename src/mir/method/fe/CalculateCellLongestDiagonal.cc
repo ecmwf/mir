@@ -25,9 +25,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace method {
-namespace fe {
+namespace mir::method::fe {
 
 
 CalculateCellLongestDiagonal::CalculateCellLongestDiagonal(std::string name, bool force_recompute) :
@@ -103,6 +101,4 @@ double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh, bool include_
 }
 
 
-}  // namespace fe
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::fe

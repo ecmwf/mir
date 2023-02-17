@@ -29,8 +29,7 @@
 #include "mir/util/ValueMap.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 MIRInput::MIRInput() = default;
@@ -43,11 +42,10 @@ grib_handle* MIRInput::gribHandle(size_t /*unused*/) const {
     // ASSERT(which == 0);
     static grib_handle* handle = nullptr;
     if (handle == nullptr) {
+        // NOTE: starts from GRIB1 to avoid supporting user-requested conversions of GRIB2 to 1
+        // FIXME: make this edition-independent
         handle = codes_grib_handle_new_from_samples(nullptr, "GRIB1");
-
-        constexpr long MISSING = 255;
-        codes_set_long(handle, "paramId", MISSING);
-        ASSERT(handle);
+        ASSERT(handle != nullptr);
     }
     return handle;
 }
@@ -223,5 +221,4 @@ void MIRInputFactory::list(std::ostream& out) {
 }
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

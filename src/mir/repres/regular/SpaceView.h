@@ -15,9 +15,7 @@
 #include "mir/repres/regular/RegularGrid.h"
 
 
-namespace mir {
-namespace repres {
-namespace regular {
+namespace mir::repres::regular {
 namespace detail {
 
 
@@ -113,6 +111,4 @@ private:
 };
 
 
-}  // namespace regular
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres::regular

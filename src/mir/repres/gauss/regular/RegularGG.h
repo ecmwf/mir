@@ -15,10 +15,7 @@
 #include "mir/repres/gauss/regular/Regular.h"
 
 
-namespace mir {
-namespace repres {
-namespace gauss {
-namespace regular {
+namespace mir::repres::gauss::regular {
 
 
 class RegularGG : public Regular {
@@ -96,7 +93,4 @@ private:
 };
 
 
-}  // namespace regular
-}  // namespace gauss
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres::gauss::regular

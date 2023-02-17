@@ -22,8 +22,7 @@
 #include "mir/util/ValueMap.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 NetcdfFileInput::NetcdfFileInput(const eckit::PathName& path) :
@@ -207,5 +206,4 @@ static const MIRInputBuilder<NetcdfFileInput> netcdf31(0x43444601);  // "CDF."
 static const MIRInputBuilder<NetcdfFileInput> netcdf32(0x43444602);  // "CDF."
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

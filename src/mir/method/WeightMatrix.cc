@@ -21,8 +21,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace method {
+namespace mir::method {
 
 
 WeightMatrix::WeightMatrix(SparseMatrix::Allocator* alloc) : SparseMatrix(alloc) {}
@@ -153,5 +152,4 @@ void WeightMatrix::validate(const char* when) const {
 }
 
 
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method

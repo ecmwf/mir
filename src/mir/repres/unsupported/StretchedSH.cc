@@ -15,8 +15,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace repres {
+namespace mir::repres {
 
 
 StretchedSH::StretchedSH(const param::MIRParametrisation& /*parametrisation*/) {}
@@ -31,5 +30,4 @@ void StretchedSH::print(std::ostream& out) const {
 static const RepresentationBuilder<StretchedSH> __repres("stretched_sh");
 
 
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres

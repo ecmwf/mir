@@ -20,8 +20,7 @@
 #include "mir/netcdf/Remapping.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 Dimension::Dimension(Dataset& owner, const std::string& name, size_t len) : owner_(owner), name_(name), len_(len) {}
@@ -91,5 +90,4 @@ void Dimension::realDimensions(std::vector<size_t>& /*dims*/) const {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

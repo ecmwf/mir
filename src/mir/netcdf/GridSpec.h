@@ -18,15 +18,12 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 class Variable;
-}
-}  // namespace mir
+}  // namespace mir::netcdf
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class GridSpec {
@@ -99,5 +96,4 @@ public:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

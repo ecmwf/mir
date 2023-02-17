@@ -23,10 +23,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace distance {
+namespace mir::method::knn::distance {
 
 
 struct Choice {
@@ -102,7 +99,4 @@ void NearestLSMWithLowestIndex::hash(eckit::MD5& h) const {
 static const DistanceWeightingWithLSMBuilder<NearestLSMWithLowestIndex> __distance("nearest-lsm-with-lowest-index");
 
 
-}  // namespace distance
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::distance

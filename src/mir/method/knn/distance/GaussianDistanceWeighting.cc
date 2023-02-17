@@ -24,10 +24,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace distance {
+namespace mir::method::knn::distance {
 
 
 GaussianDistanceWeighting::GaussianDistanceWeighting(const param::MIRParametrisation& parametrisation) {
@@ -90,7 +87,4 @@ void GaussianDistanceWeighting::hash(eckit::MD5& h) const {
 static const DistanceWeightingBuilder<GaussianDistanceWeighting> __distance("gaussian");
 
 
-}  // namespace distance
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::distance

@@ -15,9 +15,7 @@
 #include "mir/key/truncation/Truncation.h"
 
 
-namespace mir {
-namespace key {
-namespace truncation {
+namespace mir::key::truncation {
 
 
 class Ordinal : public Truncation {
@@ -73,6 +71,4 @@ private:
 };
 
 
-}  // namespace truncation
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::truncation

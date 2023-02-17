@@ -17,9 +17,7 @@
 #include "mir/param/MIRParametrisation.h"
 
 
-namespace mir {
-namespace stats {
-namespace detail {
+namespace mir::stats::detail {
 
 namespace {
 
@@ -110,6 +108,7 @@ ModeBoolean::ModeBoolean(bool disambiguateMax, double min) : min_(min), disambig
 
 
 ModeBoolean::ModeBoolean(const param::MIRParametrisation& param) {
+    reset();
     param.get("mode-disambiguate-max", disambiguateMax_);
     param.get("mode-boolean-min", min_);
 }
@@ -166,6 +165,4 @@ void MedianIntegral::print(std::ostream& out) const {
 }
 
 
-}  // namespace detail
-}  // namespace stats
-}  // namespace mir
+}  // namespace mir::stats::detail

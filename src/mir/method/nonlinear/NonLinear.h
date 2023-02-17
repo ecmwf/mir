@@ -35,9 +35,7 @@ class MIRParametrisation;
 }  // namespace mir
 
 
-namespace mir {
-namespace method {
-namespace nonlinear {
+namespace mir::method::nonlinear {
 
 
 class NonLinear {
@@ -96,6 +94,4 @@ public:
 };
 
 
-}  // namespace nonlinear
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::nonlinear

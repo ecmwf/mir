@@ -20,8 +20,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 SelectField::SelectField(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
@@ -57,5 +56,4 @@ const char* SelectField::name() const {
 static const ActionBuilder<SelectField> __action("select.field");
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

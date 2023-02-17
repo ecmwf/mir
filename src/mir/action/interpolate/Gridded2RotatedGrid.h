@@ -17,9 +17,7 @@
 #include "mir/util/Rotation.h"
 
 
-namespace mir {
-namespace action {
-namespace interpolate {
+namespace mir::action::interpolate {
 
 
 class Gridded2RotatedGrid : public Gridded2GriddedInterpolation {
@@ -97,6 +95,4 @@ private:
 };
 
 
-}  // namespace interpolate
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::interpolate

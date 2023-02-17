@@ -23,8 +23,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 SimpleInputVariable::SimpleInputVariable(Dataset& owner, const std::string& name, int id,
                                          const std::vector<Dimension*>& dimensions) :
@@ -116,5 +115,4 @@ std::vector<std::string> SimpleInputVariable::coordinates() const {
     return result;
 }
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

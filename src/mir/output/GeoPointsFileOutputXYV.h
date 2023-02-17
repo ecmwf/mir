@@ -15,8 +15,7 @@
 #include "mir/output/GeoPointsFileOutput.h"
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 class GeoPointsFileOutputXYV : public GeoPointsFileOutput {
@@ -89,5 +88,4 @@ private:
 };
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

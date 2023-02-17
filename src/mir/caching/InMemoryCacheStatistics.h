@@ -24,8 +24,7 @@ class Stream;
 }
 
 
-namespace mir {
-namespace caching {
+namespace mir::caching {
 
 
 class InMemoryCacheStatistics : public eckit::Statistics {
@@ -60,5 +59,4 @@ public:
 };
 
 
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching

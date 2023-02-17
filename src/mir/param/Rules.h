@@ -19,16 +19,13 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 class MIRParametrisation;
 class SimpleParametrisation;
-}  // namespace param
-}  // namespace mir
+}  // namespace mir::param
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 
 
 class Rules {
@@ -116,5 +113,4 @@ private:
 };
 
 
-}  // namespace param
-}  // namespace mir
+}  // namespace mir::param

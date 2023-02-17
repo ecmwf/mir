@@ -34,8 +34,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace tools {
+namespace mir::tools {
 
 
 struct MIRTriangulate : MIRTool {
@@ -420,8 +419,7 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
 }
 
 
-}  // namespace tools
-}  // namespace mir
+}  // namespace mir::tools
 
 
 int main(int argc, char** argv) {

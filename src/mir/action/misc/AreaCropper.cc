@@ -33,8 +33,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 constexpr size_t CAPACITY = 256 * 1024 * 1024;
@@ -57,18 +56,9 @@ struct LL {
 };
 
 
-AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation) : Action(parametrisation), caching_(true) {
+AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation) :
+    Action(parametrisation), caching_(LibMir::caching()) {
     ASSERT(key::Area::get(parametrisation_.userParametrisation(), bbox_));
-
-    caching_ = LibMir::caching();
-    parametrisation_.get("caching", caching_);
-}
-
-
-AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation, const util::BoundingBox& bbox) :
-    Action(parametrisation), bbox_(bbox), caching_(true) {
-
-    caching_ = LibMir::caching();
     parametrisation_.get("caching", caching_);
 }
 
@@ -311,5 +301,4 @@ bool AreaCropper::canCrop() const {
 static const ActionBuilder<AreaCropper> __action("crop.area");
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

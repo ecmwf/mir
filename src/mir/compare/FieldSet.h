@@ -17,8 +17,7 @@
 #include "mir/compare/Field.h"
 
 
-namespace mir {
-namespace compare {
+namespace mir::compare {
 
 
 class FieldSet {
@@ -41,5 +40,4 @@ private:  // members
 };
 
 
-}  // namespace compare
-}  // namespace mir
+}  // namespace mir::compare

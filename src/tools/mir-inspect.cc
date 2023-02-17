@@ -15,8 +15,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace tools {
+namespace mir::tools {
 
 
 class MIRInspect : public tools::MIRTool {
@@ -83,8 +82,7 @@ void MIRInspect::execute(const eckit::option::CmdArgs& /*unused*/) {
 }
 
 
-}  // namespace tools
-}  // namespace mir
+}  // namespace mir::tools
 
 
 int main(int argc, char** argv) {

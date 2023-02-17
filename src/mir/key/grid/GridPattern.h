@@ -19,18 +19,12 @@
 #include "mir/util/Regex.h"
 
 
-namespace mir {
-namespace key {
-namespace grid {
+namespace mir::key::grid {
 class Grid;
-}
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::grid
 
 
-namespace mir {
-namespace key {
-namespace grid {
+namespace mir::key::grid {
 
 
 class GridPattern {
@@ -116,6 +110,4 @@ private:
 };
 
 
-}  // namespace grid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::grid

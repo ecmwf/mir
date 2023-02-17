@@ -27,8 +27,7 @@ class Formula;
 }  // namespace mir
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 class FormulaParser : public eckit::StreamParser {
 
 public:  // methods
@@ -49,5 +48,4 @@ private:  // methods
 };
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

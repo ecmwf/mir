@@ -285,12 +285,10 @@ public:
 #endif
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 using atlas::util::Earth;
 
 
-}
-}  // namespace mir
+}  // namespace mir::util

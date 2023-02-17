@@ -25,8 +25,7 @@ class MIRParametrisation;
 }  // namespace mir
 
 
-namespace mir {
-namespace caching {
+namespace mir::caching {
 
 
 struct WeightCacheTraits {
@@ -52,5 +51,4 @@ private:  // members
 };
 
 
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching

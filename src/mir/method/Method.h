@@ -36,8 +36,7 @@ class BoundingBox;
 }  // namespace mir
 
 
-namespace mir {
-namespace method {
+namespace mir::method {
 
 
 class Method {
@@ -103,5 +102,4 @@ public:
 };
 
 
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method

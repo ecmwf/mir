@@ -15,15 +15,12 @@
 #include "mir/netcdf/Codec.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 class Variable;
-}
-}  // namespace mir
+}  // namespace mir::netcdf
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class Calendar : public Codec {
@@ -35,5 +32,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

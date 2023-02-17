@@ -21,17 +21,12 @@ namespace eckit {
 class MD5;
 }
 
-namespace mir {
-namespace repres {
+namespace mir::repres {
 class Representation;
-}
-}  // namespace mir
+}  // namespace mir::repres
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace pick {
+namespace mir::method::knn::pick {
 
 
 class Pick {
@@ -88,7 +83,4 @@ public:
 };
 
 
-}  // namespace pick
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::pick

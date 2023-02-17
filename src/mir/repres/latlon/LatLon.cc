@@ -21,9 +21,7 @@
 
 #include "mir/data/MIRField.h"
 #include "mir/iterator/detail/RegularIterator.h"
-#include "mir/key/Area.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/param/SameParametrisation.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
@@ -32,9 +30,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace repres {
-namespace latlon {
+namespace mir::repres::latlon {
 
 
 LatLon::LatLon(const param::MIRParametrisation& parametrisation) :
@@ -408,45 +404,4 @@ void LatLon::correctBoundingBox(util::BoundingBox& bbox, size_t& ni, size_t& nj,
 }
 
 
-bool LatLon::samePoints(const param::MIRParametrisation& user, const param::MIRParametrisation& field) {
-    std::unique_ptr<const param::MIRParametrisation> same(new param::SameParametrisation(user, field, true));
-
-    std::vector<double> rotation;
-    if (user.has("rotation") && !same->get("rotation", rotation)) {
-        return false;
-    }
-
-    std::vector<double> grid;
-    if (user.has("grid") && !same->get("grid", grid)) {
-        return false;
-    }
-
-    util::BoundingBox bboxUser;
-    if (key::Area::get(user, bboxUser)) {
-        util::Increments inc(field);
-        size_t ni = 0;
-        size_t nj = 0;
-
-        correctBoundingBox(bboxUser, ni, nj, inc, {bboxUser.south(), bboxUser.west()});
-
-        util::BoundingBox bboxField(field);
-        correctBoundingBox(bboxField, ni, nj, inc, {bboxField.south(), bboxField.west()});
-
-        PointLatLon ref{bboxField.south(), bboxField.west()};
-
-        for (const auto& lat : {bboxUser.south(), bboxUser.north()}) {
-            for (const auto& lon : {bboxUser.east(), bboxUser.west()}) {
-                if (inc.isShifted({ref.lat() - lat, ref.lon() - lon})) {
-                    return false;
-                }
-            }
-        }
-    }
-
-    return true;
-}
-
-
-}  // namespace latlon
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres::latlon

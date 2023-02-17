@@ -26,9 +26,7 @@
 #include "mir/util/MIRStatistics.h"
 
 
-namespace mir {
-namespace action {
-namespace interpolate {
+namespace mir::action::interpolate {
 
 
 Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParametrisation& param) : Action(param) {
@@ -161,6 +159,4 @@ void Gridded2GriddedInterpolation::estimate(context::Context& ctx, api::MIREstim
 }
 
 
-}  // namespace interpolate
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::interpolate

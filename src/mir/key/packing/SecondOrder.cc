@@ -18,9 +18,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace key {
-namespace packing {
+namespace mir::key::packing {
 
 
 static const PackingBuilder<SecondOrder> __packing("second-order", "so", false, true);
@@ -63,6 +61,4 @@ void SecondOrder::set(const repres::Representation* repres, grib_handle* handle)
 }
 
 
-}  // namespace packing
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::packing

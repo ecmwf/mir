@@ -26,9 +26,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace key {
-namespace grid {
+namespace mir::key::grid {
 
 
 TypedGrid::TypedGrid(const std::string& key, const std::set<std::string>& requiredKeys,
@@ -181,6 +179,4 @@ static const TypedGenericPattern<TypedGeneric<repres::regular::LambertAzimuthalE
     {"gaussianNumber", "shapeOfTheEarth", "radius", "earthMajorAxis", "earthMinorAxis"});
 
 
-}  // namespace grid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::grid

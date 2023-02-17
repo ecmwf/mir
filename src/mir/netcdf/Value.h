@@ -16,15 +16,12 @@
 #include <vector>
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 class Type;
-}
-}  // namespace mir
+}  // namespace mir::netcdf
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class Value {
@@ -92,5 +89,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

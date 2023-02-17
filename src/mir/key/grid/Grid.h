@@ -29,9 +29,7 @@ class Rotation;
 }  // namespace mir
 
 
-namespace mir {
-namespace key {
-namespace grid {
+namespace mir::key::grid {
 
 
 class Grid {
@@ -144,6 +142,4 @@ private:
 };
 
 
-}  // namespace grid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::grid

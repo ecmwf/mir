@@ -21,9 +21,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace method {
-namespace fe {
+namespace mir::method::fe {
 
 
 BuildNodeLumpedMassMatrix::BuildNodeLumpedMassMatrix(std::string name, bool force_recompute) :
@@ -135,6 +133,4 @@ atlas::Field& BuildNodeLumpedMassMatrix::operator()(atlas::Mesh& mesh) const {
 }
 
 
-}  // namespace fe
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::fe

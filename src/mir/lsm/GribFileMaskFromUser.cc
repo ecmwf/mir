@@ -13,8 +13,7 @@
 #include "mir/lsm/GribFileMaskFromUser.h"
 
 
-namespace mir {
-namespace lsm {
+namespace mir::lsm {
 
 
 bool GribFileMaskFromUser::cacheable() const {
@@ -25,5 +24,4 @@ std::string GribFileMaskFromUser::cacheName() const {
     return path_;
 }
 
-}  // namespace lsm
-}  // namespace mir
+}  // namespace mir::lsm

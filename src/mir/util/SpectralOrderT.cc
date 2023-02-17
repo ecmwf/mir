@@ -13,8 +13,7 @@
 #include "mir/util/SpectralOrderT.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 static const SpectralOrderBuilder<SpectralOrderT<1> > __order1("linear");
@@ -41,5 +40,4 @@ void SpectralOrderT<4>::print(std::ostream& out) const {
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

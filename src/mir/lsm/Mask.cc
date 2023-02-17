@@ -25,8 +25,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace lsm {
+namespace mir::lsm {
 
 
 static util::recursive_mutex* local_mutex  = nullptr;
@@ -177,5 +176,4 @@ bool Mask::sameOutput(const param::MIRParametrisation& parametrisation1,
 }
 
 
-}  // namespace lsm
-}  // namespace mir
+}  // namespace mir::lsm

@@ -15,8 +15,7 @@
 #include "mir/netcdf/GridSpec.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class RegularLL : public GridSpec {
@@ -65,5 +64,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

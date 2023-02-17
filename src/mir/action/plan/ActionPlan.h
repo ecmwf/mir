@@ -32,8 +32,7 @@ class MIRParametrisation;
 }  // namespace mir
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 class ActionPlan : protected std::vector<Action*> {
@@ -153,5 +152,4 @@ private:
 };
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

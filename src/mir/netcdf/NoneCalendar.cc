@@ -15,8 +15,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 NoneCalendar::NoneCalendar(const Variable& /*variable*/) {}
@@ -33,5 +32,4 @@ void NoneCalendar::print(std::ostream& out) const {
 static const CodecBuilder<NoneCalendar> builder("none");
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

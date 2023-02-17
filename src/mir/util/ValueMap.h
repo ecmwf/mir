@@ -19,15 +19,12 @@ namespace eckit {
 class Configured;
 }  // namespace eckit
 
-namespace mir {
-namespace param {
+namespace mir::param {
 class SimpleParametrisation;
-}
-}  // namespace mir
+}  // namespace mir::param
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 class ValueMap : public eckit::ValueMap {
@@ -42,5 +39,4 @@ public:
 };
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

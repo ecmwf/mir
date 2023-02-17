@@ -26,8 +26,7 @@
 #include "mir/util/Trace.h"
 
 
-namespace mir {
-namespace lsm {
+namespace mir::lsm {
 
 
 /*
@@ -133,5 +132,4 @@ std::string TenMinutesMask::cacheName() const {
     return name_;
 }
 
-}  // namespace lsm
-}  // namespace mir
+}  // namespace mir::lsm

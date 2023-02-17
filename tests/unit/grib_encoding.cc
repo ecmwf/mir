@@ -30,9 +30,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace tests {
-namespace unit {
+namespace mir::tests::unit {
 
 using input::MIRInput;
 using repres::RepresentationHandle;
@@ -625,9 +623,7 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
 }
 
 
-}  // namespace unit
-}  // namespace tests
-}  // namespace mir
+}  // namespace mir::tests::unit
 
 int main(int argc, char** argv) {
     return eckit::testing::run_tests(argc, argv);

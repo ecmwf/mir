@@ -18,8 +18,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace lsm {
+namespace mir::lsm {
 
 
 static const NoneLSM __lsm_selection("none");
@@ -55,5 +54,4 @@ std::string NoneLSM::cacheName() const {
 }
 
 
-}  // namespace lsm
-}  // namespace mir
+}  // namespace mir::lsm

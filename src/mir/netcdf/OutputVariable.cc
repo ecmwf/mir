@@ -23,8 +23,7 @@
 #include "mir/netcdf/Type.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 OutputVariable::OutputVariable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions) :
@@ -88,5 +87,4 @@ int OutputVariable::varid() const {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

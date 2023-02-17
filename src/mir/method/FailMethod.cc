@@ -18,11 +18,11 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace method {
+namespace mir::method {
 
 
-static const MethodBuilder<FailMethod> __method("fail");
+static const MethodBuilder<FailMethod> __method_1("fail");
+static const MethodBuilder<FailMethod> __method_2("none");
 
 
 bool FailMethod::canCrop() const {
@@ -72,5 +72,4 @@ void FailMethod::setCropping(const util::BoundingBox& /*unused*/) {
 }
 
 
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method

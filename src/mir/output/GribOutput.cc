@@ -40,8 +40,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 static util::recursive_mutex local_mutex;
@@ -270,6 +269,31 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
         // Packing, accuracy, edition
         pack->fill(repres, info);
 
+        // Basic angle (after representation), support only for gridType=regular_ll
+        std::string basicAngle = "decimal";
+        param.get("basic-angle", basicAngle);
+
+        if (basicAngle == "as-input") {
+            ASSERT(info.grid.grid_type == CODES_UTIL_GRID_SPEC_REGULAR_LL);
+
+            std::vector<long> fraction(2);
+            GRIB_CALL(codes_get_long(h, "basicAngleOfTheInitialProductionDomain", &fraction[0]));
+            GRIB_CALL(codes_get_long(h, "subdivisionsOfBasicAngle", &fraction[1]));
+
+            util::grib::BasicAngle basic(fraction[0], fraction[1]);
+            basic.fillGrib(info);
+        }
+        else if (basicAngle == "fraction") {
+            ASSERT(info.grid.grid_type == CODES_UTIL_GRID_SPEC_REGULAR_LL);
+
+            util::grib::BasicAngle basic(info);
+            basic.fillGrib(info);
+        }
+        else {
+            // codes_grib_util_set_spec does not need anything here (GRIB standard)
+            ASSERT(basicAngle == "decimal");
+        }
+
         // Extra settings (paramId comes from here)
         for (const auto& k : field.metadata(i)) {
             info.extra_set(k.first.c_str(), k.second);
@@ -352,7 +376,8 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
         int flags          = 0;
         int err            = 0;
 
-        auto* result = codes_grib_util_set_spec(h, &info.grid, &info.packing, flags, &values[0], values.size(), &err);
+        auto* result =
+            codes_grib_util_set_spec(h, &info.grid, &info.packing, flags, values.data(), values.size(), &err);
         HandleDeleter hf(result);  // Make sure handle deleted even in case of exception
 
 
@@ -489,5 +514,4 @@ void GribOutput::fill(grib_handle* /*unused*/, grib_info& /*unused*/) const {}
 #undef X
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

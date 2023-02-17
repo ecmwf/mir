@@ -26,9 +26,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace tests {
-namespace unit {
+namespace mir::tests::unit {
 
 
 CASE("RawInput") {
@@ -279,9 +277,7 @@ CASE("Example 2") {
 }
 
 
-}  // namespace unit
-}  // namespace tests
-}  // namespace mir
+}  // namespace mir::tests::unit
 
 
 int main(int argc, char** argv) {

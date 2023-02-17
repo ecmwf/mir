@@ -15,8 +15,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace repres {
+namespace mir::repres {
 
 
 StretchedLL::StretchedLL(const param::MIRParametrisation& /*parametrisation*/) {}
@@ -31,5 +30,4 @@ void StretchedLL::print(std::ostream& out) const {
 static const RepresentationBuilder<StretchedLL> __repres("stretched_ll");
 
 
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres

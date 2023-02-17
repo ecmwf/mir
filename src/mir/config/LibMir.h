@@ -17,6 +17,11 @@
 #include "eckit/system/Library.h"
 
 
+namespace eckit {
+class PathName;
+}
+
+
 namespace mir {
 
 
@@ -28,6 +33,20 @@ public:
     static std::string homeDir();
     static std::string cacheDir();
     static bool caching();
+
+    enum config_file
+    {
+        AREA = 0,
+        CLASSES,
+        GRIB,
+        GRIDS,
+        NETCDF,
+        PARAMETER_CLASS,
+        PARAMETERS,
+        ALL_CONFIG_FILES
+    };
+
+    static eckit::PathName configFile(config_file);
 
 protected:
     const void* addr() const override;

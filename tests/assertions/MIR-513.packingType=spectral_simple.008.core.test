@@ -1,0 +1,8 @@
+# mars
+packingType=spectral_simple.grib1
+# mir
+--grid=0.5/0.5
+# grib_get assertions
+packingType=grid_simple
+edition=1
+bitsPerValue=16

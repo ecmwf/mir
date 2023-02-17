@@ -15,18 +15,15 @@
 #include <string>
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 class Value;
 class Matrix;
 class Variable;
 class MergePlan;
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class Type {
@@ -81,5 +78,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

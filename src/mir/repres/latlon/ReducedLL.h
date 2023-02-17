@@ -15,9 +15,7 @@
 #include "mir/repres/Gridded.h"
 
 
-namespace mir {
-namespace repres {
-namespace latlon {
+namespace mir::repres::latlon {
 
 
 class ReducedLL : public Gridded {
@@ -112,6 +110,4 @@ private:
 };
 
 
-}  // namespace latlon
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres::latlon

@@ -16,7 +16,6 @@
 #include <ostream>
 
 #include "eckit/types/FloatCompare.h"
-#include "eckit/types/Fraction.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/api/MIRJob.h"
@@ -25,17 +24,13 @@
 #include "mir/util/Grib.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
-static void check(const BoundingBox& bbox) {
-    ASSERT(bbox.north() >= bbox.south());
-    ASSERT(bbox.north() <= Latitude::NORTH_POLE);
-    ASSERT(bbox.south() >= Latitude::SOUTH_POLE);
-
-    ASSERT(bbox.east() - bbox.west() >= 0);
-    ASSERT(bbox.east() - bbox.west() <= Longitude::GLOBE);
+static double get(const param::MIRParametrisation& param, const char* key) {
+    double value = 0.;
+    ASSERT(param.get(key, value));
+    return value;
 }
 
 
@@ -45,46 +40,24 @@ BoundingBox::BoundingBox() :
 
 BoundingBox::BoundingBox(const Latitude& north, const Longitude& west, const Latitude& south, const Longitude& east) :
     north_(north), west_(west), south_(south), east_(east) {
-    normalise();
-    check(*this);
-}
-
-
-BoundingBox::BoundingBox(const param::MIRParametrisation& param) {
-
-    double box[4];
-    ASSERT(param.get("north", box[0]));
-    ASSERT(param.get("west", box[1]));
-    ASSERT(param.get("south", box[2]));
-    ASSERT(param.get("east", box[3]));
-
-    double angularPrecision = 0.;
-    param.get("angular_precision", angularPrecision);
-
-    if (angularPrecision > 0.) {
-
-        const eckit::Fraction precision(angularPrecision);
-        north_ = eckit::Fraction(box[0], precision);
-        west_  = eckit::Fraction(box[1], precision);
-        south_ = eckit::Fraction(box[2], precision);
-        east_  = eckit::Fraction(box[3], precision);
-    }
-    else {
-
-        north_ = box[0];
-        west_  = box[1];
-        south_ = box[2];
-        east_  = box[3];
+    if (west_ != east_) {
+        auto eastNormalised = east_.normalise(west_);
+        if (eastNormalised == west_) {
+            eastNormalised += Longitude::GLOBE;
+        }
+        east_ = eastNormalised;
     }
 
-    normalise();
-    check(*this);
+    ASSERT(west_ <= east_ && east_ <= west_ + Longitude::GLOBE);
+    ASSERT(Latitude::SOUTH_POLE <= south_ && south_ <= north_ && north_ <= Latitude::NORTH_POLE);
 }
 
 
-BoundingBox::BoundingBox(const BoundingBox& other) {
-    operator=(other);
-}
+BoundingBox::BoundingBox(const param::MIRParametrisation& param) :
+    BoundingBox(get(param, "north"), get(param, "west"), get(param, "south"), get(param, "east")) {}
+
+
+BoundingBox::BoundingBox(const BoundingBox&) = default;
 
 
 bool BoundingBox::operator==(const BoundingBox& other) const {
@@ -111,10 +84,7 @@ void BoundingBox::fillGrib(grib_info& info) const {
     info.grid.latitudeOfLastGridPointInDegrees   = south_.value();
     info.grid.longitudeOfLastGridPointInDegrees  = east_.value();
 
-    const long c                              = info.packing.extra_settings_count++;
-    info.packing.extra_settings[c].type       = CODES_TYPE_LONG;
-    info.packing.extra_settings[c].name       = "expandBoundingBox";
-    info.packing.extra_settings[c].long_value = 1;
+    info.extra_set("expandBoundingBox", 1L);
 }
 
 
@@ -133,20 +103,6 @@ void BoundingBox::fillJob(api::MIRJob& job) const {
 
 bool BoundingBox::isPeriodicWestEast() const {
     return (west_ != east_) && (west_ == east_.normalise(west_));
-}
-
-
-void BoundingBox::normalise() {
-    if (west_ != east_) {
-        Longitude eastNormalised = east_.normalise(west_);
-        if (eastNormalised == west_) {
-            eastNormalised += Longitude::GLOBE;
-        }
-        east_ = eastNormalised;
-    }
-
-    ASSERT(west_ <= east_);
-    ASSERT(east_ <= west_ + Longitude::GLOBE);
 }
 
 
@@ -241,5 +197,4 @@ void BoundingBox::makeName(std::ostream& out) const {
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

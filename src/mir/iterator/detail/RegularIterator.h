@@ -15,9 +15,7 @@
 #include "eckit/types/Fraction.h"
 
 
-namespace mir {
-namespace iterator {
-namespace detail {
+namespace mir::iterator::detail {
 
 
 class RegularIterator {
@@ -108,6 +106,4 @@ private:
 };
 
 
-}  // namespace detail
-}  // namespace iterator
-}  // namespace mir
+}  // namespace mir::iterator::detail

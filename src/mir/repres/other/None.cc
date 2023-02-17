@@ -15,9 +15,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace repres {
-namespace other {
+namespace mir::repres::other {
 
 
 None::None() = default;
@@ -37,6 +35,4 @@ void None::print(std::ostream& out) const {
 static const RepresentationBuilder<None> builder("none");
 
 
-}  // namespace other
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres::other

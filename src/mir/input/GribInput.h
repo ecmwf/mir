@@ -18,8 +18,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 class GribInput : public MIRInput, public param::FieldParametrisation {
@@ -83,5 +82,4 @@ private:
 };
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

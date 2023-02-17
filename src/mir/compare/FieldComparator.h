@@ -26,17 +26,14 @@ class CmdArgs;
 }  // namespace eckit
 
 
-namespace mir {
-namespace compare {
+namespace mir::compare {
 class Field;
 class FieldSet;
 class MultiFile;
-}  // namespace compare
-}  // namespace mir
+}  // namespace mir::compare
 
 
-namespace mir {
-namespace compare {
+namespace mir::compare {
 
 class WhiteLister {
     WhiteLister(const WhiteLister&)            = delete;
@@ -139,5 +136,4 @@ private:
 };
 
 
-}  // namespace compare
-}  // namespace mir
+}  // namespace mir::compare

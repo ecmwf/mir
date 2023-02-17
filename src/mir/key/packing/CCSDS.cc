@@ -17,9 +17,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace key {
-namespace packing {
+namespace mir::key::packing {
 
 
 static const PackingBuilder<CCSDS> __packing("ccsds", false, true);
@@ -45,6 +43,4 @@ void CCSDS::set(const repres::Representation* /*unused*/, grib_handle* handle) c
 }
 
 
-}  // namespace packing
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::packing

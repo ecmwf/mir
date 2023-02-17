@@ -35,8 +35,7 @@ class Representation;
 }  // namespace mir
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 class Action {
@@ -164,5 +163,4 @@ public:
 };
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

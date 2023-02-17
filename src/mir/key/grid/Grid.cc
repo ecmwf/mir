@@ -18,6 +18,7 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/parser/YAMLParser.h"
 
+#include "mir/config/LibMir.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/grid/NamedFromFile.h"
 #include "mir/util/Exceptions.h"
@@ -25,9 +26,7 @@
 #include "mir/util/ValueMap.h"
 
 
-namespace mir {
-namespace key {
-namespace grid {
+namespace mir::key::grid {
 
 
 static util::once_flag once;
@@ -47,7 +46,7 @@ static void read_configuration_files() {
     files_read = true;
 
     // Read config file, attaching new Grid's grids to parametrisations
-    eckit::PathName path("~mir/etc/mir/grids.yaml");
+    const auto path = LibMir::configFile(LibMir::config_file::GRIDS);
     if (path.exists()) {
         Log::debug() << "Grid: reading from '" << path << "'" << std::endl;
 
@@ -184,6 +183,4 @@ const Grid& Grid::lookup(const std::string& key, const param::MIRParametrisation
 }
 
 
-}  // namespace grid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::grid

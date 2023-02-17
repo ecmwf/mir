@@ -29,8 +29,7 @@ class ActionNode;
 }  // namespace mir
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 class Executor {
 public:
     // -- Exceptions
@@ -113,5 +112,4 @@ private:
 };
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

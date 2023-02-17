@@ -15,15 +15,12 @@
 #include "mir/netcdf/Matrix.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 class NCFile;
-}
-}  // namespace mir
+}  // namespace mir::netcdf
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class InputMatrix : public Matrix {
@@ -56,5 +53,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

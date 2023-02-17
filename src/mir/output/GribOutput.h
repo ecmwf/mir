@@ -21,8 +21,7 @@ struct grib_info;
 struct grib_handle;
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 class GribOutput : public MIROutput {
@@ -105,5 +104,4 @@ private:
 };
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

@@ -16,15 +16,12 @@
 #include <string>
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 class Attribute;
-}
-}  // namespace mir
+}  // namespace mir::netcdf
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class Endowed {
@@ -58,5 +55,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

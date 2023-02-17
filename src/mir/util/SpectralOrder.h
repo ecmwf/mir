@@ -16,8 +16,7 @@
 #include <string>
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 class SpectralOrder {
@@ -123,5 +122,4 @@ public:
 };
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

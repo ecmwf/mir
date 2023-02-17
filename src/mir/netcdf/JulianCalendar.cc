@@ -15,8 +15,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 JulianCalendar::JulianCalendar(const Variable& /*variable*/) {}
@@ -33,5 +32,4 @@ void JulianCalendar::print(std::ostream& out) const {
 static const CodecBuilder<JulianCalendar> builder("julian");
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

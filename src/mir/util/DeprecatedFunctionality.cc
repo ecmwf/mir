@@ -17,8 +17,7 @@
 #include "eckit/utils/MD5.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 static std::set<eckit::Hash::digest_t> known_messages;
@@ -39,5 +38,4 @@ void DeprecatedFunctionality::message(const std::string& msg, Log::Channel& out)
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

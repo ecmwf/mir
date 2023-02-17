@@ -13,8 +13,7 @@
 #include "mir/netcdf/Calendar.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 bool Calendar::timeAxis() const {
@@ -22,5 +21,4 @@ bool Calendar::timeAxis() const {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

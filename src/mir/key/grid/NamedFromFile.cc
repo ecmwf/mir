@@ -19,9 +19,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace key {
-namespace grid {
+namespace mir::key::grid {
 
 
 NamedFromFile::NamedFromFile(const std::string& name) : NamedGrid(name) {}
@@ -50,6 +48,4 @@ const repres::Representation* NamedFromFile::representation(const util::Rotation
 }
 
 
-}  // namespace grid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::grid

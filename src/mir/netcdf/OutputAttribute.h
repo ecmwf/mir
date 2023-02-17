@@ -15,8 +15,7 @@
 #include "mir/netcdf/Attribute.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class OutputAttribute : public Attribute {
@@ -38,5 +37,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

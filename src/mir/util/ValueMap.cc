@@ -17,8 +17,7 @@
 #include "mir/param/SimpleParametrisation.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 ValueMap::ValueMap(const eckit::Value& value) : eckit::ValueMap(value) {}
@@ -44,5 +43,4 @@ void ValueMap::set(param::SimpleParametrisation& config) const {
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

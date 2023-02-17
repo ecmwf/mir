@@ -25,9 +25,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace method {
-namespace structured {
+namespace mir::method::structured {
 
 
 static const MethodBuilder<StructuredBilinearLatLon> __method("structured-bilinear-latlon");
@@ -294,6 +292,4 @@ void StructuredBilinearLatLon::print(std::ostream& out) const {
 }
 
 
-}  // namespace structured
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::structured

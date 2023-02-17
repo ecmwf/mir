@@ -16,10 +16,7 @@
 #include "mir/util/BoundingBox.h"
 
 
-namespace mir {
-namespace repres {
-namespace gauss {
-namespace reduced {
+namespace mir::repres::gauss::reduced {
 
 
 class Classic : public Reduced {
@@ -94,7 +91,4 @@ private:
 };
 
 
-}  // namespace reduced
-}  // namespace gauss
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres::gauss::reduced

@@ -15,10 +15,7 @@
 #include "mir/method/knn/pick/Pick.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace pick {
+namespace mir::method::knn::pick {
 
 
 struct Sample : Pick {
@@ -35,7 +32,4 @@ private:
 };
 
 
-}  // namespace pick
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::pick

@@ -18,8 +18,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 class ValuesOutput : public MIROutput {
@@ -103,5 +102,4 @@ private:
 };
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

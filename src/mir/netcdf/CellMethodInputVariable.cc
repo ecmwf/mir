@@ -17,8 +17,7 @@
 #include "mir/netcdf/CellMethodOutputVariable.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 CellMethodInputVariable::CellMethodInputVariable(Dataset& owner, const std::string& name, int id,
                                                  const std::vector<Dimension*>& dimensions) :
@@ -44,5 +43,4 @@ const char* CellMethodInputVariable::kind() const {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

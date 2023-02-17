@@ -13,9 +13,7 @@
 #include "mir/data/space/Space2DVectorZonalMeridional.h"
 
 
-namespace mir {
-namespace data {
-namespace space {
+namespace mir::data::space {
 
 
 static const SpaceChoice<Space2DVectorZonalMeridional> __space1("2d-vector-u", 0, 2);
@@ -27,6 +25,4 @@ size_t Space2DVectorZonalMeridional::dimensions() const {
 }
 
 
-}  // namespace space
-}  // namespace data
-}  // namespace mir
+}  // namespace mir::data::space

@@ -21,8 +21,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 static util::once_flag once;
@@ -87,5 +86,4 @@ void ThreadExecutor::parametrisation(const param::MIRParametrisation& parametris
 static const ThreadExecutor executor("thread");
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

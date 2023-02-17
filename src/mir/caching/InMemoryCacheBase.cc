@@ -19,8 +19,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace caching {
+namespace mir::caching {
 
 
 static util::recursive_mutex* local_mutex = nullptr;
@@ -105,5 +104,4 @@ void InMemoryCacheBase::checkTotalFootprint() {
 }
 
 
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching

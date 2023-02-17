@@ -21,9 +21,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace action {
-namespace transform {
+namespace mir::action::transform {
 
 
 template <class Invtrans>
@@ -85,6 +83,4 @@ static const ActionBuilder<ShToRotatedReducedGGPLGiven<InvtransVodTouv> > __acti
     "transform.sh-vod-to-uv-rotated-reduced-gg-pl-given");
 
 
-}  // namespace transform
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::transform

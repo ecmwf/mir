@@ -17,8 +17,7 @@
 #include "mir/action/plan/Executor.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 class ThreadExecutor : public Executor {
@@ -94,5 +93,4 @@ private:
 };
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

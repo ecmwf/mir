@@ -23,10 +23,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace distance {
+namespace mir::method::knn::distance {
 
 
 ClimateFilter::ClimateFilter(const param::MIRParametrisation& param) {
@@ -109,7 +106,4 @@ void ClimateFilter::hash(eckit::MD5& h) const {
 static const DistanceWeightingBuilder<ClimateFilter> __distance("climate-filter");
 
 
-}  // namespace distance
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::distance

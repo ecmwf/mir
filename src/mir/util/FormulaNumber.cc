@@ -17,8 +17,7 @@
 #include "mir/action/context/Context.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 FormulaNumber::FormulaNumber(const param::MIRParametrisation& parametrisation, double value) :
@@ -46,5 +45,4 @@ const char* FormulaNumber::name() const {
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

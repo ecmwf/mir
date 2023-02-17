@@ -13,9 +13,7 @@
 #include "mir/key/truncation/None.h"
 
 
-namespace mir {
-namespace key {
-namespace truncation {
+namespace mir::key::truncation {
 
 
 static const TruncationBuilder<None> __truncation1("none");
@@ -30,6 +28,4 @@ bool None::truncation(long& /*unused*/, long /*inputTrucation*/) const {
 }
 
 
-}  // namespace truncation
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::truncation

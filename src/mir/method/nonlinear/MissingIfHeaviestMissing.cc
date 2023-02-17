@@ -21,9 +21,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace method {
-namespace nonlinear {
+namespace mir::method::nonlinear {
 
 
 MissingIfHeaviestMissing::MissingIfHeaviestMissing(const param::MIRParametrisation& param) : NonLinear(param) {}
@@ -118,6 +116,4 @@ void MissingIfHeaviestMissing::hash(eckit::MD5& h) const {
 static const NonLinearBuilder<MissingIfHeaviestMissing> __nonlinear("missing-if-heaviest-missing");
 
 
-}  // namespace nonlinear
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::nonlinear

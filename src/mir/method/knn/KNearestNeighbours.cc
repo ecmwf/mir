@@ -29,9 +29,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
+namespace mir::method::knn {
 
 
 KNearestNeighbours::KNearestNeighbours(const param::MIRParametrisation& param) : MethodWeighted(param) {}
@@ -151,6 +149,4 @@ void KNearestNeighbours::print(std::ostream& out) const {
 }
 
 
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn

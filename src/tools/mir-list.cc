@@ -19,8 +19,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace tools {
+namespace mir::tools {
 
 
 struct MIRList : MIRTool {
@@ -64,8 +63,7 @@ void MIRList::execute(const eckit::option::CmdArgs& args) {
 }
 
 
-}  // namespace tools
-}  // namespace mir
+}  // namespace mir::tools
 
 
 int main(int argc, char** argv) {

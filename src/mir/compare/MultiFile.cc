@@ -22,8 +22,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace compare {
+namespace mir::compare {
 
 MultiFile::MultiFile(const std::string& name, const std::string& from) : name_(name), from_(from) {}
 
@@ -152,5 +151,4 @@ const std::vector<std::string>& MultiFile::paths() const {
     return paths_;
 }
 
-}  // namespace compare
-}  // namespace mir
+}  // namespace mir::compare

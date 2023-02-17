@@ -31,8 +31,7 @@ class Variable;
 }  // namespace mir
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class Field {
@@ -88,5 +87,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

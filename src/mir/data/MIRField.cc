@@ -20,8 +20,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace data {
+namespace mir::data {
 
 
 MIRField::MIRField(const param::MIRParametrisation& param, bool hasMissing, double missingValue) :
@@ -273,5 +272,4 @@ MIRField* FieldFactory::build(const std::string& name, const param::MIRParametri
 }
 
 
-}  // namespace data
-}  // namespace mir
+}  // namespace mir::data

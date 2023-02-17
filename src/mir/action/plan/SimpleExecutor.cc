@@ -17,8 +17,7 @@
 #include "mir/action/plan/ActionNode.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 SimpleExecutor::SimpleExecutor(const std::string& name) : Executor(name) {}
@@ -43,5 +42,4 @@ void SimpleExecutor::parametrisation(const param::MIRParametrisation& /*unused*/
 static const SimpleExecutor executor("simple");
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

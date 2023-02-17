@@ -16,8 +16,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace data {
+namespace mir::data {
 
 
 MIRFieldStats::MIRFieldStats() : count_(0), missing_(0), min_(0), max_(0), mean_(0), sqsum_(0), stdev_(0) {}
@@ -61,5 +60,4 @@ double MIRFieldStats::minimum() const {
 }
 
 
-}  // namespace data
-}  // namespace mir
+}  // namespace mir::data

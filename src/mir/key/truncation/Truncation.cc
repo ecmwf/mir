@@ -23,9 +23,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace key {
-namespace truncation {
+namespace mir::key::truncation {
 
 
 static util::once_flag once;
@@ -100,6 +98,4 @@ void TruncationFactory::list(std::ostream& out) {
 }
 
 
-}  // namespace truncation
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::truncation

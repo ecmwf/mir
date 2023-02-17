@@ -28,8 +28,7 @@ class ActionPlan;
 }  // namespace mir
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 class PlanParser : public eckit::StreamParser {
@@ -48,5 +47,4 @@ private:  // methods
 };
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

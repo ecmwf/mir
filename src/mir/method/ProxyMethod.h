@@ -18,8 +18,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace method {
+namespace mir::method {
 
 
 class ProxyMethod : public Method {
@@ -114,5 +113,4 @@ private:
 };
 
 
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method

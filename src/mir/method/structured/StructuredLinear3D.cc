@@ -31,9 +31,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace method {
-namespace structured {
+namespace mir::method::structured {
 
 
 static const MethodBuilder<StructuredLinear3D> __method("structured-linear-3d");
@@ -228,6 +226,4 @@ void StructuredLinear3D::print(std::ostream& out) const {
 }
 
 
-}  // namespace structured
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::structured

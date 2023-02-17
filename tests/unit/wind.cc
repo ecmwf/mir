@@ -27,9 +27,7 @@
     EXPECT(a)
 
 
-namespace mir {
-namespace tests {
-namespace unit {
+namespace mir::tests::unit {
 
 
 struct FakeInput : public param::RuntimeParametrisation {
@@ -93,9 +91,7 @@ CASE("MIR-324") {
 }
 
 
-}  // namespace unit
-}  // namespace tests
-}  // namespace mir
+}  // namespace mir::tests::unit
 
 
 int main(int argc, char** argv) {

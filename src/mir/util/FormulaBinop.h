@@ -17,8 +17,7 @@
 #include "mir/util/FormulaFunction.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 class FormulaBinop : public FormulaFunction {
@@ -33,5 +32,4 @@ private:
 };
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

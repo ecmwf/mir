@@ -26,8 +26,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 OutputDataset::OutputDataset(const std::string& path, NCFileCache& cache, int format) :
@@ -180,5 +179,4 @@ void OutputDataset::save() const {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

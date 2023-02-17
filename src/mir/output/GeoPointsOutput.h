@@ -20,8 +20,7 @@ class DataHandle;
 }
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 class GeoPointsOutput : public MIROutput {
@@ -99,5 +98,4 @@ private:
 };
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

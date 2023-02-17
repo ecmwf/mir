@@ -27,8 +27,7 @@ class Action;
 }  // namespace mir
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 class ActionNode {
@@ -118,5 +117,4 @@ private:
 };
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

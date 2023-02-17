@@ -20,8 +20,7 @@
 #include "mir/util/Trace.h"
 
 
-namespace mir {
-namespace caching {
+namespace mir::caching {
 
 
 CroppingCache::CroppingCache() :
@@ -120,5 +119,4 @@ void CroppingCacheTraits::load(const eckit::CacheManagerBase& /*unused*/, value_
 }
 
 
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching

@@ -1,25 +1,32 @@
-{
-    "legendre-loader": "mapped-memory",
-    "matrix-loader": "file-io",
+---
+legendre-loader: mapped-memory
+matrix-loader: file-io
 
-    "mir-cache-path": "/tmp/cache",
+post-process:
+    - accuracy
+    - bitmap
+    - checkerboard
+    - compatibility
+    - edition
+    - filter
+    - format
+    - formula
+    - frame
+    - griddef
+    - latitudes
+    - longitudes
+    - nabla
+    - packing
+    - pattern
+    - vod2uv
 
-    "post-process": [
-        "accuracy",
-        "bitmap",
-        "checkerboard",
-        "compatibility",
-        "edition",
-        "filter",
-        "format",
-        "formula",
-        "frame",
-        "griddef",
-        "latitudes",
-        "longitudes",
-        "nabla",
-        "packing",
-        "pattern",
-        "vod2uv"
-    ]
-}
+mir-cache-path: /tmp/cache
+
+mir-config-area: ~mir/etc/mir/area.yaml
+mir-config-classes: ~mir/etc/mir/classes.yaml
+mir-config-grib: ~mir/etc/mir/GRIB.yaml
+mir-config-grids: ~mir/etc/mir/grids.yaml
+mir-config-netcdf: ~mir/etc/mir/netcdf.yaml
+mir-config-parameter-class: ~mir/etc/mir/parameter-class.yaml
+mir-config-parameters: ~mir/etc/mir/parameters.yaml
+

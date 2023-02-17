@@ -15,10 +15,7 @@
 #include "mir/repres/gauss/Gaussian.h"
 
 
-namespace mir {
-namespace repres {
-namespace gauss {
-namespace regular {
+namespace mir::repres::gauss::regular {
 
 
 class Regular : public Gaussian {
@@ -113,7 +110,4 @@ private:
 };
 
 
-}  // namespace regular
-}  // namespace gauss
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres::gauss::regular

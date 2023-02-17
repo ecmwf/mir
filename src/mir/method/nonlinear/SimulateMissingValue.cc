@@ -22,9 +22,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace method {
-namespace nonlinear {
+namespace mir::method::nonlinear {
 
 
 SimulateMissingValue::SimulateMissingValue(const param::MIRParametrisation& param) : NonLinear(param) {
@@ -128,6 +126,4 @@ void SimulateMissingValue::hash(eckit::MD5& h) const {
 static const NonLinearBuilder<SimulateMissingValue> __nonlinear("simulated-missing-value");
 
 
-}  // namespace nonlinear
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::nonlinear

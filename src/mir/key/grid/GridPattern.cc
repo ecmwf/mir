@@ -20,9 +20,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace key {
-namespace grid {
+namespace mir::key::grid {
 
 
 static util::recursive_mutex* local_mutex     = nullptr;
@@ -122,6 +120,4 @@ const Grid* GridPattern::lookup(const std::string& name) {
 }
 
 
-}  // namespace grid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::grid

@@ -22,16 +22,12 @@ namespace eckit {
 class MD5;
 }
 
-namespace mir {
-namespace param {
+namespace mir::param {
 class MIRParametrisation;
-}
-}  // namespace mir
+}  // namespace mir::param
 
 
-namespace mir {
-namespace method {
-namespace solver {
+namespace mir::method::solver {
 
 
 /// Solve linear system (B = W A)
@@ -61,6 +57,4 @@ private:
 };
 
 
-}  // namespace solver
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::solver

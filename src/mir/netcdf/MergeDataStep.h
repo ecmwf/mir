@@ -15,15 +15,12 @@
 #include "mir/netcdf/Step.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 class Variable;
-}
-}  // namespace mir
+}  // namespace mir::netcdf
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class MergeDataStep : public Step {
@@ -43,5 +40,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

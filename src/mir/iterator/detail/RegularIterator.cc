@@ -15,9 +15,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace iterator {
-namespace detail {
+namespace mir::iterator::detail {
 
 
 RegularIterator::RegularIterator(const eckit::Fraction& a, const eckit::Fraction& b, const eckit::Fraction& inc,
@@ -81,6 +79,4 @@ eckit::Fraction RegularIterator::adjust(const eckit::Fraction& target, const eck
 }
 
 
-}  // namespace detail
-}  // namespace iterator
-}  // namespace mir
+}  // namespace mir::iterator::detail

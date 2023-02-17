@@ -22,8 +22,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 static const ArtificialInputBuilder<DistributionInput> __artificial("distribution");
@@ -41,7 +40,7 @@ data::MIRField DistributionInput::field() const {
     data::MIRField field(parametrisation(0), false, 9999.);
 
     repres::RepresentationHandle repres(field.representation());
-    auto n = repres->numberOfPoints();
+    auto n = repres->numberOfValues();
     ASSERT(n > 0);
 
     std::unique_ptr<stats::Distribution> dis(stats::DistributionFactory::build(distribution));
@@ -59,5 +58,4 @@ data::MIRField DistributionInput::field() const {
 }
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

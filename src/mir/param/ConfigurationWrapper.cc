@@ -17,8 +17,7 @@
 #include "eckit/config/Configuration.h"
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 
 
 ConfigurationWrapper::ConfigurationWrapper(const eckit::Configuration& config) : configuration_(config) {}
@@ -96,5 +95,4 @@ void ConfigurationWrapper::print(std::ostream& s) const {
 }
 
 
-}  // namespace param
-}  // namespace mir
+}  // namespace mir::param

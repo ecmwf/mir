@@ -18,8 +18,7 @@
 #include "mir/util/MeshGeneratorParameters.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 class NablaFilter : public Action {
@@ -113,5 +112,4 @@ public:
 };
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

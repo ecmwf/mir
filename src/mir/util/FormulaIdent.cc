@@ -17,10 +17,10 @@
 
 #include "mir/action/context/Context.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Regex.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 FormulaIdent::FormulaIdent(const param::MIRParametrisation& parametrisation, const std::string& name) :
@@ -36,22 +36,24 @@ void FormulaIdent::print(std::ostream& out) const {
 
 
 void FormulaIdent::execute(context::Context& ctx) const {
-
     // TODO: something better...
 
-    if (name_ == "f1") {
-        ctx.select(0);
-        return;
-    }
+    const auto match = Regex::match("f([0-9]+)", name_);
+    if (match) {
+        ASSERT(match.size() == 2);
 
-    if (name_ == "f2") {
-        ctx.select(1);
+        size_t which = 0;
+        std::istringstream iss(match[1]);
+        iss >> which;
+        ASSERT(which > 0);
+
+        ctx.select(which - 1);
         return;
     }
 
     if (name_ != "f") {
         std::ostringstream oss;
-        oss << "Only variable 'f' is supported (" << name_ << ")";
+        oss << "Only variables 'f', 'f1' (same as 'f'), 'f2', 'f3'... are supported (" << name_ << ")";
         throw exception::UserError(oss.str());
     }
 
@@ -71,5 +73,4 @@ const char* FormulaIdent::name() const {
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

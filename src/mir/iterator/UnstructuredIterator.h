@@ -16,8 +16,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace iterator {
+namespace mir::iterator {
 
 
 class UnstructuredIterator : public repres::Iterator {
@@ -101,5 +100,4 @@ private:
 };
 
 
-}  // namespace iterator
-}  // namespace mir
+}  // namespace mir::iterator

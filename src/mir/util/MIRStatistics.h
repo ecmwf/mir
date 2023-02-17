@@ -27,8 +27,7 @@ class Stream;
 }  // namespace eckit
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 class MIRStatistics : public eckit::Statistics {
@@ -150,5 +149,4 @@ private:
 };
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

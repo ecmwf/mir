@@ -20,29 +20,30 @@
 #include "eckit/utils/StringTools.h"
 
 #include "mir/action/plan/ActionPlan.h"
+#include "mir/key/Area.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/key/resol/Resol.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/param/SameParametrisation.h"
 #include "mir/repres/latlon/LatLon.h"
+#include "mir/util/BoundingBox.h"
 #include "mir/util/DeprecatedFunctionality.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace key {
-namespace style {
-
-
-namespace {
+namespace mir::key::style {
 
 
 struct DeprecatedStyle : ECMWFStyle, util::DeprecatedFunctionality {
-    DeprecatedStyle(const param::MIRParametrisation& p) :
+    explicit DeprecatedStyle(const param::MIRParametrisation& p) :
         ECMWFStyle(p), util::DeprecatedFunctionality("style 'dissemination' now known as 'ecmwf'") {}
 };
+
+
+static const MIRStyleBuilder<ECMWFStyle> __style("ecmwf");
+static const MIRStyleBuilder<DeprecatedStyle> __deprecated_style("dissemination");
 
 
 bool option(const param::MIRParametrisation& param, const std::string& key, bool dfault) {
@@ -52,18 +53,55 @@ bool option(const param::MIRParametrisation& param, const std::string& key, bool
 };
 
 
-}  // namespace
+bool same_points(const param::MIRParametrisation& user, const param::MIRParametrisation& field) {
+    std::unique_ptr<const param::MIRParametrisation> same(new param::SameParametrisation(user, field, true));
 
+    std::vector<double> rotation;
+    if (user.has("rotation") && !same->get("rotation", rotation)) {
+        return false;
+    }
 
-static const MIRStyleBuilder<ECMWFStyle> __style("ecmwf");
+    std::vector<double> grid;
+    if (user.has("grid") && !same->get("grid", grid)) {
+        return false;
+    }
 
-static const MIRStyleBuilder<DeprecatedStyle> __deprecated_style("dissemination");
+    util::BoundingBox bboxUser;
+    if (Area::get(user, bboxUser)) {
+        util::Increments inc(field);
+        size_t ni = 0;
+        size_t nj = 0;
+
+        repres::latlon::LatLon::correctBoundingBox(bboxUser, ni, nj, inc, {bboxUser.south(), bboxUser.west()});
+
+        util::BoundingBox bboxField(field);
+        repres::latlon::LatLon::correctBoundingBox(bboxField, ni, nj, inc, {bboxField.south(), bboxField.west()});
+
+        PointLatLon ref{bboxField.south(), bboxField.west()};
+
+        for (const auto& lat : {bboxUser.south(), bboxUser.north()}) {
+            for (const auto& lon : {bboxUser.east(), bboxUser.west()}) {
+                if (inc.isShifted({ref.lat() - lat, ref.lon() - lon})) {
+                    return false;
+                }
+            }
+        }
+    }
+
+    return true;
+}
 
 
 static std::string target_gridded_from_parametrisation(const param::MIRParametrisation& param, bool checkRotation) {
     const auto& user  = param.userParametrisation();
     const auto& field = param.fieldParametrisation();
     std::unique_ptr<const param::MIRParametrisation> same(new param::SameParametrisation(user, field, true));
+
+    std::string interpolation;
+    user.get("interpolation", interpolation);
+    if (interpolation == "none") {
+        return "";
+    }
 
     std::vector<double> rotation;
     const bool rotated = checkRotation && user.has("rotation") && !same->get("rotation", rotation);
@@ -80,9 +118,7 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
         if (g.isRegularLL()) {
             std::vector<double> grid_v;
             forced = forced || !field.has("gridded_regular_ll");
-            return forced || !same->get("grid", grid_v) || !repres::latlon::LatLon::samePoints(user, field)
-                       ? prefix + "regular-ll"
-                       : "";
+            return forced || !same->get("grid", grid_v) || !same_points(user, field) ? prefix + "regular-ll" : "";
         }
 
         if (g.isNamed()) {
@@ -96,17 +132,17 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
     }
 
     if (user.has("reduced")) {
-        long N;
+        long N = 0;
         return forced || !same->get("reduced", N) ? prefix + "reduced-gg" : "";
     }
 
     if (user.has("regular")) {
-        long N;
+        long N = 0;
         return forced || !same->get("regular", N) ? prefix + "regular-gg" : "";
     }
 
     if (user.has("octahedral")) {
-        long N;
+        long N = 0;
         return forced || !same->get("octahedral", N) ? prefix + "octahedral-gg" : "";
     }
 
@@ -134,7 +170,7 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
     }
 
     if (user.has("area") || user.has("rotation")) {
-        if (field.has("gridded_regular_ll") && !repres::latlon::LatLon::samePoints(user, field)) {
+        if (field.has("gridded_regular_ll") && !same_points(user, field)) {
             return prefix + "regular-ll";
         }
     }
@@ -314,12 +350,12 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
 
         if (u_only) {
             ASSERT(!v_only);
-            plan.add("select.field", "which", long(0));
+            plan.add("select.field", "which", 0L);
         }
 
         if (v_only) {
             ASSERT(!u_only);
-            plan.add("select.field", "which", long(1));
+            plan.add("select.field", "which", 1L);
         }
     }
 
@@ -461,6 +497,4 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, output::MIROutput& output) co
 }
 
 
-}  // namespace style
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::style

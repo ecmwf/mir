@@ -17,8 +17,7 @@
 #include "mir/netcdf/MergeDataStep.h"
 #include "mir/netcdf/MergePlan.h"
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 DataOutputVariable::DataOutputVariable(Dataset& owner, const std::string& name,
                                        const std::vector<Dimension*>& dimensions) :
@@ -49,5 +48,4 @@ void DataOutputVariable::collectField(std::vector<Field*>& /*unused*/) const {
     NOTIMP;
 }
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

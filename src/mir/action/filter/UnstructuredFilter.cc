@@ -26,8 +26,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 UnstructuredFilter::~UnstructuredFilter() = default;
@@ -77,5 +76,4 @@ const char* UnstructuredFilter::name() const {
 static const ActionBuilder<UnstructuredFilter> __action("filter.unstructured");
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

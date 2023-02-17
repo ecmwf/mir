@@ -22,8 +22,7 @@ class DataHandle;
 }
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 class GribStreamInput : public GribInput {
@@ -103,5 +102,4 @@ private:
 };
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

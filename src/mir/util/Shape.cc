@@ -15,8 +15,7 @@
 #include "mir/param/MIRParametrisation.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 Shape::Shape(const param::MIRParametrisation& param) {
@@ -87,5 +86,4 @@ void Shape::fillGrib(grib_info& info, const Projection::Spec& spec) const {
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

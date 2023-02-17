@@ -23,9 +23,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace tests {
-namespace unit {
+namespace mir::tests::unit {
 
 
 struct TestingInput : input::MIRInput {
@@ -173,9 +171,7 @@ CASE("MultiDimensionalInput") {
 }
 
 
-}  // namespace unit
-}  // namespace tests
-}  // namespace mir
+}  // namespace mir::tests::unit
 
 
 int main(int argc, char** argv) {

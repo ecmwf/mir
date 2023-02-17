@@ -19,15 +19,12 @@
 #include "eckit/memory/Counted.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 class Variable;
-}
-}  // namespace mir
+}  // namespace mir::netcdf
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class Codec : public eckit::Counted {
@@ -98,5 +95,4 @@ public:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

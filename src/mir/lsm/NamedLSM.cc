@@ -28,8 +28,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace lsm {
+namespace mir::lsm {
 
 
 static NamedLSM const __lsm_selection("named");
@@ -164,5 +163,4 @@ void NamedMaskFactory::list(std::ostream& out) {
 }
 
 
-}  // namespace lsm
-}  // namespace mir
+}  // namespace mir::lsm

@@ -20,8 +20,7 @@ class MD5;
 }
 
 
-namespace mir {
-namespace lsm {
+namespace mir::lsm {
 
 
 class NamedLSM : public LSMSelection {
@@ -120,5 +119,4 @@ public:
 };
 
 
-}  // namespace lsm
-}  // namespace mir
+}  // namespace mir::lsm

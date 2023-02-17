@@ -19,15 +19,12 @@
 #include "mir/lsm/Mask.h"
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 class MIRParametrisation;
-}
-}  // namespace mir
+}  // namespace mir::param
 
 
-namespace mir {
-namespace lsm {
+namespace mir::lsm {
 
 class TenMinutesMask : public Mask {
 public:
@@ -91,5 +88,4 @@ private:
 };
 
 
-}  // namespace lsm
-}  // namespace mir
+}  // namespace mir::lsm

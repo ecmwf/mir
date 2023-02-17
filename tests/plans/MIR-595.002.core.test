@@ -1,0 +1,6 @@
+# mars
+ukmo-tigge.count=4.grib
+# mir
+--area=1/-1/-1/1 --interpolation=none
+# grib_get assertions
+AreaCropper[bbox=BoundingBox[north=1,west=-1,south=-1,east=1]]|Save[output=...]

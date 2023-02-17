@@ -23,9 +23,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace action {
-namespace filter {
+namespace mir::action::filter {
 
 
 ShTruncate::ShTruncate(const param::MIRParametrisation& parametrisation) : Action(parametrisation), truncation_(0) {
@@ -86,6 +84,4 @@ const char* ShTruncate::name() const {
 static const ActionBuilder<ShTruncate> __action("filter.sh-truncate");
 
 
-}  // namespace filter
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::filter

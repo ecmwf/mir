@@ -15,8 +15,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace repres {
+namespace mir::repres {
 
 
 StretchedRotatedGG::StretchedRotatedGG(const param::MIRParametrisation& /*parametrisation*/) {}
@@ -31,5 +30,4 @@ void StretchedRotatedGG::print(std::ostream& out) const {
 static const RepresentationBuilder<StretchedRotatedGG> __repres("stretched_rotated_gg");
 
 
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres

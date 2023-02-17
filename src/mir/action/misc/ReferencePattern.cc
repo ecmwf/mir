@@ -25,8 +25,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 ReferencePattern::ReferencePattern(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {}
@@ -120,5 +119,4 @@ const char* ReferencePattern::name() const {
 static const ActionBuilder<ReferencePattern> __action("misc.pattern");
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

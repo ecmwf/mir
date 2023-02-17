@@ -27,9 +27,7 @@ class Representation;
 }  // namespace mir
 
 
-namespace mir {
-namespace method {
-namespace structured {
+namespace mir::method::structured {
 
 
 class StructuredMethod : public MethodWeighted {
@@ -75,6 +73,4 @@ private:
 };
 
 
-}  // namespace structured
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::structured

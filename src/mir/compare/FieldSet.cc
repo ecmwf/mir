@@ -13,8 +13,7 @@
 #include "mir/compare/FieldSet.h"
 
 
-namespace mir {
-namespace compare {
+namespace mir::compare {
 
 
 void FieldSet::clear() {
@@ -63,5 +62,4 @@ std::set<Field>::const_iterator FieldSet::begin() const {
 }
 
 
-}  // namespace compare
-}  // namespace mir
+}  // namespace mir::compare

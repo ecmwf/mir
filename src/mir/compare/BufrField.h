@@ -21,8 +21,7 @@
 #include "mir/compare/Field.h"
 
 
-namespace mir {
-namespace compare {
+namespace mir::compare {
 
 class BufrEntry {
 
@@ -109,5 +108,4 @@ private:
 };
 
 
-}  // namespace compare
-}  // namespace mir
+}  // namespace mir::compare

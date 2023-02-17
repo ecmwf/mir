@@ -25,7 +25,16 @@ namespace fe {
 class FiniteElement : public MethodWeighted {
 public:
     // -- Types
-    // None
+
+    struct ProjectionFail {
+        static void list(std::ostream& out);
+        enum type : unsigned int
+        {
+            failure = 0,
+            missingValue,
+            increaseEpsilon
+        };
+    };
 
     // -- Exceptions
     // None
@@ -80,8 +89,8 @@ private:
     // -- Members
 
     util::MeshGeneratorParameters meshGeneratorParams_;
+    ProjectionFail::type projectionFail_;
     bool validateMesh_;
-    bool missingValueOnProjectionFail_;
 
     // -- Methods
     // None

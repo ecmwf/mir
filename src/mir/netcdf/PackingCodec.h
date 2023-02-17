@@ -15,8 +15,7 @@
 #include "mir/netcdf/Codec.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class PackingCodec : public Codec {
@@ -34,5 +33,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

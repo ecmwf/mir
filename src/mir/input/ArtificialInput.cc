@@ -22,8 +22,7 @@
 #include "mir/util/ValueMap.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 static util::once_flag once;
@@ -200,5 +199,4 @@ void ArtificialInputFactory::list(std::ostream& out) {
 }
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

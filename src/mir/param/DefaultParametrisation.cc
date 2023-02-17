@@ -15,8 +15,7 @@
 #include "mir/config/LibMir.h"
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 
 
 DefaultParametrisation::DefaultParametrisation() {
@@ -48,5 +47,4 @@ DefaultParametrisation::DefaultParametrisation() {
 DefaultParametrisation::~DefaultParametrisation() = default;
 
 
-}  // namespace param
-}  // namespace mir
+}  // namespace mir::param

@@ -25,8 +25,7 @@
 #include "mir/util/Grib.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 Rotation::Rotation(const Latitude& south_pole_latitude, const Longitude& south_pole_longitude,
@@ -79,10 +78,7 @@ void Rotation::fillGrib(grib_info& info) const {
     // This is missing from the grib_spec
     // Remove that when supported
     if (!eckit::types::is_approximately_equal<double>(south_pole_rotation_angle_, 0.)) {
-        long j                                      = info.packing.extra_settings_count++;
-        info.packing.extra_settings[j].name         = "angleOfRotationInDegrees";
-        info.packing.extra_settings[j].type         = CODES_TYPE_DOUBLE;
-        info.packing.extra_settings[j].double_value = south_pole_rotation_angle_;
+        info.extra_set("angleOfRotationInDegrees", south_pole_rotation_angle_);
     }
 }
 
@@ -144,5 +140,4 @@ void Rotation::makeName(std::ostream& out) const {
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

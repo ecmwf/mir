@@ -31,8 +31,7 @@ class MIRParametrisation;
 }  // namespace mir
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 class BoundingBox {
@@ -134,8 +133,7 @@ private:
     Longitude east_;
 
     // -- Methods
-
-    void normalise();
+    // None
 
     // -- Overridden methods
     // None
@@ -155,5 +153,4 @@ private:
 };
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

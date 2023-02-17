@@ -15,17 +15,12 @@
 #include "mir/repres/gauss/Gaussian.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 class Rotation;
-}
-}  // namespace mir
+}  // namespace mir::util
 
 
-namespace mir {
-namespace repres {
-namespace gauss {
-namespace reduced {
+namespace mir::repres::gauss::reduced {
 
 
 class Reduced : public Gaussian {
@@ -126,7 +121,4 @@ private:
 };
 
 
-}  // namespace reduced
-}  // namespace gauss
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres::gauss::reduced

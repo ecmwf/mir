@@ -15,8 +15,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 bool Domain::includesPoleNorth() const {
@@ -41,5 +40,4 @@ void Domain::print(std::ostream& os) const {
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

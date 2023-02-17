@@ -18,8 +18,7 @@
 
 #include <netcdf.h>
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 Value::Value(Type& type) : type_(type) {}
 
@@ -29,5 +28,4 @@ Value* Value::newFromString(const std::string& s) {
     return new ValueT<std::string>(Type::lookup(NC_CHAR), s);
 }
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

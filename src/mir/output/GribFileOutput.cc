@@ -14,8 +14,7 @@
 #include "eckit/io/DataHandle.h"
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 GribFileOutput::GribFileOutput(const eckit::PathName& path, bool append) :
@@ -58,5 +57,4 @@ eckit::DataHandle& GribFileOutput::dataHandle() {
 static const MIROutputBuilder<GribFileOutput> output("grib");
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

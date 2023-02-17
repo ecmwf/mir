@@ -17,9 +17,7 @@
 #include "mir/stats/Field.h"
 
 
-namespace mir {
-namespace method {
-namespace voronoi {
+namespace mir::method::voronoi {
 
 
 VoronoiStatistics::VoronoiStatistics(const param::MIRParametrisation& param) : VoronoiMethod(param) {
@@ -33,6 +31,4 @@ VoronoiStatistics::VoronoiStatistics(const param::MIRParametrisation& param) : V
 static const MethodBuilder<VoronoiStatistics> __builder("voronoi-statistics");
 
 
-}  // namespace voronoi
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::voronoi

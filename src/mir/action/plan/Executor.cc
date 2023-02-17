@@ -21,8 +21,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 static util::recursive_mutex* local_mutex  = nullptr;
@@ -89,5 +88,4 @@ const Executor& Executor::lookup(const param::MIRParametrisation& params) {
 }
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

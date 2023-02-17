@@ -15,8 +15,7 @@
 #include "mir/output/GribStreamOutput.h"
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 GribStreamOutput::GribStreamOutput() = default;
@@ -30,5 +29,4 @@ void GribStreamOutput::out(const void* message, size_t length, bool /*interpolat
 }
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

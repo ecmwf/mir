@@ -26,6 +26,8 @@ list(APPEND mir_srcs
     action/filter/AdjustWindsDirections.h
     action/filter/AdjustWindsScaleCosLatitude.cc
     action/filter/AdjustWindsScaleCosLatitude.h
+    action/filter/Bandpass.cc
+    action/filter/Bandpass.h
     action/filter/BitmapFilter.cc
     action/filter/BitmapFilter.h
     action/filter/CesaroSummationFilter.cc

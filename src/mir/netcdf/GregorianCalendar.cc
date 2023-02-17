@@ -24,8 +24,7 @@
 #include "mir/netcdf/Variable.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 static long long offset = 0;
@@ -166,5 +165,4 @@ static const CodecBuilder<GregorianCalendar> builder1("gregorian");
 static const CodecBuilder<GregorianCalendar> builder2("standard");
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

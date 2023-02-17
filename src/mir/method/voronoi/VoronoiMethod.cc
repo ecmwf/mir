@@ -28,9 +28,7 @@
 #include "mir/util/Trace.h"
 
 
-namespace mir {
-namespace method {
-namespace voronoi {
+namespace mir::method::voronoi {
 
 
 namespace {
@@ -66,7 +64,7 @@ void VoronoiMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, c
     std::unique_ptr<search::PointSearch> tree;
     {
         trace::ResourceUsage usage("assemble: create output k-d tree");
-        tree.reset(new search::PointSearch(parametrisation_, out));
+        tree = std::make_unique<search::PointSearch>(parametrisation_, out);
     }
 
 
@@ -106,7 +104,7 @@ void VoronoiMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, c
 
         {
             trace::ResourceUsage usage("assemble: create input k-d tree");
-            tree.reset(new search::PointSearch(parametrisation_, in));
+            tree = std::make_unique<search::PointSearch>(parametrisation_, in);
         }
 
         {
@@ -167,6 +165,4 @@ const char* VoronoiMethod::name() const {
 }
 
 
-}  // namespace voronoi
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::voronoi

@@ -27,7 +27,7 @@
 #include "mir/api/MIRJob.h"
 #include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/data/Space.h"
-#include "mir/input/MultiDimensionalGribFileInput.h"
+#include "mir/input/MIRInput.h"
 #include "mir/key/Area.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/intgrid/Intgrid.h"
@@ -49,6 +49,7 @@
 #include "mir/stats/Statistics.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Grib.h"
 #include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/SpectralOrder.h"
@@ -126,9 +127,8 @@ struct MIR : MIRTool {
                                                                                "L2 Projection FE method for output"));
         options_.push_back(new SimpleOption<bool>("finite-element-validate-mesh",
                                                   "FE method check mesh quadrilaterals validity (default false)"));
-        options_.push_back(
-            new SimpleOption<bool>("finite-element-missing-value-on-projection-fail",
-                                   "FE method sets missing value when interpolation isn't possible (default true)"));
+        options_.push_back(new FactoryOption<method::fe::FiniteElement::ProjectionFail>(
+            "finite-element-projection-fail", "FE method failed projection handling (default missing-value)"));
 #endif
 
         options_.push_back(new FactoryOption<method::nonlinear::NonLinearFactory>(
@@ -256,10 +256,16 @@ struct MIR : MIRTool {
         options_.push_back(new SimpleOption<double>("cesaro-k", "Cesàro summation k (default 2.)"));
         options_.push_back(new SimpleOption<size_t>(
             "cesaro-truncation", "Cesàro summation filtering minimum truncation (1 <= Tmin < T, default 1)"));
+        options_.push_back(new VectorOption<long>(
+            "bandpass",
+            "spectral bandpass filter on zonal/meridional minimum/maximum wave numbers (M min/M max/N min/N max)", 4));
 
         //==============================================
         options_.push_back(new Separator("Compute"));
-        options_.push_back(new SimpleOption<std::string>("formula", "Formula to apply on field"));
+        for (const std::string& when : {"prologue", "raw", "spectral", "gridded", "epilogue"}) {
+            options_.push_back(new SimpleOption<std::string>("formula." + when, "Formula"));
+            options_.push_back(new SimpleOption<std::string>("formula." + when + ".metadata", "Formula metadata"));
+        }
 
         //==============================================
         options_.push_back(new Separator("Land-sea mask handling"));
@@ -300,6 +306,8 @@ struct MIR : MIRTool {
         options_.push_back(new SimpleOption<size_t>("edition", "GRIB edition number"));
 
         options_.push_back(new SimpleOption<bool>("delete-local-definition", "Remove GRIB local extension"));
+        options_.push_back(new FactoryOption<util::grib::BasicAngle>(
+            "basic-angle", "GRIB basic angle and subdivisions (bounding box and grid increments, default false)"));
         options_.push_back(
             new SimpleOption<std::string>("metadata", "Set eccodes keys to integer values (a=b,c=d,..)"));
 
@@ -322,6 +330,10 @@ struct MIR : MIRTool {
         options_.push_back(new SimpleOption<size_t>("precision", "Statistics methods output precision"));
         options_.push_back(new SimpleOption<std::string>("input", "Input options YAML (lat, lon, etc.)"));
         options_.push_back(new SimpleOption<std::string>("output", "Output options YAML"));
+        options_.push_back(new SimpleOption<std::string>(
+            "default-gridded-packing", "On gridded/spectral conversions set the default gridded packing"));
+        options_.push_back(new SimpleOption<std::string>(
+            "default-spectral-packing", "On gridded/spectral conversions set the default spectral packing"));
         options_.push_back(new FactoryOption<action::Executor>("executor", "Select whether threads are used or not"));
         options_.push_back(new SimpleOption<std::string>("plan", "String containing a plan definition"));
         options_.push_back(new SimpleOption<eckit::PathName>("plan-script", "File containing a plan definition"));

@@ -23,8 +23,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace data {
+namespace mir::data {
 
 
 Field::Field(const param::MIRParametrisation& param, bool hasMissing, double missingValue) :
@@ -137,20 +136,20 @@ void Field::print(std::ostream& out) const {
     }
 
     if (!metadata_.empty()) {
-        out << ",params=";
-        char sep = '(';
+        out << ",params=(";
+        const char* sep = "";
         for (const auto& m : metadata_) {
             out << sep << m;
-            sep = ',';
+            sep = ",";
         }
         out << ')';
     }
 
-    out << ",handles=";
-    char sep = '(';
+    out << ",handles=(";
+    const char* sep = "";
     for (auto h : handles_) {
         out << sep << h.first << "=>" << h.second;
-        sep = ',';
+        sep = ",";
     }
     out << ')';
 
@@ -320,5 +319,4 @@ void Field::missingValue(double value) {
 }
 
 
-}  // namespace data
-}  // namespace mir
+}  // namespace mir::data

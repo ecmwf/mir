@@ -18,8 +18,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 static const ArtificialInputBuilder<DummyInput> __artificial("dummy");
@@ -63,5 +62,4 @@ data::MIRField DummyInput::field() const {
 }
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

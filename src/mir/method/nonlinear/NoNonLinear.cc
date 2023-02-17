@@ -18,9 +18,7 @@
 #include "eckit/utils/MD5.h"
 
 
-namespace mir {
-namespace method {
-namespace nonlinear {
+namespace mir::method::nonlinear {
 
 
 NoNonLinear::NoNonLinear(const param::MIRParametrisation& param) : NonLinear(param) {}
@@ -55,6 +53,4 @@ void NoNonLinear::hash(eckit::MD5& h) const {
 static const NonLinearBuilder<NoNonLinear> __nonlinear("no");
 
 
-}  // namespace nonlinear
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::nonlinear

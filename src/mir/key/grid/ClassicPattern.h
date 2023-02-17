@@ -15,9 +15,7 @@
 #include "mir/key/grid/GridPattern.h"
 
 
-namespace mir {
-namespace key {
-namespace grid {
+namespace mir::key::grid {
 
 
 class ClassicPattern : public GridPattern {
@@ -77,6 +75,4 @@ private:
 };
 
 
-}  // namespace grid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::grid

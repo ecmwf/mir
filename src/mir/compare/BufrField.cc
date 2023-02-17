@@ -27,8 +27,7 @@
 #include "mir/util/Grib.h"
 
 
-namespace mir {
-namespace compare {
+namespace mir::compare {
 
 
 static double bufrRelativeError_ = 0.;
@@ -99,7 +98,7 @@ BufrEntry::BufrEntry(const std::string& full, const std::vector<long>& l, const 
     std::vector<std::string> v;
     parse(full_, v);
 
-    ASSERT(v.size());
+    ASSERT(!v.empty());
     name_ = v.back();
 
     ignore_ = ignoreBufrKeys.find(name_) != ignoreBufrKeys.end();
@@ -309,7 +308,7 @@ BufrField::BufrField(const char* buffer, size_t size, const std::string& path, o
     descriptors_.resize(nDescriptors);
 
     size_t n = nDescriptors;
-    GRIB_CALL(codes_get_long_array(h, "unexpandedDescriptors", &descriptors_[0], &n));
+    GRIB_CALL(codes_get_long_array(h, "unexpandedDescriptors", descriptors_.data(), &n));
     ASSERT(n == nDescriptors);
 
 
@@ -355,13 +354,13 @@ BufrField::BufrField(const char* buffer, size_t size, const std::string& path, o
 
             case CODES_TYPE_LONG:
                 l.resize(count);
-                GRIB_CALL(codes_get_long_array(h, name, &l[0], &count));
+                GRIB_CALL(codes_get_long_array(h, name, l.data(), &count));
                 ASSERT(l.size() == count);
                 break;
 
             case CODES_TYPE_DOUBLE:
                 d.resize(count);
-                GRIB_CALL(codes_get_double_array(h, name, &d[0], &count));
+                GRIB_CALL(codes_get_double_array(h, name, d.data(), &count));
                 ASSERT(d.size() == count);
                 break;
 
@@ -645,6 +644,4 @@ bool BufrField::canCompareFieldValues() const {
 }
 
 
-}  // namespace compare
-
-}  // namespace mir
+}  // namespace mir::compare

@@ -71,8 +71,7 @@ public:
 static const unsigned int MASKS[] = {1 << 7, 1 << 6, 1 << 5, 1 << 4, 1 << 3, 1 << 2, 1 << 1, 1 << 0};
 
 
-namespace mir {
-namespace lsm {
+namespace mir::lsm {
 
 
 MappedMask::MappedMask(const std::string& name, const eckit::PathName& path,
@@ -188,5 +187,4 @@ const std::vector<bool>& MappedMask::mask() const {
 }
 
 
-}  // namespace lsm
-}  // namespace mir
+}  // namespace mir::lsm

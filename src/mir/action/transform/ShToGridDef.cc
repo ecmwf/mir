@@ -21,9 +21,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace action {
-namespace transform {
+namespace mir::action::transform {
 
 
 template <class Invtrans>
@@ -76,6 +74,4 @@ static const ActionBuilder<ShToGridDef<InvtransScalar> > __action1("transform.sh
 static const ActionBuilder<ShToGridDef<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-griddef");
 
 
-}  // namespace transform
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::transform

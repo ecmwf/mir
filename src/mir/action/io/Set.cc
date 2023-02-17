@@ -17,9 +17,7 @@
 #include "mir/util/MIRStatistics.h"
 
 
-namespace mir {
-namespace action {
-namespace io {
+namespace mir::action::io {
 
 
 Set::Set(const param::MIRParametrisation& parametrisation, output::MIROutput& output) :
@@ -47,6 +45,4 @@ void Set::estimate(context::Context& ctx, api::MIREstimation& estimation) const 
 }
 
 
-}  // namespace io
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::io

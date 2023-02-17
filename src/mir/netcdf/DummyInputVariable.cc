@@ -20,8 +20,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 DummyInputVariable::DummyInputVariable(Dataset& owner, const Variable& parent) :
@@ -69,5 +68,4 @@ bool DummyInputVariable::sameAsDummy(const Variable& other) const {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

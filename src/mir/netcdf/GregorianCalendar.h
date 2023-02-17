@@ -19,8 +19,7 @@
 #include "mir/netcdf/Calendar.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class GregorianCalendar : public Calendar {
@@ -62,5 +61,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

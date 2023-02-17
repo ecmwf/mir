@@ -20,10 +20,7 @@
 #include "mir/util/GridBox.h"
 
 
-namespace mir {
-namespace repres {
-namespace gauss {
-namespace regular {
+namespace mir::repres::gauss::regular {
 
 
 RegularGG::RegularGG(const param::MIRParametrisation& parametrisation) : Regular(parametrisation) {}
@@ -108,7 +105,4 @@ std::vector<util::GridBox> RegularGG::gridBoxes() const {
 static const RepresentationBuilder<RegularGG> reducedGG("regular_gg");
 
 
-}  // namespace regular
-}  // namespace gauss
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres::gauss::regular

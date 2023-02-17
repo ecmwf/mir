@@ -15,8 +15,7 @@
 #include "eckit/serialisation/Stream.h"
 
 
-namespace mir {
-namespace caching {
+namespace mir::caching {
 
 
 InMemoryCacheStatistics::InMemoryCacheStatistics() :
@@ -106,5 +105,4 @@ void InMemoryCacheStatistics::report(const char* title, std::ostream& out, const
 }
 
 
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching

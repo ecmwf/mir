@@ -15,15 +15,12 @@
 #include <iosfwd>
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 class MergePlan;
-}
-}  // namespace mir
+}  // namespace mir::netcdf
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 class Step {
     Step(const Step&)            = delete;
@@ -51,5 +48,4 @@ struct CompareSteps {
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

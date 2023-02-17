@@ -17,15 +17,12 @@
 #include <vector>
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 class Dataset;
-}
-}  // namespace mir
+}  // namespace mir::netcdf
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class Dimension {
@@ -68,5 +65,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

@@ -23,9 +23,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace action {
-namespace transform {
+namespace mir::action::transform {
 
 
 void InvtransScalar::print(std::ostream& out) const {
@@ -105,6 +103,4 @@ void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_tra
 }
 
 
-}  // namespace transform
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::transform

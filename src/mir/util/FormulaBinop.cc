@@ -23,8 +23,7 @@
 #include "mir/util/MIRStatistics.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 FormulaBinop::FormulaBinop(const param::MIRParametrisation& parametrisation, const std::string& name, Formula* arg1,
@@ -409,5 +408,4 @@ static const Binop<pow> _pow_1("^");
 static const Binop<pow> _pow_2("pow");
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

@@ -12,10 +12,11 @@
 
 #include "mir/config/LibMir.h"
 
-#include "mir/api/mir_version.h"
-
 #include "eckit/config/Resource.h"
 #include "eckit/filesystem/PathName.h"
+
+#include "mir/api/mir_version.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -29,19 +30,32 @@ LibMir::LibMir() : Library("mir") {}
 
 std::string LibMir::cacheDir() {
     static std::string mirCachePath =
-        eckit::PathName(eckit::LibResource<eckit::PathName, LibMir>("mir-cache-path;"
-                                                                    "$MIR_CACHE_PATH",
-                                                                    "/tmp/cache"));
+        eckit::PathName(eckit::LibResource<eckit::PathName, LibMir>("mir-cache-path;$MIR_CACHE_PATH", "/tmp/cache"));
     return mirCachePath;
 }
 
 
 bool LibMir::caching() {
-    static bool mirCaching = eckit::LibResource<bool, LibMir>(
-        "mir-caching;"
-        "$MIR_CACHING",
-        true);
+    static bool mirCaching = eckit::LibResource<bool, LibMir>("mir-caching;$MIR_CACHING", true);
     return mirCaching;
+}
+
+
+eckit::PathName LibMir::configFile(config_file c) {
+    using r = eckit::LibResource<std::string, LibMir>;
+
+    static const eckit::PathName files[]{
+        {r("mir-config-area;$MIR_CONFIG_AREA", "~mir/etc/mir/area.yaml")},
+        {r("mir-config-classes;$MIR_CONFIG_CLASSES", "~mir/etc/mir/classes.yaml")},
+        {r("mir-config-grib;$MIR_CONFIG_GRIB", "~mir/etc/mir/GRIB.yaml")},
+        {r("mir-config-grids;$MIR_CONFIG_GRIDS", "~mir/etc/mir/grids.yaml")},
+        {r("mir-config-netcdf;$MIR_CONFIG_NETCDF", "~mir/etc/mir/netcdf.yaml")},
+        {r("mir-config-parameter-class;$MIR_CONFIG_PARAMETER_CLASS", "~mir/etc/mir/parameter-class.yaml")},
+        {r("mir-config-parameters;$MIR_CONFIG_PARAMETERS", "~mir/etc/mir/parameters.yaml")},
+    };
+
+    ASSERT(0 <= c && c < ALL_CONFIG_FILES);
+    return files[c];
 }
 
 

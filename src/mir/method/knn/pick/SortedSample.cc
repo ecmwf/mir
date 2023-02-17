@@ -17,10 +17,7 @@
 #include "eckit/utils/MD5.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace pick {
+namespace mir::method::knn::pick {
 
 
 SortedSample::SortedSample(const param::MIRParametrisation& param) : sample_(param) {}
@@ -60,7 +57,4 @@ void SortedSample::print(std::ostream& out) const {
 static const PickBuilder<SortedSample> __pick("sorted-sample");
 
 
-}  // namespace pick
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::pick

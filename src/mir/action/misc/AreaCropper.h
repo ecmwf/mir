@@ -17,15 +17,12 @@
 #include "mir/util/BoundingBox.h"
 
 
-namespace mir {
-namespace repres {
+namespace mir::repres {
 class Representation;
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 class AreaCropper : public Action {
@@ -35,8 +32,7 @@ public:
 
     // -- Constructors
 
-    AreaCropper(const param::MIRParametrisation&);
-    AreaCropper(const param::MIRParametrisation&, const util::BoundingBox&);
+    explicit AreaCropper(const param::MIRParametrisation&);
 
     // -- Destructor
 
@@ -108,5 +104,4 @@ private:
 };
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

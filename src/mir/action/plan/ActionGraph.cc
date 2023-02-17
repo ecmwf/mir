@@ -22,8 +22,7 @@
 #include "mir/api/MIRWatcher.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 ActionGraph::ActionGraph() = default;
@@ -106,5 +105,4 @@ void ActionGraph::notifyFailure(std::exception& e, const Action& action, api::MI
 }
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

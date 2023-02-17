@@ -13,9 +13,7 @@
 #include "mir/data/space/Space3DVectorZonalMeridionalVertical.h"
 
 
-namespace mir {
-namespace data {
-namespace space {
+namespace mir::data::space {
 
 
 static const SpaceChoice<Space3DVectorZonalMeridionalVertical> __space1("3d-vector-u", 0, 3);
@@ -28,6 +26,4 @@ size_t Space3DVectorZonalMeridionalVertical::dimensions() const {
 }
 
 
-}  // namespace space
-}  // namespace data
-}  // namespace mir
+}  // namespace mir::data::space

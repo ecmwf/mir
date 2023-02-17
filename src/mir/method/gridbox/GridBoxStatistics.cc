@@ -17,9 +17,7 @@
 #include "mir/stats/Field.h"
 
 
-namespace mir {
-namespace method {
-namespace gridbox {
+namespace mir::method::gridbox {
 
 
 GridBoxStatistics::GridBoxStatistics(const param::MIRParametrisation& param) : GridBoxMethod(param) {
@@ -33,6 +31,4 @@ GridBoxStatistics::GridBoxStatistics(const param::MIRParametrisation& param) : G
 static const MethodBuilder<GridBoxStatistics> __builder("grid-box-statistics");
 
 
-}  // namespace gridbox
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::gridbox

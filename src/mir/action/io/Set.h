@@ -15,9 +15,7 @@
 #include "mir/action/io/EndAction.h"
 
 
-namespace mir {
-namespace action {
-namespace io {
+namespace mir::action::io {
 
 
 class Set : public EndAction {
@@ -94,6 +92,4 @@ private:
 };
 
 
-}  // namespace io
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::io

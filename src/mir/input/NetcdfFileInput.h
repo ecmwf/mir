@@ -26,8 +26,7 @@
 #include "mir/param/FieldParametrisation.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 class NetcdfFileInput : public MIRInput, public param::FieldParametrisation, public netcdf::NCFileCache {
@@ -134,8 +133,7 @@ private:
 };
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input
 
 
 #endif

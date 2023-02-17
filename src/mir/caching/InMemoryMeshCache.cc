@@ -26,8 +26,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace caching {
+namespace mir::caching {
 
 
 static util::recursive_mutex local_mutex;
@@ -145,5 +144,4 @@ void InMemoryMeshCache::print(std::ostream& s) const {
 InMemoryMeshCache::InMemoryMeshCache() = default;
 
 
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching

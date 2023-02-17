@@ -17,9 +17,7 @@
 #include "mir/key/grid/Grid.h"
 
 
-namespace mir {
-namespace key {
-namespace grid {
+namespace mir::key::grid {
 
 
 class TypedGrid : public Grid {
@@ -95,6 +93,4 @@ private:
 };
 
 
-}  // namespace grid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::grid

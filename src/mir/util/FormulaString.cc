@@ -17,8 +17,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 FormulaString::FormulaString(const param::MIRParametrisation& parametrisation, const std::string& value) :
@@ -49,5 +48,4 @@ const char* FormulaString::name() const {
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

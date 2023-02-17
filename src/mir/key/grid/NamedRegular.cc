@@ -18,9 +18,7 @@
 #include "mir/repres/gauss/regular/RotatedGG.h"
 
 
-namespace mir {
-namespace key {
-namespace grid {
+namespace mir::key::grid {
 
 
 NamedRegular::NamedRegular(const std::string& name, size_t N) : NamedGrid(name), N_(N) {}
@@ -46,6 +44,4 @@ size_t NamedRegular::gaussianNumber() const {
 }
 
 
-}  // namespace grid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::grid

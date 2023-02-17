@@ -17,8 +17,7 @@
 #include "mir/netcdf/Exceptions.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 Remapping::Remapping(size_t s) {
@@ -51,5 +50,4 @@ void Remapping::validate() const {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

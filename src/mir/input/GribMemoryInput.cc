@@ -18,8 +18,7 @@
 #include "mir/util/Grib.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 GribMemoryInput::GribMemoryInput(const void* message, size_t length) {
@@ -41,5 +40,4 @@ void GribMemoryInput::print(std::ostream& out) const {
 }
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

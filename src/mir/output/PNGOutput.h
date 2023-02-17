@@ -16,15 +16,12 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace data {
+namespace mir::data {
 class MIRField;
-}
-}  // namespace mir
+}  // namespace mir::data
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 class PNGOutput : public MIROutput {
@@ -136,5 +133,4 @@ public:
 };
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

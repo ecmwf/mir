@@ -28,8 +28,7 @@
 #include "mir/util/Trace.h"
 
 
-namespace mir {
-namespace api {
+namespace mir::api {
 
 
 MIRComplexJob::MIRComplexJob() : input_(nullptr) {}
@@ -129,5 +128,4 @@ MIRComplexJob& MIRComplexJob::add(MIRJob* job, input::MIRInput& input, output::M
 }
 
 
-}  // namespace api
-}  // namespace mir
+}  // namespace mir::api

@@ -15,8 +15,7 @@
 #include <string>
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class NCFile {
@@ -51,5 +50,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

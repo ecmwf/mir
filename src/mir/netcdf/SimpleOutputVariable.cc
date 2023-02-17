@@ -14,8 +14,7 @@
 
 #include <ostream>
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 SimpleOutputVariable::SimpleOutputVariable(Dataset& owner, const std::string& name,
@@ -28,5 +27,4 @@ void SimpleOutputVariable::print(std::ostream& out) const {
     out << "SimpleOutputVariable[name=" << name_ << "]";
 }
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

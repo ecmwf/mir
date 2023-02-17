@@ -18,8 +18,7 @@
 #include "mir/netcdf/Exceptions.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 VirtualOutputDimension::VirtualOutputDimension(Dataset& owner, const std::string& name) :
@@ -63,5 +62,4 @@ void VirtualOutputDimension::grow(size_t count) {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

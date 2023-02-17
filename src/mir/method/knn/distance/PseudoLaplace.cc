@@ -20,10 +20,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace distance {
+namespace mir::method::knn::distance {
 
 
 PseudoLaplace::PseudoLaplace(const param::MIRParametrisation& /*unused*/) {}
@@ -123,7 +120,4 @@ void PseudoLaplace::hash(eckit::MD5& h) const {
 static const DistanceWeightingBuilder<PseudoLaplace> __distance("pseudo-laplace");
 
 
-}  // namespace distance
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::distance

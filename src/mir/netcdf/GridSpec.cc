@@ -22,8 +22,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 static util::recursive_mutex* local_mutex    = nullptr;
@@ -89,5 +88,4 @@ GridSpec* GridSpecGuesser::guess(const Variable& variable) {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

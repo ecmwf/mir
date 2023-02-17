@@ -16,15 +16,12 @@
 #include <iosfwd>
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 class Action;
-}
-}  // namespace mir
+}  // namespace mir::action
 
 
-namespace mir {
-namespace api {
+namespace mir::api {
 
 
 class MIRWatcher {
@@ -104,5 +101,4 @@ private:
 };
 
 
-}  // namespace api
-}  // namespace mir
+}  // namespace mir::api

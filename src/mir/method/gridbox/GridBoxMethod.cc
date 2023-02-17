@@ -32,9 +32,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace method {
-namespace gridbox {
+namespace mir::method::gridbox {
 
 
 GridBoxMethod::GridBoxMethod(const param::MIRParametrisation& parametrisation) : MethodWeighted(parametrisation) {
@@ -106,7 +104,7 @@ void GridBoxMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, c
     std::unique_ptr<search::PointSearch> tree;
     {
         trace::ResourceUsage usage("GridBoxMethod::assemble create k-d tree");
-        tree.reset(new search::PointSearch(parametrisation_, in));
+        tree = std::make_unique<search::PointSearch>(parametrisation_, in);
     }
 
     {
@@ -208,6 +206,4 @@ const char* GridBoxMethod::name() const {
 }
 
 
-}  // namespace gridbox
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::gridbox

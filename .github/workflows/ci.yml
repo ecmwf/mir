@@ -1,0 +1,30 @@
+name: ci
+
+on:
+  # Trigger the workflow on push to master or develop, except tag creation
+  push:
+    branches:
+      - 'master'
+      - 'develop'
+    tags-ignore:
+      - '**'
+
+  # Trigger the workflow on pull request
+  pull_request: ~
+
+jobs:
+  # Calls a reusable CI workflow to build & test the current repository.
+  ci:
+    name: ci
+    uses: ./.github/workflows/reusable-ci.yml
+    with:
+      mir_sha: ${{ github.sha }}
+    secrets: inherit
+
+  # ci-hpc:
+  #   name: ci-hpc
+  #   if: github.event_name == "pull_request"
+  #   uses: ./.github/workflows/reusable-ci-hpc.yml
+  #   with:
+  #     mir: ecmwf/mir@${{ github.event.pull_request.head.sha }}
+  #   secrets: inherit

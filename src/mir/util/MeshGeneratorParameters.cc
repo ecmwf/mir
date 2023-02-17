@@ -20,8 +20,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 MeshGeneratorParameters::MeshGeneratorParameters() {
     meshCellCentres_            = false;
@@ -97,5 +96,4 @@ void MeshGeneratorParameters::print(std::ostream& s) const {
     s << "]";
 }
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

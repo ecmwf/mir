@@ -16,10 +16,7 @@
 #include "mir/util/Rotation.h"
 
 
-namespace mir {
-namespace repres {
-namespace gauss {
-namespace regular {
+namespace mir::repres::gauss::regular {
 
 
 class RotatedGG : public Regular {
@@ -101,7 +98,4 @@ private:
 };
 
 
-}  // namespace regular
-}  // namespace gauss
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres::gauss::regular

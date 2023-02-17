@@ -15,9 +15,7 @@
 #include "mir/key/grid/NamedGrid.h"
 
 
-namespace mir {
-namespace key {
-namespace grid {
+namespace mir::key::grid {
 
 
 class NamedClassic : public NamedGrid {
@@ -94,6 +92,4 @@ private:
 };
 
 
-}  // namespace grid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::grid

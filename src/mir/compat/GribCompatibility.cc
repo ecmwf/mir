@@ -19,8 +19,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace compat {
+namespace mir::compat {
 
 
 static util::once_flag once;
@@ -141,5 +140,4 @@ const GribCompatibility& GribCompatibility::lookup(const std::string& name) {
 }
 
 
-}  // namespace compat
-}  // namespace mir
+}  // namespace mir::compat

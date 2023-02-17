@@ -17,8 +17,7 @@
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/Type.h"
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 template <>
 void ValueT<unsigned char>::createAttribute(int nc, int varid, const std::string& name, const std::string& path) {
@@ -93,5 +92,4 @@ void ValueT<double>::dump(std::ostream& out) const {
     out << value_;
 }
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

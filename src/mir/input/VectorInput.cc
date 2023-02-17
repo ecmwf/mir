@@ -18,8 +18,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 VectorInput::VectorInput(MIRInput& component1, MIRInput& component2) :
@@ -81,5 +80,4 @@ size_t VectorInput::dimensions() const {
     return 2;
 }
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

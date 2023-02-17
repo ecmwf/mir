@@ -20,8 +20,7 @@ class Stream;
 }
 
 
-namespace mir {
-namespace caching {
+namespace mir::caching {
 
 
 class InMemoryCacheUsage {
@@ -75,5 +74,4 @@ private:
 };
 
 
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching

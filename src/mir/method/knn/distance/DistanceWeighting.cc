@@ -19,10 +19,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace distance {
+namespace mir::method::knn::distance {
 
 
 static util::recursive_mutex* local_mutex                  = nullptr;
@@ -88,7 +85,4 @@ void DistanceWeightingFactory::list(std::ostream& out) {
 }
 
 
-}  // namespace distance
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::distance

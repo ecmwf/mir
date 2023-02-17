@@ -21,9 +21,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace action {
-namespace transform {
+namespace mir::action::transform {
 
 
 template <class Invtrans>
@@ -77,6 +75,4 @@ static const ActionBuilder<ShToOctahedralGG<InvtransScalar> > __action1("transfo
 static const ActionBuilder<ShToOctahedralGG<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-octahedral-gg");
 
 
-}  // namespace transform
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::transform

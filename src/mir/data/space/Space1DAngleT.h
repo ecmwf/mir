@@ -14,9 +14,7 @@
 
 #include "mir/data/Space.h"
 
-namespace mir {
-namespace data {
-namespace space {
+namespace mir::data::space {
 
 
 template <int SCALE, int SYMMETRY>
@@ -77,6 +75,4 @@ private:
 };
 
 
-}  // namespace space
-}  // namespace data
-}  // namespace mir
+}  // namespace mir::data::space

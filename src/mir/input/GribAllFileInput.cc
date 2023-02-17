@@ -23,8 +23,7 @@
 #include "mir/util/Grib.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 GribAllFileInput::GribAllFileInput(const std::string& path) : path_(path), count_(0) {
@@ -74,7 +73,7 @@ grib_handle* GribAllFileInput::gribHandle(size_t which) const {
 
 
 data::MIRField GribAllFileInput::field() const {
-    ASSERT(inputs_.size());
+    ASSERT(!inputs_.empty());
     data::MIRField f(inputs_[0]->field());
     ASSERT(f.dimensions() == 1);
     for (size_t i = 1; i < inputs_.size(); i++) {
@@ -115,5 +114,4 @@ size_t GribAllFileInput::dimensions() const {
 }
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

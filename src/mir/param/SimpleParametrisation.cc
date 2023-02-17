@@ -27,8 +27,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 
 
 class Setting {
@@ -832,5 +831,4 @@ bool SimpleParametrisation::matchAny(const MIRParametrisation& other) const {
 }
 
 
-}  // namespace param
-}  // namespace mir
+}  // namespace mir::param

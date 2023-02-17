@@ -24,8 +24,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 ReshapeVariableStep::ReshapeVariableStep(Variable& out, const Dimension& dimension, size_t growth) :
@@ -154,5 +153,4 @@ bool ReshapeVariableStep::merge(Step* other) {
     return false;
 }
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

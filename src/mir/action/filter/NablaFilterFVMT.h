@@ -15,8 +15,7 @@
 #include "mir/action/filter/NablaFilter.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 template <typename T>
@@ -91,5 +90,4 @@ private:
 };
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

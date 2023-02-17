@@ -24,8 +24,7 @@
 #include "mir/netcdf/Value.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 InputMatrix::InputMatrix(Type& type, int varid, const std::string& name, size_t size, NCFile& file) :
@@ -161,5 +160,4 @@ void InputMatrix::read(std::vector<long long>& values, const std::vector<size_t>
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

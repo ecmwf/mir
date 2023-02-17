@@ -17,18 +17,12 @@
 #include "mir/method/MethodWeighted.h"
 
 
-namespace mir {
-namespace method {
-namespace fe {
+namespace mir::method::fe {
 class FiniteElement;
-}  // namespace fe
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::fe
 
 
-namespace mir {
-namespace method {
-namespace fe {
+namespace mir::method::fe {
 
 
 /**
@@ -118,6 +112,4 @@ private:
 };
 
 
-}  // namespace fe
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::fe

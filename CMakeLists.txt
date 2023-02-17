@@ -12,10 +12,10 @@ cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 
 find_package(ecbuild 3.4 REQUIRED HINTS ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild)
 
-project(mir VERSION 1.14.1 LANGUAGES CXX)
+project(mir VERSION 1.15.0 LANGUAGES CXX)
 
 set(PERSISTENT_NAMESPACE "eckit" CACHE INTERNAL "") # needed for generating .b files for persistent support
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 

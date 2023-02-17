@@ -25,8 +25,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace tools {
+namespace mir::tools {
 
 
 template <class T>
@@ -209,5 +208,4 @@ void Count::countOnRepresentation(const repres::Representation& rep) {
 }
 
 
-}  // namespace tools
-}  // namespace mir
+}  // namespace mir::tools

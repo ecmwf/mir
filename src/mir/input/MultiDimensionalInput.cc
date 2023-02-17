@@ -19,8 +19,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 MultiDimensionalInput::MultiDimensionalInput() = default;
@@ -136,5 +135,4 @@ void MultiDimensionalInput::print(std::ostream& out) const {
 }
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

@@ -16,8 +16,7 @@
 #include "mir/key/style/CustomParametrisation.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 PlanParser::PlanParser(std::istream& in) : StreamParser(in, true) {}
@@ -119,5 +118,4 @@ std::vector<std::string> PlanParser::parseValues() {
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

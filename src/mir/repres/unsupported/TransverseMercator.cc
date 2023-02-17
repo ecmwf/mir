@@ -15,8 +15,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace repres {
+namespace mir::repres {
 
 
 TransverseMercator::TransverseMercator(const param::MIRParametrisation& /*parametrisation*/) {}
@@ -31,5 +30,4 @@ void TransverseMercator::print(std::ostream& out) const {
 static const RepresentationBuilder<TransverseMercator> __repres("transverse_mercator");
 
 
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres

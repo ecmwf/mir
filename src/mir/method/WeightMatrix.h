@@ -19,8 +19,7 @@
 #include "eckit/linalg/SparseMatrix.h"
 
 
-namespace mir {
-namespace method {
+namespace mir::method {
 
 
 class WeightMatrix : public eckit::linalg::SparseMatrix {
@@ -69,5 +68,4 @@ private:  // members
 };
 
 
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method

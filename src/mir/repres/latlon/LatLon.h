@@ -16,9 +16,7 @@
 #include "mir/util/Increments.h"
 
 
-namespace mir {
-namespace repres {
-namespace latlon {
+namespace mir::repres::latlon {
 
 
 class LatLon : public Gridded {
@@ -52,8 +50,6 @@ public:
 
     static void correctBoundingBox(util::BoundingBox&, size_t& ni, size_t& nj, const util::Increments&,
                                    const PointLatLon& reference = {0, 0});
-
-    static bool samePoints(const param::MIRParametrisation& user, const param::MIRParametrisation& field);
 
     // -- Overridden methods
     // None
@@ -159,6 +155,4 @@ private:
 };
 
 
-}  // namespace latlon
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres::latlon

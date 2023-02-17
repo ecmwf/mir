@@ -20,8 +20,7 @@ class PathName;
 }
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 class MultiDimensionalGribFileInput : public MultiDimensionalInput {
@@ -94,5 +93,4 @@ private:
 };
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

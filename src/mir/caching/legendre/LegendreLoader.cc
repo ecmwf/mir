@@ -20,9 +20,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace caching {
-namespace legendre {
+namespace mir::caching::legendre {
 
 
 LegendreLoader::LegendreLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
@@ -116,6 +114,4 @@ void LegendreLoaderFactory::list(std::ostream& out) {
 }
 
 
-}  // namespace legendre
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching::legendre

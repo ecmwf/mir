@@ -17,8 +17,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace lsm {
+namespace mir::lsm {
 
 
 bool NoMask::active() const {
@@ -49,5 +48,4 @@ std::string NoMask::cacheName() const {
     NOTIMP;
 }
 
-}  // namespace lsm
-}  // namespace mir
+}  // namespace mir::lsm

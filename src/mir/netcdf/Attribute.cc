@@ -20,8 +20,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 Attribute::Attribute(Endowed& owner, const std::string& name, Value* value) :
     owner_(owner), name_(name), value_(value) {}
@@ -77,5 +76,4 @@ void Attribute::create(int /*unused*/) const {
     NOTIMP;
 }
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

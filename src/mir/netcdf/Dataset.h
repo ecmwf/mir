@@ -18,16 +18,13 @@
 #include "mir/netcdf/Endowed.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 class Dimension;
 class Variable;
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class Dataset : public Endowed {
@@ -85,5 +82,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

@@ -21,8 +21,7 @@
 #include "mir/util/MIRStatistics.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 GlobaliseFilter::GlobaliseFilter(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
@@ -73,5 +72,4 @@ const char* GlobaliseFilter::name() const {
 static const ActionBuilder<GlobaliseFilter> __action("filter.globalise");
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

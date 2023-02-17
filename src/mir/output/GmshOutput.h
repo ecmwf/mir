@@ -15,15 +15,12 @@
 #include "mir/output/MIROutput.h"
 
 
-namespace mir {
-namespace data {
+namespace mir::data {
 class MIRField;
-}
-}  // namespace mir
+}  // namespace mir::data
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 class GmshOutput : public MIROutput {
@@ -104,5 +101,4 @@ private:
 };
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

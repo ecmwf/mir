@@ -16,8 +16,7 @@
 #include "mir/util/Rotation.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 class AdjustWindsDirections : public Action {
@@ -93,5 +92,4 @@ private:
 };
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

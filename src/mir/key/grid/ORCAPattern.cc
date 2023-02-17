@@ -19,9 +19,7 @@
 #include "mir/key/grid/NamedORCA.h"
 
 
-namespace mir {
-namespace key {
-namespace grid {
+namespace mir::key::grid {
 
 
 ORCAPattern::ORCAPattern(const std::string& name) : GridPattern(name) {}
@@ -61,6 +59,4 @@ static const ORCAPattern __pattern1("^[eE]?[oO][rR][cC][aA][0-9]+$");
 static const ORCAPattern __pattern2("^[eE]?[oO][rR][cC][aA][0-9]+_[tTuUvVwWfF]$");
 
 
-}  // namespace grid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::grid

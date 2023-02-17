@@ -17,8 +17,7 @@
 #include "mir/action/plan/Action.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 class Formula : public action::Action {
@@ -36,5 +35,4 @@ private:
 };
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

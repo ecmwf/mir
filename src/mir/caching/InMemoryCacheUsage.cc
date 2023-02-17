@@ -21,8 +21,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace caching {
+namespace mir::caching {
 
 
 InMemoryCacheUsage::InMemoryCacheUsage() : memory_(0), shared_(0) {}
@@ -136,5 +135,4 @@ size_t InMemoryCacheUsage::shared() const {
     return shared_;
 }
 
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching

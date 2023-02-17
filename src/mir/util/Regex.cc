@@ -17,8 +17,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 static const std::map<std::regex_constants::error_type, std::string> regex_code{
@@ -61,5 +60,4 @@ Regex::match_t Regex::match(const std::string& s) const {
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

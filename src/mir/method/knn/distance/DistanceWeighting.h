@@ -23,10 +23,7 @@ class MD5;
 }
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace distance {
+namespace mir::method::knn::distance {
 
 
 class DistanceWeighting {
@@ -83,7 +80,4 @@ public:
 };
 
 
-}  // namespace distance
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::distance

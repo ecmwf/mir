@@ -23,8 +23,7 @@ class Stream;
 }
 
 
-namespace mir {
-namespace compare {
+namespace mir::compare {
 
 
 class MultiFile {
@@ -74,5 +73,4 @@ private:
 };
 
 
-}  // namespace compare
-}  // namespace mir
+}  // namespace mir::compare

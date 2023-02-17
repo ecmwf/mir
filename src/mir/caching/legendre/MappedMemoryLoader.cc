@@ -25,9 +25,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace caching {
-namespace legendre {
+namespace mir::caching::legendre {
 
 
 MappedMemoryLoader::MappedMemoryLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
@@ -88,6 +86,4 @@ static const LegendreLoaderBuilder<MappedMemoryLoader> loader1("mapped-memory");
 static const LegendreLoaderBuilder<MappedMemoryLoader> loader2("mmap");
 
 
-}  // namespace legendre
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching::legendre

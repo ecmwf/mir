@@ -17,9 +17,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace caching {
-namespace matrix {
+namespace mir::caching::matrix {
 
 
 MatrixLoader::MatrixLoader(const std::string& /*unused*/, const eckit::PathName& path) : path_(path.realName()) {}
@@ -99,6 +97,4 @@ void MatrixLoaderFactory::list(std::ostream& out) {
 }
 
 
-}  // namespace matrix
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching::matrix

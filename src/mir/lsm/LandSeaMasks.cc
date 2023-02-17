@@ -21,8 +21,7 @@
 #include "mir/util/Trace.h"
 
 
-namespace mir {
-namespace lsm {
+namespace mir::lsm {
 
 
 LandSeaMasks::LandSeaMasks(const Mask& input, const Mask& output) : input_(input), output_(output) {
@@ -80,5 +79,4 @@ bool LandSeaMasks::active() const {
 }
 
 
-}  // namespace lsm
-}  // namespace mir
+}  // namespace mir::lsm

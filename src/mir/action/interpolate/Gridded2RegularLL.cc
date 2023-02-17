@@ -22,9 +22,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace action {
-namespace interpolate {
+namespace mir::action::interpolate {
 
 
 Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation& parametrisation) :
@@ -88,6 +86,4 @@ const char* Gridded2RegularLL::name() const {
 static const ActionBuilder<Gridded2RegularLL> grid2grid("interpolate.grid2regular-ll");
 
 
-}  // namespace interpolate
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::interpolate

@@ -15,17 +15,12 @@
 #include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
 
 
-namespace mir {
-namespace lsm {
+namespace mir::lsm {
 class LandSeaMasks;
-}
-}  // namespace mir
+}  // namespace mir::lsm
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace distance {
+namespace mir::method::knn::distance {
 
 
 // Note: DistanceWeightingFactory cannot instantiate this because it
@@ -44,7 +39,4 @@ private:
 };
 
 
-}  // namespace distance
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::distance

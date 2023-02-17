@@ -18,9 +18,7 @@
 #include "eckit/linalg/SparseMatrix.h"
 
 
-namespace mir {
-namespace caching {
-namespace matrix {
+namespace mir::caching::matrix {
 
 
 class MatrixLoader : public eckit::linalg::SparseMatrix::Allocator {
@@ -70,6 +68,4 @@ public:
 };
 
 
-}  // namespace matrix
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching::matrix

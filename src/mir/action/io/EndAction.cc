@@ -17,9 +17,7 @@
 #include "mir/output/MIROutput.h"
 
 
-namespace mir {
-namespace action {
-namespace io {
+namespace mir::action::io {
 
 
 EndAction::EndAction(const param::MIRParametrisation& param, output::MIROutput& output) :
@@ -59,6 +57,4 @@ void EndAction::custom(std::ostream& out) const {
 }
 
 
-}  // namespace io
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::io

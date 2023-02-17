@@ -36,8 +36,7 @@ class MethodWeighted;
 }  // namespace mir
 
 
-namespace mir {
-namespace method {
+namespace mir::method {
 
 
 class MatrixCacheCreator : public caching::WeightCache::CacheContentCreator {
@@ -64,5 +63,4 @@ private:
 };
 
 
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method

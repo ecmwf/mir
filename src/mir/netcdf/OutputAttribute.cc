@@ -20,8 +20,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 /*
 See http://www.unidata.ucar.edu/software/netcdf/docs/netcdf/Attribute-Conventions.html
 */
@@ -74,5 +73,4 @@ void OutputAttribute::print(std::ostream& out) const {
     out << "OutputAttribute[name=" << name_ << "]";
 }
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

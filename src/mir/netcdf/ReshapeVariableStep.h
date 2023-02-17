@@ -15,16 +15,13 @@
 #include "mir/netcdf/Step.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 class Variable;
 class Dimension;
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class ReshapeVariableStep : public Step {
@@ -48,5 +45,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

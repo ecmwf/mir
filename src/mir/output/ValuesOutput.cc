@@ -17,8 +17,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 
 ValuesOutput::ValuesOutput() : missingValue_(9999), hasMissing_(false) {}
@@ -85,5 +84,4 @@ const MIRValuesVector& ValuesOutput::values(size_t which) const {
 }
 
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

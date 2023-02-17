@@ -13,8 +13,7 @@
 #include "mir/lsm/GribFileMaskFromMIR.h"
 
 
-namespace mir {
-namespace lsm {
+namespace mir::lsm {
 
 GribFileMaskFromMIR::GribFileMaskFromMIR(const std::string& name, const eckit::PathName& path,
                                          const param::MIRParametrisation& parametrisation,
@@ -30,5 +29,4 @@ std::string GribFileMaskFromMIR::cacheName() const {
 }
 
 
-}  // namespace lsm
-}  // namespace mir
+}  // namespace mir::lsm

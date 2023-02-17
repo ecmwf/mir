@@ -18,8 +18,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 EmptyInput::EmptyInput() : calls_(0) {
@@ -64,5 +63,4 @@ void EmptyInput::latitudes(std::vector<double>& /*unused*/) const {}
 void EmptyInput::longitudes(std::vector<double>& /*unused*/) const {}
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

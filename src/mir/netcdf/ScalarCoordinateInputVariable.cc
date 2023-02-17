@@ -19,8 +19,7 @@
 #include "mir/netcdf/VirtualInputDimension.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 ScalarCoordinateInputVariable::ScalarCoordinateInputVariable(Dataset& owner, const std::string& name, int id,
@@ -61,5 +60,4 @@ Dimension* ScalarCoordinateInputVariable::getVirtualDimension() {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

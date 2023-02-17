@@ -15,10 +15,7 @@
 #include "mir/repres/gauss/reduced/Octahedral.h"
 
 
-namespace mir {
-namespace repres {
-namespace gauss {
-namespace reduced {
+namespace mir::repres::gauss::reduced {
 
 
 class ReducedOctahedral : public Octahedral {
@@ -93,7 +90,4 @@ private:
 };
 
 
-}  // namespace reduced
-}  // namespace gauss
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres::gauss::reduced

@@ -21,6 +21,7 @@
 #include "eckit/utils/StringTools.h"
 #include "eckit/utils/Translator.h"
 
+#include "mir/config/LibMir.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -28,8 +29,7 @@
 #include "mir/util/ValueMap.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 GribFixes::GribFixes() {
@@ -88,7 +88,7 @@ void GribFixes::readConfigurationFiles() {
 
     ASSERT(fixes_.empty());
 
-    const eckit::PathName path = "~mir/etc/mir/GRIB.yaml";
+    const eckit::PathName path = LibMir::configFile(LibMir::config_file::GRIB);
     if (!path.exists()) {
         return;
     }
@@ -157,5 +157,4 @@ void GribFixes::readConfigurationFiles() {
 }
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

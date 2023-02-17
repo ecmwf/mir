@@ -24,3 +24,14 @@ if(EXISTS ${CMAKE_BINARY_DIR}/share/plugins/atlas-orca.yml)
             ENVIRONMENT ${_testEnvironment})
     endforeach()
 endif()
+
+set(_t ${CMAKE_CURRENT_SOURCE_DIR}/config)
+ecbuild_add_test(
+    TARGET      ${_t}
+    CONDITION   MARS_SCRIPT
+    COMMAND     mir-test.sh
+    ARGS        ${_t}.x
+    ENVIRONMENT ${_testEnvironment}
+    MIR_CONFIG_AREA=${_t}/area.yaml
+    MIR_CONFIG_PARAMETERS=${_t}/parameters.yaml)
+

@@ -18,9 +18,7 @@
 #include "mir/util/SpectralOrder.h"
 
 
-namespace mir {
-namespace tests {
-namespace unit {
+namespace mir::tests::unit {
 
 
 CASE("test_spectral_order") {
@@ -160,9 +158,7 @@ CASE("test_spectral_order") {
 }
 
 
-}  // namespace unit
-}  // namespace tests
-}  // namespace mir
+}  // namespace mir::tests::unit
 
 
 int main(int argc, char** argv) {

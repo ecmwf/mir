@@ -20,22 +20,16 @@
 #include "mir/util/Types.h"
 
 
-namespace atlas {
-namespace trans {
+namespace atlas::trans {
 class LegendreCache;
-}
-}  // namespace atlas
+}  // namespace atlas::trans
 
-namespace mir {
-namespace param {
+namespace mir::param {
 class MIRParametrisation;
-}
-}  // namespace mir
+}  // namespace mir::param
 
 
-namespace mir {
-namespace caching {
-namespace legendre {
+namespace mir::caching::legendre {
 
 
 class LegendreLoader {
@@ -100,6 +94,4 @@ public:
 };
 
 
-}  // namespace legendre
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching::legendre

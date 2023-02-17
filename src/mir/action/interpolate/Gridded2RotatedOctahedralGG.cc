@@ -19,9 +19,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace action {
-namespace interpolate {
+namespace mir::action::interpolate {
 
 
 Gridded2RotatedOctahedralGG::Gridded2RotatedOctahedralGG(const param::MIRParametrisation& parametrisation) :
@@ -65,6 +63,4 @@ const char* Gridded2RotatedOctahedralGG::name() const {
 static const ActionBuilder<Gridded2RotatedOctahedralGG> grid2grid("interpolate.grid2rotated-octahedral-gg");
 
 
-}  // namespace interpolate
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::interpolate

@@ -32,8 +32,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace tools {
+namespace mir::tools {
 
 
 using prec_t = decltype(Log::info().precision());
@@ -151,8 +150,7 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
 }
 
 
-}  // namespace tools
-}  // namespace mir
+}  // namespace mir::tools
 
 
 int main(int argc, char** argv) {

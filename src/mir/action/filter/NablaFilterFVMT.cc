@@ -30,8 +30,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 struct NablaOperation {
@@ -268,5 +267,4 @@ static const NablaFilterBuilder<NablaFilterFVMT<UVDivergence>> __nabla4("uv-dive
 static const NablaFilterBuilder<NablaFilterFVMT<UVVorticity>> __nabla5("uv-vorticity");
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

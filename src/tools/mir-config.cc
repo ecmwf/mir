@@ -22,6 +22,7 @@
 #include "eckit/option/SimpleOption.h"
 #include "eckit/utils/StringTools.h"
 
+#include "mir/config/LibMir.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/DefaultParametrisation.h"
@@ -31,12 +32,11 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace tools {
+namespace mir::tools {
 
 
 struct Param {
-    Param(const std::vector<std::string>& classes_v) : classes(classes_v.begin(), classes_v.end()) {}
+    Param(const std::vector<std::string>& classes_v) : id(0), classes(classes_v.begin(), classes_v.end()) {}
     long id;
     std::string name;
     std::set<std::string> classes;
@@ -97,9 +97,6 @@ struct MIRConfig : MIRTool {
 
         options_.push_back(new SimpleOption<long>("param-id", "Display configuration with paramId"));
         options_.push_back(new SimpleOption<std::string>("key", "Display configuration with specific key"));
-
-        options_.push_back(new SimpleOption<std::string>(
-            "param-file", "Set classification file (default '~mir/etc/mir/parameter-class.yaml')"));
         options_.push_back(new SimpleOption<std::string>("param-class", "Set class(es) for paramId, /-separated"));
         options_.push_back(new SimpleOption<std::string>("param-name", "Set name for paramId"));
     }
@@ -143,17 +140,15 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
 
         Map map;
 
-        std::string paramFile = "~mir/etc/mir/parameter-class.yaml";
-        args.get("param-file", paramFile);
+        const eckit::LocalPathName file = LibMir::configFile(LibMir::config_file::PARAMETER_CLASS).asString();
+        Log::info() << "File '" << file.fullName() << "' (read)" << std::endl;
 
-        eckit::LocalPathName file(paramFile);
-        auto tmp = file + ".tmp";
-        Log::info() << "File '" << file.fullName() << "' (read),\nFile '" << tmp.fullName() << "' (temporary)"
-                    << std::endl;
+        eckit::LocalPathName tmp = file + ".tmp";
+        Log::info() << "File '" << tmp.fullName() << "' (temporary)" << std::endl;
 
         {
-            std::ifstream i(file.c_str());
-            std::ofstream o(tmp.c_str());
+            std::ifstream i(file);
+            std::ofstream o(tmp);
             if (!o) {
                 throw exception::WriteError("Cannot write to '" + tmp + "'");
             }
@@ -171,8 +166,8 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
                 }
 
                 if (!line.empty() && line.substr(0, 2) == "- ") {
-                    auto c = line.find_first_of('#');
-                    long id;
+                    auto c  = line.find_first_of('#');
+                    long id = 0;
                     std::istringstream(line.substr(2, c)) >> id;
                     std::string name(c != std::string::npos ? eckit::StringTools::trim(line.substr(c + 1)) : "");
 
@@ -212,7 +207,7 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
             }
 
         public:
-            DummyField(long paramId) : paramId_(paramId) {}
+            explicit DummyField(long paramId) : paramId_(paramId) {}
         };
 
         display(DummyField(paramId), key);
@@ -232,8 +227,7 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
 }
 
 
-}  // namespace tools
-}  // namespace mir
+}  // namespace mir::tools
 
 
 int main(int argc, char** argv) {

@@ -20,8 +20,7 @@ class Configuration;
 }
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 
 
 class ConfigurationWrapper : public MIRParametrisation {
@@ -57,5 +56,4 @@ private:  // members
 };
 
 
-}  // namespace param
-}  // namespace mir
+}  // namespace mir::param

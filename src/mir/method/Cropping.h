@@ -17,8 +17,7 @@
 #include "mir/util/BoundingBox.h"
 
 
-namespace mir {
-namespace method {
+namespace mir::method {
 
 
 class Cropping {
@@ -47,5 +46,4 @@ private:
 };
 
 
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method

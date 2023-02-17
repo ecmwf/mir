@@ -16,9 +16,7 @@
 #include "mir/param/SimpleParametrisation.h"
 
 
-namespace mir {
-namespace action {
-namespace interpolate {
+namespace mir::action::interpolate {
 
 
 class Gridded2TypedGrid : public Gridded2UnrotatedGrid {
@@ -99,6 +97,4 @@ private:
 };
 
 
-}  // namespace interpolate
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::interpolate

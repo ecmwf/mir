@@ -21,8 +21,7 @@
 #include "mir/param/MIRParametrisation.h"
 
 
-namespace mir {
-namespace key {
+namespace mir::key {
 
 
 bool Key::postProcess(const param::MIRParametrisation& param) {
@@ -37,5 +36,4 @@ bool Key::postProcess(const param::MIRParametrisation& param) {
 }
 
 
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key

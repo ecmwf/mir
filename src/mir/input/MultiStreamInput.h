@@ -17,8 +17,7 @@
 #include "mir/input/MIRInput.h"
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 class MultiStreamInput : public MIRInput {
@@ -98,5 +97,4 @@ private:
 };
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

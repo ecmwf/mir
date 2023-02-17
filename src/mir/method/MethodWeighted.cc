@@ -40,8 +40,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace method {
+namespace mir::method {
 
 
 static util::recursive_mutex local_mutex;
@@ -533,5 +532,4 @@ const util::BoundingBox& MethodWeighted::getCropping() const {
 }
 
 
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method

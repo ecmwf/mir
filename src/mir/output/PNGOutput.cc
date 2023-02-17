@@ -41,8 +41,7 @@
 #include "mir/util/Trace.h"
 
 
-namespace mir {
-namespace output {
+namespace mir::output {
 
 constexpr int N_BITS_PER_BYTE = 8;
 
@@ -337,5 +336,4 @@ static const PNGEncoderBuilder<PNGEncoderT<3, 1, 1, uint_fast32_t>> encoder6("8-
 static const PNGEncoderBuilder<PNGEncoderT<3, 0, 2, uint_fast64_t>> encoder7("16-bit/rgb");
 static const PNGEncoderBuilder<PNGEncoderT<3, 1, 2, uint_fast64_t>> encoder8("16-bit/rgba");
 
-}  // namespace output
-}  // namespace mir
+}  // namespace mir::output

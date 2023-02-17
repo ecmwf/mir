@@ -28,8 +28,7 @@
 #include "mir/util/MIRStatistics.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 FormulaAction::FormulaAction(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
@@ -96,5 +95,4 @@ const char* FormulaAction::name() const {
 static const ActionBuilder<FormulaAction> __action("calc.formula");
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

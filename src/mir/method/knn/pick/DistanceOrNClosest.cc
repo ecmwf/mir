@@ -19,10 +19,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace pick {
+namespace mir::method::knn::pick {
 
 
 DistanceOrNClosest::DistanceOrNClosest(const param::MIRParametrisation& param) : nClosest_(param) {
@@ -68,7 +65,4 @@ void DistanceOrNClosest::hash(eckit::MD5& h) const {
 static const PickBuilder<DistanceOrNClosest> __pick("distance-or-nclosest");
 
 
-}  // namespace pick
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::pick

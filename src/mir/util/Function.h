@@ -16,15 +16,12 @@
 #include <string>
 
 
-namespace mir {
-namespace context {
+namespace mir::context {
 class Context;
-}
-}  // namespace mir
+}  // namespace mir::context
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 class Function {
@@ -56,5 +53,4 @@ private:
 };
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

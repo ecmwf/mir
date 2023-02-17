@@ -16,16 +16,12 @@
 #include <string>
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 class MIRParametrisation;
-}
-}  // namespace mir
+}  // namespace mir::param
 
 
-namespace mir {
-namespace key {
-namespace intgrid {
+namespace mir::key::intgrid {
 
 
 class Intgrid {
@@ -129,6 +125,4 @@ public:
 };
 
 
-}  // namespace intgrid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::intgrid

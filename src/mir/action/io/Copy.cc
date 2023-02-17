@@ -20,9 +20,7 @@
 #include "mir/util/MIRStatistics.h"
 
 
-namespace mir {
-namespace action {
-namespace io {
+namespace mir::action::io {
 
 
 Copy::Copy(const param::MIRParametrisation& parametrisation, output::MIROutput& output) :
@@ -60,6 +58,4 @@ void Copy::custom(std::ostream& out) const {
 }
 
 
-}  // namespace io
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::io

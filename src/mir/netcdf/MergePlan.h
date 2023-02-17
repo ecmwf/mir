@@ -18,16 +18,13 @@
 #include <queue>
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 class Variable;
 class Dataset;
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class MergePlan {
@@ -57,5 +54,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

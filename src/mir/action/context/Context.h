@@ -34,8 +34,7 @@ class Content;
 }  // namespace mir
 
 
-namespace mir {
-namespace context {
+namespace mir::context {
 
 class Extension {
 public:
@@ -159,5 +158,4 @@ private:
 };
 
 
-}  // namespace context
-}  // namespace mir
+}  // namespace mir::context

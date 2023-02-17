@@ -23,9 +23,7 @@
 #include "mir/util/PlanParser.h"
 
 
-namespace mir {
-namespace key {
-namespace style {
+namespace mir::key::style {
 
 
 void parse(std::istream& str, action::ActionPlan& plan, const param::MIRParametrisation& parametrisation,
@@ -76,6 +74,4 @@ void CustomStyle::print(std::ostream& out) const {
 static const MIRStyleBuilder<CustomStyle> __style("custom");
 
 
-}  // namespace style
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::style

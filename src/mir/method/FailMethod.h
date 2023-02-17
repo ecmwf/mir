@@ -15,8 +15,7 @@
 #include "mir/method/Method.h"
 
 
-namespace mir {
-namespace method {
+namespace mir::method {
 
 
 class FailMethod final : public Method {
@@ -83,5 +82,4 @@ private:
 };
 
 
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method

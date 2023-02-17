@@ -19,8 +19,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace sandbox {
+namespace mir::sandbox {
 
 
 struct LSM : eckit::Tool {
@@ -94,8 +93,7 @@ void LSM::run() {
 }
 
 
-}  // namespace sandbox
-}  // namespace mir
+}  // namespace mir::sandbox
 
 
 int main(int argc, char** argv) {

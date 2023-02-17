@@ -22,10 +22,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
-namespace pick {
+namespace mir::method::knn::pick {
 
 
 NearestNeighbourWithLowestIndex::NearestNeighbourWithLowestIndex(const param::MIRParametrisation& param) {
@@ -91,7 +88,4 @@ void NearestNeighbourWithLowestIndex::hash(eckit::MD5& h) const {
 static const PickBuilder<NearestNeighbourWithLowestIndex> __pick("nearest-neighbour-with-lowest-index");
 
 
-}  // namespace pick
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn::pick

@@ -15,9 +15,7 @@
 #include "mir/repres/latlon/LatLon.h"
 
 
-namespace mir {
-namespace repres {
-namespace latlon {
+namespace mir::repres::latlon {
 
 
 class RegularLL : public LatLon {
@@ -90,6 +88,4 @@ private:
 };
 
 
-}  // namespace latlon
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres::latlon

@@ -28,9 +28,7 @@ class Representation;
 }  // namespace mir
 
 
-namespace mir {
-namespace action {
-namespace transform {
+namespace mir::action::transform {
 
 
 class ShToGridded : public Action {
@@ -119,6 +117,4 @@ private:
 };
 
 
-}  // namespace transform
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::transform

@@ -15,8 +15,7 @@
 #include "mir/netcdf/Dimension.h"
 
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 class VirtualOutputDimension : public Dimension {
@@ -40,5 +39,4 @@ private:
 };
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

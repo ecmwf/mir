@@ -27,9 +27,7 @@
 #include "mir/util/Wind.h"
 
 
-namespace mir {
-namespace action {
-namespace transform {
+namespace mir::action::transform {
 
 
 ShVodToUV::ShVodToUV(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
@@ -127,6 +125,4 @@ const char* ShVodToUV::name() const {
 static const ActionBuilder<ShVodToUV> __action("transform.sh-vod-to-UV");
 
 
-}  // namespace transform
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::transform

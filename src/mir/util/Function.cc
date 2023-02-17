@@ -20,8 +20,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 static recursive_mutex* local_mutex        = nullptr;
@@ -75,5 +74,4 @@ void Function::list(std::ostream& out) {
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

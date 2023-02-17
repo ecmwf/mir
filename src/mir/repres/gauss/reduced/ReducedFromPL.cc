@@ -15,10 +15,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace repres {
-namespace gauss {
-namespace reduced {
+namespace mir::repres::gauss::reduced {
 
 
 ReducedFromPL::ReducedFromPL(const param::MIRParametrisation& parametrisation) : FromPL(parametrisation) {}
@@ -58,7 +55,4 @@ bool ReducedFromPL::sameAs(const Representation& other) const {
 static const RepresentationBuilder<ReducedFromPL> reducedFromPL("reduced_gg");
 
 
-}  // namespace reduced
-}  // namespace gauss
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres::gauss::reduced

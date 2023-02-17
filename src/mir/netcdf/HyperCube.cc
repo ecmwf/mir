@@ -13,8 +13,7 @@
 #include "mir/netcdf/HyperCube.h"
 #include "mir/netcdf/Exceptions.h"
 
-namespace mir {
-namespace netcdf {
+namespace mir::netcdf {
 
 
 static void addLoop2(int d, size_t which, size_t where, size_t count, size_t depth, const HyperCube::Dimensions& dims,
@@ -93,5 +92,4 @@ void HyperCube::coordinates(size_t index, Coordinates& result) const {
 }
 
 
-}  // namespace netcdf
-}  // namespace mir
+}  // namespace mir::netcdf

@@ -31,8 +31,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace compare {
+namespace mir::compare {
 
 
 static bool ignoreAccuracy_           = false;
@@ -1289,5 +1288,4 @@ void GribField::setGrid(GribField& field, grib_handle* h) {
 }
 
 
-}  // namespace compare
-}  // namespace mir
+}  // namespace mir::compare

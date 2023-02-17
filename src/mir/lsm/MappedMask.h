@@ -29,8 +29,7 @@ class Representation;
 }  // namespace mir
 
 
-namespace mir {
-namespace lsm {
+namespace mir::lsm {
 
 
 class MappedMask : public Mask {
@@ -111,5 +110,4 @@ private:
 };
 
 
-}  // namespace lsm
-}  // namespace mir
+}  // namespace mir::lsm

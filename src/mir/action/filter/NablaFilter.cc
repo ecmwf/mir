@@ -19,8 +19,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace action {
+namespace mir::action {
 
 
 NablaFilter::NablaFilter(const param::MIRParametrisation& param) : Action(param), meshGeneratorParams_(param, "input") {
@@ -74,5 +73,4 @@ void NablaFilterFactory::list(std::ostream& out) {
 }
 
 
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action

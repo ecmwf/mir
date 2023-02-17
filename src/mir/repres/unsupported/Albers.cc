@@ -15,8 +15,7 @@
 #include <ostream>
 
 
-namespace mir {
-namespace repres {
+namespace mir::repres {
 
 
 Albers::Albers(const param::MIRParametrisation& /*parametrisation*/) {}
@@ -31,5 +30,4 @@ void Albers::print(std::ostream& out) const {
 static const RepresentationBuilder<Albers> __repres("albers");
 
 
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres

@@ -19,9 +19,7 @@
 #include "mir/util/SpectralOrder.h"
 
 
-namespace mir {
-namespace key {
-namespace intgrid {
+namespace mir::key::intgrid {
 
 
 static const IntgridBuilder<Source> __intgrid1("source");
@@ -51,6 +49,4 @@ const std::string& Source::gridname() const {
 }
 
 
-}  // namespace intgrid
-}  // namespace key
-}  // namespace mir
+}  // namespace mir::key::intgrid

@@ -33,8 +33,7 @@ class ValueMap;
 }  // namespace mir
 
 
-namespace mir {
-namespace input {
+namespace mir::input {
 
 
 class MIRInput {
@@ -151,5 +150,4 @@ public:
 };
 
 
-}  // namespace input
-}  // namespace mir
+}  // namespace mir::input

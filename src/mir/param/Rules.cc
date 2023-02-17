@@ -18,13 +18,13 @@
 #include "eckit/parser/YAMLParser.h"
 #include "eckit/utils/Translator.h"
 
+#include "mir/config/LibMir.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 
 
 static const std::string PARAM_ID("paramId");
@@ -125,9 +125,9 @@ void Rules::readConfigurationFiles() {
         using PathName::PathName;
     };
 
-    ConfigFile classes("~mir/etc/mir/classes.yaml");
-    ConfigFile parameterClass("~mir/etc/mir/parameter-class.yaml");
-    ConfigFile parameters("~mir/etc/mir/parameters.yaml");
+    ConfigFile classes(LibMir::configFile(LibMir::config_file::CLASSES));
+    ConfigFile parameterClass(LibMir::configFile(LibMir::config_file::PARAMETER_CLASS));
+    ConfigFile parameters(LibMir::configFile(LibMir::config_file::PARAMETERS));
 
     if (!classes.exists() || !parameterClass.exists() || !parameters.exists()) {
 
@@ -230,5 +230,4 @@ void Rules::readConfigurationFiles() {
 }
 
 
-}  // namespace param
-}  // namespace mir
+}  // namespace mir::param

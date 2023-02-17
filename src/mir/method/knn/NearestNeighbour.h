@@ -17,9 +17,7 @@
 #include "mir/method/knn/distance/InverseDistanceWeightingSquared.h"
 
 
-namespace mir {
-namespace method {
-namespace knn {
+namespace mir::method::knn {
 
 
 class NearestNeighbour : public KNearestNeighbours {
@@ -39,6 +37,4 @@ private:
 };
 
 
-}  // namespace knn
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::knn

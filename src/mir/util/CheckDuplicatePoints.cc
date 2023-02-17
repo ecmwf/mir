@@ -22,8 +22,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace util {
+namespace mir::util {
 
 
 void check_duplicate_points(const std::string& title, const std::vector<double>& latitudes,
@@ -63,5 +62,4 @@ void check_duplicate_points(const std::string& title, const std::vector<double>&
 }
 
 
-}  // namespace util
-}  // namespace mir
+}  // namespace mir::util

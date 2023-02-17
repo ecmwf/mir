@@ -17,8 +17,7 @@
 #include "mir/util/Log.h"
 
 
-namespace mir {
-namespace param {
+namespace mir::param {
 
 
 RuntimeParametrisation::RuntimeParametrisation(const MIRParametrisation& owner) : owner_(owner) {}
@@ -236,5 +235,4 @@ bool RuntimeParametrisation::get(const std::string& name, std::vector<std::strin
 }
 
 
-}  // namespace param
-}  // namespace mir
+}  // namespace mir::param

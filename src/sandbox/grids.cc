@@ -19,8 +19,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace tools {
+namespace mir::tools {
 
 
 struct Grids : eckit::Tool {
@@ -33,7 +32,7 @@ struct Grids : eckit::Tool {
 void Grids::grid(const atlas::StructuredGrid& grid) {
 
     const auto& pl = grid.nx();
-    ASSERT(pl.size());
+    ASSERT(!pl.empty());
 
     std::vector<int> points_per_latitudes(pl.size());
     ASSERT(pl.size() == points_per_latitudes.size());
@@ -72,8 +71,7 @@ void Grids::run() {
 }
 
 
-}  // namespace tools
-}  // namespace mir
+}  // namespace mir::tools
 
 
 int main(int argc, char** argv) {

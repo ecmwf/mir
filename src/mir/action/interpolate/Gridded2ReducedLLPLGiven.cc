@@ -17,9 +17,7 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace action {
-namespace interpolate {
+namespace mir::action::interpolate {
 
 
 Gridded2ReducedLLPLGiven::Gridded2ReducedLLPLGiven(const param::MIRParametrisation& parametrisation) :
@@ -54,6 +52,4 @@ const char* Gridded2ReducedLLPLGiven::name() const {
 static const ActionBuilder<Gridded2ReducedLLPLGiven> grid2grid("interpolate.grid2reduced-ll-pl-given");
 
 
-}  // namespace interpolate
-}  // namespace action
-}  // namespace mir
+}  // namespace mir::action::interpolate

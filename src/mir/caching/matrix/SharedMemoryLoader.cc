@@ -40,9 +40,7 @@
 #include "mir/util/Trace.h"
 
 
-namespace mir {
-namespace caching {
-namespace matrix {
+namespace mir::caching::matrix {
 
 
 namespace {
@@ -326,6 +324,4 @@ static const MatrixLoaderBuilder<SharedMemoryLoader> loader3("tmp-shmem");
 static const MatrixLoaderBuilder<SharedMemoryLoader> loader5("tmp-shared-memory");
 
 
-}  // namespace matrix
-}  // namespace caching
-}  // namespace mir
+}  // namespace mir::caching::matrix

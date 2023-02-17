@@ -34,8 +34,7 @@ class Representation;
 }  // namespace mir
 
 
-namespace mir {
-namespace data {
+namespace mir::data {
 
 
 class MIRField {
@@ -180,5 +179,4 @@ public:
 };
 
 
-}  // namespace data
-}  // namespace mir
+}  // namespace mir::data

@@ -19,8 +19,7 @@
 #include "mir/util/Mutex.h"
 
 
-namespace mir {
-namespace data {
+namespace mir::data {
 
 
 Space::Space() = default;
@@ -92,5 +91,4 @@ void SpaceChooser::list(std::ostream& out) {
 }
 
 
-}  // namespace data
-}  // namespace mir
+}  // namespace mir::data
