@@ -90,7 +90,6 @@ private:
 
     util::MeshGeneratorParameters meshGeneratorParams_;
     ProjectionFail::type projectionFail_;
-    double poleDisplacement_;
     bool validateMesh_;
 
     // -- Methods
