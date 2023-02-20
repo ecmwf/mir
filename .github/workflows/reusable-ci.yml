@@ -39,4 +39,5 @@ jobs:
             ${{ inputs.atlas || 'ecmwf/atlas' }}
         dependency_branch: develop
         parallelism_factor: 8
+        recreate_cache: true
     secrets: inherit
