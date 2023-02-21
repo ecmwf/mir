@@ -14,9 +14,11 @@
 
 #include "mir/repres/gauss/reduced/ReducedFromPL.h"
 #include "mir/repres/gauss/regular/RegularGG.h"
+#include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Domain.h"
 #include "mir/util/GridBox.h"
+#include "mir/util/Increments.h"
 #include "mir/util/Types.h"
 
 // define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
@@ -76,6 +78,34 @@ CASE("grid boxes: West-East periodicity") {
         util::BoundingBox bbox{90., 0., 0., 180.};
 
         repres::RepresentationHandle r(new repres::gauss::regular::RegularGG(1, bbox));
+        ASSERT(!r->domain().isPeriodicWestEast());
+
+        for (const auto& box : r->gridBoxes()) {
+            EXPECT(bbox.contains({box.north(), box.west(), box.south(), box.east()}));
+        }
+    }
+
+
+    SECTION("regular lat/lon grid (periodic)") {
+        double inc = 18.;
+
+        repres::RepresentationHandle r(new repres::latlon::RegularLL(util::Increments{inc, 90.}));
+        ASSERT(r->domain().isPeriodicWestEast());
+
+        auto boxes = r->gridBoxes();
+        auto a     = boxes.front();
+        auto b     = boxes.back();
+
+        EXPECT_EQUAL(Longitude(a.west()), Longitude(-inc / 2.));
+        EXPECT_EQUAL(Longitude(b.east()), Longitude(-inc / 2. + 360.));
+    }
+
+
+    SECTION("regular lat/lon grid (non-periodic)") {
+        util::BoundingBox bbox{90., 0., 0., 180.};
+        double inc = 18.;
+
+        repres::RepresentationHandle r(new repres::latlon::RegularLL(util::Increments{inc, 90.}, bbox));
         ASSERT(!r->domain().isPeriodicWestEast());
 
         for (const auto& box : r->gridBoxes()) {
