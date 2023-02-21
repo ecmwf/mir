@@ -12,8 +12,10 @@
 
 #include "eckit/testing/Test.h"
 
+#include "mir/param/SimpleParametrisation.h"
 #include "mir/repres/gauss/reduced/ReducedFromPL.h"
 #include "mir/repres/gauss/regular/RegularGG.h"
+#include "mir/repres/latlon/ReducedLL.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Domain.h"
@@ -110,6 +112,45 @@ CASE("grid boxes: West-East periodicity") {
 
         for (const auto& box : r->gridBoxes()) {
             EXPECT(bbox.contains({box.north(), box.west(), box.south(), box.east()}));
+        }
+    }
+
+
+    {
+        const std::vector<long> pl{20, 20};
+
+        param::SimpleParametrisation param;
+        param.set("pl", pl);
+        param.set("Nj", pl.size());
+        param.set("north", 90.);
+        param.set("west", 0.);
+        param.set("south", 0.);
+        param.set("east", 360.);
+
+
+        SECTION("reduced lat/lon grid (periodic)") {
+            repres::RepresentationHandle r(new repres::latlon::ReducedLL(param));
+            ASSERT(r->domain().isPeriodicWestEast());
+
+            auto boxes = r->gridBoxes();
+            auto a     = boxes.front();
+            auto b     = boxes.back();
+            auto inc   = 360. / static_cast<double>(pl[0]);
+
+            EXPECT_EQUAL(Longitude(a.west()), Longitude(-inc / 2.));
+            EXPECT_EQUAL(Longitude(b.east()), Longitude(-inc / 2. + 360.));
+        }
+
+
+        SECTION("reduced lat/lon grid (non-periodic)") {
+            util::BoundingBox bbox{90., 0., 0., 180.};
+            param.set("east", bbox.east().value());
+
+            repres::RepresentationHandle r(new repres::latlon::ReducedLL(param));
+            ASSERT(!r->domain().isPeriodicWestEast());
+            for (const auto& box : r->gridBoxes()) {
+                EXPECT(bbox.contains({box.north(), box.west(), box.south(), box.east()}));
+            }
         }
     }
 }
