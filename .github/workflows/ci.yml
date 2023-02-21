@@ -17,11 +17,11 @@ on:
 
 jobs:
   # Calls a reusable CI workflow to build & test the current repository.
-  ci:
-    name: ci
-    uses: ./.github/workflows/reusable-ci.yml
+  downstream-ci:
+    name: downstream-ci
+    uses: ecmwf-actions/private-downstream-ci/.github/workflows/downstream-ci.yml@main
     with:
-      mir: ecmwf/mir@${{ github.sha }}
+      mir: ecmwf/mir@${{ github.event.pull_request.head.sha || github.sha }}
     secrets: inherit
 
   # ci-hpc:
