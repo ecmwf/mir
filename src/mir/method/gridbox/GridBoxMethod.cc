@@ -206,4 +206,9 @@ const char* GridBoxMethod::name() const {
 }
 
 
+int GridBoxMethod::version() const {
+    return 1;
+}
+
+
 }  // namespace mir::method::gridbox
