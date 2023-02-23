@@ -205,7 +205,7 @@ Packing* PackingFactory::build(const param::MIRParametrisation& param) {
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     std::string default_spectral = "complex";
-    std::string default_gridded  = "ccsds";
+    std::string default_gridded  = "simple";
     param.get("default-spectral-packing", default_spectral);
     param.get("default-gridded-packing", default_gridded);
 
