@@ -14,6 +14,10 @@
 
 #include <ostream>
 
+#include "eckit/types/FloatCompare.h"
+#include "eckit/types/Fraction.h"
+
+#include "mir/iterator/detail/RegularIterator.h"
 #include "mir/netcdf/Variable.h"
 #include "mir/util/Exceptions.h"
 
@@ -37,14 +41,9 @@ RegularLL::RegularLL(const Variable& variable, double north, double south, doubl
         jScansPositively_ = true;
     }
 
-    ASSERT(east_ > west_);
-    ASSERT(south_north_increments_ > 0);
-    ASSERT(west_east_increment_ > 0);
-
-    // TODO: use Fractions
-
-    nj_ = size_t((north_ - south_) / south_north_increments_ + 1);
-    ni_ = size_t((east_ - west_) / west_east_increment_ + 1);
+    using F = eckit::Fraction;
+    nj_     = iterator::detail::RegularIterator(F(south), F(north), F(south_north_increment), F(south)).n();
+    ni_     = iterator::detail::RegularIterator(F(west), F(east), F(west_east_increment), F(west)).n();
 }
 
 
@@ -157,7 +156,7 @@ static bool check_axis(const Variable& axis, double& first, double& last, double
     double d = v[1] - v[0];
 
     for (size_t i = 1; i < v.size(); ++i) {
-        if ((v[i] - v[i - 1]) != d) {
+        if (!eckit::types::is_approximately_equal(v[i] - v[i - 1], d, 1e-12)) {  // magic number
             return false;
         }
     }
