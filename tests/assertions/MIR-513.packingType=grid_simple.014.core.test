@@ -1,0 +1,7 @@
+# mars
+packingType=grid_simple.grib1
+# mir
+--packing=av
+# grib_get
+packingType=grid_simple
+edition=1
