@@ -1,0 +1,9 @@
+# mars
+packingType=spectral_complex,param=vo_d.grib1
+# mir
+--vod2uv --truncation=21 --packing=simple
+# grib_get
+packingType=spectral_simple
+edition=1
+numberOfDataPoints=506
+numberOfValues=506
