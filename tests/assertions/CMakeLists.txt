@@ -2,6 +2,11 @@ find_program(MARS_SCRIPT NAMES mars false)
 
 ecbuild_configure_file(mir-test.sh.in mir-test.sh @ONLY)
 
+file(CREATE_LINK
+    "${CMAKE_CURRENT_SOURCE_DIR}/GRIB-48R1.yaml"
+    "${CMAKE_CURRENT_BINARY_DIR}/GRIB-48R1.yaml"
+    COPY_ON_ERROR SYMBOLIC)
+
 if(MARS_SCRIPT)
     file(GLOB_RECURSE test_files LIST_DIRECTORIES false *.test)
 
