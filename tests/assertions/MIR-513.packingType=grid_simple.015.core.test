@@ -1,8 +1,9 @@
 # mars
 packingType=grid_simple.grib2
 # mir
---packing=ccsds
+$MIR_CONFIG_GRIB=GRIB-48R1.yaml
+--packing=simple
 # grib_get
-packingType=grid_ccsds
+packingType=grid_simple
 edition=2
 bitsPerValue=16

@@ -2,7 +2,7 @@
 packingType=spectral_complex.grib2
 # mir
 --grid=0.5/0.5
-# grib_get assertions
+# grib_get
 packingType=grid_simple
 edition=2
 bitsPerValue=16

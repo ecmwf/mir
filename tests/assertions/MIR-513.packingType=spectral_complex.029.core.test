@@ -1,8 +1,8 @@
 # mars
 packingType=spectral_complex,param=vo_d.grib2
 # mir
---vod2uv --intgrid=none --grid=1/1 --packing=ieee --accuracy=32
+--vod2uv --intgrid=none --grid=1/1
 # grib_get
-packingType=grid_ieee
+packingType=grid_simple
 edition=2
-precision=1
+bitsPerValue=16
