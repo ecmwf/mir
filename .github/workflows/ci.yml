@@ -24,10 +24,9 @@ jobs:
       mir: ecmwf/mir@${{ github.event.pull_request.head.sha || github.sha }}
     secrets: inherit
 
-  # ci-hpc:
-  #   name: ci-hpc
-  #   if: github.event_name == "pull_request"
-  #   uses: ./.github/workflows/reusable-ci-hpc.yml
-  #   with:
-  #     mir: ecmwf/mir@${{ github.event.pull_request.head.sha }}
-  #   secrets: inherit
+  downstream-ci-hpc:
+    name: downstream-ci-hpc
+    uses: ecmwf-actions/private-downstream-ci/.github/workflows/downstream-ci-hpc.yml@main
+    with:
+      mir: ecmwf/mir@${{ github.event.pull_request.head.sha || github.sha }}
+    secrets: inherit
