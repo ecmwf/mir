@@ -1,8 +1,8 @@
 # mars
-packingType=spectral_complex.grib1
+packingType=spectral_complex,param=vo_d.grib1
 # mir
 $MIR_CONFIG_GRIB=GRIB-48R1.yaml
---grid=1/1 --intgrid=none --packing=complex
+--vod2uv --intgrid=none --grid=1/1 --packing=complex
 # grib_get
 packingType=grid_complex
 edition=2

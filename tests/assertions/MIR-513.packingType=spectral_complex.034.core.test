@@ -1,5 +1,5 @@
 # mars
-packingType=spectral_complex.grib1
+packingType=spectral_complex.grib2
 # mir
 $MIR_CONFIG_GRIB=GRIB-48R1.yaml
 --grid=1/1 --intgrid=none --packing=complex
