@@ -1,0 +1,7 @@
+# mars
+packingType=spectral_complex.grib2
+# mir
+--grid=1/1 --intgrid=none --edition=1
+# grib_get
+packingType=grid_simple
+edition=1
