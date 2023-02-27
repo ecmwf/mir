@@ -1,7 +1,7 @@
 # mars
 packingType=spectral_complex,param=vo_d.grib2
 # mir
-$MIR_CONFIG_GRIB=GRIB-48R1.yaml
+$MIR_CONFIG_CLASSES=classes-48R1.yaml
 --vod2uv --intgrid=none --grid=1/1 --packing=ccsds
 # grib_get
 packingType=grid_ccsds

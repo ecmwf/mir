@@ -5,7 +5,7 @@ _default:
     compare: scalar
     default-spectral-packing: complex
     default-grib1-gridded-packing: simple
-    default-grib2-gridded-packing: simple
+    default-grib2-gridded-packing: ccsds
 
 # amount of mass per unit volume (typical units: [kg m**-3])
 density.mass: {}

@@ -204,10 +204,13 @@ Packing* PackingFactory::build(const param::MIRParametrisation& param) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
+    long edition = 2;
+    param.get("edition", edition);
+
     std::string default_spectral = "complex";
-    std::string default_gridded  = "simple";
+    std::string default_gridded  = "ccsds";
     param.get("default-spectral-packing", default_spectral);
-    param.get("default-gridded-packing", default_gridded);
+    param.get(edition <= 1 ? "default-grib1-gridded-packing" : "default-grib2-gridded-packing", default_gridded);
 
     const auto& user  = param.userParametrisation();
     const auto& field = param.fieldParametrisation();

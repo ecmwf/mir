@@ -1,7 +1,7 @@
 # mars
 packingType=grid_simple.grib1
 # mir
-$MIR_CONFIG_GRIB=GRIB-48R1.yaml
+$MIR_CONFIG_CLASSES=classes-48R1.yaml
 --packing=ccsds
 # grib_get
 packingType=grid_ccsds

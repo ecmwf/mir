@@ -1,7 +1,7 @@
 # mars
 param=t,level=1000,resol=20
 # mir
---grid=9/9 --default-gridded-packing=ccsds
+--grid=9/9 --default-grib1-gridded-packing=ccsds
 # grib_get
 packingType=grid_ccsds
 edition=2

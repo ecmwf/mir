@@ -331,7 +331,9 @@ struct MIR : MIRTool {
         options_.push_back(new SimpleOption<std::string>("input", "Input options YAML (lat, lon, etc.)"));
         options_.push_back(new SimpleOption<std::string>("output", "Output options YAML"));
         options_.push_back(new SimpleOption<std::string>(
-            "default-gridded-packing", "On gridded/spectral conversions set the default gridded packing"));
+            "default-grib1-gridded-packing", "On gridded/spectral conversions set the default GRIB1 gridded packing"));
+        options_.push_back(new SimpleOption<std::string>(
+            "default-grib2-gridded-packing", "On gridded/spectral conversions set the default GRIB2 gridded packing"));
         options_.push_back(new SimpleOption<std::string>(
             "default-spectral-packing", "On gridded/spectral conversions set the default spectral packing"));
         options_.push_back(new FactoryOption<action::Executor>("executor", "Select whether threads are used or not"));
