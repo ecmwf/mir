@@ -85,6 +85,7 @@ private:
     void print(std::ostream&) const override;
     bool validateMatrixWeights() const override;
     const char* name() const override;
+    int version() const override;
 
     // -- Class members
     // None
