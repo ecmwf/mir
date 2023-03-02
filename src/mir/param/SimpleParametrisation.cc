@@ -371,8 +371,8 @@ void TSettings<std::string>::get(const std::string& /*name*/, std::string& value
 template <>
 void TSettings<std::string>::get(const std::string& name, bool& value) const {
     conversion_warning("string", "bool", name, value_);
-    eckit::Translator<std::string, long> translate;
-    value = translate(value_) != 0;
+    eckit::Translator<std::string, bool> translate;
+    value = translate(value_);
 }
 
 
