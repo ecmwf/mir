@@ -112,20 +112,6 @@ bool Packing::empty() const {
 }
 
 
-void Packing::requireEdition(const param::MIRParametrisation& param, long edition) {
-    // Define edition if not specified
-    if (defineEdition_) {
-        ASSERT(edition_ == edition);
-        return;
-    }
-
-    if (!param.fieldParametrisation().get("edition", edition_) || edition_ != edition) {
-        edition_       = edition;
-        defineEdition_ = true;
-    }
-}
-
-
 void Packing::fill(grib_info& info, long pack) const {
     info.packing.packing  = CODES_UTIL_PACKING_SAME_AS_INPUT;
     info.packing.accuracy = CODES_UTIL_ACCURACY_SAME_BITS_PER_VALUES_AS_INPUT;

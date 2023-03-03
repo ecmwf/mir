@@ -12,6 +12,9 @@
 
 #include "mir/key/packing/CCSDS.h"
 
+#include "eckit/config/Resource.h"
+
+#include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
@@ -29,7 +32,24 @@ CCSDS::CCSDS(const std::string& name, const param::MIRParametrisation& param) : 
         Log::error() << msg << std::endl;
         throw exception::UserError(msg);
     }
-    requireEdition(param, 2);
+
+    long required = 2;
+    long edition  = 0;
+    if (param.get("edition", edition) && edition != required) {
+        static const bool grib_edition_conversion_default =
+            eckit::Resource<bool>("$MIR_GRIB_EDITION_CONVERSION;mirGribEditionConversion", false);
+        bool grib_edition_conversion = grib_edition_conversion_default;
+        param.get("grib-edition-conversion", grib_edition_conversion);
+
+        if (!grib_edition_conversion) {
+            throw exception::UserError("Packing: edition conversion is required, but disabled");
+        }
+    }
+
+    if (edition != required){
+        edition_       = required;
+        defineEdition_ = true;
+    }
 }
 
 

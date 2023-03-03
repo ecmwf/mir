@@ -93,7 +93,6 @@ protected:
     // -- Methods
 
     bool gridded() const { return gridded_; }
-    void requireEdition(const param::MIRParametrisation&, long);
 
     void fill(grib_info&, long) const;
     void set(grib_handle*, const std::string&) const;
