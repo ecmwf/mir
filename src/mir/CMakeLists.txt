@@ -281,8 +281,6 @@ list(APPEND mir_srcs
     key/packing/Complex.h
     key/packing/IEEE.cc
     key/packing/IEEE.h
-    key/packing/JPEG2000.cc
-    key/packing/JPEG2000.h
     key/packing/Packing.cc
     key/packing/Packing.h
     key/packing/SecondOrder.cc
