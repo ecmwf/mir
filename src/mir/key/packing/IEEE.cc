@@ -48,10 +48,6 @@ IEEE::IEEE(const std::string& name, const param::MIRParametrisation& param) : Pa
         Log::error() << msg << std::endl;
         throw exception::UserError(msg);
     }
-
-    if (gridded()) {
-        requireEdition(param, 2);
-    }
 }
 
 
