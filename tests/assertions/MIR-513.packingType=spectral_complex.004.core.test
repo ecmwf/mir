@@ -4,5 +4,5 @@ packingType=spectral_complex.grib1
 --grid=1/1 --intgrid=none --packing=ieee
 # grib_get
 packingType=grid_ieee
-edition=2
+edition=1
 precision=1

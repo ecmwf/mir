@@ -1,9 +1,0 @@
-# mars
-packingType=spectral_complex,param=vo_d.grib1
-# mir
-$MIR_CONFIG_CLASSES=classes-48R1.yaml
---vod2uv --intgrid=none --grid=1/1 --packing=complex
-# grib_get
-packingType=grid_complex
-edition=2
-bitsPerValue=16
