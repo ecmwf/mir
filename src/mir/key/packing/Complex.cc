@@ -18,23 +18,21 @@
 namespace mir::key::packing {
 
 
-static const PackingBuilder<Complex> __packing("complex", "co", true, true);
+static const PackingBuilder<Complex> __packing("complex", "co", true, false);
 
 
 Complex::Complex(const std::string& name, const param::MIRParametrisation& param) : Packing(name, param) {
-    if (gridded()) {
-        requireEdition(param, 2);
-    }
+    ASSERT(!gridded());
 }
 
 
 void Complex::fill(const repres::Representation* /*unused*/, grib_info& info) const {
-    Packing::fill(info, gridded() ? CODES_UTIL_PACKING_TYPE_GRID_COMPLEX : CODES_UTIL_PACKING_TYPE_SPECTRAL_COMPLEX);
+    Packing::fill(info, CODES_UTIL_PACKING_TYPE_SPECTRAL_COMPLEX);
 }
 
 
 void Complex::set(const repres::Representation* /*unused*/, grib_handle* handle) const {
-    Packing::set(handle, gridded() ? "grid_complex" : "spectral_complex");
+    Packing::set(handle, "spectral_complex");
 }
 
 
