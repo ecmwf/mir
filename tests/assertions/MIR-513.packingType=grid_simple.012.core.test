@@ -4,5 +4,5 @@ packingType=grid_simple.grib1
 --packing=ieee
 # grib_get
 packingType=grid_ieee
-edition=2
+edition=1
 precision=1

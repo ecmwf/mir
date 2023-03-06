@@ -1,8 +1,0 @@
-# mars
-packingType=spectral_complex.grib2
-# mir
---grid=1/1 --intgrid=none --packing=complex
-# grib_get
-packingType=grid_complex
-edition=2
-bitsPerValue=16
