@@ -31,7 +31,6 @@
 #include "mir/key/Area.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/intgrid/Intgrid.h"
-#include "mir/key/packing/Packing.h"
 #include "mir/key/style/MIRStyle.h"
 #include "mir/key/truncation/Truncation.h"
 #include "mir/lsm/LSMSelection.h"
@@ -302,7 +301,7 @@ struct MIR : MIRTool {
         //==============================================
         options_.push_back(new Separator("GRIB Output"));
         options_.push_back(new SimpleOption<size_t>("accuracy", "Number of bits per value"));
-        options_.push_back(new FactoryOption<key::packing::PackingFactory>("packing", "GRIB packing method"));
+        options_.push_back(new FactoryOption<util::grib::Packing>("packing", "GRIB packing method"));
         options_.push_back(new SimpleOption<size_t>("edition", "GRIB edition number"));
         options_.push_back(
             new SimpleOption<bool>("grib-edition-conversion", "GRIB edition conversion on packing changes"));

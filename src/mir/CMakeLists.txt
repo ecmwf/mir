@@ -273,8 +273,6 @@ list(APPEND mir_srcs
     key/intgrid/None.h
     key/intgrid/Source.cc
     key/intgrid/Source.h
-    key/packing/Packing.cc
-    key/packing/Packing.h
     key/resol/Resol.cc
     key/resol/Resol.h
     key/style/CustomParametrisation.cc
