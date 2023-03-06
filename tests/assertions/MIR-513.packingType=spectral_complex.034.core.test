@@ -1,9 +1,0 @@
-# mars
-packingType=spectral_complex.grib2
-# mir
-$MIR_CONFIG_CLASSES=classes-48R1.yaml
---grid=1/1 --intgrid=none --packing=complex
-# grib_get
-packingType=grid_complex
-edition=2
-bitsPerValue=16

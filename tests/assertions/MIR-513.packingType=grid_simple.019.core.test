@@ -2,7 +2,7 @@
 packingType=grid_simple.grib1
 # mir
 $MIR_CONFIG_CLASSES=classes-48R1.yaml
---packing=ccsds
+--packing=ccsds --grib-edition-conversion=true
 # grib_get
 packingType=grid_ccsds
 edition=2

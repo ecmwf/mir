@@ -273,22 +273,6 @@ list(APPEND mir_srcs
     key/intgrid/None.h
     key/intgrid/Source.cc
     key/intgrid/Source.h
-    key/packing/ArchivedValue.cc
-    key/packing/ArchivedValue.h
-    key/packing/CCSDS.cc
-    key/packing/CCSDS.h
-    key/packing/Complex.cc
-    key/packing/Complex.h
-    key/packing/IEEE.cc
-    key/packing/IEEE.h
-    key/packing/JPEG2000.cc
-    key/packing/JPEG2000.h
-    key/packing/Packing.cc
-    key/packing/Packing.h
-    key/packing/SecondOrder.cc
-    key/packing/SecondOrder.h
-    key/packing/Simple.cc
-    key/packing/Simple.h
     key/resol/Resol.cc
     key/resol/Resol.h
     key/style/CustomParametrisation.cc
