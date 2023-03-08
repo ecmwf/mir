@@ -1,7 +1,7 @@
 # mars
 packingType=spectral_simple.grib1
 # mir
---grid=1/1 --intgrid=none --packing=ccsds
+--grid=1/1 --intgrid=none --packing=ccsds --grib-edition-conversion=true
 # grib_get
 packingType=grid_ccsds
 edition=2
