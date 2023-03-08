@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/input/GribFixes.h"
+#include "mir/grib/Config.h"
 
 #include <algorithm>
 #include <string>
@@ -21,7 +21,6 @@
 #include "eckit/utils/StringTools.h"
 #include "eckit/utils/Translator.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -29,15 +28,15 @@
 #include "mir/util/ValueMap.h"
 
 
-namespace mir::input {
+namespace mir::grib {
 
 
-GribFixes::GribFixes() {
-    readConfigurationFiles();
+Config::Config(const eckit::PathName& path) {
+    readConfigurationFiles(path);
 }
 
 
-GribFixes::~GribFixes() {
+Config::~Config() {
     for (auto& rule : fixes_) {
         delete rule.first;
         delete rule.second;
@@ -45,7 +44,7 @@ GribFixes::~GribFixes() {
 }
 
 
-const param::SimpleParametrisation& GribFixes::find(const param::MIRParametrisation& param) const {
+const param::SimpleParametrisation& Config::find(const param::MIRParametrisation& param) const {
     static util::recursive_mutex mtx;
     util::lock_guard<util::recursive_mutex> lock(mtx);
 
@@ -63,17 +62,15 @@ const param::SimpleParametrisation& GribFixes::find(const param::MIRParametrisat
     }
 
     if (fixes->size() > 0) {
-        Log::warning() << "GribFixes: " << *fixes << std::endl;
+        Log::warning() << "Config: " << *fixes << std::endl;
     }
 
     return *fixes;
 }
 
 
-void GribFixes::print(std::ostream& s) const {
-    s << "GribFixes";
+void Config::print(std::ostream& s) const {
     eckit::JSON json(s);
-
     json.startObject();
     for (const auto& fix : fixes_) {
         json << *(fix.first) << *(fix.second);
@@ -82,13 +79,12 @@ void GribFixes::print(std::ostream& s) const {
 }
 
 
-void GribFixes::readConfigurationFiles() {
+void Config::readConfigurationFiles(const eckit::PathName& path) {
     static util::recursive_mutex mtx;
     util::lock_guard<util::recursive_mutex> lock(mtx);
 
     ASSERT(fixes_.empty());
 
-    const eckit::PathName path = LibMir::configFile(LibMir::config_file::GRIB);
     if (!path.exists()) {
         return;
     }
@@ -157,4 +153,4 @@ void GribFixes::readConfigurationFiles() {
 }
 
 
-}  // namespace mir::input
+}  // namespace mir::grib

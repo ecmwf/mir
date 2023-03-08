@@ -38,7 +38,8 @@ public:
     {
         AREA = 0,
         CLASSES,
-        GRIB,
+        GRIB_INPUT,
+        GRIB_OUTPUT,
         GRIDS,
         NETCDF,
         PARAMETER_CLASS,
