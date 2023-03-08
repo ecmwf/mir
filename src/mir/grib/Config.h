@@ -39,7 +39,10 @@ public:
 
     // -- Constructors
 
-    Config(const eckit::PathName&);
+    explicit Config(const eckit::PathName&);
+
+    Config(const Config&) = delete;
+    Config(Config&&)      = delete;
 
     // -- Destructor
 
@@ -49,7 +52,9 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const Config&) = delete;
+    void operator=(Config&&)      = delete;
 
     // -- Methods
 

@@ -1,7 +1,7 @@
 # mars
 packingType=spectral_complex.grib1
 # mir
-$MIR_CONFIG_CLASSES=classes-48R1.yaml
+$MIR_CONFIG_GRIB_OUTPUT=grib-output-ii.yaml
 --grid=1/1 --intgrid=none
 # grib_get
 packingType=grid_simple
