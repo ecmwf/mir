@@ -3,15 +3,15 @@
 edition=0:
 - grib-default-spectral-packing: complex
 - grib-default-gridded-packing: simple
-- grib-edition-conversion: true
+- grib-edition-conversion: false
 
 edition=1:
 - grib-default-spectral-packing: complex
 - grib-default-gridded-packing: simple
-- grib-edition-conversion: true
+- grib-edition-conversion: false
 
 edition=2:
 - grib-default-spectral-packing: complex
 - grib-default-gridded-packing: simple
-- grib-edition-conversion: true
+- grib-edition-conversion: false
 
