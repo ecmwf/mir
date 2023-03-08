@@ -78,7 +78,7 @@ public:
     // Used by Job
     bool matchAll(const MIRParametrisation&) const;
 
-    // Used by GribFixes
+    // Used by grib::Config
     bool matchAny(const MIRParametrisation&) const;
 
     // -- Overridden methods

@@ -47,7 +47,8 @@ eckit::PathName LibMir::configFile(config_file c) {
     static const eckit::PathName files[]{
         {r("mir-config-area;$MIR_CONFIG_AREA", "~mir/etc/mir/area.yaml")},
         {r("mir-config-classes;$MIR_CONFIG_CLASSES", "~mir/etc/mir/classes.yaml")},
-        {r("mir-config-grib;$MIR_CONFIG_GRIB", "~mir/etc/mir/GRIB.yaml")},
+        {r("mir-config-grib-input;$MIR_CONFIG_GRIB_INPUT", "~mir/etc/mir/grib-input.yaml")},
+        {r("mir-config-grib-output;$MIR_CONFIG_GRIB_OUTPUT", "~mir/etc/mir/grib-output.yaml")},
         {r("mir-config-grids;$MIR_CONFIG_GRIDS", "~mir/etc/mir/grids.yaml")},
         {r("mir-config-netcdf;$MIR_CONFIG_NETCDF", "~mir/etc/mir/netcdf.yaml")},
         {r("mir-config-parameter-class;$MIR_CONFIG_PARAMETER_CLASS", "~mir/etc/mir/parameter-class.yaml")},

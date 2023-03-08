@@ -6,6 +6,7 @@ foreach(tool IN ITEMS
     mir-compare  # NOTE: set in the testing scripts, however not used
     mir-compute
     mir-config
+    mir-config-grib
     mir-count
     mir-formula
     mir-gaussian-fractions

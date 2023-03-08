@@ -17,16 +17,19 @@
 #include <vector>
 
 
+namespace eckit {
+class PathName;
+}
 namespace mir::param {
 class MIRParametrisation;
 class SimpleParametrisation;
 }  // namespace mir::param
 
 
-namespace mir::input {
+namespace mir::grib {
 
 
-class GribFixes {
+class Config {
 public:
     // -- Types
     // None
@@ -36,17 +39,22 @@ public:
 
     // -- Constructors
 
-    GribFixes();
+    explicit Config(const eckit::PathName&);
+
+    Config(const Config&) = delete;
+    Config(Config&&)      = delete;
 
     // -- Destructor
 
-    ~GribFixes();
+    ~Config();
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const Config&) = delete;
+    void operator=(Config&&)      = delete;
 
     // -- Methods
 
@@ -88,7 +96,7 @@ private:
 
     // -- Methods
 
-    void readConfigurationFiles();
+    void readConfigurationFiles(const eckit::PathName&);
     void print(std::ostream&) const;
 
     // -- Overridden methods
@@ -102,11 +110,11 @@ private:
 
     // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s, const GribFixes& p) {
+    friend std::ostream& operator<<(std::ostream& s, const Config& p) {
         p.print(s);
         return s;
     }
 };
 
 
-}  // namespace mir::input
+}  // namespace mir::grib

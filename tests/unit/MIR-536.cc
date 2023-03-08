@@ -15,8 +15,10 @@
 #include "eckit/testing/Test.h"
 
 #include "mir/action/io/Save.h"
-#include "mir/output/GribFileOutput.h"
+#include "mir/grib/Packing.h"
+#include "mir/output/GribMemoryOutput.h"
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 
 
@@ -24,10 +26,12 @@ namespace mir::tests::unit {
 
 
 CASE("MIR-536") {
-    std::unique_ptr<output::MIROutput> out(new output::GribFileOutput(""));
+    std::unique_ptr<output::MIROutput> out(new output::GribMemoryOutput(nullptr, 0));
 
     struct Param : param::SimpleParametrisation {
-        Param() { field_.set("edition", 0L).set("accuracy", 0L).set("packing", "not_simple"); }
+        explicit Param(long edition = 0) {
+            field_.set("edition", edition).set("accuracy", 0L).set("packing", "not_simple").set("gridded", true);
+        }
         const MIRParametrisation& userParametrisation() const override { return *this; }
         const MIRParametrisation& fieldParametrisation() const override { return field_; }
 
@@ -65,6 +69,20 @@ CASE("MIR-536") {
                 }
             }
         }
+    }
+
+
+    SECTION("Control grib-edition-conversion") {
+        std::unique_ptr<grib::Packing> ptr;
+
+        Param param(1L);
+        param.set("packing", "ccsds");  // edition=2 only
+
+        param.set("grib-edition-conversion", false);
+        EXPECT_THROWS_AS(ptr.reset(grib::Packing::build(param)), exception::UserError);
+
+        param.set("grib-edition-conversion", true);
+        EXPECT_NO_THROW(ptr.reset(grib::Packing::build(param)));
     }
 }
 
