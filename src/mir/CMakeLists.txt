@@ -193,6 +193,10 @@ list(APPEND mir_srcs
     data/space/SpaceLinear.h
     data/space/SpaceLogarithmic.cc
     data/space/SpaceLogarithmic.h
+    grib/BasicAngle.cc
+    grib/BasicAngle.h
+    grib/Packing.cc
+    grib/Packing.h
     grib/Config.cc
     grib/Config.h
     input/ArtificialInput.cc

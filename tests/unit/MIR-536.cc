@@ -15,10 +15,10 @@
 #include "eckit/testing/Test.h"
 
 #include "mir/action/io/Save.h"
+#include "mir/grib/Packing.h"
 #include "mir/output/GribMemoryOutput.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Exceptions.h"
-#include "mir/util/Grib.h"
 #include "mir/util/Log.h"
 
 
@@ -71,16 +71,16 @@ CASE("MIR-536") {
 
 
     SECTION("Control grib-edition-conversion") {
-        std::unique_ptr<util::grib::Packing> ptr;
+        std::unique_ptr<grib::Packing> ptr;
 
         Param param;
         param.set("packing", "ccsds");  // edition=2 only
 
         param.set("grib-edition-conversion", false);
-        EXPECT_THROWS_AS(ptr.reset(util::grib::Packing::build(param)), exception::UserError);
+        EXPECT_THROWS_AS(ptr.reset(grib::Packing::build(param)), exception::UserError);
 
         param.set("grib-edition-conversion", true);
-        EXPECT_NO_THROW(ptr.reset(util::grib::Packing::build(param)));
+        EXPECT_NO_THROW(ptr.reset(grib::Packing::build(param)));
     }
 }
 

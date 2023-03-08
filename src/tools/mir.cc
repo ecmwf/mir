@@ -27,6 +27,8 @@
 #include "mir/api/MIRJob.h"
 #include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/data/Space.h"
+#include "mir/grib/BasicAngle.h"
+#include "mir/grib/Packing.h"
 #include "mir/input/MIRInput.h"
 #include "mir/key/Area.h"
 #include "mir/key/grid/GridPattern.h"
@@ -48,7 +50,6 @@
 #include "mir/stats/Statistics.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Exceptions.h"
-#include "mir/util/Grib.h"
 #include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/SpectralOrder.h"
@@ -301,7 +302,7 @@ struct MIR : MIRTool {
         //==============================================
         options_.push_back(new Separator("GRIB Output"));
         options_.push_back(new SimpleOption<size_t>("accuracy", "Number of bits per value"));
-        options_.push_back(new FactoryOption<util::grib::Packing>("packing", "GRIB packing method"));
+        options_.push_back(new FactoryOption<grib::Packing>("packing", "GRIB packing method"));
         options_.push_back(new SimpleOption<size_t>("edition", "GRIB edition number"));
         options_.push_back(
             new SimpleOption<bool>("grib-edition-conversion", "GRIB edition conversion on packing changes"));
@@ -312,7 +313,7 @@ struct MIR : MIRTool {
         options_.push_back(new SimpleOption<std::string>(
             "default-grib2-gridded-packing", "On gridded/spectral conversions set the default GRIB2 gridded packing"));
 
-        options_.push_back(new FactoryOption<util::grib::BasicAngle>(
+        options_.push_back(new FactoryOption<grib::BasicAngle>(
             "basic-angle", "GRIB basic angle and subdivisions (bounding box and grid increments, default false)"));
         options_.push_back(
             new SimpleOption<std::string>("metadata", "GRIB extra metadata key/integer pairs (a=b,c=d,..)"));
