@@ -15,7 +15,7 @@
 #include <memory>
 #include <ostream>
 
-#include "eckit/config/Resource.h"
+#include "eckit/filesystem/PathName.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/grib/Config.h"
@@ -310,16 +310,13 @@ Packing* Packing::build(const param::MIRParametrisation& param) {
     long edition = 2;
     param.get("edition", edition);
 
-    static const bool default_edition_conversion =
-        eckit::Resource<bool>("$MIR_GRIB_EDITION_CONVERSION;mirGribEditionConversion", false);
-
     static const grib::Config config(LibMir::configFile(LibMir::config_file::GRIB_OUTPUT));
     std::unique_ptr<param::MIRParametrisation> grib_config(
         new param::CombinedParametrisation(user, field, config.find(param)));
 
     std::string default_spectral = "complex";
     std::string default_gridded  = "ccsds";
-    bool edition_conversion      = default_edition_conversion;
+    bool edition_conversion      = false;
     grib_config->get("grib-default-spectral-packing", default_spectral);
     grib_config->get("grib-default-gridded-packing", default_gridded);
     grib_config->get("grib-edition-conversion", edition_conversion);
