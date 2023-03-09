@@ -1,6 +1,6 @@
 # MARS request
 stream=wave,param=swh,special
 # mir (do nothing)
---truncation=none
+--intgrid=none
 # grib_get assertions
 missingValuesPresent = 1

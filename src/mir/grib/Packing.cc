@@ -314,15 +314,11 @@ Packing* Packing::build(const param::MIRParametrisation& param) {
     std::unique_ptr<param::MIRParametrisation> grib_config(
         new param::CombinedParametrisation(user, field, config.find(param)));
 
-    std::string default_spectral = "complex";
-    std::string default_gridded  = "ccsds";
-    bool edition_conversion      = false;
-    grib_config->get("grib-default-spectral-packing", default_spectral);
-    grib_config->get("grib-default-gridded-packing", default_gridded);
-    grib_config->get("grib-edition-conversion", edition_conversion);
-
 
     // Check edition conversion
+    bool edition_conversion      = false;
+    grib_config->get("grib-edition-conversion", edition_conversion);
+
     if (!edition_conversion && !user.has("edition")) {
         long field_edition = 0;
         field.get("edition", field_edition);
@@ -330,17 +326,27 @@ Packing* Packing::build(const param::MIRParametrisation& param) {
     }
 
 
-    // Converting spectral to gridded
-    auto packing = (user.has("grid") && field.has("spectral")) ? default_gridded : "av";
+    // Packing
+    std::string packing_spectral = "complex";
+    std::string packing_gridded  = "ccsds";
+    bool packing_always_set      = false;
+    grib_config->get("grib-packing-gridded", packing_gridded);
+    grib_config->get("grib-packing-spectral", packing_spectral);
+    grib_config->get("grib-packing-always-set", packing_always_set);
+
+    ASSERT(field.has("spectral") != field.has("gridded"));
+    auto gridded = user.has("grid") || (field.has("gridded") && !user.has("truncation"));
+    auto packing = packing_always_set                               ? (gridded ? packing_gridded : packing_spectral)
+                   : field.has("spectral") && user.has("grid")      ? packing_gridded
+                   : field.has("gridded") && user.has("truncation") ? packing_spectral
+                                                                    : "av";
     user.get("packing", packing);
 
 
     // Aliasing
-    auto av      = packing == "av" || packing == "archived-value";
-    auto gridded = user.has("grid") || field.has("gridded");
-
+    auto av = packing == "av" || packing == "archived-value";
     if (av) {
-        packing = field.has("spectral") ? default_spectral : default_gridded;
+        packing = field.has("spectral") ? packing_spectral : packing_gridded;
         field.get("packing", packing);
     }
     else if (packing == "co") {

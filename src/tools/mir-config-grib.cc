@@ -39,13 +39,15 @@ struct MIRConfigGrib : MIRTool {
         options_.push_back(new SimpleOption<size_t>("accuracy", "Number of bits per value"));
         options_.push_back(new FactoryOption<grib::Packing>("packing", "GRIB packing method"));
         options_.push_back(new SimpleOption<size_t>("edition", "GRIB edition number"));
+
+        options_.push_back(new SimpleOption<std::string>(
+            "grib-packing-gridded", "GRIB default gridded packing, on gridded/spectral conversions"));
+        options_.push_back(new SimpleOption<std::string>(
+            "grib-packing-spectral", "GRIB default spectral packing, on gridded/spectral conversions"));
+        options_.push_back(
+            new SimpleOption<bool>("grib-packing-always-set", "GRIB packing setting to default, unless overriden"));
         options_.push_back(
             new SimpleOption<bool>("grib-edition-conversion", "GRIB edition conversion on packing changes"));
-        options_.push_back(new SimpleOption<std::string>(
-            "grib-default-gridded-packing", "GRIB default gridded packing, on gridded/spectral conversions"));
-        options_.push_back(new SimpleOption<std::string>(
-            "grib-default-spectral-packing", "GRIB default spectral packing, on gridded/spectral conversions"));
-        options_.push_back(new SimpleOption<bool>("delete-local-definition", "Remove GRIB local extension"));
     }
 
     int minimumPositionalArguments() const override { return 1; }
