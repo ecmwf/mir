@@ -39,22 +39,24 @@ struct MIRConfigGrib : MIRTool {
         options_.push_back(new SimpleOption<size_t>("accuracy", "Number of bits per value"));
         options_.push_back(new FactoryOption<grib::Packing>("packing", "GRIB packing method"));
         options_.push_back(new SimpleOption<size_t>("edition", "GRIB edition number"));
+
+        options_.push_back(new SimpleOption<std::string>(
+            "grib-packing-gridded", "GRIB default gridded packing, on gridded/spectral conversions"));
+        options_.push_back(new SimpleOption<std::string>(
+            "grib-packing-spectral", "GRIB default spectral packing, on gridded/spectral conversions"));
+        options_.push_back(
+            new SimpleOption<bool>("grib-packing-always-set", "GRIB packing setting to default, unless overriden"));
         options_.push_back(
             new SimpleOption<bool>("grib-edition-conversion", "GRIB edition conversion on packing changes"));
-        options_.push_back(new SimpleOption<std::string>(
-            "grib-default-gridded-packing", "GRIB default gridded packing, on gridded/spectral conversions"));
-        options_.push_back(new SimpleOption<std::string>(
-            "grib-default-spectral-packing", "GRIB default spectral packing, on gridded/spectral conversions"));
-        options_.push_back(new SimpleOption<bool>("delete-local-definition", "Remove GRIB local extension"));
     }
 
     int minimumPositionalArguments() const override { return 1; }
 
     void usage(const std::string& tool) const override {
-        Log::info() << "\nDisplay GRIB-repated configuration."
+        Log::info() << "\nDisplay GRIB-related configuration."
                        "\n"
                        "\nUsage: "
-                    << tool << " [--N=ordinal]" << std::endl;
+                    << tool << " [file1 [file2 [...]]]" << std::endl;
     }
 
     void execute(const eckit::option::CmdArgs& /*args*/) override;
@@ -72,7 +74,7 @@ void MIRConfigGrib::execute(const eckit::option::CmdArgs& args) {
     static const param::DefaultParametrisation defaults;
     const param::ConfigurationWrapper args_wrap(args);
 
-    static const grib::Config config(LibMir::configFile(LibMir::config_file::GRIB_OUTPUT));
+    static const grib::Config config(LibMir::configFile(LibMir::config_file::GRIB_OUTPUT), false);
 
     for (const auto& arg : args) {
         Log::info() << arg << std::endl;
@@ -81,13 +83,7 @@ void MIRConfigGrib::execute(const eckit::option::CmdArgs& args) {
         while (input->next()) {
             std::unique_ptr<param::MIRParametrisation> param(
                 new param::CombinedParametrisation(args_wrap, input->parametrisation(), defaults));
-            const auto& defs = config.find(*param);
-
-            Log::info() << "grib-edition-conversion=" << get(defs, "grib-edition-conversion", false) << std::endl;
-            Log::info() << "grib-default-gridded-packing="
-                        << get<std::string>(defs, "grib-default-gridded-packing", "?") << std::endl;
-            Log::info() << "grib-default-spectral-packing="
-                        << get<std::string>(defs, "grib-default-spectral-packing", "?") << std::endl;
+            config.find(*param);
         }
     }
 }

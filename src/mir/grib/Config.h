@@ -39,7 +39,7 @@ public:
 
     // -- Constructors
 
-    explicit Config(const eckit::PathName&);
+    Config(const eckit::PathName&, bool silent);
 
     Config(const Config&) = delete;
     Config(Config&&)      = delete;
@@ -93,6 +93,7 @@ private:
     // -- Members
 
     std::vector<fix_t> fixes_;
+    bool silent_;
 
     // -- Methods
 

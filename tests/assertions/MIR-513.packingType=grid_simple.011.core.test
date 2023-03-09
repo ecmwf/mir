@@ -1,7 +1,7 @@
 # mars
 packingType=grid_simple.grib1
 # mir
---packing=ccsds
+--packing=ccsds --grib-edition-conversion=true
 # grib_get
 packingType=grid_ccsds
 edition=2
