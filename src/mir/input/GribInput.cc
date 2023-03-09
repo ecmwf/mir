@@ -1104,7 +1104,7 @@ bool GribInput::handle(grib_handle* h) {
         GRIB_CALL(codes_get_long(h, "7777", &value));
 
         // apply user-defined fixes, if any
-        static const grib::Config config(LibMir::configFile(LibMir::config_file::GRIB_INPUT));
+        static const grib::Config config(LibMir::configFile(LibMir::config_file::GRIB_INPUT), false);
         config.find(parametrisation(0)).copyValuesTo(cache_.cache_);
 
         return true;
