@@ -316,7 +316,7 @@ Packing* Packing::build(const param::MIRParametrisation& param) {
 
 
     // Check edition conversion
-    bool edition_conversion      = false;
+    bool edition_conversion = false;
     grib_config->get("grib-edition-conversion", edition_conversion);
 
     if (!edition_conversion && !user.has("edition")) {

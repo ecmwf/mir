@@ -1,17 +1,17 @@
 ---
 
 edition=0:
-- grib-default-spectral-packing: complex
-- grib-default-gridded-packing: simple
-- grib-edition-conversion: true
+- grib-packing-gridded: ccsds
+- grib-packing-spectral: complex
+- grib-packing-always-set: true
 
 edition=1:
-- grib-default-spectral-packing: complex
-- grib-default-gridded-packing: simple
-- grib-edition-conversion: false
+- grib-packing-gridded: simple
+- grib-packing-spectral: complex
+- grib-packing-always-set: true
 
 edition=2:
-- grib-default-spectral-packing: complex
-- grib-default-gridded-packing: ccsds
-- grib-edition-conversion: false
+- grib-packing-gridded: ccsds
+- grib-packing-spectral: complex
+- grib-packing-always-set: true
 
