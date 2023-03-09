@@ -31,7 +31,7 @@
 namespace mir::grib {
 
 
-Config::Config(const eckit::PathName& path) {
+Config::Config(const eckit::PathName& path, bool silent) : silent_(silent) {
     readConfigurationFiles(path);
 }
 
@@ -61,7 +61,7 @@ const param::SimpleParametrisation& Config::find(const param::MIRParametrisation
         }
     }
 
-    if (fixes->size() > 0) {
+    if (!silent_ && fixes->size() > 0) {
         Log::warning() << "Config: " << *fixes << std::endl;
     }
 

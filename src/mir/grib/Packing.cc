@@ -310,7 +310,7 @@ Packing* Packing::build(const param::MIRParametrisation& param) {
     long edition = 2;
     param.get("edition", edition);
 
-    static const grib::Config config(LibMir::configFile(LibMir::config_file::GRIB_OUTPUT));
+    static const grib::Config config(LibMir::configFile(LibMir::config_file::GRIB_OUTPUT), true);
     std::unique_ptr<param::MIRParametrisation> grib_config(
         new param::CombinedParametrisation(user, field, config.find(param)));
 
