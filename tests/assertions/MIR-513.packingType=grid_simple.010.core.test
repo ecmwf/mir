@@ -1,0 +1,7 @@
+# mars
+packingType=grid_simple.grib1
+# mir
+--packing=so
+# grib_get
+packingType=grid_second_order
+edition=1

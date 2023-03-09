@@ -25,9 +25,10 @@
 #include "mir/api/MIREstimation.h"
 #include "mir/compat/GribCompatibility.h"
 #include "mir/data/MIRField.h"
+#include "mir/grib/BasicAngle.h"
+#include "mir/grib/Packing.h"
 #include "mir/input/MIRInput.h"
 #include "mir/key/Area.h"
-#include "mir/key/packing/Packing.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Gridded.h"
 #include "mir/repres/Representation.h"
@@ -110,7 +111,7 @@ void GribOutput::estimate(const param::MIRParametrisation& param, api::MIREstima
     std::string packing;
     if (param.get(packing, packing)) {
         estimator.packing(packing);
-        // const key::packing::Packing &packer = key::packing::Packing::lookup(packing);
+        // const grib::Packing &packer = grib::Packing::lookup(packing);
         // packer.estimate(estimator, *field.representation());
     }
 
@@ -122,7 +123,7 @@ void GribOutput::estimate(const param::MIRParametrisation& param, api::MIREstima
 
 
 bool GribOutput::printParametrisation(std::ostream& out, const param::MIRParametrisation& param) const {
-    std::unique_ptr<key::packing::Packing> pack(key::packing::PackingFactory::build(param));
+    std::unique_ptr<grib::Packing> pack(grib::Packing::build(param));
     ASSERT(pack);
 
     bool ok = pack->printParametrisation(out);
@@ -152,7 +153,7 @@ void GribOutput::prepare(const param::MIRParametrisation& param, action::ActionP
     };
 
     auto packing_empty = [&param]() {
-        std::unique_ptr<key::packing::Packing> pack(key::packing::PackingFactory::build(param));
+        std::unique_ptr<grib::Packing> pack(grib::Packing::build(param));
         ASSERT(pack);
         return pack->empty();
     };
@@ -166,8 +167,8 @@ void GribOutput::prepare(const param::MIRParametrisation& param, action::ActionP
 
 bool GribOutput::sameParametrisation(const param::MIRParametrisation& param1,
                                      const param::MIRParametrisation& param2) const {
-    std::unique_ptr<key::packing::Packing> packing1(key::packing::PackingFactory::build(param1));
-    std::unique_ptr<key::packing::Packing> packing2(key::packing::PackingFactory::build(param2));
+    std::unique_ptr<grib::Packing> packing1(grib::Packing::build(param1));
+    std::unique_ptr<grib::Packing> packing2(grib::Packing::build(param2));
 
     if (!packing1->sameAs(packing2.get())) {
         return false;
@@ -209,7 +210,7 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
     util::MIRStatistics::Timing saveTimer;
     auto timer(ctx.statistics().gribEncodingTimer());
 
-    std::unique_ptr<key::packing::Packing> pack(key::packing::PackingFactory::build(param));
+    std::unique_ptr<grib::Packing> pack(grib::Packing::build(param));
     ASSERT(pack);
 
     for (size_t i = 0; i < field.dimensions(); i++) {
@@ -280,13 +281,13 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
             GRIB_CALL(codes_get_long(h, "basicAngleOfTheInitialProductionDomain", &fraction[0]));
             GRIB_CALL(codes_get_long(h, "subdivisionsOfBasicAngle", &fraction[1]));
 
-            util::grib::BasicAngle basic(fraction[0], fraction[1]);
+            grib::BasicAngle basic(fraction[0], fraction[1]);
             basic.fillGrib(info);
         }
         else if (basicAngle == "fraction") {
             ASSERT(info.grid.grid_type == CODES_UTIL_GRID_SPEC_REGULAR_LL);
 
-            util::grib::BasicAngle basic(info);
+            grib::BasicAngle basic(info);
             basic.fillGrib(info);
         }
         else {
@@ -460,7 +461,7 @@ size_t GribOutput::set(const param::MIRParametrisation& param, context::Context&
     util::MIRStatistics::Timing saveTimer;
     auto timer(ctx.statistics().gribEncodingTimer());
 
-    std::unique_ptr<key::packing::Packing> pack(key::packing::PackingFactory::build(param));
+    std::unique_ptr<grib::Packing> pack(grib::Packing::build(param));
     ASSERT(pack);
 
     ASSERT(field.dimensions() == 1);

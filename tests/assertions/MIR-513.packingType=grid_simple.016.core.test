@@ -1,0 +1,9 @@
+# mars
+packingType=grid_simple.grib2
+# mir
+$MIR_CONFIG_GRIB_OUTPUT=grib-output-ii.yaml
+--packing=ccsds
+# grib_get
+packingType=grid_ccsds
+edition=2
+bitsPerValue=16

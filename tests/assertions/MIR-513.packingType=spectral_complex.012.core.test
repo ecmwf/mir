@@ -2,7 +2,7 @@
 packingType=spectral_complex.grib2
 # mir
 --truncation=21 --packing=simple
-# grib_get assertions
+# grib_get
 packingType=spectral_simple
 edition=2
 numberOfDataPoints=506

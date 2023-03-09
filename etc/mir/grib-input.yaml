@@ -1,0 +1,30 @@
+---
+
+# (centre=ecmf)
+md5GridSection=51ea7dcd62e71c9707157a2d15247593, centre:i=98, gridName=N640, edition=2:
+- east: 359.859375
+
+# (centre=ecmf)
+md5GridSection=8a6f6c4cc9ad3f64546773b87566bc72, centre:i=98, gridName=O2560, edition=1, experimentVersionNumber=h5xa/h5zi:
+- north: 89.973091
+- south: -89.973091
+
+# (centre=ecmf)
+md5GridSection=400afa28fb4cb24df0ce1eeb1b5b7ccb, centre:i=98, gridType=reduced_ll, edition=1:
+- east: 360.
+
+# IFS-828: Tco639 single precision (centre=ecmf)
+md5GridSection=f5dc74ec36353f4c83f7de3bf46e1aef, centre:i=98, gridName=O640, edition=1, experimentVersionNumber=h5wk/h6en/hc9k:
+- north: 89.892396
+- south: -89.892396
+
+# Lambert conformal conic projection, non-standard interpretation (Toulouse, RSMC, centre=lfpw)
+md5GridSection=6ae0076681a2541abe053ab52fa60f30, centre:i=84/85, gridType=lambert, edition=1:
+- first_point_bottom_left: true
+
+# gridType=space_view does not support the default interpolation method
+gridType=space_view:
+- interpolation: k-nearest
+- nearest-method: longest-element-diagonal-and-nclosest
+- reset-missing-values: true
+

@@ -2,7 +2,7 @@
 packingType=grid_simple.grib2
 # mir
 --packing=simple
-# grib_get assertions
+# grib_get
 packingType=grid_simple
 edition=2
 bitsPerValue=16

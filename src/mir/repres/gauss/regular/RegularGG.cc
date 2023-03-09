@@ -12,6 +12,7 @@
 
 #include "mir/repres/gauss/regular/RegularGG.h"
 
+#include <algorithm>
 #include <ostream>
 #include <utility>
 
@@ -60,8 +61,8 @@ std::string RegularGG::factory() const {
 
 
 std::vector<util::GridBox> RegularGG::gridBoxes() const {
-    ASSERT(1 < Ni_);
-    ASSERT(1 < Nj_);
+    ASSERT(1 <= Ni_);
+    ASSERT(1 <= Nj_);
 
 
     // latitude edges
@@ -78,6 +79,11 @@ std::vector<util::GridBox> RegularGG::gridBoxes() const {
     lonEdges[0] = (lon0 - inc / 2).value();
     for (size_t i = 0; i < Ni_; ++i) {
         lonEdges[i + 1] = (lon0 + (i + half) * inc).value();
+    }
+
+    if (!periodic) {
+        lonEdges.front() = std::max(bbox_.west().value(), lonEdges.front());
+        lonEdges.back()  = std::min(bbox_.east().value(), lonEdges.back());
     }
 
 

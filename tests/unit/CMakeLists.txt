@@ -9,6 +9,7 @@ foreach(_t
     MIR-425
     MIR-536
     PGEN-412
+    PGEN-492
     area
     action_graph
     bounding_box
@@ -16,6 +17,7 @@ foreach(_t
     formula
     grib_basic_angle
     grib_encoding
+    grid_box_method
     increments
     input_MultiDimensionalInput
     interpolations

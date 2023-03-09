@@ -2,7 +2,7 @@
 packingType=grid_simple.grib2
 # mir
 --packing=ccsds
-# grib_get assertions
+# grib_get
 packingType=grid_ccsds
 edition=2
 bitsPerValue=16

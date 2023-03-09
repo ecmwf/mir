@@ -31,8 +31,9 @@
 #include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
 
+#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
-#include "mir/input/GribFixes.h"
+#include "mir/grib/Config.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
@@ -1103,8 +1104,8 @@ bool GribInput::handle(grib_handle* h) {
         GRIB_CALL(codes_get_long(h, "7777", &value));
 
         // apply user-defined fixes, if any
-        static const GribFixes gribFixes;
-        gribFixes.find(parametrisation(0)).copyValuesTo(cache_.cache_);
+        static const grib::Config config(LibMir::configFile(LibMir::config_file::GRIB_INPUT), false);
+        config.find(parametrisation(0)).copyValuesTo(cache_.cache_);
 
         return true;
     }

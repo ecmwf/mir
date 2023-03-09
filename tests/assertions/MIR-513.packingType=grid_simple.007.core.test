@@ -2,6 +2,6 @@
 tiny.grib
 # mir
 --area=0/0/0/1 --packing=so
-# grib_get assertions (output (#points = 2) is in packingType=grid_simple because grid_second_order is not supported for #points < 4)
+# grib_get (output (#points = 2) is in packingType=grid_simple because grid_second_order is not supported for #points < 4)
 packingType=grid_simple
 numberOfDataPoints=2

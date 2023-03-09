@@ -1,0 +1,8 @@
+# mars
+packingType=grid_simple.grib1
+# mir
+--packing=ieee
+# grib_get
+packingType=grid_ieee
+edition=1
+precision=1

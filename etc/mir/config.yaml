@@ -1,4 +1,5 @@
 ---
+
 legendre-loader: mapped-memory
 matrix-loader: file-io
 
@@ -24,7 +25,8 @@ mir-cache-path: /tmp/cache
 
 mir-config-area: ~mir/etc/mir/area.yaml
 mir-config-classes: ~mir/etc/mir/classes.yaml
-mir-config-grib: ~mir/etc/mir/GRIB.yaml
+mir-config-grib-input: ~mir/etc/mir/grib-input.yaml
+mir-config-grib-output: ~mir/etc/mir/grib-output.yaml
 mir-config-grids: ~mir/etc/mir/grids.yaml
 mir-config-netcdf: ~mir/etc/mir/netcdf.yaml
 mir-config-parameter-class: ~mir/etc/mir/parameter-class.yaml

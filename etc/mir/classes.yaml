@@ -3,8 +3,6 @@
 # default
 _default:
     compare: scalar
-    default-spectral-packing: complex
-    default-gridded-packing: simple
 
 # amount of mass per unit volume (typical units: [kg m**-3])
 density.mass: {}

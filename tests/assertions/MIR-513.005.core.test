@@ -1,0 +1,7 @@
+# mars
+param=t,level=1000,resol=20
+# mir
+--grid=9/9
+# grib_get
+packingType=grid_simple
+edition=1

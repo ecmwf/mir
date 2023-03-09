@@ -1,0 +1,7 @@
+# mars
+packingType=spectral_complex,param=vo_d.grib2
+# mir
+--vod2uv --packing=simple
+# grib_get
+packingType=spectral_simple
+edition=2

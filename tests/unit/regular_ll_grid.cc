@@ -31,9 +31,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace tests {
-namespace unit {
+namespace mir::tests::unit {
 
 
 using eckit::Fraction;
@@ -678,9 +676,7 @@ CASE("x") {
 #endif
 
 
-}  // namespace unit
-}  // namespace tests
-}  // namespace mir
+}  // namespace mir::tests::unit
 
 
 int main(int argc, char** argv) {

@@ -1,8 +1,8 @@
 # mars
 packingType=spectral_complex.grib1
 # mir
---grid=1/1 --intgrid=none --packing=ccsds
-# grib_get assertions
+--grid=1/1 --intgrid=none --packing=ccsds --grib-edition-conversion=true
+# grib_get
 packingType=grid_ccsds
 edition=2
 bitsPerValue=16

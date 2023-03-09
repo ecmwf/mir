@@ -16,8 +16,8 @@
 #include "eckit/testing/Test.h"
 #include "eckit/types/Fraction.h"
 
+#include "mir/grib/BasicAngle.h"
 #include "mir/util/BoundingBox.h"
-#include "mir/util/Grib.h"
 #include "mir/util/Increments.h"
 
 
@@ -25,7 +25,7 @@ namespace mir::tests::unit {
 
 
 CASE("lcm") {
-    using util::grib::lcm;
+    using grib::lcm;
 
     EXPECT_EQUAL(2 * 2 * 3 * 3, lcm(2 * 2 * 3, 2 * 3 * 3));
     EXPECT_EQUAL(3 * 3 * 5 * 5, lcm(3 * 3 * 5, 3 * 5 * 5));
@@ -41,7 +41,7 @@ CASE("lcm") {
 
 
 CASE("gcd") {
-    using util::grib::gcd;
+    using grib::gcd;
 
     EXPECT_EQUAL(2 * 3, gcd(2 * 2 * 3, 2 * 3 * 3));
     EXPECT_EQUAL(3 * 5, gcd(3 * 3 * 5, 3 * 5 * 5));
@@ -57,7 +57,7 @@ CASE("gcd") {
 
 
 CASE("Climate files <= v020 (1km)") {
-    using util::grib::Fraction;
+    using grib::Fraction;
 
     auto fraction_via_double = [](const Fraction& f) {
         return eckit::Fraction(static_cast<double>(f.num) / static_cast<double>(f.den));
@@ -83,7 +83,7 @@ CASE("Climate files <= v020 (1km)") {
 
 
     // basic angle
-    util::grib::BasicAngle basic(fractions[0], fractions[1], fractions[2], fractions[3], fractions[4], fractions[5]);
+    grib::BasicAngle basic(fractions[0], fractions[1], fractions[2], fractions[3], fractions[4], fractions[5]);
 
     EXPECT_EQUAL(basic.num, 1L);
     EXPECT_EQUAL(basic.den, 240L);

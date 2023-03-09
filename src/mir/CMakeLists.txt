@@ -193,6 +193,12 @@ list(APPEND mir_srcs
     data/space/SpaceLinear.h
     data/space/SpaceLogarithmic.cc
     data/space/SpaceLogarithmic.h
+    grib/BasicAngle.cc
+    grib/BasicAngle.h
+    grib/Packing.cc
+    grib/Packing.h
+    grib/Config.cc
+    grib/Config.h
     input/ArtificialInput.cc
     input/ArtificialInput.h
     input/ConstantInput.cc
@@ -211,8 +217,6 @@ list(APPEND mir_srcs
     input/GribDataHandleInput.h
     input/GribFileInput.cc
     input/GribFileInput.h
-    input/GribFixes.cc
-    input/GribFixes.h
     input/GribInput.cc
     input/GribInput.h
     input/GribMemoryInput.cc
@@ -273,22 +277,6 @@ list(APPEND mir_srcs
     key/intgrid/None.h
     key/intgrid/Source.cc
     key/intgrid/Source.h
-    key/packing/ArchivedValue.cc
-    key/packing/ArchivedValue.h
-    key/packing/CCSDS.cc
-    key/packing/CCSDS.h
-    key/packing/Complex.cc
-    key/packing/Complex.h
-    key/packing/IEEE.cc
-    key/packing/IEEE.h
-    key/packing/JPEG2000.cc
-    key/packing/JPEG2000.h
-    key/packing/Packing.cc
-    key/packing/Packing.h
-    key/packing/SecondOrder.cc
-    key/packing/SecondOrder.h
-    key/packing/Simple.cc
-    key/packing/Simple.h
     key/resol/Resol.cc
     key/resol/Resol.h
     key/style/CustomParametrisation.cc

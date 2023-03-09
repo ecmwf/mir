@@ -15,8 +15,8 @@ on:
       atlas:
         required: false
         type: string
-      mir_sha:
-        required: true
+      mir:
+        required: false
         type: string
 
 jobs:
@@ -24,12 +24,10 @@ jobs:
     name: ci
     uses: ecmwf-actions/reusable-workflows/.github/workflows/ci.yml@v2
     with:
-      repository: ecmwf/mir
-      ref: ${{ inputs.mir_sha }}
+      repository: ${{ inputs.mir || 'ecmwf/mir@develop' }}
       name_prefix: mir-
       build_package_inputs: |
-        repository: ecmwf/mir
-        sha: ${{ inputs.mir_sha }}
+        repository: ${{ inputs.mir || 'ecmwf/mir@develop' }}
         dependencies: |
             ecmwf/ecbuild
             MathisRosenhauer/libaec@master

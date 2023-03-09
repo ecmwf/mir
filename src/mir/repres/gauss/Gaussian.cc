@@ -189,6 +189,8 @@ std::vector<double> Gaussian::calculateUnrotatedGridBoxLatitudeEdges() const {
         *f = -(*b);
     }
 
+    edges[N_] = 0.;  // exact value
+
     return edges;
 }
 

@@ -1,0 +1,8 @@
+# mars
+packingType=spectral_complex.grib1
+# mir
+$MIR_CONFIG_GRIB_OUTPUT=grib-output-ii.yaml
+--grid=1/1 --intgrid=none --edition=2
+# grib_get
+packingType=grid_ccsds
+edition=2
