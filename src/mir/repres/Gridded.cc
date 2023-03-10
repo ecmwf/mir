@@ -58,7 +58,7 @@ void Gridded::estimate(api::MIREstimation& estimation) const {
 }
 
 
-bool Gridded::crop(util::BoundingBox& /*unused*/, util::AreaCropperMapping& /*unused*/) const {
+bool Gridded::crop(util::BoundingBox& /*unused*/, util::IndexMapping& /*unused*/) const {
     return false;
 }
 

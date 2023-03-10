@@ -18,7 +18,7 @@
 namespace mir::util {
 
 
-using AreaCropperMapping = std::vector<size_t>;
+using IndexMapping = std::vector<size_t>;
 
 
 }  // namespace mir::util

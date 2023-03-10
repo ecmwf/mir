@@ -69,7 +69,7 @@ protected:
     const util::BoundingBox& boundingBox() const override;
     bool getLongestElementDiagonal(double&) const override;
     void estimate(api::MIREstimation&) const override;
-    bool crop(util::BoundingBox&, util::AreaCropperMapping&) const override;
+    bool crop(util::BoundingBox&, util::IndexMapping&) const override;
 
     // -- Class members
     // None

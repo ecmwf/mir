@@ -13,8 +13,8 @@
 #pragma once
 
 #include "mir/action/plan/Action.h"
-#include "mir/util/AreaCropperMapping.h"
 #include "mir/util/BoundingBox.h"
+#include "mir/util/IndexMapping.h"
 
 
 namespace mir::repres {
@@ -46,7 +46,7 @@ public:
 
     // -- Methods
 
-    static void crop(const repres::Representation&, util::BoundingBox&, util::AreaCropperMapping&);
+    static void crop(const repres::Representation&, util::BoundingBox&, util::IndexMapping&);
 
     // -- Overridden methods
 

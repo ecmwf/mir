@@ -32,7 +32,7 @@ CroppingCache::CroppingCache() :
 
 void CroppingCacheEntry::print(std::ostream& out) const {
     out << "CroppingCacheEntry[size=" << mapping_.size() << ",bbox=" << bbox_
-        << ",size=" << Log::Bytes(sizeof(util::AreaCropperMapping::value_type) * mapping_.size()) << "]";
+        << ",size=" << Log::Bytes(sizeof(util::IndexMapping::value_type) * mapping_.size()) << "]";
 }
 
 

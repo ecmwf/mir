@@ -63,8 +63,7 @@ AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation) :
 }
 
 
-void AreaCropper::crop(const repres::Representation& repres, util::BoundingBox& bbox,
-                       util::AreaCropperMapping& mapping) {
+void AreaCropper::crop(const repres::Representation& repres, util::BoundingBox& bbox, util::IndexMapping& mapping) {
     std::map<LL, size_t> m;
 
     Latitude n  = 0;

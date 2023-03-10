@@ -14,8 +14,8 @@
 
 #include "eckit/container/CacheManager.h"
 
-#include "mir/util/AreaCropperMapping.h"
 #include "mir/util/BoundingBox.h"
+#include "mir/util/IndexMapping.h"
 
 
 namespace mir::caching {
@@ -25,7 +25,7 @@ struct CroppingCacheEntry {
 
     ~CroppingCacheEntry();
 
-    util::AreaCropperMapping mapping_;
+    util::IndexMapping mapping_;
     util::BoundingBox bbox_;
 
     void print(std::ostream&) const;

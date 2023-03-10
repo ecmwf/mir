@@ -17,7 +17,7 @@
 
 #include "eckit/memory/Counted.h"
 
-#include "mir/util/AreaCropperMapping.h"
+#include "mir/util/IndexMapping.h"
 #include "mir/util/Types.h"
 
 
@@ -99,7 +99,7 @@ public:
     virtual const Representation* croppedRepresentation(const util::BoundingBox&) const;
     virtual util::BoundingBox extendBoundingBox(const util::BoundingBox&) const;
     virtual bool extendBoundingBoxOnIntersect() const;
-    virtual bool crop(util::BoundingBox&, util::AreaCropperMapping&) const;
+    virtual bool crop(util::BoundingBox&, util::IndexMapping&) const;
 
     virtual size_t frame(MIRValuesVector&, size_t size, double missingValue, bool estimate = false) const;
 
