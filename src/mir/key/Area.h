@@ -32,7 +32,11 @@ namespace mir::key {
 class Area {
 public:
     // -- Types
-    // None
+
+    struct Mode {
+        static void list(std::ostream&);
+        static std::string get(const param::MIRParametrisation&);
+    };
 
     // -- Constructors
 

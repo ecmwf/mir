@@ -64,7 +64,7 @@ protected:
 
     // -- Methods
 
-    static void apply(const repres::Representation&, util::BoundingBox&, util::IndexMapping&);
+    static void apply(const repres::Representation&, util::BoundingBox&, util::IndexMapping&, bool projection);
 
     const util::BoundingBox& boundingBox() const { return bbox_; }
 

@@ -235,7 +235,8 @@ struct MIR : MIRTool {
 
         //==============================================
         options_.push_back(new Separator("Filtering"));
-        options_.push_back(new FactoryOption<key::Area>("area", "cropping area"));
+        options_.push_back(new FactoryOption<key::Area>("area", "area cropping/masking"));
+        options_.push_back(new FactoryOption<key::Area::Mode>("area-mode", "area cropping/masking mode"));
         options_.push_back(new SimpleOption<eckit::PathName>("bitmap", "Bitmap file to apply"));
         options_.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
         options_.push_back(new FactoryOption<stats::DistributionFactory>(

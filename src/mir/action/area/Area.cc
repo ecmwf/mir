@@ -52,7 +52,8 @@ Area::Area(const param::MIRParametrisation& parametrisation) : Action(parametris
 Area::~Area() = default;
 
 
-void Area::apply(const repres::Representation& repres, util::BoundingBox& bbox, util::IndexMapping& mapping) {
+void Area::apply(const repres::Representation& repres, util::BoundingBox& bbox, util::IndexMapping& mapping,
+                 bool projection) {
     std::map<LL, size_t> m;
 
     Latitude n  = 0;
@@ -62,9 +63,10 @@ void Area::apply(const repres::Representation& repres, util::BoundingBox& bbox, 
 
     bool first = true;
 
-    // Iterator is "unrotated", because the cropping area is expressed in before the rotation is applied
+    // Point can be     interpreted "projected" or "non-projected"/"unrotated"
     for (const std::unique_ptr<repres::Iterator> it(repres.iterator()); it->next();) {
-        const auto& point = it->pointUnrotated();
+        const auto point(projection ? PointLatLon(it->pointRotated().x(), it->pointRotated().y())
+                                    : it->pointUnrotated());
 
         // Log::debug() << point << " ====> " << bbox.contains(point) << std::endl;
 
@@ -98,11 +100,7 @@ void Area::apply(const repres::Representation& repres, util::BoundingBox& bbox, 
     }
 
     // Set mapping (don't support empty results)
-    if (m.empty()) {
-        std::ostringstream oss;
-        oss << "Cropping " << repres << " to " << bbox << " returns no points";
-        throw exception::UserError(oss.str());
-    }
+    ASSERT_NONEMPTY_AREA("Area", !m.empty());
 
     mapping.clear();
     mapping.reserve(m.size());

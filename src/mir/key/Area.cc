@@ -26,6 +26,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
 
 
@@ -57,6 +58,25 @@ static util::once_flag once;
 static void init() {
     mtx = new util::recursive_mutex();
     m   = new map_t;
+}
+
+
+void Area::Mode::list(std::ostream& out) {
+    out << "crop, mask";
+}
+
+
+std::string Area::Mode::get(const param::MIRParametrisation& param) {
+    std::string mode = "crop";
+    param.get("area-mode", mode);
+
+    if (mode != "crop" && mode != "mask") {
+        std::ostringstream msg;
+        list(Log::error() << "Area::Mode: unknown '" << mode << "', choices are: ");
+        throw exception::UserError("Area::Mode: unknown '" + mode + "'");
+    }
+
+    return mode;
 }
 
 
