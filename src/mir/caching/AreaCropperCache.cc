@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/caching/CroppingCache.h"
+#include "mir/caching/AreaCropperCache.h"
 
 #include "eckit/io/AutoCloser.h"
 #include "eckit/serialisation/FileStream.h"
@@ -23,28 +23,28 @@
 namespace mir::caching {
 
 
-CroppingCache::CroppingCache() :
-    eckit::CacheManager<CroppingCacheTraits>(
+AreaCropperCache::AreaCropperCache() :
+    eckit::CacheManager<AreaCropperCacheTraits>(
         "Cropper",  // dummy -- would be used in load() / save() static functions
         LibMir::cacheDir(), eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false),
         eckit::Resource<size_t>("$MIR_AREA_CACHE_SIZE", 0)) {}
 
 
-void CroppingCacheEntry::print(std::ostream& out) const {
-    out << "CroppingCacheEntry[size=" << mapping_.size() << ",bbox=" << bbox_
+void AreaCropperCacheEntry::print(std::ostream& out) const {
+    out << "AreaCropperCacheEntry[size=" << mapping_.size() << ",bbox=" << bbox_
         << ",size=" << Log::Bytes(sizeof(util::IndexMapping::value_type) * mapping_.size()) << "]";
 }
 
 
-CroppingCacheEntry::~CroppingCacheEntry() = default;
+AreaCropperCacheEntry::~AreaCropperCacheEntry() = default;
 
 
-size_t CroppingCacheEntry::footprint() const {
+size_t AreaCropperCacheEntry::footprint() const {
     return sizeof(*this) + mapping_.capacity() * sizeof(size_t);
 }
 
 
-void CroppingCacheEntry::save(const eckit::PathName& path) const {
+void AreaCropperCacheEntry::save(const eckit::PathName& path) const {
     trace::Timer timer("Saving cropping to cache");
 
     eckit::FileStream f(path, "w");
@@ -62,7 +62,7 @@ void CroppingCacheEntry::save(const eckit::PathName& path) const {
 }
 
 
-void CroppingCacheEntry::load(const eckit::PathName& path) {
+void AreaCropperCacheEntry::load(const eckit::PathName& path) {
     trace::Timer timer("Loading cropping from cache");
 
     eckit::FileStream f(path, "r");
@@ -90,28 +90,29 @@ void CroppingCacheEntry::load(const eckit::PathName& path) {
 }
 
 
-const char* CroppingCacheTraits::name() {
+const char* AreaCropperCacheTraits::name() {
     return "mir/cropping";
 }
 
 
-int CroppingCacheTraits::version() {
+int AreaCropperCacheTraits::version() {
     return 9;
 }
 
 
-const char* CroppingCacheTraits::extension() {
+const char* AreaCropperCacheTraits::extension() {
     return ".area";
 }
 
 
-void CroppingCacheTraits::save(const eckit::CacheManagerBase& /*unused*/, const value_type& c,
-                               const eckit::PathName& path) {
+void AreaCropperCacheTraits::save(const eckit::CacheManagerBase& /*unused*/, const value_type& c,
+                                  const eckit::PathName& path) {
     c.save(path);
 }
 
 
-void CroppingCacheTraits::load(const eckit::CacheManagerBase& /*unused*/, value_type& c, const eckit::PathName& path) {
+void AreaCropperCacheTraits::load(const eckit::CacheManagerBase& /*unused*/, value_type& c,
+                                  const eckit::PathName& path) {
     c.load(path);
 }
 

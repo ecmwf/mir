@@ -19,7 +19,7 @@
 #include "eckit/utils/MD5.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/caching/CroppingCache.h"
+#include "mir/caching/AreaCropperCache.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
@@ -37,8 +37,8 @@ namespace mir::action {
 
 
 constexpr size_t CAPACITY = 256 * 1024 * 1024;
-static caching::InMemoryCache<caching::CroppingCacheEntry> cache("mirArea", CAPACITY, 0,
-                                                                 "$MIR_AREA_CACHE_MEMORY_FOOTPRINT");
+static caching::InMemoryCache<caching::AreaCropperCacheEntry> cache("mirArea", CAPACITY, 0,
+                                                                    "$MIR_AREA_CACHE_MEMORY_FOOTPRINT");
 
 
 struct LL {
@@ -145,8 +145,8 @@ util::BoundingBox AreaCropper::outputBoundingBox() const {
 }
 
 
-static void createCroppingCacheEntry(caching::CroppingCacheEntry& c, const repres::Representation* representation,
-                                     const util::BoundingBox& bbox) {
+static void createAreaCropperCacheEntry(caching::AreaCropperCacheEntry& c, const repres::Representation* representation,
+                                        const util::BoundingBox& bbox) {
 
     Log::debug() << "Creating cropping cache entry for " << bbox << std::endl;
     c.bbox_ = bbox;
@@ -161,9 +161,9 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c, const repre
 }
 
 
-static const caching::CroppingCacheEntry& getMapping(const std::string& key,
-                                                     const repres::Representation* representation,
-                                                     const util::BoundingBox& bbox, bool caching) {
+static const caching::AreaCropperCacheEntry& getMapping(const std::string& key,
+                                                        const repres::Representation* representation,
+                                                        const util::BoundingBox& bbox, bool caching) {
     static util::recursive_mutex local_mutex;
     util::lock_guard<util::recursive_mutex> lock(local_mutex);
 
@@ -174,34 +174,34 @@ static const caching::CroppingCacheEntry& getMapping(const std::string& key,
 
     auto& c = cache[key];
     if (caching) {
-        static caching::CroppingCache disk;
+        static caching::AreaCropperCache disk;
 
-        class CroppingCacheCreator final : public caching::CroppingCache::CacheContentCreator {
+        class CacheCreator final : public caching::AreaCropperCache::CacheContentCreator {
 
             const repres::Representation* representation_;
             const util::BoundingBox& bbox_;
 
-            void create(const eckit::PathName& /*path*/, caching::CroppingCacheEntry& c, bool& /*saved*/) final {
-                createCroppingCacheEntry(c, representation_, bbox_);
+            void create(const eckit::PathName& /*path*/, caching::AreaCropperCacheEntry& c, bool& /*saved*/) final {
+                createAreaCropperCacheEntry(c, representation_, bbox_);
             }
 
         public:
-            CroppingCacheCreator(const repres::Representation* representation, const util::BoundingBox& bbox) :
+            CacheCreator(const repres::Representation* representation, const util::BoundingBox& bbox) :
                 representation_(representation), bbox_(bbox) {}
-            ~CroppingCacheCreator() override = default;
+            ~CacheCreator() override = default;
 
-            CroppingCacheCreator(const CroppingCacheCreator&)            = delete;
-            CroppingCacheCreator(CroppingCacheCreator&&)                 = delete;
-            CroppingCacheCreator& operator=(const CroppingCacheCreator&) = delete;
-            CroppingCacheCreator& operator=(CroppingCacheCreator&&)      = delete;
+            CacheCreator(const CacheCreator&)            = delete;
+            CacheCreator(CacheCreator&&)                 = delete;
+            CacheCreator& operator=(const CacheCreator&) = delete;
+            CacheCreator& operator=(CacheCreator&&)      = delete;
         };
 
-        CroppingCacheCreator creator(representation, bbox);
+        CacheCreator creator(representation, bbox);
         disk.getOrCreate(key, creator, c);
     }
     else {
 
-        createCroppingCacheEntry(c, representation, bbox);
+        createAreaCropperCacheEntry(c, representation, bbox);
     }
 
     cache.footprint(key, caching::InMemoryCacheUsage(c.footprint(), 0));
@@ -209,8 +209,8 @@ static const caching::CroppingCacheEntry& getMapping(const std::string& key,
 }
 
 
-static const caching::CroppingCacheEntry& getMapping(const repres::Representation* representation,
-                                                     const util::BoundingBox& bbox, bool caching) {
+static const caching::AreaCropperCacheEntry& getMapping(const repres::Representation* representation,
+                                                        const util::BoundingBox& bbox, bool caching) {
     eckit::MD5 md5;
     md5 << representation->uniqueName() << bbox;
 

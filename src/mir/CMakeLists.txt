@@ -142,8 +142,8 @@ list(APPEND mir_srcs
     api/MIRJob.h
     api/MIRWatcher.cc
     api/MIRWatcher.h
-    caching/CroppingCache.cc
-    caching/CroppingCache.h
+    caching/AreaCropperCache.cc
+    caching/AreaCropperCache.h
     caching/InMemoryCache.cc
     caching/InMemoryCache.h
     caching/InMemoryCacheBase.cc

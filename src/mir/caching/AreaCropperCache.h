@@ -21,16 +21,16 @@
 namespace mir::caching {
 
 
-struct CroppingCacheEntry {
+struct AreaCropperCacheEntry {
 
-    ~CroppingCacheEntry();
+    ~AreaCropperCacheEntry();
 
     util::IndexMapping mapping_;
     util::BoundingBox bbox_;
 
     void print(std::ostream&) const;
 
-    friend std::ostream& operator<<(std::ostream& out, const CroppingCacheEntry& e) {
+    friend std::ostream& operator<<(std::ostream& out, const AreaCropperCacheEntry& e) {
         e.print(out);
         return out;
     }
@@ -43,9 +43,9 @@ struct CroppingCacheEntry {
 };
 
 
-struct CroppingCacheTraits {
+struct AreaCropperCacheTraits {
 
-    using value_type = CroppingCacheEntry;
+    using value_type = AreaCropperCacheEntry;
     using Locker     = eckit::CacheManagerFileFlock;
 
     static const char* name();
@@ -57,9 +57,9 @@ struct CroppingCacheTraits {
 };
 
 
-class CroppingCache : public eckit::CacheManager<CroppingCacheTraits> {
+class AreaCropperCache : public eckit::CacheManager<AreaCropperCacheTraits> {
 public:  // methods
-    explicit CroppingCache();
+    explicit AreaCropperCache();
 };
 
 
