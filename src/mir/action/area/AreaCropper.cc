@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/action/misc/AreaCropper.h"
+#include "mir/action/area/AreaCropper.h"
 
 #include <ostream>
 #include <sstream>

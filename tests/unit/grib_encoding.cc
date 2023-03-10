@@ -16,7 +16,7 @@
 
 #include "eckit/testing/Test.h"
 
-#include "mir/action/misc/AreaCropper.h"
+#include "mir/action/area/AreaCropper.h"
 #include "mir/api/mir_config.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribMemoryInput.h"
