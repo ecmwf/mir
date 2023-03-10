@@ -141,14 +141,15 @@ void AreaMasker::execute(context::Context& ctx) const {
     const auto& c = get_cache_entry(representation, boundingBox(), caching());
     ASSERT_NONEMPTY_AREA("AreaMasker", !c.mapping_.empty());
 
+    auto missingValue = field.missingValue();
+
     for (size_t i = 0; i < field.dimensions(); i++) {
         const MIRValuesVector& values = field.values(i);
 
-        MIRValuesVector result;
-        result.reserve(c.mapping_.size());
+        MIRValuesVector result(values.size(), missingValue);
 
         for (const auto& j : c.mapping_) {
-            result.push_back(values[j]);
+            result[j] = values[j];
         }
 
         if (result.empty()) {
