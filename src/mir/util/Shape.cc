@@ -19,6 +19,8 @@ namespace mir::util {
 
 
 Shape::Shape(const param::MIRParametrisation& param) {
+    param.get("edition", edition = 0);
+
     provided = param.get("shapeOfTheEarth", code = 6);
 
     bool isOblate = false;
@@ -28,7 +30,7 @@ Shape::Shape(const param::MIRParametrisation& param) {
 }
 
 
-Shape::Shape(const Projection::Spec& spec) {
+Shape::Shape(const Projection::Spec& spec) : edition(0) {
     if (spec.has("radius")) {
         code = 1L;
         a = b = spec.getDouble("radius");
@@ -55,6 +57,11 @@ Shape& Shape::operator=(const Shape& other) = default;
 
 
 void Shape::fillGrib(grib_info& info, const Projection::Spec& spec) const {
+    // GRIB2 encoding of user-provided shape
+    if (edition != 2) {
+        return;
+    }
+
     // shape given by radius or semi-major/minor axis
     if (provided) {
         info.extra_set("shapeOfTheEarth", code);
