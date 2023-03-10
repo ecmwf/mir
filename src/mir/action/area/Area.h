@@ -12,24 +12,33 @@
 
 #pragma once
 
-#include "mir/action/area/Area.h"
 #include "mir/action/plan/Action.h"
+#include "mir/util/BoundingBox.h"
+#include "mir/util/IndexMapping.h"
+
+
+namespace mir {
+namespace repres {
+class Representation;
+}
+}  // namespace mir
 
 
 namespace mir::action {
 
 
-class AreaCropper final : public Area {
+class Area : public Action {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    AreaCropper(const param::MIRParametrisation& param) : Area(param) {}
+    explicit Area(const param::MIRParametrisation&);
 
     // -- Destructor
-    // None
+
+    virtual ~Area() override;
 
     // -- Convertors
     // None
@@ -38,11 +47,7 @@ public:
     // None
 
     // -- Methods
-
-    static void crop(const repres::Representation& repres, util::BoundingBox& bbox, util::IndexMapping& mapping) {
-        // apply cropping on non-projected points (lat/lon, on non-rotated reference frame)
-        AreaCropper::apply(repres, bbox, mapping, false);
-    }
+    // None
 
     // -- Overridden methods
     // None
@@ -53,23 +58,39 @@ public:
     // -- Class methods
     // None
 
-private:
+protected:
     // -- Members
     // None
+
+    // -- Methods
+
+    static void apply(const repres::Representation&, util::BoundingBox&, util::IndexMapping&);
+
+    const util::BoundingBox& boundingBox() const { return bbox_; }
+
+    bool caching() const { return caching_; }
+
+    // -- Overridden methods
+
+    virtual bool sameAs(const Action&) const override;
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+private:
+    // -- Members
+
+    util::BoundingBox bbox_;
+    bool caching_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
-
-    void execute(context::Context&) const override;
-    void print(std::ostream&) const override;
-    bool sameAs(const Action&) const override;
-    const char* name() const override;
-    bool isCropAction() const override;
-    bool canCrop() const override;
-    util::BoundingBox outputBoundingBox() const override;
-    void estimate(context::Context&, api::MIREstimation&) const override;
+    // None
 
     // -- Class members
     // None

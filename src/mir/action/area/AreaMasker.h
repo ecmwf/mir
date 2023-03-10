@@ -19,14 +19,14 @@
 namespace mir::action {
 
 
-class AreaCropper final : public Area {
+class AreaMasker final : public Area {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    AreaCropper(const param::MIRParametrisation& param) : Area(param) {}
+    AreaMasker(const param::MIRParametrisation& param) : Area(param) {}
 
     // -- Destructor
     // None
@@ -39,9 +39,9 @@ public:
 
     // -- Methods
 
-    static void crop(const repres::Representation& repres, util::BoundingBox& bbox, util::IndexMapping& mapping) {
-        // apply cropping on non-projected points (lat/lon, on non-rotated reference frame)
-        AreaCropper::apply(repres, bbox, mapping, false);
+    static void mask(const repres::Representation& repres, util::BoundingBox& bbox, util::IndexMapping& mapping) {
+        // apply masking on projected points (lat/lon, on projection reference frame)
+        AreaMasker::apply(repres, bbox, mapping, true);
     }
 
     // -- Overridden methods
@@ -66,8 +66,6 @@ private:
     void print(std::ostream&) const override;
     bool sameAs(const Action&) const override;
     const char* name() const override;
-    bool isCropAction() const override;
-    bool canCrop() const override;
     util::BoundingBox outputBoundingBox() const override;
     void estimate(context::Context&, api::MIREstimation&) const override;
 

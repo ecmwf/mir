@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/caching/AreaCropperCache.h"
+#include "mir/caching/AreaMaskerCache.h"
 
 #include "eckit/config/Resource.h"
 
@@ -20,36 +20,36 @@
 namespace mir::caching {
 
 
-AreaCropperCache::AreaCropperCache() :
-    eckit::CacheManager<AreaCropperCacheTraits>(
-        "Cropper",  // dummy -- would be used in load() / save() static functions
+AreaMaskerCache::AreaMaskerCache() :
+    eckit::CacheManager<AreaMaskerCacheTraits>(
+        "Masker",  // dummy -- would be used in load() / save() static functions
         LibMir::cacheDir(), eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false),
         eckit::Resource<size_t>("$MIR_AREA_CACHE_SIZE", 0)) {}
 
 
-const char* AreaCropperCacheTraits::name() {
+const char* AreaMaskerCacheTraits::name() {
     return "mir/area";
 }
 
 
-int AreaCropperCacheTraits::version() {
+int AreaMaskerCacheTraits::version() {
     return 1;
 }
 
 
-const char* AreaCropperCacheTraits::extension() {
-    return ".crop";
+const char* AreaMaskerCacheTraits::extension() {
+    return ".mask";
 }
 
 
-void AreaCropperCacheTraits::save(const eckit::CacheManagerBase& /*unused*/, const value_type& c,
-                                  const eckit::PathName& path) {
+void AreaMaskerCacheTraits::save(const eckit::CacheManagerBase& /*unused*/, const value_type& c,
+                                 const eckit::PathName& path) {
     c.save(path);
 }
 
 
-void AreaCropperCacheTraits::load(const eckit::CacheManagerBase& /*unused*/, value_type& c,
-                                  const eckit::PathName& path) {
+void AreaMaskerCacheTraits::load(const eckit::CacheManagerBase& /*unused*/, value_type& c,
+                                 const eckit::PathName& path) {
     c.load(path);
 }
 

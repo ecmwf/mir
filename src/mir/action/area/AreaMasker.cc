@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/action/area/AreaCropper.h"
+#include "mir/action/area/AreaMasker.h"
 
 #include <ostream>
 #include <sstream>
@@ -18,7 +18,7 @@
 #include "eckit/utils/MD5.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/caching/AreaCropperCache.h"
+#include "mir/caching/AreaMaskerCache.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/data/MIRField.h"
 #include "mir/repres/Representation.h"
@@ -36,34 +36,29 @@ static caching::InMemoryCache<caching::AreaCacheEntry> cache("mirArea", CAPACITY
                                                              "$MIR_AREA_CACHE_MEMORY_FOOTPRINT");
 
 
-void AreaCropper::print(std::ostream& out) const {
-    out << "AreaCropper[bbox=" << boundingBox() << "]";
+void AreaMasker::print(std::ostream& out) const {
+    out << "AreaMasker[bbox=" << boundingBox() << "]";
 }
 
 
-bool AreaCropper::sameAs(const Action& other) const {
-    const auto* o = dynamic_cast<const AreaCropper*>(&other);
+bool AreaMasker::sameAs(const Action& other) const {
+    const auto* o = dynamic_cast<const AreaMasker*>(&other);
     return (o != nullptr) && Area::sameAs(other);
 }
 
 
-util::BoundingBox AreaCropper::outputBoundingBox() const {
+util::BoundingBox AreaMasker::outputBoundingBox() const {
     return boundingBox();
 }
 
 
 static void create_cache_entry(caching::AreaCacheEntry& c, const repres::Representation* representation,
                                const util::BoundingBox& bbox) {
-    Log::debug() << "Creating area cropping cache entry for " << bbox << std::endl;
+    Log::debug() << "Creating area masker cache entry for " << bbox << std::endl;
     c.bbox_ = bbox;
     c.mapping_.clear();
 
-    // Give a chance to representation-specialised cropping
-    if (representation->crop(c.bbox_, c.mapping_)) {
-        return;
-    }
-
-    AreaCropper::crop(*representation, c.bbox_, c.mapping_);
+    AreaMasker::mask(*representation, c.bbox_, c.mapping_);
 }
 
 
@@ -80,9 +75,9 @@ static const caching::AreaCacheEntry& get_cache_entry(const std::string& key,
 
     auto& c = cache[key];
     if (caching) {
-        static caching::AreaCropperCache disk;
+        static caching::AreaMaskerCache disk;
 
-        class CacheCreator final : public caching::AreaCropperCache::CacheContentCreator {
+        class CacheCreator final : public caching::AreaMaskerCache::CacheContentCreator {
 
             const repres::Representation* representation_;
             const util::BoundingBox& bbox_;
@@ -118,7 +113,7 @@ static const caching::AreaCacheEntry& get_cache_entry(const std::string& key,
 static const caching::AreaCacheEntry& get_cache_entry(const repres::Representation* representation,
                                                       const util::BoundingBox& bbox, bool caching) {
     eckit::MD5 md5;
-    md5 << representation->uniqueName() << bbox << caching::AreaCropperCacheTraits::extension();
+    md5 << representation->uniqueName() << bbox << caching::AreaMaskerCacheTraits::extension();
 
     std::string key(md5);
 
@@ -135,18 +130,16 @@ static const caching::AreaCacheEntry& get_cache_entry(const repres::Representati
 }
 
 
-void AreaCropper::execute(context::Context& ctx) const {
+void AreaMasker::execute(context::Context& ctx) const {
     // Make sure another thread to no evict anything from the cache while we are using it
     auto cacheUse(ctx.statistics().cacheUser(cache));
     auto timing(ctx.statistics().cropTimer());
 
-    // Keep a pointer on the original representation, as the one in the field will
-    // be changed in the loop
     auto& field = ctx.field();
     repres::RepresentationHandle representation(field.representation());
 
     const auto& c = get_cache_entry(representation, boundingBox(), caching());
-    ASSERT_NONEMPTY_AREA("AreaCropper", !c.mapping_.empty());
+    ASSERT_NONEMPTY_AREA("AreaMasker", !c.mapping_.empty());
 
     for (size_t i = 0; i < field.dimensions(); i++) {
         const MIRValuesVector& values = field.values(i);
@@ -158,51 +151,28 @@ void AreaCropper::execute(context::Context& ctx) const {
             result.push_back(values[j]);
         }
 
-        repres::RepresentationHandle cropped(representation->croppedRepresentation(c.bbox_));
-        // Log::debug() << *cropped << std::endl;
-
         if (result.empty()) {
             std::ostringstream oss;
-            oss << "AreaCropper: failed to crop " << *representation << " with bbox " << c.bbox_
-                << " cropped=" << *cropped;
+            oss << "AreaMasker: failed to mask " << *representation << " with bbox " << c.bbox_;
             throw exception::UserError(oss.str());
         }
 
-        cropped->validate(result);
-
-        field.representation(cropped);
-        field.update(result, i, field.hasMissing());
+        field.update(result, i, true);
     }
 }
 
 
-void AreaCropper::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
-    repres::RepresentationHandle in(ctx.field().representation());
-    repres::RepresentationHandle out(in->croppedRepresentation(boundingBox()));
-
-    estimateNumberOfGridPoints(ctx, estimation, *out);
-    estimateMissingValues(ctx, estimation, *out);
-
-    ctx.field().representation(out);
+void AreaMasker::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
+    NOTIMP;
 }
 
 
-const char* AreaCropper::name() const {
-    return "AreaCropper";
+const char* AreaMasker::name() const {
+    return "AreaMasker";
 }
 
 
-bool AreaCropper::isCropAction() const {
-    return true;
-}
-
-
-bool AreaCropper::canCrop() const {
-    return true;
-}
-
-
-static const ActionBuilder<AreaCropper> __action("crop.area");
+static const ActionBuilder<AreaMasker> __action("mask.area");
 
 
 }  // namespace mir::action

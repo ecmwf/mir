@@ -20,7 +20,7 @@
 namespace mir::caching {
 
 
-struct AreaCropperCacheTraits {
+struct AreaMaskerCacheTraits {
 
     using value_type = AreaCacheEntry;
     using Locker     = eckit::CacheManagerFileFlock;
@@ -34,9 +34,9 @@ struct AreaCropperCacheTraits {
 };
 
 
-class AreaCropperCache : public eckit::CacheManager<AreaCropperCacheTraits> {
+class AreaMaskerCache : public eckit::CacheManager<AreaMaskerCacheTraits> {
 public:  // methods
-    explicit AreaCropperCache();
+    explicit AreaMaskerCache();
 };
 
 
