@@ -149,7 +149,7 @@ void AreaMasker::execute(context::Context& ctx) const {
         MIRValuesVector result(values.size(), missingValue);
 
         for (const auto& j : c.mapping_) {
-            result[j] = values[j];
+            result[j] = values.at(j);
         }
 
         if (result.empty()) {
