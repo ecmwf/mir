@@ -471,7 +471,7 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, output::MIROutput& output) co
         }
 
         if (user.has("area")) {
-            plan.add(key::Area::Mode::get(parametrisation_) + ".area");
+            plan.add(key::Area::action(parametrisation_));
         }
 
         if (user.has("bitmap")) {

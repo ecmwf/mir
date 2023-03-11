@@ -66,17 +66,20 @@ void Area::Mode::list(std::ostream& out) {
 }
 
 
-std::string Area::Mode::get(const param::MIRParametrisation& param) {
+std::string Area::action(const param::MIRParametrisation& param) {
     std::string mode = "crop";
     param.get("area-mode", mode);
 
-    if (mode != "crop" && mode != "mask") {
-        std::ostringstream msg;
-        list(Log::error() << "Area::Mode: unknown '" << mode << "', choices are: ");
-        throw exception::UserError("Area::Mode: unknown '" + mode + "'");
+    if (mode == "crop") {
+        return "crop.area";
     }
 
-    return mode;
+    if (mode == "mask") {
+        return "mask.area";
+    }
+
+    list(Log::error() << "Area: unknown '" << mode << "', choices are: ");
+    throw exception::UserError("Area: unknown '" + mode + "'");
 }
 
 

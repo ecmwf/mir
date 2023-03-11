@@ -35,7 +35,6 @@ public:
 
     struct Mode {
         static void list(std::ostream&);
-        static std::string get(const param::MIRParametrisation&);
     };
 
     // -- Constructors
@@ -57,6 +56,7 @@ public:
     // -- Methods
 
     static bool get(const param::MIRParametrisation&, util::BoundingBox&);
+    static std::string action(const param::MIRParametrisation&);
     static bool match(const std::string&, util::BoundingBox&);
     static void list(std::ostream&);
 
