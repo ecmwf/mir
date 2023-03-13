@@ -10,11 +10,11 @@ foreach(_t
     MIR-536
     PGEN-412
     PGEN-492
-    area
     action_graph
+    area
     bounding_box
-    gaussian_grid
     formula
+    gaussian_grid
     grib_basic_angle
     grib_encoding
     grid_box_method
@@ -23,6 +23,7 @@ foreach(_t
     interpolations
     iterator
     knn_weighting
+    packing
     raw_memory
     spectral_order
     statistics
