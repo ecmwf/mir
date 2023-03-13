@@ -175,7 +175,7 @@ ArtificialInput* ArtificialInputFactory::build(const std::string& name, const pa
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-    Log::debug() << "ArtificialInputFactory: looking for '" << name << "'" << std::endl;
+    //    Log::debug() << "ArtificialInputFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
