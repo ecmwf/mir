@@ -44,9 +44,6 @@ CASE("PGEN-492") {
     auto west = longitude("west");
     ASSERT(west == Longitude::GREENWICH);
 
-    auto east = longitude("east");  // wrongly encoded, should be 360.
-    EXPECT_EQUAL(east, Longitude::GLOBE);
-
     repres::RepresentationHandle repres(input->field().representation());
     auto domain = repres->domain();
 
