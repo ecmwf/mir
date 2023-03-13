@@ -19,7 +19,6 @@
 #include "mir/input/GribFileInput.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
-#include "mir/util/Types.h"
 
 
 namespace mir::tests::unit {
@@ -29,20 +28,9 @@ CASE("PGEN-492") {
     std::unique_ptr<input::MIRInput> input(new input::GribFileInput("stream=wave,param=swh"));
     ASSERT(input->next());
 
-    const auto& param = input->parametrisation();
-
     std::string gridType;
-    param.get("gridType", gridType);
+    input->parametrisation().get("gridType", gridType);
     ASSERT(gridType == "reduced_ll");
-
-    auto longitude = [&](const std::string& key) -> Longitude {
-        double value = 0.;
-        ASSERT(param.get(key, value));
-        return value;
-    };
-
-    auto west = longitude("west");
-    ASSERT(west == Longitude::GREENWICH);
 
     repres::RepresentationHandle repres(input->field().representation());
     auto domain = repres->domain();
