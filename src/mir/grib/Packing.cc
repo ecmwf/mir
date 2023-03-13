@@ -335,11 +335,10 @@ Packing* Packing::build(const param::MIRParametrisation& param) {
     grib_config->get("grib-packing-always-set", packing_always_set);
 
     ASSERT(field.has("spectral") != field.has("gridded"));
-    auto gridded = user.has("grid") || (field.has("gridded") && !user.has("truncation"));
-    auto packing = packing_always_set                               ? (gridded ? packing_gridded : packing_spectral)
-                   : field.has("spectral") && user.has("grid")      ? packing_gridded
-                   : field.has("gridded") && user.has("truncation") ? packing_spectral
-                                                                    : "av";
+    auto gridded = user.has("grid") || (field.has("gridded"));
+    auto packing = packing_always_set                          ? (gridded ? packing_gridded : packing_spectral)
+                   : field.has("spectral") && user.has("grid") ? packing_gridded
+                                                               : "av";
     user.get("packing", packing);
 
 
