@@ -34,8 +34,8 @@ CASE("Packing") {
     std::map<std::string, param::SimpleParametrisation> fields;
 
 #define COMMON "artificialInput:constant,constant:0.,accuracy:16,truncation:1279"
-    fields["spectral_complex, edition=1"].set("input", "{" COMMON ",edition:1,spectral:true,packing:complex}");
-    fields["spectral_complex, edition=2"].set("input", "{" COMMON ",edition:2,spectral:true,packing:complex}");
+    fields["spectral_complex, edition=1"].set("input", "{" COMMON ",edition:1,packing:complex,spectral:true}");
+    fields["spectral_complex, edition=2"].set("input", "{" COMMON ",edition:2,packing:complex,spectral:true}");
     fields["grid_simple, edition=1"].set("input", "{" COMMON ",edition:1,packing:simple,gridded:true}");
     fields["grid_simple, edition=2"].set("input", "{" COMMON ",edition:2,packing:simple,gridded:true}");
     fields["grid_ccsds, edition=2"].set("input", "{" COMMON ",edition:2,packing:ccsds,gridded:true}");
