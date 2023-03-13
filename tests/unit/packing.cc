@@ -176,6 +176,24 @@ CASE("Packing") {
             check_packing_edition_bits(*pack, same_packing ? "" : "ccsds", same_edition ? 0 : 2);
         }
     }
+
+
+    // PGEN-496
+    SECTION("grid=?, packing=off, edition=off, accuracy=off, truncation=?") {
+        api::MIRJob job;
+        job.set("truncation", "none");  // (from RESOL=AV)
+
+        for (const std::string& grid : {"N80", "N160"}) {
+            job.set("grid", grid);
+
+            for (const auto& field : fields) {
+                std::unique_ptr<grib::Packing> pack(grib::Packing::build(*Combine(job, field.second).param));
+
+                bool field_spectral = field.first.substr(0, 8) == "spectral";
+                check_packing_edition_bits(*pack, field_spectral ? "simple" : "");
+            }
+        }
+    }
 }
 
 
