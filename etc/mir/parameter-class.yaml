@@ -2509,7 +2509,7 @@ numerics.accumulated:
 - 231001  # Accumulated freezing rain water equivalent
 - 231002  # Runoff water equivalent
 - 231003  # Snow evaporation water equivalent
-- 231004  # Total snowfall water equivalent
+- 231005  # Potential evaporation
 - 235015  # Time integral of rain flux
 - 235017  # Time integral of surface eastward momentum flux
 - 235018  # Time integral of surface northward momentum flux
@@ -4002,7 +4002,8 @@ rate.mass-flux:
 - 231001  # Accumulated freezing rain water equivalent
 - 231002  # Runoff water equivalent
 - 231003  # Snow evaporation water equivalent
-- 231004  # Total snowfall water equivalent
+- 231004  # Potential evaporation rate
+- 231005  # Potential evaporation
 - 235009  # Mean updraught mass flux
 - 235010  # Mean downdraught mass flux
 - 235013  # Mean total precipitation flux
