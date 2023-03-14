@@ -4656,6 +4656,8 @@ ratio.fraction:
 - 228255  # Surface long wave-effective total cloudiness
 - 230050  # Large-scale precipitation fraction (variable resolution)
 - 230174  # Albedo (variable resolution)
+- 231006  # Tile fraction
+- 231007  # Tile percentage
 - 235026  # Mean large-scale precipitation fraction
 - 235044  # Sunshine duration fraction
 - 240016  # Water fraction
@@ -5533,6 +5535,10 @@ stress:
 - 300193  # Surface zonal wind stress
 - 300195  # Surface meridional wind stress
 
+tile-fraction:
+- 231006  # Tile fraction
+- 231007  # Tile percentage
+  
 orca.arrangement.f:
 - 250011  # lat_F (coordinate) FIXME
 - 250012  # lon_F (coordinate) FIXME
