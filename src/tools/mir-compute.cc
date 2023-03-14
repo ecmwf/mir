@@ -23,8 +23,10 @@
 #include "mir/action/io/Save.h"
 #include "mir/input/MIRInput.h"
 #include "mir/output/MIROutput.h"
+#include "mir/param/CombinedParametrisation.h"
 #include "mir/param/ConfigurationWrapper.h"
-#include "mir/param/RuntimeParametrisation.h"
+#include "mir/param/DefaultParametrisation.h"
+#include "mir/param/SimpleParametrisation.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -80,10 +82,9 @@ void MIRCompute::execute(const eckit::option::CmdArgs& args) {
     ASSERT(paramids.empty() || paramids.size() == formulas.size());
 
 
-    // create input/output/save
+    // create input/output
     std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build(args(0), param));
     std::unique_ptr<output::MIROutput> output(output::MIROutputFactory::build(args(1), param));
-    std::unique_ptr<action::Action> save(new action::io::Save(param, *output));
 
 
     // for each input (possibly more than one field at a time), process each formula/metadata
@@ -92,14 +93,20 @@ void MIRCompute::execute(const eckit::option::CmdArgs& args) {
             util::MIRStatistics statistics;
             context::Context ctx(*input, statistics);
 
-            param::RuntimeParametrisation run(param);
-            run.set("formula", formulas[i]);
-            run.set("formula.metadata", paramids.empty() ? "" : "paramId=" + std::to_string(paramids[i]));
+            // run-time parametrisation
+            param::SimpleParametrisation user;
+            user.set("formula", formulas[i]);
+            user.set("formula.metadata", paramids.empty() ? "" : "paramId=" + std::to_string(paramids[i]));
 
-            std::unique_ptr<action::FormulaAction> formula(new action::FormulaAction(run));
+            const param::DefaultParametrisation defaults;
+            std::unique_ptr<param::MIRParametrisation> param(
+                new param::CombinedParametrisation(user, input->parametrisation(), defaults));
+
+            std::unique_ptr<action::FormulaAction> formula(new action::FormulaAction(*param));
             formula->perform(ctx);
             Log::info() << ctx << std::endl;
 
+            std::unique_ptr<action::Action> save(new action::io::Save(*param, *output));
             save->perform(ctx);
         }
     }
