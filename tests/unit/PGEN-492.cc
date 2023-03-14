@@ -25,17 +25,19 @@ namespace mir::tests::unit {
 
 
 CASE("PGEN-492") {
-    std::unique_ptr<input::MIRInput> input(new input::GribFileInput("stream=wave,param=swh"));
-    ASSERT(input->next());
+    for (const std::string& file : {"stream=wave,param=swh", "stream=wave,param=swh,domain=m"}) {
+        std::unique_ptr<input::MIRInput> input(new input::GribFileInput(file));
+        ASSERT(input->next());
 
-    std::string gridType;
-    input->parametrisation().get("gridType", gridType);
-    ASSERT(gridType == "reduced_ll");
+        std::string gridType;
+        input->parametrisation().get("gridType", gridType);
+        ASSERT(gridType == "reduced_ll");
 
-    repres::RepresentationHandle repres(input->field().representation());
-    auto domain = repres->domain();
+        repres::RepresentationHandle repres(input->field().representation());
+        auto domain = repres->domain();
 
-    EXPECT(domain.isPeriodicWestEast());
+        EXPECT(domain.isPeriodicWestEast());
+    }
 }
 
 
