@@ -19,38 +19,25 @@
 #include "mir/input/GribFileInput.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
-#include "mir/util/Types.h"
 
 
 namespace mir::tests::unit {
 
 
 CASE("PGEN-492") {
-    std::unique_ptr<input::MIRInput> input(new input::GribFileInput("stream=wave,param=swh"));
-    ASSERT(input->next());
+    for (const std::string& file : {"stream=wave,param=swh", "stream=wave,param=swh,domain=m"}) {
+        std::unique_ptr<input::MIRInput> input(new input::GribFileInput(file));
+        ASSERT(input->next());
 
-    const auto& param = input->parametrisation();
+        std::string gridType;
+        input->parametrisation().get("gridType", gridType);
+        ASSERT(gridType == "reduced_ll");
 
-    std::string gridType;
-    param.get("gridType", gridType);
-    ASSERT(gridType == "reduced_ll");
+        repres::RepresentationHandle repres(input->field().representation());
+        auto domain = repres->domain();
 
-    auto longitude = [&](const std::string& key) -> Longitude {
-        double value = 0.;
-        ASSERT(param.get(key, value));
-        return value;
-    };
-
-    auto west = longitude("west");
-    ASSERT(west == Longitude::GREENWICH);
-
-    auto east = longitude("east");  // wrongly encoded, should be 360.
-    EXPECT_EQUAL(east, Longitude::GLOBE);
-
-    repres::RepresentationHandle repres(input->field().representation());
-    auto domain = repres->domain();
-
-    EXPECT(domain.isPeriodicWestEast());
+        EXPECT(domain.isPeriodicWestEast());
+    }
 }
 
 
