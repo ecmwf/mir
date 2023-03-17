@@ -163,8 +163,8 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 #endif
 
     // This may return EINVAL is the segment is too large 256MB
-    int shmid;
-    if ((shmid = eckit::Shmget::shmget(key, shmsize, IPC_CREAT | 0600)) < 0) {
+    int shmid = eckit::Shmget::shmget(key, shmsize, IPC_CREAT | 0600);
+    if (shmid < 0) {
         Log::warning()
             << msg.str()
             << ", shmget: failed to acquire shared memory, check the maximum authorised on this system (Linux ipcs "
