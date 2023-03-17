@@ -22,7 +22,6 @@
 #include "mir/action/io/Save.h"
 #include "mir/action/io/Set.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/api/MIREstimation.h"
 #include "mir/compat/GribCompatibility.h"
 #include "mir/data/MIRField.h"
 #include "mir/grib/BasicAngle.h"
@@ -92,33 +91,6 @@ size_t GribOutput::copy(const param::MIRParametrisation& /*unused*/, context::Co
     }
 
     return total;
-}
-
-
-void GribOutput::estimate(const param::MIRParametrisation& param, api::MIREstimation& estimator,
-                          context::Context& ctx) const {
-
-    const data::MIRField& field = ctx.field();
-    ASSERT(field.dimensions() == 1);
-
-    field.representation()->estimate(estimator);
-
-    long bits = 0;
-    if (param.get("accuracy", bits)) {
-        estimator.accuracy(size_t(bits));
-    }
-
-    std::string packing;
-    if (param.get(packing, packing)) {
-        estimator.packing(packing);
-        // const grib::Packing &packer = grib::Packing::lookup(packing);
-        // packer.estimate(estimator, *field.representation());
-    }
-
-    long edition;
-    if (param.get("edition", edition)) {
-        estimator.edition(size_t(edition));
-    }
 }
 
 

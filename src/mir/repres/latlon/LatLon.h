@@ -134,7 +134,7 @@ private:
 
     void fillMeshGen(util::MeshGeneratorParameters&) const override;
 
-    size_t frame(MIRValuesVector& values, size_t size, double missingValue, bool estimate = false) const override;
+    size_t frame(MIRValuesVector& values, size_t size, double missingValue) const override;
 
     void reorder(long scanningMode, MIRValuesVector& values) const override;
 

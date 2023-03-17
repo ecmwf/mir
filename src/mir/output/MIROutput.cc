@@ -176,12 +176,4 @@ void MIROutput::prepare(const param::MIRParametrisation& param, action::ActionPl
 }
 
 
-void MIROutput::estimate(const param::MIRParametrisation& /*unused*/, api::MIREstimation& /*unused*/,
-                         context::Context& /*unused*/) const {
-    std::ostringstream oss;
-    oss << "MIROutput::estimate not implemented for " << *this;
-    throw exception::SeriousBug(oss.str());
-}
-
-
 }  // namespace mir::output

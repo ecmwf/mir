@@ -14,7 +14,6 @@
 #include <sstream>
 
 #include "mir/action/plan/Action.h"
-#include "mir/api/MIREstimation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Exceptions.h"
@@ -70,53 +69,6 @@ bool Action::canCrop() const {
 
 util::BoundingBox Action::outputBoundingBox() const {
     NOTIMP;
-}
-
-void Action::estimate(context::Context& /*unused*/, api::MIREstimation& /*estimation*/) const {
-    std::ostringstream oss;
-    oss << "Action::estimate not implemented for " << *this;
-    throw exception::SeriousBug(oss.str());
-}
-
-
-void Action::estimateNumberOfGridPoints(context::Context& /*unused*/, api::MIREstimation& estimation,
-                                        const repres::Representation& out) {
-    // trace::Timer timer("estimateNumberOfGridPoints");
-    estimation.numberOfGridPoints(out.numberOfPoints());
-}
-
-
-void Action::estimateMissingValues(context::Context& /*ctx*/, api::MIREstimation& /*estimation*/,
-                                   const repres::Representation& /*out*/) {
-#if 0
-    data::MIRField& field = ctx.field();
-    ASSERT(field.dimensions() == 1);
-    if (field.hasMissing()) {
-        trace::Timer timer("estimateMissingValues");
-
-        param::DefaultParametrisation runtime;
-        param::CombinedParametrisation combined(runtime, runtime, runtime);
-        std::unique_ptr< method::Method > method(method::MethodFactory::build("nn", combined));
-
-        util::MIRStatistics dummy; // TODO: use the global one
-        context::Context ctx(field, dummy);
-        method->execute(ctx, *field.representation(), out);
-
-
-        size_t missing = 0;
-
-        const MIRValuesVector& values = field.values(0);
-        double missingValue = field.missingValue();
-
-        for(size_t i = 0; i < values.size(); ++i) {
-            if(values[i] == missingValue) {
-                missing++;
-            }
-        }
-
-        estimation.missingValues(missing);
-    }
-#endif
 }
 
 

@@ -26,9 +26,6 @@ class MIRParametrisation;
 namespace util {
 class BoundingBox;
 }
-namespace api {
-class MIREstimation;
-}
 namespace repres {
 class Representation;
 }
@@ -75,16 +72,11 @@ public:
     virtual bool canCrop() const;
     virtual util::BoundingBox outputBoundingBox() const;
 
-    virtual void estimate(context::Context&, api::MIREstimation&) const;
-
     // -- Overridden methods
     // None
 
     // -- Class members
-    // Helper function for estimate()
-
-    static void estimateNumberOfGridPoints(context::Context&, api::MIREstimation&, const repres::Representation&);
-    static void estimateMissingValues(context::Context&, api::MIREstimation&, const repres::Representation&);
+    // None
 
     // -- Class methods
     // None

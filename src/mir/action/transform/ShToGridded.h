@@ -78,7 +78,6 @@ protected:
 
     void print(std::ostream&) const override  = 0;
     bool sameAs(const Action&) const override = 0;
-    void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Class members
     // None

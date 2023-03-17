@@ -40,9 +40,4 @@ const char* Set::name() const {
 }
 
 
-void Set::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
-    output().estimate(parametrisation_, estimation, ctx);
-}
-
-
 }  // namespace mir::action::io

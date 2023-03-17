@@ -95,7 +95,7 @@ private:
 
     // -- Overridden methods
 
-    size_t frame(MIRValuesVector&, size_t size, double missingValue, bool estimate = false) const override;
+    size_t frame(MIRValuesVector&, size_t size, double missingValue) const override;
     size_t numberOfPoints() const override;
     bool getLongestElementDiagonal(double&) const override;
 

@@ -73,14 +73,6 @@ void Job::execute(util::MIRStatistics& statistics) const {
 }
 
 
-void Job::estimate(api::MIREstimation& estimation) const {
-    ASSERT(plan_);
-
-    util::MIRStatistics statistics;
-    context::Context ctx(input_, statistics);
-    plan_->estimate(ctx, estimation);
-}
-
 const ActionPlan& Job::plan() const {
     return *plan_;
 }

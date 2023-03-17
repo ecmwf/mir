@@ -82,8 +82,6 @@ private:
 
     const char* name() const override;
 
-    void estimate(context::Context&, api::MIREstimation&) const override;
-
     // -- Class members
     // None
 

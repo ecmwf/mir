@@ -89,7 +89,6 @@ private:
 
     void fillGrib(grib_info&) const override;
     void fillJob(api::MIRJob&) const override;
-    void estimate(api::MIREstimation&) const override;
     std::string factory() const override;
 
     const Representation* truncate(size_t truncation, const MIRValuesVector&, MIRValuesVector&) const override;

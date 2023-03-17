@@ -15,7 +15,6 @@
 #include <ostream>
 
 #include "mir/action/context/Context.h"
-#include "mir/api/MIREstimation.h"
 #include "mir/output/MIROutput.h"
 #include "mir/util/MIRStatistics.h"
 
@@ -45,11 +44,6 @@ const char* Copy::name() const {
 
 void Copy::print(std::ostream& out) const {
     out << "Copy[]";
-}
-
-
-void Copy::estimate(context::Context& /*unused*/, api::MIREstimation& estimation) const {
-    estimation.sameAsInput();
 }
 
 
