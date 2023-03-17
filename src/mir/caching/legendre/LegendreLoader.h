@@ -47,8 +47,6 @@ public:
 
     atlas::trans::LegendreCache transCache();
 
-    static const std::string& default_loader();
-
 protected:
     const param::MIRParametrisation& parametrisation_;
     eckit::PathName path_;

@@ -21,6 +21,7 @@
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/caching/matrix/MatrixLoader.h"
+#include "mir/config/LibMir.h"
 #include "mir/method/WeightMatrix.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/stats/detail/CounterBinary.h"
@@ -92,7 +93,7 @@ void MIRWeightMatrixDiff::execute(const eckit::option::CmdArgs& args) {
     const param::ConfigurationWrapper param(args);
     auto& log = Log::info();
 
-    std::string matrixLoader = caching::matrix::MatrixLoader::default_loader();
+    std::string matrixLoader = LibMir::cacheLoader(LibMir::cache_loader::MATRIX);
     param.get("matrix-loader", matrixLoader);
 
     bool matrixValidate;

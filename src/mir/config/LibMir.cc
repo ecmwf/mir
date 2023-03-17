@@ -55,8 +55,22 @@ eckit::PathName LibMir::configFile(config_file c) {
         {r("mir-config-parameters;$MIR_CONFIG_PARAMETERS", "~mir/etc/mir/parameters.yaml")},
     };
 
-    ASSERT(0 <= c && c < ALL_CONFIG_FILES);
+    ASSERT(0 <= c && c < config_file::ALL_CONFIG_FILES);
     return files[c];
+}
+
+
+std::string LibMir::cacheLoader(cache_loader l) {
+    using r = eckit::LibResource<std::string, LibMir>;
+
+    static const std::string loaders[]{
+        {r("$MIR_LEGENDRE_LOADER;mirLegendreLoader", "mapped-memory")},
+        {r("$MIR_MATRIX_LOADER;mirMatrixLoader", "file-io")},
+        {r("$MIR_POINT_SEARCH_LOADER;mirPointSearchLoader", "mapped-cache-file")},
+    };
+
+    ASSERT(0 <= l && l < cache_loader::ALL_CACHE_LOADERS);
+    return loaders[l];
 }
 
 

@@ -33,6 +33,7 @@
 // #include "eckit/os/SemLocker.h"
 #include "eckit/runtime/Main.h"
 
+#include "mir/config/LibMir.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Error.h"
 #include "mir/util/Exceptions.h"
@@ -115,7 +116,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
 
     trace::Timer timer("SharedMemoryLoader: loading '" + path.asString() + "'");
 
-    std::string name = default_loader();
+    std::string name = LibMir::cacheLoader(LibMir::cache_loader::LEGENDRE);
     if (parametrisation.get("legendre-loader", name)) {
         unload_ = name.substr(0, 4) == "tmp-";
     }

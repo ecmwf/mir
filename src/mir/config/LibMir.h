@@ -49,6 +49,16 @@ public:
 
     static eckit::PathName configFile(config_file);
 
+    enum cache_loader
+    {
+        LEGENDRE,
+        MATRIX,
+        POINT_SEARCH,
+        ALL_CACHE_LOADERS,
+    };
+
+    static std::string cacheLoader(cache_loader);
+
 protected:
     const void* addr() const override;
     std::string version() const override;

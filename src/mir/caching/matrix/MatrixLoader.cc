@@ -12,8 +12,6 @@
 
 #include "mir/caching/matrix/MatrixLoader.h"
 
-#include "eckit/config/Resource.h"
-
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
@@ -40,12 +38,6 @@ void MatrixLoader::deallocate(eckit::linalg::SparseMatrix::Layout /*unused*/,
                               eckit::linalg::SparseMatrix::Shape /*unused*/) {
     // We assume that the MatrixLoader is deleted at the same time as the matrix
     // and release the memory in its destructor
-}
-
-
-const std::string& MatrixLoader::default_loader() {
-    static const std::string r = eckit::Resource<std::string>("$MIR_MATRIX_LOADER;mirMatrixLoader", "file-io");
-    return r;
 }
 
 
