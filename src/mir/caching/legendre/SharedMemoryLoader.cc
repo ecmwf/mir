@@ -115,7 +115,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
 
     trace::Timer timer("SharedMemoryLoader: loading '" + path.asString() + "'");
 
-    std::string name;
+    std::string name = default_loader();
     if (parametrisation.get("legendre-loader", name)) {
         unload_ = name.substr(0, 4) == "tmp-";
     }

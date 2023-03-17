@@ -92,7 +92,7 @@ void MIRWeightMatrixDiff::execute(const eckit::option::CmdArgs& args) {
     const param::ConfigurationWrapper param(args);
     auto& log = Log::info();
 
-    std::string matrixLoader = "file-io";
+    std::string matrixLoader = caching::matrix::MatrixLoader::default_loader();
     param.get("matrix-loader", matrixLoader);
 
     bool matrixValidate;

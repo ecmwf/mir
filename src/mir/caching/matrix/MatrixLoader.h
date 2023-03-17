@@ -37,6 +37,8 @@ public:
 
     void deallocate(eckit::linalg::SparseMatrix::Layout, eckit::linalg::SparseMatrix::Shape) override;
 
+    static const std::string& default_loader();
+
 protected:
     eckit::PathName path_;
 };

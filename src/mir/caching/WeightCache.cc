@@ -28,13 +28,9 @@ namespace caching {
 
 
 static std::string extract_loader(const param::MIRParametrisation& param) {
-
-    std::string name;
-    if (param.get("matrix-loader", name)) {
-        return name;
-    }
-
-    return "file-io";
+    std::string name = matrix::MatrixLoader::default_loader();
+    param.get("matrix-loader", name);
+    return name;
 }
 
 

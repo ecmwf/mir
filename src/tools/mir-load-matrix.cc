@@ -96,7 +96,7 @@ void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
     param.get("unload", unload);
     param.get("wait", wait);
 
-    std::string matrixLoader = "file-io";
+    std::string matrixLoader = caching::matrix::MatrixLoader::default_loader();
     param.get("matrix-loader", matrixLoader);
 
 
