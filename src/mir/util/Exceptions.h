@@ -37,14 +37,17 @@ namespace mir::exception {
 
 using eckit::BadValue;
 using eckit::CantOpenFile;
-using eckit::FailedSystemCall;
 using eckit::SeriousBug;
 using eckit::UserError;
 using eckit::WriteError;
 
 
-class CannotConvert : public eckit::Exception {
-public:
+struct FailedSystemCall : eckit::FailedSystemCall {
+    FailedSystemCall(const std::string& msg);
+};
+
+
+struct CannotConvert : eckit::Exception {
     template <class T>
     CannotConvert(const char* from, const char* to, const std::string& name, const T& value) {
         std::ostringstream os;

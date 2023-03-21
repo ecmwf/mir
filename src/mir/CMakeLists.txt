@@ -627,6 +627,7 @@ list(APPEND mir_srcs
     util/Domain.h
     util/Error.cc
     util/Error.h
+    util/Exceptions.cc
     util/Exceptions.h
     util/Formula.cc
     util/Formula.h
