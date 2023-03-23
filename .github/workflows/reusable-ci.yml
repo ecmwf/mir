@@ -9,9 +9,6 @@ on:
       eckit:
         required: false
         type: string
-      metkit:
-        required: false
-        type: string
       atlas:
         required: false
         type: string
@@ -33,7 +30,6 @@ jobs:
             MathisRosenhauer/libaec@master
             ${{ inputs.eccodes || 'ecmwf/eccodes' }}
             ${{ inputs.eckit || 'ecmwf/eckit' }}
-            ${{ inputs.metkit || 'ecmwf/metkit' }}
             ${{ inputs.atlas || 'ecmwf/atlas' }}
         dependency_branch: develop
         parallelism_factor: 8
