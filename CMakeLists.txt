@@ -49,7 +49,10 @@ include(cmake/compiler_warnings.cmake) # optionally handle compiler specific war
 add_subdirectory(src)
 add_subdirectory(etc)
 add_subdirectory(share)
-add_subdirectory(tests)
+
+if(mir_ENABLE_TESTS)
+    add_subdirectory(tests)
+endif()
 
 
 ecbuild_add_resources(TARGET ${PROJECT_NAME}_top_files SOURCES AUTHORS README NOTICE LICENSE INSTALL COPYING)
