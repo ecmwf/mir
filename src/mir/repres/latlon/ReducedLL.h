@@ -98,6 +98,7 @@ private:
 
     // From Representation
     std::vector<util::GridBox> gridBoxes() const override;
+    const Representation* croppedRepresentation(const util::BoundingBox&) const override;
 
     // -- Class members
     // None
