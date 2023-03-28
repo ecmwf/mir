@@ -50,7 +50,7 @@ add_subdirectory(src)
 add_subdirectory(etc)
 add_subdirectory(share)
 
-if(mir_ENABLE_TESTS)
+if(HAVE_TESTS)
     add_subdirectory(tests)
 endif()
 
