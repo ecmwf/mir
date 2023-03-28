@@ -12,7 +12,7 @@ cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
 find_package(ecbuild 3.4 REQUIRED HINTS ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild)
 
-project(mir VERSION 1.16.4 LANGUAGES CXX)
+project(mir VERSION 1.16.5 LANGUAGES CXX)
 
 set(PERSISTENT_NAMESPACE "eckit" CACHE INTERNAL "") # needed for generating .b files for persistent support
 set(CMAKE_CXX_STANDARD 17)
@@ -21,7 +21,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 ecbuild_add_option(FEATURE BUILD_TOOLS        DEFAULT OFF DESCRIPTION "build the command line tools (install)")
 ecbuild_add_option(FEATURE MIR_DOWNLOAD_MASKS DEFAULT ON  DESCRIPTION "download LSM files")
-ecbuild_add_option(FEATURE TEST_ASSERTIONS    DEFAULT ON  DESCRIPTION "test: regressions")
 ecbuild_add_option(FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support for netCDF" REQUIRED_PACKAGES "NetCDF COMPONENTS C")
 ecbuild_add_option(FEATURE PNG                DEFAULT OFF DESCRIPTION "support for PNG encoding" REQUIRED_PACKAGES PNG)
 ecbuild_add_option(FEATURE OMP                DEFAULT OFF DESCRIPTION "support for OpenMP shared memory parallelism" REQUIRED_PACKAGES "OpenMP COMPONENTS CXX")
@@ -50,7 +49,7 @@ add_subdirectory(src)
 add_subdirectory(etc)
 add_subdirectory(share)
 
-if(mir_ENABLE_TESTS)
+if(HAVE_TESTS)
     add_subdirectory(tests)
 endif()
 
