@@ -35,6 +35,7 @@ print("include_dirs:", " ".join(include_dirs))
 # FIXME: sort out how to discover MIR libraries
 setup(
     name="mir-python",
+    version="0.1.0",
     ext_modules=cythonize(
         Extension(
             "mir",
