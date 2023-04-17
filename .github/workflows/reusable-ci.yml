@@ -15,6 +15,10 @@ on:
       mir:
         required: false
         type: string
+      codecov:
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   ci:
@@ -23,8 +27,10 @@ jobs:
     with:
       repository: ${{ inputs.mir || 'ecmwf/mir@develop' }}
       name_prefix: mir-
+      codecov_upload: ${{ inputs.codecov }}
       build_package_inputs: |
         repository: ${{ inputs.mir || 'ecmwf/mir@develop' }}
+        self_coverage: true
         dependencies: |
             ecmwf/ecbuild
             MathisRosenhauer/libaec@master
