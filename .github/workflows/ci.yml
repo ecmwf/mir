@@ -19,14 +19,14 @@ jobs:
   # Calls a reusable CI workflow to build & test the current repository.
   downstream-ci:
     name: downstream-ci
-    uses: ecmwf-actions/private-downstream-ci/.github/workflows/downstream-ci.yml@main
+    uses: ecmwf-actions/downstream-ci/.github/workflows/downstream-ci.yml@main
     with:
       mir: ecmwf/mir@${{ github.event.pull_request.head.sha || github.sha }}
     secrets: inherit
 
   downstream-ci-hpc:
     name: downstream-ci-hpc
-    uses: ecmwf-actions/private-downstream-ci/.github/workflows/downstream-ci-hpc.yml@main
+    uses: ecmwf-actions/downstream-ci/.github/workflows/downstream-ci-hpc.yml@main
     with:
       mir: ecmwf/mir@${{ github.event.pull_request.head.sha || github.sha }}
     secrets: inherit
