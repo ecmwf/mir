@@ -2453,6 +2453,7 @@ numerics.accumulated:
 - 228101  # Evaporation from bare soil
 - 228102  # Evaporation from open water surfaces excluding oceans
 - 228103  # Evaporation from vegetation transpiration
+- 228109  # Accumulated mass emission of methane from Wetlands
 - 228129  # Surface solar radiation downward clear-sky
 - 228130  # Surface thermal radiation downward clear-sky
 - 228141  # Snow depth water equivalent
@@ -3991,6 +3992,7 @@ rate.mass-flux:
 - 228102  # Evaporation from open water surfaces excluding oceans
 - 228103  # Evaporation from vegetation transpiration
 - 228104  # Atmosphere emission mass flux of Methane from Wetlands
+- 228109  # Accumulated mass emission of methane from Wetlands
 - 228141  # Snow depth water equivalent
 - 228143  # Convective precipitation
 - 228144  # Snow Fall water equivalent
