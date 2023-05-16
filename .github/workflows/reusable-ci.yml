@@ -38,5 +38,7 @@ jobs:
             ${{ inputs.eckit || 'ecmwf/eckit' }}
             ${{ inputs.atlas || 'ecmwf/atlas' }}
         dependency_branch: develop
+        dependency_cmake_options: |
+            ${{ inputs.codecov && 'ecmwf/atlas: "-DENABLE_OMP=0"' || '' }}
         parallelism_factor: 8
     secrets: inherit
