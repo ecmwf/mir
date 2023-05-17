@@ -4810,7 +4810,7 @@ ratio.mass:
 - 210170  # Volcanic sulfur dioxide mass mixing ratio
 - 210181  # Radon
 - 210182  # Sulphur Hexafluoride
-- 210203  # GEMS Ozone
+- 210203  # Ozone mass mixing ratio (full chemistry scheme)
 - 210247  # Nitrate fine mode aerosol mass mixing ratio
 - 210248  # Nitrate coarse mode aerosol mass mixing ratio
 - 210249  # Ammonium aerosol mass mixing ratio
@@ -5540,7 +5540,7 @@ stress:
 tile-fraction:
 - 231006  # Tile fraction
 - 231007  # Tile percentage
-  
+
 orca.arrangement.f:
 - 250011  # lat_F (coordinate) FIXME
 - 250012  # lon_F (coordinate) FIXME
