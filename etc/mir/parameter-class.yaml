@@ -889,8 +889,6 @@ intensity:
 - 3096  # V-component of ice drift
 - 3098  # Ice divergence
 - 3100  # Signific.height,combined wind waves+swell
-- 3102  # Significant height of wind waves
-- 3103  # Mean period of wind waves
 - 3105  # Significant height of swell waves
 - 3106  # Mean period of swell waves
 - 3108  # Primary wave mean period
@@ -1721,7 +1719,6 @@ intensity:
 - 260071  # V-component storm motion
 - 260073  # Frictional velocity
 - 260074  # Pressure reduced to MSL
-- 260075  # Geometric height
 - 260076  # Altimeter setting
 - 260077  # Thickness
 - 260078  # Pressure altitude
@@ -1729,7 +1726,6 @@ intensity:
 - 260080  # 5-wave geopotential height
 - 260081  # Zonal flux of gravity wave stress
 - 260082  # Meridional flux of gravity wave stress
-- 260083  # Planetary boundary layer height
 - 260084  # 5-wave geopotential height anomaly
 - 260085  # Standard deviation of sub-grid scale orography
 - 260101  # Cloud Ice
@@ -3327,7 +3323,6 @@ rate.energy-flux:
 - 235069  # Mean surface downward long-wave radiation flux, clear sky
 - 235071  # Time integral of surface latent heat sublimation flux
 - 260002  # Latent heat net flux
-- 260003  # Sensible heat net flux
 - 260007  # Snow phase change heat flux
 - 260037  # Potential evaporation rate
 - 260086  # Net short-wave radiation flux (top of atmosphere)
@@ -4092,7 +4087,6 @@ rate.mass-flux:
 - 260188  # Exchange coefficient
 - 260218  # Estimated precipitation
 - 260219  # Instantaneous rain rate
-- 260258  # Evaporation rate
 - 260259  # Evaporation
 - 260284  # Liquid precipitation (rainfall)
 - 260286  # Total precipitation (nearest grid point)
@@ -4521,7 +4515,6 @@ ratio.cover:
 - 200026  # Lake cover difference
 - 200031  # Sea-ice cover difference
 - 260038  # Snow cover
-- 260179  # Land cover (1=land, 0=sea)
 - 260459  # Land-sea coverage (nearest neighbor) [land=1,sea=0]
 
 ratio.cover.cloud:
@@ -4696,7 +4689,6 @@ ratio.fraction:
 - 215149  # Single scattering albedo at 1640 nm
 - 215178  # Single scattering albedo at 2130 nm
 - 228032  # Snow albedo
-- 228033  # Fraction of stratiform precipitation cover
 - 228034  # Fraction of convective precipitation cover
 - 228091  # Canopy cover fraction
 - 228092  # Soil texture fraction
