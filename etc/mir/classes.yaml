@@ -148,6 +148,10 @@ spectrum.associated-magnitude:
 # quantity expressing the internal forces arising from deformation exerted from external forces (typical units: [Pa])
 stress: {}
 
+# fractional quantity (relative to total) in a grid-box description
+tile-fraction:
+    interpolation: nearest-neighbour
+
 orca.arrangement.f:
     orca-arrangement: F
 

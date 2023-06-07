@@ -34,7 +34,7 @@ namespace mir::lsm {
 static NamedLSM const __lsm_selection("named");
 
 
-static const NamedMaskBuilder<MappedMask> __NamedMappedMask_1("1km", "~mir/share/mir/masks/lsm.1km.climate.v013.mask");
+static const NamedMaskBuilder<MappedMask> __NamedMappedMask_1("1km", "~mir/share/mir/masks/lsm.1km.climate.v020.mask");
 static const NamedMaskBuilder<MappedMask> __NamedMappedMask_2("1km.climate.v020",
                                                               "~mir/share/mir/masks/lsm.1km.climate.v020.mask");
 static const NamedMaskBuilder<MappedMask> __NamedMappedMask_3("1km.climate.v013",

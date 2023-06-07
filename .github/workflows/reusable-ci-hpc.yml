@@ -12,12 +12,12 @@ on:
       eckit:
         required: false
         type: string
-      metkit:
-        required: false
-        type: string
       atlas:
         required: false
         type: string
+      ecbuild:
+          required: false
+          type: string
 
 jobs:
   ci-hpc:
@@ -28,12 +28,11 @@ jobs:
       build-inputs: |
         --package: ${{ inputs.mir || 'ecmwf/mir@develop' }}
         --modules: |
-          ecbuild
           ninja
         --dependencies: |
+          ${{ inputs.ecbuild || 'ecmwf/ecbuild@develop' }}
           ${{ inputs.eccodes || 'ecmwf/eccodes@develop' }}
           ${{ inputs.eckit || 'ecmwf/eckit@develop' }}
-          ${{ inputs.metkit || 'ecmwf/metkit@develop' }}
           ${{ inputs.atlas || 'ecmwf/atlas@develop' }}
         --parallel: 64
     secrets: inherit

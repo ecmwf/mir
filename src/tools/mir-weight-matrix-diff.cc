@@ -21,6 +21,7 @@
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/caching/matrix/MatrixLoader.h"
+#include "mir/config/LibMir.h"
 #include "mir/method/WeightMatrix.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/stats/detail/CounterBinary.h"
@@ -85,20 +86,16 @@ void MIRWeightMatrixDiff::execute(const eckit::option::CmdArgs& args) {
     using caching::matrix::MatrixLoaderFactory;
     using method::WeightMatrix;
 
-    struct shape_t : std::vector<WeightMatrix::Size> {
-        shape_t(const WeightMatrix& m) : std::vector<WeightMatrix::Size>{m.nonZeros(), m.rows(), m.cols()} {}
-    };
-
     const param::ConfigurationWrapper param(args);
     auto& log = Log::info();
 
-    std::string matrixLoader = "file-io";
+    std::string matrixLoader = LibMir::cacheLoader(LibMir::cache_loader::MATRIX);
     param.get("matrix-loader", matrixLoader);
 
-    bool matrixValidate;
+    bool matrixValidate = false;
     param.get("matrix-validate", matrixValidate);
 
-    bool counter;
+    bool counter = false;
     param.get("counter", counter);
 
     WeightMatrix a(MatrixLoaderFactory::build(matrixLoader, args(0)));
@@ -111,8 +108,8 @@ void MIRWeightMatrixDiff::execute(const eckit::option::CmdArgs& args) {
         b.validate(("load '" + args(1) + "'").c_str());
     }
 
-    shape_t aShape(a);
-    shape_t bShape(b);
+    auto aShape = std::vector<WeightMatrix::Size>{a.nonZeros(), a.rows(), a.cols()};
+    auto bShape = std::vector<WeightMatrix::Size>{b.nonZeros(), b.rows(), b.cols()};
     if (aShape != bShape) {
         log << "!= geometry: " << aShape << " != " << bShape << std::endl;
     }

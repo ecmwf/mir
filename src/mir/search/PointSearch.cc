@@ -26,15 +26,19 @@
 
 namespace mir::search {
 
-PointSearch::PointSearch(const param::MIRParametrisation& parametrisation, const repres::Representation& r) {
+
+static std::string extract_loader(const param::MIRParametrisation& param) {
     bool caching = LibMir::caching();
-    parametrisation.get("caching", caching);
+    param.get("caching", caching);
 
-    std::string name = caching ? "mapped-cache-file" : "memory";
-    parametrisation.get("point-search-trees", name);
+    std::string name = caching ? LibMir::cacheLoader(LibMir::cache_loader::POINT_SEARCH) : "memory";
+    param.get("point-search-trees", name);
+    return name;
+}
 
-    tree_.reset(TreeFactory::build(name, r));
 
+PointSearch::PointSearch(const param::MIRParametrisation& param, const repres::Representation& r) {
+    tree_.reset(TreeFactory::build(extract_loader(param), r));
     eckit::AutoLock<Tree> lock(*tree_);
 
     Log::debug() << "Search using " << *tree_ << std::endl;
@@ -45,9 +49,11 @@ PointSearch::PointSearch(const param::MIRParametrisation& parametrisation, const
     }
 }
 
+
 PointSearch::PointValueType PointSearch::closestPoint(const PointSearch::PointType& pt) const {
     return tree_->nearestNeighbour(pt);
 }
+
 
 void PointSearch::closestNPoints(const PointType& pt, size_t n, std::vector<PointValueType>& closest) const {
 
@@ -61,9 +67,11 @@ void PointSearch::closestNPoints(const PointType& pt, size_t n, std::vector<Poin
     closest = tree_->kNearestNeighbours(pt, n);
 }
 
+
 void PointSearch::closestWithinRadius(const PointType& pt, double radius, std::vector<PointValueType>& closest) const {
     closest = tree_->findInSphere(pt, radius);
 }
+
 
 void PointSearch::build(const repres::Representation& r) {
     const size_t npts = tree_->itemCount();
@@ -97,9 +105,11 @@ void PointSearch::build(const repres::Representation& r) {
     }
 }
 
+
 void PointSearch::print(std::ostream& out) const {
     tree_->statsPrint(out, false);
     tree_->statsReset();
 }
+
 
 }  // namespace mir::search

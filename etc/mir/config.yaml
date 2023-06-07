@@ -1,8 +1,5 @@
 ---
 
-legendre-loader: mapped-memory
-matrix-loader: file-io
-
 post-process:
     - accuracy
     - bitmap

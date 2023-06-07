@@ -83,12 +83,9 @@ void CroppingCacheEntry::load(const eckit::PathName& path) {
     size_t size;
     f >> size;
 
-    mapping_.clear();
-    mapping_.reserve(size);
+    mapping_.resize(size);
     for (size_t i = 0; i < size; ++i) {
-        util::AreaCropperMapping::value_type j;
-        f >> j;
-        mapping_.push_back(j);
+        f >> mapping_[i];
     }
 }
 

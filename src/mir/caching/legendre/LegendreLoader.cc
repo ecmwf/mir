@@ -14,6 +14,7 @@
 
 #include <map>
 
+#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -68,7 +69,7 @@ LegendreLoader* LegendreLoaderFactory::build(const param::MIRParametrisation& pa
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> guard(*local_mutex);
 
-    std::string name = "mapped-memory";
+    std::string name = LibMir::cacheLoader(LibMir::cache_loader::LEGENDRE);
     params.get("legendre-loader", name);
 
     Log::debug() << "LegendreLoaderFactory: looking for '" << name << "'" << std::endl;
@@ -87,7 +88,7 @@ bool LegendreLoaderFactory::inSharedMemory(const param::MIRParametrisation& para
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> guard(*local_mutex);
 
-    std::string name = "mapped-memory";
+    std::string name = LibMir::cacheLoader(LibMir::cache_loader::LEGENDRE);
     params.get("legendre-loader", name);
 
     Log::debug() << "LegendreLoaderFactory: looking for '" << name << "'" << std::endl;

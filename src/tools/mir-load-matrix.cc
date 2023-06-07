@@ -24,6 +24,7 @@
 
 #include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/caching/matrix/SharedMemoryLoader.h"
+#include "mir/config/LibMir.h"
 #include "mir/method/WeightMatrix.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/tools/MIRTool.h"
@@ -96,7 +97,7 @@ void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
     param.get("unload", unload);
     param.get("wait", wait);
 
-    std::string matrixLoader = "file-io";
+    std::string matrixLoader = LibMir::cacheLoader(LibMir::cache_loader::MATRIX);
     param.get("matrix-loader", matrixLoader);
 
 

@@ -33,6 +33,7 @@
 // #include "eckit/os/SemLocker.h"
 #include "eckit/runtime/Main.h"
 
+#include "mir/config/LibMir.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Error.h"
 #include "mir/util/Exceptions.h"
@@ -115,7 +116,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
 
     trace::Timer timer("SharedMemoryLoader: loading '" + path.asString() + "'");
 
-    std::string name;
+    std::string name = LibMir::cacheLoader(LibMir::cache_loader::LEGENDRE);
     if (parametrisation.get("legendre-loader", name)) {
         unload_ = name.substr(0, 4) == "tmp-";
     }
@@ -159,8 +160,8 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
 #endif
 
     // This may return EINVAL is the segment is too large 256MB
-    int shmid;
-    if ((shmid = eckit::Shmget::shmget(key, shmsize, IPC_CREAT | 0600)) < 0) {
+    int shmid = eckit::Shmget::shmget(key, shmsize, IPC_CREAT | 0600);
+    if (shmid < 0) {
         Log::warning()
             << msg.str()
             << ", shmget: failed to acquire shared memory, check the maximum authorised on this system (Linux ipcs "

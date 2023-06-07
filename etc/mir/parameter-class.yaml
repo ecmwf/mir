@@ -530,6 +530,7 @@ vector-space.2d-vector-u:
 - 228246  # 100 metre U wind component
 - 230180  # East-West surface stress (variable resolution)
 - 230195  # Longitudinal component of gravity wave stress (variable resolution)
+- 233000  # Time-integrated total column vertically-integrated eastward geopotential flux
 - 235041  # Mean eastward turbulent surface stress
 - 235045  # Mean eastward gravity wave surface stress
 - 260062  # Momentum flux, u component
@@ -625,6 +626,7 @@ vector-space.2d-vector-v:
 - 228247  # 100 metre V wind component
 - 230181  # North-South surface stress (variable resolution)
 - 230196  # Meridional component of gravity wave stress (variable resolution)
+- 233001  # Time-integrated total column vertically-integrated northward geopotential flux
 - 235042  # Mean northward turbulent surface stress
 - 235046  # Mean northward gravity wave surface stress
 - 260063  # Momentum flux, v component
@@ -887,8 +889,6 @@ intensity:
 - 3096  # V-component of ice drift
 - 3098  # Ice divergence
 - 3100  # Signific.height,combined wind waves+swell
-- 3102  # Significant height of wind waves
-- 3103  # Mean period of wind waves
 - 3105  # Significant height of swell waves
 - 3106  # Mean period of swell waves
 - 3108  # Primary wave mean period
@@ -1684,6 +1684,10 @@ intensity:
 - 230082  # Accumulated Carbon Dioxide Ecosystem Respiration (variable resolution)
 - 230189  # Sunshine duration (variable resolution)
 - 230198  # Skin reservoir content (variable resolution)
+- 231008  # Forecast logarithm of surface roughness length for moisture
+- 232004  # Fuel load
+- 233002  # Time-integrated total column vertically-integrated divergence of water geopotential flux
+- 233003  # Time-integrated total column vertically-integrated divergence of geopotential flux
 - 235001  # Mean temperature tendency due to short-wave radiation
 - 235002  # Mean temperature tendency due to long-wave radiation
 - 235003  # Mean temperature tendency due to short-wave radiation, clear sky
@@ -1715,7 +1719,6 @@ intensity:
 - 260071  # V-component storm motion
 - 260073  # Frictional velocity
 - 260074  # Pressure reduced to MSL
-- 260075  # Geometric height
 - 260076  # Altimeter setting
 - 260077  # Thickness
 - 260078  # Pressure altitude
@@ -1723,7 +1726,6 @@ intensity:
 - 260080  # 5-wave geopotential height
 - 260081  # Zonal flux of gravity wave stress
 - 260082  # Meridional flux of gravity wave stress
-- 260083  # Planetary boundary layer height
 - 260084  # 5-wave geopotential height anomaly
 - 260085  # Standard deviation of sub-grid scale orography
 - 260101  # Cloud Ice
@@ -1911,6 +1913,7 @@ intensity:
 - 261020  # Physiological equivalent temperature
 - 261021  # Saturation water vapor pressure
 - 261022  # Wet-bulb potential temperature
+- 262143  # Sea surface height with inverse barometer correction
 - 300001  # Pressure
 - 300002  # Pressure reduced to msl
 - 300003  # Pressure tendency
@@ -2128,6 +2131,9 @@ numerics.mean:
 - 260472  # Time-mean snow depth water equivalent
 - 260473  # Time-mean skin temperature
 - 260477  # Time-mean snow melt rate in the last 24h
+- 435001  # mean net ecosystem exchange flux
+- 436001  # mean gross primary production flux 
+- 437001  # mean ecosystem respiration flux
 
 numerics.accumulated:
 - 8  # Surface runoff
@@ -2453,6 +2459,7 @@ numerics.accumulated:
 - 228101  # Evaporation from bare soil
 - 228102  # Evaporation from open water surfaces excluding oceans
 - 228103  # Evaporation from vegetation transpiration
+- 228109  # Accumulated mass emission of methane from Wetlands
 - 228129  # Surface solar radiation downward clear-sky
 - 228130  # Surface thermal radiation downward clear-sky
 - 228141  # Snow depth water equivalent
@@ -2510,6 +2517,12 @@ numerics.accumulated:
 - 231002  # Runoff water equivalent
 - 231003  # Snow evaporation water equivalent
 - 231005  # Potential evaporation
+- 231010  # Surface runoff
+- 231012  # Sub-surface runoff
+- 233000  # Time-integrated total column vertically-integrated eastward geopotential flux
+- 233001  # Time-integrated total column vertically-integrated northward geopotential flux
+- 233002  # Time-integrated total column vertically-integrated divergence of water geopotential flux
+- 233003  # Time-integrated total column vertically-integrated divergence of geopotential flux
 - 235015  # Time integral of rain flux
 - 235017  # Time integral of surface eastward momentum flux
 - 235018  # Time integral of surface northward momentum flux
@@ -2557,6 +2570,9 @@ numerics.accumulated:
 - 260645  # Time integral of total solid precipitation flux
 - 300065  # Wat equiv acc snow depth
 - 300177  # Potential sfc evaporation
+- 435002  # Accumulated net ecosystem exchange flux
+- 436002  # Accumulated gross primary production flux 
+- 437002  # Accumulated ecosystem respiration flux
 
 numerics.vertical-integral:
 - 78  # Total column cloud liquid water
@@ -2943,6 +2959,10 @@ numerics.vertical-integral:
 - 228088  # Total column supercooled liquid water
 - 228089  # Total column rain water
 - 228090  # Total column snow water
+- 233000  # Time-integrated total column vertically-integrated eastward geopotential flux
+- 233001  # Time-integrated total column vertically-integrated northward geopotential flux
+- 233002  # Time-integrated total column vertically-integrated divergence of water geopotential flux
+- 233003  # Time-integrated total column vertically-integrated divergence of geopotential flux
 - 235054  # Mean vertically integrated moisture divergence
 - 260001  # Total column graupel
 - 260041  # Total column integrated rain
@@ -3274,6 +3294,8 @@ rate.energy-flux:
 - 230210  # Surface net solar radiation, clear sky (variable resolution)
 - 230211  # Surface net thermal radiation, clear sky (variable resolution)
 - 230212  # TOA incident solar radiation (variable resolution)
+- 233000  # Time-integrated total column vertically-integrated eastward geopotential flux
+- 233001  # Time-integrated total column vertically-integrated northward geopotential flux
 - 235019  # Time integral of surface latent heat evaporation flux
 - 235022  # Mean surface photosynthetically active radiation flux, clear sky
 - 235027  # Mean surface downward UV radiation flux
@@ -3301,7 +3323,6 @@ rate.energy-flux:
 - 235069  # Mean surface downward long-wave radiation flux, clear sky
 - 235071  # Time integral of surface latent heat sublimation flux
 - 260002  # Latent heat net flux
-- 260003  # Sensible heat net flux
 - 260007  # Snow phase change heat flux
 - 260037  # Potential evaporation rate
 - 260086  # Net short-wave radiation flux (top of atmosphere)
@@ -3991,6 +4012,7 @@ rate.mass-flux:
 - 228102  # Evaporation from open water surfaces excluding oceans
 - 228103  # Evaporation from vegetation transpiration
 - 228104  # Atmosphere emission mass flux of Methane from Wetlands
+- 228109  # Accumulated mass emission of methane from Wetlands
 - 228141  # Snow depth water equivalent
 - 228143  # Convective precipitation
 - 228144  # Snow Fall water equivalent
@@ -4004,6 +4026,10 @@ rate.mass-flux:
 - 231003  # Snow evaporation water equivalent
 - 231004  # Potential evaporation rate
 - 231005  # Potential evaporation
+- 231009  # Surface runoff rate
+- 231010  # Surface runoff
+- 231011  # Sub-surface runoff rate
+- 231012  # Sub-surface runoff
 - 235009  # Mean updraught mass flux
 - 235010  # Mean downdraught mass flux
 - 235013  # Mean total precipitation flux
@@ -4061,7 +4087,6 @@ rate.mass-flux:
 - 260188  # Exchange coefficient
 - 260218  # Estimated precipitation
 - 260219  # Instantaneous rain rate
-- 260258  # Evaporation rate
 - 260259  # Evaporation
 - 260284  # Liquid precipitation (rainfall)
 - 260286  # Total precipitation (nearest grid point)
@@ -4096,6 +4121,15 @@ rate.mass-flux:
 - 300065  # Wat equiv acc snow depth
 - 300169  # Vert. integrated moisture flux conv.
 - 300178  # Runoff
+- 435000  # Net ecosystem exchange flux
+- 435001  # Mean net ecosystem exchange flux
+- 435002  # Accumulated net ecosystem exchange flux
+- 436000  # Gross primary production flux 
+- 436001  # Mean gross primary production flux 
+- 436002  # Accumulated gross primary production flux 
+- 437000  # Ecosystem respiration flux
+- 437001  # Mean ecosystem respiration flux
+- 437002  # Accumulated ecosystem respiration flux
 
 rate.volume-flux:
 - 8  # Surface runoff
@@ -4410,6 +4444,16 @@ ratio:
 - 162229  # Variance of relative humidity
 - 171157  # Relative humidity anomaly
 - 200157  # Relative humidity difference
+- 210198  # UV visible albedo for diffuse radiation (climatological)
+- 210199  # UV visible albedo for direct radiation (climatological)
+- 210200  # UV visible albedo for direct radiation, geometric component (climatological)
+- 210201  # UV visible albedo for direct radiation, isotropic component (climatological)
+- 210202  # UV visible albedo for direct radiation, volumetric component (climatological)
+- 210260  # Near IR albedo for diffuse radiation (climatological)
+- 210261  # Near IR albedo for direct radiation (climatological)
+- 210262  # Near IR albedo for direct radiation, geometric component (climatological)
+- 210263  # Near IR albedo for direct radiation, isotropic component (climatological)
+- 210264  # Near IR albedo for direct radiation, volumetric component (climatological)
 - 228012  # Lake shape factor
 - 228030  # Relative humidity with respect to water
 - 228031  # Relative humidity with respect to ice
@@ -4417,6 +4461,7 @@ ratio:
 - 228041  # Soil wetness index in layer 2
 - 228042  # Soil wetness index in layer 3
 - 228043  # Soil wetness index in layer 4
+- 231013  # Reflectance in 0.4 micron channel
 - 260023  # Maximum relative humidity
 - 260034  # Horizontal moisture divergence
 - 260112  # Convective cloud efficiency
@@ -4470,7 +4515,6 @@ ratio.cover:
 - 200026  # Lake cover difference
 - 200031  # Sea-ice cover difference
 - 260038  # Snow cover
-- 260179  # Land cover (1=land, 0=sea)
 - 260459  # Land-sea coverage (nearest neighbor) [land=1,sea=0]
 
 ratio.cover.cloud:
@@ -4645,7 +4689,6 @@ ratio.fraction:
 - 215149  # Single scattering albedo at 1640 nm
 - 215178  # Single scattering albedo at 2130 nm
 - 228032  # Snow albedo
-- 228033  # Fraction of stratiform precipitation cover
 - 228034  # Fraction of convective precipitation cover
 - 228091  # Canopy cover fraction
 - 228092  # Soil texture fraction
@@ -4656,6 +4699,13 @@ ratio.fraction:
 - 228255  # Surface long wave-effective total cloudiness
 - 230050  # Large-scale precipitation fraction (variable resolution)
 - 230174  # Albedo (variable resolution)
+- 231006  # Tile fraction
+- 231007  # Tile percentage
+- 232000  # Burned area
+- 232001  # Burning area
+- 232002  # Burnable area
+- 232003  # Un-burnable area
+- 232005  # Combustion completeness
 - 235026  # Mean large-scale precipitation fraction
 - 235044  # Sunshine duration fraction
 - 240016  # Water fraction
@@ -4806,7 +4856,7 @@ ratio.mass:
 - 210170  # Volcanic sulfur dioxide mass mixing ratio
 - 210181  # Radon
 - 210182  # Sulphur Hexafluoride
-- 210203  # GEMS Ozone
+- 210203  # Ozone mass mixing ratio (full chemistry scheme)
 - 210247  # Nitrate fine mode aerosol mass mixing ratio
 - 210248  # Nitrate coarse mode aerosol mass mixing ratio
 - 210249  # Ammonium aerosol mass mixing ratio
@@ -5075,6 +5125,7 @@ ratio.mass:
 - 228054  # Unbalanced component of specific humidity
 - 228055  # Unbalanced component of specific cloud liquid water content
 - 228056  # Unbalanced component of specific cloud ice water content
+- 232006  # Fuel moisture content
 - 235006  # Mean specific humidity tendency due to parametrisations
 - 260017  # Condensate
 - 260018  # Cloud mixing ratio
@@ -5532,6 +5583,10 @@ stress:
 - 235046  # Mean northward gravity wave surface stress
 - 300193  # Surface zonal wind stress
 - 300195  # Surface meridional wind stress
+
+tile-fraction:
+- 231006  # Tile fraction
+- 231007  # Tile percentage
 
 orca.arrangement.f:
 - 250011  # lat_F (coordinate) FIXME
