@@ -24,7 +24,3 @@ gridType=space_view:
 - nearest-method: longest-element-diagonal-and-nclosest
 - reset-missing-values: true
 
-# gridType=lambert area behaves as a mask
-gridType=lambert:
-- area-mode: mask
-
