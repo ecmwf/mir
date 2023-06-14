@@ -103,12 +103,24 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
         return "";
     }
 
-    std::vector<double> rotation;
-    const bool rotated = checkRotation && user.has("rotation") && !same->get("rotation", rotation);
+    bool rotation = user.has("rotation");
+    bool forced   = field.has("spectral") || option(user, "filter", false) || [&]() {
+        std::vector<double> dummy;
+        return checkRotation && rotation && !same->get("rotation", dummy);
+    }();
 
-    bool filter = option(user, "filter", false);
-    bool forced = field.has("spectral") || filter || rotated;
-    const std::string prefix(user.has("rotation") ? "rotated-" : "");
+    auto check_rotated_regular_ll = [&]() {
+        if (rotation && user.has("area")) {
+            std::string area_mode;
+            param.get("area-mode", area_mode);
+
+            if (area_mode == "mask") {
+                throw exception::UserError("ECMWFStyle: option 'rotation' is incompatible with area mode 'mask'");
+            }
+        }
+    };
+
+    const std::string prefix(rotation ? "rotated-" : "");
 
 
     std::string grid;
@@ -117,8 +129,12 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
 
         if (g.isRegularLL()) {
             std::vector<double> grid_v;
-            forced = forced || !field.has("gridded_regular_ll");
-            return forced || !same->get("grid", grid_v) || !same_points(user, field) ? prefix + "regular-ll" : "";
+            if (forced || !field.has("gridded_regular_ll") || !same->get("grid", grid_v) || !same_points(user, field)) {
+                check_rotated_regular_ll();
+                return prefix + "regular-ll";
+            }
+
+            return "";
         }
 
         if (g.isNamed()) {
@@ -152,7 +168,7 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
     }
 
     if (user.has("griddef")) {
-        if (user.has("rotation")) {
+        if (rotation) {
             throw exception::UserError("ECMWFStyle: option 'rotation' is incompatible with 'griddef'");
         }
         return "griddef";
@@ -162,15 +178,16 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
         if (user.has("latitudes") != user.has("longitudes")) {
             throw exception::UserError("ECMWFStyle: options 'latitudes' and 'longitudes' have to be provided together");
         }
-        if (user.has("rotation")) {
+        if (rotation) {
             throw exception::UserError(
                 "ECMWFStyle: option 'rotation' is incompatible with 'latitudes' and 'longitudes'");
         }
         return "points";
     }
 
-    if (user.has("area") || user.has("rotation")) {
+    if (user.has("area") || rotation) {
         if (field.has("gridded_regular_ll") && !same_points(user, field)) {
+            check_rotated_regular_ll();
             return prefix + "regular-ll";
         }
     }
