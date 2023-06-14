@@ -66,7 +66,7 @@ eckit::PathName LibMir::configFile(config_file c) {
         const std::string msg =
             "Configuration file '" + path.fullName() + "' not found, post-processing defaults might not be appropriate";
 
-        static bool abort = eckit::Resource<bool>("$MIR_ABORT_IF_CONFIGURATION_NOT_FOUND", false);
+        static bool abort = eckit::Resource<bool>("$MIR_ABORT_IF_CONFIGURATION_NOT_FOUND", true);
         if (abort) {
             Log::error() << msg << std::endl;
             throw exception::UserError(msg);
