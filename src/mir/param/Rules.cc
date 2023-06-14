@@ -130,19 +130,6 @@ void Rules::readConfigurationFiles() {
     ConfigFile parameters(LibMir::configFile(LibMir::config_file::PARAMETERS));
 
     if (!classes.exists() || !parameterClass.exists() || !parameters.exists()) {
-
-        const std::string msg =
-            "Configuration files not found,"
-            " post-processing defaults might not be appropriate";
-
-        static bool abortIfConfigurationFilesNotFound =
-            eckit::Resource<bool>("$MIR_ABORT_IF_CONFIGURATION_NOT_FOUND", false);
-        if (abortIfConfigurationFilesNotFound) {
-            Log::error() << msg << std::endl;
-            throw exception::UserError(msg);
-        }
-
-        Log::warning() << msg << std::endl;
         return;
     }
 
