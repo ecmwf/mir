@@ -19,16 +19,6 @@
 #include "mir/lsm/Mask.h"
 
 
-namespace mir {
-namespace param {
-class MIRParametrisation;
-}
-namespace repres {
-class Representation;
-}
-}  // namespace mir
-
-
 namespace mir::lsm {
 
 

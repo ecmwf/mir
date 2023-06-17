@@ -119,13 +119,12 @@ Mask* NamedMaskFactory::build(const param::MIRParametrisation& param, const repr
     name = sane(name);
 
     Log::debug() << "NamedMaskFactory: looking for '" << name << "'" << std::endl;
-    auto j = m->find(name);
-    if (j == m->end()) {
-        list(Log::error() << "NamedMaskFactory: unknown '" << name << "', choices are: ");
-        throw exception::SeriousBug("NamedMaskFactory: unknown '" + name + "'");
+    if (auto j = m->find(name); j != m->end()) {
+        return j->second->make(param, representation, which);
     }
 
-    return j->second->make(param, representation, which);
+    list(Log::error() << "NamedMaskFactory: unknown '" << name << "', choices are: ");
+    throw exception::SeriousBug("NamedMaskFactory: unknown '" + name + "'");
 }
 
 
@@ -139,15 +138,14 @@ std::string NamedMaskFactory::cacheKey(const param::MIRParametrisation& param,
     name = sane(name);
 
     Log::debug() << "NamedMaskFactory: looking for '" << name << "'" << std::endl;
-    auto j = m->find(name);
-    if (j == m->end()) {
-        list(Log::error() << "NamedMaskFactory: unknown '" << name << "', choices are: ");
-        throw exception::SeriousBug("NamedMaskFactory: unknown '" + name + "'");
+    if (auto j = m->find(name); j != m->end()) {
+        eckit::MD5 md5;
+        j->second->hashCacheKey(md5, param, representation, which);
+        return "named." + name + "." + md5.digest();
     }
 
-    eckit::MD5 md5;
-    j->second->hashCacheKey(md5, param, representation, which);
-    return "named." + name + "." + md5.digest();
+    list(Log::error() << "NamedMaskFactory: unknown '" << name << "', choices are: ");
+    throw exception::SeriousBug("NamedMaskFactory: unknown '" + name + "'");
 }
 
 

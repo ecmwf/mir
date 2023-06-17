@@ -20,9 +20,8 @@ namespace mir::lsm {
 
 class GribFileMaskFromMIR : public GribFileMask {
 public:
-    GribFileMaskFromMIR(const std::string& name, const eckit::PathName& path,
-                        const param::MIRParametrisation& parametrisation, const repres::Representation& representation,
-                        const std::string& which);
+    GribFileMaskFromMIR(const std::string& name, const eckit::PathName&, const param::MIRParametrisation&,
+                        const repres::Representation&, const std::string& which);
 
 private:
     std::string name_;

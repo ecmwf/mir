@@ -128,8 +128,10 @@ const std::vector<bool>& TenMinutesMask::mask() const {
     return mask_;
 }
 
+
 std::string TenMinutesMask::cacheName() const {
     return name_;
 }
+
 
 }  // namespace mir::lsm
