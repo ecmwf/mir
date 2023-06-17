@@ -19,16 +19,6 @@
 #include "mir/lsm/Mask.h"
 
 
-namespace mir {
-namespace param {
-class MIRParametrisation;
-}
-namespace repres {
-class Representation;
-}
-}  // namespace mir
-
-
 namespace mir::lsm {
 
 
@@ -39,8 +29,8 @@ public:
 
     // -- Constructors
 
-    MappedMask(const std::string& name, const eckit::PathName&, const param::MIRParametrisation& parametrisation,
-               const repres::Representation& representation, const std::string& which);
+    MappedMask(const std::string& name, const eckit::PathName&, const param::MIRParametrisation&,
+               const repres::Representation&, const std::string& which);
 
     // -- Destructor
 

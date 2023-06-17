@@ -12,11 +12,15 @@
 
 #include "mir/config/LibMir.h"
 
+#include <set>
+
 #include "eckit/config/Resource.h"
 #include "eckit/filesystem/PathName.h"
+#include "eckit/utils/MD5.h"
 
 #include "mir/api/mir_version.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -41,6 +45,13 @@ bool LibMir::caching() {
 }
 
 
+const std::string& LibMir::lsmNamed() {
+    static const std::string mirLsmNamed =
+        eckit::LibResource<std::string, LibMir>("mir-lsm-named;$MIR_LSM_NAMED", "1km");
+    return mirLsmNamed;
+}
+
+
 eckit::PathName LibMir::configFile(config_file c) {
     using r = eckit::LibResource<std::string, LibMir>;
 
@@ -56,7 +67,26 @@ eckit::PathName LibMir::configFile(config_file c) {
     };
 
     ASSERT(0 <= c && c < config_file::ALL_CONFIG_FILES);
-    return files[c];
+    const auto& path = files[c];
+
+    if (!path.exists()) {
+        const std::string msg =
+            "Configuration file '" + path.fullName() + "' not found, post-processing defaults might not be appropriate";
+
+        static bool abort = eckit::Resource<bool>("$MIR_ABORT_IF_CONFIGURATION_NOT_FOUND", true);
+        if (abort) {
+            Log::error() << msg << std::endl;
+            throw exception::UserError(msg);
+        }
+
+        // only log messages once
+        static std::set<eckit::Hash::digest_t> known_messages;
+        if (known_messages.insert(eckit::MD5(msg).digest()).second) {
+            Log::warning() << msg << std::endl;
+        }
+    }
+
+    return path;
 }
 
 

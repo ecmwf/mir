@@ -27,12 +27,13 @@ namespace mir {
 
 class LibMir : public eckit::system::Library {
 public:
-    LibMir();
     static const LibMir& instance();
 
     static std::string homeDir();
     static std::string cacheDir();
+
     static bool caching();
+    static const std::string& lsmNamed();
 
     enum config_file
     {
@@ -59,7 +60,9 @@ public:
 
     static std::string cacheLoader(cache_loader);
 
-protected:
+private:
+    LibMir();
+
     const void* addr() const override;
     std::string version() const override;
     std::string gitsha1(unsigned int count) const override;
