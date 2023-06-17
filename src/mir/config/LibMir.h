@@ -32,7 +32,9 @@ public:
 
     static std::string homeDir();
     static std::string cacheDir();
+
     static bool caching();
+    static const std::string& lsmNamed();
 
     enum config_file
     {
