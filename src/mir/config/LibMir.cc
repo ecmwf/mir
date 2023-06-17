@@ -47,7 +47,7 @@ bool LibMir::caching() {
 
 const std::string& LibMir::lsmNamed() {
     static const std::string mirLsmNamed =
-        eckit::LibResource<std::string, LibMir>("mir-lsm-named;$MIR_LSM_NAMED", "1km");
+        eckit::LibResource<std::string, LibMir>("mir-lsm-named;$MIR_LSM_NAMED", "1km.climate.v020");
     return mirLsmNamed;
 }
 
