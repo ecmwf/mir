@@ -25,15 +25,14 @@ DefaultParametrisation::DefaultParametrisation() {
     set("interpolation", "linear/k-nearest-neighbours");
     set("vector-space", "1d-linear");
 
-    bool caching = LibMir::caching();
-    set("caching", caching);
+    set("caching", LibMir::caching());
 
     set("prune-epsilon", 1e-10);
     set("nclosest", 4L);
 
     set("lsm", false);
     set("lsm-selection", "named");
-    set("lsm-named", "1km");
+    set("lsm-named", LibMir::lsmNamed());
     set("lsm-interpolation", "nearest-neighbour");
     set("lsm-weight-adjustment", 0.2);
     set("lsm-value-threshold", 0.5);

@@ -66,13 +66,12 @@ const LSMSelection& LSMSelection::lookup(const std::string& name) {
 
     Log::debug() << "LSMSelection: looking for '" << name << "'" << std::endl;
 
-    auto j = m->find(name);
-    if (j == m->end()) {
-        list(Log::error() << "LSMSelection: unknown '" << name << "', choices are: ");
-        throw exception::SeriousBug("LSMSelection: unknown '" + name + "'");
+    if (auto j = m->find(name); j != m->end()) {
+        return *(j->second);
     }
 
-    return *(j->second);
+    list(Log::error() << "LSMSelection: unknown '" << name << "', choices are: ");
+    throw exception::SeriousBug("LSMSelection: unknown '" + name + "'");
 }
 
 

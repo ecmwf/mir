@@ -49,6 +49,7 @@ std::string NoneLSM::cacheKey(const param::MIRParametrisation& /*unused*/, const
     return "none";
 }
 
+
 std::string NoneLSM::cacheName() const {
     NOTIMP;
 }
