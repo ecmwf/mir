@@ -2294,7 +2294,6 @@ numerics.accumulated:
 - 173210  # Surface net solar radiation, clear sky anomaly
 - 173211  # Surface net thermal radiation, clear sky anomaly
 - 174008  # Surface runoff
-- 174009  # Sub-surface runoff
 - 174089  # Top incoming solar radiation
 - 174090  # Top outgoing solar radiation
 - 174116  # Short wave radiation flux at surface
@@ -3445,7 +3444,6 @@ rate.mass-flux:
 - 173008  # Mean surface runoff rate anomaly
 - 173009  # Mean sub-surface runoff rate anomaly
 - 174008  # Surface runoff
-- 174009  # Sub-surface runoff
 - 174142  # Large scale rainfall rate
 - 174143  # Convective rainfall rate
 - 174239  # Convective snowfall rate
@@ -4075,8 +4073,6 @@ rate.mass-flux:
 - 260048  # Total precipitation rate
 - 260049  # Total snowfall rate water equivalent
 - 260050  # Large scale precipitation rate
-- 260051  # Convective snowfall rate water equivalent
-- 260052  # Large scale snowfall rate water equivalent
 - 260056  # Water equivalent of accumulated snow depth
 - 260058  # Rain precipitation rate
 - 260059  # Snow precipitation rate
