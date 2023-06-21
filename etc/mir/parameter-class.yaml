@@ -1914,6 +1914,8 @@ intensity:
 - 261021  # Saturation water vapor pressure
 - 261022  # Wet-bulb potential temperature
 - 262143  # Sea surface height with inverse barometer correction
+- 262144  # Average sea water potential temperature in the upper 300m
+- 263144  # Time-mean average sea water potential temperature in the upper 300m
 - 300001  # Pressure
 - 300002  # Pressure reduced to msl
 - 300003  # Pressure tendency
@@ -2568,6 +2570,7 @@ numerics.accumulated:
 - 260479  # Land Surface Precipitation Accumulation
 - 260564  # Energy release component (as defined by the U.S Forest Service National Fire-Danger Rating System)
 - 260645  # Time integral of total solid precipitation flux
+- 263144  # Time-mean average sea water potential temperature in the upper 300m
 - 300065  # Wat equiv acc snow depth
 - 300177  # Potential sfc evaporation
 - 435002  # Accumulated net ecosystem exchange flux
@@ -5142,6 +5145,7 @@ ratio.mass:
 - 260292  # specific rain water content (convection)
 - 260293  # specific snow water content (convection)
 - 260624  # Ozone mixing ratio
+- 262516  # Sea water salinity
 - 300051  # Specific humidity
 - 300053  # Humidity mixing ratio
 - 300181  # Surface spec humidity
