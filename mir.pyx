@@ -27,8 +27,8 @@ cdef class Args:
 cdef init(Args args):
     eckit.Main.initialise(args.argc, args.argv)
 
-args = Args()
-init(args)
+_args = Args()
+init(_args)
 
 def home():
     return mir.LibMir.homeDir().decode()
