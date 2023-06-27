@@ -8,17 +8,27 @@ cimport std_defs as std
 
 cimport mir_pyio
 
-import sys
+cdef class Args:
+    cdef int argc
+    cdef char** argv
+
+    def __cinit__(self):
+        import sys 
+
+        self.argc = len(sys.argv)
+        self.argv = <char**> malloc(self.argc * sizeof(char*))
+        for i, arg in enumerate(sys.argv):
+            self.argv[i] = arg
+    
+    def __dealloc__(self):
+        free(self.argv)
 
 # Initialise eckit::Main when module is loaded
-cdef init():
-    cdef int argc = len(sys.argv)
-    cdef char** argv = <char**> malloc(argc * sizeof(char*))
-    for i, arg in enumerate(sys.argv):
-        argv[i] = arg
-    eckit.Main.initialise(argc, argv)
-    free(argv)
-init()
+cdef init(Args args):
+    eckit.Main.initialise(args.argc, args.argv)
+
+_args = Args()
+init(_args)
 
 def home():
     return mir.LibMir.homeDir().decode()
