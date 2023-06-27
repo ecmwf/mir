@@ -8,13 +8,13 @@ cimport std_defs as std
 
 cimport mir_pyio
 
-import sys
-
 cdef class Args:
     cdef int argc
     cdef char** argv
 
     def __cinit__(self):
+        import sys 
+
         self.argc = len(sys.argv)
         self.argv = <char**> malloc(self.argc * sizeof(char*))
         for i, arg in enumerate(sys.argv):
