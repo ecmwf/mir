@@ -54,7 +54,7 @@ if(HAVE_TESTS)
 endif()
 
 
-ecbuild_add_resources(TARGET ${PROJECT_NAME}_top_files SOURCES AUTHORS README NOTICE LICENSE INSTALL COPYING)
+ecbuild_add_resources(TARGET ${PROJECT_NAME}_top_files SOURCES AUTHORS README.md NOTICE LICENSE INSTALL COPYING)
 ecbuild_install_project(NAME ${PROJECT_NAME})
 
 ecbuild_print_summary()
