@@ -32,6 +32,7 @@
 #include "eckit/memory/Shmget.h"
 // #include "eckit/os/SemLocker.h"
 #include "eckit/runtime/Main.h"
+#include "eckit/os/Stat.h"
 
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Error.h"
@@ -137,8 +138,11 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
     //    GlobalSemaphore gsem(real.dirName());
     //    static const int max_wait_lock = eckit::Resource<int>("$MIR_SEMLOCK_RETRIES", 60);
     //    eckit::SemLocker locker(gsem.semaphore_, gsem.path_, max_wait_lock);
+    eckit::Stat::Struct s;
+    SYSCALL(eckit::Stat::stat(real.asString().c_str(), &s));
 
-    key_t key = ::ftok(real.asString().c_str(), 1);
+    // Use time of creation epoch as proj_id for ftok to add 8 more bits of entropy 
+    key_t key = ::ftok(real.asString().c_str(), s.st_ctim.tv_sec);
     if (key == key_t(-1)) {
         Log::warning() << msg.str() << "::ftok(" << real.asString() << "), " << util::Error();
         throw exception::FailedSystemCall(msg.str());
@@ -267,8 +271,11 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
     Log::debug() << "SharedMemoryLoader: unloading '" << path << "'" << std::endl;
 
     eckit::PathName real = path.realName();
+    eckit::Stat::Struct s;
+    SYSCALL(eckit::Stat::stat(real.asString().c_str(), &s));
 
-    key_t key = ::ftok(real.asString().c_str(), 1);
+    key_t key = ::ftok(real.asString().c_str(), s.st_ctim.tv_sec);
+
     if (key == key_t(-1)) {
         Log::warning() << "SharedMemoryLoader: ::ftok(" << real.asString() << ")" << std::endl;
         throw exception::FailedSystemCall("SharedMemoryLoader: ::ftok");
