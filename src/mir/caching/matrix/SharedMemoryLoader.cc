@@ -36,7 +36,7 @@
 // #include "eckit/os/SemLocker.h"
 #include "eckit/runtime/Main.h"
 
-#include "mir/caching/SharedMemory.h"
+#include "mir/caching/SharedMemoryKey.h"
 #include "mir/method/WeightMatrix.h"
 #include "mir/util/Error.h"
 #include "mir/util/Exceptions.h"

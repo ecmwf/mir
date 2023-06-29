@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/caching/SharedMemory.h"
+#include "mir/caching/SharedMemoryKey.h"
 
 #include <sstream>
 
@@ -32,12 +32,13 @@ key_t shared_memory_key(const eckit::PathName& path) {
     eckit::Stat::Struct s;
     SYSCALL(eckit::Stat::stat(name.c_str(), &s));
 
-    const auto proj_id =
-#if defined(SYSTEM_STAT_APPLE)
-        s.st_ctimespec.tv_sec;
+    const auto proj_id = static_cast<int>(
+#if defined(HAS_SYS_STAT_ST_CTIMESPEC)
+        s.st_ctimespec.tv_sec
 #else
-        s.st_ctim.tv_sec;
+        s.st_ctim.tv_sec
 #endif
+    );
 
     if (key_t key = ::ftok(name.c_str(), proj_id); key != -1) {
         return key;

@@ -1,3 +1,16 @@
+### system headers
+
+include(CheckCSourceCompiles)
+
+check_c_source_compiles("
+#include <sys/stat.h>
+int main() {
+    struct stat s;
+    s.st_ctimespec;
+    return 0;
+}"
+HAS_SYS_STAT_ST_CTIMESPEC)
+
 ### config headers
 
 ecbuild_generate_config_headers(DESTINATION ${INSTALL_INCLUDE_DIR}/mir)
@@ -141,8 +154,8 @@ list(APPEND mir_srcs
     caching/InMemoryCacheUsage.h
     caching/MeshCache.cc
     caching/MeshCache.h
-    caching/SharedMemory.cc
-    caching/SharedMemory.h
+    caching/SharedMemoryKey.cc
+    caching/SharedMemoryKey.h
     caching/WeightCache.cc
     caching/WeightCache.h
     caching/legendre/LegendreLoader.cc
@@ -939,8 +952,10 @@ if(mir_HAVE_PNG)
     target_link_libraries(mir PRIVATE PNG::PNG)
 endif()
 
-set_source_files_properties(
-    caching/SharedMemory.cc
-    PROPERTIES
-    COMPILE_DEFINITIONS SYSTEM_STAT_APPLE)
+if (HAS_SYS_STAT_ST_CTIMESPEC)
+    set_source_files_properties(
+        caching/SharedMemoryKey.cc
+        PROPERTIES
+        COMPILE_DEFINITIONS HAS_SYS_STAT_ST_CTIMESPEC)
+endif()
 
