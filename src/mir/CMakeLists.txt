@@ -141,6 +141,8 @@ list(APPEND mir_srcs
     caching/InMemoryCacheUsage.h
     caching/MeshCache.cc
     caching/MeshCache.h
+    caching/SharedMemory.cc
+    caching/SharedMemory.h
     caching/WeightCache.cc
     caching/WeightCache.h
     caching/legendre/LegendreLoader.cc
