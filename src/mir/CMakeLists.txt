@@ -939,3 +939,8 @@ if(mir_HAVE_PNG)
     target_link_libraries(mir PRIVATE PNG::PNG)
 endif()
 
+set_source_files_properties(
+    caching/SharedMemory.cc
+    PROPERTIES
+    COMPILE_DEFINITIONS SYSTEM_STAT_APPLE)
+

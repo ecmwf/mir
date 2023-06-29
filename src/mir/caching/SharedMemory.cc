@@ -32,7 +32,14 @@ key_t shared_memory_key(const eckit::PathName& path) {
     eckit::Stat::Struct s;
     SYSCALL(eckit::Stat::stat(name.c_str(), &s));
 
-    if (key_t key = ::ftok(name.c_str(), s.st_ctim.tv_sec); key != -1) {
+    const auto proj_id =
+#if defined(SYSTEM_STAT_APPLE)
+        s.st_ctimespec.tv_sec;
+#else
+        s.st_ctim.tv_sec;
+#endif
+
+    if (key_t key = ::ftok(name.c_str(), proj_id); key != -1) {
         return key;
     }
 
