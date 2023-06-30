@@ -729,11 +729,14 @@ data::MIRField GribInput::field() const {
                 }
             }
 
+            // set the new (extended) pl vector in cached parametrisation
+            pl.swap(pl_fixed);
+            const_cast<param::CachedParametrisation&>(cache_).set("pl", pl);
+
             // set the new (extended) values vector, confirm it is compatible with a returned pl array
             ASSERT(values.size() + new_values == values_extended.size());
             values.swap(values_extended);
 
-            ASSERT(get("pl", pl));
             size_t pl_sum = size_t(std::accumulate(pl.begin(), pl.end(), 0L));
             ASSERT(pl_sum == values.size());
         }

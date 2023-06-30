@@ -26,6 +26,7 @@
 #include "mir/repres/Iterator.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Grib.h"
 #include "mir/util/GridBox.h"
 #include "mir/util/MeshGeneratorParameters.h"
 #include "mir/util/Types.h"
@@ -152,6 +153,12 @@ void ReducedLL::fillMeshGen(util::MeshGeneratorParameters& params) const {
         params.set("force_include_north_pole", true);
     }
 }
+
+
+void ReducedLL::set(grib_handle* h) const {
+    GRIB_CALL(codes_set_long_array(h, "pl", pl_.data(), pl_.size()));
+}
+
 
 bool ReducedLL::isPeriodicWestEast() const {
     ASSERT(!pl_.empty());

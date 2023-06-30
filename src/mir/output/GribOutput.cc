@@ -476,7 +476,9 @@ size_t GribOutput::set(const param::MIRParametrisation& param, context::Context&
         auto* h = codes_handle_clone(input.gribHandle(field.handle(i)));
         HandleDeleter hf(h);
 
+        // Ask representation to update info
         repres::RepresentationHandle repres(field.representation());
+        repres->set(h);
 
         // Packing, accuracy, edition
         pack->set(repres, h);

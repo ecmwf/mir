@@ -21,6 +21,7 @@
 #include "mir/util/Types.h"
 
 
+struct grib_handle;
 struct grib_info;
 
 
@@ -90,6 +91,8 @@ public:
     virtual void fillGrib(grib_info&) const;
     virtual void fillJob(api::MIRJob&) const;
     virtual void fillMeshGen(util::MeshGeneratorParameters&) const;
+    virtual void set(grib_handle*) const;
+
     virtual void estimate(api::MIREstimation&) const;
 
     // Return a cropped version

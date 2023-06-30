@@ -124,6 +124,11 @@ void Representation::fillMeshGen(util::MeshGeneratorParameters& /*unused*/) cons
 }
 
 
+void Representation::set(grib_handle* /*unused*/) const {
+    // do nothing
+}
+
+
 const Representation* Representation::croppedRepresentation(const util::BoundingBox& /*unused*/) const {
     std::ostringstream os;
     os << "Representation::croppedRepresentation() not implemented for " << *this;

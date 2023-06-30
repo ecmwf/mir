@@ -85,6 +85,7 @@ private:
     void fillGrib(grib_info&) const override;
     void fillJob(api::MIRJob&) const override;
     void fillMeshGen(util::MeshGeneratorParameters&) const override;
+    void set(grib_handle*) const override;
 
     void validate(const MIRValuesVector&) const override;
 

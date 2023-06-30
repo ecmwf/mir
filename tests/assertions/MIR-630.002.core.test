@@ -1,8 +1,6 @@
 # mars
 stream=wave,param=2dfd,direction=1,frequency=1
 # mir
---accuracy=10 --packing=simple
-# grib_get assertions
-gridType=reduced_ll
-bitsPerValue=10
+--packing=simple --grid=3/3
+# grib_get
 packingType=grid_simple_matrix

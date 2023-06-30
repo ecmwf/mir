@@ -56,6 +56,8 @@ public:
     void set(const std::string& name, const std::string& value);
     void set(const std::string& name, const char* value);
 
+    void set(const std::string& name, std::vector<long>& value);
+
     // -- Class members
     // None
 

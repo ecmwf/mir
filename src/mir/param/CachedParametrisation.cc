@@ -148,4 +148,9 @@ void CachedParametrisation::set(const std::string& name, const char* value) {
 }
 
 
+void CachedParametrisation::set(const std::string& name, std::vector<long>& value) {
+    _set(name, value);
+}
+
+
 }  // namespace mir::param
