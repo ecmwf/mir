@@ -87,8 +87,8 @@ bool IrregularLatlon::getLongestElementDiagonal(double& d) const {
         const auto& latAwayFromEquator(latitudes_[away ? j - 1 : j]);
         const auto& latCloserToEquator(latitudes_[away ? j : j - 1]);
 
-        d = std::max(d, util::Earth::distance(atlas::PointLonLat(0., latCloserToEquator),
-                                              atlas::PointLonLat(we, latAwayFromEquator)));
+        d = std::max(d, 1./*util::Earth::distance(atlas::PointLonLat(0., latCloserToEquator),
+                                              atlas::PointLonLat(we, latAwayFromEquator))*/);
     }
 
     ASSERT(d > 0.);

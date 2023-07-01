@@ -65,12 +65,7 @@ Point3 Iterator::point3D() const {
     ASSERT(valid_);
 
     // notice the order
-    const atlas::PointLonLat pll(point_[1], point_[0]);
-
-    atlas::PointXYZ pxyz;
-    util::Earth::convertSphericalToCartesian(pll, pxyz);
-
-    return pxyz;
+    return util::Earth::convertSphericalToCartesian(atlas::to_pointlonlat({point_[1], point_[0]}));
 }
 
 

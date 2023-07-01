@@ -147,7 +147,7 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
 
                     // notice the order
                     atlas::PointLonLat lonlat(ll.lon().value(), ll.lat().value());
-                    atlas::util::Earth::convertSphericalToCartesian(lonlat, qp[k]);
+                    qp[k] = atlas::util::Earth::convertSphericalToCartesian(atlas::to_pointlonlat(lonlat));
                 }
 
                 /*

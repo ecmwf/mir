@@ -105,7 +105,7 @@ SpaceViewInternal::SpaceViewInternal(const param::MIRParametrisation& param) {
 
     // longest element diagonal, a multiple of a reference central element diagonal (avoiding distortion)
     LongestElementDiagonal_ =
-        20. * util::Earth::distance(projection_.lonlat({-rx / 2, ry / 2}), projection_.lonlat({rx / 2, -ry / 2}));
+        20. /** util::Earth::distance(projection_.lonlat({-rx / 2, ry / 2}), projection_.lonlat({rx / 2, -ry / 2}))*/;
     ASSERT(0. < LongestElementDiagonal_);
 
 
