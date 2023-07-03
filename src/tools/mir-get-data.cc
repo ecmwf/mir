@@ -253,7 +253,7 @@ const neighbours_t& getNeighbours(Point2 p, size_t n, const repres::Representati
         return cached->second;
     }
 
-    search::PointSearch::PointType pt = util::Earth::convertSphericalToCartesian(atlas::to_pointlonlat(p));
+    search::PointSearch::PointType pt = util::Earth::convertSphericalToCartesian({p[1], p[0]});
 
     search::PointSearch sptree(param, rep);
 
@@ -339,8 +339,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                     eckit::geometry::PointLonLat q(crd->longitudes()[i], crd->latitudes()[i]);
                     ASSERT(i < values.size());
 
-                    auto distance = util::Earth::distance(atlas::to_pointlonlat({p.x(), p.y()}),
-                                                          q);
+                    auto distance = util::Earth::distance({p.x(), p.y()}, q);
 
                     constexpr double THOUSAND = 1000;
                     log << "- " << c++ << " -"
