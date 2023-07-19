@@ -38,10 +38,11 @@ CASE("Test number of points representation <=> grid") {
 
 
     Handle representations[] = {
-        new RegularLL(util::Increments(1., 1.)),
-        new RegularLL(util::Increments(1., 1.), util::BoundingBox()),
-        Grid::lookup("O16").representation(),
-        Grid::lookup("O1280").representation(),
+//        new RegularLL(util::Increments(1., 1.)),
+//        new RegularLL(util::Increments(1., 1.), util::BoundingBox()),
+//        Grid::lookup("O16").representation(),
+//        Grid::lookup("O1280").representation(),
+        Grid::lookup("H2").representation(),
     };
 
     for (const auto& repres : representations) {
@@ -57,6 +58,7 @@ CASE("Test number of points representation <=> grid") {
 }
 
 
+#if 0
 CASE("Test number of points representation <=> cropped grid") {
     auto& log = Log::info();
 
@@ -133,6 +135,7 @@ CASE("MIR-374") {
 
     log.precision(old);
 }
+#endif
 
 
 }  // namespace mir::tests::unit

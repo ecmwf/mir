@@ -1,0 +1,6 @@
+# mars
+gridType=healpix,N=36.grib2
+# mir
+--grid=2/2
+# grib_get assertions
+numberOfDataPoints=16380
