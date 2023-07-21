@@ -30,6 +30,32 @@ namespace mir::tests::unit {
 using Handle = repres::RepresentationHandle;
 
 
+CASE("Test number of points representation HEALPix <=> grid") {
+    auto& log = Log::info();
+
+    using key::grid::Grid;
+    using repres::latlon::RegularLL;
+
+
+    Handle representations[] = {
+        Grid::lookup("H2").representation(),
+        Grid::lookup("H32").representation(),
+    };
+
+    for (const auto& repres : representations) {
+        size_t n1 = repres->numberOfPoints();
+        log << "#=" << n1 << "\tfrom " << *repres << std::endl;
+
+        auto grid = repres->atlasGrid();
+        auto n2   = size_t(grid.size());
+        log << "#=" << n2 << "\tfrom " << grid.spec() << std::endl;
+
+        EXPECT(n1 == n2);
+    }
+}
+
+
+#if 0
 CASE("Test number of points representation <=> grid") {
     auto& log = Log::info();
 
@@ -58,7 +84,6 @@ CASE("Test number of points representation <=> grid") {
 }
 
 
-#if 0
 CASE("Test number of points representation <=> cropped grid") {
     auto& log = Log::info();
 

@@ -760,6 +760,10 @@ if(mir_HAVE_ATLAS)
         caching/legendre/NoLoader.h
         caching/legendre/SharedMemoryLoader.cc
         caching/legendre/SharedMemoryLoader.h
+        key/grid/NamedHEALPix.cc
+        key/grid/NamedHEALPix.h
+        key/grid/HEALPixPattern.cc
+        key/grid/HEALPixPattern.h
         key/grid/NamedORCA.cc
         key/grid/NamedORCA.h
         key/grid/ORCAPattern.cc
@@ -788,6 +792,8 @@ if(mir_HAVE_ATLAS)
         output/GmshOutput.h
         repres/other/ORCA.cc
         repres/other/ORCA.h
+        repres/other/HEALPix.cc
+        repres/other/HEALPix.h
         stats/statistics/Integral.cc
         stats/statistics/Integral.h)
 else()
