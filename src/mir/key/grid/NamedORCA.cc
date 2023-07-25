@@ -30,7 +30,7 @@ void NamedORCA::print(std::ostream& out) const {
 
 
 const repres::Representation* NamedORCA::representation() const {
-    return new repres::proxygrid::ORCA(key_);
+    return new repres::proxy::ORCA(key_);
 }
 
 

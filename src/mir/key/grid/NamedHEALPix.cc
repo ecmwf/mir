@@ -30,7 +30,7 @@ void NamedHEALPix::print(std::ostream& out) const {
 
 
 const repres::Representation* NamedHEALPix::representation() const {
-    return new repres::proxygrid::HEALPix(N_);
+    return new repres::proxy::HEALPix(N_);
 }
 
 
