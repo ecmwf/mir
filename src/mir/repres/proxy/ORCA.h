@@ -13,32 +13,37 @@
 #pragma once
 
 
-#include "mir/key/grid/GridPattern.h"
+#include "atlas/grid/SpecRegistry.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/repres/proxy/ProxyGrid.h"
+#include "mir/util/Grib.h"
+#include "mir/util/MeshGeneratorParameters.h"
 
 
-namespace mir::key::grid {
+namespace mir::repres::proxygrid {
 
 
-class HEALPixPattern : public GridPattern {
+class ORCA final : public ProxyGrid {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    HEALPixPattern(const std::string& name);
-    HEALPixPattern(const HEALPixPattern&) = delete;
+    ORCA(const std::string& uid);
+    ORCA(const param::MIRParametrisation&);
+    ORCA(const ORCA&) = delete;
 
     // -- Destructor
 
-    ~HEALPixPattern() override;
+    ~ORCA() override;
 
     // -- Convertors
     // None
 
     // -- Operators
 
-    HEALPixPattern& operator=(const HEALPixPattern&) = delete;
+    ORCA& operator=(const ORCA&) = delete;
 
     // -- Methods
     // None
@@ -54,16 +59,24 @@ public:
 
 private:
     // -- Members
-    // None
+
+    const ::atlas::Grid::Spec spec_;
+    mutable ::atlas::Grid grid_;
 
     // -- Methods
-    // None
+
+    const ::atlas::Grid& atlasGridRef() const override;
 
     // -- Overridden methods
 
+    // from Representation
+    bool sameAs(const Representation&) const override;
+    void makeName(std::ostream&) const override;
+
+    void fillGrib(grib_info&) const override;
+    void fillMeshGen(util::MeshGeneratorParameters&) const override;
+
     void print(std::ostream&) const override;
-    const Grid* make(const std::string&) const override;
-    std::string canonical(const std::string&, const param::MIRParametrisation&) const override;
 
     // -- Class members
     // None
@@ -76,4 +89,4 @@ private:
 };
 
 
-}  // namespace mir::key::grid
+}  // namespace mir::repres::proxygrid

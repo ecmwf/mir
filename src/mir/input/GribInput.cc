@@ -321,6 +321,11 @@ static const char* get_key(const std::string& name, grib_handle* h) {
             "numberOfGridInReference" /*just a dummy*/,
             is("gridType", "unstructured_grid"),
         },
+        {
+            "gridded",
+            "orderingConvention" /*just a dummy*/,
+            is("gridType", "healpix"),
+        },
         {"gridded", "numberOfPointsAlongAMeridian"},  // Is that always true?
         {"gridded_regular_ll", "Ni", _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll"))},
         {"gridded_named", "gridName"},

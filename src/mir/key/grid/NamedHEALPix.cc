@@ -14,7 +14,7 @@
 
 #include <ostream>
 
-#include "mir/repres/other/HEALPix.h"
+#include "mir/repres/proxy/HEALPix.h"
 #include "mir/util/Exceptions.h"
 
 
@@ -30,7 +30,7 @@ void NamedHEALPix::print(std::ostream& out) const {
 
 
 const repres::Representation* NamedHEALPix::representation() const {
-    return new repres::other::HEALPix(N_);
+    return new repres::proxygrid::HEALPix(N_);
 }
 
 

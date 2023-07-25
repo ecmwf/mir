@@ -790,10 +790,12 @@ if(mir_HAVE_ATLAS)
         method/structured/StructuredMethod.h
         output/GmshOutput.cc
         output/GmshOutput.h
-        repres/other/ORCA.cc
-        repres/other/ORCA.h
-        repres/other/HEALPix.cc
-        repres/other/HEALPix.h
+        repres/proxy/ProxyGrid.h
+        repres/proxy/ProxyGrid.cc
+        repres/proxy/ORCA.h
+        repres/proxy/ORCA.cc
+        repres/proxy/HEALPix.h
+        repres/proxy/HEALPix.cc
         stats/statistics/Integral.cc
         stats/statistics/Integral.h)
 else()
