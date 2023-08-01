@@ -3,4 +3,5 @@ regular_ll.2-2.grib2
 # mir
 --grid=H2
 # grib_get assertions
+gridType=healpix
 numberOfDataPoints=48
