@@ -1,0 +1,7 @@
+# mars
+gridType=reduced_gg,gridName=O8,shortName=q.grib2
+# mir
+--interpolation=grid-box-average --grid=H2
+# grib_get assertions
+Gridded2NamedGrid[grid=H2,interpolation=grid-box-average,method=GridBoxMethod[name=grid-box,nonLinear[MissingIfHeaviestMissing[]],Solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10]]|Save[output=...]
+
