@@ -91,6 +91,15 @@ bool GridBox::intersects(GridBox& other) const {
 }
 
 
+GridBox& GridBox::operator=(const GridBox& other) {
+    north_ = other.north_;
+    west_  = other.west_;
+    south_ = other.south_;
+    east_  = other.east_;
+    return *this;
+};
+
+
 void GridBox::print(std::ostream& out) const {
     out << "GridBox[north=" << north_ << ",west=" << west_ << ",south=" << south_ << ",east=" << east_ << "]";
 }

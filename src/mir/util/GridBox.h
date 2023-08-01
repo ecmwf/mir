@@ -26,6 +26,7 @@ public:
     // -- Constructors
 
     GridBox(double north, double west, double south, double east);
+    GridBox() = default;
 
     // -- Destructor
     // None
@@ -41,6 +42,7 @@ public:
     double area() const;
     double diagonal() const;
     bool intersects(GridBox&) const;
+    GridBox& operator=(const GridBox&);
 
     double north() const { return north_; }
     double west() const { return west_; }
