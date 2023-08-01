@@ -323,7 +323,7 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         },
         {
             "gridded",
-            "orderingConvention" /*just a dummy*/,
+            "Nside" /*just a dummy*/,
             is("gridType", "healpix"),
         },
         {"gridded", "numberOfPointsAlongAMeridian"},  // Is that always true?
@@ -332,9 +332,10 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         {"grid", "gridNameForHealpix", is("gridType", "healpix")},
 
         {"grid", "gridName",
-         _or(_or(_or(_or(is("gridType", "regular_gg"), is("gridType", "reduced_gg")), is("gridType", "rotated_gg")),
-                 is("gridType", "reduced_rotated_gg")),
-             is("gridType", "unstructured_grid"))},
+         _or(_or(_or(_or(_or(is("gridType", "regular_gg"), is("gridType", "reduced_gg")), is("gridType", "rotated_gg")),
+                     is("gridType", "reduced_rotated_gg")),
+                 is("gridType", "unstructured_grid")),
+             is("gridType", "healpix"))},
 
         {"spectral", "pentagonalResolutionParameterJ"},
 
@@ -823,6 +824,7 @@ bool GribInput::get(const std::string& name, bool& value) const {
         return false;
     }
 
+    // NOTE: They key has to return a non-zero value
     // FIXME: make sure that 'temp' is not set if CODES_MISSING_LONG
     long temp = CODES_MISSING_LONG;
     int err   = codes_get_long(grib_, key, &temp);
