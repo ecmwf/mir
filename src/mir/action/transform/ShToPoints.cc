@@ -13,7 +13,6 @@
 #include "mir/action/transform/ShToPoints.h"
 
 #include <ostream>
-#include <vector>
 
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
@@ -27,6 +26,7 @@ namespace mir::action::transform {
 
 template <class Invtrans>
 ShToPoints<Invtrans>::ShToPoints(const param::MIRParametrisation& parametrisation) : ShToGridded(parametrisation) {
+#if 0
     auto& user  = parametrisation_.userParametrisation();
     auto& field = parametrisation_.fieldParametrisation();
 
@@ -34,6 +34,12 @@ ShToPoints<Invtrans>::ShToPoints(const param::MIRParametrisation& parametrisatio
     ASSERT(user.has("longitudes") && field.get("longitudes", longitudes_));
 
     ASSERT(latitudes_.size() == longitudes_.size());
+#else
+    ASSERT_MSG(parametrisation_.userParametrisation().get("latitudes", latitudes_) &&
+                   parametrisation_.userParametrisation().get("longitudes", longitudes_) && !latitudes_.empty() &&
+                   latitudes_.size() == longitudes_.size(),
+               "ShToPoints: requires 'latitudes' and 'longitudes', non-empty and of the same size");
+#endif
 }
 
 
