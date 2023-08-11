@@ -24,20 +24,10 @@ namespace mir::action::interpolate {
 
 Gridded2Points::Gridded2Points(const param::MIRParametrisation& parametrisation) :
     Gridded2UnrotatedGrid(parametrisation) {
-#if 0
-    ASSERT(parametrisation_.get("latitudes", latitudes_));
-    ASSERT(parametrisation_.get("longitudes", longitudes_));
-
-    if (latitudes_.empty() || longitudes_.empty()) {
-        throw exception::UserError("Gridded2Points: requires 'latitudes' and 'longitudes'");
-    }
-    ASSERT(latitudes_.size() == longitudes_.size());
-#else
     ASSERT_MSG(parametrisation_.userParametrisation().get("latitudes", latitudes_) &&
                    parametrisation_.userParametrisation().get("longitudes", longitudes_) && !latitudes_.empty() &&
                    latitudes_.size() == longitudes_.size(),
                "Gridded2Points: requires 'latitudes' and 'longitudes', non-empty and of the same size");
-#endif
 }
 
 
