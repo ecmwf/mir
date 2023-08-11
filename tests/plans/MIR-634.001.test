@@ -1,0 +1,6 @@
+# mars
+param=t,level=1000,resol=20
+# mir
+--truncation=none --intgrid=none --latitudes=1/2/3 --longitudes=4/5/6
+# plan
+ShToPoints[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<scalar>,points=3]|Save[output=...]
