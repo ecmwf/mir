@@ -15,6 +15,9 @@
 #include "mir/repres/gauss/reduced/Reduced.h"
 #include "mir/util/BoundingBox.h"
 
+namespace eckit {
+class JSON;
+}
 
 namespace mir::repres::gauss::reduced {
 
@@ -65,6 +68,7 @@ protected:
     atlas::Grid atlasGrid() const override;
     void makeName(std::ostream&) const override;
     bool sameAs(const Representation&) const override;
+    void json(eckit::JSON&) const override;
 
     // -- Class members
     // None

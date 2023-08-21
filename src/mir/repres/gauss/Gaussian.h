@@ -15,6 +15,9 @@
 #include "mir/repres/Gridded.h"
 #include "mir/util/BoundingBox.h"
 
+namespace eckit {
+class JSON;
+}
 
 namespace mir::repres {
 
@@ -87,6 +90,8 @@ protected:
 
     bool includesNorthPole() const override;
     bool includesSouthPole() const override;
+
+    void json(eckit::JSON&) const override;
 
     // -- Class members
     // None

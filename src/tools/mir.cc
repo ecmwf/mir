@@ -343,6 +343,7 @@ struct MIR : MIRTool {
         options_.push_back(new FactoryOption<action::Executor>("executor", "Select whether threads are used or not"));
         options_.push_back(new SimpleOption<std::string>("plan", "String containing a plan definition"));
         options_.push_back(new SimpleOption<eckit::PathName>("plan-script", "File containing a plan definition"));
+        options_.push_back(new SimpleOption<eckit::PathName>("dump-weights-info", "Dump weights information to file"));
 
         //==============================================
         options_.push_back(new Separator("Caching"));

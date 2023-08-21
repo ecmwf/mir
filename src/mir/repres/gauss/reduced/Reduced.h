@@ -14,6 +14,9 @@
 
 #include "mir/repres/gauss/Gaussian.h"
 
+namespace eckit {
+class JSON;
+}
 
 namespace mir::util {
 class Rotation;
@@ -88,6 +91,7 @@ protected:
     bool isPeriodicWestEast() const override;
     void estimate(api::MIREstimation&) const override;
     std::vector<util::GridBox> gridBoxes() const override;
+    void json(eckit::JSON&) const override;
 
     // -- Class members
 

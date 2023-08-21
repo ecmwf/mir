@@ -13,10 +13,12 @@
 #include "mir/method/MethodWeighted.h"
 
 #include <algorithm>
+#include <fstream>
 #include <limits>
 #include <sstream>
 #include <string>
 
+#include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 #include "eckit/utils/StringTools.h"
@@ -127,7 +129,8 @@ void MethodWeighted::createMatrix(context::Context& ctx, const repres::Represent
 const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repres::Representation& in,
                                               const repres::Representation& out) const {
     util::lock_guard<util::recursive_mutex> lock(local_mutex);
-
+    static bool dumpWeightedMatrix = eckit::Resource<bool>("$MIR_DUMP_WEIGHTED_MATRIX", false);
+    eckit::PathName cacheFile;
     auto& log = Log::debug();
 
     log << "MethodWeighted::getMatrix " << *this << std::endl;
@@ -149,6 +152,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     eckit::MD5 hash;
     hash << *this << shortName_in << shortName_out << in.boundingBox() << out.boundingBox();
 
+
     std::string version_str;
     auto v = version();
     if (bool(v)) {
@@ -167,7 +171,6 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
             disk_key += masks_key;
         }
     }
-
 
     {
         auto j     = matrix_cache.find(memory_key);
@@ -195,7 +198,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
         // as caching may be disabled on a field by field basis (unstructured grids)
         static caching::WeightCache cache(parametrisation_);
         MatrixCacheCreator creator(*this, ctx, in, out, masks, cropping_);
-        cache.getOrCreate(disk_key, creator, W);
+        cacheFile = cache.getOrCreate(disk_key, creator, W);
     }
     else {
         createMatrix(ctx, in, out, W, masks, cropping_);
@@ -222,6 +225,21 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     caching::InMemoryCacheUsage usage(w.inSharedMemory() ? 0 : footprint, w.inSharedMemory() ? footprint : 0);
 
     log << "Matrix footprint " << w.owner() << " " << usage << " W -> " << W.owner() << std::endl;
+
+    std::string filename;
+    if (parametrisation_.get("dump-weights-info", filename)) {
+
+        std::ofstream file(filename);
+        eckit::JSON json(file);
+        json.startObject();
+        json << "input" << in;
+        json << "output" << out;
+        json << "rows" << w.rows();
+        json << "columns" << w.cols();
+        json << "cache_file" << cacheFile;
+        json.endObject();
+        file.close();
+    }
 
     matrix_cache.footprint(memory_key, usage);
     return w;

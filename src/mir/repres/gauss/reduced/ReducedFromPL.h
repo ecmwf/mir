@@ -14,6 +14,9 @@
 
 #include "mir/repres/gauss/reduced/FromPL.h"
 
+namespace eckit {
+class JSON;
+}
 
 namespace mir::repres::gauss::reduced {
 
@@ -57,6 +60,7 @@ protected:
     // -- Methods
 
     void print(std::ostream&) const override;
+    void json(eckit::JSON&) const override;
 
     // -- Overridden methods
     // None

@@ -14,6 +14,7 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
 
 namespace mir::repres::gauss::reduced {
 
@@ -49,6 +50,13 @@ void ReducedFromPL::makeName(std::ostream& out) const {
 bool ReducedFromPL::sameAs(const Representation& other) const {
     const auto* o = dynamic_cast<const ReducedFromPL*>(&other);
     return (o != nullptr) && FromPL::sameAs(other);
+}
+
+void ReducedFromPL::json(eckit::JSON& json) const {
+    json.startObject();
+    json << "type" << "reduced_gg";
+    FromPL::json(json);
+    json.endObject();
 }
 
 

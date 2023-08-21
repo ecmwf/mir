@@ -20,6 +20,9 @@
 #include "mir/util/AreaCropperMapping.h"
 #include "mir/util/Types.h"
 
+namespace eckit {
+class JSON;
+}
 
 struct grib_info;
 
@@ -144,6 +147,7 @@ protected:
 
     // -- Methods
 
+    virtual void json(eckit::JSON&) const;
     virtual void print(std::ostream&) const = 0;
     virtual void makeName(std::ostream&) const;
 
@@ -182,6 +186,11 @@ private:
 
     friend std::ostream& operator<<(std::ostream& s, const Representation& p) {
         p.print(s);
+        return s;
+    }
+
+    friend eckit::JSON& operator<<(eckit::JSON& s, const Representation& p) {
+        p.json(s);
         return s;
     }
 };
