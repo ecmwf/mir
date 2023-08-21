@@ -26,7 +26,7 @@ public:
 
     // -- Constructors
 
-    NamedHEALPix(const std::string& name, size_t N);
+    NamedHEALPix(const std::string& name, size_t Nside);
     NamedHEALPix(const NamedHEALPix&) = delete;
 
     // -- Destructor
@@ -75,7 +75,7 @@ private:
     // -- Members
     // None
 
-    size_t N_;
+    size_t Nside_;
 
     // -- Methods
     // None

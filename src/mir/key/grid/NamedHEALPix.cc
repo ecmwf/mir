@@ -21,7 +21,7 @@
 namespace mir::key::grid {
 
 
-NamedHEALPix::NamedHEALPix(const std::string& name, size_t N) : NamedGrid(name), N_(N) {}
+NamedHEALPix::NamedHEALPix(const std::string& name, size_t Nside) : NamedGrid(name), Nside_(Nside) {}
 
 
 void NamedHEALPix::print(std::ostream& out) const {
@@ -30,7 +30,7 @@ void NamedHEALPix::print(std::ostream& out) const {
 
 
 const repres::Representation* NamedHEALPix::representation() const {
-    return new repres::proxy::HEALPix(N_);
+    return new repres::proxy::HEALPix(Nside_);
 }
 
 
@@ -40,7 +40,7 @@ const repres::Representation* NamedHEALPix::representation(const util::Rotation&
 
 
 size_t NamedHEALPix::gaussianNumber() const {
-    return default_gaussian_number();
+    return 2*Nside_;
 }
 
 
