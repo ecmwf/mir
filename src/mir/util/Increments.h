@@ -145,7 +145,6 @@ private:
         p.json(s);
         return s;
     }
-    
 };
 
 

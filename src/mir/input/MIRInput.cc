@@ -17,7 +17,9 @@
 #include <sstream>
 
 #include "eckit/io/StdFile.h"
+#include "eckit/parser/JSONParser.h"
 #include "eckit/parser/YAMLParser.h"
+#include "eckit/utils/StringTools.h"
 
 #include "mir/input/ArtificialInput.h"
 #include "mir/input/GribFileInput.h"
@@ -139,8 +141,11 @@ MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParame
 
     util::ValueMap map;
     std::string input;
-    if (param.get("input", input) && !input.empty()) {
-        map = eckit::YAMLParser::decodeString(input);
+    if (param.get("input", input) && !input.empty()) {\
+        map = eckit::StringTools::endsWith(input, ".yaml")   ? eckit::YAMLParser::decodeFile(input)
+              : eckit::StringTools::endsWith(input, ".yml")  ? eckit::YAMLParser::decodeFile(input)
+              : eckit::StringTools::endsWith(input, ".json") ? eckit::JSONParser::decodeFile(input)
+                                                             : eckit::YAMLParser::decodeString(input);
     }
 
     // attach information after construction (pe. extra files), so virtual methods are specific to child class

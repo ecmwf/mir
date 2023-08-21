@@ -15,6 +15,7 @@
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/SimpleOption.h"
+#include "eckit/filesystem/PathName.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/grib/Config.h"

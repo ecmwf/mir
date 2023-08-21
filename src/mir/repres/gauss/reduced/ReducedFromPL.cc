@@ -54,7 +54,8 @@ bool ReducedFromPL::sameAs(const Representation& other) const {
 
 void ReducedFromPL::json(eckit::JSON& json) const {
     json.startObject();
-    json << "type" << "reduced_gg";
+    json << "type"
+         << "reduced_gg";
     FromPL::json(json);
     json.endObject();
 }
