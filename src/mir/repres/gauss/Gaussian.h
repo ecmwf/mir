@@ -15,9 +15,6 @@
 #include "mir/repres/Gridded.h"
 #include "mir/util/BoundingBox.h"
 
-namespace eckit {
-class JSON;
-}
 
 namespace mir::repres {
 

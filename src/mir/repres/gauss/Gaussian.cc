@@ -283,10 +283,12 @@ const std::vector<double>& Gaussian::weights() const {
     return weights(N_);
 }
 
-void Gaussian::json(eckit::JSON& json) const {
-    json << "N" << N_;
-    json << "bbox" << bbox_;
-    json << "angular_precision" << angularPrecision_;
+
+void Gaussian::json(eckit::JSON& s) const {
+    s << "N" << N_;
+    s << "bbox" << bbox_;
+    s << "angular_precision" << angularPrecision_;
 }
+
 
 }  // namespace mir::repres

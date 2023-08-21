@@ -20,15 +20,15 @@
 #include "mir/util/AreaCropperMapping.h"
 #include "mir/util/Types.h"
 
-namespace eckit {
-class JSON;
-}
 
 struct grib_info;
 
-
 namespace atlas {
 class Grid;
+}
+
+namespace eckit {
+class JSON;
 }
 
 namespace mir {
