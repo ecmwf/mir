@@ -1,6 +1,0 @@
-# mars
-gridType=healpix,N=36.grib2
-# mir
---interpolation=grid-box-average  --grid=H36
-# grib_get assertions
-Copy[]

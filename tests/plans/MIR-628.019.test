@@ -1,7 +1,0 @@
-# mars
-param=vo_d,level=1000
-# mir
---vod2uv --truncation=auto --intgrid=none --grid=H36  --dont-compress-plan
-# plan
-ShTruncate[truncation=143]|ShToNamedGrid[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<vod2uv>,grid=H36]|Save[packing=simple,output=...]
-

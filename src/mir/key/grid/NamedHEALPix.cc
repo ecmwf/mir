@@ -40,7 +40,7 @@ const repres::Representation* NamedHEALPix::representation(const util::Rotation&
 
 
 size_t NamedHEALPix::gaussianNumber() const {
-    return 2*Nside_;
+    return 2 * Nside_;
 }
 
 

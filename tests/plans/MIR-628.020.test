@@ -1,6 +1,0 @@
-# mars
-packingType=spectral_complex.grib1
-# mir
---grid=H36 --intgrid=none
-# plan
-ShToNamedGrid[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<scalar>,grid=H36]|Save[packing=simple,output=...]

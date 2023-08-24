@@ -1,0 +1,7 @@
+# mars
+gridType=healpix,N=36.grib2
+# mir
+--grid=O8
+# grib_get assertions
+gridType=reduced_gg
+numberOfDataPoints=544
