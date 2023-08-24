@@ -1,0 +1,8 @@
+# mars
+param=t,level=1,levtype=ml,resol=20.grib2
+# mir (fails because of no support for inv. spectral transfoms to "shifted" grids)
+--grid=H36 --intgrid=none
+# grib_get assertions
+gridType=healpix
+Nside=36
+numberOfDataPoints=15552
