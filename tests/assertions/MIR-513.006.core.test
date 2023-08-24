@@ -1,5 +1,5 @@
 # mars
-param=z,level=1,levtype=ml,resol=20
+param=z,level=1,levtype=ml,resol=20.grib2
 # mir
 --grid=9/9
 # grib_get

@@ -1,0 +1,6 @@
+# mars
+param=vo_d,level=1,levtype=ml,resol=20.grib2
+# mir
+--grid=H36 --intgrid=none --vod2uv
+# plan
+ShToNamedGrid[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<vod2uv>,grid=H36]|Save[packing=simple,output=...]
