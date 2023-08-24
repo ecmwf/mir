@@ -12,41 +12,36 @@
 
 #pragma once
 
-#include <iosfwd>
+#include "mir/repres/Gridded.h"
+#include "mir/util/Atlas.h"
+#include "mir/util/Log.h"
 
 
-namespace mir::util {
+namespace mir::repres::proxy {
 
 
-class GridBox {
+class ProxyGrid : public Gridded {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    GridBox(double north, double west, double south, double east);
-    GridBox() = default;
+    ProxyGrid(const ProxyGrid&) = delete;
 
     // -- Destructor
-    // None
+
+    ~ProxyGrid() = default;
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    ProxyGrid& operator=(const ProxyGrid&) = delete;
 
     // -- Methods
-
-    double area() const;
-    double diagonal() const;
-    bool intersects(GridBox&) const;
-
-    double north() const { return north_; }
-    double west() const { return west_; }
-    double south() const { return south_; }
-    double east() const { return east_; }
+    // None
 
     // -- Overridden methods
     // None
@@ -58,11 +53,17 @@ public:
     // None
 
 protected:
+    // -- Constructors
+
+    ProxyGrid();
+
     // -- Members
     // None
 
     // -- Methods
-    // None
+
+    virtual const ::atlas::Grid& atlasGridRef() const = 0;
+    ::atlas::Grid atlasGrid() const override;
 
     // -- Overridden methods
     // None
@@ -71,25 +72,27 @@ protected:
     // None
 
     // -- Class methods
-    // None
-
-    // -- Friends
     // None
 
 private:
     // -- Members
-
-    double north_;
-    double west_;
-    double south_;
-    double east_;
+    // None
 
     // -- Methods
-
-    void print(std::ostream&) const;
+    // None
 
     // -- Overridden methods
-    // None
+
+    // from Representation
+    void validate(const MIRValuesVector& values) const override;
+
+    size_t numberOfPoints() const override;
+
+    bool includesNorthPole() const override { return true; }
+    bool includesSouthPole() const override { return true; }
+    bool isPeriodicWestEast() const override { return true; }
+
+    Iterator* iterator() const override;
 
     // -- Class members
     // None
@@ -98,12 +101,8 @@ private:
     // None
 
     // -- Friends
-
-    friend std::ostream& operator<<(std::ostream& s, const GridBox& p) {
-        p.print(s);
-        return s;
-    }
+    // None
 };
 
 
-}  // namespace mir::util
+}  // namespace mir::repres::proxy

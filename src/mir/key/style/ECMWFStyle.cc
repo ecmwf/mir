@@ -123,7 +123,7 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
 
         if (g.isNamed()) {
             std::string field_grid;
-            field.has("gridded_named") && field.get("grid", field_grid);
+            field.get("grid", field_grid);
             return forced || grid != field_grid ? prefix + "namedgrid" : "";
         }
 

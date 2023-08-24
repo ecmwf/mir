@@ -1,0 +1,8 @@
+# mars
+gridType=reduced_gg,gridName=O8,shortName=q.grib2
+# mir
+--interpolation=grid-box-average --grid=H2
+# grib_get assertions
+gridType=healpix
+Nside=2
+numberOfDataPoints=48

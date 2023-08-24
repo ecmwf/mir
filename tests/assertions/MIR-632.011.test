@@ -1,0 +1,8 @@
+# mars
+regular_ll.2-2.grib2
+# mir
+--interpolation=grid-box-average --grid=H2
+# grib_get assertions
+gridType=healpix
+Nside=2
+numberOfDataPoints=48

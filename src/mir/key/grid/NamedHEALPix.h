@@ -12,36 +12,32 @@
 
 #pragma once
 
-#include <string>
 
-#include "mir/repres/Gridded.h"
-#include "mir/util/Atlas.h"
+#include "mir/key/grid/NamedGrid.h"
 
 
-namespace mir::repres::other {
+namespace mir::key::grid {
 
 
-class ORCA : public Gridded {
+class NamedHEALPix : public NamedGrid {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    ORCA(const std::string& uid);
-    ORCA(const param::MIRParametrisation&);
-    ORCA(const ORCA&) = delete;
+    NamedHEALPix(const std::string& name, size_t Nside);
+    NamedHEALPix(const NamedHEALPix&) = delete;
 
     // -- Destructor
-
-    ~ORCA() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
 
-    ORCA& operator=(const ORCA&) = delete;
+    NamedHEALPix& operator=(const NamedHEALPix&) = delete;
 
     // -- Methods
     // None
@@ -64,8 +60,10 @@ protected:
 
     // -- Overridden methods
 
-    // from Representation
     void print(std::ostream&) const override;
+    size_t gaussianNumber() const override;
+    const repres::Representation* representation() const override;
+    const repres::Representation* representation(const util::Rotation&) const override;
 
     // -- Class members
     // None
@@ -75,31 +73,15 @@ protected:
 
 private:
     // -- Members
+    // None
 
-    const atlas::Grid::Spec spec_;
-    mutable atlas::Grid grid_;
+    size_t Nside_;
 
     // -- Methods
-
-    const atlas::Grid& atlasGridRef() const;
+    // None
 
     // -- Overridden methods
-
-    // from Representation
-    bool sameAs(const Representation&) const override;
-    void validate(const MIRValuesVector&) const override;
-    size_t numberOfPoints() const override;
-    void makeName(std::ostream&) const override;
-
-    void fillGrib(grib_info&) const override;
-    void fillMeshGen(util::MeshGeneratorParameters&) const override;
-
-    bool includesNorthPole() const override { return true; }
-    bool includesSouthPole() const override { return true; }
-    bool isPeriodicWestEast() const override { return true; }
-
-    Iterator* iterator() const override;
-    atlas::Grid atlasGrid() const override;
+    // None
 
     // -- Class members
     // None
@@ -112,4 +94,4 @@ private:
 };
 
 
-}  // namespace mir::repres::other
+}  // namespace mir::key::grid

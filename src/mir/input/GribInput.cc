@@ -321,14 +321,21 @@ static const char* get_key(const std::string& name, grib_handle* h) {
             "numberOfGridInReference" /*just a dummy*/,
             is("gridType", "unstructured_grid"),
         },
+        {
+            "gridded",
+            "Nside" /*just a dummy*/,
+            is("gridType", "healpix"),
+        },
         {"gridded", "numberOfPointsAlongAMeridian"},  // Is that always true?
         {"gridded_regular_ll", "Ni", _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll"))},
-        {"gridded_named", "gridName"},
+
+        {"grid", "gridNameForHealpix", is("gridType", "healpix")},
 
         {"grid", "gridName",
-         _or(_or(_or(_or(is("gridType", "regular_gg"), is("gridType", "reduced_gg")), is("gridType", "rotated_gg")),
-                 is("gridType", "reduced_rotated_gg")),
-             is("gridType", "unstructured_grid"))},
+         _or(_or(_or(_or(_or(is("gridType", "regular_gg"), is("gridType", "reduced_gg")), is("gridType", "rotated_gg")),
+                     is("gridType", "reduced_rotated_gg")),
+                 is("gridType", "unstructured_grid")),
+             is("gridType", "healpix"))},
 
         {"spectral", "pentagonalResolutionParameterJ"},
 
@@ -594,6 +601,32 @@ static ProcessingT<std::string>* packing() {
 }
 
 
+static ProcessingT<std::string>* gridNameForHealpix() {
+    return new ProcessingT<std::string>([](grib_handle* h, std::string& value) {
+        ASSERT(h != nullptr);
+
+        char buffer[64];
+        size_t size = sizeof(buffer);
+
+        GRIB_CALL(codes_get_string(h, "gridType", buffer, &size));
+        ASSERT(size < sizeof(buffer) - 1);
+
+        std::string type = ::strcmp(buffer, "MISSING") != 0 ? buffer : "";
+        ASSERT(type == "healpix");
+
+        long Nside = 0;
+        GRIB_CALL(codes_get_long(h, "Nside", &Nside));
+        ASSERT(Nside > 0);
+
+        std::ostringstream name;
+        name << "H" << Nside;
+        value = name.str();
+
+        return true;
+    });
+}
+
+
 template <class T>
 struct ConditionedProcessingT {
     const std::string name;
@@ -791,6 +824,7 @@ bool GribInput::get(const std::string& name, bool& value) const {
         return false;
     }
 
+    // NOTE: They key has to return a non-zero value
     // FIXME: make sure that 'temp' is not set if CODES_MISSING_LONG
     long temp = CODES_MISSING_LONG;
     int err   = codes_get_long(grib_, key, &temp);
@@ -997,9 +1031,8 @@ bool GribInput::get(const std::string& name, std::string& value) const {
     int err     = codes_get_string(grib_, key, buffer, &size);
 
     if (err == CODES_NOT_FOUND) {
-        static const ProcessingList<std::string> process{
-            {"packing", packing()},
-        };
+        static const ProcessingList<std::string> process{{"packing", packing()},
+                                                         {"gridNameForHealpix", gridNameForHealpix()}};
 
         return get_value(key, grib_, value, process) || FieldParametrisation::get(name, value);
     }
