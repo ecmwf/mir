@@ -19,10 +19,10 @@
 #include "mir/input/MIRInput.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/CombinedParametrisation.h"
-#include "mir/stats/Statistics.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/stats/Statistics.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/GridBox.h"
@@ -33,8 +33,8 @@
 namespace mir::tools {
 
 
-struct MIRStatistics : MIRTool {
-    MIRStatistics(int argc, char** argv) : MIRTool(argc, argv) {}
+struct MIRGridBoxArea : MIRTool {
+    MIRGridBoxArea(int argc, char** argv) : MIRTool(argc, argv) {}
 
     int numberOfPositionalArguments() const override { return 1; }
 
@@ -50,7 +50,7 @@ struct MIRStatistics : MIRTool {
 
         for (const auto& arg : args) {
             // read in first field to calculate grid-box areas
-            std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build(args(0), args_wrap));
+            std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build(arg, args_wrap));
             ASSERT(input->next());
 
             std::unique_ptr<param::MIRParametrisation> param(
@@ -59,7 +59,7 @@ struct MIRStatistics : MIRTool {
             util::MIRStatistics statistics;
             context::Context ctx(*input, statistics);
 
-            auto field = ctx.field();
+            auto& field = ctx.field();
             ASSERT(field.dimensions() == 1);
 
             auto& area = field.direct(0);
@@ -70,7 +70,7 @@ struct MIRStatistics : MIRTool {
             }
 
             {
-                std::unique_ptr<stats::Statistics> stats(stats::StatisticsFactory::build("scalar",*param));
+                std::unique_ptr<stats::Statistics> stats(stats::StatisticsFactory::build("scalar", *param));
                 stats->execute(field);
                 Log::info() << *stats << std::endl;
             }
@@ -86,6 +86,6 @@ struct MIRStatistics : MIRTool {
 
 
 int main(int argc, char** argv) {
-    mir::tools::MIRStatistics tool(argc, argv);
+    mir::tools::MIRGridBoxArea tool(argc, argv);
     return tool.start();
 }
