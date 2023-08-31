@@ -131,6 +131,9 @@ struct MIR : MIRTool {
             "finite-element-projection-fail", "FE method failed projection handling (default missing-value)"));
 #endif
 
+        options_.push_back(new SimpleOption<double>("pole-displacement-in-degree",
+                                                    "Infinitesimal displacement at the poles [degree] (default 0.)"));
+
         options_.push_back(new FactoryOption<method::nonlinear::NonLinearFactory>(
             "non-linear",
             "Non-linear treatment on the interpolation linear system (such as the handling of missing values)"));

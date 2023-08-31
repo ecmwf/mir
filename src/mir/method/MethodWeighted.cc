@@ -58,6 +58,11 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation)
 
     pruneEpsilon_ = 0;
     ASSERT(parametrisation_.get("prune-epsilon", pruneEpsilon_));
+    ASSERT(pruneEpsilon_ >= 0);
+
+    poleDisplacement_ = 0;
+    parametrisation_.get("pole-displacement-in-degree", poleDisplacement_);
+    ASSERT(poleDisplacement_ >= 0);
 
     matrixValidate_ = eckit::Resource<bool>("$MIR_MATRIX_VALIDATE", false);
     matrixAssemble_ = parametrisation_.userParametrisation().has("filter");
@@ -84,7 +89,7 @@ void MethodWeighted::print(std::ostream& out) const {
     out << "]";
 
     out << ",Solver=" << *solver_ << ",cropping=" << cropping_ << ",lsmWeightAdjustment=" << lsmWeightAdjustment_
-        << ",pruneEpsilon=" << pruneEpsilon_;
+        << ",pruneEpsilon=" << pruneEpsilon_ << ",poleDisplacement=" << poleDisplacement_;
 }
 
 
@@ -104,6 +109,7 @@ bool MethodWeighted::sameAs(const Method& other) const {
 
     const auto* o = dynamic_cast<const MethodWeighted*>(&other);
     return (o != nullptr) && (lsmWeightAdjustment_ == o->lsmWeightAdjustment_) && (pruneEpsilon_ == o->pruneEpsilon_) &&
+           Latitude(poleDisplacement_) == Latitude(o->poleDisplacement_) &&
            (sameNonLinearities(nonLinear_, o->nonLinear_)) && solver().sameAs(o->solver()) &&
            lsm::LandSeaMasks::sameLandSeaMasks(parametrisation_, o->parametrisation_) && cropping_.sameAs(o->cropping_);
 }
@@ -513,7 +519,9 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
 void MethodWeighted::hash(eckit::MD5& md5) const {
     md5.add(name());
     md5 << pruneEpsilon_;
+    md5 << poleDisplacement_;
     md5 << lsmWeightAdjustment_;
+
     for (const auto& n : nonLinear_) {
         n->hash(md5);
     }

@@ -32,6 +32,7 @@
 #include "mir/util/Domain.h"
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
+#include "mir/util/Point2ToPoint3.h"
 #include "mir/util/Trace.h"
 
 
@@ -49,6 +50,10 @@ static void init() {
     mtx = new util::recursive_mutex();
     m   = new std::map<std::string, FiniteElementFactory*>();
 }
+
+
+namespace {
+
 
 using triplet_vector_t    = std::vector<WeightMatrix::Triplet>;
 using element_tree_t      = atlas::interpolation::method::ElemIndex3;
@@ -142,6 +147,9 @@ struct quad_t : element_t, atlas::interpolation::element::Quad3D {
         return false;
     }
 };
+
+
+}  // namespace
 
 
 FiniteElement::FiniteElement(const param::MIRParametrisation& param, const std::string& label) :
@@ -240,9 +248,9 @@ void FiniteElement::hash(eckit::MD5& md5) const {
     MethodWeighted::hash(md5);
     meshGeneratorParams_.hash(md5);
 
-    // FIXME uncomment on cache version increase
-    // md5 << validateMesh_;
-    // md5 << static_cast<unsigned int>(projectionFail_);
+    md5 << validateMesh_;
+    md5 << static_cast<unsigned int>(projectionFail_);
+    md5 << poleDisplacement();
 }
 
 
@@ -281,6 +289,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
     const auto nbRealPts =
         inNodes.metadata().has("NbRealPts") ? inNodes.metadata().get<size_t>("NbRealPts") : nbInputPoints;
 
+    util::Point2ToPoint3 point3(out, poleDisplacement());
 
     // some statistics
     size_t nbMaxElementsSearched   = 0;
@@ -300,14 +309,13 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
         // iterate over output points
         for (const std::unique_ptr<repres::Iterator> it(out.iterator()); it->next(); ++progress) {
             if (inDomain.contains(it->pointRotated())) {
-
-                // 3D projection, trying elements closest to p
-                Point3 p(it->point3D());
                 size_t nbProjectionAttempts = 0;
 
                 auto ip = it->index();
                 ASSERT(ip < nbOutputPoints);
 
+                // 3D projection, trying elements closest to p
+                const auto p = point3(*(*it));
                 auto closest = eTree->findInSphere(p, R);
 
                 atlas::interpolation::method::Ray ray(p.data());

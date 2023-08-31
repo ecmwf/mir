@@ -99,6 +99,7 @@ protected:
     const solver::Solver& solver() const;
     void addNonLinearTreatment(const nonlinear::NonLinear*);
     void setSolver(const solver::Solver*);
+    double poleDisplacement() const { return poleDisplacement_; }
 
     // -- Overridden methods
 
@@ -117,6 +118,7 @@ private:
 
     double lsmWeightAdjustment_;
     double pruneEpsilon_;
+    double poleDisplacement_;
     Cropping cropping_;
 
     std::vector<std::unique_ptr<const nonlinear::NonLinear>> nonLinear_;

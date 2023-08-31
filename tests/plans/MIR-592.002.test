@@ -1,0 +1,6 @@
+# mars
+param=vo_d,level=1000,resol=20
+# mir
+--grid=3/3 --interpolation=linear --vod2uv
+# plan
+ShToNamedGrid[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<vod2uv>,grid=F21]|Gridded2RegularLL[increments=Increments[west_east=3,south_north=3],bbox=BoundingBox[north=90,west=0,south=-90,east=357],interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],Solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=1e-06,validateMesh=0,projectionFail=missing-value]]|Save[packing=simple,output=...]
