@@ -7,3 +7,4 @@ gridType=healpix
 Nside=36
 numberOfDataPoints=15552
 shortName=u
+longitudeOfFirstGridPoint=45000000

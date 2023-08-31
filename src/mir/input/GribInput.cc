@@ -22,6 +22,7 @@
 #include <sstream>
 #include <utility>
 #include <vector>
+#include <cmath>
 
 #include "eckit/config/Resource.h"
 #include "eckit/io/Buffer.h"
@@ -607,9 +608,14 @@ static ProcessingT<std::string>* gridNameForHealpix() {
 
         char buffer[64];
         size_t size = sizeof(buffer);
+        double logpid;
 
         GRIB_CALL(codes_get_string(h, "gridType", buffer, &size));
         ASSERT(size < sizeof(buffer) - 1);
+
+
+        GRIB_CALL(codes_get_double(h, "longitudeOfFirstGridPointInDegrees", &logpid));
+        ASSERT( std::abs(logpid-45.0)< 1e-12);
 
         std::string type = ::strcmp(buffer, "MISSING") != 0 ? buffer : "";
         ASSERT(type == "healpix");

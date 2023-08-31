@@ -7,3 +7,4 @@ gridType=healpix
 Nside=36
 numberOfDataPoints=15552
 packingType=grid_ccsds
+longitudeOfFirstGridPoint=45000000
