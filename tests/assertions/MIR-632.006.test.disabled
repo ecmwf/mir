@@ -6,3 +6,4 @@ ORCA.grib2
 gridType=healpix
 Nside=2
 numberOfDataPoints=48
+longitudeOfFirstGridPointInDegrees=45
