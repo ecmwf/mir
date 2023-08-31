@@ -6,4 +6,4 @@ gridType=reduced_gg,gridName=O8,shortName=q.grib2
 gridType=healpix
 Nside=2
 numberOfDataPoints=48
-longitudeOfFirstGridPoint=45000000
+longitudeOfFirstGridPointInDegrees=45

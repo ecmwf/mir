@@ -6,4 +6,4 @@ regular_ll.2-2.grib2
 gridType=healpix
 Nside=2
 numberOfDataPoints=48
-longitudeOfFirstGridPoint=45000000
+longitudeOfFirstGridPointInDegrees=45

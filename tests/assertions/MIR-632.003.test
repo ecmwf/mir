@@ -6,4 +6,4 @@ gridType=healpix,N=36.grib2
 gridType=healpix
 Nside=36
 numberOfDataPoints=15552
-longitudeOfFirstGridPoint=45000000
+longitudeOfFirstGridPointInDegrees=45

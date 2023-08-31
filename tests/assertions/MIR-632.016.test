@@ -7,4 +7,4 @@ gridType=healpix
 Nside=36
 numberOfDataPoints=15552
 accuracy=8
-longitudeOfFirstGridPoint=45000000
+longitudeOfFirstGridPointInDegrees=45
