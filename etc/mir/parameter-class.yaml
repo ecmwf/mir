@@ -369,6 +369,8 @@ density.mass:
 - 260273  # Total column-integrated melting ice
 - 260495  # Ocean Mixed Layer Potential Density (Reference 2000m)<br
 - 260619  # Mass concentration of condensed water in soil
+- 262023  # Sea ice salinity
+- 263023  # Time-mean Sea ice salinity
 - 300089  # Density
 
 density.energy:
@@ -548,6 +550,8 @@ vector-space.2d-vector-u:
 - 260626  # Zonal momentum flux by long gravity wave
 - 260629  # Zonal momentum flux by short gravity wave
 - 260637  # Vertical diffusion zonal acceleration
+- 262021  # X-component of sea ice velocity
+- 263021  # Time-mean X-component of sea ice velocity
 - 300033  # Zonal wind (u)
 - 300049  # U-component of current
 - 300130  # 10 metre u-wind component
@@ -644,6 +648,8 @@ vector-space.2d-vector-v:
 - 260627  # Meridional momentum flux by long gravity wave
 - 260628  # Meridional momentum flux by short gravity wave
 - 260638  # Vertical diffusion meridional acceleration
+- 262022  # Y-component of sea ice velocity
+- 263022  # Time-mean Y-component of sea ice velocity
 - 300034  # Meridional wind (v)
 - 300050  # V-component of current
 - 300131  # 10 metre v-wind component
@@ -1917,8 +1923,12 @@ intensity:
 - 261020  # Physiological equivalent temperature
 - 261021  # Saturation water vapor pressure
 - 261022  # Wet-bulb potential temperature
+- 262021  # X-component of sea ice velocity
+- 262022  # Y-component of sea ice velocity
 - 262143  # Sea surface height with inverse barometer correction
 - 262144  # Average sea water potential temperature in the upper 300m
+- 263021  # Time-mean of X-component of sea ice velocity
+- 263022  # Time-mean of Y-component of sea ice velocity
 - 263144  # Time-mean average sea water potential temperature in the upper 300m
 - 300001  # Pressure
 - 300002  # Pressure reduced to msl
@@ -2137,6 +2147,7 @@ numerics.mean:
 - 260472  # Time-mean snow depth water equivalent
 - 260473  # Time-mean skin temperature
 - 260477  # Time-mean snow melt rate in the last 24h
+- 263023  # Time-mean Sea ice salinity
 - 435001  # mean net ecosystem exchange flux
 - 436001  # mean gross primary production flux 
 - 437001  # mean ecosystem respiration flux
