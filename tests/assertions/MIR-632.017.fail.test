@@ -4,6 +4,7 @@ param=t,level=1,levtype=ml,resol=20.grib2
 --grid=H36 --intgrid=none
 # grib_get assertions
 gridType=healpix
+gridName=H36
 Nside=36
 numberOfDataPoints=15552
 longitudeOfFirstGridPointInDegrees=45

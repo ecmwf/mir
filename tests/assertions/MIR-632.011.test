@@ -4,6 +4,7 @@ regular_ll.2-2.grib2
 --interpolation=grid-box-average --grid=H2
 # grib_get assertions
 gridType=healpix
+gridName=H2
 Nside=2
 numberOfDataPoints=48
 longitudeOfFirstGridPointInDegrees=45

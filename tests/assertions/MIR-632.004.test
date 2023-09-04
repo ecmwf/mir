@@ -4,6 +4,7 @@ gridType=healpix,N=36.grib2
 --packing=ccsds
 # grib_get assertions
 gridType=healpix
+gridName=H36
 Nside=36
 numberOfDataPoints=15552
 packingType=grid_ccsds
