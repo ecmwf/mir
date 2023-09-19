@@ -29,6 +29,12 @@ list(APPEND mir_srcs
 
     ${CMAKE_CURRENT_BINARY_DIR}/api/mir_version.cc
 
+    action/area/Area.cc
+    action/area/Area.h
+    action/area/AreaCropper.cc
+    action/area/AreaCropper.h
+    action/area/AreaMasker.cc
+    action/area/AreaMasker.h
     action/calc/FormulaAction.cc
     action/calc/FormulaAction.h
     action/context/Context.cc
@@ -105,8 +111,6 @@ list(APPEND mir_srcs
     action/io/Save.h
     action/io/Set.cc
     action/io/Set.h
-    action/misc/AreaCropper.cc
-    action/misc/AreaCropper.h
     action/misc/CheckerBoard.cc
     action/misc/CheckerBoard.h
     action/misc/Noop.cc
@@ -142,8 +146,12 @@ list(APPEND mir_srcs
     api/MIRJob.h
     api/MIRWatcher.cc
     api/MIRWatcher.h
-    caching/CroppingCache.cc
-    caching/CroppingCache.h
+    caching/AreaCacheEntry.cc
+    caching/AreaCacheEntry.h
+    caching/AreaCropperCache.cc
+    caching/AreaCropperCache.h
+    caching/AreaMaskerCache.cc
+    caching/AreaMaskerCache.h
     caching/InMemoryCache.cc
     caching/InMemoryCache.h
     caching/InMemoryCacheBase.cc
@@ -628,7 +636,6 @@ list(APPEND mir_srcs
     tools/MIRTool.cc
     tools/MIRTool.h
     util/Angles.h
-    util/AreaCropperMapping.h
     util/Atlas.h
     util/Bitmap.cc
     util/Bitmap.h
@@ -667,6 +674,7 @@ list(APPEND mir_srcs
     util/GridBox.h
     util/Increments.cc
     util/Increments.h
+    util/IndexMapping.h
     util/Latitude.cc
     util/Latitude.h
     util/LatitudeIncrement.h

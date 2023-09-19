@@ -14,38 +14,15 @@
 
 #include "eckit/container/CacheManager.h"
 
-#include "mir/util/AreaCropperMapping.h"
-#include "mir/util/BoundingBox.h"
+#include "mir/caching/AreaCacheEntry.h"
 
 
 namespace mir::caching {
 
 
-struct CroppingCacheEntry {
+struct AreaMaskerCacheTraits {
 
-    ~CroppingCacheEntry();
-
-    util::AreaCropperMapping mapping_;
-    util::BoundingBox bbox_;
-
-    void print(std::ostream&) const;
-
-    friend std::ostream& operator<<(std::ostream& out, const CroppingCacheEntry& e) {
-        e.print(out);
-        return out;
-    }
-
-    size_t footprint() const;
-    const util::BoundingBox& boundingBox() const { return bbox_; }
-
-    void save(const eckit::PathName&) const;
-    void load(const eckit::PathName&);
-};
-
-
-struct CroppingCacheTraits {
-
-    using value_type = CroppingCacheEntry;
+    using value_type = AreaCacheEntry;
     using Locker     = eckit::CacheManagerFileFlock;
 
     static const char* name();
@@ -57,9 +34,9 @@ struct CroppingCacheTraits {
 };
 
 
-class CroppingCache : public eckit::CacheManager<CroppingCacheTraits> {
+class AreaMaskerCache : public eckit::CacheManager<AreaMaskerCacheTraits> {
 public:  // methods
-    explicit CroppingCache();
+    explicit AreaMaskerCache();
 };
 
 

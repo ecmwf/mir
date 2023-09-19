@@ -14,7 +14,7 @@
 
 #include "eckit/testing/Test.h"
 
-#include "mir/action/misc/AreaCropper.h"
+#include "mir/action/area/AreaCropper.h"
 #include "mir/action/plan/Action.h"
 #include "mir/action/plan/ActionGraph.h"
 #include "mir/action/plan/ActionNode.h"

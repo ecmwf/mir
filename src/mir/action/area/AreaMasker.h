@@ -12,21 +12,21 @@
 
 #pragma once
 
-#include "mir/repres/regular/RegularGrid.h"
+#include "mir/action/area/Area.h"
+#include "mir/action/plan/Action.h"
 
 
-namespace mir::repres::regular {
+namespace mir::action {
 
 
-class Lambert : public RegularGrid {
+class AreaMasker final : public Area {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    Lambert(const param::MIRParametrisation&);
-    Lambert(const Lambert&) = delete;
+    AreaMasker(const param::MIRParametrisation& param) : Area(param) {}
 
     // -- Destructor
     // None
@@ -35,11 +35,14 @@ public:
     // None
 
     // -- Operators
-
-    Lambert& operator=(const Lambert&) = delete;
+    // None
 
     // -- Methods
-    // None
+
+    static void mask(const repres::Representation& repres, util::BoundingBox& bbox, util::IndexMapping& mapping) {
+        // apply masking on projected points (lat/lon, on projection reference frame)
+        AreaMasker::apply(repres, bbox, mapping, true);
+    }
 
     // -- Overridden methods
     // None
@@ -52,20 +55,19 @@ public:
 
 private:
     // -- Members
-
-    double latitudeOfSouthernPoleInDegrees_;
-    double longitudeOfSouthernPoleInDegrees_;
-    bool writeLaDInDegrees_;
-    bool writeLonPositive_;
-    bool uvRelativeToGrid_;
+    // None
 
     // -- Methods
-
-    static Projection make_projection(const param::MIRParametrisation&);
+    // None
 
     // -- Overridden methods
 
-    void fillGrib(grib_info&) const override;
+    void execute(context::Context&) const override;
+    void print(std::ostream&) const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
+    util::BoundingBox outputBoundingBox() const override;
+    void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Class members
     // None
@@ -78,4 +80,4 @@ private:
 };
 
 
-}  // namespace mir::repres::regular
+}  // namespace mir::action

@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "eckit/testing/Test.h"
+#include "eckit/utils/StringTools.h"
 
 #include "mir/action/calc/FormulaAction.h"
 #include "mir/action/plan/Action.h"
@@ -29,6 +30,7 @@
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 
 // define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
@@ -49,14 +51,14 @@ class InputOutput : public param::SimpleParametrisation {
     const std::vector<double> grid{1, 1};
 
 protected:
-    InputOutput(bool gridded) {
+    explicit InputOutput(bool gridded) {
         gridded ? set("grid", grid).set("gridded", true) : set("truncation", 1).set("spectral", true);
     }
 };
 
 
 struct TestingInput : input::MIRInput, InputOutput {
-    TestingInput(bool gridded) : InputOutput(gridded) {}
+    explicit TestingInput(bool gridded) : InputOutput(gridded) {}
 
 private:
     const param::MIRParametrisation& parametrisation(size_t /*which*/) const override { return *this; }
@@ -71,7 +73,7 @@ private:
 
 
 struct TestingOutput : InputOutput {
-    TestingOutput(bool gridded) : InputOutput(gridded) {}
+    explicit TestingOutput(bool gridded) : InputOutput(gridded) {}
 };
 
 
@@ -150,10 +152,10 @@ CASE("ECMWFStyle") {
 
                         output::EmptyOutput out;
 
-                        const param::CombinedParametrisation combined(user, in, defaults);
-                        std::unique_ptr<key::style::MIRStyle> style(key::style::MIRStyleFactory::build(combined));
+                        const param::CombinedParametrisation param(user, in, defaults);
+                        std::unique_ptr<key::style::MIRStyle> style(key::style::MIRStyleFactory::build(param));
 
-                        action::ActionPlan plan(combined);
+                        action::ActionPlan plan(param);
                         style->prepare(plan, out);
 
                         bool plan_has_this_formula   = plan_has_action(plan, CORRECT_ACTION);
@@ -185,6 +187,71 @@ CASE("ECMWFStyle") {
                     }
                 }
             }
+        }
+    }
+
+
+    SECTION("mir::action::Area") {
+        auto plan_contains = [](const action::ActionPlan& plan, const std::string& action) {
+            return std::any_of(plan.begin(), plan.end(), [&action](const action::Action* act_ptr) -> bool {
+                std::ostringstream str;
+                str << *act_ptr;
+                return eckit::StringTools::startsWith(str.str(), action);
+            });
+        };
+
+        // trigger post-processing, but avoid the same points
+        param::SimpleParametrisation user;
+        user.set("grid", std::vector<double>{2, 2});
+        user.set("area", std::vector<double>{90, 0.1, -90, 360});
+
+        TestingInput in(true);
+        output::EmptyOutput out;
+
+        const param::CombinedParametrisation param(user, in, defaults);
+        std::unique_ptr<key::style::MIRStyle> style(key::style::MIRStyleFactory::build(param));
+
+
+        Log::info() << "area-mode=crop for regular lat/lon" << std::endl;
+        {
+            user.set("area-mode", "crop");
+            user.clear("rotation");
+
+            action::ActionPlan plan(param);
+            style->prepare(plan, out);
+            EXPECT(plan_contains(plan, "AreaCropper"));
+        }
+
+
+        Log::info() << "area-mode=mask for regular lat/lon" << std::endl;
+        {
+            user.set("area-mode", "mask");
+            user.clear("rotation");
+
+            action::ActionPlan plan(param);
+            style->prepare(plan, out);
+            EXPECT(plan_contains(plan, "AreaMasker"));
+        }
+
+
+        Log::info() << "area-mode=crop for rotated regular lat/lon" << std::endl;
+        {
+            user.set("area-mode", "crop");
+            user.set("rotation", std::vector<double>{-90, 0});
+
+            action::ActionPlan plan(param);
+            style->prepare(plan, out);
+            EXPECT(plan_contains(plan, "AreaCropper"));
+        }
+
+
+        Log::info() << "area-mode=mask for rotated regular lat/lon" << std::endl;
+        {
+            user.set("area-mode", "mask");
+            user.set("rotation", std::vector<double>{-90, 0});
+
+            action::ActionPlan plan(param);
+            EXPECT_THROWS_AS(style->prepare(plan, out), exception::UserError);
         }
     }
 }

@@ -39,6 +39,7 @@ struct Shape {
     long code;
     double a;
     double b;
+    long edition;
     bool provided;
 };
 

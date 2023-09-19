@@ -13,30 +13,32 @@
 #pragma once
 
 #include "mir/action/plan/Action.h"
-#include "mir/util/AreaCropperMapping.h"
 #include "mir/util/BoundingBox.h"
+#include "mir/util/IndexMapping.h"
 
 
-namespace mir::repres {
+namespace mir {
+namespace repres {
 class Representation;
-}  // namespace mir::repres
+}
+}  // namespace mir
 
 
 namespace mir::action {
 
 
-class AreaCropper : public Action {
+class Area : public Action {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    explicit AreaCropper(const param::MIRParametrisation&);
+    explicit Area(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    ~AreaCropper() override;
+    virtual ~Area() override;
 
     // -- Convertors
     // None
@@ -45,12 +47,10 @@ public:
     // None
 
     // -- Methods
-
-    static void crop(const repres::Representation&, util::BoundingBox&, util::AreaCropperMapping&);
+    // None
 
     // -- Overridden methods
-
-    void execute(context::Context&) const override;
+    // None
 
     // -- Class members
     // None
@@ -64,10 +64,15 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const override;
+    static void apply(const repres::Representation&, util::BoundingBox&, util::IndexMapping&, bool projection);
+
+    const util::BoundingBox& boundingBox() const { return bbox_; }
+
+    bool caching() const { return caching_; }
 
     // -- Overridden methods
-    // None
+
+    virtual bool sameAs(const Action&) const override;
 
     // -- Class members
     // None
@@ -85,13 +90,7 @@ private:
     // None
 
     // -- Overridden methods
-
-    bool sameAs(const Action&) const override;
-    const char* name() const override;
-    bool isCropAction() const override;
-    bool canCrop() const override;
-    util::BoundingBox outputBoundingBox() const override;
-    void estimate(context::Context&, api::MIREstimation&) const override;
+    // None
 
     // -- Class members
     // None

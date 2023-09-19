@@ -29,7 +29,7 @@
 #define ASSERT_NONEMPTY_INTERPOLATION(m, nonempty) \
     ASSERT_MSG((nonempty), m ": non-empty interpolation (to at least one point)")
 
-#define ASSERT_NONEMPTY_AREA_CROP(m, nonempty) ASSERT_MSG((nonempty), m ": non-empty area crop (to at least one point)")
+#define ASSERT_NONEMPTY_AREA(m, nonempty) ASSERT_MSG((nonempty), m ": non-empty area crop/mask (to at least one point)")
 
 
 namespace mir::exception {
