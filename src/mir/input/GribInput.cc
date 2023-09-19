@@ -329,8 +329,6 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         {"gridded", "numberOfPointsAlongAMeridian"},  // Is that always true?
         {"gridded_regular_ll", "Ni", _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll"))},
 
-        {"grid", "gridNameForHealpix", is("gridType", "healpix")},
-
         {"grid", "gridName",
          _or(_or(_or(_or(_or(is("gridType", "regular_gg"), is("gridType", "reduced_gg")), is("gridType", "rotated_gg")),
                      is("gridType", "reduced_rotated_gg")),
@@ -601,32 +599,6 @@ static ProcessingT<std::string>* packing() {
 }
 
 
-static ProcessingT<std::string>* gridNameForHealpix() {
-    return new ProcessingT<std::string>([](grib_handle* h, std::string& value) {
-        ASSERT(h != nullptr);
-
-        char buffer[64];
-        size_t size = sizeof(buffer);
-
-        GRIB_CALL(codes_get_string(h, "gridType", buffer, &size));
-        ASSERT(size < sizeof(buffer) - 1);
-
-        std::string type = ::strcmp(buffer, "MISSING") != 0 ? buffer : "";
-        ASSERT(type == "healpix");
-
-        long Nside = 0;
-        GRIB_CALL(codes_get_long(h, "Nside", &Nside));
-        ASSERT(Nside > 0);
-
-        std::ostringstream name;
-        name << "H" << Nside;
-        value = name.str();
-
-        return true;
-    });
-}
-
-
 template <class T>
 struct ConditionedProcessingT {
     const std::string name;
@@ -736,7 +708,6 @@ data::MIRField GribInput::field() const {
             std::vector<long> pl_fixed = pl;
             size_t new_values          = fix_pl_array_zeros(pl_fixed);
             ASSERT(new_values > 0);
-
 
             // values array: copy values row by row, and when a fixed (0) entry is found, insert missing values
             Log::debug() << "GribInput: correcting values array with " << new_values << " new missing values"
@@ -1031,8 +1002,7 @@ bool GribInput::get(const std::string& name, std::string& value) const {
     int err     = codes_get_string(grib_, key, buffer, &size);
 
     if (err == CODES_NOT_FOUND) {
-        static const ProcessingList<std::string> process{{"packing", packing()},
-                                                         {"gridNameForHealpix", gridNameForHealpix()}};
+        static const ProcessingList<std::string> process{{"packing", packing()}};
 
         return get_value(key, grib_, value, process) || FieldParametrisation::get(name, value);
     }
@@ -1304,7 +1274,6 @@ void GribInput::marsRequest(std::ostream& out) const {
 
             NOTIMP;
         }
-
 
         if (err != CODES_NOT_FOUND) {
             grib_call(err, "freeFormData");
