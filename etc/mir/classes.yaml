@@ -173,12 +173,6 @@ orca.arrangement.v:
 orca.arrangement.w:
     orca-arrangement: W
 
-unknown.experimental:
-    _warning: true
-
-unknown.missing:
-    _warning: true
-
 unknown.reserved:
     _warning: true
 
