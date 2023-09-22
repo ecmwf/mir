@@ -303,29 +303,9 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         {"projSource", "projSourceString"},
 
         // This will be just called for has()
-        {
-            "gridded",
-            "Nx",
-            _or(_or(_or(is("gridType", "polar_stereographic"), is("gridType", "lambert_azimuthal_equal_area")),
-                    is("gridType", "lambert")),
-                is("gridType", "space_view")),
-        },
-        {
-            "gridded",
-            "Ni",
-            is("gridType", "triangular_grid"),
-        },
-        {
-            "gridded",
-            "numberOfGridInReference" /*just a dummy*/,
-            is("gridType", "unstructured_grid"),
-        },
-        {
-            "gridded",
-            "Nside" /*just a dummy*/,
-            is("gridType", "healpix"),
-        },
-        {"gridded", "numberOfPointsAlongAMeridian"},  // Is that always true?
+        {"gridded", "isGridded"},
+        {"spectral", "isSpectral"},
+
         {"gridded_regular_ll", "Ni", _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll"))},
 
         {"grid", "gridName",
@@ -334,8 +314,6 @@ static const char* get_key(const std::string& name, grib_handle* h) {
              is("gridType", "unstructured_grid"))},
 
         {"grid", "gridName_fix_for_healpix_grids", is("gridType", "healpix")},
-
-        {"spectral", "pentagonalResolutionParameterJ"},
 
         {"uid", "uuidOfHGrid", is("gridType", "unstructured_grid")},
 

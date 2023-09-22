@@ -452,8 +452,11 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, output::MIROutput& output) co
 
     ASSERT(user_wants_gridded <= 1);
 
-    bool field_gridded  = parametrisation_.fieldParametrisation().has("gridded");
-    bool field_spectral = parametrisation_.fieldParametrisation().has("spectral");
+    bool field_gridded = false;
+    parametrisation_.fieldParametrisation().get("gridded", field_gridded);
+
+    bool field_spectral = false;
+    parametrisation_.fieldParametrisation().get("spectral", field_spectral);
 
     ASSERT(field_gridded != field_spectral);
 

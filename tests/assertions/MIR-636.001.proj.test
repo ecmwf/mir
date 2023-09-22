@@ -1,0 +1,11 @@
+# mars
+gridType=polar_stereographic,shortName=tp,centre=kwbc.grib1
+# mir
+--grid=3/3
+# grib_get assertions
+gridType=regular_ll
+numberOfDataPoints=2880
+latitudeOfFirstGridPointInDegrees=90
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=21
+longitudeOfLastGridPointInDegrees=357

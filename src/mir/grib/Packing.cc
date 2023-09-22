@@ -40,10 +40,11 @@ void check(bool ok, const std::string& message) {
 
 
 Packing::Packing(const std::string& name, const param::MIRParametrisation& param) :
-    bitsPerValue_(0),
-    precision_(0),
-    definePrecision_(false),
-    gridded_(param.userParametrisation().has("grid") || param.fieldParametrisation().has("gridded")) {
+    bitsPerValue_(0), precision_(0), definePrecision_(false), gridded_([&param]() {
+        bool field_gridded = false;
+        param.fieldParametrisation().get("gridded", field_gridded);
+        return param.userParametrisation().has("grid") || field_gridded;
+    }()) {
     const auto& user  = param.userParametrisation();
     const auto& field = param.fieldParametrisation();
 
@@ -326,23 +327,29 @@ Packing* Packing::build(const param::MIRParametrisation& param) {
     // Packing
     std::string packing_spectral = "complex";
     std::string packing_gridded  = "ccsds";
-    bool packing_always_set      = false;
+
+    bool packing_always_set = false;
     grib_config->get("grib-packing-gridded", packing_gridded);
     grib_config->get("grib-packing-spectral", packing_spectral);
     grib_config->get("grib-packing-always-set", packing_always_set);
 
-    ASSERT(field.has("spectral") != field.has("gridded"));
-    auto gridded = user.has("grid") || (field.has("gridded"));
-    auto packing = packing_always_set                          ? (gridded ? packing_gridded : packing_spectral)
-                   : field.has("spectral") && user.has("grid") ? packing_gridded
-                                                               : "av";
+    bool field_gridded  = false;
+    bool field_spectral = false;
+    field.get("gridded", field_gridded);
+    field.get("spectral", field_spectral);
+    ASSERT(field_spectral != field_gridded);
+
+    auto gridded = user.has("grid") || field_gridded;
+    auto packing = packing_always_set                   ? (gridded ? packing_gridded : packing_spectral)
+                   : field_spectral && user.has("grid") ? packing_gridded
+                                                        : "av";
     user.get("packing", packing);
 
 
     // Aliasing
     auto av = packing == "av" || packing == "archived-value";
     if (av) {
-        packing = field.has("spectral") ? packing_spectral : packing_gridded;
+        packing = field_spectral ? packing_spectral : packing_gridded;
         field.get("packing", packing);
     }
     else if (packing == "co") {

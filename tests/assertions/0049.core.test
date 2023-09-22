@@ -1,0 +1,9 @@
+# Mars request
+gridType=reduced_gg,gridName=O8,shortName=q.grib2
+# Mir tool options
+--grid=F64 --area=90/-180/-90/180 --dont-compress-plan=1
+# grib_get assertions
+latitudeOfFirstGridPointInDegrees=88.9277
+longitudeOfFirstGridPointInDegrees=180
+latitudeOfLastGridPointInDegrees=-88.9277
+longitudeOfLastGridPointInDegrees=178.594

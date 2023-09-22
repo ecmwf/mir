@@ -75,11 +75,21 @@ RegularGrid::RegularGrid(const param::MIRParametrisation& param, const RegularGr
     auto bbox = projection.lonlatBoundingBox(range);
     ASSERT(bbox);
 
-    // MIR-661 Grid projection handling covering the poles: account for "excessive" bounds
-    Longitude west(bbox.west());
-    auto east = bbox.east() - bbox.west() >= Longitude::GLOBE.value() ? west + Longitude::GLOBE : bbox.east();
+    long projectionCentreFlag = 0;
+    auto adjust               = param.get("projectionCentreFlag", projectionCentreFlag);
 
-    bbox_ = {bbox.north(), west, bbox.south(), east};
+    if (auto np = !bbox.containsNorthPole() && (projectionCentreFlag == 0 || projectionCentreFlag == 3),
+        sp      = !bbox.containsSouthPole() && (projectionCentreFlag == 1 || projectionCentreFlag == 3);
+        adjust && (np || sp)) {
+        bbox_ = {np ? Latitude::NORTH_POLE.value() : bbox.north(), bbox.west(),
+                 sp ? Latitude::SOUTH_POLE.value() : bbox.south()};
+    }
+    else {
+        // MIR-661 Grid projection handling covering the poles: account for "excessive" bounds
+        Longitude west(bbox.west());
+        auto east = bbox.east() - bbox.west() >= Longitude::GLOBE.value() ? west + Longitude::GLOBE : bbox.east();
+        bbox_ = {bbox.north(), west, bbox.south(), east};
+    }
 }
 
 
