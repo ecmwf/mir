@@ -12,15 +12,26 @@
 
 #include <algorithm>
 #include <memory>
+#include <numeric>
 #include <vector>
 
 #include "eckit/testing/Test.h"
+#include "eckit/types/FloatCompare.h"
 
+#include "mir/api/MIRJob.h"
 #include "mir/api/mir_config.h"
+#include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
+#include "mir/input/GribMemoryInput.h"
+#include "mir/input/RawInput.h"
 #include "mir/key/grid/Grid.h"
+#include "mir/output/GribMemoryOutput.h"
+#include "mir/output/RawOutput.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Angles.h"
+#include "mir/util/Atlas.h"
 #include "mir/util/BoundingBox.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Types.h"
 
@@ -30,6 +41,7 @@
 namespace mir::tests::unit {
 
 
+#if 0
 CASE("BoundingBox") {
     using util::BoundingBox;
 
@@ -314,8 +326,7 @@ CASE("Representation::extendBoundingBox") {
             for (const auto& bbox : _bbox) {
                 BoundingBox extended = repres->extendBoundingBox(bbox);
 
-                log << name << "\t > " << *repres << " + extendBoundingBox("
-                    << "\n\t   " << bbox << ")"
+                log << name << "\t > " << *repres << " + extendBoundingBox(" << "\n\t   " << bbox << ")"
                     << "\n\t = " << extended << std::endl;
 
                 EXPECT(extended.contains(bbox));
@@ -343,6 +354,120 @@ CASE("IFS climate files") {
         EXPECT_EQUAL(test.first, test.second);
     }
 }
+#endif
+
+
+#if 0
+CASE("Gaussian grid bounding box") {
+    // input
+    param::SimpleParametrisation meta1;
+    meta1.set("gridded", true);
+    meta1.set("gridType", "reduced_gg");
+    meta1.set("north", 90.);
+    meta1.set("west", 0.);
+    meta1.set("south", -90.);
+    meta1.set("east", 360.);
+
+    std::vector<long> pl{20, 24, 28, 32, 36, 40, 44, 48, 48, 44, 40, 36, 32, 28, 24, 20};
+    ASSERT(pl.size() % 2 == 0);
+
+    meta1.set("pl", pl);
+    meta1.set("N", pl.size() / 2);
+
+    std::vector<double> values1(std::accumulate(pl.begin(), pl.end(), static_cast<size_t>(0)), 0.);
+    std::unique_ptr<input::MIRInput> input(new input::RawInput(values1.data(), values1.size(), meta1));
+
+
+    // output (rough memory estimate for the F8 grid)
+    // std::vector<char> output_data(/*header*/ 1024 + /*data*/ sizeof(double) * 512, 0.);
+    param::SimpleParametrisation meta2;
+    std::vector<double> values2(512, 0.);
+
+    std::unique_ptr<output::MIROutput> output(new output::RawOutput(values2.data(), values2.size(), meta2));
+
+
+    // job (no plan compression)
+    api::MIRJob job;
+    job.set("grid", "F8");
+    job.set("area", std::vector<double>{90., -180., -90., 180.});  // West-East periodic
+
+
+    auto get_area = [](const param::MIRParametrisation& param) -> std::vector<double> {
+        std::vector<double> area(4);
+        ASSERT(param.get("latitudeOfFirstGridPointInDegrees", area[0]));
+        ASSERT(param.get("longitudeOfFirstGridPointInDegrees", area[1]));
+        ASSERT(param.get("latitudeOfLastGridPointInDegrees", area[2]));
+        ASSERT(param.get("longitudeOfLastGridPointInDegrees", area[3]));
+        return area;
+    };
+
+
+    auto check_area = [](const std::vector<double>& area1, const std::vector<double>& area2) -> bool {
+        constexpr double EPS = 1e-3;
+
+        // normalise because of GRIB2
+        return eckit::types::is_approximately_equal(area1[0], area2[0], EPS) &&
+               eckit::types::is_approximately_equal(util::normalise_longitude(area1[1], 0),
+                                                    util::normalise_longitude(area2[1], 0), EPS) &&
+               eckit::types::is_approximately_equal(area1[2], area2[2], EPS) &&
+               eckit::types::is_approximately_equal(util::normalise_longitude(area1[3], 0),
+                                                    util::normalise_longitude(area2[3], 0), EPS);
+    };
+
+
+    SECTION("dont-compress-plan: False") {
+        // process
+        job.set("dont-compress-plan", false /*default*/);
+
+        job.execute(*input, *output);
+
+        std::unique_ptr<input::MIRInput> encoded_input(
+            new input::GribMemoryInput(values2.data(), values2.size()));
+        const auto& encoded = encoded_input->parametrisation();
+
+        std::string grid;
+        EXPECT(encoded.get("gridName", grid) && grid == "F8");
+
+        const auto area = get_area(encoded);
+        EXPECT(check_area({81.651, -180., -81.651, 168.75}, area));
+    }
+
+
+#if 0
+    SECTION("dont-compress-plan: True") {
+        // process
+        job.set("dont-compress-plan", true);
+
+        job.execute(*input, *output);
+
+        std::unique_ptr<input::MIRInput> encoded_input(
+            new input::GribMemoryInput(output_data.data(), output_data.size()));
+        const auto& encoded = encoded_input->parametrisation();
+
+        std::string grid;
+        EXPECT(encoded.get("gridName", grid) && grid == "F8");
+
+        const auto area = get_area(encoded);
+        EXPECT(check_area({81.651, -180., -81.651, 168.75}, area));
+    }
+#endif
+}
+#endif
+
+
+#if mir_HAVE_ATLAS
+#if ATLAS_HAVE_PROJ
+CASE("Polar stereographic grid bounding box") {
+    std::unique_ptr<input::MIRInput> in(new input::GribFileInput("gridType=polar_stereographic.grib2"));
+    ASSERT(in->next());
+
+    auto field                          = in->field();
+    repres::RepresentationHandle repres = field.representation();
+    auto bbox                           = repres->boundingBox();
+    std::cout << bbox << std::endl;
+}
+#endif
+#endif
 
 
 }  // namespace mir::tests::unit

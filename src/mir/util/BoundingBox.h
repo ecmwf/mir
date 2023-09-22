@@ -45,9 +45,12 @@ public:
     // -- Constructors
 
     BoundingBox();
-    BoundingBox(const Latitude& north, const Longitude& west, const Latitude& south, const Longitude& east);
-    BoundingBox(const param::MIRParametrisation&);
+    explicit BoundingBox(const param::MIRParametrisation&);
     BoundingBox(const BoundingBox&);
+
+    BoundingBox(const Latitude& north, const Longitude& west, const Latitude& south, const Longitude& east);
+    BoundingBox(const Latitude& north, const Longitude& west, const Latitude& south) :
+        BoundingBox(north, west, south, west + Longitude::GLOBE) {}
 
     // -- Destructor
 

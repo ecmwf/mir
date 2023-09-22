@@ -13,10 +13,11 @@
 #include "mir/repres/regular/RegularGrid.h"
 
 #include <algorithm>
-#include <cmath>
 #include <memory>
 #include <ostream>
 #include <sstream>
+#include <string>
+#include <vector>
 
 #include "eckit/config/Resource.h"
 #include "eckit/utils/MD5.h"
@@ -74,7 +75,18 @@ RegularGrid::RegularGrid(const param::MIRParametrisation& param, const RegularGr
     auto bbox = projection.lonlatBoundingBox(range);
     ASSERT(bbox);
 
-    bbox_ = {bbox.north(), bbox.west(), bbox.south(), bbox.east()};
+    long projectionCentreFlag = 0;
+    auto adjust               = param.get("projectionCentreFlag", projectionCentreFlag);
+
+    if (auto np = !bbox.containsNorthPole() && (projectionCentreFlag == 0 || projectionCentreFlag == 3),
+        sp      = !bbox.containsSouthPole() && (projectionCentreFlag == 1 || projectionCentreFlag == 3);
+        adjust && (np || sp)) {
+        bbox_ = {np ? Latitude::NORTH_POLE.value() : bbox.north(), bbox.west(),
+                 sp ? Latitude::SOUTH_POLE.value() : bbox.south()};
+    }
+    else {
+        bbox_ = {bbox.north(), bbox.west(), bbox.south(), bbox.east()};
+    }
 }
 
 

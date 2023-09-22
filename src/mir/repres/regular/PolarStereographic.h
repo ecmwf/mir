@@ -59,6 +59,7 @@ private:
 
     // -- Overridden methods
 
+    bool isPeriodicWestEast() const override;
     void fillGrib(grib_info&) const override;
 
     // -- Class members

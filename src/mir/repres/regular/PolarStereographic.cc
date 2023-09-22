@@ -12,6 +12,7 @@
 
 #include "mir/repres/regular/PolarStereographic.h"
 
+#include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
 
 
@@ -22,7 +23,20 @@ static const RepresentationBuilder<PolarStereographic> __builder("polar_stereogr
 
 
 PolarStereographic::PolarStereographic(const param::MIRParametrisation& param) :
-    RegularGrid(param, make_proj_spec(param)) {}
+    RegularGrid(param, make_proj_spec(param)) {
+    // ensure bounding box covers either pole
+    long sp = 0;
+    ASSERT(param.get("southPoleOnProjectionPlane", sp));
+
+    bbox_ = {sp == 0 ? Latitude::NORTH_POLE : bbox_.north(), bbox_.west(),
+             sp == 1 ? Latitude::SOUTH_POLE : bbox_.south(), bbox_.east()};
+}
+
+
+bool PolarStereographic::isPeriodicWestEast() const {
+    // periodicity implied by pole
+    return true;
+}
 
 
 void PolarStereographic::fillGrib(grib_info& /*info*/) const {
