@@ -18,11 +18,13 @@
 #include "eckit/testing/Test.h"
 
 #include "mir/api/MIRJob.h"
+#include "mir/api/mir_config.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/RawInput.h"
 #include "mir/output/RawOutput.h"
 #include "mir/output/ResizableOutput.h"
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/util/Atlas.h"
 #include "mir/util/Log.h"
 
 
@@ -109,6 +111,36 @@ CASE("RawInput") {
         auto field = input->field();
         log << field << std::endl;
     }
+
+
+#if mir_HAVE_ATLAS
+    const std::string uid = "d5bde4f52ff3a9bea5629cd9ac514410";
+    const auto keys       = ::atlas::grid::SpecRegistry::keys();
+
+    // (shouldn't be conditional, but plugins are optional)
+    if (std::find(keys.begin(), keys.end(), uid) != keys.end()) {
+        SECTION("grid=ORCA2_T") {
+            // metadata
+            param::SimpleParametrisation meta;
+
+            meta.set("gridded", true);
+            meta.set("gridType", "orca");
+            meta.set("uid", uid);
+
+
+            // data
+            std::vector<double> values(27118, 0.);  // 182 * 149
+            std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
+
+
+            // access a field (in the post-processing context)
+            log << *input << std::endl;
+
+            auto field = input->field();
+            log << field << std::endl;
+        }
+    }
+#endif
 }
 
 
