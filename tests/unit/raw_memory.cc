@@ -15,16 +15,15 @@
 #include <sstream>
 #include <vector>
 
+#include "eckit/system/Library.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/api/MIRJob.h"
-#include "mir/api/mir_config.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/RawInput.h"
 #include "mir/output/RawOutput.h"
 #include "mir/output/ResizableOutput.h"
 #include "mir/param/SimpleParametrisation.h"
-#include "mir/util/Atlas.h"
 #include "mir/util/Log.h"
 
 
@@ -113,19 +112,15 @@ CASE("RawInput") {
     }
 
 
-#if mir_HAVE_ATLAS
-    const std::string uid = "d5bde4f52ff3a9bea5629cd9ac514410";
-    const auto keys       = ::atlas::grid::SpecRegistry::keys();
-
-    // (shouldn't be conditional, but plugins are optional)
-    if (std::find(keys.begin(), keys.end(), uid) != keys.end()) {
+    // (plugins are optional)
+    if (eckit::system::Library::exists("atlas-orca")) {
         SECTION("grid=ORCA2_T") {
             // metadata
             param::SimpleParametrisation meta;
 
             meta.set("gridded", true);
             meta.set("gridType", "orca");
-            meta.set("uid", uid);
+            meta.set("uid", "d5bde4f52ff3a9bea5629cd9ac514410");
 
 
             // data
@@ -140,7 +135,6 @@ CASE("RawInput") {
             log << field << std::endl;
         }
     }
-#endif
 }
 
 
