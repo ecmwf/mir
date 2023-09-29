@@ -321,14 +321,19 @@ static const char* get_key(const std::string& name, grib_handle* h) {
             "numberOfGridInReference" /*just a dummy*/,
             is("gridType", "unstructured_grid"),
         },
+        {
+            "gridded",
+            "Nside" /*just a dummy*/,
+            is("gridType", "healpix"),
+        },
         {"gridded", "numberOfPointsAlongAMeridian"},  // Is that always true?
         {"gridded_regular_ll", "Ni", _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll"))},
-        {"gridded_named", "gridName"},
 
         {"grid", "gridName",
-         _or(_or(_or(_or(is("gridType", "regular_gg"), is("gridType", "reduced_gg")), is("gridType", "rotated_gg")),
-                 is("gridType", "reduced_rotated_gg")),
-             is("gridType", "unstructured_grid"))},
+         _or(_or(_or(_or(_or(is("gridType", "regular_gg"), is("gridType", "reduced_gg")), is("gridType", "rotated_gg")),
+                     is("gridType", "reduced_rotated_gg")),
+                 is("gridType", "unstructured_grid")),
+             is("gridType", "healpix"))},
 
         {"spectral", "pentagonalResolutionParameterJ"},
 
@@ -704,7 +709,6 @@ data::MIRField GribInput::field() const {
             size_t new_values          = fix_pl_array_zeros(pl_fixed);
             ASSERT(new_values > 0);
 
-
             // values array: copy values row by row, and when a fixed (0) entry is found, insert missing values
             Log::debug() << "GribInput: correcting values array with " << new_values << " new missing values"
                          << std::endl;
@@ -791,6 +795,7 @@ bool GribInput::get(const std::string& name, bool& value) const {
         return false;
     }
 
+    // NOTE: They key has to return a non-zero value
     // FIXME: make sure that 'temp' is not set if CODES_MISSING_LONG
     long temp = CODES_MISSING_LONG;
     int err   = codes_get_long(grib_, key, &temp);
@@ -997,9 +1002,7 @@ bool GribInput::get(const std::string& name, std::string& value) const {
     int err     = codes_get_string(grib_, key, buffer, &size);
 
     if (err == CODES_NOT_FOUND) {
-        static const ProcessingList<std::string> process{
-            {"packing", packing()},
-        };
+        static const ProcessingList<std::string> process{{"packing", packing()}};
 
         return get_value(key, grib_, value, process) || FieldParametrisation::get(name, value);
     }
@@ -1271,7 +1274,6 @@ void GribInput::marsRequest(std::ostream& out) const {
 
             NOTIMP;
         }
-
 
         if (err != CODES_NOT_FOUND) {
             grib_call(err, "freeFormData");

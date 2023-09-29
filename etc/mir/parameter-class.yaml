@@ -365,11 +365,13 @@ density.mass:
 - 260212  # Transpiration stress-onset (soil moisture)
 - 260214  # Direct evaporation cease (soil moisture)
 - 260217  # Saturation of soil moisture
-- 260272  # Total column-integrated supercooled liquid water
-- 260273  # Total column-integrated melting ice
-- 260495  # Ocean Mixed Layer Potential Density (Reference 2000m)<br
-- 260619  # Mass concentration of condensed water in soil
-- 300089  # Density
+- 260368  # Soil moisture
+- 262023  # Sea ice salinity
+- 262502  # Sea water sigma theta
+- 263023  # Time-mean Sea ice salinity
+- 263502  # Time-mean sea water sigma theta
+- 400000  # Mass density
+- 401000  # Total column vertically-integrated mass density
 
 density.energy:
 - 162059  # Vertical integral of kinetic energy
@@ -404,7 +406,6 @@ density.volume:
 - 200041  # Volumetric soil water layer 3 difference
 - 200042  # Volumetric soil water layer 4 difference
 - 228093  # Volumetric soil moisture
-- 260185  # Volumetric soil moisture content
 - 260199  # Volumetric soil moisture
 - 260200  # Volumetric wilting point
 - 260210  # Liquid volumetric soil moisture (non-frozen)
@@ -437,25 +438,6 @@ vector-space.1d-angle-degree-asymmetric:
 - 260233  # Primary wave direction
 - 260236  # Current direction
 - 260260  # 10 metre wind direction
-- 260296  # Longitude of U Wind Component of Velocity
-- 260298  # Longitude of V Wind Component of Velocity
-- 260300  # Longitude of Presure Point
-- 260422  # East Longitude (0 - 360)
-- 260426  # East Longitude (nearest neighbor) (0 - 360)
-- 300031  # Wind direction
-- 300047  # Direction of current
-- 300093  # Direction of ice drift
-- 300101  # Direction of wind wave
-- 300104  # Direction of swell wave
-- 300107  # Primary wave direction
-- 300109  # Second wave direction
-
-vector-space.1d-angle-degree-symmetric:
-- 260295  # Latitude of U Wind Component of Velocity
-- 260297  # Latitude of V Wind Component of Velocity
-- 260299  # Latitude of Presure Point
-- 260421  # Latitude (-90 to +90)
-- 260425  # Latitude (nearest neighbor) (-90 to +90)
 
 vector-space.1d-angle-radian-symmetric:
 - 162  # Angle of sub-gridscale orography
@@ -531,6 +513,15 @@ vector-space.2d-vector-u:
 - 230180  # East-West surface stress (variable resolution)
 - 230195  # Longitudinal component of gravity wave stress (variable resolution)
 - 233000  # Time-integrated total column vertically-integrated eastward geopotential flux
+- 233004  # Time-integrated total column vertically-integrated eastward enthalpy flux
+- 233006  # Time-integrated total column vertically-integrated eastward kinetic energy flux
+- 233008  # Time-integrated total column vertically-integrated eastward total energy flux
+- 233015  # Time integrated, vertically integrated eastward mass flux
+- 233022  # Time integrated, vertically integrated eastward water vapour flux
+- 233024  # Time integrated, vertically integrated eastward cloud liquid water flux
+- 233026  # Time integrated, vertically integrated eastward cloud ice water flux
+- 233028  # Time integrated, vertically integrated eastward rain flux
+- 233030  # Time integrated, vertically integrated eastward snow flux
 - 235041  # Mean eastward turbulent surface stress
 - 235045  # Mean eastward gravity wave surface stress
 - 260062  # Momentum flux, u component
@@ -538,26 +529,26 @@ vector-space.2d-vector-u:
 - 260070  # U-component storm motion
 - 260081  # Zonal flux of gravity wave stress
 - 260222  # Estimated u component of wind
-- 260305  # Vertical Diffusion Zonal Acceleration
-- 260307  # Gravity wave drag zonal acceleration
-- 260309  # Convective zonal momentum mixing acceleration
-- 260313  # Convective Gravity wave drag zonal acceleration
-- 260484  # Scatterometer Estimated U Wind Component
-- 260607  # Adiabatic zonal acceleration
-- 260613  # Gravity wave zonal acceleration
-- 260626  # Zonal momentum flux by long gravity wave
-- 260629  # Zonal momentum flux by short gravity wave
-- 260637  # Vertical diffusion zonal acceleration
-- 300033  # Zonal wind (u)
-- 300049  # U-component of current
-- 300130  # 10 metre u-wind component
-- 300147  # Storm motion u-component
-- 300159  # Tropopause u-wind component
-- 300164  # Gravity wave drag sfc zonal stress
-- 300192  # Surface zonal wind (u)
-- 300193  # Surface zonal wind stress
-- 300230  # Time mean surface zonal wind (u)
-- 300255  # Time mean zonal wind (u)
+- 262003  # Eastward sea ice velocity
+- 262021  # X-component of sea ice velocity
+- 262110  # Eastward surface stress
+- 262112  # X-component of surface stress
+- 262138  # X-component of surface sea water velocity
+- 262140  # Eastward surface sea water velocity
+- 262504  # X-component of sea water velocity
+- 262512  # Eastward sea water velocity tendency due to parameterization
+- 262906  # Eastward of wind stress over sea ice
+- 262908  # U-component of wind stress over sea ice
+- 263003  # Time-mean eastward sea ice velocity
+- 263021  # Time-mean X-component of sea ice velocity
+- 263110  # Time-mean eastward surface stress
+- 263112  # Time-mean X-component of surface stress
+- 263138  # Time-mean X-component of surface sea water velocity
+- 263140  # Time-mean eastward surface sea water velocity
+- 263504  # Time-mean X-component of sea water velocity
+- 263512  # Time-mean eastward sea water velocity tendency due to parameterization
+- 263906  # Time-mean eastward of wind stress over sea ice
+- 263908  # Time-mean U-component of wind stress over sea ice
 
 vector-space.2d-vector-v:
 - 12  # V component of divergent wind
@@ -627,6 +618,15 @@ vector-space.2d-vector-v:
 - 230181  # North-South surface stress (variable resolution)
 - 230196  # Meridional component of gravity wave stress (variable resolution)
 - 233001  # Time-integrated total column vertically-integrated northward geopotential flux
+- 233005  # Time-integrated total column vertically-integrated northward enthalpy flux
+- 233007  # Time-integrated total column vertically-integrated northward kinetic energy flux
+- 233009  # Time-integrated total column vertically-integrated northward total energy flux
+- 233016  # Time integrated, vertically integrated northward mass flux
+- 233023  # Time integrated, vertically integrated northward water vapour flux
+- 233025  # Time integrated, vertically integrated northward cloud liquid water flux
+- 233027  # Time integrated, vertically integrated northward cloud ice water flux
+- 233029  # Time integrated, vertically integrated northward rain flux
+- 233031  # Time integrated, vertically integrated northward snow flux
 - 235042  # Mean northward turbulent surface stress
 - 235046  # Mean northward gravity wave surface stress
 - 260063  # Momentum flux, v component
@@ -634,38 +634,48 @@ vector-space.2d-vector-v:
 - 260071  # V-component storm motion
 - 260082  # Meridional flux of gravity wave stress
 - 260223  # Estimated v component of wind
-- 260306  # Vertical Diffusion Meridional Acceleration
-- 260308  # Gravity wave drag meridional acceleration
-- 260310  # Convective meridional momentum mixing acceleration
-- 260314  # Convective Gravity wave drag meridional acceleration
-- 260485  # Scatterometer Estimated V Wind Component
-- 260609  # Adiabatic meridional acceleration
-- 260614  # Gravity wave meridional acceleration
-- 260627  # Meridional momentum flux by long gravity wave
-- 260628  # Meridional momentum flux by short gravity wave
-- 260638  # Vertical diffusion meridional acceleration
-- 300034  # Meridional wind (v)
-- 300050  # V-component of current
-- 300131  # 10 metre v-wind component
-- 300148  # Storm motion v-component
-- 300160  # Tropopause v-wind component
-- 300165  # Gravity wave drag sfc meridional stress
-- 300194  # Surface meridional wind (v)
-- 300195  # Surface meridional wind stress
-- 300231  # Time mean surface meridional wind (v)
-- 300241  # Time mean meridional wind (v)
+- 262004  # Northward sea ice velocity
+- 262022  # Y-component of sea ice velocity
+- 262109  # Northward surface stress
+- 262111  # Y-component of surface stress
+- 262137  # Y-component of surface sea water velocity
+- 262139  # Northward surface sea water velocity
+- 262503  # Y-component of sea water velocity
+- 262513  # Northward sea water velocity tendency due to parameterization
+- 262907  # Northward of wind stress over sea ice
+- 262909  # V-component of wind stress over sea ice
+- 263004  # Time-mean northward sea ice velocity
+- 263022  # Time-mean Y-component of sea ice velocity
+- 263109  # Time-mean northward surface stress
+- 263111  # Time mean Y-component of surface stress
+- 263137  # Time-mean Y-component of surface sea water velocity
+- 263139  # Time-mean northward surface sea water velocity
+- 263503  # Time-mean Y-component of sea water velocity
+- 263513  # Time-mean northward sea water velocity tendency due to parameterization
+- 263907  # Time-mean northward of wind stress over sea ice
+- 263909  # Time-mean V-component of wind stress over sea ice
+
+vector-space.2d-vector.associated:
+- 138  # Vorticity (relative)
+- 155  # Divergence
 
 vector-space.3d-vector-u:
 - 150133  # Ocean U wind component
 - 151131  # Ocean current zonal component
+- 262506  # Eastward sea water velocity
+- 263506  # Time-mean eastward sea water velocity
 
 vector-space.3d-vector-v:
 - 150134  # Ocean V wind component
 - 151132  # Ocean current meridional component
+- 262505  # Northward sea water velocity
+- 263505  # Time-mean northward sea water velocity
 
 vector-space.3d-vector-w:
 - 150135  # Ocean W wind component
 - 151133  # Ocean current vertical component
+- 262507  # Upward sea water velocity
+- 263507  # Time-mean upward sea water velocity
 
 vector-space.geographic-coordinate-latitude:
 - 250001  # Latitude
@@ -687,6 +697,7 @@ index:
 - 29  # Type of low vegetation
 - 30  # Type of high vegetation
 - 43  # Soil type
+- 229008  # Wetland type
 - 260015  # Precipitation type
 - 260026  # Precipitable water category
 - 260029  # Categorical rain
@@ -712,13 +723,6 @@ index:
 - 260321  # Precipitation type (most frequent) in the last 3 hours
 - 260338  # Precipitation type (most severe) in the last 6 hours
 - 260339  # Precipitation type (most frequent) in the last 6 hours
-- 260380  # Categorical Ozone Concentration
-- 260394  # Slight risk convective outlook
-- 260395  # Moderate risk convective outlook
-- 260396  # High risk convective outlook
-- 260403  # Categorical Thunderstorm (1-yes, 0-no)
-- 260439  # Vegetation Type
-- 260474  # Surface Slope Type
 - 260537  # Cloud mask
 - 260538  # Pixel scene type
 - 260539  # Fire detection indicator
@@ -758,6 +762,7 @@ intensity:
 - 13  # U component of rotational wind
 - 14  # V component of rotational wind
 - 21  # Unbalanced component of temperature
+- 22  # Unbalanced component of logarithm of surface pressure
 - 23  # Unbalanced component of divergence
 - 34  # Sea surface temperature
 - 35  # Ice temperature layer 1
@@ -1007,8 +1012,11 @@ intensity:
 - 130231  # Adiabatic tendency of meridional wind
 - 130232  # Mean vertical velocity
 - 140098  # Wave induced mean sea level correction
-- 140099  # Ratio of wave angular and frequency width
 - 140100  # Number of events in freak waves statistics
+- 140101  # U-component of atmospheric surface momentum flux
+- 140102  # V-component of atmospheric surface momentum flux
+- 140103  # U-component of surface momentum flux into ocean
+- 140104  # V-component of surface momentum flux into ocean
 - 140105  # Wave turbulent energy flux into ocean
 - 140112  # Wave energy flux magnitude
 - 140114  # Significant wave height of all waves with periods within the inclusive range from 10 to 12 seconds
@@ -1168,6 +1176,7 @@ intensity:
 - 160225  # Covariance of W component and V component
 - 160226  # Standard deviation of vertical velocity
 - 160246  # 10 metre wind speed
+- 160247  # Momentum flux
 - 162051  # Surface geopotential
 - 162054  # Vertical integral of temperature
 - 162064  # Vertical integral of energy conversion
@@ -1678,6 +1687,8 @@ intensity:
 - 228241  # 200 metre wind speed
 - 228249  # 100 metre wind speed
 - 228252  # Irrigation
+- 229004  # Building height
+- 229006  # Standard deviation of building height
 - 230046  # Solar duration (variable resolution)
 - 230080  # Accumulated Carbon Dioxide Net Ecosystem Exchange (variable resolution)
 - 230081  # Accumulated Carbon Dioxide Gross Primary Production (variable resolution)
@@ -1696,6 +1707,8 @@ intensity:
 - 235007  # Mean eastward wind tendency due to parametrisations
 - 235008  # Mean northward wind tendency due to parametrisations
 - 235014  # Mean turbulent diffusion coefficient for heat
+- 235017  # Time integral of surface eastward momentum flux
+- 235018  # Time integral of surface northward momentum flux
 - 240011  # Cross sectional area of flow in channel
 - 240014  # River storage of water
 - 240015  # Floodplain storage of water
@@ -1715,6 +1728,7 @@ intensity:
 - 260066  # u-component of wind (gust)
 - 260067  # v-component of wind (gust)
 - 260068  # Vertical speed shear
+- 260069  # Horizontal momentum flux
 - 260070  # U-component storm motion
 - 260071  # V-component storm motion
 - 260073  # Frictional velocity
@@ -1780,99 +1794,14 @@ intensity:
 - 260235  # Secondary wave mean period
 - 260237  # Current speed
 - 260238  # Geometric vertical velocity
-- 260239  # Ice temperature
-- 260240  # Deviation of sea level from mean
 - 260241  # Seconds prior to initial reference time (defined in Section 1)
-- 260243  # Temperature tendency by all radiation
-- 260248  # Temperature Tendency By All Physics
-- 260249  # Temperature Tendency By Non-radiation Physics
-- 260250  # Standard Dev. of IR Temp. over 1x1 deg. area
-- 260253  # Potential temperature at top of viscous sublayer
-- 260254  # Tropical Cyclone Heat Potential
 - 260255  # Apparent temperature
-- 260271  # Snow temperature
-- 260279  # Condensation Pressure of Parcali Lifted From Indicate Surface
-- 260285  # Snow temperature, depth-avg
-- 260288  # Freezing Rain
 - 260290  # Clear air turbulence (CAT)
 - 260291  # Mountain wave turbulence (eddy dissipation rate)
-- 260301  # Vertical Eddy Diffusivity Heat exchange
-- 260302  # Covariance between Meridional and Zonal Components of the wind.
-- 260303  # Covariance between Temperature and Zonal Components of the wind.
-- 260304  # Covariance between Temperature and Meridional Components of the wind.
-- 260305  # Vertical Diffusion Zonal Acceleration
-- 260306  # Vertical Diffusion Meridional Acceleration
-- 260307  # Gravity wave drag zonal acceleration
-- 260308  # Gravity wave drag meridional acceleration
-- 260309  # Convective zonal momentum mixing acceleration
-- 260310  # Convective meridional momentum mixing acceleration
-- 260311  # Tendency of vertical velocity
-- 260312  # Omega (Dp/Dt) divide by density
-- 260313  # Convective Gravity wave drag zonal acceleration
-- 260314  # Convective Gravity wave drag meridional acceleration
-- 260315  # Velocity Point Model Surface
-- 260316  # Potential Vorticity (Mass-Weighted)
-- 260317  # MSLP (Eta model reduction)
-- 260323  # MSLP (MAPS System Reduction)
-- 260324  # 3-hr pressure tendency (Std. Atmos. Reduction)
-- 260325  # Pressure of level from which parcel was lifted
-- 260328  # X-gradient of Height
-- 260329  # Y-gradient of Height
-- 260330  # Layer Thickness
-- 260336  # Geopotential Height (nearest grid point)
-- 260337  # Pressure (nearest grid point)
 - 260360  # Soil temperature
 - 260367  # Soil depth
-- 260372  # Updraft Helicity
-- 260374  # Particulate matter (coarse)
-- 260375  # Particulate matter (fine)
-- 260381  # Ozone vertical diffusion
-- 260382  # Ozone production
-- 260383  # Ozone tendency
-- 260384  # Ozone production from temperature term
-- 260385  # Ozone production from col ozone term
-- 260386  # Derived radar reflectivity backscatter from rain
-- 260387  # Derived radar reflectivity backscatter from ice
-- 260388  # Derived radar reflectivity backscatter from parameterized convection
-- 260449  # Surface exchange coefficients for T and Q divided by delta z
-- 260450  # Surface exchange coefficients for U and V divided by delta z
-- 260451  # Vegetation canopy temperature
-- 260452  # Surface water storage
-- 260453  # Liquid soil moisture content (non-frozen)
-- 260455  # Groundwater recharge
-- 260456  # Flood plain recharge
-- 260457  # Roughness length for heat
-- 260460  # Asymptotic mixing length scale
-- 260463  # Water Vapor Flux Convergance (Vertical Int)
-- 260464  # Water Condensate Flux Convergance (Vertical Int)
-- 260465  # Water Vapor Zonal Flux (Vertical Int)
-- 260466  # Water Vapor Meridional Flux (Vertical Int)
-- 260467  # Water Condensate Zonal Flux (Vertical Int)
-- 260468  # Water Condensate Meridional Flux (Vertical Int)
-- 260469  # Aerodynamic conductance
 - 260472  # Time-mean snow depth water equivalent
 - 260473  # Time-mean skin temperature
-- 260480  # Bare soil surface skin temperature
-- 260481  # Average surface skin temperature
-- 260482  # Effective radiative skin temperature
-- 260484  # Scatterometer Estimated U Wind Component
-- 260485  # Scatterometer Estimated V Wind Component
-- 260487  # Ocean Mixed Layer U Velocity
-- 260488  # Ocean Mixed Layer V Velocity
-- 260489  # Barotropic U velocity
-- 260490  # Barotropic V velocity
-- 260491  # Storm Surge
-- 260492  # Extra Tropical Storm Surge
-- 260493  # Ocean Surface Elevation Relative to Geoid
-- 260494  # Sea Surface Height Relative to Geoid
-- 260498  # Surface Temperature Trend
-- 260499  # Surface Salinity Trend
-- 260500  # Kinetic Energy
-- 260502  # 3-D Temperature
-- 260504  # Barotropic Kinectic Energy
-- 260505  # Geometric Depth Below Sea Surface
-- 260506  # Interface Depths
-- 260507  # Ocean Heat Content
 - 260510  # Cloudy brightness temperature
 - 260511  # Clear-sky brightness temperature
 - 260540  # Forest fire weather index
@@ -1884,19 +1813,6 @@ intensity:
 - 260546  # Fire daily severity rating
 - 260552  # Wind speed
 - 260556  # Angstrom coefficient
-- 260606  # Square of Brunt-Vaisala frequency
-- 260607  # Adiabatic zonal acceleration
-- 260609  # Adiabatic meridional acceleration
-- 260613  # Gravity wave zonal acceleration
-- 260614  # Gravity wave meridional acceleration
-- 260617  # Moisture storage on canopy
-- 260618  # Moisture storage on ground or cover
-- 260626  # Zonal momentum flux by long gravity wave
-- 260627  # Meridional momentum flux by long gravity wave
-- 260628  # Meridional momentum flux by short gravity wave
-- 260629  # Zonal momentum flux by short gravity wave
-- 260637  # Vertical diffusion zonal acceleration
-- 260638  # Vertical diffusion meridional acceleration
 - 260646  # 10 metre eastward wind gust since previous post-processing
 - 260647  # 10 metre northward wind gust since previous post-processing
 - 260649  # Sea ice surface temperature
@@ -1913,143 +1829,135 @@ intensity:
 - 261020  # Physiological equivalent temperature
 - 261021  # Saturation water vapor pressure
 - 261022  # Wet-bulb potential temperature
+- 262000  # Sea ice thickness
+- 262002  # Snow thickness over sea ice
+- 262003  # Eastward sea ice velocity
+- 262004  # Northward sea ice velocity
+- 262006  # Sea ice surface temperature
+- 262007  # Sea ice growth
+- 262008  # Sea ice volume per unit area
+- 262009  # Snow volume over sea ice per unit area
+- 262010  # Vertically averaged sea ice temperature
+- 262011  # Snow temperature over sea ice
+- 262012  # Sea ice temperature at the sea ice and snow interface
+- 262013  # Underside ice temperature
+- 262014  # Sea ice heat content
+- 262015  # Snow heat content over sea ice
+- 262016  # Sea ice freeboard thickness
+- 262018  # Sea ice melt pond depth
+- 262019  # Sea ice melt pond volume per unit area
+- 262021  # X-component of sea ice velocity
+- 262022  # Y-component of sea ice velocity
+- 262024  # Sea ice temperature
+- 262101  # Sea surface temperature
+- 262102  # Depth of 14 C isotherm
+- 262103  # Depth of 17 C isotherm
+- 262104  # Depth of 20 C isotherm
+- 262105  # Depth of 26 C isotherm
+- 262106  # Depth of 28 C isotherm
+- 262107  # Barotropic stream function
+- 262113  # Ocean mixed layer depth defined by sigma theta 0.01 kg m-3
+- 262114  # Ocean mixed layer depth defined by sigma theta 0.03 kg m-3
+- 262115  # Ocean mixed layer depth defined by sigma theta 0.125 kg m-3
+- 262116  # Ocean mixed layer depth defined by temperature 0.2 C
+- 262117  # Ocean mixed layer depth defined by temperature 0.5 C
+- 262121  # Vertically-integrated heat content in the upper 300 m
+- 262122  # Vertically-integrated heat content in the upper 700 m
+- 262123  # Total column of heat content
+- 262124  # Sea surface height
+- 262125  # Steric change in sea surface height
+- 262126  # Halosteric change in sea surface height
+- 262127  # Thermosteric change in sea surface height
+- 262128  # Thermocline depth
+- 262129  # Bottom pressure equivalent height
+- 262136  # Turbocline depth (kz=5e-4)
+- 262137  # Y-component of surface sea water velocity
+- 262138  # X-component of surface sea water velocity
+- 262139  # Northward surface sea water velocity
+- 262140  # Eastward surface sea water velocity
+- 262141  # Heat Content surface to 26C isotherm
+- 262142  # Sea surface height tendency due to parameterization
 - 262143  # Sea surface height with inverse barometer correction
+- 262144  # Average sea water potential temperature in the upper 300m
+- 262501  # Sea water potential temperature
+- 262503  # Y-component of sea water velocity
+- 262504  # X-component of sea water velocity
+- 262505  # Northward sea water velocity
+- 262506  # Eastward sea water velocity
+- 262507  # Upward sea water velocity
+- 262508  # Sea water potential temperature tendency due to newtonian relaxation
+- 262510  # Sea water temperature tendency due to parameterization
+- 262512  # Eastward sea water velocity tendency due to parameterization
+- 262513  # Northward sea water velocity tendency due to parameterization
+- 262514  # Sea water temperature tendency due to direct bias correction
+- 262902  # Wind speed at 10m above sea surface
+- 262903  # Neutral drag coefficient at 10m above sea surface
+- 263000  # Time-mean sea ice thickness
+- 263002  # Time-mean snow thickness over sea ice
+- 263003  # Time-mean eastward sea ice velocity
+- 263004  # Time-mean northward sea ice velocity
+- 263006  # Time-mean sea ice surface temperature
+- 263007  # Time-mean sea ice growth
+- 263008  # Time-mean sea ice volume per unit area
+- 263009  # Time-mean snow volume over sea ice per unit area
+- 263010  # Time-mean vertically averaged sea ice temperature
+- 263011  # Time-mean snow temperature over sea ice
+- 263012  # Time-mean sea ice temperature at the sea ice and snow interface
+- 263013  # Time-mean underside ice temperature
+- 263014  # Time-mean sea ice heat content
+- 263015  # Time-mean snow heat content over sea ice
+- 263016  # Time-mean sea ice freeboard thickness
+- 263018  # Time-mean sea ice melt pond depth
+- 263019  # Time-mean sea ice melt pond volume per unit area
+- 263021  # Time-mean of X-component of sea ice velocity
+- 263022  # Time-mean of Y-component of sea ice velocity
+- 263024  # Time-mean sea ice temperature
+- 263101  # Time-mean sea surface temperature
+- 263102  # Time-mean depth of 14 C isotherm
+- 263103  # Time-mean depth of 17 C isotherm
+- 263104  # Time-mean depth of 20 C isotherm
+- 263105  # Time-mean depth of 26 C isotherm
+- 263106  # Time-mean depth of 28 C isotherm
+- 263107  # Time-mean barotropic stream function
+- 263113  # Time-mean ocean mixed layer depth defined by sigma theta 0.01 kg m-3
+- 263114  # Time-mean ocean mixed layer depth defined by sigma theta 0.03 kg m-3
+- 263115  # Time-mean ocean mixed layer depth defined by sigma theta 0.125 kg m-3
+- 263116  # Time-mean ocean mixed layer depth defined by temperature 0.2 C
+- 263117  # Time-mean ocean mixed layer depth defined by temperature 0.5 C
+- 263121  # Time-mean vertically-integrated heat content in the upper 300 m
+- 263122  # Time-mean vertically-integrated heat content in the upper 700 m
+- 263123  # Time-mean total column heat content
+- 263124  # Time-mean sea surface height
+- 263125  # Time-mean steric change in sea surface height
+- 263126  # Time-mean halosteric change in sea surface height
+- 263127  # Time-mean thermosteric change in sea surface height
+- 263128  # Time-mean thermocline depth
+- 263129  # Time-mean bottom pressure equivalent height
+- 263136  # Time-mean turbocline depth (kz=5e-4)
+- 263137  # Time-mean Y-component of surface sea water velocity
+- 263138  # Time-mean X-component of surface sea water velocity
+- 263139  # Time-mean northward surface sea water velocity
+- 263140  # Time-mean eastward surface sea water velocity
+- 263141  # Time-mean heat content surface to 26C isotherm
+- 263142  # Time-mean sea surface height tendency due to parameterization
+- 263144  # Time-mean average sea water potential temperature in the upper 300m
+- 263501  # Time-mean sea water potential temperature
+- 263503  # Time-mean Y-component of sea water velocity
+- 263504  # Time-mean X-component of sea water velocity
+- 263505  # Time-mean northward sea water velocity
+- 263506  # Time-mean eastward sea water velocity
+- 263507  # Time-mean upward sea water velocity
+- 263508  # Time-mean sea water potential temperature tendency due to newtonian relaxation
+- 263510  # Time-mean sea water temperature tendency due to parameterization
+- 263512  # Time-mean eastward sea water velocity tendency due to parameterization
+- 263513  # Time-mean northward sea water velocity tendency due to parameterization
+- 263514  # Time-mean sea water temperature tendency due to direct bias correction
+- 263902  # Time-mean wind speed at 10m above sea surface
+- 263903  # Time-mean neutral drag coefficient at 10m above sea surface
 - 300001  # Pressure
-- 300002  # Pressure reduced to msl
-- 300003  # Pressure tendency
-- 300006  # Geopotential
-- 300007  # Geopotential height
-- 300008  # Geometric height
-- 300011  # Absolute temperature
 - 300012  # Virtual temperature
-- 300013  # Potential temperature
-- 300014  # Pseudo-adiabatic potential temperature
-- 300015  # Maximum temperature
-- 300016  # Minimum temperature
-- 300017  # Dew point temperature
-- 300018  # Dew point depression
-- 300025  # Temperature anomaly
-- 300026  # Pressure anomaly
-- 300027  # Geopot height anomaly
-- 300032  # Wind speed
-- 300033  # Zonal wind (u)
-- 300034  # Meridional wind (v)
-- 300035  # Stream function
-- 300036  # Velocity potential
-- 300038  # Sigma coord vert vel
-- 300039  # Omega
-- 300040  # Vertical velocity
-- 300041  # Absolute vorticity
-- 300042  # Absolute divergence
-- 300043  # Vorticity
-- 300044  # Divergence
-- 300045  # Vertical u-comp shear
-- 300046  # Vert v-comp shear
-- 300048  # Speed of current
-- 300049  # U-component of current
-- 300050  # V-component of current
-- 300054  # Inst. precipitable water
-- 300055  # Vapour pressure
-- 300056  # Saturation deficit
-- 300066  # Snow depth
-- 300070  # Main thermocline anom
-- 300076  # Cloud water
-- 300077  # Best lifted index (to 500 hpa)
-- 300082  # Dev sea_lev from mean
-- 300083  # Roughness length
-- 300085  # Deep soil temperature
-- 300086  # Soil moisture content
-- 300092  # Ice thickness
-- 300094  # Speed of ice drift
-- 300095  # U-comp of ice drift
-- 300096  # V-comp of ice drift
-- 300097  # Ice growth
-- 300098  # Ice divergence
-- 300102  # Sig hght of wind waves
-- 300103  # Mean period wind waves
-- 300105  # Sig height swell waves
-- 300106  # Mean period swell waves
-- 300108  # Prim wave mean period
-- 300110  # Second wave mean period
-- 300128  # 2 metre temperature
-- 300129  # 2 metre dewpoint temperature
-- 300130  # 10 metre u-wind component
-- 300131  # 10 metre v-wind component
-- 300132  # Topography
-- 300133  # Geometric mean surface pressure
-- 300135  # Surface pressure
-- 300136  # M s l pressure (mesinger method)
-- 300138  # Maximum u-wind
-- 300139  # Maximum v-wind
-- 300140  # Convective avail. pot.energy
-- 300141  # Convective inhib. energy
-- 300142  # Convective latent heating
-- 300143  # Convective moisture source
-- 300144  # Shallow conv. moisture source
-- 300145  # Shallow convective heating
-- 300146  # Maximum wind press. lvl
-- 300147  # Storm motion u-component
-- 300148  # Storm motion v-component
-- 300150  # Pressure at cloud base
-- 300151  # Pressure at cloud top
-- 300152  # Freezing level height
-- 300154  # Flight levels temperature
-- 300155  # Flight levels u-wind
-- 300156  # Flight levels v-wind
-- 300157  # Tropopause pressure
-- 300158  # Tropopause temperature
-- 300159  # Tropopause u-wind component
-- 300160  # Tropopause v-wind component
-- 300162  # Gravity wave drag du/dt
-- 300163  # Gravity wave drag dv/dt
-- 300164  # Gravity wave drag sfc zonal stress
-- 300165  # Gravity wave drag sfc meridional stress
-- 300167  # Divergence of specific humidity
-- 300172  # Large scale latent heating
-- 300173  # Large scale moisture source
-- 300175  # Soil temperature of root zone
-- 300176  # Bare soil latent heat
-- 300180  # Vapor pressure of canopy air space
-- 300185  # Storage on canopy
-- 300186  # Storage on ground
-- 300187  # Surface temperature
-- 300188  # Surface absolute temperature
-- 300189  # Temperature of canopy air space
-- 300190  # Temperature at canopy
-- 300191  # Ground/surface cover temperature
-- 300192  # Surface zonal wind (u)
-- 300194  # Surface meridional wind (v)
-- 300205  # Long wave radiative heating
-- 300206  # Short wave radiative heating
-- 300218  # Horizontal heating diffusion
-- 300219  # Horizontal moisture diffusion
-- 300220  # Horizontal divergence diffusion
-- 300221  # Horizontal vorticity diffusion
-- 300222  # Vertical diff. moisture source
-- 300223  # Vertical diffusion du/dt
-- 300224  # Vertical diffusion dv/dt
-- 300225  # Vertical diffusion heating
-- 300230  # Time mean surface zonal wind (u)
-- 300231  # Time mean surface meridional wind (v)
-- 300232  # Time mean surface absolute temperature
-- 300234  # Time mean absolute temperature
-- 300235  # Time mean deep soil temperature
-- 300236  # Time mean derived omega
-- 300237  # Time mean divergence
-- 300238  # Time mean geopotential height
-- 300241  # Time mean meridional wind (v)
-- 300242  # Time mean omega
-- 300243  # Time mean potential temperature
-- 300244  # Time mean precip. water
-- 300246  # Time mean sea level pressure
-- 300247  # Time mean sigmadot
-- 300249  # Time mean stream function
-- 300250  # Time mean surface pressure
-- 300251  # Time mean surface temperature
-- 300252  # Time mean velocity potential
-- 300253  # Time mean virtual temperature
-- 300254  # Time mean vorticity
-- 300255  # Time mean zonal wind (u)
+- 404000  # Dry deposition velocity
+- 450000  # Aerosol number density
 
 intensity.spectral-intensity:
 - 3119  # Radiance (with respect to wave number)
@@ -2080,10 +1988,31 @@ numerics.tendency:
 - 235006  # Mean specific humidity tendency due to parametrisations
 - 235007  # Mean eastward wind tendency due to parametrisations
 - 235008  # Mean northward wind tendency due to parametrisations
+- 262020  # Sea ice fraction tendency due to parameterization
+- 262142  # Sea surface height tendency due to parameterization
+- 262508  # Sea water potential temperature tendency due to newtonian relaxation
+- 262509  # Sea water salinity tendency due to newtonian relaxation
+- 262510  # Sea water temperature tendency due to parameterization
+- 262511  # Sea water salinity tendency due to parameterization
+- 262512  # Eastward sea water velocity tendency due to parameterization
+- 262513  # Northward sea water velocity tendency due to parameterization
+- 262514  # Sea water temperature tendency due to direct bias correction
+- 262515  # Sea water salinity tendency due to direct bias correction
+- 263020  # Time-mean sea ice fraction tendency due to parameterization
+- 263142  # Time-mean sea surface height tendency due to parameterization
+- 263508  # Time-mean sea water potential temperature tendency due to newtonian relaxation
+- 263509  # Time-mean sea water salinity tendency due to newtonian relaxation
+- 263510  # Time-mean sea water temperature tendency due to parameterization
+- 263511  # Time-mean sea water salinity tendency due to parameterization
+- 263512  # Time-mean eastward sea water velocity tendency due to parameterization
+- 263513  # Time-mean northward sea water velocity tendency due to parameterization
+- 263514  # Time-mean sea water temperature tendency due to direct bias correction
+- 263515  # Time-mean sea water salinity tendency due to direct bias correction
 
 numerics.mean:
 - 173008  # Mean surface runoff rate anomaly
 - 173009  # Mean sub-surface runoff rate anomaly
+- 229004  # Building height
 - 235001  # Mean temperature tendency due to short-wave radiation
 - 235002  # Mean temperature tendency due to long-wave radiation
 - 235003  # Mean temperature tendency due to short-wave radiation, clear sky
@@ -2131,6 +2060,99 @@ numerics.mean:
 - 260472  # Time-mean snow depth water equivalent
 - 260473  # Time-mean skin temperature
 - 260477  # Time-mean snow melt rate in the last 24h
+- 263000  # Time-mean sea ice thickness
+- 263001  # Time-mean sea ice area fraction
+- 263002  # Time-mean snow thickness over sea ice
+- 263003  # Time-mean eastward sea ice velocity
+- 263004  # Time-mean northward sea ice velocity
+- 263005  # Time-mean sea ice albedo
+- 263006  # Time-mean sea ice surface temperature
+- 263007  # Time-mean sea ice growth
+- 263008  # Time-mean sea ice volume per unit area
+- 263009  # Time-mean snow volume over sea ice per unit area
+- 263010  # Time-mean vertically averaged sea ice temperature
+- 263011  # Time-mean snow temperature over sea ice
+- 263012  # Time-mean sea ice temperature at the sea ice and snow interface
+- 263013  # Time-mean underside ice temperature
+- 263014  # Time-mean sea ice heat content
+- 263015  # Time-mean snow heat content over sea ice
+- 263016  # Time-mean sea ice freeboard thickness
+- 263017  # Time-mean sea ice melt pond fraction
+- 263018  # Time-mean sea ice melt pond depth
+- 263019  # Time-mean sea ice melt pond volume per unit area
+- 263020  # Time-mean sea ice fraction tendency due to parameterization
+- 263023  # Time-mean Sea ice salinity
+- 263024  # Time-mean sea ice temperature
+- 263100  # Time-mean sea surface practical salinity
+- 263101  # Time-mean sea surface temperature
+- 263102  # Time-mean depth of 14 C isotherm
+- 263103  # Time-mean depth of 17 C isotherm
+- 263104  # Time-mean depth of 20 C isotherm
+- 263105  # Time-mean depth of 26 C isotherm
+- 263106  # Time-mean depth of 28 C isotherm
+- 263107  # Time-mean barotropic stream function
+- 263108  # Time-mean surface downward heat flux
+- 263109  # Time-mean northward surface stress
+- 263110  # Time-mean eastward surface stress
+- 263111  # Time mean Y-component of surface stress
+- 263112  # Time-mean X-component of surface stress
+- 263113  # Time-mean ocean mixed layer depth defined by sigma theta 0.01 kg m-3
+- 263114  # Time-mean ocean mixed layer depth defined by sigma theta 0.03 kg m-3
+- 263115  # Time-mean ocean mixed layer depth defined by sigma theta 0.125 kg m-3
+- 263116  # Time-mean ocean mixed layer depth defined by temperature 0.2 C
+- 263117  # Time-mean ocean mixed layer depth defined by temperature 0.5 C
+- 263118  # Time-mean average sea water practical salinity in the upper 300 m
+- 263119  # Time-mean average sea water practical salinity in the upper 700 m
+- 263120  # Time-mean total column average sea water practical salinity
+- 263121  # Time-mean vertically-integrated heat content in the upper 300 m
+- 263122  # Time-mean vertically-integrated heat content in the upper 700 m
+- 263123  # Time-mean total column heat content
+- 263124  # Time-mean sea surface height
+- 263125  # Time-mean steric change in sea surface height
+- 263126  # Time-mean halosteric change in sea surface height
+- 263127  # Time-mean thermosteric change in sea surface height
+- 263128  # Time-mean thermocline depth
+- 263129  # Time-mean bottom pressure equivalent height
+- 263130  # Time-mean net surface upward water flux
+- 263131  # Time-mean fresh water flux into sea water (from rivers)
+- 263132  # Time-mean virtual salt flux into sea water
+- 263133  # Time-mean heat flux correction
+- 263134  # Time-mean fresh water flux correction
+- 263135  # Time-mean virtual salt flux correction
+- 263136  # Time-mean turbocline depth (kz=5e-4)
+- 263137  # Time-mean Y-component of surface sea water velocity
+- 263138  # Time-mean X-component of surface sea water velocity
+- 263139  # Time-mean northward surface sea water velocity
+- 263140  # Time-mean eastward surface sea water velocity
+- 263141  # Time-mean heat content surface to 26C isotherm
+- 263142  # Time-mean sea surface height tendency due to parameterization
+- 263500  # Time-mean sea water practical salinity
+- 263501  # Time-mean sea water potential temperature
+- 263502  # Time-mean sea water sigma theta
+- 263503  # Time-mean Y-component of sea water velocity
+- 263504  # Time-mean X-component of sea water velocity
+- 263505  # Time-mean northward sea water velocity
+- 263506  # Time-mean eastward sea water velocity
+- 263507  # Time-mean upward sea water velocity
+- 263508  # Time-mean sea water potential temperature tendency due to newtonian relaxation
+- 263509  # Time-mean sea water salinity tendency due to newtonian relaxation
+- 263510  # Time-mean sea water temperature tendency due to parameterization
+- 263511  # Time-mean sea water salinity tendency due to parameterization
+- 263512  # Time-mean eastward sea water velocity tendency due to parameterization
+- 263513  # Time-mean northward sea water velocity tendency due to parameterization
+- 263514  # Time-mean sea water temperature tendency due to direct bias correction
+- 263515  # Time-mean sea water salinity tendency due to direct bias correction
+- 263900  # Time-mean net short wave radiation rate at sea surface
+- 263901  # Time-mean wind stress at sea surface
+- 263902  # Time-mean wind speed at 10m above sea surface
+- 263903  # Time-mean neutral drag coefficient at 10m above sea surface
+- 263904  # Time-mean total precipitation rate at sea surface
+- 263905  # Time-mean snow precipitation rate at sea surface
+- 263906  # Time-mean eastward of wind stress over sea ice
+- 263907  # Time-mean northward of wind stress over sea ice
+- 263908  # Time-mean U-component of wind stress over sea ice
+- 263909  # Time-mean V-component of wind stress over sea ice
+- 409000  # Volume-mean total column mixing ratio
 - 435001  # mean net ecosystem exchange flux
 - 436001  # mean gross primary production flux 
 - 437001  # mean ecosystem respiration flux
@@ -2230,6 +2252,9 @@ numerics.accumulated:
 - 160141  # Snow depth
 - 160231  # Instantaneous surface heat flux
 - 160249  # Gravity wave dissipation flux
+- 162093  # Total column vertically-integrated water enthalpy
+- 162104  # Time-integrated updraught mass flux
+- 162105  # Time-integrated downdraught mass flux
 - 162108  # Total precipitation flux
 - 162130  # Liquid Precipitation flux from convection
 - 162131  # Ice Precipitation flux from convection
@@ -2292,7 +2317,6 @@ numerics.accumulated:
 - 173210  # Surface net solar radiation, clear sky anomaly
 - 173211  # Surface net thermal radiation, clear sky anomaly
 - 174008  # Surface runoff
-- 174009  # Sub-surface runoff
 - 174089  # Top incoming solar radiation
 - 174090  # Top outgoing solar radiation
 - 174116  # Short wave radiation flux at surface
@@ -2523,6 +2547,34 @@ numerics.accumulated:
 - 233001  # Time-integrated total column vertically-integrated northward geopotential flux
 - 233002  # Time-integrated total column vertically-integrated divergence of water geopotential flux
 - 233003  # Time-integrated total column vertically-integrated divergence of geopotential flux
+- 233004  # Time-integrated total column vertically-integrated eastward enthalpy flux
+- 233005  # Time-integrated total column vertically-integrated northward enthalpy flux
+- 233006  # Time-integrated total column vertically-integrated eastward kinetic energy flux
+- 233007  # Time-integrated total column vertically-integrated northward kinetic energy flux
+- 233008  # Time-integrated total column vertically-integrated eastward total energy flux
+- 233009  # Time-integrated total column vertically-integrated northward total energy flux
+- 233010  # Time-integrated total column vertically-integrated divergence of enthalpy flux
+- 233011  # Time-integrated total column vertically-integrated divergence of kinetic energy flux
+- 233012  # Time-integrated total column vertically-integrated divergence of total energy flux
+- 233013  # Time-integrated total column vertically-integrated divergence of water enthalpy flux
+- 233014  # Time integrated, vertically integrated divergence of mass flux
+- 233015  # Time integrated, vertically integrated eastward mass flux
+- 233016  # Time integrated, vertically integrated northward mass flux
+- 233017  # Time integrated, vertically integrated divergence of water vapour flux
+- 233018  # Time integrated, vertically integrated divergence of cloud liquid water flux
+- 233019  # Time integrated, vertically integrated divergence of cloud ice water flux
+- 233020  # Time integrated, vertically integrated divergence of rain flux
+- 233021  # Time integrated, vertically integrated divergence of snow flux
+- 233022  # Time integrated, vertically integrated eastward water vapour flux
+- 233023  # Time integrated, vertically integrated northward water vapour flux
+- 233024  # Time integrated, vertically integrated eastward cloud liquid water flux
+- 233025  # Time integrated, vertically integrated northward cloud liquid water flux
+- 233026  # Time integrated, vertically integrated eastward cloud ice water flux
+- 233027  # Time integrated, vertically integrated northward cloud ice water flux
+- 233028  # Time integrated, vertically integrated eastward rain flux
+- 233029  # Time integrated, vertically integrated northward rain flux
+- 233030  # Time integrated, vertically integrated eastward snow flux
+- 233031  # Time integrated, vertically integrated northward snow flux
 - 235015  # Time integral of rain flux
 - 235017  # Time integral of surface eastward momentum flux
 - 235018  # Time integral of surface northward momentum flux
@@ -2552,9 +2604,6 @@ numerics.accumulated:
 - 260218  # Estimated precipitation
 - 260259  # Evaporation
 - 260264  # Time-integrated surface direct short wave radiation flux
-- 260284  # Liquid precipitation (rainfall)
-- 260286  # Total precipitation (nearest grid point)
-- 260287  # Convective precipitation (nearest grid point)
 - 260423  # Accumulated surface downward short-wave radiation flux, clear sky
 - 260427  # Accumulated surface upward short-wave radiation flux, clear sky
 - 260428  # Accumulated surface downward long-wave radiation flux, clear sky
@@ -2562,17 +2611,18 @@ numerics.accumulated:
 - 260434  # Time-integrated evapotranspiration rate in the last 24h
 - 260437  # Time-integrated potential evapotranspiration rate in the last 24h
 - 260444  # Time-integrated water runoff and drainage rate in the last 24h
-- 260461  # Water vapor added by precip assimilation
-- 260462  # Water condensate added by precip assimilation
 - 260476  # Time-integrated snow melt rate in the last 24h
-- 260479  # Land Surface Precipitation Accumulation
 - 260564  # Energy release component (as defined by the U.S Forest Service National Fire-Danger Rating System)
 - 260645  # Time integral of total solid precipitation flux
-- 300065  # Wat equiv acc snow depth
-- 300177  # Potential sfc evaporation
+- 263144  # Time-mean average sea water potential temperature in the upper 300m
+- 264900  # Time-accumulated net short wave radiation at sea surface
+- 264904  # Time-accumulated total precipitation at sea surface
+- 264905  # Time-accumulated snow precipitation at sea surface
 - 435002  # Accumulated net ecosystem exchange flux
 - 436002  # Accumulated gross primary production flux 
 - 437002  # Accumulated ecosystem respiration flux
+- 444000  # Accumulated wet deposition mass flux
+- 445000  # Accumulated dry deposition mass flux
 
 numerics.vertical-integral:
 - 78  # Total column cloud liquid water
@@ -2626,6 +2676,7 @@ numerics.vertical-integral:
 - 162090  # Vertical integral of eastward cloud frozen water flux
 - 162091  # Vertical integral of northward cloud frozen water flux
 - 162092  # Vertical integral of mass tendency
+- 162093  # Total column vertically-integrated water enthalpy
 - 171078  # Total column liquid water anomaly
 - 171079  # Total column ice water anomaly
 - 171136  # Total column water anomaly
@@ -2963,6 +3014,34 @@ numerics.vertical-integral:
 - 233001  # Time-integrated total column vertically-integrated northward geopotential flux
 - 233002  # Time-integrated total column vertically-integrated divergence of water geopotential flux
 - 233003  # Time-integrated total column vertically-integrated divergence of geopotential flux
+- 233004  # Time-integrated total column vertically-integrated eastward enthalpy flux
+- 233005  # Time-integrated total column vertically-integrated northward enthalpy flux
+- 233006  # Time-integrated total column vertically-integrated eastward kinetic energy flux
+- 233007  # Time-integrated total column vertically-integrated northward kinetic energy flux
+- 233008  # Time-integrated total column vertically-integrated eastward total energy flux
+- 233009  # Time-integrated total column vertically-integrated northward total energy flux
+- 233010  # Time-integrated total column vertically-integrated divergence of enthalpy flux
+- 233011  # Time-integrated total column vertically-integrated divergence of kinetic energy flux
+- 233012  # Time-integrated total column vertically-integrated divergence of total energy flux
+- 233013  # Time-integrated total column vertically-integrated divergence of water enthalpy flux
+- 233014  # Time integrated, vertically integrated divergence of mass flux
+- 233015  # Time integrated, vertically integrated eastward mass flux
+- 233016  # Time integrated, vertically integrated northward mass flux
+- 233017  # Time integrated, vertically integrated divergence of water vapour flux
+- 233018  # Time integrated, vertically integrated divergence of cloud liquid water flux
+- 233019  # Time integrated, vertically integrated divergence of cloud ice water flux
+- 233020  # Time integrated, vertically integrated divergence of rain flux
+- 233021  # Time integrated, vertically integrated divergence of snow flux
+- 233022  # Time integrated, vertically integrated eastward water vapour flux
+- 233023  # Time integrated, vertically integrated northward water vapour flux
+- 233024  # Time integrated, vertically integrated eastward cloud liquid water flux
+- 233025  # Time integrated, vertically integrated northward cloud liquid water flux
+- 233026  # Time integrated, vertically integrated eastward cloud ice water flux
+- 233027  # Time integrated, vertically integrated northward cloud ice water flux
+- 233028  # Time integrated, vertically integrated eastward rain flux
+- 233029  # Time integrated, vertically integrated northward rain flux
+- 233030  # Time integrated, vertically integrated eastward snow flux
+- 233031  # Time integrated, vertically integrated northward snow flux
 - 235054  # Mean vertically integrated moisture divergence
 - 260001  # Total column graupel
 - 260041  # Total column integrated rain
@@ -2974,14 +3053,21 @@ numerics.vertical-integral:
 - 260116  # Total column-integrated condensate
 - 260132  # Total column integrated ozone
 - 260197  # Column-integrated soil water
-- 260272  # Total column-integrated supercooled liquid water
-- 260273  # Total column-integrated melting ice
+- 262120  # Total column average sea water practical salinity
+- 262121  # Vertically-integrated heat content in the upper 300 m
+- 262122  # Vertically-integrated heat content in the upper 700 m
+- 262123  # Total column of heat content
+- 263120  # Time-mean total column average sea water practical salinity
+- 263121  # Time-mean vertically-integrated heat content in the upper 300 m
+- 263122  # Time-mean vertically-integrated heat content in the upper 700 m
+- 263123  # Time-mean total column heat content
+- 401000  # Total column vertically-integrated mass density
+- 409000  # Volume-mean total column mixing ratio
 
 rate:
 - 3019  # Lapse rate
 - 3097  # Ice growth rate
 - 129232  # Instantaneous moisture flux gradient
-- 160247  # Momentum flux
 - 162106  # Updraught detrainment rate
 - 162107  # Downdraught detrainment rate
 - 171232  # Instantaneous moisture flux anomaly
@@ -3001,41 +3087,11 @@ rate:
 - 240012  # Side flow into river channel
 - 240013  # Discharge from rivers or streams
 - 260022  # Horizontal moisture convergence
-- 260069  # Horizontal momentum flux
-- 260245  # Large Scale Condensate Heating rate
-- 260246  # Deep Convective Heating rate
-- 260251  # Shallow Convective Heating rate
-- 260252  # Vertical Diffusion Heating rate
-- 260276  # Deep Convective Moistening Rate
-- 260277  # Shallow Convective Moistening Rate
-- 260278  # Vertical Diffusion Moistening Rate
-- 260280  # Large scale moistening rate
-- 260332  # Convective updraft mass flux
-- 260333  # Convective downdraft mass flux
-- 260334  # Convective detrainment mass flux
-- 260343  # Solar Radiative Heating Rate
-- 260354  # Long-Wave Radiative Heating Rate
-- 260366  # Convective Cloud Mass Flux
-- 260447  # Rate of water dropping from canopy to ground
-- 260501  # Salt Flux
 - 260559  # Rate of spread (as defined by the Australian forest service)
-- 260616  # Adiabatic heating rate
-- 260623  # Adiabatic moistening rate
-- 260633  # Large scale condensation heating rate
-- 260634  # Convective heating rate
-- 260635  # Convective moistening rate
-- 260636  # Vertical diffusion heating rate
-- 260639  # Vertical diffusion moistening rate
-- 260640  # Solar radiative heating rate
-- 260641  # Long wave radiative heating rate
-- 260642  # Large scale moistening rate
 - 261005  # Plasmodium falciparum entomological inoculation rate
 - 261006  # Human bite rate by anopheles vectors
-- 261010  # Anopheles vector to host ratio
 - 261011  # Anopheles vector number
 - 261013  # Population density
-- 300019  # Lapse rate
-- 300168  # Horiz. moisture flux conv.
 
 rate.energy-flux:
 - 19  # Clear sky surface UV
@@ -3114,6 +3170,7 @@ rate.energy-flux:
 - 162074  # Vertical integral of northward geopotential flux
 - 162075  # Vertical integral of eastward total energy flux
 - 162076  # Vertical integral of northward total energy flux
+- 162093  # Total column vertically-integrated water enthalpy
 - 170179  # Top net thermal radiation
 - 171047  # Direct solar radiation anomaly
 - 171057  # Downward UV radiation at the surface anomaly
@@ -3296,6 +3353,16 @@ rate.energy-flux:
 - 230212  # TOA incident solar radiation (variable resolution)
 - 233000  # Time-integrated total column vertically-integrated eastward geopotential flux
 - 233001  # Time-integrated total column vertically-integrated northward geopotential flux
+- 233004  # Time-integrated total column vertically-integrated eastward enthalpy flux
+- 233005  # Time-integrated total column vertically-integrated northward enthalpy flux
+- 233006  # Time-integrated total column vertically-integrated eastward kinetic energy flux
+- 233007  # Time-integrated total column vertically-integrated northward kinetic energy flux
+- 233008  # Time-integrated total column vertically-integrated eastward total energy flux
+- 233009  # Time-integrated total column vertically-integrated northward total energy flux
+- 233010  # Time-integrated total column vertically-integrated divergence of enthalpy flux
+- 233011  # Time-integrated total column vertically-integrated divergence of kinetic energy flux
+- 233012  # Time-integrated total column vertically-integrated divergence of total energy flux
+- 233013  # Time-integrated total column vertically-integrated divergence of water enthalpy flux
 - 235019  # Time integral of surface latent heat evaporation flux
 - 235022  # Mean surface photosynthetically active radiation flux, clear sky
 - 235027  # Mean surface downward UV radiation flux
@@ -3324,7 +3391,6 @@ rate.energy-flux:
 - 235071  # Time integral of surface latent heat sublimation flux
 - 260002  # Latent heat net flux
 - 260007  # Snow phase change heat flux
-- 260037  # Potential evaporation rate
 - 260086  # Net short-wave radiation flux (top of atmosphere)
 - 260087  # Downward short-wave radiation flux
 - 260088  # Upward short-wave radiation flux
@@ -3340,25 +3406,9 @@ rate.energy-flux:
 - 260100  # Net long-wave radiation flux, clear sky
 - 260186  # Ground heat flux
 - 260198  # Heat flux
-- 260247  # Total Downward Heat Flux at Surface
 - 260262  # Direct short wave radiation flux
 - 260263  # Diffuse short wave radiation flux
 - 260264  # Time-integrated surface direct short wave radiation flux
-- 260275  # Sublimation (evaporation from snow)
-- 260340  # UV-B downward solar flux
-- 260341  # Clear sky UV-B downward solar flux
-- 260342  # Clear Sky Downward Solar Flux
-- 260344  # Clear Sky Upward Solar Flux
-- 260345  # Cloud Forcing Net Solar Flux
-- 260346  # Visible Beam Downward Solar Flux
-- 260347  # Visible Diffuse Downward Solar Flux
-- 260348  # Near IR Beam Downward Solar Flux
-- 260349  # Near IR Diffuse Downward Solar Flux
-- 260350  # Downward Total radiation Flux
-- 260351  # Upward Total radiation Flux
-- 260355  # Clear Sky Upward Long Wave Flux
-- 260356  # Clear Sky Downward Long Wave Flux
-- 260357  # Cloud Forcing Net Long Wave Flux
 - 260361  # Downward short-wave radiation flux, clear sky
 - 260362  # Upward short-wave radiation flux, clear sky
 - 260363  # Downward long-wave radiation flux, clear sky
@@ -3366,41 +3416,14 @@ rate.energy-flux:
 - 260423  # Accumulated surface downward short-wave radiation flux, clear sky
 - 260427  # Accumulated surface upward short-wave radiation flux, clear sky
 - 260428  # Accumulated surface downward long-wave radiation flux, clear sky
-- 260454  # Open water evaporation (standing water)
-- 260470  # Canopy water evaporation
-- 260471  # Transpiration
-- 260478  # Direct evaporation from bare soil
-- 260496  # Net Air-Ocean Heat Flux
-- 260497  # Assimilative Heat Flux
 - 260564  # Energy release component (as defined by the U.S Forest Service National Fire-Danger Rating System)
-- 260615  # Evapotranspiration
-- 300111  # Short wave absorbed at ground
-- 300112  # Net long wave at bottom
-- 300113  # Net short-wav rad(top)
-- 300114  # Outgoing long wave at top
-- 300115  # Long-wav rad
-- 300116  # Short wave absorbed by earth/atmosphere
-- 300117  # Global radiation
-- 300121  # Latent heat flux from surface
-- 300122  # Sensible heat flux from surface
-- 300123  # Bound layer dissipation
-- 300179  # Interception loss
-- 300196  # Surface momentum flux
-- 300197  # Incident short wave flux
-- 300198  # Time ave ground ht flx
-- 300200  # Net long wave at bottom (clear)
-- 300201  # Outgoing long wave at top (clear)
-- 300202  # Short wv absrbd by earth/atmos (clear)
-- 300203  # Short wave absorbed at ground (clear)
-- 300207  # Downward long wave at bottom
-- 300208  # Downward long wave at bottom (clear)
-- 300209  # Downward short wave at ground
-- 300210  # Downward short wave at ground (clear)
-- 300211  # Upward long wave at bottom
-- 300212  # Upward short wave at ground
-- 300213  # Upward short wave at ground (clear)
-- 300214  # Upward short wave at top
-- 300215  # Upward short wave at top (clear)
+- 262108  # Surface downward heat flux
+- 262133  # Heat flux correction
+- 262900  # Net short wave radiation rate at sea surface
+- 263108  # Time-mean surface downward heat flux
+- 263133  # Time-mean heat flux correction
+- 263900  # Time-mean net short wave radiation rate at sea surface
+- 264900  # Time-accumulated net short wave radiation at sea surface
 
 rate.mass-flux:
 - 232  # Instantaneous moisture flux
@@ -3431,6 +3454,8 @@ rate.mass-flux:
 - 162090  # Vertical integral of eastward cloud frozen water flux
 - 162091  # Vertical integral of northward cloud frozen water flux
 - 162092  # Vertical integral of mass tendency
+- 162104  # Time-integrated updraught mass flux
+- 162105  # Time-integrated downdraught mass flux
 - 162108  # Total precipitation flux
 - 162130  # Liquid Precipitation flux from convection
 - 162131  # Ice Precipitation flux from convection
@@ -3442,7 +3467,6 @@ rate.mass-flux:
 - 173008  # Mean surface runoff rate anomaly
 - 173009  # Mean sub-surface runoff rate anomaly
 - 174008  # Surface runoff
-- 174009  # Sub-surface runoff
 - 174142  # Large scale rainfall rate
 - 174143  # Convective rainfall rate
 - 174239  # Convective snowfall rate
@@ -4030,9 +4054,28 @@ rate.mass-flux:
 - 231010  # Surface runoff
 - 231011  # Sub-surface runoff rate
 - 231012  # Sub-surface runoff
+- 233014  # Time integrated, vertically integrated divergence of mass flux
+- 233015  # Time integrated, vertically integrated eastward mass flux
+- 233016  # Time integrated, vertically integrated northward mass flux
+- 233017  # Time integrated, vertically integrated divergence of water vapour flux
+- 233018  # Time integrated, vertically integrated divergence of cloud liquid water flux
+- 233019  # Time integrated, vertically integrated divergence of cloud ice water flux
+- 233020  # Time integrated, vertically integrated divergence of rain flux
+- 233021  # Time integrated, vertically integrated divergence of snow flux
+- 233022  # Time integrated, vertically integrated eastward water vapour flux
+- 233023  # Time integrated, vertically integrated northward water vapour flux
+- 233024  # Time integrated, vertically integrated eastward cloud liquid water flux
+- 233025  # Time integrated, vertically integrated northward cloud liquid water flux
+- 233026  # Time integrated, vertically integrated eastward cloud ice water flux
+- 233027  # Time integrated, vertically integrated northward cloud ice water flux
+- 233028  # Time integrated, vertically integrated eastward rain flux
+- 233029  # Time integrated, vertically integrated northward rain flux
+- 233030  # Time integrated, vertically integrated eastward snow flux
+- 233031  # Time integrated, vertically integrated northward snow flux
 - 235009  # Mean updraught mass flux
 - 235010  # Mean downdraught mass flux
 - 235013  # Mean total precipitation flux
+- 235015  # Time integral of rain flux
 - 235020  # Mean surface runoff rate
 - 235021  # Mean sub-surface runoff rate
 - 235023  # Mean snow evaporation rate
@@ -4072,8 +4115,6 @@ rate.mass-flux:
 - 260048  # Total precipitation rate
 - 260049  # Total snowfall rate water equivalent
 - 260050  # Large scale precipitation rate
-- 260051  # Convective snowfall rate water equivalent
-- 260052  # Large scale snowfall rate water equivalent
 - 260056  # Water equivalent of accumulated snow depth
 - 260058  # Rain precipitation rate
 - 260059  # Snow precipitation rate
@@ -4088,9 +4129,6 @@ rate.mass-flux:
 - 260218  # Estimated precipitation
 - 260219  # Instantaneous rain rate
 - 260259  # Evaporation
-- 260284  # Liquid precipitation (rainfall)
-- 260286  # Total precipitation (nearest grid point)
-- 260287  # Convective precipitation (nearest grid point)
 - 260365  # Percolation rate
 - 260430  # Percolation
 - 260433  # Evapotranspiration rate
@@ -4103,24 +4141,55 @@ rate.mass-flux:
 - 260443  # Water runoff and drainage rate
 - 260444  # Time-integrated water runoff and drainage rate in the last 24h
 - 260445  # Time-mean water runoff and drainage rate in the last 24h
-- 260461  # Water vapor added by precip assimilation
-- 260462  # Water condensate added by precip assimilation
 - 260475  # Snow melt rate
 - 260476  # Time-integrated snow melt rate in the last 24h
 - 260477  # Time-mean snow melt rate in the last 24h
-- 260479  # Land Surface Precipitation Accumulation
-- 260621  # Upward mass flux at cloud base
-- 260622  # Upward mass flux
 - 260645  # Time integral of total solid precipitation flux
-- 300057  # Evaporation
-- 300059  # Precipitation rate
-- 300061  # Total precipitation
-- 300062  # Large scale precipitation
-- 300063  # Convective precipitation
-- 300064  # Snowfall
-- 300065  # Wat equiv acc snow depth
-- 300169  # Vert. integrated moisture flux conv.
-- 300178  # Runoff
+- 262130  # Net surface upward water flux
+- 262131  # Fresh water flux into sea water (from rivers)
+- 262132  # Virtual salt flux into sea water
+- 262134  # Fresh water flux correction
+- 262135  # Virtual salt flux correction
+- 262904  # Total precipitation rate at sea surface
+- 262905  # Snow precipitation rate at sea surface
+- 263130  # Time-mean net surface upward water flux
+- 263131  # Time-mean fresh water flux into sea water (from rivers)
+- 263132  # Time-mean virtual salt flux into sea water
+- 263134  # Time-mean fresh water flux correction
+- 263135  # Time-mean virtual salt flux correction
+- 263904  # Time-mean total precipitation rate at sea surface
+- 263905  # Time-mean snow precipitation rate at sea surface
+- 264904  # Time-accumulated total precipitation at sea surface
+- 264905  # Time-accumulated snow precipitation at sea surface
+- 403000  # Emission mass flux
+- 405000  # Wet deposition mass flux
+- 406000  # Dry deposition mass flux
+- 407000  # Sedimentation mass flux
+- 410000  # Wet deposition mass flux by large-scale precipitation
+- 411000  # Wet deposition mass flux by convective precipitation
+- 412000  # Emission mass flux from vegetation
+- 413000  # Emission mass flux from natural sources
+- 414000  # Emission mass flux from anthropogenic sources
+- 415000  # Emission mass flux from elevated anthropogenic sources
+- 416000  # Emission mass flux from surface anthropogenic sources
+- 417000  # Emission mass flux from biomass burning
+- 418000  # Emission from aviation
+- 419000  # Emission mass flux from agriculture livestock
+- 420000  # Emission mass flux from agriculture soils
+- 421000  # Emission mass flux from agricultural waste burning
+- 422000  # Emission mass flux from residential, commercial and other combustion
+- 423000  # Emission mass flux from power generation
+- 424000  # Emission mass flux from fugitives
+- 425000  # Emission mass flux from industrial process
+- 426000  # Emission mass flux from solvents
+- 427000  # Emission mass flux from ships
+- 428000  # Emission mass flux from wastes (solid and water)
+- 429000  # Emission mass flux from off-road transportation
+- 430000  # Emission mass flux from road transportation
+- 431000  # Emission mass flux from super power stations
+- 432000  # Emission mass flux from settlements
+- 433000  # Emission mass flux from volcanoes
+- 434000  # Emission mass flux from wetlands
 - 435000  # Net ecosystem exchange flux
 - 435001  # Mean net ecosystem exchange flux
 - 435002  # Accumulated net ecosystem exchange flux
@@ -4130,6 +4199,17 @@ rate.mass-flux:
 - 437000  # Ecosystem respiration flux
 - 437001  # Mean ecosystem respiration flux
 - 437002  # Accumulated ecosystem respiration flux
+- 438000  # Emission mass flux from bio fuel
+- 439000  # Emission mass flux from fossil fuel
+- 440000  # Emission mass flux from other
+- 441000  # Emission mass flux from oceans
+- 442000  # Emission mass flux from soil
+- 443000  # Emission mass flux from wild animals
+- 444000  # Accumulated wet deposition mass flux
+- 445000  # Accumulated dry deposition mass flux
+- 451000  # Aerosol negative fixer mass flux
+- 452000  # Aerosol sink/loss mass flux
+- 453000  # Aerosol source/gain mass flux
 
 rate.volume-flux:
 - 8  # Surface runoff
@@ -4421,14 +4501,6 @@ rate.volume-flux:
 - 260053  # Total snowfall rate
 - 260054  # Convective snowfall rate
 - 260055  # Large scale snowfall rate
-- 260274  # Evaporation - Precipitation
-- 260600  # Evaporation
-- 260601  # Total precipitation
-- 260602  # Large scale precipitation
-- 260603  # Convective precipitation
-- 260604  # Snowfall rate water equivalent
-- 260605  # Water run-off
-- 300177  # Potential sfc evaporation
 
 ratio:
 - 124  # Surface emissivity
@@ -4438,6 +4510,7 @@ ratio:
 - 130225  # Humidity tendency by cumulus convection
 - 130226  # Humidity tendency by large-scale condensation
 - 130229  # Adiabatic tendency of humidity
+- 140099  # Ratio of wave angular and frequency width
 - 150137  # Richardson number
 - 151139  # Richardson number
 - 160157  # Relative humidity
@@ -4469,30 +4542,20 @@ ratio:
 - 260194  # Temperature parameter in canopy conductance
 - 260195  # Soil moisture parameter in canopy conductance
 - 260196  # Humidity parameter in canopy conductance
-- 260205  # Liquid volumetric soil moisture (non-frozen)
-- 260207  # Transpiration stress-onset (soil moisture)
-- 260208  # Direct evaporation cease (soil moisture)
-- 260209  # Soil porosity
 - 260227  # Reflectance in 0.6 micron channel
 - 260228  # Reflectance in 0.8 micron channel
 - 260229  # Reflectance in 1.6 micron channel
 - 260230  # Reflectance in 3.9 micron channel
 - 260242  # 2 metre relative humidity
-- 260261  # Minimum Relative Humidity
-- 260369  # Richardson Number
-- 260379  # Ozone Concentration (PPB)
-- 260418  # Radiative emissivity
+- 260512  # Cloudy reflectance
+- 260513  # Clear reflectance
 - 260558  # Drought factor (as defined by the Australian forest service)
 - 260560  # Fire danger index (as defined by the Australian forest service)
 - 260561  # Spread component (as defined by the U.S Forest Service National Fire-Danger Rating System)
 - 260562  # Burning index (as defined by the U.S Forest Service National Fire-Danger Rating System)
-- 300052  # Relative humidity
-- 300153  # Freezing level relative humidity
-- 300170  # Vertical moisture advection
-- 300171  # Neg. hum. corr. moisture source
-- 300226  # Surface relative humidity
-- 300233  # Time mean surface relative humidity
-- 300245  # Time mean relative humidity
+- 261010  # Anopheles vector to host ratio
+- 408000  # Volume mixing ratio
+- 409000  # Volume-mean total column mixing ratio
 
 ratio.area:
 - 66  # Leaf area index, low vegetation
@@ -4501,7 +4564,7 @@ ratio.area:
 - 129067  # Leaf area index, high vegetation
 - 200066  # Leaf area index, low vegetation
 - 200067  # Leaf area index, high vegetation
-- 260373  # Leaf Area Index
+- 229005  # Vertical-to-horizontal area ratio
 - 261012  # Fraction of malarial vector reproductive habitat
 
 ratio.cover:
@@ -4514,8 +4577,14 @@ ratio.cover:
 - 171031  # Sea-ice cover anomaly
 - 200026  # Lake cover difference
 - 200031  # Sea-ice cover difference
+- 229001  # Urban cover
+- 229002  # Road Cover
+- 229003  # Building cover
+- 229007  # Wetland cover
+- 229009  # Irrigation cover
+- 229010  # C4 crop cover
+- 229011  # C4 grass cover
 - 260038  # Snow cover
-- 260459  # Land-sea coverage (nearest neighbor) [land=1,sea=0]
 
 ratio.cover.cloud:
 - 164  # Total cloud cover
@@ -4561,12 +4630,6 @@ ratio.cover.cloud:
 - 260110  # Non-convective cloud cover
 - 260257  # Cloud cover
 - 260648  # Fog
-- 300071  # Cloud cover
-- 300072  # Convective cloud cover
-- 300073  # Low cloud cover
-- 300074  # Medium cloud cover
-- 300075  # High cloud cover
-- 300149  # Mean cloud cover
 
 ratio.cover.vegetation:
 - 27  # Low vegetation cover
@@ -4717,17 +4780,6 @@ ratio.fraction:
 - 260173  # Snow water equivalent percent of normal
 - 260187  # Moisture availability
 - 260294  # Glacier mask
-- 260406  # Confidence - Ceiling
-- 260407  # Confidence - Visibility
-- 260408  # Confidence - Flight Category
-- 260411  # Visible, Black Sky Albedo
-- 260412  # Visible, White Sky Albedo
-- 260413  # Near IR, Black Sky Albedo
-- 260414  # Near IR, White Sky Albedo
-- 260442  # Wilting Point
-- 260448  # Ice-free water surface
-- 260458  # Normalized Difference Vegetation Index
-- 260483  # Field Capacity
 - 260509  # Albedo
 - 260557  # Keetch-Byram drought index
 - 261003  # Malaria cases
@@ -4735,13 +4787,14 @@ ratio.fraction:
 - 261007  # Malaria immunity
 - 261008  # Falciparum parasite rates
 - 261009  # Detectable falciparum parasite ratio (after day 10)
-- 300081  # Land sea mask
-- 300084  # Albedo
-- 300091  # Ice concentration
-- 300174  # Soil moisture availability
-- 300182  # Soil wetness of surface
-- 300183  # Soil wetness of root zone
-- 300184  # Soil wetness of drainage zone
+- 262001  # Sea ice area fraction
+- 262005  # Sea ice albedo
+- 262017  # Sea ice melt pond fraction
+- 262020  # Sea ice fraction tendency due to parameterization
+- 263001  # Time-mean sea ice area fraction
+- 263005  # Time-mean sea ice albedo
+- 263017  # Time-mean sea ice melt pond fraction
+- 263020  # Time-mean sea ice fraction tendency due to parameterization
 
 ratio.mass:
 - 75  # Specific rain water content
@@ -5135,17 +5188,26 @@ ratio.mass:
 - 260028  # Graupel (snow pellets)
 - 260113  # Total condensate
 - 260118  # Cloud ice mixing ratio
-- 260131  # Ozone mixing ratio
-- 260281  # Specific humidity at top of viscous sublayer
-- 260282  # Maximum specific humidity at 2m
-- 260283  # Minimum specific humidity at 2m
 - 260292  # specific rain water content (convection)
 - 260293  # specific snow water content (convection)
-- 260624  # Ozone mixing ratio
-- 300051  # Specific humidity
-- 300053  # Humidity mixing ratio
-- 300181  # Surface spec humidity
-- 300248  # Time mean specific humidity
+- 262100  # Sea surface practical salinity
+- 262118  # Average sea water practical salinity in the upper 300 m
+- 262119  # Average sea water practical salinity in the upper 700 m
+- 262120  # Total column average sea water practical salinity
+- 262500  # Sea water practical salinity
+- 262509  # Sea water salinity tendency due to newtonian relaxation
+- 262511  # Sea water salinity tendency due to parameterization
+- 262515  # Sea water salinity tendency due to direct bias correction
+- 262516  # Sea water salinity
+- 263100  # Time-mean sea surface practical salinity
+- 263118  # Time-mean average sea water practical salinity in the upper 300 m
+- 263119  # Time-mean average sea water practical salinity in the upper 700 m
+- 263120  # Time-mean total column average sea water practical salinity
+- 263500  # Time-mean sea water practical salinity
+- 263509  # Time-mean sea water salinity tendency due to newtonian relaxation
+- 263511  # Time-mean sea water salinity tendency due to parameterization
+- 263515  # Time-mean sea water salinity tendency due to direct bias correction
+- 402000  # Mass mixing ratio
 
 ratio.probability:
 - 3060  # Thunderstorm probability
@@ -5325,19 +5387,7 @@ ratio.probability:
 - 133098  # Probability of temperature standardized anomaly less than -2 standard deviation
 - 260166  # Supercooled large droplet probability (see Note 4)
 - 260178  # Probability of 0.01 inch of precipitation (POP)
-- 260397  # Tornado probability
-- 260398  # Hail probability
-- 260399  # Wind probability
-- 260400  # Significant Tornado probability
-- 260401  # Significant Hail probability
-- 260402  # Significant Wind probability
-- 260415  # Total Probability of Severe Thunderstorms (Days 2,3)
-- 260416  # Total Probability of Extreme Severe Thunderstorms (Days 2,3)
-- 260429  # Probability of Freezing Precipitation
-- 260431  # Probability of precipitation exceeding flash flood guidance values
-- 260432  # Probability of Wetting Rain, exceeding in 0.10 in a given time period
 - 260563  # Ignition component (as defined by the U.S Forest Service National Fire-Danger Rating System)
-- 300060  # Thunder probability
 
 ratio.volume:
 - 190229  # Total soil moisture
@@ -5482,12 +5532,6 @@ spectrum:
 - 3030  # Wave spectra (3)
 - 140250  # 2D wave spectra (multiple)
 - 140251  # 2D wave spectra (single)
-- 300021  # Radar spectra(1)
-- 300022  # Radar spectra(2)
-- 300023  # Radar spectra(3)
-- 300028  # Wave spectra(1)
-- 300029  # Wave spectra(2)
-- 300030  # Wave spectra(3)
 
 spectrum.associated-angle:
 - 140122  # Mean wave direction of first swell partition
@@ -5537,10 +5581,6 @@ stress:
 - 129196  # Meridional component of gravity wave stress gradient
 - 129229  # Instantaneous X surface stress gradient
 - 129230  # Instantaneous Y surface stress gradient
-- 140101  # U-component of atmospheric surface momentum flux
-- 140102  # V-component of atmospheric surface momentum flux
-- 140103  # U-component of surface momentum flux into ocean
-- 140104  # V-component of surface momentum flux into ocean
 - 150168  # U stress
 - 150169  # V stress
 - 151153  # U stress
@@ -5573,773 +5613,126 @@ stress:
 - 230181  # North-South surface stress (variable resolution)
 - 230195  # Longitudinal component of gravity wave stress (variable resolution)
 - 230196  # Meridional component of gravity wave stress (variable resolution)
-- 235015  # Time integral of rain flux
-- 235017  # Time integral of surface eastward momentum flux
-- 235018  # Time integral of surface northward momentum flux
 - 235025  # Mean magnitude of turbulent surface stress
 - 235041  # Mean eastward turbulent surface stress
 - 235042  # Mean northward turbulent surface stress
 - 235045  # Mean eastward gravity wave surface stress
 - 235046  # Mean northward gravity wave surface stress
-- 300193  # Surface zonal wind stress
-- 300195  # Surface meridional wind stress
+- 262109  # Northward surface stress
+- 262110  # Eastward surface stress
+- 262111  # Y-component of surface stress
+- 262112  # X-component of surface stress
+- 262901  # Wind stress at sea surface
+- 262906  # Eastward of wind stress over sea ice
+- 262907  # Northward of wind stress over sea ice
+- 262908  # U-component of wind stress over sea ice
+- 262909  # V-component of wind stress over sea ice
+- 263109  # Time-mean northward surface stress
+- 263110  # Time-mean eastward surface stress
+- 263111  # Time mean Y-component of surface stress
+- 263112  # Time-mean X-component of surface stress
+- 263901  # Time-mean wind stress at sea surface
+- 263906  # Time-mean eastward of wind stress over sea ice
+- 263907  # Time-mean northward of wind stress over sea ice
+- 263908  # Time-mean U-component of wind stress over sea ice
+- 263909  # Time-mean V-component of wind stress over sea ice
 
 tile-fraction:
 - 231006  # Tile fraction
 - 231007  # Tile percentage
 
 orca.arrangement.f:
-- 250011  # lat_F (coordinate) FIXME
-- 250012  # lon_F (coordinate) FIXME
+- 250011  # Latitude on F grid
+- 250012  # Longitude on F grid
 
 orca.arrangement.t:
-- 212001  # toce FIXME
-- 212002  # soce FIXME
-- 212003  # sigmat FIXME
-- 212004  # sst FIXME
-- 212005  # sss FIXME
-- 212006  # ssh FIXME
-- 212007  # hst FIXME
-- 212008  # hbp FIXME
-- 212009  # empmr FIXME
-- 212010  # runoffs FIXME
-- 212011  # saltflx FIXME
-- 212012  # qt FIXME
-- 212013  # qsr FIXME
-- 212014  # mldr10_1 FIXME
-- 212015  # mldkr125 FIXME
-- 212016  # mldkr03 FIXME
-- 212017  # mldt05 FIXME
-- 212018  # mldt02 FIXME
-- 212019  # ice_cover FIXME
-- 212020  # taum FIXME
-- 212021  # wspd FIXME
-- 212022  # cdn10 FIXME
-- 212023  # qrp FIXME
-- 212024  # erp FIXME
-- 212025  # mldkz5 FIXME
-- 212026  # 14d FIXME
-- 212027  # 17d FIXME
-- 212028  # 20d FIXME
-- 212029  # 26d FIXME
-- 212030  # 28d FIXME
-- 212031  # hc300 FIXME
-- 212032  # sal300 FIXME
-- 212033  # hc700 FIXME
-- 212034  # sal700 FIXME
-- 212035  # hcbtm, salbtm (duplicate paramId) FIXME
-- 212036  # precip FIXME
-- 212037  # uocee FIXME
-- 212038  # vocen FIXME
-- 212039  # uocees FIXME
-- 212040  # vocens FIXME
-- 212041  # utaue FIXME
-- 212042  # vtaun FIXME
-- 212043  # hc26c FIXME
-- 212044  # thetaodmp FIXME
-- 212045  # sodmp FIXME
-- 212211  # icevolu (ice) FIXME
-- 212212  # ice_cover (ice) FIXME
-- 212213  # iceconc_cat (ice) FIXME
-- 212214  # icethic (ice) FIXME
-- 212215  # icethick_cat (ice) FIXME
-- 212216  # snwthic (ice) FIXME
-- 212217  # snwthic_cat (ice) FIXME
-- 212226  # snowpre (ice) FIXME
-- 212227  # icesalt (ice) FIXME
-- 212228  # icetemp (ice) FIXME
-- 212229  # icettop (ice) FIXME
-- 212230  # icesalt_cat (ice) FIXME
-- 250003  # lat_T (coordinate) FIXME
-- 250004  # lon_T (coordinate) FIXME
+- 212001  # FIXME
+- 212002  # FIXME
+- 212003  # FIXME
+- 212004  # FIXME
+- 212005  # FIXME
+- 212006  # FIXME
+- 212007  # FIXME
+- 212008  # FIXME
+- 212009  # FIXME
+- 212010  # FIXME
+- 212011  # FIXME
+- 212012  # FIXME
+- 212013  # FIXME
+- 212014  # FIXME
+- 212015  # FIXME
+- 212016  # FIXME
+- 212017  # FIXME
+- 212018  # FIXME
+- 212019  # FIXME
+- 212020  # FIXME
+- 212021  # FIXME
+- 212022  # FIXME
+- 212023  # FIXME
+- 212024  # FIXME
+- 212025  # FIXME
+- 212026  # FIXME
+- 212027  # FIXME
+- 212028  # FIXME
+- 212029  # FIXME
+- 212030  # FIXME
+- 212031  # FIXME
+- 212032  # FIXME
+- 212033  # FIXME
+- 212034  # FIXME
+- 212035  # FIXME
+- 212036  # FIXME
+- 212037  # FIXME
+- 212038  # FIXME
+- 212039  # FIXME
+- 212040  # FIXME
+- 212041  # FIXME
+- 212042  # FIXME
+- 212043  # FIXME
+- 212044  # FIXME
+- 212045  # FIXME
+- 212211  # FIXME
+- 212212  # FIXME
+- 212213  # FIXME
+- 212214  # FIXME
+- 212215  # FIXME
+- 212216  # FIXME
+- 212217  # FIXME
+- 212226  # FIXME
+- 212227  # FIXME
+- 212228  # FIXME
+- 212229  # FIXME
+- 212230  # FIXME
+- 250003  # Latitude on T grid
+- 250004  # Longitude on T grid
 
 orca.arrangement.u:
-- 212101  # ssu FIXME
-- 212102  # uoce FIXME
-- 212103  # utau FIXME
-- 212218  # uice (ice) FIXME
-- 212220  # iicevelur (ice) FIXME
-- 212222  # utau_ai (ice) FIXME
-- 212224  # iocestrur (ice) FIXME
-- 250005  # lat_U (coordinate) FIXME
-- 250006  # lon_U (coordinate) FIXME
+- 212101  # FIXME
+- 212102  # FIXME
+- 212103  # FIXME
+- 212218  # FIXME
+- 212220  # FIXME
+- 212222  # FIXME
+- 212224  # FIXME
+- 250005  # Latitude on U grid
+- 250006  # Longitude on U grid
 
 orca.arrangement.v:
-- 212151  # ssv FIXME
-- 212152  # voce FIXME
-- 212153  # vtau FIXME
-- 212219  # vice (ice) FIXME
-- 212221  # iicevelvr (ice) FIXME
-- 212223  # vtau_ai (ice) FIXME
-- 212225  # iocestrvr (ice) FIXME
-- 250007  # lat_V (coordinate) FIXME
-- 250008  # lon_V (coordinate) FIXME
+- 212151  # FIXME
+- 212152  # FIXME
+- 212153  # FIXME
+- 212219  # FIXME
+- 212221  # FIXME
+- 212223  # FIXME
+- 212225  # FIXME
+- 250007  # Latitude on V grid
+- 250008  # Longitude on V grid
 
 orca.arrangement.w:
-- 212201  # woce FIXME
-- 212202  # ssw FIXME
-- 250009  # lat_W (coordinate) FIXME
-- 250010  # lon_W (coordinate) FIXME
-
-unknown.experimental:
-- 80  # Experimental product
-- 81  # Experimental product
-- 82  # Experimental product
-- 83  # Experimental product
-- 84  # Experimental product
-- 85  # Experimental product
-- 86  # Experimental product
-- 87  # Experimental product
-- 88  # Experimental product
-- 89  # Experimental product
-- 90  # Experimental product
-- 91  # Experimental product
-- 92  # Experimental product
-- 93  # Experimental product
-- 94  # Experimental product
-- 95  # Experimental product
-- 96  # Experimental product
-- 97  # Experimental product
-- 98  # Experimental product
-- 99  # Experimental product
-- 100  # Experimental product
-- 101  # Experimental product
-- 102  # Experimental product
-- 103  # Experimental product
-- 104  # Experimental product
-- 105  # Experimental product
-- 106  # Experimental product
-- 107  # Experimental product
-- 108  # Experimental product
-- 109  # Experimental product
-- 110  # Experimental product
-- 111  # Experimental product
-- 112  # Experimental product
-- 113  # Experimental product
-- 114  # Experimental product
-- 115  # Experimental product
-- 116  # Experimental product
-- 117  # Experimental product
-- 118  # Experimental product
-- 119  # Experimental product
-- 120  # Experimental product
-- 129080  # Experimental product
-- 129081  # Experimental product
-- 129082  # Experimental product
-- 129083  # Experimental product
-- 129084  # Experimental product
-- 129085  # Experimental product
-- 129086  # Experimental product
-- 129087  # Experimental product
-- 129088  # Experimental product
-- 129089  # Experimental product
-- 129090  # Experimental product
-- 129091  # Experimental product
-- 129092  # Experimental product
-- 129093  # Experimental product
-- 129094  # Experimental product
-- 129095  # Experimental product
-- 129096  # Experimental product
-- 129097  # Experimental product
-- 129098  # Experimental product
-- 129099  # Experimental product
-- 129100  # Experimental product
-- 129101  # Experimental product
-- 129102  # Experimental product
-- 129103  # Experimental product
-- 129104  # Experimental product
-- 129105  # Experimental product
-- 129106  # Experimental product
-- 129107  # Experimental product
-- 129108  # Experimental product
-- 129109  # Experimental product
-- 129110  # Experimental product
-- 129111  # Experimental product
-- 129112  # Experimental product
-- 129113  # Experimental product
-- 129114  # Experimental product
-- 129115  # Experimental product
-- 129116  # Experimental product
-- 129117  # Experimental product
-- 129118  # Experimental product
-- 129119  # Experimental product
-- 129120  # Experimental product
-- 140080  # Wave experimental parameter 1
-- 140081  # Wave experimental parameter 2
-- 140082  # Wave experimental parameter 3
-- 140083  # Wave experimental parameter 4
-- 140084  # Wave experimental parameter 5
-- 200080  # Experimental product
-- 200081  # Experimental product
-- 200082  # Experimental product
-- 200083  # Experimental product
-- 200084  # Experimental product
-- 200085  # Experimental product
-- 200086  # Experimental product
-- 200087  # Experimental product
-- 200088  # Experimental product
-- 200089  # Experimental product
-- 200090  # Experimental product
-- 200091  # Experimental product
-- 200092  # Experimental product
-- 200093  # Experimental product
-- 200094  # Experimental product
-- 200095  # Experimental product
-- 200096  # Experimental product
-- 200097  # Experimental product
-- 200098  # Experimental product
-- 200099  # Experimental product
-- 200100  # Experimental product
-- 200101  # Experimental product
-- 200102  # Experimental product
-- 200103  # Experimental product
-- 200104  # Experimental product
-- 200105  # Experimental product
-- 200106  # Experimental product
-- 200107  # Experimental product
-- 200108  # Experimental product
-- 200109  # Experimental product
-- 200110  # Experimental product
-- 200111  # Experimental product
-- 200112  # Experimental product
-- 200113  # Experimental product
-- 200114  # Experimental product
-- 200115  # Experimental product
-- 200116  # Experimental product
-- 200117  # Experimental product
-- 200118  # Experimental product
-- 200119  # Experimental product
-- 200120  # Experimental product
-- 210055  # Experimental product
-- 210056  # Experimental product
-- 211055  # Experimental product
-- 211056  # Experimental product
-- 212001  # Experimental product
-- 212002  # Experimental product
-- 212003  # Experimental product
-- 212004  # Experimental product
-- 212005  # Experimental product
-- 212006  # Experimental product
-- 212007  # Experimental product
-- 212008  # Experimental product
-- 212009  # Experimental product
-- 212010  # Experimental product
-- 212011  # Experimental product
-- 212012  # Experimental product
-- 212013  # Experimental product
-- 212014  # Experimental product
-- 212015  # Experimental product
-- 212016  # Experimental product
-- 212017  # Experimental product
-- 212018  # Experimental product
-- 212019  # Experimental product
-- 212020  # Experimental product
-- 212021  # Experimental product
-- 212022  # Experimental product
-- 212023  # Experimental product
-- 212024  # Experimental product
-- 212025  # Experimental product
-- 212026  # Experimental product
-- 212027  # Experimental product
-- 212028  # Experimental product
-- 212029  # Experimental product
-- 212030  # Experimental product
-- 212031  # Experimental product
-- 212032  # Experimental product
-- 212033  # Experimental product
-- 212034  # Experimental product
-- 212035  # Experimental product
-- 212036  # Experimental product
-- 212037  # Experimental product
-- 212038  # Experimental product
-- 212039  # Experimental product
-- 212040  # Experimental product
-- 212041  # Experimental product
-- 212042  # Experimental product
-- 212043  # Experimental product
-- 212044  # Experimental product
-- 212045  # Experimental product
-- 212046  # Experimental product
-- 212047  # Experimental product
-- 212048  # Experimental product
-- 212049  # Experimental product
-- 212050  # Experimental product
-- 212051  # Experimental product
-- 212052  # Experimental product
-- 212053  # Experimental product
-- 212054  # Experimental product
-- 212055  # Experimental product
-- 212056  # Experimental product
-- 212057  # Experimental product
-- 212058  # Experimental product
-- 212059  # Experimental product
-- 212060  # Experimental product
-- 212061  # Experimental product
-- 212062  # Experimental product
-- 212063  # Experimental product
-- 212064  # Experimental product
-- 212065  # Experimental product
-- 212066  # Experimental product
-- 212067  # Experimental product
-- 212068  # Experimental product
-- 212069  # Experimental product
-- 212070  # Experimental product
-- 212071  # Experimental product
-- 212072  # Experimental product
-- 212073  # Experimental product
-- 212074  # Experimental product
-- 212075  # Experimental product
-- 212076  # Experimental product
-- 212077  # Experimental product
-- 212078  # Experimental product
-- 212079  # Experimental product
-- 212080  # Experimental product
-- 212081  # Experimental product
-- 212082  # Experimental product
-- 212083  # Experimental product
-- 212084  # Experimental product
-- 212085  # Experimental product
-- 212086  # Experimental product
-- 212087  # Experimental product
-- 212088  # Experimental product
-- 212089  # Experimental product
-- 212090  # Experimental product
-- 212091  # Experimental product
-- 212092  # Experimental product
-- 212093  # Experimental product
-- 212094  # Experimental product
-- 212095  # Experimental product
-- 212096  # Experimental product
-- 212097  # Experimental product
-- 212098  # Experimental product
-- 212099  # Experimental product
-- 212100  # Experimental product
-- 212101  # Experimental product
-- 212102  # Experimental product
-- 212103  # Experimental product
-- 212104  # Experimental product
-- 212105  # Experimental product
-- 212106  # Experimental product
-- 212107  # Experimental product
-- 212108  # Experimental product
-- 212109  # Experimental product
-- 212110  # Experimental product
-- 212111  # Experimental product
-- 212112  # Experimental product
-- 212113  # Experimental product
-- 212114  # Experimental product
-- 212115  # Experimental product
-- 212116  # Experimental product
-- 212117  # Experimental product
-- 212118  # Experimental product
-- 212119  # Experimental product
-- 212120  # Experimental product
-- 212121  # Experimental product
-- 212122  # Experimental product
-- 212123  # Experimental product
-- 212124  # Experimental product
-- 212125  # Experimental product
-- 212126  # Experimental product
-- 212127  # Experimental product
-- 212128  # Experimental product
-- 212129  # Experimental product
-- 212130  # Experimental product
-- 212131  # Experimental product
-- 212132  # Experimental product
-- 212133  # Experimental product
-- 212134  # Experimental product
-- 212135  # Experimental product
-- 212136  # Experimental product
-- 212137  # Experimental product
-- 212138  # Experimental product
-- 212139  # Experimental product
-- 212140  # Experimental product
-- 212141  # Experimental product
-- 212142  # Experimental product
-- 212143  # Experimental product
-- 212144  # Experimental product
-- 212145  # Experimental product
-- 212146  # Experimental product
-- 212147  # Experimental product
-- 212148  # Experimental product
-- 212149  # Experimental product
-- 212150  # Experimental product
-- 212151  # Experimental product
-- 212152  # Experimental product
-- 212153  # Experimental product
-- 212154  # Experimental product
-- 212155  # Experimental product
-- 212156  # Experimental product
-- 212157  # Experimental product
-- 212158  # Experimental product
-- 212159  # Experimental product
-- 212160  # Experimental product
-- 212161  # Experimental product
-- 212162  # Experimental product
-- 212163  # Experimental product
-- 212164  # Experimental product
-- 212165  # Experimental product
-- 212166  # Experimental product
-- 212167  # Experimental product
-- 212168  # Experimental product
-- 212169  # Experimental product
-- 212170  # Experimental product
-- 212171  # Experimental product
-- 212172  # Experimental product
-- 212173  # Experimental product
-- 212174  # Experimental product
-- 212175  # Experimental product
-- 212176  # Experimental product
-- 212177  # Experimental product
-- 212178  # Experimental product
-- 212179  # Experimental product
-- 212180  # Experimental product
-- 212181  # Experimental product
-- 212182  # Experimental product
-- 212183  # Experimental product
-- 212184  # Experimental product
-- 212185  # Experimental product
-- 212186  # Experimental product
-- 212187  # Experimental product
-- 212188  # Experimental product
-- 212189  # Experimental product
-- 212190  # Experimental product
-- 212191  # Experimental product
-- 212192  # Experimental product
-- 212193  # Experimental product
-- 212194  # Experimental product
-- 212195  # Experimental product
-- 212196  # Experimental product
-- 212197  # Experimental product
-- 212198  # Experimental product
-- 212199  # Experimental product
-- 212200  # Experimental product
-- 212201  # Experimental product
-- 212202  # Experimental product
-- 212203  # Experimental product
-- 212204  # Experimental product
-- 212205  # Experimental product
-- 212206  # Experimental product
-- 212207  # Experimental product
-- 212208  # Experimental product
-- 212209  # Experimental product
-- 212210  # Experimental product
-- 212211  # Experimental product
-- 212212  # Experimental product
-- 212213  # Experimental product
-- 212214  # Experimental product
-- 212215  # Experimental product
-- 212216  # Experimental product
-- 212217  # Experimental product
-- 212218  # Experimental product
-- 212219  # Experimental product
-- 212220  # Experimental product
-- 212221  # Experimental product
-- 212222  # Experimental product
-- 212223  # Experimental product
-- 212224  # Experimental product
-- 212225  # Experimental product
-- 212226  # Experimental product
-- 212227  # Experimental product
-- 212228  # Experimental product
-- 212229  # Experimental product
-- 212230  # Experimental product
-- 212231  # Experimental product
-- 212232  # Experimental product
-- 212233  # Experimental product
-- 212234  # Experimental product
-- 212235  # Experimental product
-- 212236  # Experimental product
-- 212237  # Experimental product
-- 212238  # Experimental product
-- 212239  # Experimental product
-- 212240  # Experimental product
-- 212241  # Experimental product
-- 212242  # Experimental product
-- 212243  # Experimental product
-- 212244  # Experimental product
-- 212245  # Experimental product
-- 212246  # Experimental product
-- 212247  # Experimental product
-- 212248  # Experimental product
-- 212249  # Experimental product
-- 212250  # Experimental product
-- 212251  # Experimental product
-- 212252  # Experimental product
-- 212253  # Experimental product
-- 212254  # Experimental product
-- 212255  # Experimental product
-- 216001  # Experimental product
-- 216002  # Experimental product
-- 216003  # Experimental product
-- 216004  # Experimental product
-- 216005  # Experimental product
-- 216006  # Experimental product
-- 216007  # Experimental product
-- 216008  # Experimental product
-- 216009  # Experimental product
-- 216010  # Experimental product
-- 216011  # Experimental product
-- 216012  # Experimental product
-- 216013  # Experimental product
-- 216014  # Experimental product
-- 216015  # Experimental product
-- 216016  # Experimental product
-- 216017  # Experimental product
-- 216018  # Experimental product
-- 216019  # Experimental product
-- 216020  # Experimental product
-- 216021  # Experimental product
-- 216022  # Experimental product
-- 216023  # Experimental product
-- 216024  # Experimental product
-- 216025  # Experimental product
-- 216026  # Experimental product
-- 216027  # Experimental product
-- 216028  # Experimental product
-- 216029  # Experimental product
-- 216030  # Experimental product
-- 216031  # Experimental product
-- 216032  # Experimental product
-- 216033  # Experimental product
-- 216034  # Experimental product
-- 216035  # Experimental product
-- 216036  # Experimental product
-- 216037  # Experimental product
-- 216038  # Experimental product
-- 216039  # Experimental product
-- 216040  # Experimental product
-- 216041  # Experimental product
-- 216042  # Experimental product
-- 216043  # Experimental product
-- 216044  # Experimental product
-- 216045  # Experimental product
-- 216046  # Experimental product
-- 216047  # Experimental product
-- 216048  # Experimental product
-- 216049  # Experimental product
-- 216050  # Experimental product
-- 216051  # Experimental product
-- 216052  # Experimental product
-- 216053  # Experimental product
-- 216054  # Experimental product
-- 216055  # Experimental product
-- 216056  # Experimental product
-- 216057  # Experimental product
-- 216058  # Experimental product
-- 216059  # Experimental product
-- 216060  # Experimental product
-- 216061  # Experimental product
-- 216062  # Experimental product
-- 216063  # Experimental product
-- 216064  # Experimental product
-- 216065  # Experimental product
-- 216066  # Experimental product
-- 216067  # Experimental product
-- 216068  # Experimental product
-- 216069  # Experimental product
-- 216070  # Experimental product
-- 216071  # Experimental product
-- 216072  # Experimental product
-- 216073  # Experimental product
-- 216074  # Experimental product
-- 216075  # Experimental product
-- 216076  # Experimental product
-- 216077  # Experimental product
-- 216078  # Experimental product
-- 216079  # Experimental product
-- 216080  # Experimental product
-- 216081  # Experimental product
-- 216082  # Experimental product
-- 216083  # Experimental product
-- 216084  # Experimental product
-- 216085  # Experimental product
-- 216086  # Experimental product
-- 216087  # Experimental product
-- 216088  # Experimental product
-- 216089  # Experimental product
-- 216090  # Experimental product
-- 216091  # Experimental product
-- 216092  # Experimental product
-- 216093  # Experimental product
-- 216094  # Experimental product
-- 216095  # Experimental product
-- 216096  # Experimental product
-- 216097  # Experimental product
-- 216098  # Experimental product
-- 216099  # Experimental product
-- 216100  # Experimental product
-- 216101  # Experimental product
-- 216102  # Experimental product
-- 216103  # Experimental product
-- 216104  # Experimental product
-- 216105  # Experimental product
-- 216106  # Experimental product
-- 216107  # Experimental product
-- 216108  # Experimental product
-- 216109  # Experimental product
-- 216110  # Experimental product
-- 216111  # Experimental product
-- 216112  # Experimental product
-- 216113  # Experimental product
-- 216114  # Experimental product
-- 216115  # Experimental product
-- 216116  # Experimental product
-- 216117  # Experimental product
-- 216118  # Experimental product
-- 216119  # Experimental product
-- 216120  # Experimental product
-- 216121  # Experimental product
-- 216122  # Experimental product
-- 216123  # Experimental product
-- 216124  # Experimental product
-- 216125  # Experimental product
-- 216126  # Experimental product
-- 216127  # Experimental product
-- 216128  # Experimental product
-- 216129  # Experimental product
-- 216130  # Experimental product
-- 216131  # Experimental product
-- 216132  # Experimental product
-- 216133  # Experimental product
-- 216134  # Experimental product
-- 216135  # Experimental product
-- 216136  # Experimental product
-- 216137  # Experimental product
-- 216138  # Experimental product
-- 216139  # Experimental product
-- 216140  # Experimental product
-- 216141  # Experimental product
-- 216142  # Experimental product
-- 216143  # Experimental product
-- 216144  # Experimental product
-- 216145  # Experimental product
-- 216146  # Experimental product
-- 216147  # Experimental product
-- 216148  # Experimental product
-- 216149  # Experimental product
-- 216150  # Experimental product
-- 216151  # Experimental product
-- 216152  # Experimental product
-- 216153  # Experimental product
-- 216154  # Experimental product
-- 216155  # Experimental product
-- 216156  # Experimental product
-- 216157  # Experimental product
-- 216158  # Experimental product
-- 216159  # Experimental product
-- 216160  # Experimental product
-- 216161  # Experimental product
-- 216162  # Experimental product
-- 216163  # Experimental product
-- 216164  # Experimental product
-- 216165  # Experimental product
-- 216166  # Experimental product
-- 216167  # Experimental product
-- 216168  # Experimental product
-- 216169  # Experimental product
-- 216170  # Experimental product
-- 216171  # Experimental product
-- 216172  # Experimental product
-- 216173  # Experimental product
-- 216174  # Experimental product
-- 216175  # Experimental product
-- 216176  # Experimental product
-- 216177  # Experimental product
-- 216178  # Experimental product
-- 216179  # Experimental product
-- 216180  # Experimental product
-- 216181  # Experimental product
-- 216182  # Experimental product
-- 216183  # Experimental product
-- 216184  # Experimental product
-- 216185  # Experimental product
-- 216186  # Experimental product
-- 216187  # Experimental product
-- 216188  # Experimental product
-- 216189  # Experimental product
-- 216190  # Experimental product
-- 216191  # Experimental product
-- 216192  # Experimental product
-- 216193  # Experimental product
-- 216194  # Experimental product
-- 216195  # Experimental product
-- 216196  # Experimental product
-- 216197  # Experimental product
-- 216198  # Experimental product
-- 216199  # Experimental product
-- 216200  # Experimental product
-- 216201  # Experimental product
-- 216202  # Experimental product
-- 216203  # Experimental product
-- 216204  # Experimental product
-- 216205  # Experimental product
-- 216206  # Experimental product
-- 216207  # Experimental product
-- 216208  # Experimental product
-- 216209  # Experimental product
-- 216210  # Experimental product
-- 216211  # Experimental product
-- 216212  # Experimental product
-- 216213  # Experimental product
-- 216214  # Experimental product
-- 216215  # Experimental product
-- 216216  # Experimental product
-- 216217  # Experimental product
-- 216218  # Experimental product
-- 216219  # Experimental product
-- 216220  # Experimental product
-- 216221  # Experimental product
-- 216222  # Experimental product
-- 216223  # Experimental product
-- 216224  # Experimental product
-- 216225  # Experimental product
-- 216226  # Experimental product
-- 216227  # Experimental product
-- 216228  # Experimental product
-- 216229  # Experimental product
-- 216230  # Experimental product
-- 216231  # Experimental product
-- 216232  # Experimental product
-- 216233  # Experimental product
-- 216234  # Experimental product
-- 216235  # Experimental product
-- 216236  # Experimental product
-- 216237  # Experimental product
-- 216238  # Experimental product
-- 216239  # Experimental product
-- 216240  # Experimental product
-- 216241  # Experimental product
-- 216242  # Experimental product
-- 216243  # Experimental product
-- 216244  # Experimental product
-- 216245  # Experimental product
-- 216246  # Experimental product
-- 216247  # Experimental product
-- 216248  # Experimental product
-- 216249  # Experimental product
-- 216250  # Experimental product
-- 216251  # Experimental product
-- 216252  # Experimental product
-- 216253  # Experimental product
-- 216254  # Experimental product
-- 216255  # Experimental product
-
-unknown.missing:
-- 255  # Indicates a missing value
-- 129255  # Indicates a missing value
-- 131255  # Indicates a missing value
-- 140255  # Indicates a missing value
-- 150255  # Indicates a missing value
-- 151255  # Indicates a missing value
-- 162255  # Indicates a missing value
-- 171255  # Indicates a missing value
-- 172255  # Indicates a missing value
-- 173255  # Indicates a missing value
-- 174255  # Indicates a missing value
-- 175255  # Indicates a missing value
-- 200255  # Indicates a missing value
-- 201255  # Indicates a missing value
+- 212201  # FIXME
+- 212202  # FIXME
+- 250009  # Latitude on W grid
+- 250010  # Longitude on W grid
 
 unknown.reserved:
 - 24  # Reserved for future unbalanced components
@@ -6349,17 +5742,4 @@ unknown.reserved:
 - 151193  # Reserved
 - 200024  # Reserved for future unbalanced components
 - 200025  # Reserved for future unbalanced components
-
-unknown.to-classify-from-dgov:
-- 228070  # SMOS observed soil moisture retrieved using neural network
-- 228071  # SMOS observed soil moisture uncertainty retrieved using neural network
-- 228072  # SMOS radio frequency interference probability
-- 228073  # SMOS number of observations per grid point
-- 228074  # SMOS observation time for the satellite soil moisture data
-- 260318  # Precipitation type (most severe) in the last 1 hour
-- 260319  # Precipitation type (most severe) in the last 3 hours
-- 260320  # Precipitation type (most frequent) in the last 1 hour
-- 260321  # Precipitation type (most frequent) in the last 3 hours
-- 260338  # Precipitation type (most severe) in the last 6 hours
-- 260339  # Precipitation type (most frequent) in the last 6 hours
 

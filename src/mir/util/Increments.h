@@ -18,6 +18,10 @@
 #include "mir/util/LongitudeIncrement.h"
 
 
+namespace eckit {
+class JSON;
+}  // namespace eckit
+
 struct grib_info;
 namespace mir {
 namespace param {
@@ -101,6 +105,7 @@ protected:
     // -- Methods
 
     void print(std::ostream&) const;
+    void json(eckit::JSON&) const;
 
     // -- Overridden methods
     // None
@@ -133,6 +138,11 @@ private:
 
     friend std::ostream& operator<<(std::ostream& s, const Increments& p) {
         p.print(s);
+        return s;
+    }
+
+    friend eckit::JSON& operator<<(eckit::JSON& s, const Increments& p) {
+        p.json(s);
         return s;
     }
 };

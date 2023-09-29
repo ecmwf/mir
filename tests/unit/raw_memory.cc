@@ -15,6 +15,7 @@
 #include <sstream>
 #include <vector>
 
+#include "eckit/system/Library.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/api/MIRJob.h"
@@ -108,6 +109,31 @@ CASE("RawInput") {
 
         auto field = input->field();
         log << field << std::endl;
+    }
+
+
+    // (plugins are optional)
+    if (eckit::system::Library::exists("atlas-orca")) {
+        SECTION("grid=ORCA2_T") {
+            // metadata
+            param::SimpleParametrisation meta;
+
+            meta.set("gridded", true);
+            meta.set("gridType", "orca");
+            meta.set("uid", "d5bde4f52ff3a9bea5629cd9ac514410");
+
+
+            // data
+            std::vector<double> values(27118, 0.);  // 182 * 149
+            std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
+
+
+            // access a field (in the post-processing context)
+            log << *input << std::endl;
+
+            auto field = input->field();
+            log << field << std::endl;
+        }
     }
 }
 

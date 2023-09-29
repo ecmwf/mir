@@ -28,6 +28,7 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/GridBox.h"
 #include "mir/util/Log.h"
+#include "mir/util/Point2ToPoint3.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
@@ -95,6 +96,8 @@ void GridBoxMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, c
     const GridBoxes outBoxes(out);
     const auto R = inBoxes.getLongestGridBoxDiagonal() + outBoxes.getLongestGridBoxDiagonal();
 
+    util::Point2ToPoint3 point3(in, poleDisplacement());
+
     size_t nbFailures           = 0;
     using failed_intersection_t = std::pair<size_t, PointLatLon>;
     std::forward_list<failed_intersection_t> failures;
@@ -117,7 +120,7 @@ void GridBoxMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, c
 
 
             // lookup
-            tree->closestWithinRadius(it->point3D(), R, closest);
+            tree->closestWithinRadius(point3(*(*it)), R, closest);
             ASSERT(!closest.empty());
 
 

@@ -36,10 +36,16 @@ vector-space.1d-angle-radian-symmetric:
 # Vector in 2D Cartesian space, X component
 vector-space.2d-vector-u:
     vector-space: 2d-vector-u
+    pole-displacement-in-degree: 1e-6
 
 # Vector in 2D Cartesian space, Y component
 vector-space.2d-vector-v:
     vector-space: 2d-vector-v
+    pole-displacement-in-degree: 1e-6
+
+# Vector in 2D Cartesian space, associated parameters
+vector-space.2d-vector.associated:
+    pole-displacement-in-degree: 1e-6
 
 # Vector in 3D Cartesian space, X component
 vector-space.3d-vector-u:
@@ -167,15 +173,6 @@ orca.arrangement.v:
 orca.arrangement.w:
     orca-arrangement: W
 
-unknown.experimental:
-    _warning: true
-
-unknown.missing:
-    _warning: true
-
 unknown.reserved:
-    _warning: true
-
-unknown.to-classify-from-dgov:
     _warning: true
 

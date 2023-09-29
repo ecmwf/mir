@@ -88,6 +88,8 @@ protected:
     bool includesNorthPole() const override;
     bool includesSouthPole() const override;
 
+    void json(eckit::JSON&) const override;
+
     // -- Class members
     // None
 

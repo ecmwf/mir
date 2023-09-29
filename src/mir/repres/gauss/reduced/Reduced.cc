@@ -20,6 +20,7 @@
 #include <set>
 #include <utility>
 
+#include "eckit/log/JSON.h"
 #include "eckit/types/Fraction.h"
 
 #include "mir/api/MIREstimation.h"
@@ -537,6 +538,16 @@ bool Reduced::isPeriodicWestEast() const {
 
 std::string Reduced::factory() const {
     return "reduced_gg";
+}
+
+
+void Reduced::json(eckit::JSON& s) const {
+    s.startObject();
+    s << "type"
+      << "reduced_gg";
+    s << "pl" << pls();
+    Gaussian::json(s);
+    s.endObject();
 }
 
 

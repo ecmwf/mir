@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <ostream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -196,5 +197,13 @@ void BoundingBox::makeName(std::ostream& out) const {
     out << "-" << north_ << ":" << west_ << ":" << south_ << ":" << east_;
 }
 
+void BoundingBox::json(eckit::JSON& json) const {
+    json.startObject();
+    json << "north" << north_.value();
+    json << "west" << west_.value();
+    json << "south" << south_.value();
+    json << "east" << east_.value();
+    json.endObject();
+}
 
 }  // namespace mir::util

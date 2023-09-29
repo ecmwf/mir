@@ -51,10 +51,7 @@ Packing::Packing(const std::string& name, const param::MIRParametrisation& param
     packing_ = name;
     std::string packing;
 
-    bool gridded = false;
-    field.get("gridded", gridded);
-
-    definePacking_                   = !field.get("packing", packing) || packing_ != packing || gridded_ != gridded;
+    definePacking_ = !field.get("packing", packing) || packing_ != packing || gridded_ != field.has("gridded");
     defineBitsPerValueBeforePacking_ = definePacking_ && packing == "ieee";
 
     defineBitsPerValue_ = false;

@@ -1,0 +1,11 @@
+# mars
+gridType=reduced_gg,gridName=O8,shortName=q.grib2
+# mir
+--grid=H36  --interpolation=grid-box-average --packing=ccsds
+# grib_get assertions
+gridType=healpix
+gridName=H36
+Nside=36
+numberOfDataPoints=15552
+packingType=grid_ccsds
+longitudeOfFirstGridPointInDegrees=45

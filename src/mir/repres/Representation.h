@@ -17,15 +17,18 @@
 
 #include "eckit/memory/Counted.h"
 
-#include "mir/util/AreaCropperMapping.h"
+#include "mir/util/IndexMapping.h"
 #include "mir/util/Types.h"
 
 
 struct grib_info;
 
-
 namespace atlas {
 class Grid;
+}
+
+namespace eckit {
+class JSON;
 }
 
 namespace mir {
@@ -96,7 +99,7 @@ public:
     virtual const Representation* croppedRepresentation(const util::BoundingBox&) const;
     virtual util::BoundingBox extendBoundingBox(const util::BoundingBox&) const;
     virtual bool extendBoundingBoxOnIntersect() const;
-    virtual bool crop(util::BoundingBox&, util::AreaCropperMapping&) const;
+    virtual bool crop(util::BoundingBox&, util::IndexMapping&) const;
 
     virtual size_t frame(MIRValuesVector&, size_t size, double missingValue, bool estimate = false) const;
 
@@ -110,10 +113,13 @@ public:
 
     virtual atlas::Grid atlasGrid() const;
 
+    // Domain operations
     virtual util::Domain domain() const;
     virtual const util::BoundingBox& boundingBox() const;
-
     virtual bool isGlobal() const;
+    virtual bool isPeriodicWestEast() const;
+    virtual bool includesNorthPole() const;
+    virtual bool includesSouthPole() const;
 
     virtual size_t truncation() const;
 
@@ -144,13 +150,9 @@ protected:
 
     // -- Methods
 
+    virtual void json(eckit::JSON&) const;
     virtual void print(std::ostream&) const = 0;
     virtual void makeName(std::ostream&) const;
-
-    // Domain operations
-    virtual bool isPeriodicWestEast() const;
-    virtual bool includesNorthPole() const;
-    virtual bool includesSouthPole() const;
 
     // -- Overridden methods
     // None
@@ -182,6 +184,11 @@ private:
 
     friend std::ostream& operator<<(std::ostream& s, const Representation& p) {
         p.print(s);
+        return s;
+    }
+
+    friend eckit::JSON& operator<<(eckit::JSON& s, const Representation& p) {
+        p.json(s);
         return s;
     }
 };

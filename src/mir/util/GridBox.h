@@ -26,6 +26,7 @@ public:
     // -- Constructors
 
     GridBox(double north, double west, double south, double east);
+    GridBox() = default;
 
     // -- Destructor
     // None

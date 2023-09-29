@@ -131,6 +131,9 @@ struct MIR : MIRTool {
             "finite-element-projection-fail", "FE method failed projection handling (default missing-value)"));
 #endif
 
+        options_.push_back(new SimpleOption<double>("pole-displacement-in-degree",
+                                                    "Infinitesimal displacement at the poles [degree] (default 0.)"));
+
         options_.push_back(new FactoryOption<method::nonlinear::NonLinearFactory>(
             "non-linear",
             "Non-linear treatment on the interpolation linear system (such as the handling of missing values)"));
@@ -232,7 +235,8 @@ struct MIR : MIRTool {
 
         //==============================================
         options_.push_back(new Separator("Filtering"));
-        options_.push_back(new FactoryOption<key::Area>("area", "cropping area"));
+        options_.push_back(new FactoryOption<key::Area>("area", "area cropping/masking"));
+        options_.push_back(new FactoryOption<key::Area::Mode>("area-mode", "area cropping/masking mode"));
         options_.push_back(new SimpleOption<eckit::PathName>("bitmap", "Bitmap file to apply"));
         options_.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
         options_.push_back(new FactoryOption<stats::DistributionFactory>(
@@ -343,6 +347,7 @@ struct MIR : MIRTool {
         options_.push_back(new FactoryOption<action::Executor>("executor", "Select whether threads are used or not"));
         options_.push_back(new SimpleOption<std::string>("plan", "String containing a plan definition"));
         options_.push_back(new SimpleOption<eckit::PathName>("plan-script", "File containing a plan definition"));
+        options_.push_back(new SimpleOption<eckit::PathName>("dump-weights-info", "Dump weights information to file"));
 
         //==============================================
         options_.push_back(new Separator("Caching"));

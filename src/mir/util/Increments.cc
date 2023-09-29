@@ -14,6 +14,7 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/types/Fraction.h"
 
 #include "mir/api/MIRJob.h"
@@ -123,6 +124,13 @@ bool Increments::isLongitudeShifted(const PointLatLon& p) const {
 void Increments::print(std::ostream& out) const {
     out << "Increments["
         << "west_east=" << west_east_.longitude() << ",south_north=" << south_north_.latitude() << "]";
+}
+
+void Increments::json(eckit::JSON& json) const {
+    json.startObject();
+    json << "west_east" << west_east_.longitude().value();
+    json << "south_north" << south_north_.latitude().value();
+    json.endObject();
 }
 
 

@@ -61,6 +61,7 @@ private:
 
     Iterator* iterator() const override;
     void print(std::ostream&) const override;
+    void json(eckit::JSON&) const override;
 
     atlas::Grid atlasGrid() const override;
 

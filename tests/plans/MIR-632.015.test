@@ -1,0 +1,6 @@
+# mars
+gridType=healpix,N=36.grib2
+# mir
+--interpolation=grid-box-average  --grid=F8
+# plan
+Gridded2NamedGrid[grid=F8,interpolation=grid-box-average,method=GridBoxMethod[name=grid-box,nonLinear[MissingIfHeaviestMissing[]],Solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0]]|Save[output=...]

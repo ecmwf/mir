@@ -1,0 +1,10 @@
+# mars
+ORCA.grib2
+# mir
+--grid=H2
+# grib_get assertions
+gridType=healpix
+gridName=H2
+Nside=2
+numberOfDataPoints=48
+longitudeOfFirstGridPointInDegrees=45

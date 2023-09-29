@@ -32,7 +32,10 @@ namespace mir::key {
 class Area {
 public:
     // -- Types
-    // None
+
+    struct Mode {
+        static void list(std::ostream&);
+    };
 
     // -- Constructors
 
@@ -53,6 +56,7 @@ public:
     // -- Methods
 
     static bool get(const param::MIRParametrisation&, util::BoundingBox&);
+    static std::string action(const param::MIRParametrisation&);
     static bool match(const std::string&, util::BoundingBox&);
     static void list(std::ostream&);
 

@@ -25,6 +25,7 @@
 #include "mir/search/PointSearch.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Point2ToPoint3.h"
 #include "mir/util/Trace.h"
 
 
@@ -68,6 +69,8 @@ void VoronoiMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, c
     }
 
 
+    util::Point2ToPoint3 point3(in, poleDisplacement());
+
     auto Nin  = in.numberOfPoints();
     auto Nout = out.numberOfPoints();
 
@@ -86,7 +89,8 @@ void VoronoiMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, c
                 log << *tree << std::endl;
             }
 
-            pick_.pick(*tree, it->point3D(), closest);
+            // lookup
+            pick_.pick(*tree, point3(*(*it)), closest);
             for (auto& c : closest) {
                 auto i = c.payload();
                 biplets.emplace(i, it->index());
@@ -121,7 +125,8 @@ void VoronoiMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, c
                     log << *tree << std::endl;
                 }
 
-                pick_.pick(*tree, it->point3D(), closest);
+                // lookup
+                pick_.pick(*tree, point3(*(*it)), closest);
                 for (auto& c : closest) {
                     auto j = c.payload();
                     biplets.emplace(i, j);  // won't insert biplet if existing

@@ -16,6 +16,9 @@
 
 #include "mir/util/Types.h"
 
+namespace eckit {
+class JSON;
+}
 
 struct grib_info;
 namespace eckit {
@@ -111,6 +114,7 @@ protected:
     // -- Methods
 
     virtual void print(std::ostream&) const;
+    virtual void json(eckit::JSON&) const;
 
     // -- Overridden methods
     // None
@@ -148,6 +152,11 @@ private:
 
     friend std::ostream& operator<<(std::ostream& s, const BoundingBox& p) {
         p.print(s);
+        return s;
+    }
+
+    friend eckit::JSON& operator<<(eckit::JSON& s, const BoundingBox& p) {
+        p.json(s);
         return s;
     }
 };

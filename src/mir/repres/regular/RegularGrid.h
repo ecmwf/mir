@@ -104,7 +104,7 @@ protected:
     void print(std::ostream&) const override;
 
     bool extendBoundingBoxOnIntersect() const override;
-    bool crop(util::BoundingBox&, util::AreaCropperMapping&) const override;
+    bool crop(util::BoundingBox&, util::IndexMapping&) const override;
 
     ::atlas::Grid atlasGrid() const override;
     size_t numberOfPoints() const override;

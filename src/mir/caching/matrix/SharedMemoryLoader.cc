@@ -24,7 +24,10 @@
 
 #include <cerrno>
 #include <cstring>
+#include <ios>
 #include <sstream>
+#include <string>
+#include <vector>
 
 // #include "eckit/config/Resource.h"
 #include "eckit/maths/Functions.h"
@@ -33,6 +36,7 @@
 // #include "eckit/os/SemLocker.h"
 #include "eckit/runtime/Main.h"
 
+#include "mir/caching/SharedMemoryKey.h"
 #include "mir/method/WeightMatrix.h"
 #include "mir/util/Error.h"
 #include "mir/util/Exceptions.h"
@@ -96,14 +100,8 @@ public:
 class GlobalSemaphore {
 public:
     GlobalSemaphore(eckit::PathName path) : path_(path) {
-
         Log::debug() << "Semaphore for " << path << std::endl;
-
-        key_t key = ::ftok(path.asString().c_str(), 1);
-        if (key == key_t(-1)) {
-            throw exception::FailedSystemCall("ftok(" + path.asString() + ")");
-        }
-        SYSCALL(semaphore_ = ::semget(key, 1, IPC_CREAT | 0600));
+        SYSCALL(semaphore_ = ::semget(shared_memory_key(path), 1, IPC_CREAT | 0600));
     }
 
     eckit::PathName path_;
@@ -135,12 +133,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
     //    GlobalSemaphore gsem(real.dirName());
     //    static const int max_wait_lock = eckit::Resource<int>("$MIR_SEMLOCK_RETRIES", 60);
     //    eckit::SemLocker locker(gsem.semaphore_, gsem.path_, max_wait_lock);
-
-    key_t key = ::ftok(real.asString().c_str(), 1);
-    if (key == key_t(-1)) {
-        Log::warning() << msg.str() << "::ftok(" << real.asString() << "), " << util::Error();
-        throw exception::FailedSystemCall(msg.str());
-    }
+    const auto key = shared_memory_key(real);
 
     // NOTE: size is based on file.size() which is assumed to be bigger than the memory footprint. Real size would be:
     // size_t sz = sizeof(SHMInfo) + w.footprint();
@@ -221,7 +214,6 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
             }
         }
         else {
-
             method::WeightMatrix w(path);
             w.dump(addr + sizeof(SHMInfo), size());
 
@@ -268,13 +260,7 @@ void SharedMemoryLoader::loadSharedMemory(const eckit::PathName& path) {
 void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
     Log::debug() << "SharedMemoryLoader: unloading '" << path << "'" << std::endl;
 
-    eckit::PathName real = path.realName();
-
-    key_t key = ::ftok(real.asString().c_str(), 1);
-    if (key == key_t(-1)) {
-        Log::warning() << "SharedMemoryLoader: ::ftok(" << real.asString() << ")" << std::endl;
-        throw exception::FailedSystemCall("SharedMemoryLoader: ::ftok");
-    }
+    const auto key = shared_memory_key(path.realName());
 
     int shmid = eckit::Shmget::shmget(key, 0, 0600);
     if (shmid < 0) {

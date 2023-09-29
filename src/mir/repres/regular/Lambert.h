@@ -53,8 +53,11 @@ public:
 private:
     // -- Members
 
+    double latitudeOfSouthernPoleInDegrees_;
+    double longitudeOfSouthernPoleInDegrees_;
     bool writeLaDInDegrees_;
     bool writeLonPositive_;
+    bool uvRelativeToGrid_;
 
     // -- Methods
 

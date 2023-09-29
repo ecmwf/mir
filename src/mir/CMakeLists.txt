@@ -1,3 +1,16 @@
+### system headers
+
+include(CheckCSourceCompiles)
+
+check_c_source_compiles("
+#include <sys/stat.h>
+int main() {
+    struct stat s;
+    s.st_ctimespec;
+    return 0;
+}"
+HAS_SYS_STAT_ST_CTIMESPEC)
+
 ### config headers
 
 ecbuild_generate_config_headers(DESTINATION ${INSTALL_INCLUDE_DIR}/mir)
@@ -16,6 +29,12 @@ list(APPEND mir_srcs
 
     ${CMAKE_CURRENT_BINARY_DIR}/api/mir_version.cc
 
+    action/area/Area.cc
+    action/area/Area.h
+    action/area/AreaCropper.cc
+    action/area/AreaCropper.h
+    action/area/AreaMasker.cc
+    action/area/AreaMasker.h
     action/calc/FormulaAction.cc
     action/calc/FormulaAction.h
     action/context/Context.cc
@@ -92,8 +111,6 @@ list(APPEND mir_srcs
     action/io/Save.h
     action/io/Set.cc
     action/io/Set.h
-    action/misc/AreaCropper.cc
-    action/misc/AreaCropper.h
     action/misc/CheckerBoard.cc
     action/misc/CheckerBoard.h
     action/misc/Noop.cc
@@ -129,8 +146,12 @@ list(APPEND mir_srcs
     api/MIRJob.h
     api/MIRWatcher.cc
     api/MIRWatcher.h
-    caching/CroppingCache.cc
-    caching/CroppingCache.h
+    caching/AreaCacheEntry.cc
+    caching/AreaCacheEntry.h
+    caching/AreaCropperCache.cc
+    caching/AreaCropperCache.h
+    caching/AreaMaskerCache.cc
+    caching/AreaMaskerCache.h
     caching/InMemoryCache.cc
     caching/InMemoryCache.h
     caching/InMemoryCacheBase.cc
@@ -141,6 +162,8 @@ list(APPEND mir_srcs
     caching/InMemoryCacheUsage.h
     caching/MeshCache.cc
     caching/MeshCache.h
+    caching/SharedMemoryKey.cc
+    caching/SharedMemoryKey.h
     caching/WeightCache.cc
     caching/WeightCache.h
     caching/legendre/LegendreLoader.cc
@@ -613,7 +636,6 @@ list(APPEND mir_srcs
     tools/MIRTool.cc
     tools/MIRTool.h
     util/Angles.h
-    util/AreaCropperMapping.h
     util/Atlas.h
     util/Bitmap.cc
     util/Bitmap.h
@@ -652,6 +674,7 @@ list(APPEND mir_srcs
     util/GridBox.h
     util/Increments.cc
     util/Increments.h
+    util/IndexMapping.h
     util/Latitude.cc
     util/Latitude.h
     util/LatitudeIncrement.h
@@ -669,6 +692,8 @@ list(APPEND mir_srcs
     util/Mutex.h
     util/PlanParser.cc
     util/PlanParser.h
+    util/Point2ToPoint3.cc
+    util/Point2ToPoint3.h
     util/PointLatLonT.h
     util/Regex.cc
     util/Regex.h
@@ -745,6 +770,10 @@ if(mir_HAVE_ATLAS)
         caching/legendre/NoLoader.h
         caching/legendre/SharedMemoryLoader.cc
         caching/legendre/SharedMemoryLoader.h
+        key/grid/NamedHEALPix.cc
+        key/grid/NamedHEALPix.h
+        key/grid/HEALPixPattern.cc
+        key/grid/HEALPixPattern.h
         key/grid/NamedORCA.cc
         key/grid/NamedORCA.h
         key/grid/ORCAPattern.cc
@@ -771,8 +800,12 @@ if(mir_HAVE_ATLAS)
         method/structured/StructuredMethod.h
         output/GmshOutput.cc
         output/GmshOutput.h
-        repres/other/ORCA.cc
-        repres/other/ORCA.h
+        repres/proxy/ProxyGrid.h
+        repres/proxy/ProxyGrid.cc
+        repres/proxy/ORCA.h
+        repres/proxy/ORCA.cc
+        repres/proxy/HEALPix.h
+        repres/proxy/HEALPix.cc
         stats/statistics/Integral.cc
         stats/statistics/Integral.h)
 else()
@@ -935,5 +968,12 @@ if(mir_HAVE_NETCDF)
 endif()
 if(mir_HAVE_PNG)
     target_link_libraries(mir PRIVATE PNG::PNG)
+endif()
+
+if (HAS_SYS_STAT_ST_CTIMESPEC)
+    set_source_files_properties(
+        caching/SharedMemoryKey.cc
+        PROPERTIES
+        COMPILE_DEFINITIONS HAS_SYS_STAT_ST_CTIMESPEC)
 endif()
 

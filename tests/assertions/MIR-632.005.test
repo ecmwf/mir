@@ -1,0 +1,10 @@
+# mars
+gridType=healpix,N=36.grib2
+# mir
+--interpolation=grid-box-average  --grid=H36
+# grib_get assertions
+gridType=healpix
+gridName=H36
+Nside=36
+numberOfDataPoints=15552
+longitudeOfFirstGridPointInDegrees=45

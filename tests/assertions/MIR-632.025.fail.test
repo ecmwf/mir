@@ -1,0 +1,11 @@
+# mars
+param=vo_d,level=1,levtype=ml,resol=20.grib2
+# mir
+--grid=H36 --intgrid=none --vod2uv
+# grib_get assertions
+gridType=healpix
+gridName=H36
+Nside=36
+numberOfDataPoints=15552
+shortName=u
+longitudeOfFirstGridPointInDegrees=45
