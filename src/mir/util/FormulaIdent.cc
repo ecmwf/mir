@@ -53,7 +53,7 @@ void FormulaIdent::execute(context::Context& ctx) const {
 
     if (name_ != "f") {
         std::ostringstream oss;
-        oss << "Only variables 'f', 'f1' (same as 'f'), 'f2', 'f3'... are supported (" << name_ << ")";
+        oss << "Only variables 'f'/'f1', 'f2', ... are supported (" << name_ << ")";
         throw exception::UserError(oss.str());
     }
 
