@@ -1,3 +1,6 @@
+---
+# yamllint disable rule:line-length
+
 air_pressure_at_sea_level:
   paramId: 151
 air_temperature:

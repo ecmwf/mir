@@ -1,4 +1,5 @@
 ---
+# yamllint disable rule:line-length
 
 # quaver/verify etc/domains.yaml with minor modifications
 # area: [North, West, South, East]
@@ -248,4 +249,3 @@ w-europe: [58., -7.5, 43., 9.]
 
 # Western USA
 western-usa: [50., -130., 30., -110.]
-
