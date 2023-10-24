@@ -1,4 +1,5 @@
 ---
+# yamllint disable rule:line-length
 
 # default
 _default:
@@ -175,4 +176,3 @@ orca.arrangement.w:
 
 unknown.reserved:
     _warning: true
-

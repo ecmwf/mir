@@ -11,7 +11,7 @@
 
 
 #include <memory>
-#include <sstream>
+#include <regex>
 #include <vector>
 
 #include "eckit/option/CmdArgs.h"
@@ -36,11 +36,32 @@
 namespace mir::tools {
 
 
+static std::string rename_formula_variables(const std::string& formula, const std::vector<std::string>& variables) {
+    static const std::regex var_name_is_canonical("f|f[1-9][0-9]*");
+
+    // rename variables in formula to expected names (f|f[1-9][0-9]*)
+    auto renamed = formula;
+
+    for (size_t i = 0; i < variables.size(); ++i) {
+        if (const auto& var = variables[i]; !var.empty() && !std::regex_match(var, var_name_is_canonical)) {
+            for (const std::regex from("\\b" + var + "\\b"); std::regex_search(renamed, from);) {
+                renamed = std::regex_replace(renamed, from, "f" + std::to_string(i + 1));
+            }
+        }
+    }
+
+    Log::info() << "\t" << formula << "\n->\t" << renamed << std::endl;
+    return renamed;
+}
+
+
 struct MIRCompute : MIRTool {
     MIRCompute(int argc, char** argv) : MIRTool(argc, argv) {
         options_.push_back(new eckit::option::SimpleOption<std::string>("input", "Input options (YAML)"));
         options_.push_back(new eckit::option::VectorOption<std::string>(
-            "formula", "Formula(s) on variables f/f1/f2/... (formula;formula;...)", 0, ";"));
+            "formula", "Formula(s) on variables f/f1, f2, ... (formula;formula;...)", 0, ";"));
+        options_.push_back(new eckit::option::VectorOption<std::string>(
+            "variables", "variable(s) replacing f/f1, f2, ... (variable;variable;...)", 0, ";"));
         options_.push_back(new eckit::option::VectorOption<long>("param-id", "GRIB paramId(s) (1;2;...)", 0, ";"));
     }
 
@@ -59,7 +80,7 @@ struct MIRCompute : MIRTool {
                     << " --formula=2+3*f input.grib output.grib"
                        "\n  % "
                     << tool
-                    << " --formula=\"sqrt(f1*f1+f2^2);f1-f2;f1+f2\" --input=\"{multiDimensional: 2}\" "
+                    << " --formula=\"sqrt(a*a+b^2);a-b;a+b\" --variables=a;b --input=\"{multiDimensional: 2}\" "
                        "--param-id=1;2;3 input.grib output.grib"
                     << std::endl;
     }
@@ -76,6 +97,11 @@ void MIRCompute::execute(const eckit::option::CmdArgs& args) {
     std::vector<std::string> formulas;
     args.get("formula", formulas);
     ASSERT(!formulas.empty());
+
+    std::vector<std::string> variables;
+    if (args.get("variables", variables)) {
+        ASSERT(!variables.empty());
+    }
 
     std::vector<long> paramids;
     args.get("param-id", paramids);
@@ -95,10 +121,10 @@ void MIRCompute::execute(const eckit::option::CmdArgs& args) {
 
             // run-time parametrisation
             param::SimpleParametrisation user;
-            user.set("formula", formulas[i]);
+            user.set("formula", rename_formula_variables(formulas[i], variables));
             user.set("formula.metadata", paramids.empty() ? "" : "paramId=" + std::to_string(paramids[i]));
 
-            const param::DefaultParametrisation defaults;
+            static const param::DefaultParametrisation defaults;
             std::unique_ptr<param::MIRParametrisation> param(
                 new param::CombinedParametrisation(user, input->parametrisation(), defaults));
 

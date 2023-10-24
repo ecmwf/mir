@@ -1,15 +1,15 @@
 ---
+# yamllint disable rule:line-length
 
 edition=0:
-- grib-packing-gridded: ccsds
-- grib-packing-spectral: complex
-- grib-packing-always-set: true
+  - grib-packing-gridded: ccsds
+  - grib-packing-spectral: complex
+  - grib-packing-always-set: true
 
 edition=1:
-- grib-packing-gridded: simple
-- grib-packing-spectral: complex
+  - grib-packing-gridded: simple
+  - grib-packing-spectral: complex
 
 edition=2:
-- grib-packing-gridded: ccsds
-- grib-packing-spectral: complex
-
+  - grib-packing-gridded: ccsds
+  - grib-packing-spectral: complex

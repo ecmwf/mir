@@ -14,12 +14,8 @@
 
 #include <string>
 
+#include "eckit/filesystem/PathName.h"
 #include "eckit/system/Library.h"
-
-
-namespace eckit {
-class PathName;
-}
 
 
 namespace mir {

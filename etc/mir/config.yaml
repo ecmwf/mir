@@ -1,4 +1,5 @@
 ---
+# yamllint disable rule:line-length
 
 post-process:
     - accuracy
@@ -28,4 +29,3 @@ mir-config-grids: ~mir/etc/mir/grids.yaml
 mir-config-netcdf: ~mir/etc/mir/netcdf.yaml
 mir-config-parameter-class: ~mir/etc/mir/parameter-class.yaml
 mir-config-parameters: ~mir/etc/mir/parameters.yaml
-
