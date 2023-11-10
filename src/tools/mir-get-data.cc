@@ -56,6 +56,7 @@ struct MIRGetData : MIRTool {
         options_.push_back(
             new SimpleOption<size_t>("nclosest", "Number of points close to given latitude/longitude, default 1"));
         options_.push_back(new SimpleOption<prec_t>("precision", "Output precision"));
+        options_.push_back(new SimpleOption<bool>("dryrun", "decode the field, no listing coordinates or values"));
     }
 
     int minimumPositionalArguments() const override { return 1; }
@@ -274,6 +275,10 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
     const param::ConfigurationWrapper args_wrap(args);
 
+    bool dryrun = false;
+    args.get("dryrun", dryrun);
+
+
     bool ecc = false;
     args.get("diff-ecc", ecc);
 
@@ -321,6 +326,13 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
             repres::RepresentationHandle rep(field.representation());
 
+            if (dryrun) {
+                ASSERT(rep->numberOfPoints() == values.size());
+                for (const std::unique_ptr<repres::Iterator> it(rep->iterator()); it->next();) {
+                }
+                continue;
+            }
+
             if (!atlas && !ecc && (nclosest == 0)) {
                 for (const std::unique_ptr<repres::Iterator> it(rep->iterator()); it->next();) {
                     const Point2& P(**it);
@@ -341,10 +353,9 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                     ASSERT(i < values.size());
 
                     constexpr double THOUSAND = 1000;
-                    log << "- " << c++ << " -"
-                        << " index=" << i << " latitude=" << q[1] << " longitude=" << q[0]
-                        << " distance=" << util::Earth::distance(p, q) / THOUSAND << " (km)"
-                        << " value=" << values[i] << std::endl;
+                    log << "- " << c++ << " -" << " index=" << i << " latitude=" << q[1] << " longitude=" << q[0]
+                        << " distance=" << util::Earth::distance(p, q) / THOUSAND << " (km)" << " value=" << values[i]
+                        << std::endl;
                 }
             }
 

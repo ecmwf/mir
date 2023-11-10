@@ -48,3 +48,15 @@ if(mir_HAVE_ATLAS)
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
 
+if(ENABLE_BUILD_TOOLS)
+    foreach(_t MIR-637.grib2)
+        ecbuild_add_test(
+            TARGET            mir_tests_unit_grib_fail_decode_${_t}
+            COMMAND           mir-get-data
+            ARGS              --dryrun ${_t}
+            ENVIRONMENT       ${_testEnvironment}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+        set_tests_properties(mir_tests_unit_grib_fail_decode_${_t} PROPERTIES WILL_FAIL TRUE)
+    endforeach()
+endif()
+    
