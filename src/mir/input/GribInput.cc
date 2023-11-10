@@ -127,8 +127,7 @@ bool ConditionT<std::string>::eval(grib_handle* h) const {
     }
 
     if (err != 0) {
-        Log::debug() << "ConditionT<std::string>::eval("
-                     << ",key=" << key_ << ") failed " << err << std::endl;
+        Log::debug() << "ConditionT<std::string>::eval(" << ",key=" << key_ << ") failed " << err << std::endl;
         GRIB_ERROR(err, key_);
     }
 
@@ -678,8 +677,8 @@ data::MIRField GribInput::field() const {
 
     // Ensure missingValue is unique, so values are not wrongly "missing"
     long numberOfMissingValues = 0;
-    if (codes_get_long(grib_, "numberOfMissingValues", &numberOfMissingValues) == CODES_SUCCESS &&
-        numberOfMissingValues == 0) {
+    GRIB_GET(codes_get_long(grib_, "numberOfMissingValues", &numberOfMissingValues));
+    if (numberOfMissingValues == 0) {
         grib_get_unique_missing_value(values, missingValue);
     }
 
@@ -746,7 +745,8 @@ data::MIRField GribInput::field() const {
     data::MIRField field(cache_, missingValuesPresent != 0, missingValue);
 
     long scanningMode = 0;
-    if (codes_get_long(grib_, "scanningMode", &scanningMode) == CODES_SUCCESS && scanningMode != 0) {
+    GRIB_GET(codes_get_long(grib_, "scanningMode", &scanningMode));
+    if (scanningMode != 0) {
         field.representation()->reorder(scanningMode, values);
     }
 
