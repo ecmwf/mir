@@ -530,6 +530,8 @@ vector-space.2d-vector-u:
   - 260070  # U-component storm motion
   - 260081  # Zonal flux of gravity wave stress
   - 260222  # Estimated u component of wind
+  - 260652  # Time-integrated eastward turbulent surface stress due to orographic form drag
+  - 260654  # Time-integrated eastward turbulent surface stress due to surface roughness
   - 262003  # Eastward sea ice velocity
   - 262021  # X-component of sea ice velocity
   - 262110  # Eastward surface stress
@@ -635,6 +637,8 @@ vector-space.2d-vector-v:
   - 260071  # V-component storm motion
   - 260082  # Meridional flux of gravity wave stress
   - 260223  # Estimated v component of wind
+  - 260653  # Time-integrated northward turbulent surface stress due to orographic form drag
+  - 260655  # Time-integrated northward turbulent surface stress due to surface roughness
   - 262004  # Northward sea ice velocity
   - 262022  # Y-component of sea ice velocity
   - 262109  # Northward surface stress
@@ -2615,6 +2619,10 @@ numerics.accumulated:
   - 260476  # Time-integrated snow melt rate in the last 24h
   - 260564  # Energy release component (as defined by the U.S Forest Service National Fire-Danger Rating System)
   - 260645  # Time integral of total solid precipitation flux
+  - 260652  # Time-integrated eastward turbulent surface stress due to orographic form drag
+  - 260653  # Time-integrated northward turbulent surface stress due to orographic form drag
+  - 260654  # Time-integrated eastward turbulent surface stress due to surface roughness
+  - 260655  # Time-integrated northward turbulent surface stress due to surface roughness
   - 263144  # Time-mean average sea water potential temperature in the upper 300m
   - 264900  # Time-accumulated net short wave radiation at sea surface
   - 264904  # Time-accumulated total precipitation at sea surface
@@ -5619,6 +5627,10 @@ stress:
   - 235042  # Mean northward turbulent surface stress
   - 235045  # Mean eastward gravity wave surface stress
   - 235046  # Mean northward gravity wave surface stress
+  - 260652  # Time-integrated eastward turbulent surface stress due to orographic form drag
+  - 260653  # Time-integrated northward turbulent surface stress due to orographic form drag
+  - 260654  # Time-integrated eastward turbulent surface stress due to surface roughness
+  - 260655  # Time-integrated northward turbulent surface stress due to surface roughness
   - 262109  # Northward surface stress
   - 262110  # Eastward surface stress
   - 262111  # Y-component of surface stress
