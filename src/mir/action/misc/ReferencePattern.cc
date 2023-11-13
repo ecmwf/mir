@@ -64,12 +64,10 @@ void ReferencePattern::execute(context::Context& ctx) const {
         double maxvalue = 0;
 
         size_t first = 0;
-        size_t count = 0;
         for (; first < values.size(); ++first) {
             if (!hasMissing || values[first] != missingValue) {
                 minvalue = values[first];
                 maxvalue = values[first];
-                count++;
                 break;
             }
         }
@@ -83,7 +81,6 @@ void ReferencePattern::execute(context::Context& ctx) const {
             if (!hasMissing || values[i] != missingValue) {
                 minvalue = std::min(minvalue, values[i]);
                 maxvalue = std::max(maxvalue, values[i]);
-                count++;
             }
         }
 
