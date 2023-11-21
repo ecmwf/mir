@@ -6,3 +6,5 @@ dependencies: |
   ecmwf/atlas
 dependency_branch: develop
 parallelism_factor: 8
+force_build: true
+recreate_cache: true
