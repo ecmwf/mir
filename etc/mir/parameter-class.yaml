@@ -1,6 +1,8 @@
 ---
 # yamllint disable rule:line-length
 
+count.density: {}
+
 density.mass:
   - 33  # Snow density
   - 78  # Total column cloud liquid water
@@ -681,6 +683,8 @@ vector-space.3d-vector-w:
   - 151133  # Ocean current vertical component
   - 262507  # Upward sea water velocity
   - 263507  # Time-mean upward sea water velocity
+
+vector-space.3d-vector.associated: {}
 
 vector-space.geographic-coordinate-latitude:
   - 250001  # Latitude
@@ -4219,6 +4223,8 @@ rate.mass-flux:
   - 451000  # Aerosol negative fixer mass flux
   - 452000  # Aerosol sink/loss mass flux
   - 453000  # Aerosol source/gain mass flux
+
+rate.power: {}
 
 rate.volume-flux:
   - 8  # Surface runoff
