@@ -148,8 +148,11 @@ void Rules::readConfigurationFiles() {
         const eckit::ValueMap& klassConfig = config->second;
 
         // paramId(s)
-        const eckit::ValueList& paramIds = i.second;
-        for (long paramId : paramIds) {
+        if (!i.second.isList()) {
+            continue;
+        }
+
+        for (long paramId : static_cast<const eckit::ValueList&>(i.second)) {
             SimpleParametrisation& pidConfig = lookup(paramId);
 
             std::string klasses;
