@@ -1,7 +1,18 @@
 ---
 # yamllint disable rule:line-length
 
-count.density: {}
+count.density:
+  - 228050  # Instantaneous total lightning flash density
+  - 228051  # Averaged total lightning flash density over the past hour
+  - 228052  # Instantaneous cloud-to-ground lightning flash density
+  - 228053  # Averaged cloud-to-ground lightning flash density over the past hour
+  - 228057  # Averaged total lightning flash density over the past 3 hours
+  - 228058  # Averaged total lightning flash density over the past 6 hours
+  - 228059  # Averaged cloud-to-ground lightning flash density over the past 3 hours
+  - 228060  # Averaged cloud-to-ground lightning flash density over the past 6 hours
+  - 231023  # Tropical cyclones track density
+  - 231041  # Time-integrated total lightning flash density
+  - 260391  # Lightning
 
 density.mass:
   - 33  # Snow density
@@ -369,6 +380,8 @@ density.mass:
   - 260214  # Direct evaporation cease (soil moisture)
   - 260217  # Saturation of soil moisture
   - 260368  # Soil moisture
+  - 260656  # Saturation specific humidity with respect to water
+  - 260657  # Total column integrated saturation specific humidity with respect to water
   - 262023  # Sea ice salinity
   - 262502  # Sea water sigma theta
   - 263023  # Time-mean Sea ice salinity
@@ -684,7 +697,8 @@ vector-space.3d-vector-w:
   - 262507  # Upward sea water velocity
   - 263507  # Time-mean upward sea water velocity
 
-vector-space.3d-vector.associated: {}
+vector-space.3d-vector.associated:
+  - 231014  # Vertical divergence
 
 vector-space.geographic-coordinate-latitude:
   - 250001  # Latitude
@@ -1664,14 +1678,6 @@ intensity:
   - 228046  # Height of convective cloud top
   - 228047  # Height of zero-degree wet-bulb temperature
   - 228048  # Height of one-degree wet-bulb temperature
-  - 228050  # Instantaneous total lightning flash density
-  - 228051  # Averaged total lightning flash density over the past hour
-  - 228052  # Instantaneous cloud-to-ground lightning flash density
-  - 228053  # Averaged cloud-to-ground lightning flash density over the past hour
-  - 228057  # Averaged total lightning flash density over the past 3 hours
-  - 228058  # Averaged total lightning flash density over the past 6 hours
-  - 228059  # Averaged cloud-to-ground lightning flash density over the past 3 hours
-  - 228060  # Averaged cloud-to-ground lightning flash density over the past 6 hours
   - 228078  # GPP coefficient from Biogenic Flux Adjustment System
   - 228079  # Rec coefficient from Biogenic Flux Adjustment System
   - 228080  # Accumulated Carbon Dioxide Net Ecosystem Exchange
@@ -1705,7 +1711,32 @@ intensity:
   - 230189  # Sunshine duration (variable resolution)
   - 230198  # Skin reservoir content (variable resolution)
   - 231008  # Forecast logarithm of surface roughness length for moisture
+  - 231015  # Drag thermal coefficient
+  - 231016  # Drag evaporation coefficient
+  - 231017  # Pressure departure from hydrostatic state
+  - 231024  # Canopy air temperature
+  - 231025  # Soil wetness index (total layer)
+  - 231026  # Soil wetness index (root zone)
+  - 231027  # Soil wetness index (layer)
+  - 231028  # Distance downward from roof surface
+  - 231029  # Distance inward from outer wall surface
+  - 231030  # Distance downward from road surface
+  - 231043  # Minimum visibility
+  - 231044  # Geometric height of theta level above ground
+  - 231045  # Pressure at cloud base
+  - 231046  # Geometric height of adiabatic condensation level above ground
+  - 231047  # Geometric height of free convection level above ground
+  - 231048  # Geometric height of neutral buoyancy level above ground
+  - 231049  # Geometric height of atmospheric isothermal level above ground
+  - 231050  # Roof temperature
+  - 231051  # Wall temperature
+  - 231052  # Road temperature
+  - 231055  # Urban canyon temperature
   - 232004  # Fuel load
+  - 232007  # Live leaf fuel load
+  - 232008  # Live wood fuel load
+  - 232009  # Dead leaf fuel load
+  - 232010  # Dead wood fuel load
   - 233002  # Time-integrated total column vertically-integrated divergence of water geopotential flux
   - 233003  # Time-integrated total column vertically-integrated divergence of geopotential flux
   - 235001  # Mean temperature tendency due to short-wave radiation
@@ -2017,11 +2048,14 @@ numerics.tendency:
   - 263513  # Time-mean northward sea water velocity tendency due to parameterization
   - 263514  # Time-mean sea water temperature tendency due to direct bias correction
   - 263515  # Time-mean sea water salinity tendency due to direct bias correction
+  - 263516  # Time-mean sea water salinity
 
 numerics.mean:
+  - 172149  # Time-mean surface net radiation flux (SW and LW)
   - 173008  # Mean surface runoff rate anomaly
   - 173009  # Mean sub-surface runoff rate anomaly
   - 229004  # Building height
+  - 231020  # Time-mean top net radiation flux (SW and LW)
   - 235001  # Mean temperature tendency due to short-wave radiation
   - 235002  # Mean temperature tendency due to long-wave radiation
   - 235003  # Mean temperature tendency due to short-wave radiation, clear sky
@@ -2135,6 +2169,11 @@ numerics.mean:
   - 263140  # Time-mean eastward surface sea water velocity
   - 263141  # Time-mean heat content surface to 26C isotherm
   - 263142  # Time-mean sea surface height tendency due to parameterization
+  - 263144  # Time-mean average sea water potential temperature in the upper 300m
+  - 263145  # Time-mean sea surface salinity
+  - 263146  # Time-mean vertically integrated sea water practical salinity in the upper 300 m
+  - 263147  # Time-mean vertically integrated sea water practical salinity in the upper 700 m
+  - 263148  # Time-mean total column vertically integrated sea water practical salinity
   - 263500  # Time-mean sea water practical salinity
   - 263501  # Time-mean sea water potential temperature
   - 263502  # Time-mean sea water sigma theta
@@ -2552,6 +2591,13 @@ numerics.accumulated:
   - 231005  # Potential evaporation
   - 231010  # Surface runoff
   - 231012  # Sub-surface runoff
+  - 231033  # Renewable power production
+  - 231036  # Wind power production
+  - 231039  # Solar photovoltaic (PV) power production
+  - 231040  # Graupel (snow pellets) precipitation
+  - 231041  # Time-integrated total lightning flash density
+  - 231053  # Snow depth water equivalent on roof
+  - 231054  # Snow depth water equivalent on road
   - 233000  # Time-integrated total column vertically-integrated eastward geopotential flux
   - 233001  # Time-integrated total column vertically-integrated northward geopotential flux
   - 233002  # Time-integrated total column vertically-integrated divergence of water geopotential flux
@@ -2627,7 +2673,6 @@ numerics.accumulated:
   - 260653  # Time-integrated northward turbulent surface stress due to orographic form drag
   - 260654  # Time-integrated eastward turbulent surface stress due to surface roughness
   - 260655  # Time-integrated northward turbulent surface stress due to surface roughness
-  - 263144  # Time-mean average sea water potential temperature in the upper 300m
   - 264900  # Time-accumulated net short wave radiation at sea surface
   - 264904  # Time-accumulated total precipitation at sea surface
   - 264905  # Time-accumulated snow precipitation at sea surface
@@ -3023,6 +3068,7 @@ numerics.vertical-integral:
   - 228088  # Total column supercooled liquid water
   - 228089  # Total column rain water
   - 228090  # Total column snow water
+  - 231042  # Maximum total column integrated graupel (snow pellets)
   - 233000  # Time-integrated total column vertically-integrated eastward geopotential flux
   - 233001  # Time-integrated total column vertically-integrated northward geopotential flux
   - 233002  # Time-integrated total column vertically-integrated divergence of water geopotential flux
@@ -3066,14 +3112,21 @@ numerics.vertical-integral:
   - 260116  # Total column-integrated condensate
   - 260132  # Total column integrated ozone
   - 260197  # Column-integrated soil water
+  - 260657  # Total column integrated saturation specific humidity with respect to water
   - 262120  # Total column average sea water practical salinity
   - 262121  # Vertically-integrated heat content in the upper 300 m
   - 262122  # Vertically-integrated heat content in the upper 700 m
   - 262123  # Total column of heat content
+  - 262146  # Vertically integrated sea water practical salinity in the upper 300 m
+  - 262147  # Vertically integrated sea water practical salinity in the upper 700 m
+  - 262148  # Total column vertically integrated sea water practical salinity
   - 263120  # Time-mean total column average sea water practical salinity
   - 263121  # Time-mean vertically-integrated heat content in the upper 300 m
   - 263122  # Time-mean vertically-integrated heat content in the upper 700 m
   - 263123  # Time-mean total column heat content
+  - 263146  # Time-mean vertically integrated sea water practical salinity in the upper 300 m
+  - 263147  # Time-mean vertically integrated sea water practical salinity in the upper 700 m
+  - 263148  # Time-mean total column vertically integrated sea water practical salinity
   - 401000  # Total column vertically-integrated mass density
   - 409000  # Volume-mean total column mixing ratio
 
@@ -3095,6 +3148,7 @@ rate:
   - 200232  # Instantaneous moisture flux difference
   - 201013  # shortwave radiative heating rate
   - 201014  # longwave radiative heating rate
+  - 231022  # Eady growth rate
   - 235011  # Mean updraught detrainment rate
   - 235012  # Mean downdraught detrainment rate
   - 240012  # Side flow into river channel
@@ -3364,6 +3418,10 @@ rate.energy-flux:
   - 230210  # Surface net solar radiation, clear sky (variable resolution)
   - 230211  # Surface net thermal radiation, clear sky (variable resolution)
   - 230212  # TOA incident solar radiation (variable resolution)
+  - 231018  # Surface net radiation flux (SW and LW)
+  - 231019  # Top net radiation flux (SW and LW)
+  - 231020  # Time-mean top net radiation flux (SW and LW)
+  - 231021  # Global irradiance on tilted surfaces
   - 233000  # Time-integrated total column vertically-integrated eastward geopotential flux
   - 233001  # Time-integrated total column vertically-integrated northward geopotential flux
   - 233004  # Time-integrated total column vertically-integrated eastward enthalpy flux
@@ -4067,6 +4125,10 @@ rate.mass-flux:
   - 231010  # Surface runoff
   - 231011  # Sub-surface runoff rate
   - 231012  # Sub-surface runoff
+  - 231040  # Graupel (snow pellets) precipitation
+  - 231042  # Maximum total column integrated graupel (snow pellets)
+  - 231053  # Snow depth water equivalent on roof
+  - 231054  # Snow depth water equivalent on road
   - 233014  # Time integrated, vertically integrated divergence of mass flux
   - 233015  # Time integrated, vertically integrated eastward mass flux
   - 233016  # Time integrated, vertically integrated northward mass flux
@@ -4224,7 +4286,16 @@ rate.mass-flux:
   - 452000  # Aerosol sink/loss mass flux
   - 453000  # Aerosol source/gain mass flux
 
-rate.power: {}
+rate.power:
+  - 231031  # Renewable power capacity
+  - 231032  # Renewable power production rate
+  - 231033  # Renewable power production
+  - 231034  # Wind power capacity
+  - 231035  # Wind power production rate
+  - 231036  # Wind power production
+  - 231037  # Solar photovoltaic (PV) power capacity
+  - 231038  # Solar photovoltaic (PV) power production rate
+  - 231039  # Solar photovoltaic (PV) power production
 
 rate.volume-flux:
   - 8  # Surface runoff
@@ -4518,7 +4589,6 @@ rate.volume-flux:
   - 260055  # Large scale snowfall rate
 
 ratio:
-  - 124  # Surface emissivity
   - 157  # Relative humidity
   - 129157  # Relative humidity gradient
   - 130224  # Vertical diffusion of humidity
@@ -4671,6 +4741,7 @@ ratio.fraction:
   - 18  # Near IR albedo for diffuse radiation
   - 32  # Snow albedo
   - 50  # Large-scale precipitation fraction
+  - 124 # Surface emissivity
   - 172  # Land-sea mask
   - 174  # Albedo
   - 199  # Vegetation fraction
@@ -5193,7 +5264,13 @@ ratio.mass:
   - 228054  # Unbalanced component of specific humidity
   - 228055  # Unbalanced component of specific cloud liquid water content
   - 228056  # Unbalanced component of specific cloud ice water content
+  - 231056  # Urban canyon specific humidity
   - 232006  # Fuel moisture content
+  - 232011  # Live fuel moisture content
+  - 232012  # Fine dead leaf moisture content
+  - 232013  # Dense dead leaf moisture content
+  - 232014  # Fine dead wood moisture content
+  - 232015  # Dense dead wood moisture content
   - 235006  # Mean specific humidity tendency due to parametrisations
   - 260017  # Condensate
   - 260018  # Cloud mixing ratio
@@ -5209,6 +5286,10 @@ ratio.mass:
   - 262118  # Average sea water practical salinity in the upper 300 m
   - 262119  # Average sea water practical salinity in the upper 700 m
   - 262120  # Total column average sea water practical salinity
+  - 262145  # Sea surface salinity
+  - 262146  # Vertically integrated sea water practical salinity in the upper 300 m
+  - 262147  # Vertically integrated sea water practical salinity in the upper 700 m
+  - 262148  # Total column vertically integrated sea water practical salinity
   - 262500  # Sea water practical salinity
   - 262509  # Sea water salinity tendency due to newtonian relaxation
   - 262511  # Sea water salinity tendency due to parameterization
@@ -5218,10 +5299,15 @@ ratio.mass:
   - 263118  # Time-mean average sea water practical salinity in the upper 300 m
   - 263119  # Time-mean average sea water practical salinity in the upper 700 m
   - 263120  # Time-mean total column average sea water practical salinity
+  - 263145  # Time-mean sea surface salinity
+  - 263146  # Time-mean vertically integrated sea water practical salinity in the upper 300 m
+  - 263147  # Time-mean vertically integrated sea water practical salinity in the upper 700 m
+  - 263148  # Time-mean total column vertically integrated sea water practical salinity
   - 263500  # Time-mean sea water practical salinity
   - 263509  # Time-mean sea water salinity tendency due to newtonian relaxation
   - 263511  # Time-mean sea water salinity tendency due to parameterization
   - 263515  # Time-mean sea water salinity tendency due to direct bias correction
+  - 263516  # Time-mean sea water salinity
   - 402000  # Mass mixing ratio
 
 ratio.probability:
