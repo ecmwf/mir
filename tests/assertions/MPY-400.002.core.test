@@ -1,0 +1,12 @@
+# Mars request: grid=f60,area=26.15/0/-26.15/360
+MPY-400.grib1
+# Mir tool options
+--grid=1.5/1.5 --interpolation=grid-box-average --area=25/-180/-25/180
+# grib_get assertions
+gridType=regular_ll
+Ni=240
+Nj=34
+latitudeOfFirstGridPointInDegrees=24.5
+longitudeOfFirstGridPointInDegrees=-180
+latitudeOfLastGridPointInDegrees=-25
+longitudeOfLastGridPointInDegrees=178.5
