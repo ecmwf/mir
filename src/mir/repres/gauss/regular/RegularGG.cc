@@ -91,13 +91,14 @@ std::vector<util::GridBox> RegularGG::gridBoxes() const {
     std::vector<util::GridBox> r;
     r.reserve(Ni_ * Nj_);
 
-    for (size_t j = 0; j < Nj_; ++j) {
+    for (size_t j = k_; j < k_ + Nj_; ++j) {
         Longitude lon1 = lon0;
 
         for (size_t i = 0; i < Ni_; ++i) {
             auto l = lon1;
             lon1   = l + Longitude(inc * (i + half));
-            r.emplace_back(util::GridBox(latEdges[j], lonEdges[i], latEdges[j + 1], lonEdges[i + 1]));
+            r.emplace_back(std::min(bbox_.north().value(), latEdges[j]), lonEdges[i],
+                           std::max(bbox_.south().value(), latEdges[j + 1]), lonEdges[i + 1]);
         }
 
         ASSERT(periodic ? lon0 == lon1.normalise(lon0) : lon0 < lon1.normalise(lon0));
