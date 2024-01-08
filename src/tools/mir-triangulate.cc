@@ -392,7 +392,6 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
             eckit::JSON json(std::cout);
             json.startList();
 
-            size_t count = 0;
             while (!segments.empty()) {
                 Segment line = *segments.begin();
                 segments.erase(segments.begin());
@@ -410,8 +409,6 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
                 }
 
                 json << line;
-
-                count++;
             }
             json.endList();
         }
