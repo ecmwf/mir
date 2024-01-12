@@ -35,7 +35,7 @@ print("include_dirs:", " ".join(include_dirs))
 # FIXME: sort out how to discover MIR libraries
 setup(
     name="mir-python",
-    version="0.1.0",
+    version="0.2.0",
     ext_modules=cythonize(
         Extension(
             "mir",
@@ -45,8 +45,8 @@ setup(
             library_dirs=library_dirs,
             runtime_library_dirs=library_dirs,
             include_dirs=include_dirs,
-            extra_compile_args=["-std=c++11"],
-            extra_link_args=["-std=c++11"],
+            extra_compile_args=["-std=c++17"],
+            extra_link_args=["-std=c++17"],
         ),
         compiler_directives={"language_level": 3, "c_string_encoding": "default"},
     ),
