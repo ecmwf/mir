@@ -368,7 +368,8 @@ Value* TypeT<unsigned char>::attributeValue(int nc, int id, const char* name, si
     unsigned char value;
     ASSERT(len == 1);
     NC_CALL(nc_get_att_ubyte(nc, id, name, &value), path);
-    return new ValueT<unsigned char>(*this, value);
+    auto* v = new ValueT<unsigned char>(*this, value);
+    return v;
 }
 
 
@@ -377,7 +378,8 @@ Value* TypeT<short>::attributeValue(int nc, int id, const char* name, size_t len
     short value;
     ASSERT(len == 1);
     NC_CALL(nc_get_att_short(nc, id, name, &value), path);
-    return new ValueT<short>(*this, value);
+    auto* v = new ValueT<short>(*this, value);
+    return v;
 }
 
 
@@ -386,7 +388,8 @@ Value* TypeT<long>::attributeValue(int nc, int id, const char* name, size_t len,
     long value;
     ASSERT(len == 1);
     NC_CALL(nc_get_att_long(nc, id, name, &value), path);
-    return new ValueT<long>(*this, value);
+    auto* v = new ValueT<long>(*this, value);
+    return v;
 }
 
 
@@ -395,7 +398,8 @@ Value* TypeT<long long>::attributeValue(int nc, int id, const char* name, size_t
     long long value;
     ASSERT(len == 1);
     NC_CALL(nc_get_att_longlong(nc, id, name, &value), path);
-    return new ValueT<long long>(*this, value);
+    auto* v = new ValueT<long long>(*this, value);
+    return v;
 }
 
 
@@ -406,13 +410,15 @@ Value* TypeT<std::string>::attributeValue(int nc, int id, const char* name, size
         char* value = nullptr;
         NC_CALL(nc_get_att_string(nc, id, name, &value), path);
         ASSERT(value);
-        return new ValueT<std::string>(*this, value);
+        auto* v = new ValueT<std::string>(*this, value);
+        return v;
     }
 
     char value[len + 1];
     memset(value, 0, sizeof(value));
     NC_CALL(nc_get_att_text(nc, id, name, value), path);
-    return new ValueT<std::string>(*this, value);
+    auto* v = new ValueT<std::string>(*this, value);
+    return v;
 }
 
 
@@ -421,7 +427,8 @@ Value* TypeT<double>::attributeValue(int nc, int id, const char* name, size_t le
     double value;
     ASSERT(len == 1);
     NC_CALL(nc_get_att_double(nc, id, name, &value), path);
-    return new ValueT<double>(*this, value);
+    auto* v = new ValueT<double>(*this, value);
+    return v;
 }
 
 
@@ -430,7 +437,8 @@ Value* TypeT<float>::attributeValue(int nc, int id, const char* name, size_t len
     float value;
     ASSERT(len == 1);
     NC_CALL(nc_get_att_float(nc, id, name, &value), path);
-    return new ValueT<float>(*this, value);
+    auto* v = new ValueT<float>(*this, value);
+    return v;
 }
 
 
