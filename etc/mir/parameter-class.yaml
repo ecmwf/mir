@@ -1,6 +1,29 @@
 ---
 # yamllint disable rule:line-length
 
+correlation.covariance:
+  - 254001  # Covariance between 2-metre temperature and volumetric soil water layer 1
+  - 254002  # Covariance between 2-metre relative humidity and volumetric soil water layer 1
+  - 254003  # Covariance between surface soil moisture and volumetric soil water layer 1
+  - 254004  # Covariance between 2-metre temperature and volumetric soil water layer 2
+  - 254005  # Covariance between 2-metre relative humidity and volumetric soil water layer 2
+  - 254006  # Covariance between surface soil moisture and volumetric soil water layer 2
+  - 254007  # Covariance between 2-metre temperature and volumetric soil water layer 3
+  - 254008  # Covariance between 2-metre relative humidity and volumetric soil water layer 3
+  - 254009  # Covariance between surface soil moisture and volumetric soil water layer 3
+  - 254010  # Covariance between 2-metre temperature and soil temperature layer 1
+  - 254011  # Covariance between 2-metre relative humidity and soil temperature layer 1
+  - 254012  # Covariance between 2-metre temperature and soil temperature layer 2
+  - 254013  # Covariance between 2-metre relative humidity and soil temperature layer 2
+  - 254014  # Covariance between 2-metre temperature and soil temperature layer 3
+  - 254015  # Covariance between 2-metre relative humidity and soil temperature layer 3
+  - 254016  # Covariance between 2-metre temperature and temperature of snow layer 1
+  - 254017  # Covariance between 2-metre relative humidity and temperature of snow layer 1
+  - 254018  # Covariance between 2-metre temperature and temperature of snow layer 2
+  - 254019  # Covariance between 2-metre relative humidity and temperature of snow layer 2
+  - 254020  # Covariance between 2-metre temperature and temperature of snow layer 3
+  - 254021  # Covariance between 2-metre relative humidity and temperature of snow layer 3
+
 count.density:
   - 228050  # Instantaneous total lightning flash density
   - 228051  # Averaged total lightning flash density over the past hour
@@ -388,6 +411,7 @@ density.mass:
   - 263502  # Time-mean sea water sigma theta
   - 400000  # Mass density
   - 401000  # Total column vertically-integrated mass density
+  - 455000  # Total column vertically-integrated mass density from volcanoes
 
 density.energy:
   - 162059  # Vertical integral of kinetic energy
@@ -422,6 +446,7 @@ density.volume:
   - 200041  # Volumetric soil water layer 3 difference
   - 200042  # Volumetric soil water layer 4 difference
   - 228093  # Volumetric soil moisture
+  - 235077  # Time-mean volumetric soil moisture
   - 260199  # Volumetric soil moisture
   - 260200  # Volumetric wilting point
   - 260210  # Liquid volumetric soil moisture (non-frozen)
@@ -1049,6 +1074,11 @@ intensity:
   - 140118  # Significant wave height of all waves with periods within the inclusive range from 21 to 25 seconds
   - 140119  # Significant wave height of all waves with periods within the inclusive range from 25 to 30 seconds
   - 140120  # Significant wave height of all waves with period larger than 10s
+  - 140130  # Envelope-maximum individual wave height
+  - 140131  # Time domain maximum individual crest height
+  - 140132  # Time domain maximum individual wave height
+  - 140133  # Space time maximum individual crest height
+  - 140134  # Space time maximum individual wave height
   - 140200  # Maximum of significant wave height
   - 140207  # Wave Spectral Skewness
   - 140215  # U-component stokes drift
@@ -1749,12 +1779,15 @@ intensity:
   - 235014  # Mean turbulent diffusion coefficient for heat
   - 235017  # Time integral of surface eastward momentum flux
   - 235018  # Time integral of surface northward momentum flux
+  - 235079  # Time-mean skin temperature
   - 240011  # Cross sectional area of flow in channel
   - 240014  # River storage of water
   - 240015  # Floodplain storage of water
   - 240018  # Frost index
   - 240028  # Groundwater upper storage
   - 240029  # Groundwater lower storage
+  - 240030  # Lake depth
+  - 240031  # River depth
   - 260004  # Heat index
   - 260005  # Wind chill factor
   - 260006  # Minimum dew point depression
@@ -1840,8 +1873,6 @@ intensity:
   - 260291  # Mountain wave turbulence (eddy dissipation rate)
   - 260360  # Soil temperature
   - 260367  # Soil depth
-  - 260472  # Time-mean snow depth water equivalent
-  - 260473  # Time-mean skin temperature
   - 260510  # Cloudy brightness temperature
   - 260511  # Clear-sky brightness temperature
   - 260540  # Forest fire weather index
@@ -1980,6 +2011,7 @@ intensity:
   - 263140  # Time-mean eastward surface sea water velocity
   - 263141  # Time-mean heat content surface to 26C isotherm
   - 263142  # Time-mean sea surface height tendency due to parameterization
+  - 263143  # Time-mean sea surface height with inverse barometer correction
   - 263144  # Time-mean average sea water potential temperature in the upper 300m
   - 263501  # Time-mean sea water potential temperature
   - 263503  # Time-mean Y-component of sea water velocity
@@ -2095,13 +2127,12 @@ numerics.mean:
   - 235066  # Mean convective rain rate
   - 235067  # Mean large-scale rain rate
   - 235070  # Mean potential evaporation rate
-  - 260435  # Time-mean Evapotranspiration rate in the last 24h
-  - 260438  # Time-mean potential evapotranspiration rate in the last 24h
-  - 260440  # Time-mean volumetric soil moisture
+  - 235074  # Time-mean evapotranspiration flux
+  - 235076  # Time-mean potential evapotranspiration rate
+  - 235077  # Time-mean volumetric soil moisture
+  - 235078  # Time-mean snow depth water equivalent
+  - 235079  # Time-mean skin temperature
   - 260441  # Time-mean total precipitation rate
-  - 260445  # Time-mean water runoff and drainage rate in the last 24h
-  - 260472  # Time-mean snow depth water equivalent
-  - 260473  # Time-mean skin temperature
   - 260477  # Time-mean snow melt rate in the last 24h
   - 263000  # Time-mean sea ice thickness
   - 263001  # Time-mean sea ice area fraction
@@ -2169,6 +2200,7 @@ numerics.mean:
   - 263140  # Time-mean eastward surface sea water velocity
   - 263141  # Time-mean heat content surface to 26C isotherm
   - 263142  # Time-mean sea surface height tendency due to parameterization
+  - 263143  # Time-mean sea surface height with inverse barometer correction
   - 263144  # Time-mean average sea water potential temperature in the upper 300m
   - 263145  # Time-mean sea surface salinity
   - 263146  # Time-mean vertically integrated sea water practical salinity in the upper 300 m
@@ -2637,6 +2669,8 @@ numerics.accumulated:
   - 235071  # Time integral of surface latent heat sublimation flux
   - 235072  # Time integral of snow evaporation flux
   - 235073  # Time integral of evapotranspiration flux
+  - 235075  # Time integral of potential evapotranspiration rate
+  - 235078  # Time-mean snow depth water equivalent
   - 240020  # Depth of water on soil surface
   - 240021  # Upstream accumulated precipitation
   - 240022  # Upstream accumulated snow melt
@@ -2664,9 +2698,6 @@ numerics.accumulated:
   - 260428  # Accumulated surface downward long-wave radiation flux, clear sky
   - 260430  # Percolation
   - 260434  # Time-integrated evapotranspiration rate in the last 24h
-  - 260437  # Time-integrated potential evapotranspiration rate in the last 24h
-  - 260444  # Time-integrated water runoff and drainage rate in the last 24h
-  - 260476  # Time-integrated snow melt rate in the last 24h
   - 260564  # Energy release component (as defined by the U.S Forest Service National Fire-Danger Rating System)
   - 260645  # Time integral of total solid precipitation flux
   - 260652  # Time-integrated eastward turbulent surface stress due to orographic form drag
@@ -3129,6 +3160,7 @@ numerics.vertical-integral:
   - 263148  # Time-mean total column vertically integrated sea water practical salinity
   - 401000  # Total column vertically-integrated mass density
   - 409000  # Volume-mean total column mixing ratio
+  - 455000  # Total column vertically-integrated mass density from volcanoes
 
 rate:
   - 3019  # Lapse rate
@@ -3159,6 +3191,17 @@ rate:
   - 261006  # Human bite rate by anopheles vectors
   - 261011  # Anopheles vector number
   - 261013  # Population density
+
+rate.energy:
+  - 231031  # Renewable power capacity
+  - 231032  # Renewable power production rate
+  - 231033  # Renewable power production
+  - 231034  # Wind power capacity
+  - 231035  # Wind power production rate
+  - 231036  # Wind power production
+  - 231037  # Solar photovoltaic (PV) power capacity
+  - 231038  # Solar photovoltaic (PV) power production rate
+  - 231039  # Solar photovoltaic (PV) power production
 
 rate.energy-flux:
   - 19  # Clear sky surface UV
@@ -4173,6 +4216,10 @@ rate.mass-flux:
   - 235070  # Mean potential evaporation rate
   - 235072  # Time integral of snow evaporation flux
   - 235073  # Time integral of evapotranspiration flux
+  - 235074  # Time-mean evapotranspiration flux
+  - 235075  # Time integral of potential evapotranspiration rate
+  - 235076  # Time-mean potential evapotranspiration rate
+  - 235078  # Time-mean snow depth water equivalent
   - 240020  # Depth of water on soil surface
   - 240021  # Upstream accumulated precipitation
   - 240022  # Upstream accumulated snow melt
@@ -4208,16 +4255,10 @@ rate.mass-flux:
   - 260430  # Percolation
   - 260433  # Evapotranspiration rate
   - 260434  # Time-integrated evapotranspiration rate in the last 24h
-  - 260435  # Time-mean Evapotranspiration rate in the last 24h
   - 260436  # Potential evapotranspiration rate
-  - 260437  # Time-integrated potential evapotranspiration rate in the last 24h
-  - 260438  # Time-mean potential evapotranspiration rate in the last 24h
   - 260441  # Time-mean total precipitation rate
   - 260443  # Water runoff and drainage rate
-  - 260444  # Time-integrated water runoff and drainage rate in the last 24h
-  - 260445  # Time-mean water runoff and drainage rate in the last 24h
   - 260475  # Snow melt rate
-  - 260476  # Time-integrated snow melt rate in the last 24h
   - 260477  # Time-mean snow melt rate in the last 24h
   - 260645  # Time integral of total solid precipitation flux
   - 262130  # Net surface upward water flux
@@ -4286,16 +4327,10 @@ rate.mass-flux:
   - 452000  # Aerosol sink/loss mass flux
   - 453000  # Aerosol source/gain mass flux
 
-rate.power:
-  - 231031  # Renewable power capacity
-  - 231032  # Renewable power production rate
-  - 231033  # Renewable power production
-  - 231034  # Wind power capacity
-  - 231035  # Wind power production rate
-  - 231036  # Wind power production
-  - 231037  # Solar photovoltaic (PV) power capacity
-  - 231038  # Solar photovoltaic (PV) power production rate
-  - 231039  # Solar photovoltaic (PV) power production
+rate.volume:
+  - 240032  # River outflow of water
+  - 240033  # Floodplain outflow of water
+  - 240034  # Floodpath outflow of water
 
 rate.volume-flux:
   - 8  # Surface runoff
@@ -4587,6 +4622,7 @@ rate.volume-flux:
   - 260053  # Total snowfall rate
   - 260054  # Convective snowfall rate
   - 260055  # Large scale snowfall rate
+  - 456000  # Dry deposition velocity from volcanoes
 
 ratio:
   - 157  # Relative humidity
@@ -4639,8 +4675,8 @@ ratio:
   - 260561  # Spread component (as defined by the U.S Forest Service National Fire-Danger Rating System)
   - 260562  # Burning index (as defined by the U.S Forest Service National Fire-Danger Rating System)
   - 261010  # Anopheles vector to host ratio
-  - 408000  # Volume mixing ratio
   - 409000  # Volume-mean total column mixing ratio
+  - 454000  # Mass mixing ratio from volcanoes
 
 ratio.area:
   - 66  # Leaf area index, low vegetation
@@ -5494,7 +5530,6 @@ ratio.volume:
   - 190229  # Total soil moisture
   - 228253  # ASCAT first soil moisture CDF matching parameter
   - 260215  # Soil porosity
-  - 260440  # Time-mean volumetric soil moisture
 
 ratio.random:
   - 213001  # Random pattern 1 for sppt
