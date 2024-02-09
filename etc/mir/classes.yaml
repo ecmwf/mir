@@ -5,6 +5,9 @@
 _default:
     compare: scalar
 
+correlation.covariance:
+    _warning: true
+
 # TODO DGOV
 count.density: {}
 
@@ -107,14 +110,20 @@ numerics.vertical-integral: {}
 # ratio between two related quantities (time, mass, length, etc.) (typical units: [... s**-1])
 rate: {}
 
+# rate of energy per time (typical units: [J s**-1], [W])
+rate.energy: {}
+
 # rate of flow of energy per unit area (typical units: [J m**-2 s**-1], [W m**-2])
 rate.energy-flux: {}
+
+# rate of mass per time (typical units: [kg s**-1])
+rate.mass: {}
 
 # rate of flow of mass per unit area (typical units: [kg m**-2 s**-1])
 rate.mass-flux: {}
 
-# TODO DGOV
-rate.power: {}
+# rate of rate of a volumetric quantity per time (typical units: [m**3 s**-1])
+rate.volume: {}
 
 # rate of flow of a volumetric quantity per unit area (typical units [m**3 m**-2 s**-1], [m s**-1])
 rate.volume-flux: {}
