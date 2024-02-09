@@ -39,7 +39,9 @@ conn  = mysql.connector.connect(host=Host, user=User, password=Password, databas
 # Create a cursor object
 cur  = conn.cursor()
 
-query=f"select mir_classification.param_id,mir_classifiers.classifier_name from mir_classification INNER JOIN mir_classifiers ON mir_classification.mir_classifier = mir_classifiers.classifier"
+#query=f"select mir_classification.param_id,mir_classifiers.classifier_name from mir_classification INNER JOIN mir_classifiers ON mir_classification.mir_classifier = mir_classifiers.classifier"
+# we sort parameters out which are marked as retired in table param
+query=f"select mir_classification.param_id,mir_classifiers.classifier_name from mir_classification INNER JOIN mir_classifiers ON mir_classification.mir_classifier = mir_classifiers.classifier join param on param.id=mir_classification.param_id where param.retired=0"
 
 cur.execute(query)
 
