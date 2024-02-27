@@ -9,6 +9,7 @@ foreach(tool IN ITEMS
     mir-config-grib
     mir-count
     mir-formula
+    mir-healpix-matrix
     mir-gaussian-fractions
     mir-get-data
     mir-grid-box-area
