@@ -9,7 +9,6 @@ foreach(tool IN ITEMS
     mir-config-grib
     mir-count
     mir-formula
-    mir-healpix-matrix
     mir-gaussian-fractions
     mir-get-data
     mir-grid-box-area
@@ -18,6 +17,7 @@ foreach(tool IN ITEMS
     mir-list
     mir-load-matrix
     mir-make-lsm
+    mir-matrix-reorder
     mir-plot-lsm
     mir-points
     mir-statistics
