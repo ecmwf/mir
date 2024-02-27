@@ -19,6 +19,7 @@
 #include "eckit/linalg/Triplet.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
+#include "eckit/option/SimpleOption.h"
 
 #include "mir/repres/Representation.h"
 #include "mir/repres/proxy/HEALPix.h"
@@ -194,8 +195,10 @@ static const ReorderBuilder<HEALPixNestedToRing> __reorder3("healpix-nested-to-r
 struct MIRMatrixReorder : MIRTool {
     MIRMatrixReorder(int argc, char** argv) : MIRTool(argc, argv) {
         using eckit::option::FactoryOption;
+        using eckit::option::SimpleOption;
         options_.push_back(new FactoryOption<ReorderFactory>("reorder-rows", "Reordering rows method", IDENTITY));
         options_.push_back(new FactoryOption<ReorderFactory>("reorder-cols", "Reordering columns method", IDENTITY));
+        options_.push_back(new SimpleOption<bool>("transpose", "Transpose matrix", false));
     }
 
     int numberOfPositionalArguments() const override { return 2; }
@@ -206,6 +209,7 @@ struct MIRMatrixReorder : MIRTool {
                     << tool
                     << " [--reorder-rows=...]"
                        " [--reorder-cols=...]"
+                       " [--transpose=[0|1]]"
                        " input-matrix output-matrix"
                     << std::endl;
     }
@@ -232,8 +236,14 @@ void MIRMatrixReorder::execute(const eckit::option::CmdArgs& args) {
     std::vector<eckit::linalg::Triplet> trips;
     trips.reserve(M.nonZeros());
 
-    for (auto i = M.begin(); i != M.end(); ++i) {
-        trips.emplace_back(rows.at(i.row()), cols.at(i.col()), *i);
+    auto transpose = args.getBool("transpose");
+    for (auto i = M.begin(), end = M.end(); i != end; ++i) {
+        if (transpose) {
+            trips.emplace_back(cols.at(i.col()), rows.at(i.row()), *i);
+        }
+        else {
+            trips.emplace_back(rows.at(i.row()), cols.at(i.col()), *i);
+        }
     }
 
 
