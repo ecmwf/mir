@@ -10,11 +10,13 @@
  */
 
 
+#include <algorithm>
 #include <memory>
 #include <numeric>
 #include <vector>
 
 #include "eckit/linalg/SparseMatrix.h"
+#include "eckit/linalg/Triplet.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 
@@ -30,7 +32,6 @@ namespace mir::tools {
 
 
 using Renumber = std::vector<size_t>;
-using Ordering = repres::proxy::HEALPix::Ordering;
 
 static util::once_flag ONCE;
 static util::recursive_mutex* MUTEX = nullptr;
@@ -50,7 +51,7 @@ struct Reorder {
 
     virtual ~Reorder() = default;
 
-    virtual Renumber reorder(Ordering) = 0;
+    virtual Renumber reorder() = 0;
 
     Reorder(const Reorder&)            = delete;
     Reorder(Reorder&&)                 = delete;
@@ -128,7 +129,7 @@ struct Identity final : Reorder {
     explicit Identity(size_t N) : N_(N) {}
 
 private:
-    Renumber reorder(Ordering) override {
+    Renumber reorder() override {
         Renumber renumber(N_);
         std::iota(renumber.begin(), renumber.end(), 0);
         return renumber;
@@ -140,30 +141,46 @@ private:
 
 struct HEALPix : Reorder {
     explicit HEALPix(size_t N) :
-        N_(N), Nside_([N] {
+        N_(N),
+        Nside_([N] {
             auto Nside = static_cast<size_t>(std::sqrt(static_cast<double>(N) / 12.));
             ASSERT_MSG(12 * Nside * Nside == N, "Expected N = 12 * Nside ** 2, got N=" + std::to_string(N));
             return Nside;
-        }()) {}
+        }()),
+        healpix_(static_cast<int>(Nside_)) {}
 
     size_t N() const { return N_; }
     size_t Nside() const { return Nside_; }
+    const repres::proxy::HEALPix::Reorder& healpix() const { return healpix_; }
 
 private:
     const size_t N_;
     const size_t Nside_;
+    const repres::proxy::HEALPix::Reorder healpix_;
 };
 
 
 struct HEALPixRingToNested final : HEALPix {
     explicit HEALPixRingToNested(size_t N) : HEALPix(N) {}
-    Renumber reorder(Ordering) override { NOTIMP; }
+    Renumber reorder() override {
+        Renumber map(N());
+        for (size_t i = 0; i < N(); ++i) {
+            map[i] = static_cast<size_t>(healpix().ring_to_nest(static_cast<int>(i)));
+        }
+        return map;
+    }
 };
 
 
 struct HEALPixNestedToRing final : HEALPix {
     explicit HEALPixNestedToRing(size_t N) : HEALPix(N) {}
-    Renumber reorder(Ordering) override { NOTIMP; }
+    Renumber reorder() override {
+        Renumber map(N());
+        for (size_t i = 0; i < N(); ++i) {
+            map[i] = static_cast<size_t>(healpix().nest_to_ring(static_cast<int>(i)));
+        }
+        return map;
+    }
 };
 
 
@@ -198,22 +215,35 @@ struct MIRMatrixReorder : MIRTool {
 
 
 void MIRMatrixReorder::execute(const eckit::option::CmdArgs& args) {
-    // access input matrix
-    eckit::linalg::SparseMatrix in;
-    in.load(args(0));
+    // load input matrix
+    eckit::linalg::SparseMatrix M;
+    M.load(args(0));
 
 
-    // renumbering methods
-    std::unique_ptr<Reorder> rows(ReorderFactory::build(args.getString("reorder-rows"), in.rows()));
-    std::unique_ptr<Reorder> cols(ReorderFactory::build(args.getString("reorder-cols"), in.cols()));
+    // renumbering maps
+    auto rows = std::unique_ptr<Reorder>(ReorderFactory::build(args.getString("reorder-rows"), M.rows()))->reorder();
+    ASSERT(rows.size() == M.rows());
+
+    auto cols = std::unique_ptr<Reorder>(ReorderFactory::build(args.getString("reorder-cols"), M.cols()))->reorder();
+    ASSERT(cols.size() == M.cols());
 
 
     // expand triplets, renumbering directly
-    // SparseMatrix(Size rows, Size cols, const std::vector<Triplet>& triplets);
+    std::vector<eckit::linalg::Triplet> trips;
+    trips.reserve(M.nonZeros());
+
+    for (auto i = M.begin(); i != M.end(); ++i) {
+        trips.emplace_back(rows.at(i.row()), cols.at(i.col()), *i);
+    }
 
 
-    // compress triplets
-    // NOTIMP;  // TODO
+    // compress triplets, create output matrix
+    std::sort(trips.begin(), trips.end());
+    eckit::linalg::SparseMatrix W(M.rows(), M.cols(), trips);
+
+
+    // create output matrix
+    W.save(args(1));
 }
 
 
