@@ -14,10 +14,11 @@
 
 #include <ostream>
 
+#include "eckit/utils/StringTools.h"
 #include "eckit/utils/Translator.h"
+
 #include "mir/key/grid/NamedHEALPix.h"
 #include "mir/util/Exceptions.h"
-
 
 namespace mir::key::grid {
 
@@ -34,7 +35,13 @@ void HEALPixPattern::print(std::ostream& out) const {
 
 
 const Grid* HEALPixPattern::make(const std::string& name) const {
-    return new NamedHEALPix(name, eckit::Translator<std::string, size_t>()(name.substr(1)));
+    auto nested = eckit::StringTools::endsWith(name, "_nested");
+    ASSERT(!nested || name.size() > 8);
+
+    auto Nside = eckit::Translator<std::string, size_t>()(nested ? name.substr(1, name.size() - 8) : name.substr(1));
+
+    return new NamedHEALPix(name, Nside,
+                            nested ? NamedHEALPix::Ordering::healpix_nested : NamedHEALPix::Ordering::healpix_ring);
 }
 
 
@@ -45,6 +52,7 @@ std::string HEALPixPattern::canonical(const std::string& name, const param::MIRP
 
 
 static const HEALPixPattern __pattern1("^[hH][1-9][0-9]*$");
+static const HEALPixPattern __pattern2("^[hH][1-9][0-9]*_nested$");
 
 
 }  // namespace mir::key::grid
