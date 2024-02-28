@@ -20,6 +20,7 @@
 #include "mir/key/grid/NamedHEALPix.h"
 #include "mir/util/Exceptions.h"
 
+
 namespace mir::key::grid {
 
 
