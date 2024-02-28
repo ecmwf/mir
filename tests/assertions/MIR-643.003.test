@@ -1,0 +1,10 @@
+# mars
+gridType=healpix,Nside=32,orderingConvention=nested.grib2
+# mir
+--grid=h16_nested --interpolation=grid-box-average
+# grib_get
+gridType=healpix
+orderingConvention=nested
+Nside=16
+packingType=grid_ccsds
+edition=2
