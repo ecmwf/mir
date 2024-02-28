@@ -15,19 +15,18 @@
 #include <ostream>
 
 
-namespace mir::repres {
+namespace mir::repres::unsupported {
 
 
-Albers::Albers(const param::MIRParametrisation& /*parametrisation*/) {}
+Albers::Albers(const param::MIRParametrisation&) {}
 
 
 void Albers::print(std::ostream& out) const {
-    out << "Albers["
-        << "]";
+    out << "Albers[]";
 }
 
 
 static const RepresentationBuilder<Albers> __repres("albers");
 
 
-}  // namespace mir::repres
+}  // namespace mir::repres::unsupported

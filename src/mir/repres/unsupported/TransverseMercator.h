@@ -15,18 +15,20 @@
 #include "mir/repres/Gridded.h"
 
 
-namespace mir::repres {
+namespace mir::repres::unsupported {
 
 
-class TransverseMercator : public Gridded {
+class TransverseMercator final : public Gridded {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    TransverseMercator(const param::MIRParametrisation&);
+    explicit TransverseMercator(const param::MIRParametrisation&);
+
     TransverseMercator(const TransverseMercator&) = delete;
+    TransverseMercator(TransverseMercator&&)      = delete;
 
     // -- Destructor
     // None
@@ -37,6 +39,7 @@ public:
     // -- Operators
 
     TransverseMercator& operator=(const TransverseMercator&) = delete;
+    TransverseMercator& operator=(TransverseMercator&&)      = delete;
 
     // -- Methods
     // // None
@@ -88,4 +91,4 @@ private:
 };
 
 
-}  // namespace mir::repres
+}  // namespace mir::repres::unsupported

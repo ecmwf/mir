@@ -15,19 +15,18 @@
 #include <ostream>
 
 
-namespace mir::repres {
+namespace mir::repres::unsupported {
 
 
-TransverseMercator::TransverseMercator(const param::MIRParametrisation& /*parametrisation*/) {}
+TransverseMercator::TransverseMercator(const param::MIRParametrisation&) {}
 
 
 void TransverseMercator::print(std::ostream& out) const {
-    out << "TransverseMercator["
-        << "]";
+    out << "TransverseMercator[]";
 }
 
 
 static const RepresentationBuilder<TransverseMercator> __repres("transverse_mercator");
 
 
-}  // namespace mir::repres
+}  // namespace mir::repres::unsupported

@@ -15,19 +15,18 @@
 #include <ostream>
 
 
-namespace mir::repres {
+namespace mir::repres::unsupported {
 
 
-StretchedRotatedGG::StretchedRotatedGG(const param::MIRParametrisation& /*parametrisation*/) {}
+StretchedRotatedGG::StretchedRotatedGG(const param::MIRParametrisation&) {}
 
 
 void StretchedRotatedGG::print(std::ostream& out) const {
-    out << "StretchedRotatedGG["
-        << "]";
+    out << "StretchedRotatedGG[]";
 }
 
 
 static const RepresentationBuilder<StretchedRotatedGG> __repres("stretched_rotated_gg");
 
 
-}  // namespace mir::repres
+}  // namespace mir::repres::unsupported

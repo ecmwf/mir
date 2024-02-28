@@ -15,18 +15,20 @@
 #include "mir/repres/Gridded.h"
 
 
-namespace mir::repres {
+namespace mir::repres::unsupported {
 
 
-class StretchedRotatedLL : public Gridded {
+class StretchedRotatedLL final : public Gridded {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    StretchedRotatedLL(const param::MIRParametrisation&);
+    explicit StretchedRotatedLL(const param::MIRParametrisation&);
+
     StretchedRotatedLL(const StretchedRotatedLL&) = delete;
+    StretchedRotatedLL(StretchedRotatedLL&&)      = delete;
 
     // -- Destructor
     // None
@@ -37,6 +39,7 @@ public:
     // -- Operators
 
     StretchedRotatedLL& operator=(const StretchedRotatedLL&) = delete;
+    StretchedRotatedLL& operator=(StretchedRotatedLL&&)      = delete;
 
     // -- Methods
     // // None
@@ -88,4 +91,4 @@ private:
 };
 
 
-}  // namespace mir::repres
+}  // namespace mir::repres::unsupported

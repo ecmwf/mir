@@ -15,19 +15,18 @@
 #include <ostream>
 
 
-namespace mir::repres {
+namespace mir::repres::unsupported {
 
 
-RotatedSH::RotatedSH(const param::MIRParametrisation& /*parametrisation*/) {}
+RotatedSH::RotatedSH(const param::MIRParametrisation&) {}
 
 
 void RotatedSH::print(std::ostream& out) const {
-    out << "RotatedSH["
-        << "]";
+    out << "RotatedSH[]";
 }
 
 
 static const RepresentationBuilder<RotatedSH> __repres("rotated_sh");
 
 
-}  // namespace mir::repres
+}  // namespace mir::repres::unsupported

@@ -15,7 +15,7 @@
 #include "mir/repres/Gridded.h"
 
 
-namespace mir::repres {
+namespace mir::repres::unsupported {
 
 
 class IrregularLatlon : public Gridded {
@@ -113,4 +113,4 @@ private:
 };
 
 
-}  // namespace mir::repres
+}  // namespace mir::repres::unsupported

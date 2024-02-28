@@ -15,19 +15,18 @@
 #include <ostream>
 
 
-namespace mir::repres {
+namespace mir::repres::unsupported {
 
 
-StretchedLL::StretchedLL(const param::MIRParametrisation& /*parametrisation*/) {}
+StretchedLL::StretchedLL(const param::MIRParametrisation&) {}
 
 
 void StretchedLL::print(std::ostream& out) const {
-    out << "StretchedLL["
-        << "]";
+    out << "StretchedLL[]";
 }
 
 
 static const RepresentationBuilder<StretchedLL> __repres("stretched_ll");
 
 
-}  // namespace mir::repres
+}  // namespace mir::repres::unsupported
