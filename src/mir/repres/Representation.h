@@ -199,7 +199,7 @@ class RepresentationHandle {
 
 public:
     RepresentationHandle(const Representation*);
-    RepresentationHandle(const RepresentationHandle&);
+    explicit RepresentationHandle(const RepresentationHandle&);
     ~RepresentationHandle();
     const Representation* operator->() const { return representation_; }
     operator const Representation*() const { return representation_; }
@@ -217,7 +217,7 @@ class RepresentationFactory {
     RepresentationFactory& operator=(const RepresentationFactory&) = delete;
 
 protected:
-    RepresentationFactory(const std::string&);
+    explicit RepresentationFactory(const std::string&);
     virtual ~RepresentationFactory();
 
 public:
@@ -233,7 +233,7 @@ class RepresentationBuilder : public RepresentationFactory {
     Representation* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
-    RepresentationBuilder(const std::string& name) : RepresentationFactory(name) {}
+    explicit RepresentationBuilder(const std::string& name) : RepresentationFactory(name) {}
 };
 
 
