@@ -15,19 +15,18 @@
 #include <ostream>
 
 
-namespace mir::repres {
+namespace mir::repres::unsupported {
 
 
-StretchedSH::StretchedSH(const param::MIRParametrisation& /*parametrisation*/) {}
+StretchedSH::StretchedSH(const param::MIRParametrisation&) {}
 
 
 void StretchedSH::print(std::ostream& out) const {
-    out << "StretchedSH["
-        << "]";
+    out << "StretchedSH[]";
 }
 
 
 static const RepresentationBuilder<StretchedSH> __repres("stretched_sh");
 
 
-}  // namespace mir::repres
+}  // namespace mir::repres::unsupported

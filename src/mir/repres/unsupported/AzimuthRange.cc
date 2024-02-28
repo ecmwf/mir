@@ -15,19 +15,18 @@
 #include <ostream>
 
 
-namespace mir::repres {
+namespace mir::repres::unsupported {
 
 
-AzimuthRange::AzimuthRange(const param::MIRParametrisation& /*parametrisation*/) {}
+AzimuthRange::AzimuthRange(const param::MIRParametrisation&) {}
 
 
 void AzimuthRange::print(std::ostream& out) const {
-    out << "AzimuthRange["
-        << "]";
+    out << "AzimuthRange[]";
 }
 
 
 static const RepresentationBuilder<AzimuthRange> __repres("azimuth_range");
 
 
-}  // namespace mir::repres
+}  // namespace mir::repres::unsupported

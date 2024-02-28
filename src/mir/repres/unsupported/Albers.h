@@ -15,18 +15,20 @@
 #include "mir/repres/Gridded.h"
 
 
-namespace mir::repres {
+namespace mir::repres::unsupported {
 
 
-class Albers : public Gridded {
+class Albers final : public Gridded {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    Albers(const param::MIRParametrisation&);
+    explicit Albers(const param::MIRParametrisation&);
+
     Albers(const Albers&) = delete;
+    Albers(Albers&&)      = delete;
 
     // -- Destructor
     // None
@@ -37,6 +39,7 @@ public:
     // -- Operators
 
     Albers& operator=(const Albers&) = delete;
+    Albers& operator=(Albers&&)      = delete;
 
     // -- Methods
     // // None
@@ -88,4 +91,4 @@ private:
 };
 
 
-}  // namespace mir::repres
+}  // namespace mir::repres::unsupported

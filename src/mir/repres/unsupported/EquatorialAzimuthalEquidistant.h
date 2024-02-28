@@ -15,18 +15,20 @@
 #include "mir/repres/Gridded.h"
 
 
-namespace mir::repres {
+namespace mir::repres::unsupported {
 
 
-class EquatorialAzimuthalEquidistant : public Gridded {
+class EquatorialAzimuthalEquidistant final : public Gridded {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    EquatorialAzimuthalEquidistant(const param::MIRParametrisation&);
+    explicit EquatorialAzimuthalEquidistant(const param::MIRParametrisation&);
+
     EquatorialAzimuthalEquidistant(const EquatorialAzimuthalEquidistant&) = delete;
+    EquatorialAzimuthalEquidistant(EquatorialAzimuthalEquidistant&&)      = delete;
 
     // -- Destructor
     // None
@@ -37,6 +39,7 @@ public:
     // -- Operators
 
     EquatorialAzimuthalEquidistant& operator=(const EquatorialAzimuthalEquidistant&) = delete;
+    EquatorialAzimuthalEquidistant& operator=(EquatorialAzimuthalEquidistant&&)      = delete;
 
     // -- Methods
     // // None
@@ -88,4 +91,4 @@ private:
 };
 
 
-}  // namespace mir::repres
+}  // namespace mir::repres::unsupported

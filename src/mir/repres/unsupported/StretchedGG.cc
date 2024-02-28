@@ -15,19 +15,18 @@
 #include <ostream>
 
 
-namespace mir::repres {
+namespace mir::repres::unsupported {
 
 
-StretchedGG::StretchedGG(const param::MIRParametrisation& /*parametrisation*/) {}
+StretchedGG::StretchedGG(const param::MIRParametrisation&) {}
 
 
 void StretchedGG::print(std::ostream& out) const {
-    out << "StretchedGG["
-        << "]";
+    out << "StretchedGG[]";
 }
 
 
 static const RepresentationBuilder<StretchedGG> __repres("stretched_gg");
 
 
-}  // namespace mir::repres
+}  // namespace mir::repres::unsupported

@@ -15,18 +15,20 @@
 #include "mir/repres/Gridded.h"
 
 
-namespace mir::repres {
+namespace mir::repres::unsupported {
 
 
-class AzimuthRange : public Gridded {
+class AzimuthRange final : public Gridded {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    AzimuthRange(const param::MIRParametrisation&);
+    explicit AzimuthRange(const param::MIRParametrisation&);
+
     AzimuthRange(const AzimuthRange&) = delete;
+    AzimuthRange(AzimuthRange&&)      = delete;
 
     // -- Destructor
     // None
@@ -37,6 +39,7 @@ public:
     // -- Operators
 
     AzimuthRange& operator=(const AzimuthRange&) = delete;
+    AzimuthRange& operator=(AzimuthRange&&)      = delete;
 
     // -- Methods
     // // None
@@ -88,4 +91,4 @@ private:
 };
 
 
-}  // namespace mir::repres
+}  // namespace mir::repres::unsupported
