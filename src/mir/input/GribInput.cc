@@ -329,10 +329,11 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         {"gridded_regular_ll", "Ni", _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll"))},
 
         {"grid", "gridName",
-         _or(_or(_or(_or(_or(is("gridType", "regular_gg"), is("gridType", "reduced_gg")), is("gridType", "rotated_gg")),
-                     is("gridType", "reduced_rotated_gg")),
-                 is("gridType", "unstructured_grid")),
-             is("gridType", "healpix"))},
+         _or(_or(_or(_or(is("gridType", "regular_gg"), is("gridType", "reduced_gg")), is("gridType", "rotated_gg")),
+                 is("gridType", "reduced_rotated_gg")),
+             is("gridType", "unstructured_grid"))},
+
+        {"grid", "gridName_fix_for_healpix_grids", is("gridType", "healpix")},
 
         {"spectral", "pentagonalResolutionParameterJ"},
 
@@ -591,6 +592,40 @@ static ProcessingT<std::string>* packing() {
                 std::replace(value.begin(), value.end(), '_', '-');
                 return true;
             }
+        }
+
+        return false;
+    });
+}
+
+
+static ProcessingT<std::string>* gridName_fix_for_healpix_grids() {
+    return new ProcessingT<std::string>([](grib_handle* h, std::string& value) {
+        std::string gridName;
+
+        char buffer[64];
+        size_t size = sizeof(buffer);
+
+        GRIB_CALL(codes_get_string(h, "gridName", buffer, &size));
+        ASSERT(size < sizeof(buffer) - 1);
+
+        if (::strcmp(buffer, "MISSING") != 0) {
+            gridName += buffer;
+        }
+
+        size = sizeof(buffer);
+        GRIB_CALL(codes_get_string(h, "orderingConvention", buffer, &size));
+        ASSERT(size < sizeof(buffer) - 1);
+
+        if (::strcmp(buffer, "MISSING") != 0) {
+            if (::strcmp(buffer, "nested") == 0) {
+                gridName += "_nested";
+            }
+        }
+
+        if (!gridName.empty()) {
+            value = gridName;
+            return true;
         }
 
         return false;
@@ -1002,7 +1037,8 @@ bool GribInput::get(const std::string& name, std::string& value) const {
     int err     = codes_get_string(grib_, key, buffer, &size);
 
     if (err == CODES_NOT_FOUND) {
-        static const ProcessingList<std::string> process{{"packing", packing()}};
+        static const ProcessingList<std::string> process{
+            {"packing", packing()}, {"gridName_fix_for_healpix_grids", gridName_fix_for_healpix_grids()}};
 
         return get_value(key, grib_, value, process) || FieldParametrisation::get(name, value);
     }
