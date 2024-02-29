@@ -144,6 +144,16 @@ void KNearestNeighbours::assemble(util::MIRStatistics& /*unused*/, WeightMatrix&
 }
 
 
+void KNearestNeighbours::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << name();
+    MethodWeighted::json(j);
+    j << "nearestMethod" << pick();
+    j << "distanceWeighting" << distanceWeighting();
+    j.endObject();
+}
+
+
 void KNearestNeighbours::print(std::ostream& out) const {
     out << "KNearestNeighbours[";
     MethodWeighted::print(out);

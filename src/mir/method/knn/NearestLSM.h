@@ -20,11 +20,8 @@
 namespace mir::method::knn {
 
 
-class NearestLSM : public KNearestNeighbours {
-public:
-    NearestLSM(const param::MIRParametrisation&);
-
-    ~NearestLSM() override;
+struct NearestLSM final : KNearestNeighbours {
+    explicit NearestLSM(const param::MIRParametrisation&);
 
 private:
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,

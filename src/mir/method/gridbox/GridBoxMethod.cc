@@ -17,6 +17,7 @@
 #include <sstream>
 #include <vector>
 
+#include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -42,9 +43,6 @@ GridBoxMethod::GridBoxMethod(const param::MIRParametrisation& parametrisation) :
         throw exception::UserError("GridBoxMethod: rotated input/output not supported");
     }
 }
-
-
-GridBoxMethod::~GridBoxMethod() = default;
 
 
 bool GridBoxMethod::sameAs(const Method& other) const {
@@ -79,9 +77,10 @@ void GridBoxMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, c
 
     // set input and output grid boxes
     struct GridBoxes : std::vector<util::GridBox> {
-        GridBoxes(const repres::Representation& rep) : std::vector<util::GridBox>(rep.gridBoxes()) {
+        explicit GridBoxes(const repres::Representation& rep) : vector(rep.gridBoxes()) {
             ASSERT(size() == rep.numberOfPoints());
         }
+
         double getLongestGridBoxDiagonal() const {
             double R = 0.;
             for (const auto& box : *this) {
@@ -143,7 +142,7 @@ void GridBoxMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, c
                     double smallArea = smallBox.area();
                     ASSERT(smallArea > 0.);
 
-                    triplets.emplace_back(WeightMatrix::Triplet(i, j, smallArea / area));
+                    triplets.emplace_back(i, j, smallArea / area);
                     sumSmallAreas += smallArea;
 
                     if ((areaMatch = eckit::types::is_approximately_equal(area, sumSmallAreas, 1. /*m^2*/))) {
@@ -159,7 +158,7 @@ void GridBoxMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, c
             }
             else {
                 ++nbFailures;
-                failures.push_front({i, it->pointUnrotated()});
+                failures.emplace_front(i, it->pointUnrotated());
             }
         }
     }
@@ -189,6 +188,14 @@ void GridBoxMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, c
 void GridBoxMethod::hash(eckit::MD5& md5) const {
     MethodWeighted::hash(md5);
     md5.add(name());
+}
+
+
+void GridBoxMethod::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "grid-box-method";
+    MethodWeighted::json(j);
+    j.endObject();
 }
 
 

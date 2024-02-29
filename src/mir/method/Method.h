@@ -42,11 +42,14 @@ namespace mir::method {
 class Method {
 public:
     Method(const param::MIRParametrisation&);
+
     Method(const Method&) = delete;
+    Method(Method&&)      = delete;
 
     virtual ~Method();
 
     void operator=(const Method&) = delete;
+    void operator=(Method&&)      = delete;
 
     virtual void hash(eckit::MD5&) const = 0;
 

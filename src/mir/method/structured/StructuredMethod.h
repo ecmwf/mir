@@ -62,8 +62,6 @@ protected:
 
     bool sameAs(const Method&) const override = 0;
 
-    void print(std::ostream&) const override;
-
 private:
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
                   const repres::Representation& out) const override;

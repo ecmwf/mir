@@ -21,11 +21,8 @@
 namespace mir::method::knn {
 
 
-class KNearestStatistics : public KNearestNeighbours {
-public:
-    KNearestStatistics(const param::MIRParametrisation&);
-
-    ~KNearestStatistics() override;
+struct KNearestStatistics final : KNearestNeighbours {
+    explicit KNearestStatistics(const param::MIRParametrisation&);
 
 private:
     const char* name() const override;
