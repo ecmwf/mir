@@ -15,6 +15,7 @@
 #include <ostream>
 #include <sstream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -110,6 +111,13 @@ void MissingIfHeaviestMissing::hash(eckit::MD5& h) const {
     std::ostringstream s;
     s << *this;
     h.add(s.str());
+}
+
+
+void MissingIfHeaviestMissing::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "missing-if-heaviest-missing";
+    j.endObject();
 }
 
 

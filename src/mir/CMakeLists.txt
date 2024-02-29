@@ -426,8 +426,8 @@ list(APPEND mir_srcs
     method/nonlinear/NoNonLinear.h
     method/nonlinear/NonLinear.cc
     method/nonlinear/NonLinear.h
-    method/nonlinear/SimulateMissingValue.cc
-    method/nonlinear/SimulateMissingValue.h
+    method/nonlinear/SimulatedMissingValue.cc
+    method/nonlinear/SimulatedMissingValue.h
     method/solver/Multiply.cc
     method/solver/Multiply.h
     method/solver/Solver.h

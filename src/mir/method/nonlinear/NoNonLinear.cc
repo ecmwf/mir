@@ -15,6 +15,7 @@
 #include <ostream>
 #include <sstream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
 
@@ -47,6 +48,13 @@ void NoNonLinear::hash(eckit::MD5& h) const {
     std::ostringstream s;
     s << *this;
     h.add(s.str());
+}
+
+
+void NoNonLinear::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "no";
+    j.endObject();
 }
 
 
