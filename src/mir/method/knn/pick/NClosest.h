@@ -25,8 +25,10 @@ struct NClosest : Pick {
     bool sameAs(const Pick&) const override;
 
 private:
+    void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;
+
     size_t nClosest_;
 };
 

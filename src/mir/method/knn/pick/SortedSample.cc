@@ -14,6 +14,7 @@
 
 #include <algorithm>
 
+#include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
 
@@ -46,6 +47,14 @@ bool SortedSample::sameAs(const Pick& other) const {
 void SortedSample::hash(eckit::MD5& h) const {
     h << "sample-sorted";
     h << sample_;
+}
+
+
+void SortedSample::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "sorted-sample";
+    j << "sample" << sample_;
+    j.endObject();
 }
 
 
