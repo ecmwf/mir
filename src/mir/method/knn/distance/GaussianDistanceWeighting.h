@@ -24,11 +24,13 @@ struct GaussianDistanceWeighting : DistanceWeighting {
                     std::vector<WeightMatrix::Triplet>& triplets) const override;
 
 private:
-    double stddev_;
-    double exponentFactor_;
     bool sameAs(const DistanceWeighting&) const override;
+    void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;
+
+    double stddev_;
+    double exponentFactor_;
 };
 
 

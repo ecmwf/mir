@@ -15,6 +15,7 @@
 #include <limits>
 #include <sstream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -74,13 +75,20 @@ void NearestLSMWithLowestIndex::operator()(size_t ip, const Point3& point,
     ASSERT(choice.index() < imask_.size());
     size_t jp = choice.index();
 
-    triplets.assign(1, WeightMatrix::Triplet(ip, jp, 1.));
+    triplets.assign(1, {ip, jp, 1.});
 }
 
 
 bool NearestLSMWithLowestIndex::sameAs(const DistanceWeighting& other) const {
     const auto* o = dynamic_cast<const NearestLSMWithLowestIndex*>(&other);
     return (o != nullptr);
+}
+
+
+void NearestLSMWithLowestIndex::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "nearest-lsm-with-lowest-index";
+    j.endObject();
 }
 
 

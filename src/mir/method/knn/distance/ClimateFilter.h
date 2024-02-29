@@ -25,8 +25,10 @@ struct ClimateFilter : DistanceWeighting {
 
 private:
     bool sameAs(const DistanceWeighting&) const override;
+    void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;
+
     double halfDelta_;
     double delta_;
 };

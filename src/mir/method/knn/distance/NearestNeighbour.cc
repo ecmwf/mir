@@ -14,6 +14,7 @@
 
 #include <sstream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/util/Exceptions.h"
@@ -30,13 +31,20 @@ void NearestNeighbour::operator()(size_t ip, const Point3& /*point*/,
                                   std::vector<WeightMatrix::Triplet>& triplets) const {
 
     ASSERT(!neighbours.empty());
-    triplets.assign(1, WeightMatrix::Triplet(ip, neighbours.front().payload(), 1.));
+    triplets.assign(1, {ip, neighbours.front().payload(), 1.});
 }
 
 
 bool NearestNeighbour::sameAs(const DistanceWeighting& other) const {
     const auto* o = dynamic_cast<const NearestNeighbour*>(&other);
     return (o != nullptr);
+}
+
+
+void NearestNeighbour::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "nearest-neighbour";
+    j.endObject();
 }
 
 

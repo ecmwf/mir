@@ -15,6 +15,7 @@
 #include <cmath>
 #include <sstream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -54,7 +55,7 @@ void GaussianDistanceWeighting::operator()(size_t ip, const Point3& point,
         const double d2     = Point3::distance2(point, n.point());
         const double weight = std::exp(d2 * exponentFactor_);
 
-        triplets.emplace_back(WeightMatrix::Triplet(ip, n.payload(), weight));
+        triplets.emplace_back(ip, n.payload(), weight);
         sum += weight;
     }
 
@@ -69,6 +70,14 @@ void GaussianDistanceWeighting::operator()(size_t ip, const Point3& point,
 bool GaussianDistanceWeighting::sameAs(const DistanceWeighting& other) const {
     const auto* o = dynamic_cast<const GaussianDistanceWeighting*>(&other);
     return (o != nullptr) && eckit::types::is_approximately_equal(stddev_, o->stddev_);
+}
+
+
+void GaussianDistanceWeighting::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "gaussian";
+    j << "distance-weighting-gaussian-stddev" << stddev_;
+    j.endObject();
 }
 
 

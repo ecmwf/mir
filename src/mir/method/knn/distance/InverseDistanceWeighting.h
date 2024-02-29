@@ -25,11 +25,13 @@ protected:
                     std::vector<WeightMatrix::Triplet>& triplets) const override;
 
 private:
-    double power_;
-    double halfPower_;
     bool sameAs(const DistanceWeighting&) const override;
+    void json(eckit::JSON& j) const override;
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;
+
+    double power_;
+    double halfPower_;
 };
 
 

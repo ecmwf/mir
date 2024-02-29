@@ -14,6 +14,7 @@
 
 #include <sstream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/util/Exceptions.h"
@@ -50,7 +51,7 @@ void InverseDistanceWeightingSquared::operator()(size_t ip, const Point3& point,
     // normalise all weights according to the total, and set sparse matrix triplets
     for (size_t i = 0; i < nbPoints; ++i) {
         size_t jp = neighbours[i].payload();
-        triplets.emplace_back(WeightMatrix::Triplet(ip, jp, weights[i] / sum));
+        triplets.emplace_back(ip, jp, weights[i] / sum);
     }
 }
 
@@ -58,6 +59,13 @@ void InverseDistanceWeightingSquared::operator()(size_t ip, const Point3& point,
 bool InverseDistanceWeightingSquared::sameAs(const DistanceWeighting& other) const {
     const auto* o = dynamic_cast<const InverseDistanceWeightingSquared*>(&other);
     return (o != nullptr);
+}
+
+
+void InverseDistanceWeightingSquared::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "inverse-distance-weighting-squared";
+    j.endObject();
 }
 
 

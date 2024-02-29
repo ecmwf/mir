@@ -14,6 +14,7 @@
 
 #include <sstream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/util/Exceptions.h"
@@ -34,9 +35,9 @@ void NoDistanceWeighting::operator()(size_t ip, const Point3& /*point*/,
     triplets.reserve(neighbours.size());
 
     // average neighbour points
-    auto weight = 1. / double(neighbours.size());
+    auto weight = 1. / static_cast<double>(neighbours.size());
     for (const auto& n : neighbours) {
-        triplets.emplace_back(WeightMatrix::Triplet(ip, n.payload(), weight));
+        triplets.emplace_back(ip, n.payload(), weight);
     }
 }
 
@@ -44,6 +45,13 @@ void NoDistanceWeighting::operator()(size_t ip, const Point3& /*point*/,
 bool NoDistanceWeighting::sameAs(const DistanceWeighting& other) const {
     const auto* o = dynamic_cast<const NoDistanceWeighting*>(&other);
     return (o != nullptr);
+}
+
+
+void NoDistanceWeighting::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "no";
+    j.endObject();
 }
 
 
