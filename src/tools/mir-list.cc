@@ -31,8 +31,7 @@ struct MIRList : MIRTool {
     int minimumPositionalArguments() const override { return 1; }
 
     void usage(const std::string& tool) const override {
-        Log::info() << "\n"
-                    << "Usage: " << tool << " ..." << std::endl;
+        Log::info() << "\n" << "Usage: " << tool << " ..." << std::endl;
     }
 
     void execute(const eckit::option::CmdArgs& args) override;

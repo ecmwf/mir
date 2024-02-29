@@ -232,7 +232,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
 
     log << "Matrix footprint " << w.owner() << " " << usage << " W -> " << W.owner() << std::endl;
 
-    if (std::string filename;parametrisation_.get("dump-weights-info", filename)) {
+    if (std::string filename; parametrisation_.get("dump-weights-info", filename)) {
         std::ofstream file(filename);
         eckit::JSON j(file);
         j.startObject();
@@ -427,8 +427,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
         if (check_stats) {
             // compute some statistics on the result
             auto ostats = field.statistics(i);
-            log << "Input field statistics:  " << istats << "\n"
-                << "Output field statistics: " << ostats << std::endl;
+            log << "Input field statistics:  " << istats << "\n" << "Output field statistics: " << ostats << std::endl;
         }
     }
 }

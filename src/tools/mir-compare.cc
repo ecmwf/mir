@@ -26,8 +26,7 @@ struct MIRCompare : MIRTool {
     int numberOfPositionalArguments() const override { return 2; }
 
     void usage(const std::string& tool) const override {
-        Log::info() << "\n"
-                    << "Usage: " << tool << " [options] file1 file2" << std::endl;
+        Log::info() << "\n" << "Usage: " << tool << " [options] file1 file2" << std::endl;
     }
 
     void execute(const eckit::option::CmdArgs& args) override;

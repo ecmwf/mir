@@ -61,8 +61,8 @@ void Rotation::normalize() {
 
 
 void Rotation::print(std::ostream& out) const {
-    out << "Rotation["
-        << "south_pole_latitude=" << south_pole_latitude_ << ",south_pole_longitude=" << south_pole_longitude_
+    out << "Rotation[" << "south_pole_latitude=" << south_pole_latitude_
+        << ",south_pole_longitude=" << south_pole_longitude_
         << ",south_pole_rotation_angle=" << south_pole_rotation_angle_ << "]";
 }
 

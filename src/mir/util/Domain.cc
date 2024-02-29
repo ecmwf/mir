@@ -34,8 +34,7 @@ Domain::operator atlas::RectangularDomain() const {
 
 
 void Domain::print(std::ostream& os) const {
-    os << "Domain["
-       << "north=" << north() << ",west=" << west() << ",south=" << south() << ",east=" << east()
+    os << "Domain[" << "north=" << north() << ",west=" << west() << ",south=" << south() << ",east=" << east()
        << ",isGlobal=" << isGlobal() << "]";
 }
 

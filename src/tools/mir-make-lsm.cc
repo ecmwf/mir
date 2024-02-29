@@ -28,8 +28,7 @@ struct MIRMakeLSM : MIRTool {
     int minimumPositionalArguments() const override { return 2; }
 
     void usage(const std::string& tool) const override {
-        Log::info() << "\n"
-                    << "Usage: " << tool << " file.grib file.lsm" << std::endl;
+        Log::info() << "\n" << "Usage: " << tool << " file.grib file.lsm" << std::endl;
     }
 
     void execute(const eckit::option::CmdArgs& /*unused*/) override;

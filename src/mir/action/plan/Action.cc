@@ -172,8 +172,7 @@ Action* ActionFactory::build(const std::string& name, const param::MIRParametris
 
                         if (j != m->end()) {
                             std::ostringstream oss;
-                            oss << "ActionFactory: ambiguous '" << name << "'"
-                                << ", could be '" << j->first << "'"
+                            oss << "ActionFactory: ambiguous '" << name << "'" << ", could be '" << j->first << "'"
                                 << " or '" << p->first << "'";
                             Log::error() << "   " << j->first << std::endl;
                             throw exception::SeriousBug(oss.str());
