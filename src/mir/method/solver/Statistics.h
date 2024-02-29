@@ -14,6 +14,8 @@
 
 #include <memory>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/method/solver/Solver.h"
 
 
@@ -37,10 +39,9 @@ struct Statistics final : solver::Solver {
 
 private:
     bool sameAs(const Solver&) const override;
-
     void print(std::ostream&) const override;
-
     void hash(eckit::MD5&) const override;
+    void json(eckit::JSON&) const override;
 
     std::unique_ptr<stats::Field> stats_;
 };
