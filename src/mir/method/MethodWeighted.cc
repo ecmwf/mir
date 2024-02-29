@@ -232,19 +232,16 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
 
     log << "Matrix footprint " << w.owner() << " " << usage << " W -> " << W.owner() << std::endl;
 
-    std::string filename;
-    if (parametrisation_.get("dump-weights-info", filename)) {
-
+    if (std::string filename;parametrisation_.get("dump-weights-info", filename)) {
         std::ofstream file(filename);
-        eckit::JSON json(file);
-        json.startObject();
-        json << "input" << in;
-        json << "output" << out;
-        json << "rows" << w.rows();
-        json << "columns" << w.cols();
-        json << "cache_file" << cacheFile;
-        json.endObject();
-        file.close();
+        eckit::JSON j(file);
+        j.startObject();
+        j << "input" << in;
+        j << "output" << out;
+        j << "rows" << w.rows();
+        j << "columns" << w.cols();
+        j << "cache_file" << cacheFile;
+        j.endObject();
     }
 
     matrix_cache.footprint(memory_key, usage);
