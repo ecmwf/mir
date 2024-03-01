@@ -20,11 +20,15 @@ namespace mir::reorder {
 
 struct HEALPixRingToNested final : Reorder {
     Renumber reorder(size_t N) const override;
+private:
+    void print(std::ostream&) const override;
 };
 
 
 struct HEALPixNestedToRing final : Reorder {
     Renumber reorder(size_t N) const override;
+private:
+    void print(std::ostream&) const override;
 };
 
 

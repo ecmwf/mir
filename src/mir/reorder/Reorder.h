@@ -21,7 +21,8 @@ namespace mir::reorder {
 using Renumber = std::vector<size_t>;
 
 
-struct Reorder {
+class Reorder {
+public:
     Reorder() = default;
 
     virtual ~Reorder() = default;
@@ -32,6 +33,14 @@ struct Reorder {
     Reorder(Reorder&&)                 = delete;
     Reorder& operator=(const Reorder&) = delete;
     Reorder& operator=(Reorder&&)      = delete;
+
+private:
+    virtual void print(std::ostream&) const = 0;
+
+    friend std::ostream& operator<<(std::ostream& s, const Reorder& p) {
+        p.print(s);
+        return s;
+    }
 };
 
 

@@ -16,6 +16,7 @@
 #include <cmath>
 #include <string>
 #include <tuple>
+#include <ostream>
 
 #include "mir/util/Exceptions.h"
 
@@ -236,6 +237,11 @@ Renumber HEALPixRingToNested::reorder(size_t N) const {
 }
 
 
+void HEALPixRingToNested::print(std::ostream&s) const {
+    s<<"HEALPixRingToNested[]";
+}
+
+
 Renumber HEALPixNestedToRing::reorder(size_t N) const {
     HEALPixReorder reorder(N);
     Renumber map(N);
@@ -243,6 +249,11 @@ Renumber HEALPixNestedToRing::reorder(size_t N) const {
         map[i] = static_cast<size_t>(reorder.nest_to_ring(static_cast<int>(i)));
     }
     return map;
+}
+
+
+void HEALPixNestedToRing::print(std::ostream&s) const {
+    s<<"HEALPixNestedToRing[]";
 }
 
 

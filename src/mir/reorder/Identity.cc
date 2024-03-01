@@ -13,6 +13,7 @@
 #include "mir/reorder/Identity.h"
 
 #include <numeric>
+#include <ostream>
 
 
 namespace mir::reorder {
@@ -22,6 +23,11 @@ Renumber Identity::reorder(size_t N) const {
     Renumber renumber(N);
     std::iota(renumber.begin(), renumber.end(), 0);
     return renumber;
+}
+
+
+void Identity::print(std::ostream &s) const {
+    s << "Identity[]";
 }
 
 

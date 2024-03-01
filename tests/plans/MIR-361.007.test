@@ -3,4 +3,4 @@ regular_ll.2-2.grib1
 # mir
 --rotation=30/30
 # plan
-Gridded2RotatedLL[increments=Increments[west_east=2,south_north=2],bbox=BoundingBox[north=90,west=0,south=-90,east=358],rotation=Rotation[south_pole_latitude=30,south_pole_longitude=30,south_pole_rotation_angle=0],interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],Solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|Save[output=...]
+Gridded2RotatedLL[increments=Increments[west_east=2,south_north=2],bbox=BoundingBox[north=90,west=0,south=-90,east=358],rotation=Rotation[south_pole_latitude=30,south_pole_longitude=30,south_pole_rotation_angle=0],interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|Save[output=...]

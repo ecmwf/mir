@@ -89,8 +89,19 @@ void MethodWeighted::print(std::ostream& out) const {
     }
     out << "]";
 
-    out << ",Solver=" << *solver_ << ",cropping=" << cropping_ << ",lsmWeightAdjustment=" << lsmWeightAdjustment_
-        << ",pruneEpsilon=" << pruneEpsilon_ << ",poleDisplacement=" << poleDisplacement_;
+    if (reorderRows_) {
+        out << ",reorderRows=" << *reorderRows_;
+    }
+
+    if (reorderCols_) {
+        out << ",reorderCols=" << *reorderCols_;
+    }
+
+    out << ",solver=" << *solver_;
+    out << ",cropping=" << cropping_;
+    out << ",lsmWeightAdjustment=" << lsmWeightAdjustment_;
+    out << ",pruneEpsilon=" << pruneEpsilon_;
+    out << ",poleDisplacement=" << poleDisplacement_;
 }
 
 
