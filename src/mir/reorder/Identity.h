@@ -19,11 +19,8 @@ namespace mir::reorder {
 
 
 struct Identity final : Reorder {
-    explicit Identity(size_t N) : N_(N) {}
-
 private:
-    Renumber reorder() const override;
-    const size_t N_;
+    Renumber reorder(size_t N) const override;
 };
 
 

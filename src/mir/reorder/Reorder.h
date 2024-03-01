@@ -26,7 +26,7 @@ struct Reorder {
 
     virtual ~Reorder() = default;
 
-    virtual Renumber reorder() const = 0;
+    virtual Renumber reorder(size_t N) const = 0;
 
     Reorder(const Reorder&)            = delete;
     Reorder(Reorder&&)                 = delete;
@@ -38,7 +38,7 @@ struct Reorder {
 class ReorderFactory {
 private:
     std::string name_;
-    virtual Reorder* make(size_t N) = 0;
+    virtual Reorder* make() = 0;
 
 protected:
     explicit ReorderFactory(const std::string& name);
@@ -51,14 +51,14 @@ public:
     ReorderFactory& operator=(const ReorderFactory&) = delete;
     ReorderFactory& operator=(ReorderFactory&&)      = delete;
 
-    static Reorder* build(const std::string& name, size_t N);
+    static Reorder* build(const std::string& name);
     static std::ostream& list(std::ostream& out);
 };
 
 
 template <class T>
 class ReorderBuilder : public ReorderFactory {
-    Reorder* make(size_t N) override { return new T(N); }
+    Reorder* make() override { return new T; }
 
 public:
     explicit ReorderBuilder(const std::string& name) : ReorderFactory(name) {}

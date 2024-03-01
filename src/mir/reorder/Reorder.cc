@@ -54,12 +54,12 @@ ReorderFactory::~ReorderFactory() {
 }
 
 
-Reorder* ReorderFactory::build(const std::string& name, size_t N) {
+Reorder* ReorderFactory::build(const std::string& name) {
     util::call_once(ONCE, init);
     util::lock_guard<util::recursive_mutex> lock(*MUTEX);
 
     if (auto j = M->find(name); j != M->end()) {
-        return j->second->make(N);
+        return j->second->make();
     }
 
     list(Log::error() << "ReorderFactory: unknown '" << name << "', choices are:\n") << std::endl;

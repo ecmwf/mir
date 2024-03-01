@@ -18,34 +18,13 @@
 namespace mir::reorder {
 
 
-class HEALPixReorder : public Reorder {
-public:
-    explicit HEALPixReorder(size_t N);
-
-protected:
-    size_t N() const { return Npix_; }
-    size_t Nside() const { return Nside_; }
-
-    int nest_to_ring(int) const;
-    int ring_to_nest(int) const;
-
-private:
-    const int Nside_;  // up to 2^13
-    const int Npix_;
-    const int Ncap_;
-    const int k_;
+struct HEALPixRingToNested final : Reorder {
+    Renumber reorder(size_t N) const override;
 };
 
 
-struct HEALPixRingToNested final : HEALPixReorder {
-    using HEALPixReorder::HEALPixReorder;
-    Renumber reorder() const override;
-};
-
-
-struct HEALPixNestedToRing final : HEALPixReorder {
-    using HEALPixReorder::HEALPixReorder;
-    Renumber reorder() const override;
+struct HEALPixNestedToRing final : Reorder {
+    Renumber reorder(size_t N) const override;
 };
 
 

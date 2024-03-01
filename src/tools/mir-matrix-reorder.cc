@@ -68,11 +68,11 @@ void MIRMatrixReorder::execute(const eckit::option::CmdArgs& args) {
 
     // renumbering maps
     auto rows =
-        std::unique_ptr<Reorder>(reorder::ReorderFactory::build(args.getString("reorder-rows"), M.rows()))->reorder();
+        std::unique_ptr<Reorder>(reorder::ReorderFactory::build(args.getString("reorder-rows")))->reorder(M.rows());
     ASSERT(rows.size() == M.rows());
 
     auto cols =
-        std::unique_ptr<Reorder>(reorder::ReorderFactory::build(args.getString("reorder-cols"), M.cols()))->reorder();
+        std::unique_ptr<Reorder>(reorder::ReorderFactory::build(args.getString("reorder-cols")))->reorder(M.cols());
     ASSERT(cols.size() == M.cols());
 
 

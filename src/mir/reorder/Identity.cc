@@ -18,8 +18,8 @@
 namespace mir::reorder {
 
 
-Renumber Identity::reorder() const {
-    Renumber renumber(N_);
+Renumber Identity::reorder(size_t N) const {
+    Renumber renumber(N);
     std::iota(renumber.begin(), renumber.end(), 0);
     return renumber;
 }

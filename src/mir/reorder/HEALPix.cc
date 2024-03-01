@@ -92,18 +92,40 @@ inline int pll(int f) {
 }  // namespace
 
 
-HEALPixReorder::HEALPixReorder(size_t N) :
-    Nside_([N] {
+class HEALPixReorder {
+public:
+    explicit HEALPixReorder(size_t N) :
+        Nside_([N] {
+            auto Nside = static_cast<int>(std::sqrt(static_cast<double>(N) / 12.));
+            ASSERT_MSG(12 * Nside * Nside == static_cast<int>(N),
+                       "Expected N = 12 * Nside ** 2, got N=" + std::to_string(N));
+            return Nside;
+        }()),
+        Npix_(size()),
+        Ncap_((Nside_ * (Nside_ - 1)) << 1),
+        k_(is_power_of_2(Nside_) ? static_cast<int>(std::log2(Nside_)) : -1) {
+        ASSERT(0 <= k_);  // (specific to nested ordering)
+        ASSERT(0 < Nside_);
+    }
+
+    static int Nside(int N) {
         auto Nside = static_cast<size_t>(std::sqrt(static_cast<double>(N) / 12.));
         ASSERT_MSG(12 * Nside * Nside == N, "Expected N = 12 * Nside ** 2, got N=" + std::to_string(N));
         return Nside;
-    }()),
-    Npix_(N),
-    Ncap_((Nside_ * (Nside_ - 1)) << 1),
-    k_(is_power_of_2(Nside_) ? static_cast<int>(std::log2(Nside_)) : -1) {
-    ASSERT(0 <= k_);  // (specific to nested ordering)
-    ASSERT(0 < Nside_);
-}
+    }
+
+    int size() const { return 12 * Nside_ * Nside_; }
+    int nside() const { return Nside_; }
+
+    int nest_to_ring(int) const;
+    int ring_to_nest(int) const;
+
+private:
+    const int Nside_;  // up to 2^13
+    const int Npix_;
+    const int Ncap_;
+    const int k_;
+};
 
 
 int HEALPixReorder::nest_to_ring(int n) const {
@@ -204,19 +226,21 @@ int HEALPixReorder::ring_to_nest(int r) const {
 }
 
 
-Renumber HEALPixRingToNested::reorder() const {
-    Renumber map(N());
-    for (size_t i = 0; i < N(); ++i) {
-        map[i] = static_cast<size_t>(ring_to_nest(static_cast<int>(i)));
+Renumber HEALPixRingToNested::reorder(size_t N) const {
+    HEALPixReorder reorder(N);
+    Renumber map(N);
+    for (size_t i = 0; i < N; ++i) {
+        map[i] = static_cast<size_t>(reorder.ring_to_nest(static_cast<int>(i)));
     }
     return map;
 }
 
 
-Renumber HEALPixNestedToRing::reorder() const {
-    Renumber map(N());
-    for (size_t i = 0; i < N(); ++i) {
-        map[i] = static_cast<size_t>(nest_to_ring(static_cast<int>(i)));
+Renumber HEALPixNestedToRing::reorder(size_t N) const {
+    HEALPixReorder reorder(N);
+    Renumber map(N);
+    for (size_t i = 0; i < N; ++i) {
+        map[i] = static_cast<size_t>(reorder.nest_to_ring(static_cast<int>(i)));
     }
     return map;
 }
