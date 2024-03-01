@@ -218,10 +218,10 @@ list(APPEND mir_srcs
     data/space/SpaceLogarithmic.h
     grib/BasicAngle.cc
     grib/BasicAngle.h
-    grib/Packing.cc
-    grib/Packing.h
     grib/Config.cc
     grib/Config.h
+    grib/Packing.cc
+    grib/Packing.h
     input/ArtificialInput.cc
     input/ArtificialInput.h
     input/ConstantInput.cc
@@ -487,6 +487,10 @@ list(APPEND mir_srcs
     param/SameParametrisation.h
     param/SimpleParametrisation.cc
     param/SimpleParametrisation.h
+    reorder/Identity.cc
+    reorder/Identity.h
+    reorder/Reorder.cc
+    reorder/Reorder.h
     repres/Gridded.cc
     repres/Gridded.h
     repres/Iterator.cc
@@ -800,6 +804,8 @@ if(mir_HAVE_ATLAS)
         method/structured/StructuredMethod.h
         output/GmshOutput.cc
         output/GmshOutput.h
+        reorder/HEALPix.cc
+        reorder/HEALPix.h
         repres/proxy/HEALPix.cc
         repres/proxy/HEALPix.h
         repres/proxy/ORCA.cc
