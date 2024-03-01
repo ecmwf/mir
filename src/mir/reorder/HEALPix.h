@@ -10,6 +10,8 @@
  */
 
 
+#pragma once
+
 #include "mir/reorder/Reorder.h"
 
 
@@ -20,11 +22,12 @@ class HEALPixReorder : public Reorder {
 public:
     explicit HEALPixReorder(size_t N);
 
+protected:
     size_t N() const { return Npix_; }
     size_t Nside() const { return Nside_; }
 
-    int nest_to_ring(int n) const;
-    int ring_to_nest(int r) const;
+    int nest_to_ring(int) const;
+    int ring_to_nest(int) const;
 
 private:
     const int Nside_;  // up to 2^13
@@ -34,31 +37,15 @@ private:
 };
 
 
-class HEALPixRingToNested final : public HEALPixReorder {
-public:
+struct HEALPixRingToNested final : HEALPixReorder {
     using HEALPixReorder::HEALPixReorder;
-
-    Renumber reorder() const override {
-        Renumber map(N());
-        for (size_t i = 0; i < N(); ++i) {
-            map[i] = static_cast<size_t>(ring_to_nest(static_cast<int>(i)));
-        }
-        return map;
-    }
+    Renumber reorder() const override;
 };
 
 
-class HEALPixNestedToRing final : public HEALPixReorder {
-public:
+struct HEALPixNestedToRing final : HEALPixReorder {
     using HEALPixReorder::HEALPixReorder;
-
-    Renumber reorder() const override {
-        Renumber map(N());
-        for (size_t i = 0; i < N(); ++i) {
-            map[i] = static_cast<size_t>(nest_to_ring(static_cast<int>(i)));
-        }
-        return map;
-    }
+    Renumber reorder() const override;
 };
 
 

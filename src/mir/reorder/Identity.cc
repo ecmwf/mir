@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/reorder/Reorder.h"
+#include "mir/reorder/Identity.h"
 
 #include <numeric>
 
@@ -18,18 +18,11 @@
 namespace mir::reorder {
 
 
-struct Identity final : Reorder {
-    explicit Identity(size_t N) : N_(N) {}
-
-private:
-    Renumber reorder() const override {
-        Renumber renumber(N_);
-        std::iota(renumber.begin(), renumber.end(), 0);
-        return renumber;
-    }
-
-    const size_t N_;
-};
+Renumber Identity::reorder() const {
+    Renumber renumber(N_);
+    std::iota(renumber.begin(), renumber.end(), 0);
+    return renumber;
+}
 
 
 static const ReorderBuilder<Identity> __reorder("identity");

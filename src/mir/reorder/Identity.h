@@ -10,9 +10,9 @@
  */
 
 
-#include "mir/reorder/Reorder.h"
+#pragma once
 
-#include <numeric>
+#include "mir/reorder/Reorder.h"
 
 
 namespace mir::reorder {
@@ -22,17 +22,9 @@ struct Identity final : Reorder {
     explicit Identity(size_t N) : N_(N) {}
 
 private:
-    Renumber reorder() const override {
-        Renumber renumber(N_);
-        std::iota(renumber.begin(), renumber.end(), 0);
-        return renumber;
-    }
-
+    Renumber reorder() const override;
     const size_t N_;
 };
-
-
-static const ReorderBuilder<Identity> __reorder("identity");
 
 
 }  // namespace mir::reorder
