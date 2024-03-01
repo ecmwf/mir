@@ -27,4 +27,4 @@ gridType=space_view:
 
 # gridType=healpix,orderingConvention=nested isn't fully supported, this is a patch
 gridType=healpix, orderingConvention=nested:
-  - matrix-reorder-cols: healpix-ring-to-nested
+  - finite-element-matrix-reorder-cols: healpix-ring-to-nested

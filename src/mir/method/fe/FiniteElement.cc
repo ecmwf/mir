@@ -27,6 +27,7 @@
 
 #include "mir/caching/InMemoryMeshCache.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/reorder/Reorder.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
@@ -166,6 +167,14 @@ FiniteElement::FiniteElement(const param::MIRParametrisation& param, const std::
                       : projectionFail == "increase-epsilon" ? ProjectionFail::increaseEpsilon
                       : projectionFail == "missing-value"    ? ProjectionFail::missingValue
                                                              : NOTIMP;
+
+    if (std::string name; parametrisation_.get("finite-element-matrix-reorder-rows", name)) {
+        setReorderRows(reorder::ReorderFactory::build(name));
+    }
+
+    if (std::string name; parametrisation_.get("finite-element-matrix-reorder-cols", name)) {
+        setReorderCols(reorder::ReorderFactory::build(name));
+    }
 }
 
 

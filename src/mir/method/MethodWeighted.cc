@@ -74,14 +74,6 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation)
         addNonLinearTreatment(nonlinear::NonLinearFactory::build(n, parametrisation_));
         ASSERT(nonLinear_.back());
     }
-
-    if (std::string name; parametrisation_.get("matrix-reorder-rows", name)) {
-        reorderRows_.reset(reorder::ReorderFactory::build(name));
-    }
-
-    if (std::string name; parametrisation_.get("matrix-reorder-cols", name)) {
-        reorderCols_.reset(reorder::ReorderFactory::build(name));
-    }
 }
 
 
@@ -231,20 +223,19 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     if (reorderRows_ || reorderCols_) {
         std::unique_ptr<const reorder::Reorder> identity(reorder::ReorderFactory::build("identity"));
 
-        auto rows = reorderRows_ ? reorderRows_->reorder(out.numberOfPoints()) : identity->reorder(out.numberOfPoints());
+        auto rows =
+            reorderRows_ ? reorderRows_->reorder(out.numberOfPoints()) : identity->reorder(out.numberOfPoints());
         ASSERT(rows.size() == W.rows());
 
         auto cols = reorderCols_ ? reorderCols_->reorder(in.numberOfPoints()) : identity->reorder(out.numberOfPoints());
         ASSERT(cols.size() == W.cols());
-
-        std::cout << rows.size();
 
         // expand triplets, renumbering directly
         std::vector<eckit::linalg::Triplet> trips;
         trips.reserve(W.nonZeros());
 
         for (auto i = W.begin(), end = W.end(); i != end; ++i) {
-            trips.emplace_back(cols.at(i.col()), rows.at(i.row()), *i);
+            trips.emplace_back(rows.at(i.row()), cols.at(i.col()), *i);
         }
 
         // compress triplets, replace matrix
@@ -300,6 +291,18 @@ void MethodWeighted::addNonLinearTreatment(const nonlinear::NonLinear* n) {
 void MethodWeighted::setSolver(const solver::Solver* s) {
     ASSERT(s != nullptr);
     solver_.reset(s);
+}
+
+
+void MethodWeighted::setReorderRows(reorder::Reorder* r) {
+    ASSERT(r != nullptr);
+    reorderRows_.reset(r);
+}
+
+
+void MethodWeighted::setReorderCols(reorder::Reorder* r) {
+    ASSERT(r != nullptr);
+    reorderCols_.reset(r);
 }
 
 

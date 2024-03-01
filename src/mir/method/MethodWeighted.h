@@ -102,6 +102,8 @@ protected:
     const solver::Solver& solver() const;
     void addNonLinearTreatment(const nonlinear::NonLinear*);
     void setSolver(const solver::Solver*);
+    void setReorderRows(reorder::Reorder*);
+    void setReorderCols(reorder::Reorder*);
     double poleDisplacement() const { return poleDisplacement_; }
 
     // -- Overridden methods
