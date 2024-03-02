@@ -234,11 +234,10 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     if (reorderRows_ || reorderCols_) {
         std::unique_ptr<const reorder::Reorder> identity(reorder::ReorderFactory::build("identity"));
 
-        auto rows =
-            reorderRows_ ? reorderRows_->reorder(out.numberOfPoints()) : identity->reorder(out.numberOfPoints());
+        auto rows = (reorderRows_ ? reorderRows_ : identity)->reorder(out.numberOfPoints());
         ASSERT(rows.size() == W.rows());
 
-        auto cols = reorderCols_ ? reorderCols_->reorder(in.numberOfPoints()) : identity->reorder(out.numberOfPoints());
+        auto cols = (reorderCols_ ? reorderCols_ : identity)->reorder(in.numberOfPoints());
         ASSERT(cols.size() == W.cols());
 
         // expand triplets, renumbering directly

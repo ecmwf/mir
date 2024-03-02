@@ -14,9 +14,9 @@
 
 #include <bitset>
 #include <cmath>
+#include <ostream>
 #include <string>
 #include <tuple>
-#include <ostream>
 
 #include "mir/util/Exceptions.h"
 
@@ -237,8 +237,8 @@ Renumber HEALPixRingToNested::reorder(size_t N) const {
 }
 
 
-void HEALPixRingToNested::print(std::ostream&s) const {
-    s<<"HEALPixRingToNested[]";
+void HEALPixRingToNested::print(std::ostream& s) const {
+    s << "HEALPixRingToNested[]";
 }
 
 
@@ -252,8 +252,8 @@ Renumber HEALPixNestedToRing::reorder(size_t N) const {
 }
 
 
-void HEALPixNestedToRing::print(std::ostream&s) const {
-    s<<"HEALPixNestedToRing[]";
+void HEALPixNestedToRing::print(std::ostream& s) const {
+    s << "HEALPixNestedToRing[]";
 }
 
 

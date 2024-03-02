@@ -27,6 +27,8 @@ public:
 
     virtual ~Reorder() = default;
 
+    // N is the size of the array to reorder
+    // TODO: change to Representation (numberOfPoints())
     virtual Renumber reorder(size_t N) const = 0;
 
     Reorder(const Reorder&)            = delete;

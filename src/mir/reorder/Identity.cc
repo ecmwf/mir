@@ -26,7 +26,7 @@ Renumber Identity::reorder(size_t N) const {
 }
 
 
-void Identity::print(std::ostream &s) const {
+void Identity::print(std::ostream& s) const {
     s << "Identity[]";
 }
 
