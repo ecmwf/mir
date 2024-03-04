@@ -93,7 +93,7 @@ void MIRMatrixReorder::execute(const eckit::option::CmdArgs& args) {
 
     // compress triplets, create output matrix
     std::sort(trips.begin(), trips.end());
-    eckit::linalg::SparseMatrix W(M.rows(), M.cols(), trips);
+    eckit::linalg::SparseMatrix W(transpose ? M.cols() : M.rows(), transpose ? M.rows() : M.cols(), trips);
 
 
     // create output matrix
