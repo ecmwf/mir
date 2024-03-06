@@ -504,7 +504,8 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
         if (check_stats) {
             // compute some statistics on the result
             auto ostats = field.statistics(i);
-            log << "Input field statistics:  " << istats << "\n" << "Output field statistics: " << ostats << std::endl;
+            log << "Input field statistics:  " << istats << "\n"
+                << "Output field statistics: " << ostats << std::endl;
         }
     }
 }
