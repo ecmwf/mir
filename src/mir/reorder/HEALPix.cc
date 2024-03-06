@@ -14,6 +14,7 @@
 
 #include <bitset>
 #include <cmath>
+#include <cstdint>
 #include <ostream>
 #include <string>
 #include <tuple>

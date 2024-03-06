@@ -116,7 +116,7 @@ private:
 
     // -- Friends
 
-    friend class L2Projection;
+    friend struct L2Projection;
 };
 
 
