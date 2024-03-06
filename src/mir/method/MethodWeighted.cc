@@ -79,6 +79,22 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation)
 MethodWeighted::~MethodWeighted() = default;
 
 
+void MethodWeighted::json(eckit::JSON& j) const {
+    j << "nonLinear";
+    j.startList();
+    for (const auto& n : nonLinear_) {
+        j << *n;
+    }
+    j.endList();
+
+    j << "solver" << *solver_;
+    j << "cropping" << cropping_;
+    j << "lsmWeightAdjustment" << lsmWeightAdjustment_;
+    j << "pruneEpsilon" << pruneEpsilon_;
+    j << "poleDisplacement" << poleDisplacement_;
+}
+
+
 void MethodWeighted::print(std::ostream& out) const {
     out << "nonLinear[";
     const auto* sep = "";
@@ -238,9 +254,16 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
         j.startObject();
         j << "input" << in;
         j << "output" << out;
+        j << "interpolation" << *this;
+
+        j << "matrix";
+        j.startObject();
         j << "rows" << w.rows();
         j << "columns" << w.cols();
+        j << "nnz" << w.nonZeros();
         j << "cache_file" << cacheFile;
+        j.endObject();
+
         j.endObject();
     }
 

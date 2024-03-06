@@ -19,6 +19,7 @@
 
 
 namespace eckit {
+class JSON;
 class MD5;
 namespace linalg {
 class Matrix;
@@ -40,7 +41,7 @@ namespace mir::method::nonlinear {
 
 class NonLinear {
 public:
-    NonLinear(const param::MIRParametrisation&);
+    explicit NonLinear(const param::MIRParametrisation&);
 
     NonLinear(const NonLinear&)      = delete;
     void operator=(const NonLinear&) = delete;
@@ -52,8 +53,8 @@ public:
                            const MIRValuesVector&, const double& missingValue) const = 0;
 
     virtual bool sameAs(const NonLinear&) const = 0;
-
-    virtual void hash(eckit::MD5&) const = 0;
+    virtual void hash(eckit::MD5&) const        = 0;
+    virtual void json(eckit::JSON&) const       = 0;
 
     virtual bool modifiesMatrix(bool fieldHasMissingValues) const = 0;
 
@@ -62,6 +63,11 @@ private:
 
     friend std::ostream& operator<<(std::ostream& s, const NonLinear& p) {
         p.print(s);
+        return s;
+    }
+
+    friend eckit::JSON& operator<<(eckit::JSON& s, const NonLinear& p) {
+        p.json(s);
         return s;
     }
 };

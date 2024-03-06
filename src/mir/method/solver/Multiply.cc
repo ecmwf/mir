@@ -17,6 +17,7 @@
 
 #include "eckit/linalg/LinearAlgebraSparse.h"
 #include "eckit/linalg/Vector.h"
+#include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/util/Exceptions.h"
@@ -63,6 +64,13 @@ void Multiply::hash(eckit::MD5& h) const {
     std::ostringstream s;
     s << *this;
     h.add(s.str());
+}
+
+
+void Multiply::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "multiply";
+    j.endObject();
 }
 
 

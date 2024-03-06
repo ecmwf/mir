@@ -10,11 +10,12 @@
  */
 
 
-#include "mir/method/nonlinear/SimulateMissingValue.h"
+#include "mir/method/nonlinear/SimulatedMissingValue.h"
 
 #include <ostream>
 #include <sstream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -25,15 +26,15 @@
 namespace mir::method::nonlinear {
 
 
-SimulateMissingValue::SimulateMissingValue(const param::MIRParametrisation& param) : NonLinear(param) {
+SimulatedMissingValue::SimulatedMissingValue(const param::MIRParametrisation& param) : NonLinear(param) {
     param.get("simulated-missing-value", missingValue_ = 9999.);
     param.get("simulated-missing-value-epsilon", epsilon_ = 0.);
 }
 
 
-bool SimulateMissingValue::treatment(MethodWeighted::Matrix& /*A*/, MethodWeighted::WeightMatrix& W,
-                                     MethodWeighted::Matrix& /*B*/, const MIRValuesVector& values,
-                                     const double& /*ignored*/) const {
+bool SimulatedMissingValue::treatment(MethodWeighted::Matrix& /*A*/, MethodWeighted::WeightMatrix& W,
+                                      MethodWeighted::Matrix& /*B*/, const MIRValuesVector& values,
+                                      const double& /*ignored*/) const {
     using eckit::types::is_approximately_equal;
 
     auto missingValue = [this](double value) { return is_approximately_equal(value, missingValue_, epsilon_); };
@@ -104,26 +105,35 @@ bool SimulateMissingValue::treatment(MethodWeighted::Matrix& /*A*/, MethodWeight
 }
 
 
-bool SimulateMissingValue::sameAs(const NonLinear& other) const {
-    const auto* o = dynamic_cast<const SimulateMissingValue*>(&other);
+bool SimulatedMissingValue::sameAs(const NonLinear& other) const {
+    const auto* o = dynamic_cast<const SimulatedMissingValue*>(&other);
     return (o != nullptr) && eckit::types::is_approximately_equal(missingValue_, o->missingValue_) &&
            eckit::types::is_approximately_equal(epsilon_, o->epsilon_);
 }
 
 
-void SimulateMissingValue::print(std::ostream& out) const {
-    out << "SimulateMissingValue[missingValue=" << missingValue_ << ",epsilon=" << epsilon_ << "]";
+void SimulatedMissingValue::print(std::ostream& out) const {
+    out << "SimulatedMissingValue[missingValue=" << missingValue_ << ",epsilon=" << epsilon_ << "]";
 }
 
 
-void SimulateMissingValue::hash(eckit::MD5& h) const {
+void SimulatedMissingValue::hash(eckit::MD5& h) const {
     std::ostringstream s;
     s << *this;
     h.add(s.str());
 }
 
 
-static const NonLinearBuilder<SimulateMissingValue> __nonlinear("simulated-missing-value");
+void SimulatedMissingValue::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "simulated-missing-value";
+    j << "missingValue" << missingValue_;
+    j << "epsilon" << epsilon_;
+    j.endObject();
+}
+
+
+static const NonLinearBuilder<SimulatedMissingValue> __nonlinear("simulated-missing-value");
 
 
 }  // namespace mir::method::nonlinear

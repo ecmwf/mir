@@ -31,11 +31,13 @@ struct NearestLSM : DistanceWeightingWithLSM {
                     std::vector<WeightMatrix::Triplet>& triplets) const override;
 
 private:
-    const std::vector<bool>& imask_;
-    const std::vector<bool>& omask_;
     bool sameAs(const DistanceWeighting&) const override;
+    void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;
+
+    const std::vector<bool>& imask_;
+    const std::vector<bool>& omask_;
 };
 
 

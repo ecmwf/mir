@@ -29,86 +29,22 @@ namespace mir::method::fe {
  * @brief The L2 Projection interpolation method
  * See <https://earthsystemcog.org/doc/detail/2201/>
  */
-class L2Projection : public MethodWeighted {
-public:
-    // -- Types
-    // None
-
-    // -- Exceptions
-    // None
-
-    // -- Constructors
-
-    L2Projection(const param::MIRParametrisation&);
-
-    // -- Destructor
-
-    ~L2Projection() override;
-
-    // -- Convertors
-    // None
-
-    // -- Operators
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
+struct L2Projection final : MethodWeighted {
+    explicit L2Projection(const param::MIRParametrisation&);
 
 private:
-    // -- Members
-
-    std::unique_ptr<FiniteElement> inputMethod_;
-    std::unique_ptr<FiniteElement> outputMethod_;
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-
-    // From Method
     void hash(eckit::MD5&) const override;
     int version() const override;
     bool sameAs(const Method&) const override;
+    void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
 
-    // From MethodWeighted
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
                   const repres::Representation& out) const override;
     const char* name() const override;
 
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-    // -- Friends
-    // None
+    std::unique_ptr<FiniteElement> inputMethod_;
+    std::unique_ptr<FiniteElement> outputMethod_;
 };
 
 

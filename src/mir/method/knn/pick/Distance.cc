@@ -12,6 +12,7 @@
 
 #include "mir/method/knn/pick/Distance.h"
 
+#include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -43,6 +44,14 @@ size_t Distance::n() const {
 bool Distance::sameAs(const Pick& other) const {
     const auto* o = dynamic_cast<const Distance*>(&other);
     return (o != nullptr) && eckit::types::is_approximately_equal(distance_, o->distance_);
+}
+
+
+void Distance::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "distance";
+    j << "distance" << distance_;
+    j.endObject();
 }
 
 

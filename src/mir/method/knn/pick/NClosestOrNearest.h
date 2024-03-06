@@ -27,7 +27,9 @@ struct NClosestOrNearest : Pick {
     void hash(eckit::MD5&) const override;
 
 private:
+    void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
+
     size_t nClosest_;
     double distanceTolerance_;
     double distanceTolerance2_;

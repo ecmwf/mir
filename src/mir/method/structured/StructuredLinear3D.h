@@ -18,21 +18,17 @@
 namespace mir::method::structured {
 
 
-class StructuredLinear3D : public StructuredMethod {
-public:
-    StructuredLinear3D(const param::MIRParametrisation&);
-    ~StructuredLinear3D() override;
+struct StructuredLinear3D final : StructuredMethod {
+    explicit StructuredLinear3D(const param::MIRParametrisation&);
 
 private:
     void assembleStructuredInput(WeightMatrix&, const repres::Representation& in,
                                  const repres::Representation& out) const override;
 
     const char* name() const override;
-
     void hash(eckit::MD5&) const override;
-
+    void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
-
     bool sameAs(const Method&) const override;
 };
 

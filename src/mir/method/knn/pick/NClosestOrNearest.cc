@@ -14,6 +14,7 @@
 
 #include <cmath>
 
+#include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -77,6 +78,15 @@ bool NClosestOrNearest::sameAs(const Pick& other) const {
     const auto* o = dynamic_cast<const NClosestOrNearest*>(&other);
     return (o != nullptr) && nClosest_ == o->nClosest_ &&
            eckit::types::is_approximately_equal(distanceTolerance_, o->distanceTolerance_);
+}
+
+
+void NClosestOrNearest::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "nclosest-or-nearest";
+    j << "nclosest" << nClosest_;
+    j << "distanceTolerance" << distanceTolerance_;
+    j.endObject();
 }
 
 

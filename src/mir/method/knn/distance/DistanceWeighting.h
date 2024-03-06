@@ -19,8 +19,9 @@
 
 
 namespace eckit {
+class JSON;
 class MD5;
-}
+}  // namespace eckit
 
 
 namespace mir::method::knn::distance {
@@ -29,6 +30,12 @@ namespace mir::method::knn::distance {
 class DistanceWeighting {
 public:
     DistanceWeighting();
+
+    DistanceWeighting(const DistanceWeighting&) = delete;
+    DistanceWeighting(DistanceWeighting&&)      = delete;
+
+    DistanceWeighting& operator=(const DistanceWeighting&) = delete;
+    DistanceWeighting& operator=(DistanceWeighting&&)      = delete;
 
     virtual ~DistanceWeighting();
 
@@ -41,13 +48,16 @@ public:
     virtual void hash(eckit::MD5&) const = 0;
 
 private:
-    DistanceWeighting(const DistanceWeighting&)            = delete;
-    DistanceWeighting& operator=(const DistanceWeighting&) = delete;
-
+    virtual void json(eckit::JSON&) const   = 0;
     virtual void print(std::ostream&) const = 0;
 
     friend std::ostream& operator<<(std::ostream& s, const DistanceWeighting& p) {
         p.print(s);
+        return s;
+    }
+
+    friend eckit::JSON& operator<<(eckit::JSON& s, const DistanceWeighting& p) {
+        p.json(s);
         return s;
     }
 };
@@ -58,14 +68,17 @@ private:
     std::string name_;
     virtual DistanceWeighting* make(const param::MIRParametrisation&) = 0;
 
-    DistanceWeightingFactory(const DistanceWeightingFactory&)            = delete;
-    DistanceWeightingFactory& operator=(const DistanceWeightingFactory&) = delete;
-
 protected:
-    DistanceWeightingFactory(const std::string& name);
+    explicit DistanceWeightingFactory(const std::string& name);
     virtual ~DistanceWeightingFactory();
 
 public:
+    DistanceWeightingFactory(const DistanceWeightingFactory&) = delete;
+    DistanceWeightingFactory(DistanceWeightingFactory&&)      = delete;
+
+    DistanceWeightingFactory& operator=(const DistanceWeightingFactory&) = delete;
+    DistanceWeightingFactory& operator=(DistanceWeightingFactory&&)      = delete;
+
     static const DistanceWeighting* build(const std::string& name, const param::MIRParametrisation&);
     static void list(std::ostream&);
 };
@@ -76,7 +89,7 @@ class DistanceWeightingBuilder : public DistanceWeightingFactory {
     DistanceWeighting* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
-    DistanceWeightingBuilder(const std::string& name) : DistanceWeightingFactory(name) {}
+    explicit DistanceWeightingBuilder(const std::string& name) : DistanceWeightingFactory(name) {}
 };
 
 

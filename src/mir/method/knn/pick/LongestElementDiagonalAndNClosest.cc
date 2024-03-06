@@ -12,6 +12,7 @@
 
 #include "mir/method/knn/pick/LongestElementDiagonalAndNClosest.h"
 
+#include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -75,6 +76,15 @@ void LongestElementDiagonalAndNClosest::distance(const repres::Representation& i
     ASSERT(0. < distance_);
 
     distance2_ = distance_ * distance_;
+}
+
+
+void LongestElementDiagonalAndNClosest::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "longest-element-diagonal-and-nclosest";
+    j << "nclosest" << nClosest_;
+    j << "distance" << distance_;
+    j.endObject();
 }
 
 

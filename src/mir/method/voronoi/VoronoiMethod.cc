@@ -18,6 +18,7 @@
 #include <sstream>
 #include <utility>
 
+#include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/repres/Iterator.h"
@@ -150,6 +151,14 @@ void VoronoiMethod::hash(eckit::MD5& md5) const {
     std::ostringstream str;
     print(str);
     md5.add(str.str());
+}
+
+
+void VoronoiMethod::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "voronoi-method";
+    MethodWeighted::json(j);
+    j.endObject();
 }
 
 

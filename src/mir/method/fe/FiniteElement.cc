@@ -22,6 +22,7 @@
 #include <sstream>
 #include <utility>
 
+#include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 #include "eckit/utils/StringTools.h"
 
@@ -241,6 +242,20 @@ bool FiniteElement::sameAs(const Method& other) const {
     const auto* o = dynamic_cast<const FiniteElement*>(&other);
     return (o != nullptr) && meshGeneratorParams_.sameAs(o->meshGeneratorParams_) &&
            validateMesh_ == o->validateMesh_ && projectionFail_ == o->projectionFail_ && MethodWeighted::sameAs(other);
+}
+
+
+void FiniteElement::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "name" << name();
+    MethodWeighted::json(j);
+    j << "validateMesh" << validateMesh_;
+    j << "projectionFail"
+      << (projectionFail_ == ProjectionFail::failure           ? "fail"
+          : projectionFail_ == ProjectionFail::increaseEpsilon ? "increase-epsilon"
+          : projectionFail_ == ProjectionFail::missingValue    ? "missing-value"
+                                                               : NOTIMP);
+    j.endObject();
 }
 
 

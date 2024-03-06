@@ -102,6 +102,7 @@ private:
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
                   const repres::Representation& out) const override;
     bool sameAs(const Method&) const override;
+    void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
 
     // -- Overridden methods

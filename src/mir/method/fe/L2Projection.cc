@@ -14,6 +14,7 @@
 
 #include "eckit/linalg/LinearAlgebraSparse.h"
 #include "eckit/linalg/Vector.h"
+#include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -45,13 +46,19 @@ L2Projection::L2Projection(const param::MIRParametrisation& param) : MethodWeigh
 }
 
 
-L2Projection::~L2Projection() = default;
-
-
 bool L2Projection::sameAs(const Method& other) const {
     const auto* o = dynamic_cast<const L2Projection*>(&other);
     return (o != nullptr) && inputMethod_->sameAs(*(o->inputMethod_)) && outputMethod_->sameAs(*(o->outputMethod_)) &&
            MethodWeighted::sameAs(*o);
+}
+
+
+void L2Projection::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "l2-projection";
+    j << "input", *inputMethod_;
+    j << "output", *outputMethod_;
+    j.endObject();
 }
 
 

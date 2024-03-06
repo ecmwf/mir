@@ -26,8 +26,10 @@ struct LongestElementDiagonalAndNClosest : Pick {
 
 private:
     void distance(const repres::Representation&) const override;
+    void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;
+
     size_t nClosest_;
     mutable double distance_;
     mutable double distance2_;

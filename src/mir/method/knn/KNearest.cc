@@ -35,9 +35,6 @@ KNearest::KNearest(const param::MIRParametrisation& param) : KNearestNeighbours(
 }
 
 
-KNearest::~KNearest() = default;
-
-
 bool KNearest::sameAs(const Method& other) const {
     const auto* o = dynamic_cast<const KNearest*>(&other);
     return (o != nullptr) && KNearestNeighbours::sameAs(other);

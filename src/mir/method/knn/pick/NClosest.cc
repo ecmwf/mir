@@ -12,6 +12,7 @@
 
 #include "mir/method/knn/pick/NClosest.h"
 
+#include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/param/MIRParametrisation.h"
@@ -42,6 +43,14 @@ size_t NClosest::n() const {
 bool NClosest::sameAs(const Pick& other) const {
     const auto* o = dynamic_cast<const NClosest*>(&other);
     return (o != nullptr) && nClosest_ == o->nClosest_;
+}
+
+
+void NClosest::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "nclosest";
+    j << "nclosest" << nClosest_;
+    j.endObject();
 }
 
 

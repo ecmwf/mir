@@ -48,6 +48,7 @@ protected:
     bool sameAs(const Method&) const override = 0;
 
 private:
+    void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
 
     const char* name() const override = 0;

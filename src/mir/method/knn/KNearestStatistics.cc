@@ -41,9 +41,6 @@ const char* KNearestStatistics::name() const {
 }
 
 
-KNearestStatistics::~KNearestStatistics() = default;
-
-
 bool KNearestStatistics::sameAs(const Method& other) const {
     const auto* o = dynamic_cast<const KNearestStatistics*>(&other);
     return (o != nullptr) && KNearestStatistics::sameAs(other);

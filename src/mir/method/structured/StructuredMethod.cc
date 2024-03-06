@@ -14,6 +14,8 @@
 
 #include <memory>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
@@ -174,10 +176,5 @@ void StructuredMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W
     Log::debug() << "StructuredMethod::assemble." << std::endl;
 }
 
-void StructuredMethod::print(std::ostream& out) const {
-    out << "StructuredMethod[";
-    MethodWeighted::print(out);
-    out << "]";
-}
 
 }  // namespace mir::method::structured
