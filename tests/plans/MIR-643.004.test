@@ -3,4 +3,4 @@ regular_ll.2-2.grib2
 # mir
 --grid=h16 --interpolation=nn
 # plan
-Gridded2NamedGrid[grid=H16,interpolation=nn,method=KNearestNeighbours[nonLinear[MissingIfHeaviestMissing[]],Solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,nearestMethod=NearestNeighbourWithLowestIndex[nclosest=4],distanceWeighting=InverseDistanceWeightingSquared[]]]|Save[output=...]
+Gridded2NamedGrid[grid=H16,interpolation=nn,method=KNearestNeighbours[nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,nearestMethod=NearestNeighbourWithLowestIndex[nclosest=4],distanceWeighting=InverseDistanceWeightingSquared[]]]|Save[output=...]

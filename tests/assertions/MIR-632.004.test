@@ -1,11 +1,11 @@
 # mars
-gridType=healpix,N=36.grib2
+gridType=healpix,Nside=32,orderingConvention=ring.grib2
 # mir
 --packing=ccsds
 # grib_get assertions
 gridType=healpix
-gridName=H36
-Nside=36
-numberOfDataPoints=15552
+gridName=H32
+Nside=32
+numberOfDataPoints=12288
 packingType=grid_ccsds
 longitudeOfFirstGridPointInDegrees=45

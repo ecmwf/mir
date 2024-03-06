@@ -34,6 +34,7 @@
 #include "mir/method/nonlinear/NonLinear.h"
 #include "mir/method/solver/Multiply.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/reorder/Reorder.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
@@ -104,8 +105,19 @@ void MethodWeighted::print(std::ostream& out) const {
     }
     out << "]";
 
-    out << ",Solver=" << *solver_ << ",cropping=" << cropping_ << ",lsmWeightAdjustment=" << lsmWeightAdjustment_
-        << ",pruneEpsilon=" << pruneEpsilon_ << ",poleDisplacement=" << poleDisplacement_;
+    if (reorderRows_) {
+        out << ",reorderRows=" << *reorderRows_;
+    }
+
+    if (reorderCols_) {
+        out << ",reorderCols=" << *reorderCols_;
+    }
+
+    out << ",solver=" << *solver_;
+    out << ",cropping=" << cropping_;
+    out << ",lsmWeightAdjustment=" << lsmWeightAdjustment_;
+    out << ",pruneEpsilon=" << pruneEpsilon_;
+    out << ",poleDisplacement=" << poleDisplacement_;
 }
 
 
@@ -235,6 +247,31 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
         }
     }
 
+    if (reorderRows_ || reorderCols_) {
+        std::unique_ptr<const reorder::Reorder> identity(reorder::ReorderFactory::build("identity"));
+
+        auto rows = (reorderRows_ ? reorderRows_ : identity)->reorder(out.numberOfPoints());
+        ASSERT(rows.size() == W.rows());
+
+        auto cols = (reorderCols_ ? reorderCols_ : identity)->reorder(in.numberOfPoints());
+        ASSERT(cols.size() == W.cols());
+
+        // expand triplets, renumbering directly
+        std::vector<eckit::linalg::Triplet> trips;
+        trips.reserve(W.nonZeros());
+
+        for (auto i = W.begin(), end = W.end(); i != end; ++i) {
+            trips.emplace_back(rows.at(i.row()), cols.at(i.col()), *i);
+        }
+
+        // compress triplets, replace matrix
+        std::sort(trips.begin(), trips.end());
+
+        eckit::linalg::SparseMatrix w(W.rows(), W.cols(), trips);
+        W.swap(w);
+    }
+
+
     log << "MethodWeighted::getMatrix create weights matrix: " << timer.elapsedSeconds(here) << std::endl;
     log << "MethodWeighted::getMatrix matrix W " << W << std::endl;
 
@@ -287,6 +324,18 @@ void MethodWeighted::addNonLinearTreatment(const nonlinear::NonLinear* n) {
 void MethodWeighted::setSolver(const solver::Solver* s) {
     ASSERT(s != nullptr);
     solver_.reset(s);
+}
+
+
+void MethodWeighted::setReorderRows(reorder::Reorder* r) {
+    ASSERT(r != nullptr);
+    reorderRows_.reset(r);
+}
+
+
+void MethodWeighted::setReorderCols(reorder::Reorder* r) {
+    ASSERT(r != nullptr);
+    reorderCols_.reset(r);
 }
 
 

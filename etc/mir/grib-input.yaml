@@ -24,3 +24,7 @@ gridType=space_view:
   - interpolation: k-nearest
   - nearest-method: longest-element-diagonal-and-nclosest
   - reset-missing-values: true
+
+# gridType=healpix,orderingConvention=nested isn't fully supported, this is a patch
+gridType=healpix, orderingConvention=nested:
+  - finite-element-matrix-reorder-cols: healpix-ring-to-nested

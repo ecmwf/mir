@@ -17,9 +17,11 @@
 #include "eckit/log/JSON.h"
 
 #include "mir/iterator/UnstructuredIterator.h"
+#include "mir/reorder/HEALPix.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/GridBox.h"
+#include "mir/util/Log.h"
 
 
 namespace mir::repres::unsupported {
@@ -55,14 +57,15 @@ void HEALPixNested::print(std::ostream& out) const {
 
 
 std::vector<util::GridBox> HEALPixNested::gridBoxes() const {
-    const proxy::HEALPix::Reorder reorder(static_cast<int>(ring_.Nside()));
-    const auto N = numberOfPoints();
+    const auto N       = numberOfPoints();
+    const auto reorder = reorder::HEALPixRingToNested().reorder(N);
+    ASSERT(reorder.size() == N);
 
     std::vector<util::GridBox> boxes(N);
 
     int i = 0;
     for (const auto& box : ring().gridBoxes()) {
-        auto j      = reorder.ring_to_nest(i++);
+        auto j      = reorder.at(i++);
         boxes.at(j) = box;
     }
     ASSERT(i == N);
@@ -72,22 +75,23 @@ std::vector<util::GridBox> HEALPixNested::gridBoxes() const {
 
 
 ::atlas::Grid HEALPixNested::atlasGrid() const {
-    // NOTE: delete class altogether once we can build HEALPix nested-ordering atlas::Grid
-    NOTIMP;
+    Log::warning() << "HEALPixNested::atlasGrid() unsupported" << std::endl;
+    return ring_.atlasGrid();
 }
 
 
 Iterator* HEALPixNested::iterator() const {
     if (longitudes_.empty()) {
-        const proxy::HEALPix::Reorder reorder(static_cast<int>(ring_.Nside()));
-        const auto N = numberOfPoints();
+        const auto N       = numberOfPoints();
+        const auto reorder = reorder::HEALPixRingToNested().reorder(N);
+        ASSERT(reorder.size() == N);
 
         longitudes_.resize(N);
         latitudes_.resize(N);
 
         int i = 0;
         for (const auto& point : ring().atlasGrid().lonlat()) {
-            auto j            = reorder.ring_to_nest(i++);
+            auto j            = reorder.at(i++);
             longitudes_.at(j) = point.lon();
             latitudes_.at(j)  = point.lat();
         }

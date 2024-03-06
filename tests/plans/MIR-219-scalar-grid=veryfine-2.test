@@ -4,4 +4,4 @@ param=t,level=1000
 # mir
 --grid=0.01/0.01 --dont-compress-plan
 # plan
-ShToNamedGrid[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<scalar>,grid=F1280]|Gridded2RegularLL[increments=Increments[west_east=0.01,south_north=0.01],bbox=BoundingBox[north=90,west=0,south=-90,east=359.99],interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],Solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|Save[packing=simple,output=...]
+ShToNamedGrid[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<scalar>,grid=F1280]|Gridded2RegularLL[increments=Increments[west_east=0.01,south_north=0.01],bbox=BoundingBox[north=90,west=0,south=-90,east=359.99],interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|Save[packing=simple,output=...]
