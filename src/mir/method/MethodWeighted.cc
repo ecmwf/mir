@@ -301,6 +301,11 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
         j << "cache_file" << cacheFile;
         j.endObject();
 
+        // NOTE: to be removed
+        j << "rows" << w.rows();
+        j << "columns" << w.cols();
+        j << "cache_file" << cacheFile;
+
         j.endObject();
     }
 
