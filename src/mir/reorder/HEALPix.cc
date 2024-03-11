@@ -185,8 +185,8 @@ int HEALPixReorder::ring_to_nest(int r) const {
             p -= 8 * Nside_;
         }
 
-        int i = (r + p) >> 1;
-        int j = (r - p) >> 1;
+        int i = std::max(0, (r + p)) >> 1;
+        int j = std::max(0, (r - p)) >> 1;
 
         ASSERT(f < 12 && i < Nside_ && j < Nside_);
         return CodecFijNest::fij_to_nest(f, i, j, k_);
