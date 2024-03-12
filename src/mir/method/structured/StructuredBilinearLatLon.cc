@@ -277,11 +277,6 @@ const char* StructuredBilinearLatLon::name() const {
 }
 
 
-void StructuredBilinearLatLon::hash(eckit::MD5& md5) const {
-    StructuredMethod::hash(md5);
-}
-
-
 void StructuredBilinearLatLon::print(std::ostream& out) const {
     out << "StructuredBilinearLatLon[";
     MethodWeighted::print(out);

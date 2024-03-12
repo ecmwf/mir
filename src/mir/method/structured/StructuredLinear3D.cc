@@ -211,11 +211,6 @@ const char* StructuredLinear3D::name() const {
 }
 
 
-void StructuredLinear3D::hash(eckit::MD5& md5) const {
-    StructuredMethod::hash(md5);
-}
-
-
 void StructuredLinear3D::print(std::ostream& out) const {
     out << "StructuredLinear3D[";
     StructuredMethod::print(out);
