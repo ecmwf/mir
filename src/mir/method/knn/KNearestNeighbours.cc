@@ -46,6 +46,7 @@ bool KNearestNeighbours::sameAs(const Method& other) const {
 
 
 void KNearestNeighbours::hash(eckit::MD5& md5) const {
+    MethodWeighted::hash(md5);
     md5 << pick();
     md5 << distanceWeighting();
 }
