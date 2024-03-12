@@ -84,6 +84,11 @@ void MethodWeighted::json(eckit::JSON& j) const {
     j << "engine" << "mir";
     j << "version" << caching::WeightCache::version();
     j << "type" << name();
+    j << "checksum" << [this]() {
+        eckit::MD5 h;
+        hash(h);
+        return h.digest();
+    }();
 
     j << "nonLinear";
     j.startList();
