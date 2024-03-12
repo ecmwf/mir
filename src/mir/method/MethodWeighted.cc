@@ -81,6 +81,8 @@ MethodWeighted::~MethodWeighted() = default;
 
 
 void MethodWeighted::json(eckit::JSON& j) const {
+    j << "engine" << "mir";
+    j << "version" << caching::WeightCache::version();
     j << "type" << name();
 
     j << "nonLinear";
@@ -172,8 +174,8 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     log << "MethodWeighted::getMatrix " << *this << std::endl;
     trace::Timer timer("MethodWeighted::getMatrix");
 
-    double here                   = timer.elapsed();
-    const lsm::LandSeaMasks masks = getMasks(in, out);
+    double here      = timer.elapsed();
+    const auto masks = getMasks(in, out);
     log << "MethodWeighted::getMatrix land-sea masks: " << timer.elapsedSeconds(here) << ", "
         << (masks.active() ? "active" : "not active") << std::endl;
 
@@ -190,13 +192,12 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
 
 
     std::string version_str;
-    auto v = version();
-    if (bool(v)) {
+    if (auto v = version(); v != 0) {
         version_str = std::to_string(v) + "/";
     }
 
     std::string disk_key =
-        std::string(name()) + "/" + version_str + shortName_in + "/" + shortName_out + "-" + std::string(hash);
+        std::string{name()} + "/" + version_str + shortName_in + "/" + shortName_out + "-" + hash.digest();
     std::string memory_key = disk_key;
 
     // Add masks if any
@@ -297,8 +298,11 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
 
         j << "matrix";
         j.startObject();
-        j << "rows" << w.rows();
-        j << "columns" << w.cols();
+        j << "shape";
+        j.startList();
+        j << w.rows();
+        j << w.cols();
+        j.endList();
         j << "nnz" << w.nonZeros();
         j << "cache_file" << cacheFile;
         j.endObject();
@@ -602,8 +606,7 @@ void MethodWeighted::hash(eckit::MD5& md5) const {
         n->hash(md5);
     }
 
-    auto v = version();
-    if (v != 0) {
+    if (auto v = version(); v != 0) {
         md5.add(v);
     }
 }
