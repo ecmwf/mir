@@ -32,7 +32,7 @@ namespace mir::method::structured {
 
 class StructuredMethod : public MethodWeighted {
 public:
-    StructuredMethod(const param::MIRParametrisation&);
+    explicit StructuredMethod(const param::MIRParametrisation&);
     ~StructuredMethod() override;
 
 protected:
@@ -68,6 +68,8 @@ private:
 
     virtual void assembleStructuredInput(WeightMatrix&, const repres::Representation& in,
                                          const repres::Representation& out) const = 0;
+
+    void json(eckit::JSON&) const override;
 };
 
 

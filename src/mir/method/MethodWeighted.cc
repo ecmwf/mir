@@ -81,6 +81,8 @@ MethodWeighted::~MethodWeighted() = default;
 
 
 void MethodWeighted::json(eckit::JSON& j) const {
+    j << "type" << name();
+
     j << "nonLinear";
     j.startList();
     for (const auto& n : nonLinear_) {

@@ -55,7 +55,7 @@ bool L2Projection::sameAs(const Method& other) const {
 
 void L2Projection::json(eckit::JSON& j) const {
     j.startObject();
-    j << "type" << "l2-projection";
+    MethodWeighted::json(j);
     j << "input", *inputMethod_;
     j << "output", *outputMethod_;
     j.endObject();

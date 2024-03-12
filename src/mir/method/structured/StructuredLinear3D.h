@@ -27,7 +27,6 @@ private:
 
     const char* name() const override;
     void hash(eckit::MD5&) const override;
-    void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
     bool sameAs(const Method&) const override;
 };

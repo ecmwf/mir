@@ -256,7 +256,6 @@ bool FiniteElement::sameAs(const Method& other) const {
 
 void FiniteElement::json(eckit::JSON& j) const {
     j.startObject();
-    j << "name" << name();
     MethodWeighted::json(j);
     j << "validateMesh" << validateMesh_;
     j << "projectionFail"

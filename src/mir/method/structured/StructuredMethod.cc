@@ -177,4 +177,11 @@ void StructuredMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W
 }
 
 
+void StructuredMethod::json(eckit::JSON& j) const {
+    j.startObject();
+    MethodWeighted::json(j);
+    j.endObject();
+}
+
+
 }  // namespace mir::method::structured

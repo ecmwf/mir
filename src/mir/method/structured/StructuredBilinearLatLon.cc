@@ -282,14 +282,6 @@ void StructuredBilinearLatLon::hash(eckit::MD5& md5) const {
 }
 
 
-void StructuredBilinearLatLon::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "type" << "structured-bilinear-latlon";
-    MethodWeighted::json(j);
-    j.endObject();
-}
-
-
 void StructuredBilinearLatLon::print(std::ostream& out) const {
     out << "StructuredBilinearLatLon[";
     MethodWeighted::print(out);
