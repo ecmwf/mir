@@ -1201,25 +1201,21 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
     //     field->insert("decimalScaleFactor", decimalScaleFactor);
     // }
 
-    long edition;
-    if (codes_get_long(h, "edition", &edition) == 0) {
+    if (long edition = 0; codes_get_long(h, "edition", &edition) == 0) {
         field->format("grib" + l2s(edition));
     }
 
-    long missingValuesPresent;
-    if (codes_get_long(h, "missingValuesPresent", &missingValuesPresent) == 0) {
+    if (long missingValuesPresent = 0; codes_get_long(h, "missingValuesPresent", &missingValuesPresent) == 0) {
         if (missingValuesPresent != 0) {
             field->missingValuesPresent(true);
         }
     }
 
-    long bitsPerValue;
-    if (codes_get_long(h, "bitsPerValue", &bitsPerValue) == 0) {
-        field->accuracy(bitsPerValue);
+    if (long accuracy = 0; codes_get_long(h, "accuracy", &accuracy) == 0) {
+        field->accuracy(accuracy);
     }
 
-    long decimalScaleFactor;
-    if (codes_get_long(h, "decimalScaleFactor", &decimalScaleFactor) == 0) {
+    if (long decimalScaleFactor = 0; codes_get_long(h, "decimalScaleFactor", &decimalScaleFactor) == 0) {
         field->decimalScaleFactor(decimalScaleFactor);
     }
 

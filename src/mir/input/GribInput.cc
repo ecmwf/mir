@@ -293,7 +293,6 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         {"south", "latitudeOfLastGridPointInDegrees"},
 
         {"truncation", "pentagonalResolutionParameterJ"},  // Assumes triangular truncation
-        {"accuracy", "bitsPerValue"},
 
         {"south_pole_latitude", "latitudeOfSouthernPoleInDegrees"},
         {"south_pole_longitude", "longitudeOfSouthernPoleInDegrees"},
@@ -869,18 +868,6 @@ bool GribInput::get(const std::string& name, long& value) const {
     const std::string key = get_key(name, grib_);
     if (key.empty()) {
         return false;
-    }
-
-    std::string packing;
-    if (key == "bitsPerValue" && get("packing", packing) && packing == "ieee") {
-        // GRIB2 Section 5 Code Table 7
-        // NOTE:
-        // - has to be done here as GRIBs packingType=grid_ieee ignores bitsPerValue (usually 0?)
-        // - packingType=grid_ieee has "precision", but "spectral_ieee" doesn't
-        long precision = 0;
-        codes_get_long(grib_, "precision", &precision);
-        value = precision == 1 ? 32 : precision == 2 ? 64 : precision == 3 ? 128 : 0;
-        return value != 0;
     }
 
     // FIXME: make sure that 'value' is not set if CODES_MISSING_LONG
