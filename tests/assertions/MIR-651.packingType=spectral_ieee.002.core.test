@@ -1,0 +1,8 @@
+# mars
+packingType=spectral_ieee.grib2
+# mir
+--grid=1/1 --intgrid=none --packing=so
+# grib_get
+packingType=grid_second_order
+edition=2
+bitsPerValue=32
