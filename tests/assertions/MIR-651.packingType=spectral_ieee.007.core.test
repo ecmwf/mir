@@ -5,4 +5,4 @@ packingType=spectral_ieee.grib2
 # grib_get
 packingType=grid_ieee
 edition=2
-bitsPerValue=32
+accuracy=32
