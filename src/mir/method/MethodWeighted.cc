@@ -294,27 +294,30 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
         j << "input" << in;
         j << "output" << out;
 
-        const static std::map<eckit::Hash::digest_t, std::string> KNOWN_INTERPOLATION{
+        j << "interpolation";
+        j.startObject();
+        j << "engine" << "mir";
+        j << "version" << caching::WeightCache::version();
+        const static std::map<eckit::Hash::digest_t, std::string> KNOWN_METHOD{
             {"73e1dd539879ffbbbb22d6bc789c2262", "linear"},
             {"7738675c7e2c64d463718049ebef6563", "nearest-neighbour"},
             {"a81efab621096650c20a978062cdd169", "grid-box-average"},
         };
 
-        if (auto it = KNOWN_INTERPOLATION.find([](const MethodWeighted& method) {
+        if (auto it = KNOWN_METHOD.find([](const MethodWeighted& method) {
                 std::ostringstream ss;
                 eckit::JSON k(ss);
                 k << method;
-                return (eckit::MD5() << ss.str()).digest();
+                auto x = (eckit::MD5() << ss.str()).digest();
+                return x;
             }(*this));
-            it != KNOWN_INTERPOLATION.end()) {
-            j << "interpolation" << it->second;
+            it != KNOWN_METHOD.end()) {
+            j << "method" << it->second;
         }
         else {
-            j << "interpolation" << *this;
+            j << "method" << *this;
         }
-
-        j << "engine" << "mir";
-        j << "version" << caching::WeightCache::version();
+        j.endObject();
 
         j << "matrix";
         j.startObject();
