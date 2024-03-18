@@ -308,8 +308,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
                 std::ostringstream ss;
                 eckit::JSON k(ss);
                 k << method;
-                auto x = (eckit::MD5() << ss.str()).digest();
-                return x;
+                return (eckit::MD5() << ss.str()).digest();
             }(*this));
             it != KNOWN_METHOD.end()) {
             j << "method" << it->second;
