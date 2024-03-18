@@ -82,8 +82,6 @@ MethodWeighted::~MethodWeighted() = default;
 
 
 void MethodWeighted::json(eckit::JSON& j) const {
-    j << "engine" << "mir";
-    j << "version" << caching::WeightCache::version();
     j << "type" << name();
 
     j << "nonLinear";
@@ -297,9 +295,9 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
         j << "output" << out;
 
         const static std::map<eckit::Hash::digest_t, std::string> KNOWN_INTERPOLATION{
-            {"400c01c61126d89c19737f623db4b874", "grid-box-average"},
-            {"5c8dd32797dfd4f4aa36edf188282308", "linear"},
-            {"bdcc6407de8ea3adb73843c6cf794458", "nearest-neighbour"},
+            {"73e1dd539879ffbbbb22d6bc789c2262", "linear"},
+            {"7738675c7e2c64d463718049ebef6563", "nearest-neighbour"},
+            {"a81efab621096650c20a978062cdd169", "grid-box-average"},
         };
 
         if (auto it = KNOWN_INTERPOLATION.find([](const MethodWeighted& method) {
@@ -315,6 +313,9 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
             j << "interpolation" << *this;
         }
 
+        j << "engine" << "mir";
+        j << "version" << caching::WeightCache::version();
+
         j << "matrix";
         j.startObject();
         j << "shape";
@@ -325,11 +326,6 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
         j << "nnz" << w.nonZeros();
         j << "cache_file" << cacheFile;
         j.endObject();
-
-        // NOTE: to be removed
-        j << "rows" << w.rows();
-        j << "columns" << w.cols();
-        j << "cache_file" << cacheFile;
 
         j.endObject();
     }
