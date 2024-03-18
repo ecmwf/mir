@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <fstream>
 #include <limits>
+#include <map>
 #include <sstream>
 #include <string>
 
@@ -84,11 +85,6 @@ void MethodWeighted::json(eckit::JSON& j) const {
     j << "engine" << "mir";
     j << "version" << caching::WeightCache::version();
     j << "type" << name();
-    j << "uid" << [this]() -> std::string {
-        eckit::MD5 h;
-        hash(h);
-        return h.digest();
-    }();
 
     j << "nonLinear";
     j.startList();
@@ -299,7 +295,25 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
         j.startObject();
         j << "input" << in;
         j << "output" << out;
-        j << "interpolation" << *this;
+
+        const static std::map<eckit::Hash::digest_t, std::string> KNOWN_INTERPOLATION{
+            {"400c01c61126d89c19737f623db4b874", "grid-box-average"},
+            {"5c8dd32797dfd4f4aa36edf188282308", "linear"},
+            {"bdcc6407de8ea3adb73843c6cf794458", "nearest-neighbour"},
+        };
+
+        if (auto it = KNOWN_INTERPOLATION.find([](const MethodWeighted& method) {
+                std::ostringstream ss;
+                eckit::JSON k(ss);
+                k << method;
+                return (eckit::MD5() << ss.str()).digest();
+            }(*this));
+            it != KNOWN_INTERPOLATION.end()) {
+            j << "interpolation" << it->second;
+        }
+        else {
+            j << "interpolation" << *this;
+        }
 
         j << "matrix";
         j.startObject();
