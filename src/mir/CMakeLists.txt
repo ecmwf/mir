@@ -218,10 +218,10 @@ list(APPEND mir_srcs
     data/space/SpaceLogarithmic.h
     grib/BasicAngle.cc
     grib/BasicAngle.h
-    grib/Packing.cc
-    grib/Packing.h
     grib/Config.cc
     grib/Config.h
+    grib/Packing.cc
+    grib/Packing.h
     input/ArtificialInput.cc
     input/ArtificialInput.h
     input/ConstantInput.cc
@@ -426,8 +426,8 @@ list(APPEND mir_srcs
     method/nonlinear/NoNonLinear.h
     method/nonlinear/NonLinear.cc
     method/nonlinear/NonLinear.h
-    method/nonlinear/SimulateMissingValue.cc
-    method/nonlinear/SimulateMissingValue.h
+    method/nonlinear/SimulatedMissingValue.cc
+    method/nonlinear/SimulatedMissingValue.h
     method/solver/Multiply.cc
     method/solver/Multiply.h
     method/solver/Solver.h
@@ -487,6 +487,10 @@ list(APPEND mir_srcs
     param/SameParametrisation.h
     param/SimpleParametrisation.cc
     param/SimpleParametrisation.h
+    reorder/Identity.cc
+    reorder/Identity.h
+    reorder/Reorder.cc
+    reorder/Reorder.h
     repres/Gridded.cc
     repres/Gridded.h
     repres/Iterator.cc
@@ -770,10 +774,10 @@ if(mir_HAVE_ATLAS)
         caching/legendre/NoLoader.h
         caching/legendre/SharedMemoryLoader.cc
         caching/legendre/SharedMemoryLoader.h
-        key/grid/NamedHEALPix.cc
-        key/grid/NamedHEALPix.h
         key/grid/HEALPixPattern.cc
         key/grid/HEALPixPattern.h
+        key/grid/NamedHEALPix.cc
+        key/grid/NamedHEALPix.h
         key/grid/NamedORCA.cc
         key/grid/NamedORCA.h
         key/grid/ORCAPattern.cc
@@ -800,12 +804,16 @@ if(mir_HAVE_ATLAS)
         method/structured/StructuredMethod.h
         output/GmshOutput.cc
         output/GmshOutput.h
-        repres/proxy/ProxyGrid.h
-        repres/proxy/ProxyGrid.cc
-        repres/proxy/ORCA.h
-        repres/proxy/ORCA.cc
-        repres/proxy/HEALPix.h
+        reorder/HEALPix.cc
+        reorder/HEALPix.h
         repres/proxy/HEALPix.cc
+        repres/proxy/HEALPix.h
+        repres/proxy/ORCA.cc
+        repres/proxy/ORCA.h
+        repres/proxy/ProxyGrid.cc
+        repres/proxy/ProxyGrid.h
+        repres/unsupported/HEALPixNested.cc
+        repres/unsupported/HEALPixNested.h
         stats/statistics/Integral.cc
         stats/statistics/Integral.h)
 else()

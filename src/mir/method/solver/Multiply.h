@@ -34,6 +34,7 @@ private:
     bool sameAs(const Solver&) const override;
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;
+    void json(eckit::JSON&) const override;
 
     const eckit::linalg::LinearAlgebraSparse& backend_;
 };

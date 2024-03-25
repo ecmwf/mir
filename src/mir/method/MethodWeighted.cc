@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <fstream>
 #include <limits>
+#include <map>
 #include <sstream>
 #include <string>
 
@@ -34,6 +35,7 @@
 #include "mir/method/nonlinear/NonLinear.h"
 #include "mir/method/solver/Multiply.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/reorder/Reorder.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
@@ -79,6 +81,24 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation)
 MethodWeighted::~MethodWeighted() = default;
 
 
+void MethodWeighted::json(eckit::JSON& j) const {
+    j << "type" << name();
+
+    j << "nonLinear";
+    j.startList();
+    for (const auto& n : nonLinear_) {
+        j << *n;
+    }
+    j.endList();
+
+    j << "solver" << *solver_;
+    j << "cropping" << cropping_;
+    j << "lsmWeightAdjustment" << lsmWeightAdjustment_;
+    j << "pruneEpsilon" << pruneEpsilon_;
+    j << "poleDisplacement" << poleDisplacement_;
+}
+
+
 void MethodWeighted::print(std::ostream& out) const {
     out << "nonLinear[";
     const auto* sep = "";
@@ -88,8 +108,19 @@ void MethodWeighted::print(std::ostream& out) const {
     }
     out << "]";
 
-    out << ",Solver=" << *solver_ << ",cropping=" << cropping_ << ",lsmWeightAdjustment=" << lsmWeightAdjustment_
-        << ",pruneEpsilon=" << pruneEpsilon_ << ",poleDisplacement=" << poleDisplacement_;
+    if (reorderRows_) {
+        out << ",reorderRows=" << *reorderRows_;
+    }
+
+    if (reorderCols_) {
+        out << ",reorderCols=" << *reorderCols_;
+    }
+
+    out << ",solver=" << *solver_;
+    out << ",cropping=" << cropping_;
+    out << ",lsmWeightAdjustment=" << lsmWeightAdjustment_;
+    out << ",pruneEpsilon=" << pruneEpsilon_;
+    out << ",poleDisplacement=" << poleDisplacement_;
 }
 
 
@@ -142,8 +173,8 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     log << "MethodWeighted::getMatrix " << *this << std::endl;
     trace::Timer timer("MethodWeighted::getMatrix");
 
-    double here                   = timer.elapsed();
-    const lsm::LandSeaMasks masks = getMasks(in, out);
+    double here      = timer.elapsed();
+    const auto masks = getMasks(in, out);
     log << "MethodWeighted::getMatrix land-sea masks: " << timer.elapsedSeconds(here) << ", "
         << (masks.active() ? "active" : "not active") << std::endl;
 
@@ -160,13 +191,12 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
 
 
     std::string version_str;
-    auto v = version();
-    if (bool(v)) {
+    if (auto v = version(); v != 0) {
         version_str = std::to_string(v) + "/";
     }
 
     std::string disk_key =
-        std::string(name()) + "/" + version_str + shortName_in + "/" + shortName_out + "-" + std::string(hash);
+        std::string{name()} + "/" + version_str + shortName_in + "/" + shortName_out + "-" + hash.digest();
     std::string memory_key = disk_key;
 
     // Add masks if any
@@ -219,6 +249,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
         }
     }
 
+
     log << "MethodWeighted::getMatrix create weights matrix: " << timer.elapsedSeconds(here) << std::endl;
     log << "MethodWeighted::getMatrix matrix W " << W << std::endl;
 
@@ -232,19 +263,49 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
 
     log << "Matrix footprint " << w.owner() << " " << usage << " W -> " << W.owner() << std::endl;
 
-    std::string filename;
-    if (parametrisation_.get("dump-weights-info", filename)) {
-
+    if (std::string filename; parametrisation_.get("dump-weights-info", filename)) {
         std::ofstream file(filename);
-        eckit::JSON json(file);
-        json.startObject();
-        json << "input" << in;
-        json << "output" << out;
-        json << "rows" << w.rows();
-        json << "columns" << w.cols();
-        json << "cache_file" << cacheFile;
-        json.endObject();
-        file.close();
+        eckit::JSON j(file);
+        j.startObject();
+        j << "input" << in;
+        j << "output" << out;
+
+        j << "interpolation";
+        j.startObject();
+        j << "engine" << "mir";
+        j << "version" << caching::WeightCache::version();
+        const static std::map<eckit::Hash::digest_t, std::string> KNOWN_METHOD{
+            {"73e1dd539879ffbbbb22d6bc789c2262", "linear"},
+            {"7738675c7e2c64d463718049ebef6563", "nearest-neighbour"},
+            {"a81efab621096650c20a978062cdd169", "grid-box-average"},
+        };
+
+        if (auto it = KNOWN_METHOD.find([](const MethodWeighted& method) {
+                std::ostringstream ss;
+                eckit::JSON k(ss);
+                k << method;
+                return (eckit::MD5() << ss.str()).digest();
+            }(*this));
+            it != KNOWN_METHOD.end()) {
+            j << "method" << it->second;
+        }
+        else {
+            j << "method" << *this;
+        }
+        j.endObject();
+
+        j << "matrix";
+        j.startObject();
+        j << "shape";
+        j.startList();
+        j << w.rows();
+        j << w.cols();
+        j.endList();
+        j << "nnz" << w.nonZeros();
+        j << "cache_file" << cacheFile;
+        j.endObject();
+
+        j.endObject();
     }
 
     matrix_cache.footprint(memory_key, usage);
@@ -267,6 +328,18 @@ void MethodWeighted::addNonLinearTreatment(const nonlinear::NonLinear* n) {
 void MethodWeighted::setSolver(const solver::Solver* s) {
     ASSERT(s != nullptr);
     solver_.reset(s);
+}
+
+
+void MethodWeighted::setReorderRows(reorder::Reorder* r) {
+    ASSERT(r != nullptr);
+    reorderRows_.reset(r);
+}
+
+
+void MethodWeighted::setReorderCols(reorder::Reorder* r) {
+    ASSERT(r != nullptr);
+    reorderCols_.reset(r);
 }
 
 
@@ -449,6 +522,31 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::R
         trace::Timer timer("Assemble matrix");
         assemble(ctx.statistics(), W, in, out);
         W.cleanup(pruneEpsilon_);
+
+        if (reorderRows_ || reorderCols_) {
+            std::unique_ptr<const reorder::Reorder> identity(
+                reorderRows_ && reorderCols_ ? nullptr : reorder::ReorderFactory::build("identity"));
+
+            auto rows = (reorderRows_ ? reorderRows_ : identity)->reorder(out.numberOfPoints());
+            ASSERT(rows.size() == W.rows());
+
+            auto cols = (reorderCols_ ? reorderCols_ : identity)->reorder(in.numberOfPoints());
+            ASSERT(cols.size() == W.cols());
+
+            // expand triplets, renumbering directly
+            std::vector<eckit::linalg::Triplet> trips;
+            trips.reserve(W.nonZeros());
+
+            for (auto i = W.begin(), end = W.end(); i != end; ++i) {
+                trips.emplace_back(rows.at(i.row()), cols.at(i.col()), *i);
+            }
+
+            // compress triplets, replace matrix
+            std::sort(trips.begin(), trips.end());
+
+            eckit::linalg::SparseMatrix w(W.rows(), W.cols(), trips);
+            W.swap(w);
+        }
     }
 
     // matrix validation always happens after creation, because the matrix can/will be cached
@@ -526,8 +624,7 @@ void MethodWeighted::hash(eckit::MD5& md5) const {
         n->hash(md5);
     }
 
-    auto v = version();
-    if (v != 0) {
+    if (auto v = version(); v != 0) {
         md5.add(v);
     }
 }

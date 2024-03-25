@@ -1,0 +1,6 @@
+# MIR-583 interpolation=linear failure on low parametricEpsilon
+MIR-583.grib1
+# mir
+--grid=0.04/0.04 --interpolation=linear --finite-element-projection-fail=missing-value
+# grib_get
+# (none)

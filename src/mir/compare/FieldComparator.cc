@@ -569,16 +569,14 @@ void FieldComparator::compareFieldStatistics(const MultiFile& multi1, const Mult
     constexpr double relativeErrorMax = 0.01;
 
     if (s1.values_ != s2.values_) {
-        Log::info() << "Number of data values mismatch:"
-                    << "\n  " << multi1 << ": " << s1.values_ << " " << field1 << "\n  " << multi2 << ": " << s2.values_
-                    << " " << field2 << std::endl;
+        Log::info() << "Number of data values mismatch:" << "\n  " << multi1 << ": " << s1.values_ << " " << field1
+                    << "\n  " << multi2 << ": " << s2.values_ << " " << field2 << std::endl;
         error("statistics-mismatches");
     }
 
     if (s1.missing_ != s2.missing_) {
-        Log::info() << "Number of missing values mismatch:"
-                    << "\n  " << multi1 << ": " << s1.missing_ << " " << field1 << "\n  " << multi2 << ": "
-                    << s2.missing_ << " " << field2 << std::endl;
+        Log::info() << "Number of missing values mismatch:" << "\n  " << multi1 << ": " << s1.missing_ << " " << field1
+                    << "\n  " << multi2 << ": " << s2.missing_ << " " << field2 << std::endl;
         error("statistics-mismatches");
     }
 
@@ -643,9 +641,8 @@ void FieldComparator::compareFieldValues(const FieldComparator::MultiFile& multi
         auto problems = comp->execute(input1->field(), input2->field());
 
         if (!problems.empty()) {
-            Log::info() << "Value compare failed between:"
-                        << "\n  " << multi1 << ": " << field1 << "\n  " << multi2 << ": " << field2 << "\n  reporting "
-                        << *comp << "\n  failed because" << problems << std::endl;
+            Log::info() << "Value compare failed between:" << "\n  " << multi1 << ": " << field1 << "\n  " << multi2
+                        << ": " << field2 << "\n  reporting " << *comp << "\n  failed because" << problems << std::endl;
             error("values-mismatches");
         }
     }
@@ -672,9 +669,8 @@ void FieldComparator::compareFieldMissingValues(const FieldComparator::MultiFile
     auto problems = comp->execute(input1->field(), input2->field());
 
     if (!problems.empty()) {
-        Log::info() << "Value compare failed between:"
-                    << "\n  " << multi1 << ": " << field1 << "\n  " << multi2 << ": " << field2 << "\n  reporting "
-                    << *comp << "\n  failed because" << problems << std::endl;
+        Log::info() << "Value compare failed between:" << "\n  " << multi1 << ": " << field1 << "\n  " << multi2 << ": "
+                    << field2 << "\n  reporting " << *comp << "\n  failed because" << problems << std::endl;
         error("values-mismatches");
     }
 }
@@ -737,8 +733,7 @@ void FieldComparator::missingField(const MultiFile& multi1, const MultiFile& mul
 
     std::vector<Field> matches = field.bestMatches(fields);
     if (!matches.empty()) {
-        Log::info() << " ? "
-                    << "No match found in " << multi2 << std::endl;
+        Log::info() << " ? " << "No match found in " << multi2 << std::endl;
         size_t cnt = 0;
 
         auto flds = field.sortByDifference(fields);
@@ -786,8 +781,7 @@ void FieldComparator::missingField(const MultiFile& multi1, const MultiFile& mul
     }
     else {
 
-        Log::info() << " + "
-                    << "Possible matched in " << multi2 << std::endl;
+        Log::info() << " + " << "Possible matched in " << multi2 << std::endl;
 
         size_t cnt = 0;
         for (const auto& other : matches) {
@@ -851,8 +845,8 @@ void FieldComparator::compareCounts(const std::string& name, const MultiFile& mu
     size_t n2 = count(multi2, fields2);
 
     if (n1 != n2) {
-        Log::info() << name << " count mismatch"
-                    << "\n  " << n1 << " " << multi1 << "\n  " << n2 << " " << multi2 << std::endl;
+        Log::info() << name << " count mismatch" << "\n  " << n1 << " " << multi1 << "\n  " << n2 << " " << multi2
+                    << std::endl;
         error("count-mismatches");
     }
 }

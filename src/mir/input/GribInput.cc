@@ -293,7 +293,6 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         {"south", "latitudeOfLastGridPointInDegrees"},
 
         {"truncation", "pentagonalResolutionParameterJ"},  // Assumes triangular truncation
-        {"accuracy", "bitsPerValue"},
 
         {"south_pole_latitude", "latitudeOfSouthernPoleInDegrees"},
         {"south_pole_longitude", "longitudeOfSouthernPoleInDegrees"},
@@ -329,10 +328,11 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         {"gridded_regular_ll", "Ni", _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll"))},
 
         {"grid", "gridName",
-         _or(_or(_or(_or(_or(is("gridType", "regular_gg"), is("gridType", "reduced_gg")), is("gridType", "rotated_gg")),
-                     is("gridType", "reduced_rotated_gg")),
-                 is("gridType", "unstructured_grid")),
-             is("gridType", "healpix"))},
+         _or(_or(_or(_or(is("gridType", "regular_gg"), is("gridType", "reduced_gg")), is("gridType", "rotated_gg")),
+                 is("gridType", "reduced_rotated_gg")),
+             is("gridType", "unstructured_grid"))},
+
+        {"grid", "gridName_fix_for_healpix_grids", is("gridType", "healpix")},
 
         {"spectral", "pentagonalResolutionParameterJ"},
 
@@ -598,6 +598,40 @@ static ProcessingT<std::string>* packing() {
 }
 
 
+static ProcessingT<std::string>* gridName_fix_for_healpix_grids() {
+    return new ProcessingT<std::string>([](grib_handle* h, std::string& value) {
+        std::string gridName;
+
+        char buffer[64];
+        size_t size = sizeof(buffer);
+
+        GRIB_CALL(codes_get_string(h, "gridName", buffer, &size));
+        ASSERT(size < sizeof(buffer) - 1);
+
+        if (::strcmp(buffer, "MISSING") != 0) {
+            gridName += buffer;
+        }
+
+        size = sizeof(buffer);
+        GRIB_CALL(codes_get_string(h, "orderingConvention", buffer, &size));
+        ASSERT(size < sizeof(buffer) - 1);
+
+        if (::strcmp(buffer, "MISSING") != 0) {
+            if (::strcmp(buffer, "nested") == 0) {
+                gridName += "_nested";
+            }
+        }
+
+        if (!gridName.empty()) {
+            value = gridName;
+            return true;
+        }
+
+        return false;
+    });
+}
+
+
 template <class T>
 struct ConditionedProcessingT {
     const std::string name;
@@ -836,18 +870,6 @@ bool GribInput::get(const std::string& name, long& value) const {
         return false;
     }
 
-    std::string packing;
-    if (key == "bitsPerValue" && get("packing", packing) && packing == "ieee") {
-        // GRIB2 Section 5 Code Table 7
-        // NOTE:
-        // - has to be done here as GRIBs packingType=grid_ieee ignores bitsPerValue (usually 0?)
-        // - packingType=grid_ieee has "precision", but "spectral_ieee" doesn't
-        long precision = 0;
-        codes_get_long(grib_, "precision", &precision);
-        value = precision == 1 ? 32 : precision == 2 ? 64 : precision == 3 ? 128 : 0;
-        return value != 0;
-    }
-
     // FIXME: make sure that 'value' is not set if CODES_MISSING_LONG
     int err = codes_get_long(grib_, key.c_str(), &value);
     if (err == CODES_NOT_FOUND || codes_is_missing(grib_, key.c_str(), &err) != 0) {
@@ -1002,7 +1024,8 @@ bool GribInput::get(const std::string& name, std::string& value) const {
     int err     = codes_get_string(grib_, key, buffer, &size);
 
     if (err == CODES_NOT_FOUND) {
-        static const ProcessingList<std::string> process{{"packing", packing()}};
+        static const ProcessingList<std::string> process{
+            {"packing", packing()}, {"gridName_fix_for_healpix_grids", gridName_fix_for_healpix_grids()}};
 
         return get_value(key, grib_, value, process) || FieldParametrisation::get(name, value);
     }

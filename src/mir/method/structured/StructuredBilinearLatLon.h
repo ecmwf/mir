@@ -18,21 +18,15 @@
 namespace mir::method::structured {
 
 
-class StructuredBilinearLatLon : public StructuredMethod {
-public:
-    StructuredBilinearLatLon(const param::MIRParametrisation&);
-    ~StructuredBilinearLatLon() override;
+struct StructuredBilinearLatLon final : StructuredMethod {
+    explicit StructuredBilinearLatLon(const param::MIRParametrisation&);
 
 private:
     void assembleStructuredInput(WeightMatrix&, const repres::Representation& in,
                                  const repres::Representation& out) const override;
 
     const char* name() const override;
-
-    void hash(eckit::MD5&) const override;
-
     void print(std::ostream&) const override;
-
     bool sameAs(const Method&) const override;
 };
 

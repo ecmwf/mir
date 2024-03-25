@@ -14,10 +14,14 @@
 
 
 #include <string>
+#include <vector>
 
-#include "mir/param/MIRParametrisation.h"
 #include "mir/repres/proxy/ProxyGrid.h"
-#include "mir/util/GridBox.h"
+
+
+namespace mir::repres::unsupported {
+class HEALPixNested;
+}
 
 
 namespace mir::repres::proxy {
@@ -25,28 +29,34 @@ namespace mir::repres::proxy {
 
 class HEALPix final : public ProxyGrid {
 public:
+    // -- Types
+
+    enum Ordering
+    {
+        healpix_ring,
+        healpix_nested,
+    };
+
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    HEALPix(size_t Nside, const std::string& orderingConvention = "ring");
-    HEALPix(const param::MIRParametrisation&);
-    HEALPix(const HEALPix&) = delete;
+    explicit HEALPix(size_t Nside, const std::string& orderingConvention = "ring");
+    explicit HEALPix(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~HEALPix() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-
-    HEALPix& operator=(const HEALPix&) = delete;
+    // None
 
     // -- Methods
-    // None
+
+    size_t Nside() const { return Nside_; }
 
     // -- Overridden methods
     // None
@@ -79,11 +89,13 @@ private:
     void fillMeshGen(util::MeshGeneratorParameters&) const override;
     void fillJob(api::MIRJob&) const override;
 
+    void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
 
-    const ::atlas::Grid& atlasGridRef() const override;
-
     std::vector<util::GridBox> gridBoxes() const override;
+
+    // from ProxyGrid
+    const ::atlas::Grid& atlasGridRef() const override;
 
     // -- Class members
     // None
@@ -92,7 +104,8 @@ private:
     // None
 
     // -- Friends
-    // None
+
+    friend class unsupported::HEALPixNested;
 };
 
 

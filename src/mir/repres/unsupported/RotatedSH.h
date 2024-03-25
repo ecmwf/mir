@@ -15,18 +15,20 @@
 #include "mir/repres/Gridded.h"
 
 
-namespace mir::repres {
+namespace mir::repres::unsupported {
 
 
-class RotatedSH : public Gridded {
+class RotatedSH final : public Gridded {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    RotatedSH(const param::MIRParametrisation&);
+    explicit RotatedSH(const param::MIRParametrisation&);
+
     RotatedSH(const RotatedSH&) = delete;
+    RotatedSH(RotatedSH&&)      = delete;
 
     // -- Destructor
     // None
@@ -37,6 +39,7 @@ public:
     // -- Operators
 
     RotatedSH& operator=(const RotatedSH&) = delete;
+    RotatedSH& operator=(RotatedSH&&)      = delete;
 
     // -- Methods
     // // None
@@ -88,4 +91,4 @@ private:
 };
 
 
-}  // namespace mir::repres
+}  // namespace mir::repres::unsupported

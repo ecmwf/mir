@@ -29,9 +29,6 @@ NearestNeighbour::NearestNeighbour(const param::MIRParametrisation& param) :
 }
 
 
-NearestNeighbour::~NearestNeighbour() = default;
-
-
 bool NearestNeighbour::sameAs(const Method& other) const {
     const auto* o = dynamic_cast<const NearestNeighbour*>(&other);
     return (o != nullptr) && KNearestNeighbours::sameAs(other);

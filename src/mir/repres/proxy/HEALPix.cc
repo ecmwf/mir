@@ -12,19 +12,19 @@
 
 #include "mir/repres/proxy/HEALPix.h"
 
+#include <algorithm>
+#include <cmath>
 #include <ostream>
-#include <utility>
-#include <vector>
 
+#include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "atlas/interpolation/method/knn/GridBox.h"
-
-#include "mir/repres/Iterator.h"
-#include "mir/util/Atlas.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/repres/unsupported/HEALPixNested.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
-#include "mir/util/Log.h"
+#include "mir/util/GridBox.h"
 #include "mir/util/MeshGeneratorParameters.h"
 
 
@@ -50,12 +50,9 @@ HEALPix::HEALPix(const param::MIRParametrisation& param) : Nside_(0), orderingCo
 }
 
 
-HEALPix::~HEALPix() = default;
-
-
 const ::atlas::Grid& HEALPix::atlasGridRef() const {
     if (!grid_) {
-        grid_ = atlas::HealpixGrid(Nside_, orderingConvention_);
+        grid_ = atlas::HealpixGrid(static_cast<int>(Nside_), orderingConvention_);
     }
     return grid_;
 }
@@ -100,8 +97,17 @@ void HEALPix::fillJob(api::MIRJob&) const {
 }
 
 
+void HEALPix::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "grid" << name();
+    j << "type" << "healpix";
+    j << "ordering" << orderingConvention_;
+    j.endObject();
+}
+
+
 void HEALPix::print(std::ostream& out) const {
-    out << "HEALPix[name=" << name() << "]";
+    out << "HEALPix[name=" << name() << ",ordering=" << orderingConvention_ << "]";
 }
 
 
@@ -115,7 +121,23 @@ std::vector<util::GridBox> HEALPix::gridBoxes() const {
 }
 
 
-static const RepresentationBuilder<HEALPix> __grid("healpix");
+static const struct HEALPixRepresentationBuilder : public RepresentationFactory {
+    Representation* make(const param::MIRParametrisation& param) override {
+        std::string orderingConvention;
+        param.get("orderingConvention", orderingConvention);
+
+        if (orderingConvention == "nested") {
+            size_t Nside = 0;
+            ASSERT(param.get("Nside", Nside) && Nside > 0);
+
+            return new unsupported::HEALPixNested(Nside);
+        }
+
+        return new HEALPix(param);
+    }
+
+    explicit HEALPixRepresentationBuilder(const std::string& name) : RepresentationFactory(name) {}
+} __grid("healpix");
 
 
 }  // namespace mir::repres::proxy

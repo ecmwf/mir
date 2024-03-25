@@ -14,6 +14,8 @@
 
 #include <sstream>
 
+#include "eckit/log/JSON.h"
+
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -102,6 +104,13 @@ void PseudoLaplace::operator()(size_t ip, const Point3& point,
 
 bool PseudoLaplace::sameAs(const DistanceWeighting& other) const {
     return dynamic_cast<const PseudoLaplace*>(&other) != nullptr;
+}
+
+
+void PseudoLaplace::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "pseudo-laplace";
+    j.endObject();
 }
 
 

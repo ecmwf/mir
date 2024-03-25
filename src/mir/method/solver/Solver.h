@@ -19,8 +19,9 @@
 
 
 namespace eckit {
+class JSON;
 class MD5;
-}
+}  // namespace eckit
 
 namespace mir::param {
 class MIRParametrisation;
@@ -33,25 +34,33 @@ namespace mir::method::solver {
 /// Solve linear system (B = W A)
 class Solver {
 public:
-    Solver(const param::MIRParametrisation&) {}
+    explicit Solver(const param::MIRParametrisation&) {}
 
-    Solver(const Solver&)         = delete;
-    void operator=(const Solver&) = delete;
+    Solver(const Solver&) = delete;
+    Solver(Solver&&)      = delete;
 
     virtual ~Solver() = default;
+
+    void operator=(const Solver&) = delete;
+    void operator=(Solver&&)      = delete;
 
     virtual void solve(const MethodWeighted::Matrix& A, const MethodWeighted::WeightMatrix& W,
                        MethodWeighted::Matrix& B, const double& missingValue) const = 0;
 
     virtual bool sameAs(const Solver&) const = 0;
-
-    virtual void hash(eckit::MD5&) const = 0;
+    virtual void hash(eckit::MD5&) const     = 0;
+    virtual void json(eckit::JSON&) const    = 0;
 
 private:
     virtual void print(std::ostream&) const = 0;
 
     friend std::ostream& operator<<(std::ostream& s, const Solver& p) {
         p.print(s);
+        return s;
+    }
+
+    friend eckit::JSON& operator<<(eckit::JSON& s, const Solver& p) {
+        p.json(s);
         return s;
     }
 };

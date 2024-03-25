@@ -12,6 +12,7 @@
 
 #include "mir/method/knn/pick/DistanceOrNClosest.h"
 
+#include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -47,6 +48,15 @@ bool DistanceOrNClosest::sameAs(const Pick& other) const {
     const auto* o = dynamic_cast<const DistanceOrNClosest*>(&other);
     return (o != nullptr) && nClosest_.sameAs(o->nClosest_) &&
            eckit::types::is_approximately_equal(distance_, o->distance_);
+}
+
+
+void DistanceOrNClosest::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "distance-or-nclosest";
+    j << "nclosest" << nClosest_;
+    j << "distance" << distance_;
+    j.endObject();
 }
 
 

@@ -18,75 +18,11 @@
 namespace mir::method::fe {
 
 
-class FEBilinear : public FiniteElement {
-public:
-    // -- Types
-    // None
-
-    // -- Exceptions
-    // None
-
-    // -- Constructors
-
-    FEBilinear(const param::MIRParametrisation&, const std::string& label = "input");
-
-    // -- Destructor
-    // None
-
-    // -- Convertors
-    // None
-
-    // -- Operators
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
+struct FEBilinear final : FiniteElement {
+    explicit FEBilinear(const param::MIRParametrisation&, const std::string& label = "input");
 
 private:
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-
-    // From MethodWeighted
     const char* name() const override;
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-    // -- Friends
-    // None
 };
 
 

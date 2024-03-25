@@ -32,7 +32,7 @@ namespace mir::method::structured {
 
 class StructuredMethod : public MethodWeighted {
 public:
-    StructuredMethod(const param::MIRParametrisation&);
+    explicit StructuredMethod(const param::MIRParametrisation&);
     ~StructuredMethod() override;
 
 protected:
@@ -62,14 +62,14 @@ protected:
 
     bool sameAs(const Method&) const override = 0;
 
-    void print(std::ostream&) const override;
-
 private:
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
                   const repres::Representation& out) const override;
 
     virtual void assembleStructuredInput(WeightMatrix&, const repres::Representation& in,
                                          const repres::Representation& out) const = 0;
+
+    void json(eckit::JSON&) const override;
 };
 
 

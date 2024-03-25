@@ -25,9 +25,9 @@ class LandSeaMasks;
 namespace mir::method::knn::distance {
 
 
-struct DistanceWeightingWithLSM : DistanceWeighting {
-
-    DistanceWeightingWithLSM(const param::MIRParametrisation&);
+class DistanceWeightingWithLSM : public DistanceWeighting {
+public:
+    explicit DistanceWeightingWithLSM(const param::MIRParametrisation&);
 
     void operator()(size_t, const Point3&, const std::vector<search::PointSearch::PointValueType>&,
                     std::vector<WeightMatrix::Triplet>&) const override {
@@ -37,10 +37,12 @@ struct DistanceWeightingWithLSM : DistanceWeighting {
     const DistanceWeighting* distanceWeighting(const param::MIRParametrisation&, const lsm::LandSeaMasks& lsm) const;
 
 private:
-    std::string method_;
     bool sameAs(const DistanceWeighting&) const override;
+    void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;
+
+    std::string method_;
 };
 
 
@@ -49,14 +51,17 @@ private:
     std::string name_;
     virtual DistanceWeighting* make(const param::MIRParametrisation&, const lsm::LandSeaMasks&) = 0;
 
-    DistanceWeightingWithLSMFactory(const DistanceWeightingWithLSMFactory&)            = delete;
-    DistanceWeightingWithLSMFactory& operator=(const DistanceWeightingWithLSMFactory&) = delete;
-
 protected:
-    DistanceWeightingWithLSMFactory(const std::string& name);
+    explicit DistanceWeightingWithLSMFactory(const std::string& name);
     virtual ~DistanceWeightingWithLSMFactory();
 
 public:
+    DistanceWeightingWithLSMFactory(const DistanceWeightingWithLSMFactory&) = delete;
+    DistanceWeightingWithLSMFactory(DistanceWeightingWithLSMFactory&&)      = delete;
+
+    DistanceWeightingWithLSMFactory& operator=(const DistanceWeightingWithLSMFactory&) = delete;
+    DistanceWeightingWithLSMFactory& operator=(DistanceWeightingWithLSMFactory&&)      = delete;
+
     static const DistanceWeighting* build(const std::string& name, const param::MIRParametrisation&,
                                           const lsm::LandSeaMasks&);
     static void list(std::ostream&);
@@ -71,7 +76,7 @@ class DistanceWeightingWithLSMBuilder : public DistanceWeightingWithLSMFactory {
     }
 
 public:
-    DistanceWeightingWithLSMBuilder(const std::string& name) : DistanceWeightingWithLSMFactory(name) {}
+    explicit DistanceWeightingWithLSMBuilder(const std::string& name) : DistanceWeightingWithLSMFactory(name) {}
 };
 
 

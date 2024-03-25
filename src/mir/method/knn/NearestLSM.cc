@@ -30,9 +30,6 @@ NearestLSM::NearestLSM(const param::MIRParametrisation& param) : KNearestNeighbo
 }
 
 
-NearestLSM::~NearestLSM() = default;
-
-
 void NearestLSM::assemble(util::MIRStatistics& stats, WeightMatrix& W, const repres::Representation& in,
                           const repres::Representation& out) const {
 

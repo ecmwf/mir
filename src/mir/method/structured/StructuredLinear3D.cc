@@ -40,9 +40,6 @@ static const MethodBuilder<StructuredLinear3D> __method("structured-linear-3d");
 StructuredLinear3D::StructuredLinear3D(const param::MIRParametrisation& param) : StructuredMethod(param) {}
 
 
-StructuredLinear3D::~StructuredLinear3D() = default;
-
-
 bool StructuredLinear3D::sameAs(const Method& other) const {
     const auto* o = dynamic_cast<const StructuredLinear3D*>(&other);
     return (o != nullptr) && StructuredMethod::sameAs(other);
@@ -211,11 +208,6 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
 
 const char* StructuredLinear3D::name() const {
     return "structured-linear-3d";
-}
-
-
-void StructuredLinear3D::hash(eckit::MD5& md5) const {
-    StructuredMethod::hash(md5);
 }
 
 

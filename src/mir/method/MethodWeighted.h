@@ -20,6 +20,10 @@
 #include "mir/method/WeightMatrix.h"
 
 
+namespace eckit {
+class JSON;
+}
+
 namespace mir {
 namespace data {
 class Space;
@@ -35,6 +39,9 @@ namespace solver {
 class Solver;
 }
 }  // namespace method
+namespace reorder {
+class Reorder;
+}
 namespace repres {
 class Representation;
 }
@@ -77,8 +84,8 @@ public:
 
     int version() const override;
 
-    virtual const WeightMatrix& getMatrix(context::Context&, const repres::Representation& in,
-                                          const repres::Representation& out) const;
+    const WeightMatrix& getMatrix(context::Context&, const repres::Representation& in,
+                                  const repres::Representation& out) const;
 
     // -- Overridden methods
     // None
@@ -95,10 +102,13 @@ protected:
 
     // -- Methods
 
-    virtual const char* name() const = 0;
+    virtual void json(eckit::JSON&) const = 0;
+    virtual const char* name() const      = 0;
     const solver::Solver& solver() const;
     void addNonLinearTreatment(const nonlinear::NonLinear*);
     void setSolver(const solver::Solver*);
+    void setReorderRows(reorder::Reorder*);
+    void setReorderCols(reorder::Reorder*);
     double poleDisplacement() const { return poleDisplacement_; }
 
     // -- Overridden methods
@@ -123,6 +133,8 @@ private:
 
     std::vector<std::unique_ptr<const nonlinear::NonLinear>> nonLinear_;
     std::unique_ptr<const solver::Solver> solver_;
+    std::unique_ptr<const reorder::Reorder> reorderRows_;
+    std::unique_ptr<const reorder::Reorder> reorderCols_;
 
     bool matrixValidate_;
     bool matrixAssemble_;
@@ -165,7 +177,13 @@ private:
     // None
 
     // -- Friends
+
     friend class MatrixCacheCreator;
+
+    friend eckit::JSON& operator<<(eckit::JSON& s, const MethodWeighted& o) {
+        o.json(s);
+        return s;
+    }
 };
 
 

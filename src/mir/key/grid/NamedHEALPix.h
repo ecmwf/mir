@@ -14,6 +14,7 @@
 
 
 #include "mir/key/grid/NamedGrid.h"
+#include "mir/repres/proxy/HEALPix.h"
 
 
 namespace mir::key::grid {
@@ -21,13 +22,19 @@ namespace mir::key::grid {
 
 class NamedHEALPix : public NamedGrid {
 public:
+    // -- Types
+
+    using Ordering = repres::proxy::HEALPix::Ordering;
+
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    NamedHEALPix(const std::string& name, size_t Nside);
+    NamedHEALPix(const std::string& name, size_t Nside, Ordering);
+
     NamedHEALPix(const NamedHEALPix&) = delete;
+    NamedHEALPix(NamedHEALPix&&)      = delete;
 
     // -- Destructor
     // None
@@ -38,6 +45,7 @@ public:
     // -- Operators
 
     NamedHEALPix& operator=(const NamedHEALPix&) = delete;
+    NamedHEALPix& operator=(NamedHEALPix&&)      = delete;
 
     // -- Methods
     // None
@@ -73,9 +81,9 @@ protected:
 
 private:
     // -- Members
-    // None
 
-    size_t Nside_;
+    const size_t Nside_;
+    const Ordering ordering_;
 
     // -- Methods
     // None

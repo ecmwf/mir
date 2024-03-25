@@ -1,0 +1,9 @@
+# mars
+regular_ll.2-2.grib2
+# mir
+--grid=h16 --interpolation=nn
+# grib_get
+gridType=healpix
+orderingConvention=ring
+Nside=16
+edition=2

@@ -27,7 +27,9 @@ struct SortedSample : Pick {
     void hash(eckit::MD5&) const override;
 
 private:
+    void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
+
     Sample sample_;
 };
 

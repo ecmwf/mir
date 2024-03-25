@@ -14,6 +14,7 @@
 
 #include <sstream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -57,7 +58,7 @@ void InverseDistanceWeighting::operator()(size_t ip, const Point3& point,
         const double d2 = Point3::distance2(point, neighbours[j].point());
         if (eckit::types::is_approximately_equal(d2, 0.)) {
             // exact match found, use this neighbour only (inverse distance tends to infinity)
-            triplets.assign(1, WeightMatrix::Triplet(ip, neighbours[j].payload(), 1.));
+            triplets.assign(1, {ip, neighbours[j].payload(), 1.});
             return;
         }
 
@@ -70,7 +71,7 @@ void InverseDistanceWeighting::operator()(size_t ip, const Point3& point,
     // normalise all weights according to the total, and set sparse matrix triplets
     for (size_t j = 0; j < nbPoints; ++j) {
         size_t jp = neighbours[j].payload();
-        triplets.emplace_back(WeightMatrix::Triplet(ip, jp, weights[j] / sum));
+        triplets.emplace_back(ip, jp, weights[j] / sum);
     }
 }
 
@@ -78,6 +79,14 @@ void InverseDistanceWeighting::operator()(size_t ip, const Point3& point,
 bool InverseDistanceWeighting::sameAs(const DistanceWeighting& other) const {
     const auto* o = dynamic_cast<const InverseDistanceWeighting*>(&other);
     return (o != nullptr) && eckit::types::is_approximately_equal(power_, o->power_);
+}
+
+
+void InverseDistanceWeighting::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "inverse-distance-weighting";
+    j << "inverse-distance-weighting-power" << power_;
+    j.endObject();
 }
 
 

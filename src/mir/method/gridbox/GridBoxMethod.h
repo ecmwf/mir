@@ -20,81 +20,18 @@ namespace mir::method::gridbox {
 
 class GridBoxMethod : public MethodWeighted {
 public:
-    // -- Types
-    // None
-
-    // -- Exceptions
-    // None
-
-    // -- Constructors
-
-    GridBoxMethod(const param::MIRParametrisation&);
-
-    // -- Destructor
-
-    ~GridBoxMethod() override;
-
-    // -- Convertors
-    // None
-
-    // -- Operators
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
+    explicit GridBoxMethod(const param::MIRParametrisation&);
 
 private:
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-
-    // From MethodWeighted
     void hash(eckit::MD5&) const override;
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
                   const repres::Representation& out) const override;
     bool sameAs(const Method&) const override;
+    void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
     bool validateMatrixWeights() const override;
     const char* name() const override;
     int version() const override;
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-    // -- Friends
-    // None
 };
 
 

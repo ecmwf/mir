@@ -14,7 +14,7 @@
 
 #include <algorithm>
 #include <memory>
-#include <sstream>
+#include <ostream>
 
 #include "eckit/utils/MD5.h"
 
@@ -35,6 +35,12 @@ namespace mir::lsm {
 GribFileMask::GribFileMask(const eckit::PathName& path, const param::MIRParametrisation& parametrisation,
                            const repres::Representation& representation, const std::string& which) :
     path_(path) {
+    auto values_to_mask = [](const MIRValuesVector& values, double threshold, std::vector<bool>& mask) {
+        mask.resize(values.size());
+
+        // Compare values inequality, "is greater or equal to"
+        std::transform(values.begin(), values.end(), mask.begin(), [&](double value) { return value >= threshold; });
+    };
 
     // WARNING: don't store the grid, it won't be there later if this
     // object is cached
@@ -42,14 +48,21 @@ GribFileMask::GribFileMask(const eckit::PathName& path, const param::MIRParametr
 
     Log::debug() << "GribFileMask loading " << path_ << std::endl;
 
-    input::GribFileInput file(path_);
-    const input::MIRInput& input = file;
+    std::unique_ptr<input::MIRInput> input(new input::GribFileInput(path_));
 
-    ASSERT(file.next());
-    data::MIRField field = input.field();
+    ASSERT(input->next());
+    auto field = input->field();
 
-    param::RuntimeParametrisation runtime(parametrisation);
-    runtime.set("lsm", false);
+    double threshold = 0.5;
+    if (!parametrisation.get("lsm-value-threshold-" + which, threshold)) {
+        ASSERT(parametrisation.get("lsm-value-threshold", threshold));
+    }
+
+    const repres::RepresentationHandle in(field.representation());
+    if (in->sameAs(representation)) {
+        values_to_mask(field.values(0), threshold, mask_);
+        return;
+    }
 
     std::string interpolation;
     if (!parametrisation.get("lsm-interpolation-" + which, interpolation)) {
@@ -57,6 +70,9 @@ GribFileMask::GribFileMask(const eckit::PathName& path, const param::MIRParametr
             throw exception::SeriousBug("No interpolation method defined for land-sea mask");
         }
     }
+
+    param::RuntimeParametrisation runtime(parametrisation);
+    runtime.set("lsm", false);
 
     std::unique_ptr<method::Method> method(method::MethodFactory::build(interpolation, runtime));
     Log::debug() << "LSM interpolation method is " << *method << std::endl;
@@ -69,22 +85,12 @@ GribFileMask::GribFileMask(const eckit::PathName& path, const param::MIRParametr
 
     util::MIRStatistics dummy;  // TODO: use the global one
     context::Context ctx(field, dummy);
-    method->execute(ctx, *field.representation(), representation);
-
-    double threshold;
-    if (!parametrisation.get("lsm-value-threshold-" + which, threshold)) {
-        ASSERT(parametrisation.get("lsm-value-threshold", threshold));
-    }
-
+    method->execute(ctx, *in, representation);
 
     ASSERT(!ctx.field().hasMissing());
     ASSERT(ctx.field().dimensions() == 1);
 
-    const MIRValuesVector& values = ctx.field().values(0);
-    mask_.resize(values.size());
-
-    /// Compare values inequality, "is greater or equal to"
-    std::transform(values.begin(), values.end(), mask_.begin(), [&](double value) { return value >= threshold; });
+    values_to_mask(ctx.field().values(0), threshold, mask_);
 }
 
 

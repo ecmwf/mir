@@ -47,8 +47,7 @@ void Gridded2GridDef::custom(std::ostream& out) const {
 
 
 void Gridded2GridDef::print(std::ostream& out) const {
-    out << "Gridded2GridDef["
-        << "griddef=" << griddef_ << ",";
+    out << "Gridded2GridDef[" << "griddef=" << griddef_ << ",";
     Gridded2UnrotatedGrid::print(out);
     out << "]";
 }

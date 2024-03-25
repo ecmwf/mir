@@ -15,6 +15,7 @@
 #include <cmath>
 #include <string>
 
+#include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -88,6 +89,14 @@ bool ClimateFilter::sameAs(const DistanceWeighting& other) const {
     const auto* o = dynamic_cast<const ClimateFilter*>(&other);
     return (o != nullptr) && eckit::types::is_approximately_equal(halfDelta_, o->halfDelta_) &&
            eckit::types::is_approximately_equal(delta_, o->delta_);
+}
+
+
+void ClimateFilter::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "climate-filter";
+    j << "climate-filter-delta" << delta_;
+    j.endObject();
 }
 
 

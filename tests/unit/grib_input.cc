@@ -31,7 +31,7 @@ CASE("GribFileInput") {
                  "../data/O400.version=1.grib1",
                  "../data/O400.version=2.grib1",
                  "../data/ORCA.grib2",
-                 "../data/gridType=healpix,N=36.grib2",
+                 "../data/gridType=healpix,Nside=32,orderingConvention=ring.grib2",
                  "../data/gridType=reduced_gg,gridName=N320,shortName=msl.grib1",
                  "../data/gridType=reduced_gg,gridName=O1280,shortName=msl.grib1",
                  "../data/gridType=reduced_gg,gridName=O32,shortName=msl.grib1",

@@ -14,6 +14,7 @@
 
 #include <sstream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -66,6 +67,13 @@ void Cressman::operator()(size_t ip, const Point3& point,
 bool Cressman::sameAs(const DistanceWeighting& other) const {
     const auto* o = dynamic_cast<const Cressman*>(&other);
     return (o != nullptr) && eckit::types::is_approximately_equal(r_, o->r_);
+}
+
+
+void Cressman::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "cressman";
+    j.endList();
 }
 
 

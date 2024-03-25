@@ -18,13 +18,14 @@
 namespace mir::method::nonlinear {
 
 
-struct SimulateMissingValue : NonLinear {
-    SimulateMissingValue(const param::MIRParametrisation&);
+struct SimulatedMissingValue : NonLinear {
+    SimulatedMissingValue(const param::MIRParametrisation&);
 
 private:
     bool treatment(MethodWeighted::Matrix& A, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& B,
                    const MIRValuesVector&, const double&) const override;
     bool sameAs(const NonLinear&) const override;
+    void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;
 

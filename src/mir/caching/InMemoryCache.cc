@@ -113,9 +113,8 @@ void InMemoryCache<T>::reserve(const InMemoryCacheUsage& usage) {
     auto u = usage;
     auto p = (f + u) - c;
 
-    Log::debug() << "CACHE-RESERVE-" << name_ << " "
-                 << " => " << u << " footprint: " << f << " capacity: " << c << " f+u: " << f + u << " f+u-c: " << p
-                 << std::endl;
+    Log::debug() << "CACHE-RESERVE-" << name_ << " " << " => " << u << " footprint: " << f << " capacity: " << c
+                 << " f+u: " << f + u << " f+u-c: " << p << std::endl;
 
 
     if (p) {

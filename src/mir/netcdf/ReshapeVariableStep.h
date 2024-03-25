@@ -12,6 +12,8 @@
 
 #pragma once
 
+#include <cstddef>
+
 #include "mir/netcdf/Step.h"
 
 

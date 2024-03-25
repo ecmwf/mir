@@ -46,6 +46,8 @@ class WeightCache : public eckit::CacheManager<WeightCacheTraits> {
 public:  // methods
     explicit WeightCache(const param::MIRParametrisation&);
 
+    static int version() { return WeightCacheTraits::version(); }
+
 private:  // members
     friend WeightCacheTraits;
 };

@@ -15,6 +15,7 @@
 #include <map>
 #include <sstream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/param/MIRParametrisation.h"
@@ -59,6 +60,14 @@ bool DistanceWeightingWithLSM::sameAs(const DistanceWeighting& other) const {
 
     // Note: LSM's themselves are not used for this distinction!
     return (o != nullptr) && method_ == o->method_;
+}
+
+
+void DistanceWeightingWithLSM::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "distance-weighting-with-lsm";
+    j << "distance-weighting-with-lsm" << method_;
+    j.endObject();
 }
 
 

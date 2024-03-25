@@ -72,4 +72,12 @@ void Statistics::hash(eckit::MD5& h) const {
 }
 
 
+void Statistics::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "statistics";
+    j << "statistics" << *stats_;
+    j.endObject();
+}
+
+
 }  // namespace mir::method::solver

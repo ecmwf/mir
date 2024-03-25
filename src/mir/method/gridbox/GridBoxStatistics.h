@@ -20,8 +20,6 @@ namespace mir::method::gridbox {
 
 struct GridBoxStatistics final : GridBoxMethod {
     explicit GridBoxStatistics(const param::MIRParametrisation&);
-    GridBoxStatistics(const GridBoxStatistics&) = delete;
-    void operator=(const GridBoxStatistics&)    = delete;
 };
 
 

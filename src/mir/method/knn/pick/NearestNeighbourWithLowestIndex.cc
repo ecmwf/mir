@@ -15,6 +15,7 @@
 #include <ostream>
 #include <sstream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -70,6 +71,14 @@ size_t NearestNeighbourWithLowestIndex::n() const {
 bool NearestNeighbourWithLowestIndex::sameAs(const Pick& other) const {
     const auto* o = dynamic_cast<const NearestNeighbourWithLowestIndex*>(&other);
     return (o != nullptr);
+}
+
+
+void NearestNeighbourWithLowestIndex::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "nearest-neighbour-with-lowest-index";
+    j << "nclosest" << nClosest_;
+    j.endObject();
 }
 
 

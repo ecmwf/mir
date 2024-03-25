@@ -87,8 +87,7 @@ void MeshGeneratorParameters::hash(eckit::Hash& hash) const {
 }
 
 void MeshGeneratorParameters::print(std::ostream& s) const {
-    s << "MeshGeneratorParameters["
-      << "meshGenerator=" << meshGenerator_ << ",meshCellCentres=" << meshCellCentres_
+    s << "MeshGeneratorParameters[" << "meshGenerator=" << meshGenerator_ << ",meshCellCentres=" << meshCellCentres_
       << ",meshCellLongestDiagonal=" << meshCellLongestDiagonal_
       << ",meshNodeLumpedMassMatrix=" << meshNodeLumpedMassMatrix_
       << ",meshNodeToCellConnectivity=" << meshNodeToCellConnectivity_ << ",";

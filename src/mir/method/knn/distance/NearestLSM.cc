@@ -14,6 +14,7 @@
 
 #include <sstream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/lsm/LandSeaMasks.h"
@@ -56,13 +57,20 @@ void NearestLSM::operator()(size_t ip, const Point3& /*unused*/,
         jp = neighbours.front().payload();
     }
 
-    triplets.assign(1, WeightMatrix::Triplet(ip, jp, 1.));
+    triplets.assign(1, {ip, jp, 1.});
 }
 
 
 bool NearestLSM::sameAs(const DistanceWeighting& other) const {
     const auto* o = dynamic_cast<const NearestLSM*>(&other);
     return (o != nullptr);
+}
+
+
+void NearestLSM::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "type" << "nearest-lsm";
+    j.endObject();
 }
 
 

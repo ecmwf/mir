@@ -34,9 +34,6 @@ static const MethodBuilder<StructuredBilinearLatLon> __method("structured-biline
 StructuredBilinearLatLon::StructuredBilinearLatLon(const param::MIRParametrisation& param) : StructuredMethod(param) {}
 
 
-StructuredBilinearLatLon::~StructuredBilinearLatLon() = default;
-
-
 bool StructuredBilinearLatLon::sameAs(const Method& other) const {
     const auto* o = dynamic_cast<const StructuredBilinearLatLon*>(&other);
     return (o != nullptr) && StructuredMethod::sameAs(other);
@@ -280,14 +277,9 @@ const char* StructuredBilinearLatLon::name() const {
 }
 
 
-void StructuredBilinearLatLon::hash(eckit::MD5& md5) const {
-    StructuredMethod::hash(md5);
-}
-
-
 void StructuredBilinearLatLon::print(std::ostream& out) const {
     out << "StructuredBilinearLatLon[";
-    StructuredMethod::print(out);
+    MethodWeighted::print(out);
     out << "]";
 }
 

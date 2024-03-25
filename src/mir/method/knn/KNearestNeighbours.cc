@@ -46,6 +46,7 @@ bool KNearestNeighbours::sameAs(const Method& other) const {
 
 
 void KNearestNeighbours::hash(eckit::MD5& md5) const {
+    MethodWeighted::hash(md5);
     md5 << pick();
     md5 << distanceWeighting();
 }
@@ -141,6 +142,15 @@ void KNearestNeighbours::assemble(util::MIRStatistics& /*unused*/, WeightMatrix&
     // fill-in sparse matrix
     ASSERT_NONEMPTY_INTERPOLATION("KNearestNeighbours", !weights_triplets.empty());
     W.setFromTriplets(weights_triplets);
+}
+
+
+void KNearestNeighbours::json(eckit::JSON& j) const {
+    j.startObject();
+    MethodWeighted::json(j);
+    j << "nearestMethod" << pick();
+    j << "distanceWeighting" << distanceWeighting();
+    j.endObject();
 }
 
 

@@ -776,7 +776,6 @@ index:
   - 260539  # Fire detection indicator
 
 index.associated:
-  - 3059  # Precipitation rate
   - 129029  # Type of low vegetation gradient
   - 129030  # Type of high vegetation gradient
   - 129043  # Soil type gradient
@@ -786,17 +785,6 @@ index.associated:
   - 200029  # Type of low vegetation difference
   - 200030  # Type of high vegetation difference
   - 200043  # Soil type difference
-  - 228217  # Instantaneous large-scale surface precipitation fraction
-  - 228218  # Convective rain rate
-  - 228219  # Large scale rain rate
-  - 228220  # Convective snowfall rate water equivalent
-  - 228221  # Large scale snowfall rate water equivalent
-  - 228222  # Maximum total precipitation rate in the last 3 hours
-  - 228223  # Minimum total precipitation rate in the last 3 hours
-  - 228224  # Maximum total precipitation rate in the last 6 hours
-  - 228225  # Minimum total precipitation rate in the last 6 hours
-  - 228226  # Maximum total precipitation rate since previous post-processing
-  - 228227  # Minimum total precipitation rate since previous post-processing
 
 intensity:
   - 1  # Stream function
@@ -2630,6 +2618,8 @@ numerics.accumulated:
   - 231041  # Time-integrated total lightning flash density
   - 231053  # Snow depth water equivalent on roof
   - 231054  # Snow depth water equivalent on road
+  - 231057  # Convective snowfall water equivalent
+  - 231058  # Large-scale snowfall water equivalent
   - 233000  # Time-integrated total column vertically-integrated eastward geopotential flux
   - 233001  # Time-integrated total column vertically-integrated northward geopotential flux
   - 233002  # Time-integrated total column vertically-integrated divergence of water geopotential flux
@@ -3541,6 +3531,7 @@ rate.energy-flux:
 
 rate.mass-flux:
   - 232  # Instantaneous moisture flux
+  - 3059  # Precipitation rate
   - 3062  # large scale precipitation
   - 3063  # Convective precipitation (water)
   - 3064  # Snow fall rate water equivalent
@@ -4155,6 +4146,16 @@ rate.mass-flux:
   - 228143  # Convective precipitation
   - 228144  # Snow Fall water equivalent
   - 228205  # Water runoff and drainage
+  - 228218  # Convective rain rate
+  - 228219  # Large scale rain rate
+  - 228220  # Convective snowfall rate water equivalent
+  - 228221  # Large scale snowfall rate water equivalent
+  - 228222  # Maximum total precipitation rate in the last 3 hours
+  - 228223  # Minimum total precipitation rate in the last 3 hours
+  - 228224  # Maximum total precipitation rate in the last 6 hours
+  - 228225  # Minimum total precipitation rate in the last 6 hours
+  - 228226  # Maximum total precipitation rate since previous post-processing
+  - 228227  # Minimum total precipitation rate since previous post-processing
   - 228228  # Total Precipitation
   - 230044  # Snow evaporation (variable resolution)
   - 230045  # Snowmelt (variable resolution)
@@ -4172,6 +4173,8 @@ rate.mass-flux:
   - 231042  # Maximum total column integrated graupel (snow pellets)
   - 231053  # Snow depth water equivalent on roof
   - 231054  # Snow depth water equivalent on road
+  - 231057  # Convective snowfall water equivalent
+  - 231058  # Large-scale snowfall water equivalent
   - 233014  # Time integrated, vertically integrated divergence of mass flux
   - 233015  # Time integrated, vertically integrated eastward mass flux
   - 233016  # Time integrated, vertically integrated northward mass flux
@@ -4877,6 +4880,7 @@ ratio.fraction:
   - 228034  # Fraction of convective precipitation cover
   - 228091  # Canopy cover fraction
   - 228092  # Soil texture fraction
+  - 228217  # Instantaneous large-scale surface precipitation fraction
   - 228244  # Surface albedo of direct radiation
   - 228245  # Surface albedo of diffuse radiation
   - 228248  # Surface short wave-effective total cloudiness

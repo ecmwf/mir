@@ -18,8 +18,9 @@
 
 
 namespace eckit {
+class JSON;
 class MD5;
-}
+}  // namespace eckit
 
 namespace mir::repres {
 class Representation;
@@ -36,8 +37,11 @@ public:
     Pick();
     virtual ~Pick();
 
-    Pick(const Pick&)            = delete;
+    Pick(const Pick&) = delete;
+    Pick(Pick&&)      = delete;
+
     Pick& operator=(const Pick&) = delete;
+    Pick& operator=(Pick&&)      = delete;
 
     virtual void pick(const search::PointSearch&, const Point3&, neighbours_t&) const = 0;
     virtual size_t n() const                                                          = 0;
@@ -47,10 +51,16 @@ public:
     virtual void distance(const repres::Representation&) const;
 
 private:
+    virtual void json(eckit::JSON&) const   = 0;
     virtual void print(std::ostream&) const = 0;
 
     friend std::ostream& operator<<(std::ostream& s, const Pick& p) {
         p.print(s);
+        return s;
+    }
+
+    friend eckit::JSON& operator<<(eckit::JSON& s, const Pick& p) {
+        p.json(s);
         return s;
     }
 };

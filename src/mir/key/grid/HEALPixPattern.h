@@ -26,8 +26,10 @@ public:
 
     // -- Constructors
 
-    HEALPixPattern(const std::string& name);
+    explicit HEALPixPattern(const std::string& name);
+
     HEALPixPattern(const HEALPixPattern&) = delete;
+    HEALPixPattern(HEALPixPattern&&)      = delete;
 
     // -- Destructor
 
@@ -39,6 +41,7 @@ public:
     // -- Operators
 
     HEALPixPattern& operator=(const HEALPixPattern&) = delete;
+    HEALPixPattern& operator=(HEALPixPattern&&)      = delete;
 
     // -- Methods
     // None

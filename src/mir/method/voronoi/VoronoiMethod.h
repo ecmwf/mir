@@ -21,81 +21,19 @@ namespace mir::method::voronoi {
 
 class VoronoiMethod : public MethodWeighted {
 public:
-    // -- Types
-    // None
-
-    // -- Exceptions
-    // None
-
-    // -- Constructors
-
-    explicit VoronoiMethod(const param::MIRParametrisation& param);
-
-    // -- Destructor
-
-    virtual ~VoronoiMethod() override = default;
-
-    // -- Convertors
-    // None
-
-    // -- Operators
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
+    explicit VoronoiMethod(const param::MIRParametrisation&);
 
 private:
-    // -- Members
-
-    knn::pick::NClosestOrNearest pick_;
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-
-    // From MethodWeighted
     void hash(eckit::MD5&) const override;
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
                   const repres::Representation& out) const override;
     bool sameAs(const Method&) const override;
+    void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
     bool validateMatrixWeights() const override;
     const char* name() const override;
 
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-    // -- Friends
-    // None
+    knn::pick::NClosestOrNearest pick_;
 };
 
 

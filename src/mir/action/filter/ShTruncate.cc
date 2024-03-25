@@ -43,8 +43,7 @@ bool ShTruncate::sameAs(const Action& other) const {
 
 
 void ShTruncate::print(std::ostream& out) const {
-    out << "ShTruncate["
-        << "truncation=" << truncation_ << "]";
+    out << "ShTruncate[" << "truncation=" << truncation_ << "]";
 }
 
 
