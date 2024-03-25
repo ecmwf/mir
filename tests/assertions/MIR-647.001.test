@@ -1,6 +1,8 @@
 # mars
 gridType=healpix,Nside=2,orderingConvention=nested.grib2
 # mir
+$MIR_CACHING=1
+$MIR_CACHE_PATH=cache.MIR-647
 --grid=H2 --interpolation=linear
 # grib_get assertions
 gridType=healpix

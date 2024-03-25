@@ -1,0 +1,31 @@
+# mars
+gridType=healpix,Nside=2,orderingConvention=ring.grib2
+# mir
+$MIR_CACHING=1
+$MIR_CACHE_PATH=cache.MIR-647
+--grid=H2 --interpolation=linear
+# grib_get assertions
+gridType=healpix
+gridName=H2
+orderingConvention=ring
+Nside=2
+numberOfDataPoints=48
+longitudeOfFirstGridPointInDegrees=45
+values[0]=0
+values[1]=1
+values[2]=2
+values[3]=3
+
+values[20]=20
+values[21]=21
+values[22]=22
+values[23]=23
+values[24]=24
+values[25]=25
+values[26]=26
+values[27]=27
+
+values[44]=44
+values[45]=45
+values[46]=46
+values[47]=47
