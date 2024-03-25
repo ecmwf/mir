@@ -249,30 +249,6 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
         }
     }
 
-    if (reorderRows_ || reorderCols_) {
-        std::unique_ptr<const reorder::Reorder> identity(reorder::ReorderFactory::build("identity"));
-
-        auto rows = (reorderRows_ ? reorderRows_ : identity)->reorder(out.numberOfPoints());
-        ASSERT(rows.size() == W.rows());
-
-        auto cols = (reorderCols_ ? reorderCols_ : identity)->reorder(in.numberOfPoints());
-        ASSERT(cols.size() == W.cols());
-
-        // expand triplets, renumbering directly
-        std::vector<eckit::linalg::Triplet> trips;
-        trips.reserve(W.nonZeros());
-
-        for (auto i = W.begin(), end = W.end(); i != end; ++i) {
-            trips.emplace_back(rows.at(i.row()), cols.at(i.col()), *i);
-        }
-
-        // compress triplets, replace matrix
-        std::sort(trips.begin(), trips.end());
-
-        eckit::linalg::SparseMatrix w(W.rows(), W.cols(), trips);
-        W.swap(w);
-    }
-
 
     log << "MethodWeighted::getMatrix create weights matrix: " << timer.elapsedSeconds(here) << std::endl;
     log << "MethodWeighted::getMatrix matrix W " << W << std::endl;
@@ -546,6 +522,31 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::R
         trace::Timer timer("Assemble matrix");
         assemble(ctx.statistics(), W, in, out);
         W.cleanup(pruneEpsilon_);
+
+        if (reorderRows_ || reorderCols_) {
+            std::unique_ptr<const reorder::Reorder> identity(
+                reorderRows_ && reorderCols_ ? nullptr : reorder::ReorderFactory::build("identity"));
+
+            auto rows = (reorderRows_ ? reorderRows_ : identity)->reorder(out.numberOfPoints());
+            ASSERT(rows.size() == W.rows());
+
+            auto cols = (reorderCols_ ? reorderCols_ : identity)->reorder(in.numberOfPoints());
+            ASSERT(cols.size() == W.cols());
+
+            // expand triplets, renumbering directly
+            std::vector<eckit::linalg::Triplet> trips;
+            trips.reserve(W.nonZeros());
+
+            for (auto i = W.begin(), end = W.end(); i != end; ++i) {
+                trips.emplace_back(rows.at(i.row()), cols.at(i.col()), *i);
+            }
+
+            // compress triplets, replace matrix
+            std::sort(trips.begin(), trips.end());
+
+            eckit::linalg::SparseMatrix w(W.rows(), W.cols(), trips);
+            W.swap(w);
+        }
     }
 
     // matrix validation always happens after creation, because the matrix can/will be cached

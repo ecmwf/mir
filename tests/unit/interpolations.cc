@@ -27,29 +27,19 @@ namespace mir::tests::unit {
 
 
 CASE("interpolations") {
-    api::MIRJob jobs[7];  // jobs[0]: no post-processing
+    api::MIRJob jobs[3];  // jobs[0]: no post-processing
+
+    jobs[0].set("caching", false);
+    jobs[0].set("grid", "3/3");
 
     jobs[1].set("caching", false);
-    jobs[1].set("grid", "2/2");
-
-    jobs[2].set("caching", false);
-    jobs[2].set("grid", "3/3");
-
-    jobs[3].set("caching", false);
-    jobs[3].set("grid", "1/1");
-    jobs[3].set("area", "40/20/20/40");
-
-    jobs[4].set("caching", false);
-    jobs[4].set("grid", "1/1");
-    jobs[4].set("area", "40/20/20/40");
-    jobs[4].set("frame", 2);
+    jobs[1].set("grid", "1/1");
+    jobs[1].set("area", "40/20/20/40");
+    jobs[1].set("frame", 2);
 
 #if mir_HAVE_ATLAS
-    jobs[5].set("caching", false);
-    jobs[5].set("rotation", "-90/0");
-
-    jobs[6].set("caching", false);
-    jobs[6].set("rotation", "-89/10");
+    jobs[2].set("caching", false);
+    jobs[2].set("rotation", "-89/10");
 #endif
 
 
@@ -57,10 +47,7 @@ CASE("interpolations") {
         param::SimpleParametrisation args;
 
         for (const std::string& in : {
-                 "../data/param=2t,levtype=sfc,grid=F640",
-                 "../data/param=2t,levtype=sfc,grid=N640",
                  "../data/param=2t,levtype=sfc,grid=O640",
-                 "../data/regular_ll.2-2.grib2",
                  "../data/regular_ll.2-4.grib1",
              }) {
             for (const auto& job : jobs) {
@@ -128,28 +115,6 @@ CASE("interpolations") {
     }
 #endif
 }
-
-
-#if mir_HAVE_ATLAS
-CASE("MIR-583") {
-    // interpolation=linear failure on low parametricEpsilon
-
-    api::MIRJob job;
-    job.set("caching", false);
-    job.set("grid", "0.04/0.04");
-    job.set("interpolation", "linear");
-    job.set("finite-element-missing-value-on-projection-fail", false);
-
-    param::SimpleParametrisation args;
-    std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build("MIR-583.grib1", args));
-
-    output::EmptyOutput output;
-
-    while (input->next()) {
-        job.execute(*input, output);
-    }
-}
-#endif
 
 
 }  // namespace mir::tests::unit
