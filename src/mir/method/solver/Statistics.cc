@@ -15,6 +15,7 @@
 #include <cmath>
 #include <sstream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/method/WeightMatrix.h"

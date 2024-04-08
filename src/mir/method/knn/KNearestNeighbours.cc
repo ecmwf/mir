@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <memory>
 
+#include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/method/knn/distance/DistanceWeighting.h"
