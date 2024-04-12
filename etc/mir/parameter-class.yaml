@@ -2109,6 +2109,11 @@ numerics.mean:
   - 235077  # Time-mean volumetric soil moisture
   - 235078  # Time-mean snow depth water equivalent
   - 235079  # Time-mean skin temperature
+  - 235141  # Time-mean snow depth
+  - 235186  # Time-mean low cloud cover
+  - 235187  # Time-mean medium cloud cover
+  - 235188  # Time-mean high cloud cover
+  - 235243  # Time-mean forecast albedo
   - 260441  # Time-mean total precipitation rate
   - 260477  # Time-mean snow melt rate in the last 24h
   - 263000  # Time-mean sea ice thickness
@@ -2661,6 +2666,7 @@ numerics.accumulated:
   - 235073  # Time integral of evapotranspiration flux
   - 235075  # Time integral of potential evapotranspiration rate
   - 235078  # Time-mean snow depth water equivalent
+  - 235141  # Time-mean snow depth
   - 240020  # Depth of water on soil surface
   - 240021  # Upstream accumulated precipitation
   - 240022  # Upstream accumulated snow melt
@@ -4632,6 +4638,7 @@ rate.volume-flux:
   - 230239  # Convective snowfall (variable resolution)
   - 230240  # Large-scale snowfall (variable resolution)
   - 230251  # Potential evaporation (variable resolution)
+  - 235141  # Time-mean snow depth
   - 260025  # Total snowfall
   - 260053  # Total snowfall rate
   - 260054  # Convective snowfall rate
@@ -4762,6 +4769,9 @@ ratio.cover.cloud:
   - 201060  # cloud cover, convective cirrus
   - 228006  # Mean total cloud cover
   - 228164  # Total Cloud Cover
+  - 235186  # Time-mean low cloud cover
+  - 235187  # Time-mean medium cloud cover
+  - 235188  # Time-mean high cloud cover
   - 260110  # Non-convective cloud cover
   - 260257  # Cloud cover
   - 260648  # Fog
@@ -4908,6 +4918,7 @@ ratio.fraction:
   - 232005  # Combustion completeness
   - 235026  # Mean large-scale precipitation fraction
   - 235044  # Sunshine duration fraction
+  - 235243  # Time-mean forecast albedo
   - 240016  # Water fraction
   - 260039  # Rain fraction of total cloud water
   - 260103  # Cloud amount
