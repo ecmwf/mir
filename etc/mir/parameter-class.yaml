@@ -1739,6 +1739,9 @@ intensity:
   - 231051  # Wall temperature
   - 231052  # Road temperature
   - 231055  # Urban canyon temperature
+  - 231059  # Lake surface temperature
+  - 231063  # Surface roughness for heat
+  - 231064  # Surface roughness for moisture
   - 232004  # Fuel load
   - 232007  # Live leaf fuel load
   - 232008  # Live wood fuel load
@@ -4677,6 +4680,9 @@ ratio:
   - 228042  # Soil wetness index in layer 3
   - 228043  # Soil wetness index in layer 4
   - 231013  # Reflectance in 0.4 micron channel
+  - 231060  # Surface bulk Richardson number
+  - 231061  # Time-maximum 2 metre relative humidity
+  - 231062  # Time-minimum 2 metre relative humidity
   - 260023  # Maximum relative humidity
   - 260034  # Horizontal moisture divergence
   - 260112  # Convective cloud efficiency
