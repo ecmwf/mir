@@ -1776,9 +1776,12 @@ intensity:
   - 235090  # Time-mean lake mix-layer temperature
   - 235091  # Time-mean lake mix-layer depth
   - 235094  # Time-mean soil temperature
+  - 235129  # Time-mean geopotential
+  - 235130  # Time-mean temperature
   - 235131  # Time-mean U component of wind
   - 235132  # Time-mean V component of wind
   - 235134  # Time-mean surface pressure
+  - 235135  # Time-mean vertical velocity
   - 235151  # Time-mean mean sea level pressure
   - 235165  # Time-mean 10 metre U wind component
   - 235166  # Time-mean 10 metre V wind component
@@ -2158,9 +2161,15 @@ numerics.mean:
   - 235092  # Time-mean 2 metre relative humidity
   - 235093  # Time-mean fraction of snow cover
   - 235094  # Time-mean soil temperature
+  - 235095  # Time-mean snow depth
+  - 235096  # Time-mean snow cover
+  - 235129  # Time-mean geopotential
+  - 235130  # Time-mean temperature
   - 235131  # Time-mean U component of wind
   - 235132  # Time-mean V component of wind
+  - 235133  # Time-mean specific humidity
   - 235134  # Time-mean surface pressure
+  - 235135  # Time-mean vertical velocity
   - 235136  # Time-mean total column water
   - 235137  # Time-mean total column vertically-integrated water vapour
   - 235141  # Time-mean snow depth
@@ -2728,6 +2737,7 @@ numerics.accumulated:
   - 235073  # Time integral of evapotranspiration flux
   - 235075  # Time integral of potential evapotranspiration rate
   - 235078  # Time-mean snow depth water equivalent
+  - 235095  # Time-mean snow depth
   - 235141  # Time-mean snow depth
   - 240020  # Depth of water on soil surface
   - 240021  # Upstream accumulated precipitation
@@ -4704,6 +4714,7 @@ rate.volume-flux:
   - 230239  # Convective snowfall (variable resolution)
   - 230240  # Large-scale snowfall (variable resolution)
   - 230251  # Potential evaporation (variable resolution)
+  - 235095  # Time-mean snow depth
   - 235141  # Time-mean snow depth
   - 260025  # Total snowfall
   - 260053  # Total snowfall rate
@@ -4800,6 +4811,7 @@ ratio.cover:
   - 229010  # C4 crop cover
   - 229011  # C4 grass cover
   - 235083  # Time-mean sea ice area fraction
+  - 235096  # Time-mean snow cover
   - 260038  # Snow cover
 
 ratio.cover.cloud:
@@ -5413,6 +5425,7 @@ ratio.mass:
   - 232015  # Dense dead wood moisture content
   - 235006  # Mean specific humidity tendency due to parametrisations
   - 235089  # Time-mean 2 metre specific humidity
+  - 235133  # Time-mean specific humidity
   - 260017  # Condensate
   - 260018  # Cloud mixing ratio
   - 260019  # Ice water mixing ratio
