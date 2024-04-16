@@ -34,3 +34,10 @@ if(mir_HAVE_ATLAS)
     endforeach()
 endif()
 
+if(mir_HAVE_ECTRANS)
+    foreach(tool IN ITEMS
+        mir-grid-to-spectral)
+        ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir transi_dp ${mir_INSTALL_TOOLS})
+    endforeach()
+endif()
+
