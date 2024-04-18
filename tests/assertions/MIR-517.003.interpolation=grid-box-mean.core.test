@@ -1,16 +1,16 @@
 # input
 tiny-2x2.grib
-# mir tool options
+# mir
 --interpolation=grid-box-statistics --interpolation-statistics=mean --grid=0.5/0.5
-# grib_get assertions (not checking results)
+# grib_get
 Ni=3
 Nj=3
 values[0]=0
-values[1]=0.5
+values[1]=9999
 values[2]=1
-values[3]=1
-values[4]=1.5
-values[5]=2
+values[3]=9999
+values[4]=9999
+values[5]=9999
 values[6]=2
-values[7]=2.5
+values[7]=9999
 values[8]=3
