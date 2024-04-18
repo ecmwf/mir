@@ -20,18 +20,14 @@ namespace mir::method::gridbox {
 
 class GridBoxMethod : public MethodWeighted {
 public:
-    explicit GridBoxMethod(const param::MIRParametrisation&);
+    using MethodWeighted::MethodWeighted;
 
 private:
     void hash(eckit::MD5&) const override;
-    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
-                  const repres::Representation& out) const override;
     bool sameAs(const Method&) const override;
     void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
     bool validateMatrixWeights() const override;
-    const char* name() const override;
-    int version() const override;
 };
 
 

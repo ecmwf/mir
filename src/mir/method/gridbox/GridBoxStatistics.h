@@ -20,6 +20,11 @@ namespace mir::method::gridbox {
 
 struct GridBoxStatistics final : GridBoxMethod {
     explicit GridBoxStatistics(const param::MIRParametrisation&);
+
+    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                  const repres::Representation& out) const override;
+    const char* name() const override;
+    int version() const override;
 };
 
 
