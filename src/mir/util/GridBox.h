@@ -14,6 +14,8 @@
 
 #include <iosfwd>
 
+#include "mir/util/Types.h"
+
 
 namespace mir::util {
 
@@ -41,6 +43,9 @@ public:
 
     double area() const;
     double diagonal() const;
+    Point2 centre() const;
+
+    bool contains(const Point2&) const;
     bool intersects(GridBox&) const;
 
     double north() const { return north_; }

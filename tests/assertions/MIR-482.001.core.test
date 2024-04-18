@@ -1,5 +1,5 @@
 # input has two GRIB at bitsPerValue=16
-tiny.grib
+tiny-2x2.grib
 # Mir tool options
 --accuracy=32 --packing=ieee
 # grib_get assertions

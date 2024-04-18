@@ -1,0 +1,11 @@
+# input
+tiny-3x3.grib
+# mir tool options
+--interpolation=grid-box-statistics --interpolation-statistics=count --grid=1/1
+# grib_get assertions (not checking results)
+Ni=2
+Nj=2
+values[0]=4
+values[1]=4
+values[2]=4
+values[3]=4
