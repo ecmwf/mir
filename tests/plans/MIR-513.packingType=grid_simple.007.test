@@ -1,5 +1,5 @@
 # mars
-tiny.grib
+tiny-2x2.grib
 # mir
 --area=0/0/0/1 --packing=so
 # grib_get assertions

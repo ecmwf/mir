@@ -1,5 +1,5 @@
 # input
-tiny.grib
+tiny-2x2.grib
 # mir tool options
 --interpolation=grid-box-statistics --interpolation-statistics=maximum --grid=0.5/0.5
 # grib_get assertions (not checking results)
