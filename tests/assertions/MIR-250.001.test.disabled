@@ -1,6 +1,6 @@
-# MARS request
+# input
 param=t,level=1000
-# MIR options
+# mir
 --grid=0.123456789/0.123456789
-# grib_get assertions
+# grib_get
 

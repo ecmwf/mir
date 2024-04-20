@@ -1,8 +1,8 @@
-# MARS request
+# input
 param=2t,levtype=sfc
 # mir
 --area=12.4/-25.6/-13.3/23.8 --grid=.1/.1 --dont-compress-plan
-# grib_get assertions
+# grib_get
 latitudeOfFirstGridPointInDegrees=12.4
 latitudeOfLastGridPointInDegrees=-13.3
 longitudeOfFirstGridPointInDegrees=-25.6

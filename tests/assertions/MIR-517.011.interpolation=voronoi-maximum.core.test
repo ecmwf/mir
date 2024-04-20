@@ -1,8 +1,8 @@
 # input
 tiny-3x3.grib
-# mir tool options
+# mir
 --interpolation=voronoi-statistics --interpolation-statistics=maximum --grid=1/1
-# grib_get assertions (not checking results)
+# grib_get
 Ni=2
 Nj=2
 values[0]=4

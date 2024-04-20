@@ -1,8 +1,8 @@
-# mars
+# input
 gridType=regular_gg,gridName=F8,shortName=q.grib2
 # mir
 --grid=H2
-# grib_get assertions
+# grib_get
 gridType=healpix
 gridName=H2
 Nside=2

@@ -1,8 +1,8 @@
-# Mars request
+# input
 gridType=lambert,missingValuesPresent=1.grib2
-# Mir tool options
+# mir
 --area-mode=mask --area=90/-30/60/0
-# grib_get assertions
+# grib_get
 latitudeOfFirstGridPointInDegrees=70.135
 longitudeOfFirstGridPointInDegrees=340.592
 numberOfDataPoints=780321

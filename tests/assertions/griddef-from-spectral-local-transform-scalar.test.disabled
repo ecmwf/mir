@@ -1,6 +1,5 @@
-# Mars request
+# input
 param=t,level=1000,resol=20
-# Mir tool options
+# mir
 --plan=sh-scalar-to-griddef(griddef=tour.pts) --output=geopoints-xyv
-# grib_get assertions
-# none: output file is GEOPOINTS
+# grib_get (output is GEOPOINTS)

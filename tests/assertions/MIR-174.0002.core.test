@@ -1,8 +1,8 @@
-# MIR-174 first area only, the others areas trigger the same issue
+# input
 regular_ll.2-2.grib2
-# Mir tool options
+# mir
 --area=88/-178/-88/180
-# grib_get assertions
+# grib_get
 Ni=180
 Nj=89
 latitudeOfFirstGridPointInDegrees=88

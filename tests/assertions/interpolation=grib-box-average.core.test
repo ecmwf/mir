@@ -1,7 +1,17 @@
 # input
 tiny-2x2.grib
-# mir tool options
+# mir
 --interpolation=grid-box-average --grid=0.5/0.5
-# grib_get assertions (not checking results)
+# grib_get (not checking results)
 Ni=3
 Nj=3
+values[0]=0
+values[1]=0.5
+values[2]=1
+values[3]=1.00002
+values[4]=1.50002
+values[5]=2.00002
+values[6]=2
+values[7]=2.5
+values[8]=3
+

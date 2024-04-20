@@ -1,4 +1,4 @@
-# mars
+# input
 param=2t,levtype=sfc
 # mir
 --dont-compress-plan --grid=1/1 --area=60/180/-56/-180

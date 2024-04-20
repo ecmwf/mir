@@ -1,4 +1,4 @@
-# mars
+# input
 param=vo_d,level=1000,resol=20
 # mir
 --grid=1/1 --rotation=-89/1 --vod2uv=false

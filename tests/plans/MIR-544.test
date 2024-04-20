@@ -1,6 +1,6 @@
-# Mars request
+# input
 param=2t,levtype=sfc,grid=O16
-# Mir tool options
+# mir
 --grid=2/2 --interpolation=k-nearest-neighbours --distance-weighting=pseudo-laplace --nearest-method=nclosest-or-nearest
 # plan
 Gridded2RegularLL[increments=Increments[west_east=2,south_north=2],bbox=BoundingBox[north=90,west=0,south=-90,east=358],interpolation=k-nearest-neighbours,method=KNearestNeighbours[nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,nearestMethod=NClosestOrNearest[nclosest=4,distanceTolerance=1],distanceWeighting=PseudoLaplace[]]]|Save[output=...]

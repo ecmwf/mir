@@ -1,4 +1,4 @@
-# mars
+# input
 packingType=spectral_complex,param=vo_d.grib2
 # mir
 --vod2uv --intgrid=none --grid=1/1

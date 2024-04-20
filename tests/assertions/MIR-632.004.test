@@ -1,8 +1,8 @@
-# mars
+# input
 gridType=healpix,Nside=32,orderingConvention=ring.grib2
 # mir
 --packing=ccsds
-# grib_get assertions
+# grib_get
 gridType=healpix
 gridName=H32
 Nside=32

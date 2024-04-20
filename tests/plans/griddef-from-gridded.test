@@ -1,6 +1,6 @@
-# Mars request
+# input
 param=2t,levtype=sfc
-# Mir tool options
+# mir
 --griddef=$tests_plans_dir/weather-params.pts
 # plan
 Gridded2GridDef[griddef=.../weather-params.pts]|Save[output=...]

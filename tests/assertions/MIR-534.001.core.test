@@ -1,8 +1,8 @@
-# Mars request
+# input
 param=2t,levtype=sfc
-# Mir tool options
+# mir
 --plan=grid2regular-ll(grid=[0.5,0.5]);crop(area=france)
-# grib_get assertions
+# grib_get
 Ni=28
 Nj=20
 latitudeOfFirstGridPointInDegrees=51.5

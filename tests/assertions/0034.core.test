@@ -1,9 +1,8 @@
-# Test to check interpolation of an angle (1d-angle-degree-asymmetric)
-# Mars request
+# input (d-angle-degree-asymmetric)
 stream=wave,param=mwd
-# Mir tool options
+# mir
 --grid=O32
-# grib_get assertions
+# grib_get
 numberOfValues = 5144
 N = 32
 Nj = 64

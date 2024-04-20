@@ -1,6 +1,6 @@
-# mars
+# input
 packingType=spectral_complex.grib1
 # mir
 --truncation=21 --packing=simple
-# grib_get assertions
+# plan
 ShTruncate[truncation=21]|Save[packing=simple,output=...]

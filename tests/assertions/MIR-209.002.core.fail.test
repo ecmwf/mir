@@ -1,7 +1,7 @@
-# Mars request (based on metabuilder_master:/mars_client/.*/tests/retrieve/ocean)
+# input
 stream=enfh,param=z,levtype=dp,type=pf,levelist=5,date=20110512,hdate=19990512,time=0000,step=24,number=2,product=inst,section=h
-# Mir tool options
+# mir
 --grid=1/1
-# grib_get assertions
-Ni = 360
-Nj = 181
+# grib_get
+Ni=360
+Nj=181

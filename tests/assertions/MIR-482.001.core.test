@@ -1,7 +1,7 @@
-# input has two GRIB at bitsPerValue=16
+# input
 tiny-2x2.grib
-# Mir tool options
+# mir
 --accuracy=32 --packing=ieee
-# grib_get assertions
+# grib_get
 packingType=grid_ieee
 precision=1

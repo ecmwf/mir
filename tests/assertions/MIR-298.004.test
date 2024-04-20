@@ -1,7 +1,6 @@
-# Calculate unrotated bounding box from rotated touching North/South pole (can cause invalid latitude)
-# mars
+# input
 param=t,level=1000,resol=20
-# mir
+# mir (calculate unrotated bounding box from rotated touching North/South pole, can cause invalid latitude)
 --grid=1/1 --area=90/-10/70/10 --rotation=-40/22
-# assertions
+# grib_get
 gridType=rotated_ll

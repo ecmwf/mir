@@ -1,8 +1,8 @@
-# mars
+# input
 ukmo-tigge.count=4.grib
 # mir
 --area=1/-1/-1/1 --interpolation=none --basic-angle=fraction
-# grib_get assertions
+# grib_get
 gridType=regular_ll
 Ni=2
 Nj=2

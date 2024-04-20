@@ -1,8 +1,8 @@
-# Mars request
+# input
 param=2t,levtype=sfc
-# Mir tool options
+# mir
 --area=48.3/5.2/45.2/11 --grid=F1280 --interpolation=nearest-lsm
-# grib_get assertions
+# grib_get
 N = 1280
 Ni = 83
 Nj = 44

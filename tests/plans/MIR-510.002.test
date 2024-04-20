@@ -1,4 +1,4 @@
-# mars
+# input
 gridType=reduced_gg,gridName=O32,shortName=msl.grib1
 # mir
 --grid=o64

@@ -1,6 +1,6 @@
-# mars
+# input
 ukmo-tigge.count=4.grib
 # mir
 --area=43/-1/-10/3 --interpolation=none
-# grib_get assertions
+# plan
 AreaCropper[bbox=BoundingBox[north=43,west=-1,south=-10,east=3]]|Save[output=...]

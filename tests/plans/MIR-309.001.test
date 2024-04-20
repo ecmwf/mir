@@ -1,4 +1,4 @@
-# mars
+# input
 stream=wave,param=swh,domain=m
 # mir
 --area=28/-77/3/-43 --globalise --grid=1/1

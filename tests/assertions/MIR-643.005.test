@@ -1,4 +1,4 @@
-# mars
+# input
 regular_ll.2-2.grib2
 # mir
 --grid=h16_nested --interpolation=nn

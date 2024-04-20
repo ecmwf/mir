@@ -1,8 +1,8 @@
-# Mars request
+# input
 gridType=regular_gg,gridName=F48,shortName=msl,global=0.002.grib1
-# Mir tool options
+# mir
 --grid=1/1
-# grib_get assertions
+# grib_get
 Ni=360
 Nj=168
 latitudeOfFirstGridPointInDegrees=90

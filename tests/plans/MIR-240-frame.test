@@ -1,5 +1,4 @@
-# MIR-240: check if grid-related keywords are ignored for spectral-to-spectral
-# mars
+# input
 param=t,level=1000
 # mir
 --frame=2

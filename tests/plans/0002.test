@@ -1,4 +1,4 @@
-# mars
+# input
 param=2t,levtype=sfc
 # mir
 --dont-compress-plan --area=80/-10/10/100 --grid=1/1 --accuracy=8 --packing=so

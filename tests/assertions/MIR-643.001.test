@@ -1,4 +1,4 @@
-# mars
+# input
 gridType=healpix,Nside=32,orderingConvention=nested.grib2
 # mir
 --grid=1/1 --interpolation=nn

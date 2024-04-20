@@ -1,8 +1,8 @@
-# mars
+# input
 param=t,level=1000,resol=20
 # mir
 --grid=gridType=lambert_azimuthal_equal_area\;grid=5000./5000.\;standardParallelInDegrees=52.\;centralLongitudeInDegrees=10.\;latitudeOfFirstGridPointInDegrees=66.982143\;longitudeOfFirstGridPointInDegrees=-35.034024\;Ni=1000\;Nj=950\;gaussianNumber=1280
-# grib_get assertions
+# grib_get
 gridType=lambert_azimuthal_equal_area
 standardParallelInDegrees=52
 centralLongitudeInDegrees=10

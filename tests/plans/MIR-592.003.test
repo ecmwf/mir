@@ -1,4 +1,4 @@
-# mars
+# input
 param=u_v,level=1000,resol=20
 # mir
 --grid=3/3 --interpolation=linear

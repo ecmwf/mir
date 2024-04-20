@@ -1,9 +1,8 @@
-# Testing shifted rotated bounding box
-# Input file
+# input
 regular_ll.2-2.grib1
-# Mir tool options
+# mir
 --area=22.7/-13.7/-5.9/21.7 --grid=0.2/0.2 --rotation=-40/10
-# grib_get assertions
+# grib_get
 Ni = 178
 Nj = 144
 iDirectionIncrementInDegrees = 0.2

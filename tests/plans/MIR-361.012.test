@@ -1,4 +1,4 @@
-# mars
+# input
 MIR-361.grib
 # mir
 --grid=1/1 --area=89.5/-179.5/-89.5/179.5

@@ -1,7 +1,7 @@
-# MARS request
+# input
 regular_ll.2-2.grib1
 # mir
 --area=37.6025/-114.8915/27.7626/-105.188 --grid=O1280
-# grib_get assertions
+# grib_get
 latitudeOfFirstGridPointInDegrees = 37.575   # 37.574691602387
 latitudeOfLastGridPointInDegrees = 27.803    # 27.803162868604

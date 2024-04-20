@@ -1,4 +1,4 @@
-# mars
+# input
 date=20200308,level=1000,truncation=20,param=vo_d
 # mir
 --vod2uv --grid=1/1 --nabla=uv-vorticity

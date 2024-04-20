@@ -1,8 +1,8 @@
-# Mars (mentioned in ECC-474)
+# input (ECC-474)
 param=msl,levtype=sfc,grid=O1280
-# Mir
+# mir
 --area=-25/135/-47/179
-# grib_get assertions
+# grib_get
 gridName = O1280
 latitudeOfFirstGridPointInDegrees = -25.061
 longitudeOfFirstGridPointInDegrees = 135

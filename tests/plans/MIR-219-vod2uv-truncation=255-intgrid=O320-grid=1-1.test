@@ -1,4 +1,4 @@
-# mars
+# input
 param=vo_d,level=1000
 # mir
 --vod2uv --truncation=255 --intgrid=O320 --grid=1/1 --dont-compress-plan

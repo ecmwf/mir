@@ -1,4 +1,4 @@
-# mars (this is an O1280 grid)
+# input
 param=2t,levtype=sfc
 # mir
 --octahedral=1280

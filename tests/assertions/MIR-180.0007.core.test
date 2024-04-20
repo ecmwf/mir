@@ -1,8 +1,8 @@
-# MIR-180 (MIR handles this correctly, EMOSLIB does not)
+# input
 regular_ll.2-2.grib1
-# Mir tool options
+# mir
 --area=15/279.9/-19.95/318 --grid=0.15/0.15
-# grib_get assertions
+# grib_get
 Ni=255
 Nj=234
 latitudeOfFirstGridPointInDegrees=15

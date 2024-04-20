@@ -139,7 +139,7 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
             // insert the interpolant weights into the global (sparse) interpolant matrix
             if (!js.empty()) {
                 std::sort(js.begin(), js.end());
-                const auto weight = 1. / js.size();
+                const auto weight = 1. / static_cast<double>(js.size());
                 for (auto j : js) {
                     weights_triplets.emplace_back(i, j, weight);
                 }

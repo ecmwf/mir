@@ -1,8 +1,8 @@
-# Mars request
+# input
 param=2t,levtype=sfc
-# Mir tool options
+# mir
 --bitmap=$tests_assertions_dir/GAUSS400_EU_GL --area=90/-60/25/60 --grid=0.1/0.1
-# grib_get assertions
+# grib_get
 Ni = 1201
 Nj = 651
 iDirectionIncrementInDegrees = 0.1
