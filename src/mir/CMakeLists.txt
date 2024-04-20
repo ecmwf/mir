@@ -360,6 +360,8 @@ list(APPEND mir_srcs
     method/gridbox/GridBoxMethod.h
     method/gridbox/GridBoxStatistics.cc
     method/gridbox/GridBoxStatistics.h
+    method/healpix/HEALPixConservative.cc
+    method/healpix/HEALPixConservative.h
     method/knn/KNearest.cc
     method/knn/KNearest.h
     method/knn/KNearestNeighbours.cc
