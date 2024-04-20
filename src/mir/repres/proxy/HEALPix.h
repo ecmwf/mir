@@ -57,6 +57,7 @@ public:
     // -- Methods
 
     size_t Nside() const { return Nside_; }
+    Ordering ordering() const { return Ordering::healpix_ring; }
 
     // -- Overridden methods
     // None

@@ -19,7 +19,8 @@
 #include "eckit/utils/MD5.h"
 
 #include "mir/repres/proxy/HEALPix.h"
-// #include "mir/util/Exceptions.h"
+#include "mir/repres/unsupported/HEALPixNested.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 
 
@@ -34,11 +35,25 @@ bool HEALPixConservative::sameAs(const Method& other) const {
 
 void HEALPixConservative::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, const repres::Representation& in,
                                    const repres::Representation& out) const {
-    auto& log = Log::debug();
+    auto& log = Log::info();  // Log::debug();
     log << "HEALPixConservative::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
-    auto Nside_in  = dynamic_cast<const repres::proxy::HEALPix&>(in).Nside();
-    auto Nside_out = dynamic_cast<const repres::proxy::HEALPix&>(out).Nside();
+    auto n_side = [](const repres::Representation& rep) -> size_t {
+        try {
+            return dynamic_cast<const repres::proxy::HEALPix&>(rep).Nside();
+        }
+        catch (const std::bad_cast&) {
+        }
+        try {
+            return dynamic_cast<const repres::unsupported::HEALPixNested&>(rep).Nside();
+        }
+        catch (const std::bad_cast&) {
+        }
+        throw exception::UserError("HEALPixConservative: supports only HEALPix ring or nested representations");
+    };
+
+    size_t Nside_in  = n_side(in);
+    size_t Nside_out = n_side(out);
 
     // TODO
 }

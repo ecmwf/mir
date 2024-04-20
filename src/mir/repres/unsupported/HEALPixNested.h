@@ -43,7 +43,9 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    size_t Nside() const { return ring_.Nside(); }
+    proxy::HEALPix::Ordering ordering() const { return proxy::HEALPix::Ordering::healpix_nested; }
 
     // -- Overridden methods
     // None
