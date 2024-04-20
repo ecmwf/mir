@@ -20,6 +20,7 @@ foreach(_t
     grib_input
     grid_box_method
     increments
+    interpolation_healpix_conservative
     input_MultiDimensionalInput
     interpolations
     iterator
