@@ -14,6 +14,7 @@
 
 #include <ostream>
 #include <sstream>
+#include <vector>
 
 #include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
@@ -27,6 +28,59 @@
 namespace mir::method::healpix {
 
 
+namespace {
+
+
+struct healpix_t {
+    size_t Nside;
+    repres::proxy::HEALPix::Ordering ordering;
+    size_t size() const { return 12 * Nside * Nside; }
+
+    static healpix_t make(const repres::Representation& rep) {
+        try {
+            auto& h = dynamic_cast<const repres::proxy::HEALPix&>(rep);
+            return {h.Nside(), h.ordering()};
+        }
+        catch (const std::bad_cast&) {
+        }
+
+        try {
+            auto& h = dynamic_cast<const repres::unsupported::HEALPixNested&>(rep);
+            return {h.Nside(), h.ordering()};
+        }
+        catch (const std::bad_cast&) {
+        }
+
+        throw exception::UserError("HEALPixConservative: supports only HEALPix ring or nested representations");
+    }
+};
+
+
+struct matrix_t : protected std::vector<double> {
+    matrix_t(size_t rows, size_t cols) : vector(rows * cols), rows_(rows), cols_(cols) { ASSERT(!empty()); }
+
+    const value_type& operator()(size_t r, size_t c) const {
+        ASSERT(r < rows() && c < cols());
+        return at(r * cols() + c);
+    }
+
+    value_type& operator()(size_t r, size_t c) {
+        ASSERT(r < rows() && c < cols());
+        return at(r * cols() + c);
+    }
+
+    size_t rows() const { return rows_; }
+    size_t cols() const { return cols_; }
+
+private:
+    size_t rows_;
+    size_t cols_;
+};
+
+
+}  // namespace
+
+
 bool HEALPixConservative::sameAs(const Method& other) const {
     const auto* o = dynamic_cast<const HEALPixConservative*>(&other);
     return (o != nullptr) && name() == o->name() && MethodWeighted::sameAs(*o);
@@ -38,24 +92,23 @@ void HEALPixConservative::assemble(util::MIRStatistics& /*unused*/, WeightMatrix
     auto& log = Log::info();  // Log::debug();
     log << "HEALPixConservative::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
-    auto n_side = [](const repres::Representation& rep) -> size_t {
-        try {
-            return dynamic_cast<const repres::proxy::HEALPix&>(rep).Nside();
-        }
-        catch (const std::bad_cast&) {
-        }
-        try {
-            return dynamic_cast<const repres::unsupported::HEALPixNested&>(rep).Nside();
-        }
-        catch (const std::bad_cast&) {
-        }
-        throw exception::UserError("HEALPixConservative: supports only HEALPix ring or nested representations");
-    };
 
-    size_t Nside_in  = n_side(in);
-    size_t Nside_out = n_side(out);
+    // Pixel 1D
+
+    auto Hin  = healpix_t::make(in);
+    auto Hout = healpix_t::make(out);
+    ASSERT(Hin.size() == in.numberOfPoints());
+    ASSERT(Hout.size() == out.numberOfPoints());
 
     // TODO
+
+
+    // Pixel 2D
+
+    // TODO
+
+
+    // 12 Pixels + reordering
 }
 
 
