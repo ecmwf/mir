@@ -12,10 +12,40 @@
 
 #pragma once
 
+#include <tuple>
+
 #include "mir/reorder/Reorder.h"
 
 
 namespace mir::reorder {
+
+
+struct HEALPix {
+    explicit HEALPix(size_t N);
+
+    struct fij_t {
+        int f;
+        int i;
+        int j;
+        operator std::tuple<int, int, int>() const { return {f, i, j}; }
+    };
+
+    int size() const;
+
+    fij_t nest_to_fij(int) const;
+
+    int fij_to_nest(const fij_t&) const;
+
+    int nest_to_ring(int n) const;
+
+    int ring_to_nest(int r) const;
+
+private:
+    const int Nside_;  // up to 2^13
+    const int Npix_;
+    const int Ncap_;
+    const int k_;
+};
 
 
 struct HEALPixRingToNested final : Reorder {

@@ -17,20 +17,11 @@
 #include <cstdint>
 #include <ostream>
 #include <string>
-#include <tuple>
 
 #include "mir/util/Exceptions.h"
 
 
 namespace mir::reorder {
-
-
-struct fij_t {
-    int f;
-    int i;
-    int j;
-    operator std::tuple<int, int, int>() const { return {f, i, j}; }
-};
 
 
 namespace {
@@ -87,139 +78,137 @@ inline int pll(int f) {
 }  // namespace
 
 
-class HEALPix {
-public:
-    explicit HEALPix(size_t N) :
-        Nside_([N] {
-            auto Nside = static_cast<int>(std::sqrt(static_cast<double>(N) / 12.));
-            ASSERT_MSG(12 * Nside * Nside == static_cast<int>(N),
-                       "Expected N = 12 * Nside ** 2, got N=" + std::to_string(N));
-            return Nside;
-        }()),
-        Npix_(size()),
-        Ncap_((Nside_ * (Nside_ - 1)) << 1),
-        k_(is_power_of_2(Nside_) ? static_cast<int>(std::log2(Nside_)) : -1) {
-        ASSERT(0 <= k_);  // (specific to nested ordering)
-        ASSERT(0 < Nside_);
-    }
+HEALPix::HEALPix(size_t N) :
+    Nside_([N] {
+        auto Nside = static_cast<int>(std::sqrt(static_cast<double>(N) / 12.));
+        ASSERT_MSG(12 * Nside * Nside == static_cast<int>(N),
+                   "Expected N = 12 * Nside ** 2, got N=" + std::to_string(N));
+        return Nside;
+    }()),
+    Npix_(size()),
+    Ncap_((Nside_ * (Nside_ - 1)) << 1),
+    k_(is_power_of_2(Nside_) ? static_cast<int>(std::log2(Nside_)) : -1) {
+    ASSERT(0 <= k_);  // (specific to nested ordering)
+    ASSERT(0 < Nside_);
+}
 
-    int size() const { return 12 * Nside_ * Nside_; }
 
-    fij_t nest_to_fij(int n) const {
-        ASSERT(0 <= n);
-        auto f = n >> (2 * k_);    // f = n / (Nside * Nside)
-        n &= (1 << (2 * k_)) - 1;  // n = n % (Nside * Nside)
-        auto i = nest_decode_bits(n);
-        auto j = nest_decode_bits(n >> 1);
-        return {f, i, j};
-    }
+int HEALPix::size() const {
+    return 12 * Nside_ * Nside_;
+}
 
-    int fij_to_nest(const fij_t& fij) const {
-        return (fij.f << (2 * k_)) + nest_encode_bits(fij.i) + (nest_encode_bits(fij.j) << 1);
-    }
 
-    int nest_to_ring(int n) const {
-        auto [f, i, j] = nest_to_fij(n);
-        ASSERT(f < 12 && i < Nside_ && j < Nside_);
+HEALPix::fij_t HEALPix::nest_to_fij(int n) const {
+    ASSERT(0 <= n);
+    auto f = n >> (2 * k_);    // f = n / (Nside * Nside)
+    n &= (1 << (2 * k_)) - 1;  // n = n % (Nside * Nside)
+    auto i = nest_decode_bits(n);
+    auto j = nest_decode_bits(n >> 1);
+    return {f, i, j};
+}
 
-        auto to_ring_local = [&](int f, int i, int j,
-                                 int Nring,  //!< number of pixels in ring
-                                 int shift   //!< if ring's first pixel is/is not at phi=0
-                                 ) -> int {
-            Nring >>= 2;
-            int r = (pll(f) * Nring + i - j + 1 + shift) / 2 - 1;
-            ASSERT(r < 4 * Nring);
 
-            return r < 0 ? r + 4 * Nside_ : r;
-        };
+int HEALPix::fij_to_nest(const fij_t& fij) const {
+    return (fij.f << (2 * k_)) + nest_encode_bits(fij.i) + (nest_encode_bits(fij.j) << 1);
+}
 
-        const int ring = ((f >> 2) + 2) * Nside_ - i - j - 1;  // 1-based ring number
-        if (ring < Nside_) {
-            // North polar cap
-            int Nring = 4 * ring;
-            int r0    = 2 * ring * (ring - 1);  // index of first ring pixel (ring numbering)
 
-            return r0 + to_ring_local(f, i, j, Nring, 0);
-        }
+int HEALPix::nest_to_ring(int n) const {
+    auto [f, i, j] = nest_to_fij(n);
+    ASSERT(f < 12 && i < Nside_ && j < Nside_);
 
-        if (ring < 3 * Nside_) {
-            // South polar cap
-            int Nring = 4 * Nside_;
-            int r0    = Ncap_ + (ring - Nside_) * Nring;  // index of first ring pixel (ring numbering)
-            int shift = (ring - Nside_) & 1;
+    auto to_ring_local = [&](int f, int i, int j,
+                             int Nring,  //!< number of pixels in ring
+                             int shift   //!< if ring's first pixel is/is not at phi=0
+                             ) -> int {
+        Nring >>= 2;
+        int r = (pll(f) * Nring + i - j + 1 + shift) / 2 - 1;
+        ASSERT(r < 4 * Nring);
 
-            return r0 + to_ring_local(f, i, j, Nring, shift);
-        }
+        return r < 0 ? r + 4 * Nside_ : r;
+    };
 
-        // Equatorial belt
-        int N     = 4 * Nside_ - ring;
-        int Nring = 4 * N;
-        int r0    = Npix_ - 2 * N * (N + 1);  // index of first ring pixel (ring numbering)
+    const int ring = ((f >> 2) + 2) * Nside_ - i - j - 1;  // 1-based ring number
+    if (ring < Nside_) {
+        // North polar cap
+        int Nring = 4 * ring;
+        int r0    = 2 * ring * (ring - 1);  // index of first ring pixel (ring numbering)
 
         return r0 + to_ring_local(f, i, j, Nring, 0);
     }
 
-    int ring_to_nest(int r) const {
-        auto to_nest = [&](int f,      //!< base pixel index
-                           int ring,   //!< 1-based ring number
-                           int Nring,  //!< number of pixels in ring
-                           int phi,    //!< index in longitude
-                           int shift   //!< if ring's first pixel is not at phi=0
-                           ) -> int {
-            int r = ((2 + (f >> 2)) << k_) - ring - 1;
-            int p = 2 * phi - pll(f) * Nring - shift - 1;
-            if (p >= 2 * Nside_) {
-                p -= 8 * Nside_;
-            }
+    if (ring < 3 * Nside_) {
+        // South polar cap
+        int Nring = 4 * Nside_;
+        int r0    = Ncap_ + (ring - Nside_) * Nring;  // index of first ring pixel (ring numbering)
+        int shift = (ring - Nside_) & 1;
 
-            int i = std::max(0, (r + p)) >> 1;
-            int j = std::max(0, (r - p)) >> 1;
-
-            ASSERT(f < 12 && i < Nside_ && j < Nside_);
-            return fij_to_nest({f, i, j});
-        };
-
-        if (r < Ncap_) {
-            // North polar cap
-            int Nring = (1 + sqrt(2 * r + 1)) >> 1;
-            int phi   = 1 + r - 2 * Nring * (Nring - 1);
-            int r     = Nring;
-            int f     = div_03(phi - 1, Nring);
-
-            return to_nest(f, r, Nring, phi, 0);
-        }
-
-        if (Npix_ - Ncap_ <= r) {
-            // South polar cap
-            int Nring = (1 + sqrt(2 * Npix_ - 2 * r - 1)) >> 1;
-            int phi   = 1 + r + 2 * Nring * (Nring - 1) + 4 * Nring - Npix_;
-            int ring  = 4 * Nside_ - Nring;  // (from South pole)
-            int f     = div_03(phi - 1, Nring) + 8;
-
-            return to_nest(f, ring, Nring, phi, 0);
-        }
-
-        // Equatorial belt
-        int ip  = r - Ncap_;
-        int tmp = ip >> (k_ + 2);
-
-        int Nring = Nside_;
-        int phi   = ip - tmp * 4 * Nside_ + 1;
-        int ring  = tmp + Nside_;
-
-        int ifm = 1 + ((phi - 1 - ((1 + tmp) >> 1)) >> k_);
-        int ifp = 1 + ((phi - 1 - ((1 - tmp + 2 * Nside_) >> 1)) >> k_);
-        int f   = (ifp == ifm) ? (ifp | 4) : ((ifp < ifm) ? ifp : (ifm + 8));
-
-        return to_nest(f, ring, Nring, phi, ring & 1);
+        return r0 + to_ring_local(f, i, j, Nring, shift);
     }
 
-private:
-    const int Nside_;  // up to 2^13
-    const int Npix_;
-    const int Ncap_;
-    const int k_;
-};
+    // Equatorial belt
+    int N     = 4 * Nside_ - ring;
+    int Nring = 4 * N;
+    int r0    = Npix_ - 2 * N * (N + 1);  // index of first ring pixel (ring numbering)
+
+    return r0 + to_ring_local(f, i, j, Nring, 0);
+}
+
+
+int HEALPix::ring_to_nest(int r) const {
+    auto to_nest = [&](int f,      //!< base pixel index
+                       int ring,   //!< 1-based ring number
+                       int Nring,  //!< number of pixels in ring
+                       int phi,    //!< index in longitude
+                       int shift   //!< if ring's first pixel is not at phi=0
+                       ) -> int {
+        int r = ((2 + (f >> 2)) << k_) - ring - 1;
+        int p = 2 * phi - pll(f) * Nring - shift - 1;
+        if (p >= 2 * Nside_) {
+            p -= 8 * Nside_;
+        }
+
+        int i = std::max(0, (r + p)) >> 1;
+        int j = std::max(0, (r - p)) >> 1;
+
+        ASSERT(f < 12 && i < Nside_ && j < Nside_);
+        return fij_to_nest({f, i, j});
+    };
+
+    if (r < Ncap_) {
+        // North polar cap
+        int Nring = (1 + sqrt(2 * r + 1)) >> 1;
+        int phi   = 1 + r - 2 * Nring * (Nring - 1);
+        int r     = Nring;
+        int f     = div_03(phi - 1, Nring);
+
+        return to_nest(f, r, Nring, phi, 0);
+    }
+
+    if (Npix_ - Ncap_ <= r) {
+        // South polar cap
+        int Nring = (1 + sqrt(2 * Npix_ - 2 * r - 1)) >> 1;
+        int phi   = 1 + r + 2 * Nring * (Nring - 1) + 4 * Nring - Npix_;
+        int ring  = 4 * Nside_ - Nring;  // (from South pole)
+        int f     = div_03(phi - 1, Nring) + 8;
+
+        return to_nest(f, ring, Nring, phi, 0);
+    }
+
+    // Equatorial belt
+    int ip  = r - Ncap_;
+    int tmp = ip >> (k_ + 2);
+
+    int Nring = Nside_;
+    int phi   = ip - tmp * 4 * Nside_ + 1;
+    int ring  = tmp + Nside_;
+
+    int ifm = 1 + ((phi - 1 - ((1 + tmp) >> 1)) >> k_);
+    int ifp = 1 + ((phi - 1 - ((1 - tmp + 2 * Nside_) >> 1)) >> k_);
+    int f   = (ifp == ifm) ? (ifp | 4) : ((ifp < ifm) ? ifp : (ifm + 8));
+
+    return to_nest(f, ring, Nring, phi, ring & 1);
+}
 
 
 Renumber HEALPixRingToNested::reorder(size_t N) const {
