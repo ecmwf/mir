@@ -12,13 +12,16 @@
 
 #include "mir/method/healpix/HEALPixConservative.h"
 
+#include <numeric>
 #include <ostream>
 #include <sstream>
+#include <utility>
 #include <vector>
 
 #include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
+#include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/proxy/HEALPix.h"
 #include "mir/repres/unsupported/HEALPixNested.h"
 #include "mir/util/Exceptions.h"
@@ -32,8 +35,8 @@ namespace {
 
 
 struct healpix_t {
-    size_t Nside;
-    repres::proxy::HEALPix::Ordering ordering;
+    const size_t Nside;
+    const repres::proxy::HEALPix::Ordering ordering;
     size_t size() const { return 12 * Nside * Nside; }
 
     static healpix_t make(const repres::Representation& rep) {
@@ -102,13 +105,20 @@ void HEALPixConservative::assemble(util::MIRStatistics& /*unused*/, WeightMatrix
 
     // TODO
 
+    using f = std::pair<size_t, size_t>;
+    f inc{std::gcd(Hin.Nside, Hout.Nside), std::lcm(Hin.Nside, Hout.Nside)};
+
 
     // Pixel 2D
+
+    // matrix_t pixel()
 
     // TODO
 
 
     // 12 Pixels + reordering
+    WeightMatrix M(Hout.size(), Hin.size());
+    W.swap(M);
 }
 
 

@@ -13,6 +13,7 @@ foreach(tool IN ITEMS
     mir-get-data
     mir-grid-box-area
     mir-grid-info
+    mir-healpix-mesh
     mir-inspect
     mir-list
     mir-load-matrix
