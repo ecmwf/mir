@@ -6,4 +6,4 @@ build:
     - ecmwf/eccodes@develop
     - ecmwf/eckit@develop
     - ecmwf/atlas@develop
-  parallel: 64
+  parallel: 32
