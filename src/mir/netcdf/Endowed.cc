@@ -60,10 +60,10 @@ void Endowed::getAttributes(int nc, int i, int nattr) {
         NC_CALL(nc_inq_attname(nc, i, j, name), path());
         NC_CALL(nc_inq_att(nc, i, name, &type, &len), path());
 
-        Type& kind       = Type::lookup(type);
-        Value* attribute = kind.attributeValue(nc, i, name, len, path());
-
-        add(new InputAttribute(*this, name, attribute));
+        Type& kind = Type::lookup(type);
+        if (Value* attribute = kind.attributeValue(nc, i, name, len, path()); attribute != nullptr) {
+            add(new InputAttribute(*this, name, attribute));
+        }
     }
 }
 

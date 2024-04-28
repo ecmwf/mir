@@ -375,6 +375,9 @@ Value* TypeT<unsigned char>::attributeValue(int nc, int id, const char* name, si
 
 template <>
 Value* TypeT<short>::attributeValue(int nc, int id, const char* name, size_t len, const std::string& path) {
+    if (len != 1) {
+        return nullptr;
+    }
     short value;
     ASSERT(len == 1);
     NC_CALL(nc_get_att_short(nc, id, name, &value), path);
