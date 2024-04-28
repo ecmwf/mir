@@ -86,6 +86,7 @@ double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh, bool include_
                         d = std::max(d, util::Earth::distance(P[ni], P[nj]));
                         if (d > dMax) {
                             Log::warning() << "CalculateCellLongestDiagonal: limited to maximum " << dMax << "m";
+                            mesh.metadata().set(name_, dMax);
                             return dMax;
                         }
                     }
