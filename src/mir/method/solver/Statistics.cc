@@ -44,7 +44,8 @@ void Statistics::solve(const MethodWeighted::Matrix& A, const MethodWeighted::We
 
     WeightMatrix::const_iterator it(W);
     for (WeightMatrix::Size r = 0; r < W.rows(); ++r) {
-        stats_->reset(missingValue, std::isnan(missingValue));
+        // comparison v == missingValue holds iff !isnan(missingValue)
+        stats_->reset(missingValue, !std::isnan(missingValue));
 
         for (; it != W.end(r); ++it) {
             ASSERT(it.col() < N);
