@@ -1783,6 +1783,7 @@ intensity:
   - 235134  # Time-mean surface pressure
   - 235135  # Time-mean vertical velocity
   - 235151  # Time-mean mean sea level pressure
+  - 235159  # Time-mean boundary layer height
   - 235165  # Time-mean 10 metre U wind component
   - 235166  # Time-mean 10 metre V wind component
   - 235168  # Time-mean 2 metre dewpoint temperature
@@ -2175,6 +2176,7 @@ numerics.mean:
   - 235141  # Time-mean snow depth
   - 235151  # Time-mean mean sea level pressure
   - 235157  # Time-mean relative humidity
+  - 235159  # Time-mean boundary layer height
   - 235165  # Time-mean 10 metre U wind component
   - 235166  # Time-mean 10 metre V wind component
   - 235168  # Time-mean 2 metre dewpoint temperature
