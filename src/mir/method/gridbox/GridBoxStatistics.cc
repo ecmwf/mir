@@ -124,7 +124,9 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
             // lookup
             const auto& box = outBoxes[i];
             tree->closestWithinRadius(point3(box.centre()), R, closest);
-            ASSERT(!closest.empty());
+            if (closest.empty()) {
+                continue;
+            }
 
 
             // calculate grid box contains
