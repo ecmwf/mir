@@ -76,7 +76,8 @@ bool NearestNeighbourWithLowestIndex::sameAs(const Pick& other) const {
 
 void NearestNeighbourWithLowestIndex::json(eckit::JSON& j) const {
     j.startObject();
-    j << "type" << "nearest-neighbour-with-lowest-index";
+    j << "type"
+      << "nearest-neighbour-with-lowest-index";
     j << "nclosest" << nClosest_;
     j.endObject();
 }

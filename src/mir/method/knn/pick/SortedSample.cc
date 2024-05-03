@@ -52,7 +52,8 @@ void SortedSample::hash(eckit::MD5& h) const {
 
 void SortedSample::json(eckit::JSON& j) const {
     j.startObject();
-    j << "type" << "sorted-sample";
+    j << "type"
+      << "sorted-sample";
     j << "sample" << sample_;
     j.endObject();
 }

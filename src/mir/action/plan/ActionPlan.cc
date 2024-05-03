@@ -144,13 +144,21 @@ void ActionPlan::execute(context::Context& ctx) const {
 
     for (const auto& p : *this) {
         if (Log::debug_active()) {
-            Log::debug() << "Executing:" << "\n" << sep << "\n" << *p << "\n" << sep << std::endl;
+            Log::debug() << "Executing:"
+                         << "\n"
+                         << sep << "\n"
+                         << *p << "\n"
+                         << sep << std::endl;
         }
 
         p->perform(ctx);
 
         if (Log::debug_active()) {
-            Log::debug() << "Result:" << "\n" << sep << "\n" << ctx << "\n" << sep << std::endl;
+            Log::debug() << "Result:"
+                         << "\n"
+                         << sep << "\n"
+                         << ctx << "\n"
+                         << sep << std::endl;
         }
     }
 
@@ -180,7 +188,11 @@ void ActionPlan::estimate(context::Context& ctx, api::MIREstimation& estimation)
 void ActionPlan::compress() {
     const char* sep = "#########";
 
-    Log::debug() << "Compress:" << "\n" << sep << "\n" << *this << "\n" << sep << std::endl;
+    Log::debug() << "Compress:"
+                 << "\n"
+                 << sep << "\n"
+                 << *this << "\n"
+                 << sep << std::endl;
 
     bool hasCompressed = false;
     bool more          = true;
@@ -193,8 +205,9 @@ void ActionPlan::compress() {
 
             if (action(i).mergeWithNext(action(i + 1))) {
 
-                Log::debug() << "ActionPlan::compress: " << "\n   " << oldAction.str() << "\n + " << action(i + 1)
-                             << "\n = " << action(i) << std::endl;
+                Log::debug() << "ActionPlan::compress: "
+                             << "\n   " << oldAction.str() << "\n + " << action(i + 1) << "\n = " << action(i)
+                             << std::endl;
 
                 delete at(i + 1);
                 erase(begin() + long(i + 1));
@@ -217,10 +230,16 @@ void ActionPlan::compress() {
     }
 
     if (hasCompressed) {
-        Log::debug() << "Compress result:" << "\n" << sep << "\n" << *this << "\n" << sep << std::endl;
+        Log::debug() << "Compress result:"
+                     << "\n"
+                     << sep << "\n"
+                     << *this << "\n"
+                     << sep << std::endl;
     }
     else {
-        Log::debug() << "Compress result: unable to compress" << "\n" << sep << std::endl;
+        Log::debug() << "Compress result: unable to compress"
+                     << "\n"
+                     << sep << std::endl;
     }
 }
 

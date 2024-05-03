@@ -95,7 +95,8 @@ void CartesianVector2DField::rotate(const util::Rotation& rotation, MIRValuesVec
 
 
 void CartesianVector2DField::print(std::ostream& out) const {
-    out << "CartesianVector2DField[" << "]";
+    out << "CartesianVector2DField["
+        << "]";
 }
 
 

@@ -64,7 +64,8 @@ bool InverseDistanceWeightingSquared::sameAs(const DistanceWeighting& other) con
 
 void InverseDistanceWeightingSquared::json(eckit::JSON& j) const {
     j.startObject();
-    j << "type" << "inverse-distance-weighting-squared";
+    j << "type"
+      << "inverse-distance-weighting-squared";
     j.endObject();
 }
 

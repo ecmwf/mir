@@ -93,7 +93,8 @@ void MissingIfAnyMissing::hash(eckit::MD5& h) const {
 
 void MissingIfAnyMissing::json(eckit::JSON& j) const {
     j.startObject();
-    j << "type" << "missing-if-any-missing";
+    j << "type"
+      << "missing-if-any-missing";
     j.endObject();
 }
 

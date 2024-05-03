@@ -187,8 +187,8 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
         }
         else if (!creator.supported()) {
 
-            Log::warning() << "ShToGridded: LegendreCacheCreator is not supported for:" << "\n  representation: "
-                           << representation << "\n  options: " << options_ << std::endl
+            Log::warning() << "ShToGridded: LegendreCacheCreator is not supported for:"
+                           << "\n  representation: " << representation << "\n  options: " << options_ << std::endl
                            << "ShToGridded: continuing with hindered performance" << std::endl;
 
             trans = atlas_trans_t(grid, domain, truncation, options_);
@@ -317,8 +317,9 @@ bool ShToGridded::mergeWithNext(const Action& next) {
         repres::RepresentationHandle out(outputRepresentation());
         cropping_.boundingBox(out->extendBoundingBox(bbox));
 
-        Log::debug() << "ShToGridded::mergeWithNext: " << "\n   " << oldAction.str() << "\n + " << next
-                     << "\n = " << *this << "\n + " << "(...)" << std::endl;
+        Log::debug() << "ShToGridded::mergeWithNext: "
+                     << "\n   " << oldAction.str() << "\n + " << next << "\n = " << *this << "\n + "
+                     << "(...)" << std::endl;
     }
     return false;
 }

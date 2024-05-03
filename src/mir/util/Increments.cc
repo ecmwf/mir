@@ -122,7 +122,8 @@ bool Increments::isLongitudeShifted(const PointLatLon& p) const {
 
 
 void Increments::print(std::ostream& out) const {
-    out << "Increments[" << "west_east=" << west_east_.longitude() << ",south_north=" << south_north_.latitude() << "]";
+    out << "Increments["
+        << "west_east=" << west_east_.longitude() << ",south_north=" << south_north_.latitude() << "]";
 }
 
 void Increments::json(eckit::JSON& json) const {

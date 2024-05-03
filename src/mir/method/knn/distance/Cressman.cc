@@ -72,7 +72,8 @@ bool Cressman::sameAs(const DistanceWeighting& other) const {
 
 void Cressman::json(eckit::JSON& j) const {
     j.startObject();
-    j << "type" << "cressman";
+    j << "type"
+      << "cressman";
     j.endList();
 }
 

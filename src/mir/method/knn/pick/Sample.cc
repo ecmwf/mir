@@ -68,7 +68,8 @@ bool Sample::sameAs(const Pick& other) const {
 
 void Sample::json(eckit::JSON& j) const {
     j.startObject();
-    j << "type" << "sample";
+    j << "type"
+      << "sample";
     j << "nclosest" << nClosest_;
     j << "distance" << distance_;
     j.endObject();

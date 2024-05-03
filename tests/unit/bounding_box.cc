@@ -314,7 +314,8 @@ CASE("Representation::extendBoundingBox") {
             for (const auto& bbox : _bbox) {
                 BoundingBox extended = repres->extendBoundingBox(bbox);
 
-                log << name << "\t > " << *repres << " + extendBoundingBox(" << "\n\t   " << bbox << ")"
+                log << name << "\t > " << *repres << " + extendBoundingBox("
+                    << "\n\t   " << bbox << ")"
                     << "\n\t = " << extended << std::endl;
 
                 EXPECT(extended.contains(bbox));

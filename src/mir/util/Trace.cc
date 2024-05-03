@@ -50,7 +50,8 @@ bool ProgressTimer::operator++() {
         lastTime_   = elapsed();
         double rate = double(counter_) / lastTime_;
         output() << Log::Pretty(counter_, units_) << " in " << Log::Seconds(lastTime_) << ", rate: " << rate << " "
-                 << units_(counter_) << "/s" << ", ETA: " << eckit::ETA(double(limit_ - counter_) / rate) << std::endl;
+                 << units_(counter_) << "/s"
+                 << ", ETA: " << eckit::ETA(double(limit_ - counter_) / rate) << std::endl;
     }
 
     if (counter_ < limit_) {

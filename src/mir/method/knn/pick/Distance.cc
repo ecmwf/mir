@@ -49,7 +49,8 @@ bool Distance::sameAs(const Pick& other) const {
 
 void Distance::json(eckit::JSON& j) const {
     j.startObject();
-    j << "type" << "distance";
+    j << "type"
+      << "distance";
     j << "distance" << distance_;
     j.endObject();
 }

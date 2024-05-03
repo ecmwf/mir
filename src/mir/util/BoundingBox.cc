@@ -73,7 +73,8 @@ BoundingBox::~BoundingBox() = default;
 
 
 void BoundingBox::print(std::ostream& out) const {
-    out << "BoundingBox[" << "north=" << north_ << ",west=" << west_ << ",south=" << south_ << ",east=" << east_ << "]";
+    out << "BoundingBox["
+        << "north=" << north_ << ",west=" << west_ << ",south=" << south_ << ",east=" << east_ << "]";
 }
 
 
