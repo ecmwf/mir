@@ -1,3 +1,4 @@
+cmake_options: -DENABLE_BUILD_TOOLS=ON
 dependencies: |
   ecmwf/ecbuild
   MathisRosenhauer/libaec@master
