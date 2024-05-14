@@ -1,8 +1,8 @@
-# GRIB
+# input
 MIR-553.grib2
 # mir
 --area=66.6/-24.4/63.4/-13.6
-# grib_get assertions
+# grib_get
 #Ni=122 # prone to compiler/platform dependant results
 #Nj=105 # ...
 #latitudeOfFirstGridPointInDegrees=65.7618    # ...

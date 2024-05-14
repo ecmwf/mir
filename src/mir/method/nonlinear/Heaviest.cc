@@ -77,7 +77,8 @@ void Heaviest::hash(eckit::MD5& h) const {
 
 void Heaviest::json(eckit::JSON& j) const {
     j.startObject();
-    j << "type" << "heaviest";
+    j << "type"
+      << "heaviest";
     j.endObject();
 }
 

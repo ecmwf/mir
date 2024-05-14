@@ -53,7 +53,8 @@ bool DistanceAndNClosest::sameAs(const Pick& other) const {
 
 void DistanceAndNClosest::json(eckit::JSON& j) const {
     j.startObject();
-    j << "type" << "distance-and-nclosest";
+    j << "type"
+      << "distance-and-nclosest";
     j << "nclosest" << nClosest_;
     j << "distance" << distance_;
     j.endObject();

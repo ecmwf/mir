@@ -1,4 +1,4 @@
-# mars
+# input
 param=t,level=1000
 # mir
 --intgrid=source --truncation=159 --grid=O80

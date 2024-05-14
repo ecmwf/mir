@@ -1,6 +1,6 @@
-# mars
+# input
 param=2t,levtype=sfc
 # mir
 --grid=9/9 --interpolation=fail
-# assertions
+# grib_get
 gridType=regular_ll

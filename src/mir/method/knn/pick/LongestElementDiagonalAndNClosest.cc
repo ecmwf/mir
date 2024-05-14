@@ -81,7 +81,8 @@ void LongestElementDiagonalAndNClosest::distance(const repres::Representation& i
 
 void LongestElementDiagonalAndNClosest::json(eckit::JSON& j) const {
     j.startObject();
-    j << "type" << "longest-element-diagonal-and-nclosest";
+    j << "type"
+      << "longest-element-diagonal-and-nclosest";
     j << "nclosest" << nClosest_;
     j << "distance" << distance_;
     j.endObject();

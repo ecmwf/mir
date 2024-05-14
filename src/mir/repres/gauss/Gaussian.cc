@@ -16,6 +16,7 @@
 #include <cmath>
 #include <map>
 
+#include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/param/MIRParametrisation.h"

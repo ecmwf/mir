@@ -1,4 +1,4 @@
-# mars
+# input
 packingType=grid_simple.grib1
 # mir
 $MIR_CONFIG_GRIB_OUTPUT=grib-output-ii.yaml

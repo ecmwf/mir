@@ -189,10 +189,11 @@ CASE("Increments::correctBoundingBox") {
                 repres::latlon::LatLon::correctBoundingBox(corrected, ni, nj, inc, reference);
 
                 static size_t c = 1;
-                log << "Test " << c++ << ":" << "\n\t   " << inc << "\n\t + " << box << "\n\t > " << corrected
-                    << " corrected with reference " << reference << "\n\t > ni = " << ni << "\n\t > nj = " << nj
-                    << "\n\t = shifted in latitude? " << inc.isLatitudeShifted(corrected)
-                    << "\n\t = shifted in longitude? " << inc.isLongitudeShifted(corrected) << std::endl;
+                log << "Test " << c++ << ":"
+                    << "\n\t   " << inc << "\n\t + " << box << "\n\t > " << corrected << " corrected with reference "
+                    << reference << "\n\t > ni = " << ni << "\n\t > nj = " << nj << "\n\t = shifted in latitude? "
+                    << inc.isLatitudeShifted(corrected) << "\n\t = shifted in longitude? "
+                    << inc.isLongitudeShifted(corrected) << std::endl;
 
                 EXPECT(box.contains(corrected));
                 EXPECT(ni >= 1);
@@ -245,7 +246,8 @@ CASE("Increments::correctBoundingBox") {
                 repres::latlon::LatLon::correctBoundingBox(corrected, ni, nj, inc, reference);
 
                 static size_t c = 1;
-                log << "Test " << c++ << ":" << "\n\t   " << inc << "\n\t + " << equator << "\n\t > " << corrected
+                log << "Test " << c++ << ":"
+                    << "\n\t   " << inc << "\n\t + " << equator << "\n\t > " << corrected
                     << " corrected with reference " << reference << "\n\t > ni = " << ni << "\n\t > nj = " << nj
                     << "\n\t = shifted in latitude? " << inc.isLatitudeShifted(corrected)
                     << "\n\t = shifted in longitude? " << inc.isLongitudeShifted(corrected) << std::endl;
@@ -385,7 +387,8 @@ struct UserAndGlobalisedCase {
             repres::RepresentationHandle maybe = new RegularLL(increments_, maybe_box, ref);
             const auto& maybe_ll               = dynamic_cast<const repres::latlon::RegularLL&>(*maybe);
 
-            log << "globaliseBoundingBox should maybe result in (CONFIRM FIRST!):" << "\n\t" << maybe_box
+            log << "globaliseBoundingBox should maybe result in (CONFIRM FIRST!):"
+                << "\n\t" << maybe_box
                 << "\n\t"
                    "Ni="
                 << maybe_ll.Ni()
@@ -628,7 +631,8 @@ CASE("MIR-309") {
             const BoundingBox& corrected = rep->boundingBox();
 
             static size_t c = 1;
-            log << "Test " << c++ << ":" << "\n\t   " << t.bbox << "\n\t > " << corrected << "\n\t = " << t.corrected
+            log << "Test " << c++ << ":"
+                << "\n\t   " << t.bbox << "\n\t > " << corrected << "\n\t = " << t.corrected
                 << "\n\t = shifted in latitude? " << t.increments.isLatitudeShifted(corrected)
                 << (t.allowLatitudeShift ? "" : " (should be false)") << "\n\t = shifted in longitude? "
                 << t.increments.isLongitudeShifted(corrected) << (t.allowLongitudeShift ? "" : " (should be false)")

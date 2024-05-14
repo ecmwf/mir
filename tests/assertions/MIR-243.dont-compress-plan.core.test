@@ -1,9 +1,8 @@
-# regular_ll cropping for a periodic West-East range shouldn't include duplicate points
-# Mars request
+# input
 param=2t,levtype=sfc
-# Mir tool options
+# mir
 --grid=1/1 --area=90/0/-90/360 --dont-compress-plan
-# grib_get assertions
+# grib_get
 Ni = 360
 Nj = 181
 latitudeOfFirstGridPointInDegrees = 90

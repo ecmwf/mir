@@ -1,8 +1,7 @@
-# fail on wrongly-encoded longitudeOfLastGridPointInDegrees
-# GRIB
+# input (wrongly-encoded longitudeOfLastGridPointInDegrees)
 MIR-442.003.wrong.grib1
 # mir
 $MIR_ABORT_IF_WRONGLY_ENCODED_GRIB=1
 --grid=9/9
-# assertions
+# grib_get
 gridType=regular_ll

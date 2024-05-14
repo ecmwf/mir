@@ -1,6 +1,6 @@
-# MARS request
+# input
 param=2t,levtype=sfc
-# MIR options
+# mir
 --grid=0.0833333358/0.0833333358 --area=51.08333742/10.8333342/42.5000034/28.08333558
-# grib_get assertions
+# grib_get
 

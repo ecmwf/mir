@@ -353,9 +353,10 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                     ASSERT(i < values.size());
 
                     constexpr double THOUSAND = 1000;
-                    log << "- " << c++ << " -" << " index=" << i << " latitude=" << q[1] << " longitude=" << q[0]
-                        << " distance=" << util::Earth::distance(p, q) / THOUSAND << " (km)" << " value=" << values[i]
-                        << std::endl;
+                    log << "- " << c++ << " -"
+                        << " index=" << i << " latitude=" << q[1] << " longitude=" << q[0]
+                        << " distance=" << util::Earth::distance(p, q) / THOUSAND << " (km)"
+                        << " value=" << values[i] << std::endl;
                 }
             }
 

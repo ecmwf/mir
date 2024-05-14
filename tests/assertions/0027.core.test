@@ -1,9 +1,8 @@
-# Testing meridian bounding box
-# Input file
+# input
 regular_ll.2-2.grib1
-# Mir tool options
+# mir
 --area=90/-999/-90/-999 --grid=9/9
-# grib_get assertions
+# grib_get
 longitudeOfFirstGridPointInDegrees=-999
 longitudeOfLastGridPointInDegrees=-999
 Ni=1

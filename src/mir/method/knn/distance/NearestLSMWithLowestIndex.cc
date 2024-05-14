@@ -87,7 +87,8 @@ bool NearestLSMWithLowestIndex::sameAs(const DistanceWeighting& other) const {
 
 void NearestLSMWithLowestIndex::json(eckit::JSON& j) const {
     j.startObject();
-    j << "type" << "nearest-lsm-with-lowest-index";
+    j << "type"
+      << "nearest-lsm-with-lowest-index";
     j.endObject();
 }
 

@@ -1,8 +1,8 @@
-# Mars request
+# input
 regular_ll.2-2.grib1
-# Mir tool options
+# mir
 --area=33.075/241.85/5.95/284.025 --grid=0.175/0.175
-# grib_get assertions
+# grib_get
 latitudeOfFirstGridPointInDegrees=33.075
 longitudeOfFirstGridPointInDegrees=241.85
 latitudeOfLastGridPointInDegrees=5.95

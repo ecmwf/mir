@@ -1,6 +1,6 @@
-# Input file
+# input
 rotated_ll.3-3.grib1
-# Mir tool options
+# mir
 --grid=3/3
-# grib_get assertions
+# grib_get
 gridType=regular_ll

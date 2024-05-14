@@ -1,8 +1,8 @@
-# MIR-180 (case 1)
+# input
 regular_ll.2-2.grib2
-# Mir tool options
+# mir
 --area=84/-165/23.9/165 --grid=0.1/0.1
-# grib_get assertions
+# grib_get
 Ni=3301
 Nj=602
 latitudeOfFirstGridPointInDegrees=84

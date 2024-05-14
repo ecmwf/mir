@@ -1,8 +1,8 @@
-# Mars request
+# input
 date=19930202
-# Mir tool options
+# mir
 --grid=1/1 --dont-compress-plan
-# grib_get assertions
+# grib_get
 Ni = 360
 Nj = 181
 iDirectionIncrementInDegrees = 1

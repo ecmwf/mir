@@ -127,7 +127,8 @@ bool ConditionT<std::string>::eval(grib_handle* h) const {
     }
 
     if (err != 0) {
-        Log::debug() << "ConditionT<std::string>::eval(" << ",key=" << key_ << ") failed " << err << std::endl;
+        Log::debug() << "ConditionT<std::string>::eval("
+                     << ",key=" << key_ << ") failed " << err << std::endl;
         GRIB_ERROR(err, key_);
     }
 

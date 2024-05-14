@@ -15,6 +15,7 @@
 #include <cmath>
 #include <sstream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/method/WeightMatrix.h"
@@ -43,7 +44,8 @@ void Statistics::solve(const MethodWeighted::Matrix& A, const MethodWeighted::We
 
     WeightMatrix::const_iterator it(W);
     for (WeightMatrix::Size r = 0; r < W.rows(); ++r) {
-        stats_->reset(missingValue, std::isnan(missingValue));
+        // comparison v == missingValue holds iff !isnan(missingValue)
+        stats_->reset(missingValue, !std::isnan(missingValue));
 
         for (; it != W.end(r); ++it) {
             ASSERT(it.col() < N);
@@ -74,7 +76,8 @@ void Statistics::hash(eckit::MD5& h) const {
 
 void Statistics::json(eckit::JSON& j) const {
     j.startObject();
-    j << "type" << "statistics";
+    j << "type"
+      << "statistics";
     j << "statistics" << *stats_;
     j.endObject();
 }

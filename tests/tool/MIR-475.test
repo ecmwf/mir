@@ -1,6 +1,6 @@
-# data
+# input
 date=20200308,level=1000,grid=O80,param=u_v
 # mir
 --only=132
-# assertions
+# grib_get
 paramId=132

@@ -1,7 +1,5 @@
-# PGEN-496 ensure handling of (gridded input) + RESOL=AV (--intgrid=source --truncation=none)
-# mars
+# input
 regular_ll.2-2.grib1
-# mir
+# mir (resol=av => intgrid=source truncation=none)
 --grid=2/2 --truncation=none
 # grib_get
-

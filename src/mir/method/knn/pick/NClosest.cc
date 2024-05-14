@@ -48,7 +48,8 @@ bool NClosest::sameAs(const Pick& other) const {
 
 void NClosest::json(eckit::JSON& j) const {
     j.startObject();
-    j << "type" << "nclosest";
+    j << "type"
+      << "nclosest";
     j << "nclosest" << nClosest_;
     j.endObject();
 }

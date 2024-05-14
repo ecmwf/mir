@@ -74,7 +74,11 @@ RegularGrid::RegularGrid(const param::MIRParametrisation& param, const RegularGr
     auto bbox = projection.lonlatBoundingBox(range);
     ASSERT(bbox);
 
-    bbox_ = {bbox.north(), bbox.west(), bbox.south(), bbox.east()};
+    // MIR-661 Grid projection handling covering the poles: account for "excessive" bounds
+    Longitude west(bbox.west());
+    auto east = bbox.east() - bbox.west() >= Longitude::GLOBE.value() ? west + Longitude::GLOBE : bbox.east();
+
+    bbox_ = {bbox.north(), west, bbox.south(), east};
 }
 
 
@@ -127,7 +131,7 @@ RegularGrid::Projection::Spec RegularGrid::make_proj_spec(const param::MIRParame
 
 RegularGrid::LinearSpacing RegularGrid::linspace(double start, double step, long num, bool plus) {
     ASSERT(step >= 0.);
-    return {start, start + step * double(plus ? num - 1 : 1 - num), num};
+    return {start, start + step * static_cast<double>(plus ? num - 1 : 1 - num), num};
 }
 
 
@@ -208,12 +212,12 @@ bool RegularGrid::isPeriodicWestEast() const {
 
 
 void RegularGrid::fillGrib(grib_info& info) const {
-    // shape of the reference object
+    // shape of the reference system
     shape_.fillGrib(info, grid_.projection().spec());
 
     // scanningMode
-    info.grid.iScansNegatively = x_.back() < x_.front() ? 1 : 0;
-    info.grid.jScansPositively = y_.front() < y_.back() ? 1 : 0;
+    info.grid.iScansNegatively = x_.back() < x_.front() ? 1L : 0L;
+    info.grid.jScansPositively = y_.front() < y_.back() ? 1L : 0L;
 }
 
 
@@ -252,9 +256,9 @@ Iterator* RegularGrid::iterator() const {
 
         size_t ni_;
         size_t nj_;
-        size_t i_;
-        size_t j_;
-        size_t count_;
+        size_t i_     = 0;
+        size_t j_     = 0;
+        size_t count_ = 0;
 
         void print(std::ostream& out) const override {
             out << "RegularGridIterator[";
@@ -286,7 +290,7 @@ Iterator* RegularGrid::iterator() const {
 
     public:
         RegularGridIterator(Projection projection, const LinearSpacing& x, const LinearSpacing& y) :
-            projection_(std::move(projection)), x_(x), y_(y), ni_(x.size()), nj_(y.size()), i_(0), j_(0), count_(0) {}
+            projection_(std::move(projection)), x_(x), y_(y), ni_(x.size()), nj_(y.size()) {}
         ~RegularGridIterator() override = default;
 
         RegularGridIterator(const RegularGridIterator&)            = delete;

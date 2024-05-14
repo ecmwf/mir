@@ -1,6 +1,6 @@
-# mars
+# input
 param=vo/d,level=1000,grid=3/3
 # mir
 --vod2uv
-# grib_get assertions
+# grib_get
 gridType=regular_ll

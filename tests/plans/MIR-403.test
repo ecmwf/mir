@@ -1,4 +1,4 @@
-# mars
+# input
 param=t,level=1000
 # mir
 --truncation=none --grid=0.25/0.25 --rotation=-40/22 --area=73.5/-27/33/45

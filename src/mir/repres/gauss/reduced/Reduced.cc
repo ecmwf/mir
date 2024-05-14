@@ -41,7 +41,7 @@ template <typename T>
 std::vector<long> pl_convert(const T& nx) {
     ASSERT(!nx.empty());
     std::vector<long> pl(nx.size());
-    std::transform(nx.begin(), nx.end(), pl.begin(), [](typename T::value_type p) { return long(p); });
+    std::transform(nx.begin(), nx.end(), pl.begin(), [](typename T::value_type p) { return static_cast<long>(p); });
     return pl;
 }
 
@@ -543,7 +543,8 @@ std::string Reduced::factory() const {
 
 void Reduced::json(eckit::JSON& s) const {
     s.startObject();
-    s << "type" << "reduced_gg";
+    s << "type"
+      << "reduced_gg";
     s << "pl" << pls();
     Gaussian::json(s);
     s.endObject();

@@ -7,3 +7,5 @@ build:
     - ecmwf/eckit@develop
     - ecmwf/atlas@develop
   parallel: 64
+  env:
+    - MIR_CACHING=0

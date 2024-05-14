@@ -1,6 +1,5 @@
-# Geopoints: Format XYV (Compact format)
+# input (Geopoints XYV Compact format)
 geopoints-format-xyv.gpt
-# Mir tool options
+# mir
 --output=geopoints-xyv
-# grib_get assertions
-# none: output file is GEOPOINTS
+# grib_get (output is GEOPOINTS)

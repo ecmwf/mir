@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <ostream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 

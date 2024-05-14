@@ -1,6 +1,5 @@
-# Geopoints: Format XY_VECTOR (XY Vector format)
+# input (Geopoints XY_VECTOR)
 geopoints-format-xy-vector.gpt
-# Mir tool options
+# mir
 --output=geopoints-xyv
-# grib_get assertions
-# none: output file is GEOPOINTS
+# grib_get (output is GEOPOINTS)

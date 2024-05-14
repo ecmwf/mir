@@ -75,7 +75,8 @@ bool GaussianDistanceWeighting::sameAs(const DistanceWeighting& other) const {
 
 void GaussianDistanceWeighting::json(eckit::JSON& j) const {
     j.startObject();
-    j << "type" << "gaussian";
+    j << "type"
+      << "gaussian";
     j << "distance-weighting-gaussian-stddev" << stddev_;
     j.endObject();
 }

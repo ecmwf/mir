@@ -1,6 +1,5 @@
-# mars
+# input
 date=20200308,level=1000,grid=O80,param=u_v
 # mir
 --uv2uv --nabla=uv-gradient
 # grib_get
-# (no checks for the moment)

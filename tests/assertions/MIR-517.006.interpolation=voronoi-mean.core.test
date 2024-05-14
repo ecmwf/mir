@@ -1,8 +1,8 @@
 # input
-tiny.grib
-# mir tool options
+tiny-2x2.grib
+# mir
 --interpolation=voronoi-statistics --interpolation-statistics=mean --grid=0.5/0.5
-# grib_get assertions (not checking results)
+# grib_get
 Ni=3
 Nj=3
 values[0]=0

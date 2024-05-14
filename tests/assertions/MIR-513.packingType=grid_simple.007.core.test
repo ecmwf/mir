@@ -1,5 +1,5 @@
-# mars
-tiny.grib
+# input
+tiny-2x2.grib
 # mir
 --area=0/0/0/1 --packing=so
 # grib_get (output (#points = 2) is in packingType=grid_simple because grid_second_order is not supported for #points < 4)

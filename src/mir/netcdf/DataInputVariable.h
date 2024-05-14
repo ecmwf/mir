@@ -36,7 +36,7 @@ private:
     size_t count2DValues() const override;
     void get2DValues(MIRValuesVector&, size_t i) const override;
 
-    // Used during identtification
+    // Used during identification
     void addCoordinateVariable(const Variable*) override;
     Variable* addMissingCoordinates() override;
     const char* kind() const override;

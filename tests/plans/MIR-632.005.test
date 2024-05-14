@@ -1,4 +1,4 @@
-# mars
+# input
 gridType=healpix,Nside=32,orderingConvention=ring.grib2
 # mir
 --interpolation=grid-box-average --grid=H32

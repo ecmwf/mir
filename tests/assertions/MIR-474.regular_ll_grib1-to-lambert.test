@@ -1,8 +1,8 @@
-# mars
+# input
 regular_ll.2-2.grib1
 # mir
 --grid=gridType=lambert\;grid=2500./2500.\;writeLaDInDegrees=0\;LaDInDegrees=45.8\;LoVInDegrees=2.\;latitudeOfFirstGridPointInDegrees=37.333\;longitudeOfFirstGridPointInDegrees=-8.354\;Ni=1000\;Nj=950\;gaussianNumber=1280
-# grib_get assertions
+# grib_get
 gridType=lambert
 LaDInDegrees=45.8
 LoVInDegrees=2

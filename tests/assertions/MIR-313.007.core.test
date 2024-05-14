@@ -1,8 +1,7 @@
-# handle wrongly-encoded longitudeOfLastGridPointInDegrees (GRIB2)
-# mars
+# input (wrongly-encoded longitudeOfLastGridPointInDegrees)
 stream=enfo,param=q,levtype=ml,type=cf,levelist=1,date=20130118,time=1200,step=0
 # mir
 $MIR_ABORT_IF_WRONGLY_ENCODED_GRIB=0
 --grid=9/9
-# assertions
+# grib_get
 gridType=regular_ll

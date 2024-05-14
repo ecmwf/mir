@@ -206,7 +206,8 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
 
             for (size_t j = 0; j < Nj; ++j) {
                 if (++progress) {
-                    log << "   latitude: " << lat[j] << " degree" << "\n   farthest: " << farthest << " m"
+                    log << "   latitude: " << lat[j] << " degree"
+                        << "\n   farthest: " << farthest << " m"
                         << "\n   closest: " << Log::Seconds(tClosest) << "\n   matrix A: " << Log::Seconds(tMatrixA)
                         << "\n   vector Y: " << Log::Seconds(tVectorY) << "\n   vector X: " << Log::Seconds(tVectorX)
                         << "\n"
@@ -320,7 +321,8 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
 
 
         log << Log::Pretty(field, {"field"}) << " in " << timer.elapsedSeconds()
-            << ", rate: " << double(field) / timer.elapsed() << " " << "field/s" << std::endl;
+            << ", rate: " << double(field) / timer.elapsed() << " "
+            << "field/s" << std::endl;
     }
 }
 

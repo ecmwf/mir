@@ -1,4 +1,4 @@
-# mars
+# input
 packingType=grid_ccsds.grib2
 # mir
 --grid=0.5/0.5

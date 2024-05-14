@@ -272,7 +272,8 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
 
         j << "interpolation";
         j.startObject();
-        j << "engine" << "mir";
+        j << "engine"
+          << "mir";
         j << "version" << caching::WeightCache::version();
         const static std::map<eckit::Hash::digest_t, std::string> KNOWN_METHOD{
             {"73e1dd539879ffbbbb22d6bc789c2262", "linear"},

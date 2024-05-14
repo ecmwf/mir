@@ -1,4 +1,4 @@
-# mars
+# input
 regular_ll.2-2.grib1
 # mir
 --grid=3/3 --dont-compress-plan --interpolation=k-nearest

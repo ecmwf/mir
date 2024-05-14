@@ -1,4 +1,4 @@
-# mars
+# input
 packingType=grid_simple.grib1
 # mir
 --packing=av

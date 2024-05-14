@@ -1,4 +1,4 @@
-# mars
+# input
 param=t,level=1000,resol=20
 # mir
 --grid=9/9 --area=90/-180/0/180

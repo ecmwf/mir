@@ -1,6 +1,6 @@
-# MARS request
+# input
 gridType=regular_gg,gridName=F32,shortName=msl.grib1
-# MIR options
+# mir
 --grid=O32 --interpolation=nn --point-search-trees=mapped-anonymous-memory
-# grib_get assertions
+# grib_get
 

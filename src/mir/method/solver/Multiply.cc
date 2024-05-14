@@ -69,7 +69,8 @@ void Multiply::hash(eckit::MD5& h) const {
 
 void Multiply::json(eckit::JSON& j) const {
     j.startObject();
-    j << "type" << "multiply";
+    j << "type"
+      << "multiply";
     j.endObject();
 }
 

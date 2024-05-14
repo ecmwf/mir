@@ -1,9 +1,8 @@
-# Test with input area 69.946/-60/21.45/60
-# mars
+# input
 gridType=regular_gg,gridName=F48,shortName=msl,global=0.001.grib1
-# Mir tool options
+# mir
 --grid=0.5/0.5 --area=60/-350/20/9
-# assertions
+# grib_get
 gridType=regular_ll
 latitudeOfFirstGridPointInDegrees=60
 longitudeOfFirstGridPointInDegrees=-60

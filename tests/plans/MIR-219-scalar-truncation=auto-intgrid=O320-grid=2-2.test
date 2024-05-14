@@ -1,4 +1,4 @@
-# mars
+# input
 param=t,level=1000
 # mir
 --truncation=auto --intgrid=O320 --grid=2/2 --dont-compress-plan

@@ -1,8 +1,8 @@
-# Mars request
+# input
 stream=wave,param=swh
-# Mir tool options
+# mir
 --grid=2/2
-# grib_get assertions
+# grib_get
 latitudeOfFirstGridPointInDegrees=90
 longitudeOfFirstGridPointInDegrees=0
 latitudeOfLastGridPointInDegrees=-90

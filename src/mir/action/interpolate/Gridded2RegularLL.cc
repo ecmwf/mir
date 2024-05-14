@@ -40,7 +40,8 @@ Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation& parametris
 
     repres::latlon::LatLon::globaliseBoundingBox(bbox_, increments_, reference_);
 
-    Log::debug() << "Gridded2RegularLL: globalise:" << "\n\t" << increments_ << "\n\t" << bbox_
+    Log::debug() << "Gridded2RegularLL: globalise:"
+                 << "\n\t" << increments_ << "\n\t" << bbox_
                  << "\n\t"
                     "shifted in latitude? "
                  << increments_.isLatitudeShifted(bbox_)

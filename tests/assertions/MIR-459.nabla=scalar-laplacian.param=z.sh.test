@@ -1,6 +1,5 @@
-# mars
+# input
 date=20200308,level=1000,truncation=20,param=z
 # mir
 --grid=1/1 --nabla=scalar-laplacian
 # grib_get
-# (no checks for the moment)

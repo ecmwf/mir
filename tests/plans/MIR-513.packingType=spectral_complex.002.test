@@ -1,4 +1,4 @@
-# mars
+# input
 packingType=spectral_complex.grib1
 # mir
 --grid=1/1 --intgrid=none --packing=so

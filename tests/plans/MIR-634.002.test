@@ -1,4 +1,4 @@
-# mars
+# input
 regular_ll.2-2.grib2
 # mir
 --truncation=none --intgrid=none --latitudes=1/2/3 --longitudes=4/5/6

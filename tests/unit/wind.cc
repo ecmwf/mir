@@ -76,10 +76,11 @@ CASE("MIR-324") {
                     Wind::paramIds(input, u, v);
 
                     static size_t c = 1;
-                    log << "Test " << c++ << ":" << "\n\t   input paramId = " << input.paramId() << "\n\t + paramId.u "
+                    log << "Test " << c++ << ":"
+                        << "\n\t   input paramId = " << input.paramId() << "\n\t + paramId.u "
                         << (user_u != 0 ? "(set)" : "(not set)") << " = " << user_u << "\n\t + paramId.v "
-                        << (user_v != 0 ? "(set)" : "(not set)") << " = " << user_v << "\n\t = " << "\n\t   u = " << u
-                        << "\n\t   v = " << v << std::endl;
+                        << (user_v != 0 ? "(set)" : "(not set)") << " = " << user_v << "\n\t = "
+                        << "\n\t   u = " << u << "\n\t   v = " << v << std::endl;
 
                     EXPECTV(u == (user_u != 0 ? user_u : PARAMID_U + table * 1000));
                     EXPECTV(v == (user_v != 0 ? user_v : PARAMID_V + table * 1000));

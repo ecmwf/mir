@@ -1,7 +1,7 @@
-# mars
+# input
 stream=wave,param=2dfd,direction=1,frequency=1
 # mir
 --accuracy=9
-# grib_get assertions
+# grib_get
 gridType=reduced_ll
 bitsPerValue=9

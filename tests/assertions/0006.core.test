@@ -1,8 +1,8 @@
-# Mars request
+# input
 param=2t,levtype=sfc
-# Mir tool options
+# mir
 --grid=f320 --area=56/-16.5/50.5/-3
-# grib_get assertions
+# grib_get
 Ni=48
 Nj=19
 numberOfValues=912

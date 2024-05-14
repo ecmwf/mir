@@ -414,9 +414,8 @@ Value* TypeT<std::string>::attributeValue(int nc, int id, const char* name, size
         return v;
     }
 
-    char value[len + 1];
-    memset(value, 0, sizeof(value));
-    NC_CALL(nc_get_att_text(nc, id, name, value), path);
+    std::string value(len + 1, '\0');
+    NC_CALL(nc_get_att_text(nc, id, name, value.data()), path);
     auto* v = new ValueT<std::string>(*this, value);
     return v;
 }

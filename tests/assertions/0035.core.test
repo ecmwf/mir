@@ -1,8 +1,7 @@
-# Test to check interpolation of a logarithmic quantity (1d.logarithmic)
-# Mars request
+# input (1d.logarithmic)
 levtype=ml,levelist=1,param=lnsp,grid=O32
-# Mir tool options
+# mir
 --grid=O16
-# grib_get assertions
+# grib_get
 Nj = 32
 N = 16

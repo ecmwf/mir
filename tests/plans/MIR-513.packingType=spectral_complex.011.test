@@ -1,6 +1,6 @@
-# mars
+# input
 packingType=spectral_complex.grib2
 # mir
 --packing=simple
-# grib_get assertions
+# plan
 Set[packing=simple,output=...]

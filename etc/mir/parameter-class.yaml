@@ -387,6 +387,11 @@ density.mass:
   - 228090  # Total column snow water
   - 228170  # Field capacity
   - 228171  # Wilting point
+  - 235080  # Time-mean snow density
+  - 235087  # Time-mean total column liquid water
+  - 235088  # Time-mean total column cloud ice water
+  - 235136  # Time-mean total column water
+  - 235137  # Time-mean total column vertically-integrated water vapour
   - 260001  # Total column graupel
   - 260014  # Absolute humidity
   - 260024  # Maximum absolute humidity
@@ -565,6 +570,8 @@ vector-space.2d-vector-u:
   - 233030  # Time integrated, vertically integrated eastward snow flux
   - 235041  # Mean eastward turbulent surface stress
   - 235045  # Mean eastward gravity wave surface stress
+  - 235131  # Time-mean U component of wind
+  - 235165  # Time-mean 10 metre U wind component
   - 260062  # Momentum flux, u component
   - 260066  # u-component of wind (gust)
   - 260070  # U-component storm motion
@@ -672,6 +679,8 @@ vector-space.2d-vector-v:
   - 233031  # Time integrated, vertically integrated northward snow flux
   - 235042  # Mean northward turbulent surface stress
   - 235046  # Mean northward gravity wave surface stress
+  - 235132  # Time-mean V component of wind
+  - 235166  # Time-mean 10 metre V wind component
   - 260063  # Momentum flux, v component
   - 260067  # v-component of wind (gust)
   - 260071  # V-component storm motion
@@ -833,8 +842,6 @@ intensity:
   - 135  # Vertical velocity
   - 138  # Vorticity (relative)
   - 139  # Soil temperature level 1
-  - 140  # Soil wetness level 1
-  - 141  # Snow depth
   - 148  # Charnock
   - 151  # Mean sea level pressure
   - 152  # Logarithm of surface pressure
@@ -852,17 +859,14 @@ intensity:
   - 167  # 2 metre temperature
   - 168  # 2 metre dewpoint temperature
   - 170  # Soil temperature level 2
-  - 171  # Soil wetness level 2
   - 173  # Surface roughness
   - 183  # Soil temperature level 3
-  - 184  # Soil wetness level 3
   - 189  # Sunshine duration
   - 190  # East-West component of sub-gridscale orographic variance
   - 191  # North-South component of sub-gridscale orographic variance
   - 192  # North-West/South-East component of sub-gridscale orographic variance
   - 193  # North-East/South-West component of sub-gridscale orographic variance
   - 194  # Brightness temperature
-  - 198  # Skin reservoir content
   - 200  # Variance of sub-gridscale orography
   - 201  # Maximum temperature at 2 metres since previous post-processing
   - 202  # Minimum temperature at 2 metres since previous post-processing
@@ -915,7 +919,6 @@ intensity:
   - 3054  # Precipitable water
   - 3055  # Vapour pressure
   - 3056  # Saturation deficit
-  - 3066  # Snow depth
   - 3067  # Mixed layer depth
   - 3068  # Transient thermocline depth
   - 3069  # Main thermocline depth
@@ -1095,6 +1098,9 @@ intensity:
   - 140252  # Wave spectral kurtosis
   - 140253  # Benjamin-Feir index
   - 140254  # Wave spectral peakedness
+  - 141221  # Time-mean mean zero-crossing wave period
+  - 141229  # Time-mean significant height of combined wind waves and swell
+  - 141232  # Time-mean mean wave period
   - 150129  # Ocean potential temperature
   - 150130  # Ocean salinity
   - 150131  # Ocean potential density
@@ -1193,7 +1199,6 @@ intensity:
   - 160156  # Height
   - 160171  # Soil wetness level 2
   - 160184  # Soil wetness level 3
-  - 160198  # Skin reservoir content
   - 160201  # Maximum temperature at 2 metres during averaging time
   - 160202  # Minimum temperature at 2 metres during averaging time
   - 160206  # Standard deviation of geopotential
@@ -1330,7 +1335,6 @@ intensity:
   - 171138  # Relative vorticity anomaly
   - 171139  # Soil temperature anomaly level 1
   - 171140  # Soil wetness anomaly level 1
-  - 171141  # Snow depth anomaly
   - 171148  # Charnock anomaly
   - 171151  # Mean sea level pressure anomaly
   - 171153  # Short-wave heating rate anomaly
@@ -1357,7 +1361,6 @@ intensity:
   - 171192  # North-West/South-East component of sub-gridscale orographic variance anomaly
   - 171193  # North-East/South-West component of sub-gridscale orographic variance anomaly
   - 171194  # Brightness temperature anomaly
-  - 171198  # Skin reservoir content anomaly
   - 171200  # Variance of sub-gridscale orography anomaly
   - 171201  # Maximum temperature at 2 metres anomaly
   - 171202  # Minimum temperature at 2 metres anomaly
@@ -1473,7 +1476,6 @@ intensity:
   - 200138  # Vorticity (relative) difference
   - 200139  # Soil temperature level 1 difference
   - 200140  # Soil wetness level 1 difference
-  - 200141  # Snow depth difference
   - 200148  # Charnock difference
   - 200151  # Mean sea level pressure difference
   - 200153  # Short-wave heating rate difference
@@ -1500,7 +1502,6 @@ intensity:
   - 200192  # North-West/South-East component of sub-gridscale orographic variance difference
   - 200193  # North-East/South-West component of sub-gridscale orographic variance difference
   - 200194  # Brightness temperature difference
-  - 200198  # Skin reservoir content difference
   - 200200  # Variance of sub-gridscale orography difference
   - 200201  # Maximum temperature at 2 metres since previous post-processing difference
   - 200202  # Minimum temperature at 2 metres since previous post-processing difference
@@ -1750,6 +1751,9 @@ intensity:
   - 231051  # Wall temperature
   - 231052  # Road temperature
   - 231055  # Urban canyon temperature
+  - 231059  # Lake surface temperature
+  - 231063  # Surface roughness for heat
+  - 231064  # Surface roughness for moisture
   - 232004  # Fuel load
   - 232007  # Live leaf fuel load
   - 232008  # Live wood fuel load
@@ -1768,6 +1772,24 @@ intensity:
   - 235017  # Time integral of surface eastward momentum flux
   - 235018  # Time integral of surface northward momentum flux
   - 235079  # Time-mean skin temperature
+  - 235084  # Time-mean sea surface temperature
+  - 235090  # Time-mean lake mix-layer temperature
+  - 235091  # Time-mean lake mix-layer depth
+  - 235094  # Time-mean soil temperature
+  - 235129  # Time-mean geopotential
+  - 235130  # Time-mean temperature
+  - 235131  # Time-mean U component of wind
+  - 235132  # Time-mean V component of wind
+  - 235134  # Time-mean surface pressure
+  - 235135  # Time-mean vertical velocity
+  - 235151  # Time-mean mean sea level pressure
+  - 235159  # Time-mean boundary layer height
+  - 235165  # Time-mean 10 metre U wind component
+  - 235166  # Time-mean 10 metre V wind component
+  - 235168  # Time-mean 2 metre dewpoint temperature
+  - 235238  # Time-mean temperature of snow layer
+  - 235244  # Time-mean forecast surface roughness
+  - 235245  # Time-mean forecast logarithm of surface roughness for heat
   - 240011  # Cross sectional area of flow in channel
   - 240014  # River storage of water
   - 240015  # Floodplain storage of water
@@ -2071,9 +2093,14 @@ numerics.tendency:
   - 263516  # Time-mean sea water salinity
 
 numerics.mean:
+  - 141221  # Time-mean mean zero-crossing wave period
+  - 141229  # Time-mean significant height of combined wind waves and swell
+  - 141231  # Time-mean peak wave period
+  - 141232  # Time-mean mean wave period
   - 172149  # Time-mean surface net radiation flux (SW and LW)
   - 173008  # Mean surface runoff rate anomaly
   - 173009  # Mean sub-surface runoff rate anomaly
+  - 228005  # Mean of 10 metre wind speed
   - 229004  # Building height
   - 231020  # Time-mean top net radiation flux (SW and LW)
   - 235001  # Mean temperature tendency due to short-wave radiation
@@ -2120,6 +2147,46 @@ numerics.mean:
   - 235077  # Time-mean volumetric soil moisture
   - 235078  # Time-mean snow depth water equivalent
   - 235079  # Time-mean skin temperature
+  - 235080  # Time-mean snow density
+  - 235081  # Time-mean low vegetation cover
+  - 235082  # Time-mean high vegetation cover
+  - 235083  # Time-mean sea ice area fraction
+  - 235084  # Time-mean sea surface temperature
+  - 235085  # Time-mean leaf area index, low vegetation
+  - 235086  # Time-mean leaf area index, high vegetation
+  - 235087  # Time-mean total column liquid water
+  - 235088  # Time-mean total column cloud ice water
+  - 235089  # Time-mean 2 metre specific humidity
+  - 235090  # Time-mean lake mix-layer temperature
+  - 235091  # Time-mean lake mix-layer depth
+  - 235092  # Time-mean 2 metre relative humidity
+  - 235093  # Time-mean fraction of snow cover
+  - 235094  # Time-mean soil temperature
+  - 235095  # Time-mean snow depth
+  - 235096  # Time-mean snow cover
+  - 235129  # Time-mean geopotential
+  - 235130  # Time-mean temperature
+  - 235131  # Time-mean U component of wind
+  - 235132  # Time-mean V component of wind
+  - 235133  # Time-mean specific humidity
+  - 235134  # Time-mean surface pressure
+  - 235135  # Time-mean vertical velocity
+  - 235136  # Time-mean total column water
+  - 235137  # Time-mean total column vertically-integrated water vapour
+  - 235141  # Time-mean snow depth
+  - 235151  # Time-mean mean sea level pressure
+  - 235157  # Time-mean relative humidity
+  - 235159  # Time-mean boundary layer height
+  - 235165  # Time-mean 10 metre U wind component
+  - 235166  # Time-mean 10 metre V wind component
+  - 235168  # Time-mean 2 metre dewpoint temperature
+  - 235186  # Time-mean low cloud cover
+  - 235187  # Time-mean medium cloud cover
+  - 235188  # Time-mean high cloud cover
+  - 235238  # Time-mean temperature of snow layer
+  - 235243  # Time-mean forecast albedo
+  - 235244  # Time-mean forecast surface roughness
+  - 235245  # Time-mean forecast logarithm of surface roughness for heat
   - 260441  # Time-mean total precipitation rate
   - 260477  # Time-mean snow melt rate in the last 24h
   - 263000  # Time-mean sea ice thickness
@@ -2237,6 +2304,8 @@ numerics.accumulated:
   - 50  # Large-scale precipitation fraction
   - 57  # Downward UV radiation at the surface
   - 58  # Photosynthetically active radiation at the surface
+  - 140  # Soil wetness level 1
+  - 141  # Snow depth
   - 142  # Large-scale precipitation
   - 143  # Convective precipitation
   - 144  # Snowfall
@@ -2246,6 +2315,7 @@ numerics.accumulated:
   - 149  # Surface net radiation
   - 150  # Top net radiation
   - 169  # Surface solar radiation downwards
+  - 171  # Soil wetness level 2
   - 175  # Surface thermal radiation downwards
   - 176  # Surface net solar radiation
   - 177  # Surface net thermal radiation
@@ -2254,9 +2324,11 @@ numerics.accumulated:
   - 180  # Eastward turbulent surface stress
   - 181  # Northward turbulent surface stress
   - 182  # Evaporation
+  - 184  # Soil wetness level 3
   - 195  # Eastward gravity wave surface stress
   - 196  # Northward gravity wave surface stress
   - 197  # Gravity wave dissipation
+  - 198  # Skin reservoir content
   - 205  # Runoff
   - 208  # Top net solar radiation, clear sky
   - 209  # Top net thermal radiation, clear sky
@@ -2268,6 +2340,7 @@ numerics.accumulated:
   - 240  # Large-scale snowfall
   - 3062  # large scale precipitation
   - 3063  # Convective precipitation (water)
+  - 3066  # Snow depth
   - 3079  # Large scale snow
   - 3099  # Snow melt
   - 129044  # Snow evaporation gradient
@@ -2318,6 +2391,7 @@ numerics.accumulated:
   - 151160  # Specified surface heat flux
   - 151162  # Heat flux correction
   - 160141  # Snow depth
+  - 160198  # Skin reservoir content
   - 160231  # Instantaneous surface heat flux
   - 160249  # Gravity wave dissipation flux
   - 162093  # Total column vertically-integrated water enthalpy
@@ -2336,6 +2410,7 @@ numerics.accumulated:
   - 171050  # Large-scale precipitation fraction anomaly
   - 171057  # Downward UV radiation at the surface anomaly
   - 171058  # Photosynthetically active radiation at the surface anomaly
+  - 171141  # Snow depth anomaly
   - 171142  # Stratiform precipitation (Large-scale precipitation) anomaly
   - 171143  # Convective precipitation anomaly
   - 171144  # Snowfall (convective + stratiform) anomaly
@@ -2355,6 +2430,7 @@ numerics.accumulated:
   - 171195  # Longitudinal component of gravity wave stress anomaly
   - 171196  # Meridional component of gravity wave stress anomaly
   - 171197  # Gravity wave dissipation anomaly
+  - 171198  # Skin reservoir content anomaly
   - 171205  # Runoff anomaly
   - 171208  # Top net solar radiation clear sky anomaly
   - 171209  # Top net thermal radiation clear sky anomaly
@@ -2403,6 +2479,7 @@ numerics.accumulated:
   - 200050  # Large-scale precipitation fraction difference
   - 200057  # Downward UV radiation at the surface difference
   - 200058  # Photosynthetically active radiation at the surface difference
+  - 200141  # Snow depth difference
   - 200142  # Stratiform precipitation (Large-scale precipitation) difference
   - 200143  # Convective precipitation difference
   - 200144  # Snowfall (convective + stratiform) difference
@@ -2422,6 +2499,7 @@ numerics.accumulated:
   - 200195  # Longitudinal component of gravity wave stress difference
   - 200196  # Meridional component of gravity wave stress difference
   - 200197  # Gravity wave dissipation difference
+  - 200198  # Skin reservoir content difference
   - 200205  # Runoff difference
   - 200208  # Top net solar radiation, clear sky difference
   - 200209  # Top net thermal radiation, clear sky difference
@@ -2661,6 +2739,8 @@ numerics.accumulated:
   - 235073  # Time integral of evapotranspiration flux
   - 235075  # Time integral of potential evapotranspiration rate
   - 235078  # Time-mean snow depth water equivalent
+  - 235095  # Time-mean snow depth
+  - 235141  # Time-mean snow depth
   - 240020  # Depth of water on soil surface
   - 240021  # Upstream accumulated precipitation
   - 240022  # Upstream accumulated snow melt
@@ -3123,6 +3203,10 @@ numerics.vertical-integral:
   - 233030  # Time integrated, vertically integrated eastward snow flux
   - 233031  # Time integrated, vertically integrated northward snow flux
   - 235054  # Mean vertically integrated moisture divergence
+  - 235087  # Time-mean total column liquid water
+  - 235088  # Time-mean total column cloud ice water
+  - 235136  # Time-mean total column water
+  - 235137  # Time-mean total column vertically-integrated water vapour
   - 260001  # Total column graupel
   - 260041  # Total column integrated rain
   - 260042  # Total column integrated snow
@@ -3545,6 +3629,7 @@ rate.mass-flux:
   - 160143  # Convective precipitation
   - 160144  # Snowfall
   - 160182  # Evaporation
+  - 160198  # Skin reservoir content
   - 160205  # Runoff
   - 160239  # Convective snowfall
   - 160240  # Large scale snowfall
@@ -3569,6 +3654,7 @@ rate.mass-flux:
   - 171044  # Snow evaporation anomaly
   - 171045  # Snowmelt anomaly
   - 171182  # Evaporation anomaly
+  - 171198  # Skin reservoir content anomaly
   - 173008  # Mean surface runoff rate anomaly
   - 173009  # Mean sub-surface runoff rate anomaly
   - 174008  # Surface runoff
@@ -3580,6 +3666,7 @@ rate.mass-flux:
   - 200044  # Snow evaporation difference
   - 200045  # Snowmelt difference
   - 200182  # Evaporation difference
+  - 200198  # Skin reservoir content difference
   - 201065  # convective mass flux
   - 201100  # surface precipitation rate, rain, grid scale
   - 201101  # surface precipitation rate, snow, grid scale
@@ -4340,14 +4427,20 @@ rate.volume-flux:
   - 9  # Sub-surface runoff
   - 44  # Snow evaporation
   - 45  # Snowmelt
+  - 140  # Soil wetness level 1
+  - 141  # Snow depth
   - 142  # Large-scale precipitation
   - 143  # Convective precipitation
   - 144  # Snowfall
+  - 171  # Soil wetness level 2
   - 182  # Evaporation
+  - 184  # Soil wetness level 3
+  - 198  # Skin reservoir content
   - 205  # Runoff
   - 228  # Total precipitation
   - 239  # Convective snowfall
   - 240  # Large-scale snowfall
+  - 3066  # Snow depth
   - 129142  # Stratiform precipitation (Large-scale precipitation) gradient
   - 129143  # Convective precipitation gradient
   - 129144  # Snowfall (convective + stratiform) gradient
@@ -4356,6 +4449,7 @@ rate.volume-flux:
   - 129239  # Convective snowfall gradient
   - 129240  # Large scale snowfall gradient
   - 151158  # Precipitation - evaporation
+  - 171141  # Snow depth anomaly
   - 171142  # Stratiform precipitation (Large-scale precipitation) anomaly
   - 171143  # Convective precipitation anomaly
   - 171144  # Snowfall (convective + stratiform) anomaly
@@ -4383,6 +4477,7 @@ rate.volume-flux:
   - 173228  # Total precipitation anomalous rate of accumulation
   - 173239  # Convective snowfall anomaly
   - 173240  # Large scale snowfall anomaly
+  - 200141  # Snow depth difference
   - 200142  # Stratiform precipitation (Large-scale precipitation) difference
   - 200143  # Convective precipitation difference
   - 200144  # Snowfall (convective + stratiform) difference
@@ -4621,6 +4716,8 @@ rate.volume-flux:
   - 230239  # Convective snowfall (variable resolution)
   - 230240  # Large-scale snowfall (variable resolution)
   - 230251  # Potential evaporation (variable resolution)
+  - 235095  # Time-mean snow depth
+  - 235141  # Time-mean snow depth
   - 260025  # Total snowfall
   - 260053  # Total snowfall rate
   - 260054  # Convective snowfall rate
@@ -4659,6 +4756,11 @@ ratio:
   - 228042  # Soil wetness index in layer 3
   - 228043  # Soil wetness index in layer 4
   - 231013  # Reflectance in 0.4 micron channel
+  - 231060  # Surface bulk Richardson number
+  - 231061  # Time-maximum 2 metre relative humidity
+  - 231062  # Time-minimum 2 metre relative humidity
+  - 235092  # Time-mean 2 metre relative humidity
+  - 235157  # Time-mean relative humidity
   - 260023  # Maximum relative humidity
   - 260034  # Horizontal moisture divergence
   - 260112  # Convective cloud efficiency
@@ -4689,6 +4791,8 @@ ratio.area:
   - 200066  # Leaf area index, low vegetation
   - 200067  # Leaf area index, high vegetation
   - 229005  # Vertical-to-horizontal area ratio
+  - 235085  # Time-mean leaf area index, low vegetation
+  - 235086  # Time-mean leaf area index, high vegetation
   - 261012  # Fraction of malarial vector reproductive habitat
 
 ratio.cover:
@@ -4708,6 +4812,8 @@ ratio.cover:
   - 229009  # Irrigation cover
   - 229010  # C4 crop cover
   - 229011  # C4 grass cover
+  - 235083  # Time-mean sea ice area fraction
+  - 235096  # Time-mean snow cover
   - 260038  # Snow cover
 
 ratio.cover.cloud:
@@ -4751,6 +4857,9 @@ ratio.cover.cloud:
   - 201060  # cloud cover, convective cirrus
   - 228006  # Mean total cloud cover
   - 228164  # Total Cloud Cover
+  - 235186  # Time-mean low cloud cover
+  - 235187  # Time-mean medium cloud cover
+  - 235188  # Time-mean high cloud cover
   - 260110  # Non-convective cloud cover
   - 260257  # Cloud cover
   - 260648  # Fog
@@ -4770,6 +4879,8 @@ ratio.cover.vegetation:
   - 200028  # High vegetation cover difference
   - 200070  # Biome cover, low vegetation
   - 200071  # Biome cover, high vegetation
+  - 235081  # Time-mean low vegetation cover
+  - 235082  # Time-mean high vegetation cover
 
 ratio.fraction:
   - 6  # Soil sand fraction
@@ -4897,6 +5008,8 @@ ratio.fraction:
   - 232005  # Combustion completeness
   - 235026  # Mean large-scale precipitation fraction
   - 235044  # Sunshine duration fraction
+  - 235093  # Time-mean fraction of snow cover
+  - 235243  # Time-mean forecast albedo
   - 240016  # Water fraction
   - 260039  # Rain fraction of total cloud water
   - 260103  # Cloud amount
@@ -4905,6 +5018,7 @@ ratio.fraction:
   - 260162  # Snow free albedo
   - 260173  # Snow water equivalent percent of normal
   - 260187  # Moisture availability
+  - 260289  # Fraction of snow cover
   - 260294  # Glacier mask
   - 260509  # Albedo
   - 260557  # Keetch-Byram drought index
@@ -5312,6 +5426,8 @@ ratio.mass:
   - 232014  # Fine dead wood moisture content
   - 232015  # Dense dead wood moisture content
   - 235006  # Mean specific humidity tendency due to parametrisations
+  - 235089  # Time-mean 2 metre specific humidity
+  - 235133  # Time-mean specific humidity
   - 260017  # Condensate
   - 260018  # Cloud mixing ratio
   - 260019  # Ice water mixing ratio
@@ -5705,6 +5821,7 @@ spectrum.associated-magnitude:
   - 140246  # Altimeter wave height
   - 140247  # Altimeter corrected wave height
   - 140248  # Altimeter range relative correction
+  - 141231  # Time-mean peak wave period
 
 stress:
   - 48  # Magnitude of turbulent surface stress

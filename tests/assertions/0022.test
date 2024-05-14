@@ -1,7 +1,7 @@
-# Mars request
+# input
 param=2t,levtype=sfc
-# Mir tool options
+# mir
 --area=90/0/-90/360 --grid=N400 --rotation=-30.0/-10.0
-# grib_get assertions
+# grib_get
 latitudeOfSouthernPoleInDegrees=-30
 longitudeOfSouthernPoleInDegrees=-10

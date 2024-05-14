@@ -114,9 +114,10 @@ void Count::count(const PointLatLon& point) {
 
 void Count::print(std::ostream& out) const {
     out << Log::Pretty(count_) << " out of " << Log::Pretty(countTotal_) << ", north=" << n_ << " (bbox.n - n "
-        << bbox_.north() - n_ << ")" << ", west=" << w_ << " (w - bbox.w " << w_ - bbox_.west() << ")"
-        << ", south=" << s_ << " (s - bbox.s " << s_ - bbox_.south() << ")" << ", east=" << e_ << " (bbox.e - e "
-        << bbox_.east() - e_ << ")"
+        << bbox_.north() - n_ << ")"
+        << ", west=" << w_ << " (w - bbox.w " << w_ - bbox_.west() << ")"
+        << ", south=" << s_ << " (s - bbox.s " << s_ - bbox_.south() << ")"
+        << ", east=" << e_ << " (bbox.e - e " << bbox_.east() - e_ << ")"
         << "\n"
            "N "
         << bbox_.north() << ":" << nn_

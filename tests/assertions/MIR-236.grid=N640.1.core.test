@@ -1,8 +1,8 @@
-# Mars
+# input
 param=2t,levtype=sfc,grid=N640
-# Mir
+# mir
 --area=51.5189/2.08333/50.5349/5.83333
-# grib_get assertions
+# grib_get
 gridName = N640
 latitudeOfFirstGridPointInDegrees = 51.379
 longitudeOfFirstGridPointInDegrees = 2.083

@@ -1,6 +1,6 @@
-# ICON example
+# input
 ICON.shortName=lsm.grib2
-# Mir tool options
+# mir
 --input="{latitudes:$tests_assertions_dir/ICON.shortName=CLAT.grib2,longitudes:$tests_assertions_dir/ICON.shortName=CLON.grib2}" --area=20/0/0/20
-# grib_get assertions
+# grib_get
 numberOfValues=189

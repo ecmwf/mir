@@ -1,5 +1,4 @@
-# mars
-# this test a very high resolution so that truncation (in spectral linear order to grid increments) does not happen because it exceeds the input field truncation
+# input
 param=vo_d,level=1000
 # mir
 --vod2uv --grid=0.1/0.1 --dont-compress-plan

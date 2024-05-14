@@ -1,5 +1,4 @@
-# MIR-239: check if intermediate grid is the same as the target grid, there is no "double" interpolation
-# mars
+# input
 param=t,level=1000
 # mir
 --intgrid=auto --grid=F64

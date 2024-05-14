@@ -1,8 +1,8 @@
-# Mars request: grid=f60,area=26.15/0/-26.15/360
+# input
 MPY-400.grib1
-# Mir tool options
+# mir
 --grid=1.5/1.5 --interpolation=grid-box-average
-# grib_get assertions
+# grib_get
 gridType=regular_ll
 Ni=240
 Nj=35

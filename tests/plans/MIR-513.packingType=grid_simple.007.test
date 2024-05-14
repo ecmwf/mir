@@ -1,7 +1,7 @@
-# mars
-tiny.grib
+# input
+tiny-2x2.grib
 # mir
 --area=0/0/0/1 --packing=so
-# grib_get assertions
+# plan
 AreaCropper[bbox=BoundingBox[north=0,west=0,south=0,east=1]]|Save[packing=second-order,output=...]
 AreaCropper[bbox=BoundingBox[north=0,west=0,south=0,east=1]]|Save[packing=second-order,output=...]

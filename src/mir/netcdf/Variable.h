@@ -89,7 +89,7 @@ public:
 
     const Variable& lookupInDataset(const std::string& standardName, const std::string& units, size_t n) const;
 
-    // Used during identtification
+    // Used during identification
     virtual Variable* makeDataVariable();
     virtual Variable* makeCoordinateVariable();
     virtual Variable* makeSimpleVariable();
