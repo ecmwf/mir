@@ -88,7 +88,7 @@ RegularGrid::RegularGrid(const param::MIRParametrisation& param, const RegularGr
         // MIR-661 Grid projection handling covering the poles: account for "excessive" bounds
         Longitude west(bbox.west());
         auto east = bbox.east() - bbox.west() >= Longitude::GLOBE.value() ? west + Longitude::GLOBE : bbox.east();
-        bbox_ = {bbox.north(), west, bbox.south(), east};
+        bbox_     = {bbox.north(), west, bbox.south(), east};
     }
 }
 

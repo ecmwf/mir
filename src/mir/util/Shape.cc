@@ -19,8 +19,6 @@ namespace mir::util {
 
 
 Shape::Shape(const param::MIRParametrisation& param) {
-    param.get("edition", edition = 0);
-
     provided = param.get("shapeOfTheEarth", code = 6);
 
     bool isOblate = false;
@@ -30,7 +28,7 @@ Shape::Shape(const param::MIRParametrisation& param) {
 }
 
 
-Shape::Shape(const Projection::Spec& spec) : edition(0) {
+Shape::Shape(const Projection::Spec& spec) {
     if (spec.has("radius")) {
         code = 1L;
         a = b = spec.getDouble("radius");
@@ -58,6 +56,17 @@ Shape& Shape::operator=(const Shape&) = default;
 
 void Shape::fillGrib(grib_info& info, const Projection::Spec& spec) const {
     // GRIB2 encoding of user-provided shape
+    long edition = info.packing.editionNumber;
+
+    const std::string EDITION("edition");
+    for (size_t j = 0; j < info.packing.extra_settings_count; ++j) {
+        auto& set = info.packing.extra_settings[j];
+        if (set.name == EDITION && set.type == CODES_TYPE_LONG) {
+            edition = set.long_value;
+            break;
+        }
+    }
+
     if (edition != 2) {
         return;
     }
