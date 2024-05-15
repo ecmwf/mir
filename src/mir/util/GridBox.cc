@@ -56,23 +56,17 @@ bool GridBox::contains(const Point2& p) const {
 
 
 bool GridBox::intersects(GridBox& other) const {
-    double n = std::min(north_, other.north_);
-    double s = std::max(south_, other.south_);
+    auto n = std::min(north_, other.north_);
+    auto s = std::max(south_, other.south_);
 
     if (!eckit::types::is_strictly_greater(n, s)) {
         return false;
     }
 
     auto intersect = [](const GridBox& a, const GridBox& b, double& w, double& e) {
-#if 1
-        double ref = LongitudeDouble(b.west_).normalise(a.west_).value();
-        double w_  = std::max(a.west_, ref);
-        double e_  = std::min(a.east_, LongitudeDouble(b.east_).normalise(ref).value());
-#else
-        double ref = normalise(b.west_, a.west_);
-        double w_  = std::max(a.west_, ref);
-        double e_  = std::min(a.east_, normalise(b.east_, ref));
-#endif
+        auto ref = LongitudeDouble(b.west_).normalise(a.west_).value();
+        auto w_  = std::max(a.west_, ref);
+        auto e_  = std::min(a.east_, LongitudeDouble(b.east_).normalise(ref).value());
 
         if (eckit::types::is_strictly_greater(e_, w_)) {
             w = w_;
@@ -82,8 +76,8 @@ bool GridBox::intersects(GridBox& other) const {
         return false;
     };
 
-    double w = std::min(west_, other.west_);
-    double e = w;
+    auto w = std::min(west_, other.west_);
+    auto e = w;
 
     if (west_ <= other.west_ ? intersect(*this, other, w, e) || intersect(other, *this, w, e)
                              : intersect(other, *this, w, e) || intersect(*this, other, w, e)) {
