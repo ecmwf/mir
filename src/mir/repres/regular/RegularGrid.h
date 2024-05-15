@@ -75,17 +75,17 @@ public:
 
 protected:
     // -- Members
-
-    ::atlas::RegularGrid grid_;
-    LinearSpacing x_;
-    LinearSpacing y_;
-    bool xPlus_;
-    bool yPlus_;
-    bool firstPointBottomLeft_;
+    // None
 
     // -- Methods
 
+    const ::atlas::RegularGrid& grid() const { return grid_; }
+    const LinearSpacing& x() const { return x_; }
+    const LinearSpacing& y() const { return y_; }
     const util::Shape& shape() const { return shape_; }
+    bool xPlus() const { return xPlus_; }
+    bool yPlus() const { return yPlus_; }
+    bool firstPointBottomLeft() const { return firstPointBottomLeft_; }
 
     static Projection::Spec make_proj_spec(const param::MIRParametrisation&);
     static LinearSpacing linspace(double start, double step, long num, bool plus);
@@ -123,7 +123,13 @@ protected:
 private:
     // -- Members
 
+    ::atlas::RegularGrid grid_;
+    LinearSpacing x_;
+    LinearSpacing y_;
     util::Shape shape_;
+    bool xPlus_;
+    bool yPlus_;
+    bool firstPointBottomLeft_;
 
     // -- Friends
     // None
