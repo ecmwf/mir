@@ -18,15 +18,14 @@
 namespace mir::repres::regular {
 
 
-class Mercator : public RegularGrid {
+class Mercator final : public RegularGrid {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    Mercator(const param::MIRParametrisation&);
-    Mercator(const Mercator&) = delete;
+    explicit Mercator(const param::MIRParametrisation&);
 
     // -- Destructor
     // None
@@ -35,8 +34,7 @@ public:
     // None
 
     // -- Operators
-
-    Mercator& operator=(const Mercator&) = delete;
+    // None
 
     // -- Methods
     // None

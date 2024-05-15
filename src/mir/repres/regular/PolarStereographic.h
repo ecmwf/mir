@@ -18,15 +18,14 @@
 namespace mir::repres::regular {
 
 
-class PolarStereographic : public RegularGrid {
+class PolarStereographic final : public RegularGrid {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    PolarStereographic(const param::MIRParametrisation&);
-    PolarStereographic(const PolarStereographic&) = delete;
+    explicit PolarStereographic(const param::MIRParametrisation&);
 
     // -- Destructor
     // None
@@ -35,8 +34,7 @@ public:
     // None
 
     // -- Operators
-
-    PolarStereographic& operator=(const PolarStereographic&) = delete;
+    // None
 
     // -- Methods
     // None

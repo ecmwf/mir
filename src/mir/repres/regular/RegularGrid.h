@@ -44,7 +44,9 @@ public:
     RegularGrid(const param::MIRParametrisation&, const Projection&);
     RegularGrid(const Projection&, const util::BoundingBox&, const LinearSpacing& x, const LinearSpacing& y,
                 const util::Shape&);
+
     RegularGrid(const RegularGrid&) = delete;
+    RegularGrid(RegularGrid&&)      = delete;
 
     // -- Destructor
 
@@ -56,6 +58,7 @@ public:
     // -- Operators
 
     RegularGrid& operator=(const RegularGrid&) = delete;
+    RegularGrid& operator=(RegularGrid&&)      = delete;
 
     // -- Methods
     // None
@@ -76,15 +79,17 @@ protected:
     ::atlas::RegularGrid grid_;
     LinearSpacing x_;
     LinearSpacing y_;
-    util::Shape shape_;
     bool xPlus_;
     bool yPlus_;
     bool firstPointBottomLeft_;
 
     // -- Methods
 
+    const util::Shape& shape() const { return shape_; }
+
     static Projection::Spec make_proj_spec(const param::MIRParametrisation&);
     static LinearSpacing linspace(double start, double step, long num, bool plus);
+
     std::pair<ij_t, ij_t> minmax_ij(const util::BoundingBox&) const;
 
     // -- Overridden methods
@@ -114,6 +119,11 @@ protected:
 
     // -- Class methods
     // None
+
+private:
+    // -- Members
+
+    util::Shape shape_;
 
     // -- Friends
     // None

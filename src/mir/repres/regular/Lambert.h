@@ -18,15 +18,14 @@
 namespace mir::repres::regular {
 
 
-class Lambert : public RegularGrid {
+class Lambert final : public RegularGrid {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    Lambert(const param::MIRParametrisation&);
-    Lambert(const Lambert&) = delete;
+    explicit Lambert(const param::MIRParametrisation&);
 
     // -- Destructor
     // None
@@ -35,8 +34,7 @@ public:
     // None
 
     // -- Operators
-
-    Lambert& operator=(const Lambert&) = delete;
+    // None
 
     // -- Methods
     // None

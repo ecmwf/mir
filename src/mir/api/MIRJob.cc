@@ -99,8 +99,7 @@ static const std::map<std::string, std::string> aliases{
 
 
 static const std::string& resolveAliases(const std::string& name) {
-    auto j = aliases.find(name);
-    if (j != aliases.end()) {
+    if (auto j = aliases.find(name); j != aliases.end()) {
         Log::debug() << "MIRJob: changing [" << name << "] to [" << j->second << "]" << std::endl;
         return j->second;
     }
@@ -186,8 +185,9 @@ MIRJob& MIRJob::set(const std::string& name, long long value) {
 }
 
 MIRJob& MIRJob::set(const std::string& name, size_t value) {
-    ASSERT(size_t(long(value)) == value);
-    _setScalar(resolveAliases(name), long(value));
+    ASSERT(static_cast<size_t>(static_cast<long>(value)) == value);
+
+    _setScalar(resolveAliases(name), static_cast<long>(value));
     return *this;
 }
 
@@ -246,31 +246,21 @@ MIRJob& MIRJob::set(const std::string& name, const std::vector<std::string>& val
 
 MIRJob& MIRJob::set(const std::string& name, double v1, double v2) {
     std::vector<double> v(2);
-    v[0] = v1;
-    v[1] = v2;
-    _setVector(resolveAliases(name), v, 2);
+    _setVector(resolveAliases(name), std::vector<double>{v1, v2}, 2);
     return *this;
 }
 
 
 MIRJob& MIRJob::set(const std::string& name, double v1, double v2, double v3, double v4) {
-    std::vector<double> v(4);
-    v[0] = v1;
-    v[1] = v2;
-    v[2] = v3;
-    v[3] = v4;
-    _setVector(resolveAliases(name), v, 4);
+    _setVector(resolveAliases(name), std::vector<double>{v1, v2, v3, v4}, 4);
     return *this;
 }
 
 
 MIRJob& MIRJob::representationFrom(const input::MIRInput& input) {
-
-    const data::MIRField field           = input.field();
-    const repres::Representation* repres = field.representation();
+    repres::RepresentationHandle repres(input.field().representation());
     ASSERT(repres);
 
-    // Log::debug() << "Copy from " << *repres << std::endl;
     repres->fillJob(*this);
 
     return *this;

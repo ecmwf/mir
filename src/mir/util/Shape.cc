@@ -50,10 +50,10 @@ Shape::Shape(const Projection::Spec& spec) : edition(0) {
 }
 
 
-Shape::Shape(const Shape& other) = default;
+Shape::Shape(const Shape&) = default;
 
 
-Shape& Shape::operator=(const Shape& other) = default;
+Shape& Shape::operator=(const Shape&) = default;
 
 
 void Shape::fillGrib(grib_info& info, const Projection::Spec& spec) const {

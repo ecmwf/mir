@@ -13,6 +13,7 @@
 #include <memory>
 #include <ostream>
 #include <string>
+#include <vector>
 
 #include "eckit/linalg/LinearAlgebraDense.h"
 #include "eckit/linalg/LinearAlgebraSparse.h"
@@ -187,7 +188,7 @@ struct MIR : MIRTool {
         options_.push_back(new FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
 
 #if mir_HAVE_ATLAS
-        for (const std::string& which : {"input", "output"}) {
+        for (const auto& which : std::vector<std::string>{"input", "output"}) {
             options_.push_back(
                 new SimpleOption<std::string>(which + "-mesh-generator", "Mesh generator for " + which + " grid"));
             options_.push_back(
@@ -266,7 +267,7 @@ struct MIR : MIRTool {
 
         //==============================================
         options_.push_back(new Separator("Compute"));
-        for (const std::string& when : {"prologue", "raw", "spectral", "gridded", "epilogue"}) {
+        for (const auto& when : std::vector<std::string>{"prologue", "raw", "spectral", "gridded", "epilogue"}) {
             options_.push_back(new SimpleOption<std::string>("formula." + when, "Formula"));
             options_.push_back(new SimpleOption<std::string>("formula." + when + ".metadata", "Formula metadata"));
         }
@@ -278,7 +279,7 @@ struct MIR : MIRTool {
         options_.push_back(new SimpleOption<double>("lsm-weight-adjustment",
                                                     "LSM interpolation weight adjustment factor (default 0.2)"));
 
-        for (const std::string& io : {"", "input", "output"}) {
+        for (const auto& io : std::vector<std::string>{"", "input", "output"}) {
             const std::string which = io.empty() ? "both input and output" : io;
             const std::string key   = (io.empty() ? "" : "-") + io;
             options_.push_back(new FactoryOption<method::MethodFactory>(
