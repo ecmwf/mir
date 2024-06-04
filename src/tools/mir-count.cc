@@ -102,9 +102,11 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
     prec_t precision;
     param.get("precision", precision) ? log.precision(precision) : log.precision();
 
-    std::vector<double> area;
-    param.get("area", area);
+    std::string area_str;
+    param.get("area", area_str);
 
+    util::BoundingBox area;
+    key::Area::get(param, area);
 
     // setup a regular lat/lon representation and perform count
     std::string grid;
