@@ -186,7 +186,8 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
     }
 
     if (user.has("area")) {
-        if (field.has("gridded_regular_ll") && user.has("grid") && !same_points(user, field)) {
+        std::vector<double> grid_v;
+        if (field.has("gridded_regular_ll") && same->get("grid", grid_v) && !same_points(user, field)) {
             check_rotated_regular_ll();
             return prefix + "regular-ll";
         }
