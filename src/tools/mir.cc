@@ -118,6 +118,8 @@ struct MIR : MIRTool {
         options_.push_back(
             new FactoryOption<stats::FieldFactory>("interpolation-statistics", "Statistics interpolation method"));
 
+        options_.push_back(new SimpleOption<eckit::PathName>("interpolation-matrix", "Interpolation matrix file"));
+
         options_.push_back(
             new SimpleOption<bool>("interpolation-matrix-free", "Matrix-free interpolation (proxy methods)"));
 

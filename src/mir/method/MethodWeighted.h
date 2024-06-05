@@ -15,6 +15,7 @@
 #include <memory>
 #include <vector>
 
+#include "mir/caching/InMemoryCache.h"
 #include "mir/method/Cropping.h"
 #include "mir/method/Method.h"
 #include "mir/method/WeightMatrix.h"
@@ -87,6 +88,19 @@ public:
     const WeightMatrix& getMatrix(context::Context&, const repres::Representation& in,
                                   const repres::Representation& out) const;
 
+    /// Access the matrix in-memory cache
+    static caching::InMemoryCache<WeightMatrix>& matrix_cache();
+
+    /// Get interpolation operand matrices, from A = W B
+    static void set_operand_matrices_from_vectors(WeightMatrix::Matrix& A, WeightMatrix::Matrix& B,
+                                                  const MIRValuesVector& Avector, const MIRValuesVector& Bvector,
+                                                  const double& missingValue, const data::Space&);
+
+    /// Get interpolation operand matrices, from A = W B
+    static void set_vector_from_operand_matrix(const WeightMatrix::Matrix& A, MIRValuesVector& Avector,
+                                               const double& missingValue, const data::Space&);
+
+
     // -- Overridden methods
     // None
 
@@ -151,15 +165,6 @@ private:
                               WeightMatrix&, bool validate) const;
     void createMatrix(context::Context&, const repres::Representation& in, const repres::Representation& out,
                       WeightMatrix&, const lsm::LandSeaMasks&, const Cropping&) const;
-
-    /// Get interpolation operand matrices, from A = W B
-    virtual void setOperandMatricesFromVectors(WeightMatrix::Matrix& A, WeightMatrix::Matrix& B,
-                                               const MIRValuesVector& Avector, const MIRValuesVector& Bvector,
-                                               const double& missingValue, const data::Space&) const;
-
-    /// Get interpolation operand matrices, from A = W B
-    virtual void setVectorFromOperandMatrix(const WeightMatrix::Matrix& A, MIRValuesVector& Avector,
-                                            const double& missingValue, const data::Space&) const;
 
     // -- Overridden methods
 

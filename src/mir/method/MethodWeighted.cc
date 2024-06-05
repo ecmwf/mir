@@ -25,7 +25,6 @@
 #include "eckit/utils/StringTools.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/caching/InMemoryCache.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRFieldStats.h"
@@ -49,9 +48,14 @@ namespace mir::method {
 
 static util::recursive_mutex local_mutex;
 
-constexpr size_t CAPACITY = 512 * 1024 * 1024;
-static caching::InMemoryCache<WeightMatrix> matrix_cache("mirMatrix", CAPACITY, 0,
+constexpr size_t MIR_MATRIX_CACHE_MEMORY_FOOTPRINT = 512 * 1024 * 1024;  // capacity
+static caching::InMemoryCache<WeightMatrix> MATRIX_CACHE("mirMatrix", MIR_MATRIX_CACHE_MEMORY_FOOTPRINT, 0,
                                                          "$MIR_MATRIX_CACHE_MEMORY_FOOTPRINT");
+
+
+caching::InMemoryCache<MethodWeighted::WeightMatrix>& MethodWeighted::matrix_cache() {
+    return MATRIX_CACHE;
+}
 
 
 MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation) :
@@ -125,8 +129,7 @@ void MethodWeighted::print(std::ostream& out) const {
 
 
 bool MethodWeighted::sameAs(const Method& other) const {
-    auto sameNonLinearities = [](const std::vector<std::unique_ptr<const nonlinear::NonLinear>>& a,
-                                 const std::vector<std::unique_ptr<const nonlinear::NonLinear>>& b) {
+    auto sameNonLinearities = [](const auto& a, const auto& b) {
         if (a.size() != b.size()) {
             return false;
         }
@@ -161,6 +164,7 @@ void MethodWeighted::createMatrix(context::Context& ctx, const repres::Represent
         }
     }
 }
+
 
 // This returns a 'const' matrix so we ensure that we don't change it and break the in-memory cache
 const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repres::Representation& in,
@@ -209,8 +213,8 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     }
 
     {
-        auto j     = matrix_cache.find(memory_key);
-        auto found = j != matrix_cache.end();
+        auto j     = MATRIX_CACHE.find(memory_key);
+        auto found = j != MATRIX_CACHE.end();
         log << "MethodWeighted::getMatrix cache key: " << memory_key << " " << timer.elapsedSeconds(here) << ", "
             << (found ? "found" : "not found") << " in memory cache" << std::endl;
         if (found) {
@@ -255,7 +259,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
 
     // insert matrix in the in-memory cache and update memory footprint
 
-    WeightMatrix& w = matrix_cache[memory_key];
+    WeightMatrix& w = MATRIX_CACHE[memory_key];
     W.swap(w);
 
     size_t footprint = w.footprint();
@@ -309,7 +313,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
         j.endObject();
     }
 
-    matrix_cache.footprint(memory_key, usage);
+    MATRIX_CACHE.footprint(memory_key, usage);
     return w;
 }
 
@@ -344,9 +348,9 @@ void MethodWeighted::setReorderCols(reorder::Reorder* r) {
 }
 
 
-void MethodWeighted::setOperandMatricesFromVectors(WeightMatrix::Matrix& A, WeightMatrix::Matrix& B,
-                                                   const MIRValuesVector& Avector, const MIRValuesVector& Bvector,
-                                                   const double& missingValue, const data::Space& space) const {
+void MethodWeighted::set_operand_matrices_from_vectors(WeightMatrix::Matrix& A, WeightMatrix::Matrix& B,
+                                                       const MIRValuesVector& Avector, const MIRValuesVector& Bvector,
+                                                       const double& missingValue, const data::Space& space) {
 
     // set input matrix B (from A = W × B)
     // FIXME: remove const_cast once Matrix provides read-only view
@@ -371,8 +375,8 @@ void MethodWeighted::setOperandMatricesFromVectors(WeightMatrix::Matrix& A, Weig
 }
 
 
-void MethodWeighted::setVectorFromOperandMatrix(const WeightMatrix::Matrix& A, MIRValuesVector& Avector,
-                                                const double& missingValue, const data::Space& space) const {
+void MethodWeighted::set_vector_from_operand_matrix(const WeightMatrix::Matrix& A, MIRValuesVector& Avector,
+                                                    const double& missingValue, const data::Space& space) {
 
     // set output vector A (from A = W × B)
     // FIXME: remove const_cast once Matrix provides read-only view
@@ -398,7 +402,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
 
     // Make sure another thread to no evict anything from the cache while we are using it
-    auto cacheUse(ctx.statistics().cacheUser(matrix_cache));
+    auto cacheUse(ctx.statistics().cacheUser(MATRIX_CACHE));
 
     static bool check_stats = eckit::Resource<bool>("mirCheckStats", false);
 
@@ -463,7 +467,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
         MIRValuesVector result(npts_out);  // field.update() takes ownership with std::swap()
         WeightMatrix::Matrix A;
         WeightMatrix::Matrix B;
-        setOperandMatricesFromVectors(B, A, result, field.values(i), missingValue, sp);
+        set_operand_matrices_from_vectors(B, A, result, field.values(i), missingValue, sp);
         ASSERT(A.rows() == npts_inp);
         ASSERT(B.rows() == npts_out);
 
@@ -493,7 +497,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
 
         // update field values with interpolation result
-        setVectorFromOperandMatrix(B, result, missingValue, sp);
+        set_vector_from_operand_matrix(B, result, missingValue, sp);
 
         for (auto& r : forceMissing) {
             result[r] = missingValue;
