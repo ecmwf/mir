@@ -2187,8 +2187,6 @@ numerics.mean:
   - 235243  # Time-mean forecast albedo
   - 235244  # Time-mean forecast surface roughness
   - 235245  # Time-mean forecast logarithm of surface roughness for heat
-  - 260441  # Time-mean total precipitation rate
-  - 260477  # Time-mean snow melt rate in the last 24h
   - 263000  # Time-mean sea ice thickness
   - 263001  # Time-mean sea ice area fraction
   - 263002  # Time-mean snow thickness over sea ice
@@ -2767,7 +2765,6 @@ numerics.accumulated:
   - 260427  # Accumulated surface upward short-wave radiation flux, clear sky
   - 260428  # Accumulated surface downward long-wave radiation flux, clear sky
   - 260430  # Percolation
-  - 260434  # Time-integrated evapotranspiration rate in the last 24h
   - 260564  # Energy release component (as defined by the U.S Forest Service National Fire-Danger Rating System)
   - 260645  # Time integral of total solid precipitation flux
   - 260652  # Time-integrated eastward turbulent surface stress due to orographic form drag
@@ -4344,12 +4341,9 @@ rate.mass-flux:
   - 260365  # Percolation rate
   - 260430  # Percolation
   - 260433  # Evapotranspiration rate
-  - 260434  # Time-integrated evapotranspiration rate in the last 24h
   - 260436  # Potential evapotranspiration rate
-  - 260441  # Time-mean total precipitation rate
   - 260443  # Water runoff and drainage rate
   - 260475  # Snow melt rate
-  - 260477  # Time-mean snow melt rate in the last 24h
   - 260645  # Time integral of total solid precipitation flux
   - 262130  # Net surface upward water flux
   - 262131  # Fresh water flux into sea water (from rivers)
