@@ -712,6 +712,8 @@ vector-space.2d-vector-v:
 vector-space.2d-vector.associated:
   - 138  # Vorticity (relative)
   - 155  # Divergence
+  - 235138  # Time-mean vorticity (relative)
+  - 235155  # Time-mean divergence
 
 vector-space.3d-vector-u:
   - 150133  # Ocean U wind component
@@ -1776,13 +1778,17 @@ intensity:
   - 235090  # Time-mean lake mix-layer temperature
   - 235091  # Time-mean lake mix-layer depth
   - 235094  # Time-mean soil temperature
+  - 235103  # Time-mean eta-coordinate vertical velocity
   - 235129  # Time-mean geopotential
   - 235130  # Time-mean temperature
   - 235131  # Time-mean U component of wind
   - 235132  # Time-mean V component of wind
   - 235134  # Time-mean surface pressure
   - 235135  # Time-mean vertical velocity
+  - 235138  # Time-mean vorticity (relative)
   - 235151  # Time-mean mean sea level pressure
+  - 235152  # Time-mean logarithm of surface pressure
+  - 235155  # Time-mean divergence
   - 235159  # Time-mean boundary layer height
   - 235165  # Time-mean 10 metre U wind component
   - 235166  # Time-mean 10 metre V wind component
@@ -1790,6 +1796,8 @@ intensity:
   - 235238  # Time-mean temperature of snow layer
   - 235244  # Time-mean forecast surface roughness
   - 235245  # Time-mean forecast logarithm of surface roughness for heat
+  - 235257  # Time-mean K index
+  - 235258  # Time-mean total totals index
   - 240011  # Cross sectional area of flow in channel
   - 240014  # River storage of water
   - 240015  # Floodplain storage of water
@@ -2164,6 +2172,9 @@ numerics.mean:
   - 235094  # Time-mean soil temperature
   - 235095  # Time-mean snow depth
   - 235096  # Time-mean snow cover
+  - 235101  # Time-mean specific rain water content
+  - 235102  # Time-mean specific snow water content
+  - 235103  # Time-mean eta-coordinate vertical velocity
   - 235129  # Time-mean geopotential
   - 235130  # Time-mean temperature
   - 235131  # Time-mean U component of wind
@@ -2173,8 +2184,11 @@ numerics.mean:
   - 235135  # Time-mean vertical velocity
   - 235136  # Time-mean total column water
   - 235137  # Time-mean total column vertically-integrated water vapour
+  - 235138  # Time-mean vorticity (relative)
   - 235141  # Time-mean snow depth
   - 235151  # Time-mean mean sea level pressure
+  - 235152  # Time-mean logarithm of surface pressure
+  - 235155  # Time-mean divergence
   - 235157  # Time-mean relative humidity
   - 235159  # Time-mean boundary layer height
   - 235165  # Time-mean 10 metre U wind component
@@ -2183,10 +2197,16 @@ numerics.mean:
   - 235186  # Time-mean low cloud cover
   - 235187  # Time-mean medium cloud cover
   - 235188  # Time-mean high cloud cover
+  - 235203  # Time-mean ozone mass mixing ratio
   - 235238  # Time-mean temperature of snow layer
   - 235243  # Time-mean forecast albedo
   - 235244  # Time-mean forecast surface roughness
   - 235245  # Time-mean forecast logarithm of surface roughness for heat
+  - 235246  # Time-mean specific cloud liquid water content
+  - 235247  # Time-mean specific cloud ice water content
+  - 235248  # Time-mean fraction of cloud cover
+  - 235257  # Time-mean K index
+  - 235258  # Time-mean total totals index
   - 263000  # Time-mean sea ice thickness
   - 263001  # Time-mean sea ice area fraction
   - 263002  # Time-mean snow thickness over sea ice
@@ -5004,6 +5024,7 @@ ratio.fraction:
   - 235044  # Sunshine duration fraction
   - 235093  # Time-mean fraction of snow cover
   - 235243  # Time-mean forecast albedo
+  - 235248  # Time-mean fraction of cloud cover
   - 240016  # Water fraction
   - 260039  # Rain fraction of total cloud water
   - 260103  # Cloud amount
@@ -5421,7 +5442,12 @@ ratio.mass:
   - 232015  # Dense dead wood moisture content
   - 235006  # Mean specific humidity tendency due to parametrisations
   - 235089  # Time-mean 2 metre specific humidity
+  - 235101  # Time-mean specific rain water content
+  - 235102  # Time-mean specific snow water content
   - 235133  # Time-mean specific humidity
+  - 235203  # Time-mean ozone mass mixing ratio
+  - 235246  # Time-mean specific cloud liquid water content
+  - 235247  # Time-mean specific cloud ice water content
   - 260017  # Condensate
   - 260018  # Cloud mixing ratio
   - 260019  # Ice water mixing ratio
