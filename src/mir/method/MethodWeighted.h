@@ -13,9 +13,9 @@
 #pragma once
 
 #include <memory>
+#include <utility>
 #include <vector>
 
-#include "mir/caching/InMemoryCache.h"
 #include "mir/method/Cropping.h"
 #include "mir/method/Method.h"
 #include "mir/method/WeightMatrix.h"
@@ -62,8 +62,7 @@ public:
     using WeightMatrix = method::WeightMatrix;
     using Matrix       = eckit::linalg::Matrix;
 
-    // -- Exceptions
-    // None
+    using CacheKeys = std::pair<std::string, std::string>;
 
     // -- Constructors
 
@@ -72,12 +71,6 @@ public:
     // -- Destructor
 
     ~MethodWeighted() override;
-
-    // -- Convertors
-    // None
-
-    // -- Operators
-    // None
 
     // -- Methods
 
@@ -88,32 +81,7 @@ public:
     const WeightMatrix& getMatrix(context::Context&, const repres::Representation& in,
                                   const repres::Representation& out) const;
 
-    /// Access the matrix in-memory cache
-    static caching::InMemoryCache<WeightMatrix>& matrix_cache();
-
-    /// Get interpolation operand matrices, from A = W B
-    static void set_operand_matrices_from_vectors(WeightMatrix::Matrix& A, WeightMatrix::Matrix& B,
-                                                  const MIRValuesVector& Avector, const MIRValuesVector& Bvector,
-                                                  const double& missingValue, const data::Space&);
-
-    /// Get interpolation operand matrices, from A = W B
-    static void set_vector_from_operand_matrix(const WeightMatrix::Matrix& A, MIRValuesVector& Avector,
-                                               const double& missingValue, const data::Space&);
-
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
 protected:
-    // -- Members
-    // None
-
     // -- Methods
 
     virtual void json(eckit::JSON&) const = 0;
@@ -130,12 +98,6 @@ protected:
     // From Method
     bool sameAs(const Method&) const override = 0;
     void print(std::ostream&) const override  = 0;
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
 
 private:
     // -- Members
@@ -157,6 +119,10 @@ private:
 
     virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
                           const repres::Representation& out) const = 0;
+
+    virtual CacheKeys getDiskAndMemoryCacheKeys(const repres::Representation& in, const repres::Representation& out,
+                                                const lsm::LandSeaMasks&) const;
+
     virtual void applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const;
     virtual lsm::LandSeaMasks getMasks(const repres::Representation& in, const repres::Representation& out) const;
     virtual bool validateMatrixWeights() const;
@@ -166,6 +132,15 @@ private:
     void createMatrix(context::Context&, const repres::Representation& in, const repres::Representation& out,
                       WeightMatrix&, const lsm::LandSeaMasks&, const Cropping&) const;
 
+    /// Get interpolation operand matrices, from A = W B
+    virtual void setOperandMatricesFromVectors(WeightMatrix::Matrix& A, WeightMatrix::Matrix& B,
+                                               const MIRValuesVector& Avector, const MIRValuesVector& Bvector,
+                                               const double& missingValue, const data::Space&) const;
+
+    /// Get interpolation operand matrices, from A = W B
+    virtual void setVectorFromOperandMatrix(const WeightMatrix::Matrix& A, MIRValuesVector& Avector,
+                                            const double& missingValue, const data::Space&) const;
+
     // -- Overridden methods
 
     // From Method
@@ -174,12 +149,6 @@ private:
     void setCropping(const util::BoundingBox&) override;
     bool hasCropping() const override;
     const util::BoundingBox& getCropping() const override;
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
 
     // -- Friends
 

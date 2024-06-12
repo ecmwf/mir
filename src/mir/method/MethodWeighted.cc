@@ -25,6 +25,7 @@
 #include "eckit/utils/StringTools.h"
 
 #include "mir/action/context/Context.h"
+#include "mir/caching/InMemoryCache.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRFieldStats.h"
@@ -46,16 +47,17 @@
 namespace mir::method {
 
 
-static util::recursive_mutex local_mutex;
+static util::recursive_mutex MUTEX;
 
 constexpr size_t MIR_MATRIX_CACHE_MEMORY_FOOTPRINT = 512 * 1024 * 1024;  // capacity
 static caching::InMemoryCache<WeightMatrix> MATRIX_CACHE("mirMatrix", MIR_MATRIX_CACHE_MEMORY_FOOTPRINT, 0,
                                                          "$MIR_MATRIX_CACHE_MEMORY_FOOTPRINT");
 
-
-caching::InMemoryCache<MethodWeighted::WeightMatrix>& MethodWeighted::matrix_cache() {
-    return MATRIX_CACHE;
-}
+const static std::map<eckit::Hash::digest_t, std::string> KNOWN_METHOD{
+    {"73e1dd539879ffbbbb22d6bc789c2262", "linear"},
+    {"7738675c7e2c64d463718049ebef6563", "nearest-neighbour"},
+    {"a81efab621096650c20a978062cdd169", "grid-box-average"},
+};
 
 
 MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation) :
@@ -166,24 +168,9 @@ void MethodWeighted::createMatrix(context::Context& ctx, const repres::Represent
 }
 
 
-// This returns a 'const' matrix so we ensure that we don't change it and break the in-memory cache
-const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repres::Representation& in,
-                                              const repres::Representation& out) const {
-    util::lock_guard<util::recursive_mutex> lock(local_mutex);
-    static bool dumpWeightedMatrix = eckit::Resource<bool>("$MIR_DUMP_WEIGHTED_MATRIX", false);
-    eckit::PathName cacheFile;
-    auto& log = Log::debug();
-
-    log << "MethodWeighted::getMatrix " << *this << std::endl;
-    trace::Timer timer("MethodWeighted::getMatrix");
-
-    double here      = timer.elapsed();
-    const auto masks = getMasks(in, out);
-    log << "MethodWeighted::getMatrix land-sea masks: " << timer.elapsedSeconds(here) << ", "
-        << (masks.active() ? "active" : "not active") << std::endl;
-
-
-    here                             = timer.elapsed();
+MethodWeighted::CacheKeys MethodWeighted::getDiskAndMemoryCacheKeys(const repres::Representation& in,
+                                                                    const repres::Representation& out,
+                                                                    const lsm::LandSeaMasks& masks) const {
     const std::string& shortName_in  = in.uniqueName();
     const std::string& shortName_out = out.uniqueName();
 
@@ -212,33 +199,59 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
         }
     }
 
-    {
-        auto j     = MATRIX_CACHE.find(memory_key);
-        auto found = j != MATRIX_CACHE.end();
-        log << "MethodWeighted::getMatrix cache key: " << memory_key << " " << timer.elapsedSeconds(here) << ", "
-            << (found ? "found" : "not found") << " in memory cache" << std::endl;
-        if (found) {
-            const WeightMatrix& mat = *j;
-            log << "Using matrix from InMemoryCache " << mat << std::endl;
-            return mat;
-        }
+    return {disk_key, memory_key};
+}
+
+
+// This returns a 'const' matrix so we ensure that we don't change it and break the in-memory cache
+const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repres::Representation& in,
+                                              const repres::Representation& out) const {
+    util::lock_guard<util::recursive_mutex> lock(MUTEX);
+    auto& log = Log::debug();
+
+    log << "MethodWeighted::getMatrix " << *this << std::endl;
+    trace::Timer timer("MethodWeighted::getMatrix");
+
+    double here      = timer.elapsed();
+    const auto masks = getMasks(in, out);
+    log << "MethodWeighted::getMatrix land-sea masks: " << timer.elapsedSeconds(here) << ", "
+        << (masks.active() ? "active" : "not active") << std::endl;
+
+    auto [disk_key, memory_key] = getDiskAndMemoryCacheKeys(in, out, masks);
+    ASSERT(!disk_key.empty() && !memory_key.empty());
+
+    if (auto j = MATRIX_CACHE.find(memory_key); j != MATRIX_CACHE.end()) {
+        const auto& mat = *j;
+        log << "MethodWeighted::getMatrix cache key: " << memory_key << " " << timer.elapsedSeconds(here)
+            << ", found in memory cache (" << mat << ")" << std::endl;
+        return mat;
     }
+
+    log << "MethodWeighted::getMatrix cache key: " << memory_key << " " << timer.elapsedSeconds(here)
+        << ", not found in memory cache" << std::endl;
 
 
     // calculate weights matrix, apply mask if necessary
     here = timer.elapsed();
     WeightMatrix W(out.numberOfPoints(), in.numberOfPoints());
 
-    bool caching = LibMir::caching();
-    parametrisation_.get("caching", caching);
+    eckit::PathName cacheFile;
 
-    if (caching) {
+    bool caching = LibMir::caching();
+    if (parametrisation_.get("caching", caching); caching) {
 
         // The WeightCache is parametrised by 'caching',
         // as caching may be disabled on a field by field basis (unstructured grids)
         static caching::WeightCache cache(parametrisation_);
-        MatrixCacheCreator creator(*this, ctx, in, out, masks, cropping_);
-        cacheFile = cache.getOrCreate(disk_key, creator, W);
+
+        if (disk_key.front() == '/' && eckit::PathName(disk_key).exists()) {
+            caching::WeightCacheTraits loader;
+            loader.load(cache, W, disk_key);
+        }
+        else {
+            MatrixCacheCreator creator(*this, ctx, in, out, masks, cropping_);
+            cacheFile = cache.getOrCreate(disk_key, creator, W);
+        }
     }
     else {
         createMatrix(ctx, in, out, W, masks, cropping_);
@@ -279,11 +292,6 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
         j << "engine"
           << "mir";
         j << "version" << caching::WeightCache::version();
-        const static std::map<eckit::Hash::digest_t, std::string> KNOWN_METHOD{
-            {"73e1dd539879ffbbbb22d6bc789c2262", "linear"},
-            {"7738675c7e2c64d463718049ebef6563", "nearest-neighbour"},
-            {"a81efab621096650c20a978062cdd169", "grid-box-average"},
-        };
 
         if (auto it = KNOWN_METHOD.find([](const MethodWeighted& method) {
                 std::ostringstream ss;
@@ -348,9 +356,9 @@ void MethodWeighted::setReorderCols(reorder::Reorder* r) {
 }
 
 
-void MethodWeighted::set_operand_matrices_from_vectors(WeightMatrix::Matrix& A, WeightMatrix::Matrix& B,
-                                                       const MIRValuesVector& Avector, const MIRValuesVector& Bvector,
-                                                       const double& missingValue, const data::Space& space) {
+void MethodWeighted::setOperandMatricesFromVectors(WeightMatrix::Matrix& A, WeightMatrix::Matrix& B,
+                                                   const MIRValuesVector& Avector, const MIRValuesVector& Bvector,
+                                                   const double& missingValue, const data::Space& space) const {
 
     // set input matrix B (from A = W × B)
     // FIXME: remove const_cast once Matrix provides read-only view
@@ -375,8 +383,8 @@ void MethodWeighted::set_operand_matrices_from_vectors(WeightMatrix::Matrix& A, 
 }
 
 
-void MethodWeighted::set_vector_from_operand_matrix(const WeightMatrix::Matrix& A, MIRValuesVector& Avector,
-                                                    const double& missingValue, const data::Space& space) {
+void MethodWeighted::setVectorFromOperandMatrix(const WeightMatrix::Matrix& A, MIRValuesVector& Avector,
+                                                const double& missingValue, const data::Space& space) const {
 
     // set output vector A (from A = W × B)
     // FIXME: remove const_cast once Matrix provides read-only view
@@ -467,7 +475,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
         MIRValuesVector result(npts_out);  // field.update() takes ownership with std::swap()
         WeightMatrix::Matrix A;
         WeightMatrix::Matrix B;
-        set_operand_matrices_from_vectors(B, A, result, field.values(i), missingValue, sp);
+        setOperandMatricesFromVectors(B, A, result, field.values(i), missingValue, sp);
         ASSERT(A.rows() == npts_inp);
         ASSERT(B.rows() == npts_out);
 
@@ -497,7 +505,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
 
         // update field values with interpolation result
-        set_vector_from_operand_matrix(B, result, missingValue, sp);
+        setVectorFromOperandMatrix(B, result, missingValue, sp);
 
         for (auto& r : forceMissing) {
             result[r] = missingValue;
