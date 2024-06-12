@@ -32,6 +32,14 @@ if(eckit_HAVE_ECKIT_CODEC)
     endforeach()
 endif()
 
+if(mir_HAVE_VORONOI)
+    ecbuild_add_executable(
+        TARGET  mir-voronoi-average
+        SOURCES mir-voronoi-average.cc
+        LIBS    mir Qhull::Qhull
+        ${mir_INSTALL_TOOLS})
+endif()
+
 if(mir_HAVE_ATLAS)
     foreach(tool IN ITEMS
         mir-load-legendre

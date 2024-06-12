@@ -34,6 +34,22 @@ ecbuild_find_package(NAME eckit   VERSION 1.22 REQUIRED)
 
 ecbuild_add_option(FEATURE ATLAS DEFAULT ON DESCRIPTION "support for Atlas" REQUIRED_PACKAGES "atlas VERSION 0.35.1")
 
+ecbuild_add_option( FEATURE VORONOI
+                    DEFAULT OFF
+                    DESCRIPTION "eckit::maths library convex hull/Delaunay triangulation" )
+                    # REQUIRED_PACKAGES "Qhull COMPONENTS C CXX"
+
+if( mir_HAVE_VORONOI )
+    find_package( Qhull REQUIRED CONFIG )
+
+    if( NOT TARGET Qhull::qhullcpp OR NOT TARGET Qhull::qhullstatic_r )
+        message( FATAL_ERROR "eckit::maths ENABLE_VORONOI requires Qhull C/C++ libraries" )
+    endif()
+
+    add_library(Qhull::Qhull INTERFACE IMPORTED)
+    target_link_libraries(Qhull::Qhull INTERFACE Qhull::qhullcpp Qhull::qhullstatic_r )
+endif()
+
 
 set(MIR_LIBRARIES mir)
 
