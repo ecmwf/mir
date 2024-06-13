@@ -36,13 +36,13 @@ Matrix::Matrix(const param::MIRParametrisation& param) : MethodWeighted(param) {
         throw exception::UserError("Matrix: path does not exist '" + matrix + "'");
     }
 
-    matrix_path_ = matrix_.realName().asString();
+    matrix_path_ = matrix_.realName();
 }
 
 
 void Matrix::json(eckit::JSON& j) const {
     j.startObject();
-    j << "interpolation-matrix=" << matrix_;
+    j << "interpolation-matrix" << matrix_;
     MethodWeighted::json(j);
     j.endObject();
 }
