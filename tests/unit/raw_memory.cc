@@ -305,18 +305,17 @@ CASE("Example 2") {
 }
 
 
-CASE("Example 3"){
+CASE("Example 3") {
     auto& log = Log::info();
 
 
     SECTION("grid=unstructured regridded") {
-        // input metadata & data (latitudes/longitudes aren't strictly necessary except for UnstructuredGrid construction)
+        // input metadata & data
         param::SimpleParametrisation meta1;
 
         meta1.set("gridded", true);
         meta1.set("gridType", "unstructured_grid");
-        meta1.set("latitudes", std::vector<double>{1., 2., 3.});
-        meta1.set("longitudes", std::vector<double>{3., 2., 1.});
+        meta1.set("numberOfPoints", 3);
         meta1.set("missing_value", 42.);
 
         std::vector<double> values1(3, 1.);
