@@ -310,13 +310,17 @@ CASE("Example 3") {
 
 
     SECTION("grid=unstructured regridded") {
+        const double missingValue    = 42.;
+        const eckit::PathName matrix = "raw_memory_example_3.mat";
+
+
         // input metadata & data
         param::SimpleParametrisation meta1;
 
         meta1.set("gridded", true);
         meta1.set("gridType", "unstructured_grid");
         meta1.set("numberOfPoints", 3);
-        meta1.set("missing_value", 42.);
+        meta1.set("missing_value", missingValue);
 
         std::vector<double> values1(3, 1.);
         std::unique_ptr<input::MIRInput> input(new input::RawInput(values1.data(), values1.size(), meta1));
@@ -328,11 +332,11 @@ CASE("Example 3") {
         std::unique_ptr<output::MIROutput> output(new output::ResizableOutput(values2, meta2));
 
 
-        // matrix
-        {
+        // matrix file
+        if (!matrix.exists()) {
             method::WeightMatrix W(4, 3);
             W.setFromTriplets({{0, 0, 1.}, {0, 1, 1.}, {0, 2, 1.}, {1, 0, 2.}, {1, 1, 1.}, {1, 2, -1.}, {2, 2, 1.}});
-            W.save("raw_memory_example_3.mat");
+            W.save(matrix);
         }
 
 
@@ -341,7 +345,7 @@ CASE("Example 3") {
         job.set("grid", std::vector<double>{2., 2.});
         job.set("area", std::vector<double>{1., -1., -1., 1.});
         job.set("interpolation", "matrix");
-        job.set("interpolation-matrix", "raw_memory_example_3.mat");
+        job.set("interpolation-matrix", matrix);
 
         log << job << std::endl;
 
@@ -354,7 +358,7 @@ CASE("Example 3") {
         EXPECT_EQUAL(values2[0], 3.);
         EXPECT_EQUAL(values2[1], 2.);
         EXPECT_EQUAL(values2[2], 1.);
-        EXPECT_EQUAL(values2[3], 42.);
+        EXPECT_EQUAL(values2[3], missingValue);
 
         log << "output metadata: " << meta2 << std::endl;
 
