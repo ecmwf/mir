@@ -238,13 +238,15 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     eckit::PathName cacheFile;
 
     bool caching = LibMir::caching();
-    if (parametrisation_.get("caching", caching); caching) {
+    parametrisation_.get("caching", caching);
+
+    if (caching) {
 
         // The WeightCache is parametrised by 'caching',
         // as caching may be disabled on a field by field basis (unstructured grids)
         static caching::WeightCache cache(parametrisation_);
 
-        if (disk_key.front() == '/' && eckit::PathName(disk_key).exists()) {
+        if (disk_key.front() == '/') {
             caching::WeightCacheTraits::load(cache, W, disk_key);
         }
         else {

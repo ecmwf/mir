@@ -12,8 +12,6 @@
 
 #pragma once
 
-#include "eckit/filesystem/PathName.h"
-
 #include "mir/method/MethodWeighted.h"
 
 
@@ -29,7 +27,7 @@ public:
 private:
     // -- Members
 
-    eckit::PathName matrix_;
+    std::string matrix_;
     std::string matrix_path_;
 
     // -- Overridden methods

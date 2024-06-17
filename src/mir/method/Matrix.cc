@@ -12,6 +12,7 @@
 
 #include "mir/method/Matrix.h"
 
+#include "eckit/filesystem/PathName.h"
 #include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
@@ -26,20 +27,17 @@ static const MethodBuilder<Matrix> __builder("matrix");
 
 
 Matrix::Matrix(const param::MIRParametrisation& param) : MethodWeighted(param) {
-    std::string matrix;
-    if (!parametrisation_.get("interpolation-matrix", matrix)) {
+    if (!parametrisation_.get("interpolation-matrix", matrix_)) {
         throw exception::UserError("Matrix: option interpolation-matrix missing");
     }
 
-    matrix_ = matrix;
-    if (!matrix_.exists()) {
-        throw exception::UserError("Matrix: path does not exist '" + matrix + "'");
+    const eckit::PathName path = matrix_;
+    if (!path.exists()) {
+        throw exception::UserError("Matrix: path does not exist '" + path + "'");
     }
 
-    matrix_path_ = matrix_.realName();
-    if (matrix_path_.front() != '/') {
-        throw exception::UserError("Matrix: path is not absolute '" + matrix_path_ + "'");
-    }
+    // matrix path is a fully-resolved absolute path (unique)
+    matrix_path_ = path.realName().asString();
 }
 
 
@@ -77,7 +75,7 @@ void Matrix::hash(eckit::MD5& h) const {
 
 bool Matrix::sameAs(const Method& other) const {
     const auto* o = dynamic_cast<const Matrix*>(&other);
-    return (o != nullptr) && matrix_path_ == o->matrix_path_ && MethodWeighted::sameAs(other);
+    return (o != nullptr) && matrix_ == o->matrix_ && MethodWeighted::sameAs(other);
 }
 
 
