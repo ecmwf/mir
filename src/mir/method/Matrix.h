@@ -27,8 +27,8 @@ public:
 private:
     // -- Members
 
-    std::string matrix_;
-    std::string key_;
+    std::string diskKey_;
+    std::string memoryKey_;
 
     // -- Overridden methods
 

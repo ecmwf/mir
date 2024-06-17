@@ -27,23 +27,24 @@ static const MethodBuilder<Matrix> __builder("matrix");
 
 
 Matrix::Matrix(const param::MIRParametrisation& param) : MethodWeighted(param) {
-    if (!parametrisation_.get("interpolation-matrix", matrix_)) {
+    // disk key is an existing user-provided path (can be non fully-resolved)
+    if (!parametrisation_.get("interpolation-matrix", diskKey_)) {
         throw exception::UserError("Matrix: option interpolation-matrix missing");
     }
 
-    const eckit::PathName path = matrix_;
+    const eckit::PathName path = diskKey_;
     if (!path.exists()) {
         throw exception::UserError("Matrix: path does not exist '" + path + "'");
     }
 
-    // matrix path is a fully-resolved absolute path (unique)
-    key_ = path.realName().asString();
+    // memory key is a fully-resolved absolute path (unique)
+    memoryKey_ = path.realName().asString();
 }
 
 
 void Matrix::json(eckit::JSON& j) const {
     j.startObject();
-    j << "interpolation-matrix" << matrix_;
+    j << "interpolation-matrix" << diskKey_;
     MethodWeighted::json(j);
     j.endObject();
 }
@@ -57,7 +58,7 @@ const char* Matrix::name() const {
 MethodWeighted::CacheKeys Matrix::getDiskAndMemoryCacheKeys(const repres::Representation& in,
                                                             const repres::Representation& out,
                                                             const lsm::LandSeaMasks&) const {
-    return {key_, key_};
+    return {diskKey_, memoryKey_};
 }
 
 
@@ -68,20 +69,20 @@ void Matrix::assemble(util::MIRStatistics&, WeightMatrix&, const repres::Represe
 
 
 void Matrix::hash(eckit::MD5& h) const {
-    h << key_;
+    h << memoryKey_;
     MethodWeighted::hash(h);
 }
 
 
 bool Matrix::sameAs(const Method& other) const {
     const auto* o = dynamic_cast<const Matrix*>(&other);
-    return (o != nullptr) && key_ == o->key_ && MethodWeighted::sameAs(other);
+    return (o != nullptr) && diskKey_ == o->diskKey_ && MethodWeighted::sameAs(other);
 }
 
 
 void Matrix::print(std::ostream& out) const {
     out << "Matrix["
-        << "InterpolationMatrix=" << matrix_ << ",";
+        << "InterpolationMatrix=" << diskKey_ << ",";
     MethodWeighted::print(out);
     out << "]";
 }
