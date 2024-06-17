@@ -245,8 +245,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
         static caching::WeightCache cache(parametrisation_);
 
         if (disk_key.front() == '/' && eckit::PathName(disk_key).exists()) {
-            caching::WeightCacheTraits loader;
-            loader.load(cache, W, disk_key);
+            caching::WeightCacheTraits::load(cache, W, disk_key);
         }
         else {
             MatrixCacheCreator creator(*this, ctx, in, out, masks, cropping_);

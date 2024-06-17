@@ -37,6 +37,9 @@ Matrix::Matrix(const param::MIRParametrisation& param) : MethodWeighted(param) {
     }
 
     matrix_path_ = matrix_.realName();
+    if (matrix_path_.front() != '/') {
+        throw exception::UserError("Matrix: path is not absolute '" + matrix_path_ + "'");
+    }
 }
 
 
