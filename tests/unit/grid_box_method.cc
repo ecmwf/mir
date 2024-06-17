@@ -156,6 +156,13 @@ CASE("grid boxes: West-East periodicity") {
 }
 
 
+CASE("MIR-666") {
+    // shifted grid, with finely-adjusted bounding box
+    repres::RepresentationHandle r(new repres::latlon::RegularLL(util::Increments{0.05, 0.05}, util::BoundingBox{0.025, 27.875, -0.025, 57.825}, {-0.025, 27.875}));
+    auto boxes = r->gridBoxes();
+}
+
+
 }  // namespace mir::tests::unit
 
 
