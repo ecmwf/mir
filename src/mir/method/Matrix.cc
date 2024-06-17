@@ -37,7 +37,7 @@ Matrix::Matrix(const param::MIRParametrisation& param) : MethodWeighted(param) {
     }
 
     // matrix path is a fully-resolved absolute path (unique)
-    matrix_path_ = path.realName().asString();
+    key_ = path.realName().asString();
 }
 
 
@@ -57,7 +57,7 @@ const char* Matrix::name() const {
 MethodWeighted::CacheKeys Matrix::getDiskAndMemoryCacheKeys(const repres::Representation& in,
                                                             const repres::Representation& out,
                                                             const lsm::LandSeaMasks&) const {
-    return {matrix_path_, matrix_path_};
+    return {key_, key_};
 }
 
 
@@ -68,14 +68,14 @@ void Matrix::assemble(util::MIRStatistics&, WeightMatrix&, const repres::Represe
 
 
 void Matrix::hash(eckit::MD5& h) const {
-    h << matrix_path_;
+    h << key_;
     MethodWeighted::hash(h);
 }
 
 
 bool Matrix::sameAs(const Method& other) const {
     const auto* o = dynamic_cast<const Matrix*>(&other);
-    return (o != nullptr) && matrix_ == o->matrix_ && MethodWeighted::sameAs(other);
+    return (o != nullptr) && key_ == o->key_ && MethodWeighted::sameAs(other);
 }
 
 

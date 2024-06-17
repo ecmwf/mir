@@ -246,7 +246,8 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
         // as caching may be disabled on a field by field basis (unstructured grids)
         static caching::WeightCache cache(parametrisation_);
 
-        if (disk_key.front() == '/') {
+        if (const std::string ext = caching::WeightCacheTraits::extension();
+            eckit::StringTools::endsWith(disk_key, ext)) {
             caching::WeightCacheTraits::load(cache, W, disk_key);
         }
         else {

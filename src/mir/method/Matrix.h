@@ -28,7 +28,7 @@ private:
     // -- Members
 
     std::string matrix_;
-    std::string matrix_path_;
+    std::string key_;
 
     // -- Overridden methods
 
