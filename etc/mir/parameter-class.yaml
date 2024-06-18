@@ -1798,6 +1798,13 @@ intensity:
   - 235245  # Time-mean forecast logarithm of surface roughness for heat
   - 235257  # Time-mean K index
   - 235258  # Time-mean total totals index
+  - 235271  # Time-mean soil wetness index (total layer)
+  - 235272  # Time-mean soil wetness index (root zone)
+  - 235273  # Time-mean soil wetness index(layer)
+  - 235274  # Time-mean floodplain depth
+  - 235276  # Time-mean floodplain flooded area
+  - 235278  # Time-mean river area
+  - 235280  # Time-mean area of river coverage plus river related flooding
   - 240011  # Cross sectional area of flow in channel
   - 240014  # River storage of water
   - 240015  # Floodplain storage of water
@@ -1806,6 +1813,10 @@ intensity:
   - 240029  # Groundwater lower storage
   - 240030  # Lake depth
   - 240031  # River depth
+  - 240035  # Floodplain depth
+  - 240037  # Floodplain flooded area
+  - 240039  # River area
+  - 240041  # Area of river coverage plus river related flooding
   - 260004  # Heat index
   - 260005  # Wind chill factor
   - 260006  # Minimum dew point depression
@@ -1907,6 +1918,13 @@ intensity:
   - 260649  # Sea ice surface temperature
   - 260650  # Snow on ice depth
   - 260651  # Surface roughness length for heat
+  - 260658  # Standardised Precipitation Index (SPI)
+  - 260659  # Standardised Precipitation Evapotranspiration Index (SPEI)
+  - 260660  # Standardised Streamflow Index (SSFI)
+  - 260661  # Standardised Reservoir Supply Index (SRSI)
+  - 260662  # Standardised Water-level Index (SWI)
+  - 260663  # Standardised Snowmelt and Rain Index (SMRI)
+  - 260664  # Streamflow Drought Index (SDI)
   - 261001  # Universal thermal climate index
   - 261002  # Mean radiant temperature
   - 261014  # Wet bulb globe temperature
@@ -2048,7 +2066,12 @@ intensity:
   - 300012  # Virtual temperature
   - 404000  # Dry deposition velocity
   - 450000  # Aerosol number density
+  - 457000  # Aerosol optical depth
 
+intensity.spectral-density:
+  - 460000  # Aerosol backscatter from top of atmosphere
+  - 461000  # Aerosol backscatter from ground
+    
 intensity.spectral-intensity:
   - 3119  # Radiance (with respect to wave number)
   - 260550  # Cloudy radiance (with respect to wave number)
@@ -2207,6 +2230,16 @@ numerics.mean:
   - 235248  # Time-mean fraction of cloud cover
   - 235257  # Time-mean K index
   - 235258  # Time-mean total totals index
+  - 235271  # Time-mean soil wetness index (total layer)
+  - 235272  # Time-mean soil wetness index (root zone)
+  - 235273  # Time-mean soil wetness index(layer)
+  - 235274  # Time-mean floodplain depth
+  - 235275  # Time-mean floodplain flooded fraction
+  - 235276  # Time-mean floodplain flooded area
+  - 235277  # Time-mean river fraction
+  - 235278  # Time-mean river area
+  - 235279  # Time-mean fraction of river coverage plus river related flooding
+  - 235280  # Time-mean area of river coverage plus river related flooding
   - 263000  # Time-mean sea ice thickness
   - 263001  # Time-mean sea ice area fraction
   - 263002  # Time-mean snow thickness over sea ice
@@ -4432,6 +4465,7 @@ rate.mass-flux:
   - 453000  # Aerosol source/gain mass flux
 
 rate.volume:
+  - 235270  # Time-mean discharge from rivers or streams
   - 240032  # River outflow of water
   - 240033  # Floodplain outflow of water
   - 240034  # Floodpath outflow of water
@@ -4796,6 +4830,7 @@ ratio:
   - 261010  # Anopheles vector to host ratio
   - 409000  # Volume-mean total column mixing ratio
   - 454000  # Mass mixing ratio from volcanoes
+  - 459000  # Asymmetry Factor
 
 ratio.area:
   - 66  # Leaf area index, low vegetation
@@ -5025,7 +5060,13 @@ ratio.fraction:
   - 235093  # Time-mean fraction of snow cover
   - 235243  # Time-mean forecast albedo
   - 235248  # Time-mean fraction of cloud cover
+  - 235275  # Time-mean floodplain flooded fraction
+  - 235277  # Time-mean river fraction
+  - 235279  # Time-mean fraction of river coverage plus river related flooding
   - 240016  # Water fraction
+  - 240036  # Floodplain flooded fraction
+  - 240038  # River fraction
+  - 240040  # Fraction of river coverage plus river related flooding
   - 260039  # Rain fraction of total cloud water
   - 260103  # Cloud amount
   - 260117  # Ice fraction of total condensate
@@ -5050,6 +5091,7 @@ ratio.fraction:
   - 263005  # Time-mean sea ice albedo
   - 263017  # Time-mean sea ice melt pond fraction
   - 263020  # Time-mean sea ice fraction tendency due to parameterization
+  - 458000  # Single scattering albedo
 
 ratio.mass:
   - 75  # Specific rain water content
