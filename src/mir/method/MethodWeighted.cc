@@ -240,20 +240,19 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     bool caching = LibMir::caching();
     parametrisation_.get("caching", caching);
 
-    if (caching) {
+    static caching::WeightCache cache(parametrisation_);
 
+    if (const std::string ext = caching::WeightCacheTraits::extension(); eckit::StringTools::endsWith(disk_key, ext)) {
+        caching::WeightCacheTraits::load(cache, W, disk_key);
+
+        cacheFile = disk_key;
+    }
+    else if (caching) {
         // The WeightCache is parametrised by 'caching',
         // as caching may be disabled on a field by field basis (unstructured grids)
-        static caching::WeightCache cache(parametrisation_);
 
-        if (const std::string ext = caching::WeightCacheTraits::extension();
-            eckit::StringTools::endsWith(disk_key, ext)) {
-            caching::WeightCacheTraits::load(cache, W, disk_key);
-        }
-        else {
-            MatrixCacheCreator creator(*this, ctx, in, out, masks, cropping_);
-            cacheFile = cache.getOrCreate(disk_key, creator, W);
-        }
+        MatrixCacheCreator creator(*this, ctx, in, out, masks, cropping_);
+        cacheFile = cache.getOrCreate(disk_key, creator, W);
     }
     else {
         createMatrix(ctx, in, out, W, masks, cropping_);

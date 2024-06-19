@@ -15,7 +15,6 @@
 #include <sstream>
 #include <vector>
 
-#include "eckit/filesystem/PathExpander.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/system/Library.h"
 #include "eckit/testing/Test.h"
@@ -312,7 +311,7 @@ CASE("Example 3") {
 
     SECTION("grid=unstructured regridded") {
         const double missingValue    = 42.;
-        const eckit::PathName matrix = eckit::PathExpander::expand("{CWD}/raw_memory_example_3.mat");
+        const eckit::PathName matrix = "raw_memory_example_3.mat";
 
 
         // input metadata & data
