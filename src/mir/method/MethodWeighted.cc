@@ -50,8 +50,16 @@ namespace mir::method {
 static util::recursive_mutex MUTEX;
 
 constexpr size_t MIR_MATRIX_CACHE_MEMORY_FOOTPRINT = 512 * 1024 * 1024;  // capacity
-static caching::InMemoryCache<WeightMatrix> MATRIX_CACHE("mirMatrix", MIR_MATRIX_CACHE_MEMORY_FOOTPRINT, 0,
-                                                         "$MIR_MATRIX_CACHE_MEMORY_FOOTPRINT");
+static caching::InMemoryCache<WeightMatrix> MATRIX_CACHE_MEMORY("mirMatrix", MIR_MATRIX_CACHE_MEMORY_FOOTPRINT, 0,
+                                                                "$MIR_MATRIX_CACHE_MEMORY_FOOTPRINT");
+
+
+// WeightCache is parametrised by 'caching' (it may be disabled for specific fields, eg. unstructured grids)
+static caching::WeightCache& matrix_cache_disk(const param::MIRParametrisation& parametrisation) {
+    static caching::WeightCache cache(parametrisation);
+    return cache;
+}
+
 
 const static std::map<eckit::Hash::digest_t, std::string> KNOWN_METHOD{
     {"73e1dd539879ffbbbb22d6bc789c2262", "linear"},
@@ -220,7 +228,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     auto [disk_key, memory_key] = getDiskAndMemoryCacheKeys(in, out, masks);
     ASSERT(!disk_key.empty() && !memory_key.empty());
 
-    if (auto j = MATRIX_CACHE.find(memory_key); j != MATRIX_CACHE.end()) {
+    if (auto j = MATRIX_CACHE_MEMORY.find(memory_key); j != MATRIX_CACHE_MEMORY.end()) {
         const auto& mat = *j;
         log << "MethodWeighted::getMatrix cache key: " << memory_key << " " << timer.elapsedSeconds(here)
             << ", found in memory cache (" << mat << ")" << std::endl;
@@ -240,19 +248,13 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     bool caching = LibMir::caching();
     parametrisation_.get("caching", caching);
 
-    static caching::WeightCache cache(parametrisation_);
-
     if (const std::string ext = caching::WeightCacheTraits::extension(); eckit::StringTools::endsWith(disk_key, ext)) {
-        caching::WeightCacheTraits::load(cache, W, disk_key);
-
+        caching::WeightCacheTraits::load(matrix_cache_disk(parametrisation_), W, disk_key);
         cacheFile = disk_key;
     }
     else if (caching) {
-        // The WeightCache is parametrised by 'caching',
-        // as caching may be disabled on a field by field basis (unstructured grids)
-
         MatrixCacheCreator creator(*this, ctx, in, out, masks, cropping_);
-        cacheFile = cache.getOrCreate(disk_key, creator, W);
+        cacheFile = matrix_cache_disk(parametrisation_).getOrCreate(disk_key, creator, W);
     }
     else {
         createMatrix(ctx, in, out, W, masks, cropping_);
@@ -273,7 +275,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
 
     // insert matrix in the in-memory cache and update memory footprint
 
-    WeightMatrix& w = MATRIX_CACHE[memory_key];
+    WeightMatrix& w = MATRIX_CACHE_MEMORY[memory_key];
     W.swap(w);
 
     size_t footprint = w.footprint();
@@ -322,7 +324,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
         j.endObject();
     }
 
-    MATRIX_CACHE.footprint(memory_key, usage);
+    MATRIX_CACHE_MEMORY.footprint(memory_key, usage);
     return w;
 }
 
@@ -411,7 +413,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
 
     // Make sure another thread to no evict anything from the cache while we are using it
-    auto cacheUse(ctx.statistics().cacheUser(MATRIX_CACHE));
+    auto cacheUse(ctx.statistics().cacheUser(MATRIX_CACHE_MEMORY));
 
     static bool check_stats = eckit::Resource<bool>("mirCheckStats", false);
 
