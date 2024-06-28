@@ -1778,6 +1778,9 @@ intensity:
   - 235090  # Time-mean lake mix-layer temperature
   - 235091  # Time-mean lake mix-layer depth
   - 235094  # Time-mean soil temperature
+  - 235097  # Time-mean wind speed
+  - 235098  # Time-mean pressure
+  - 235100  # Time-mean potential vorticity
   - 235103  # Time-mean eta-coordinate vertical velocity
   - 235129  # Time-mean geopotential
   - 235130  # Time-mean temperature
@@ -1798,6 +1801,7 @@ intensity:
   - 235245  # Time-mean forecast logarithm of surface roughness for heat
   - 235257  # Time-mean K index
   - 235258  # Time-mean total totals index
+  - 235262  # Time-mean clear air turbulence (CAT)
   - 235271  # Time-mean soil wetness index (total layer)
   - 235272  # Time-mean soil wetness index (root zone)
   - 235273  # Time-mean soil wetness index(layer)
@@ -2195,6 +2199,9 @@ numerics.mean:
   - 235094  # Time-mean soil temperature
   - 235095  # Time-mean snow depth
   - 235096  # Time-mean snow cover
+  - 235097  # Time-mean wind speed
+  - 235098  # Time-mean pressure
+  - 235100  # Time-mean potential vorticity
   - 235101  # Time-mean specific rain water content
   - 235102  # Time-mean specific snow water content
   - 235103  # Time-mean eta-coordinate vertical velocity
@@ -2230,6 +2237,7 @@ numerics.mean:
   - 235248  # Time-mean fraction of cloud cover
   - 235257  # Time-mean K index
   - 235258  # Time-mean total totals index
+  - 235262  # Time-mean clear air turbulence (CAT)
   - 235271  # Time-mean soil wetness index (total layer)
   - 235272  # Time-mean soil wetness index (root zone)
   - 235273  # Time-mean soil wetness index(layer)
