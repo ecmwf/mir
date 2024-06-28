@@ -1782,6 +1782,7 @@ intensity:
   - 235098  # Time-mean pressure
   - 235100  # Time-mean potential vorticity
   - 235103  # Time-mean eta-coordinate vertical velocity
+  - 235117  # Time-mean most-unstable CAPE
   - 235129  # Time-mean geopotential
   - 235130  # Time-mean temperature
   - 235131  # Time-mean U component of wind
@@ -1809,6 +1810,9 @@ intensity:
   - 235276  # Time-mean floodplain flooded area
   - 235278  # Time-mean river area
   - 235280  # Time-mean area of river coverage plus river related flooding
+  - 237117  # Time-maximum most-unstable CAPE
+  - 238117  # Time-minimum most-unstable CAPE
+  - 239117  # Time-standard-deviation most-unstable CAPE
   - 240011  # Cross sectional area of flow in channel
   - 240014  # River storage of water
   - 240015  # Floodplain storage of water
@@ -2205,6 +2209,7 @@ numerics.mean:
   - 235101  # Time-mean specific rain water content
   - 235102  # Time-mean specific snow water content
   - 235103  # Time-mean eta-coordinate vertical velocity
+  - 235117  # Time-mean most-unstable CAPE
   - 235129  # Time-mean geopotential
   - 235130  # Time-mean temperature
   - 235131  # Time-mean U component of wind
