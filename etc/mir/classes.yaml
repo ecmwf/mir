@@ -89,10 +89,13 @@ index.associated:
 # physical quantity whose magnitude is independent of the extent (size) of the system (typical units: no typical units)
 intensity: {}
 
-# radiant intensity per unit frequency or wavelength
+# measure per unit frequency or wavelength, per unit solid angle
+intensity.spectral-density: {}
+
+# radiant intensity per unit frequency or wavelength, per unit solid angle
 intensity.spectral-intensity: {}
 
-# radiance of a surface per unit frequency or wavelength (also called "spectral intensity")
+# radiance of a surface per unit frequency or wavelength, per unit solid angle (also called "spectral intensity") 
 intensity.spectral-radiance: {}
 
 # quantity interpreted as accumulated in time (typical units: [<original unit> s])

@@ -712,6 +712,8 @@ vector-space.2d-vector-v:
 vector-space.2d-vector.associated:
   - 138  # Vorticity (relative)
   - 155  # Divergence
+  - 235138  # Time-mean vorticity (relative)
+  - 235155  # Time-mean divergence
 
 vector-space.3d-vector-u:
   - 150133  # Ocean U wind component
@@ -1776,13 +1778,21 @@ intensity:
   - 235090  # Time-mean lake mix-layer temperature
   - 235091  # Time-mean lake mix-layer depth
   - 235094  # Time-mean soil temperature
+  - 235097  # Time-mean wind speed
+  - 235098  # Time-mean pressure
+  - 235100  # Time-mean potential vorticity
+  - 235103  # Time-mean eta-coordinate vertical velocity
+  - 235117  # Time-mean most-unstable CAPE
   - 235129  # Time-mean geopotential
   - 235130  # Time-mean temperature
   - 235131  # Time-mean U component of wind
   - 235132  # Time-mean V component of wind
   - 235134  # Time-mean surface pressure
   - 235135  # Time-mean vertical velocity
+  - 235138  # Time-mean vorticity (relative)
   - 235151  # Time-mean mean sea level pressure
+  - 235152  # Time-mean logarithm of surface pressure
+  - 235155  # Time-mean divergence
   - 235159  # Time-mean boundary layer height
   - 235165  # Time-mean 10 metre U wind component
   - 235166  # Time-mean 10 metre V wind component
@@ -1790,6 +1800,19 @@ intensity:
   - 235238  # Time-mean temperature of snow layer
   - 235244  # Time-mean forecast surface roughness
   - 235245  # Time-mean forecast logarithm of surface roughness for heat
+  - 235257  # Time-mean K index
+  - 235258  # Time-mean total totals index
+  - 235262  # Time-mean clear air turbulence (CAT)
+  - 235271  # Time-mean soil wetness index (total layer)
+  - 235272  # Time-mean soil wetness index (root zone)
+  - 235273  # Time-mean soil wetness index(layer)
+  - 235274  # Time-mean floodplain depth
+  - 235276  # Time-mean floodplain flooded area
+  - 235278  # Time-mean river area
+  - 235280  # Time-mean area of river coverage plus river related flooding
+  - 237117  # Time-maximum most-unstable CAPE
+  - 238117  # Time-minimum most-unstable CAPE
+  - 239117  # Time-standard-deviation most-unstable CAPE
   - 240011  # Cross sectional area of flow in channel
   - 240014  # River storage of water
   - 240015  # Floodplain storage of water
@@ -1798,6 +1821,10 @@ intensity:
   - 240029  # Groundwater lower storage
   - 240030  # Lake depth
   - 240031  # River depth
+  - 240035  # Floodplain depth
+  - 240037  # Floodplain flooded area
+  - 240039  # River area
+  - 240041  # Area of river coverage plus river related flooding
   - 260004  # Heat index
   - 260005  # Wind chill factor
   - 260006  # Minimum dew point depression
@@ -1899,6 +1926,13 @@ intensity:
   - 260649  # Sea ice surface temperature
   - 260650  # Snow on ice depth
   - 260651  # Surface roughness length for heat
+  - 260658  # Standardised Precipitation Index (SPI)
+  - 260659  # Standardised Precipitation Evapotranspiration Index (SPEI)
+  - 260660  # Standardised Streamflow Index (SSFI)
+  - 260661  # Standardised Reservoir Supply Index (SRSI)
+  - 260662  # Standardised Water-level Index (SWI)
+  - 260663  # Standardised Snowmelt and Rain Index (SMRI)
+  - 260664  # Streamflow Drought Index (SDI)
   - 261001  # Universal thermal climate index
   - 261002  # Mean radiant temperature
   - 261014  # Wet bulb globe temperature
@@ -2040,7 +2074,12 @@ intensity:
   - 300012  # Virtual temperature
   - 404000  # Dry deposition velocity
   - 450000  # Aerosol number density
+  - 457000  # Aerosol optical depth
 
+intensity.spectral-density:
+  - 460000  # Aerosol backscatter from top of atmosphere
+  - 461000  # Aerosol backscatter from ground
+    
 intensity.spectral-intensity:
   - 3119  # Radiance (with respect to wave number)
   - 260550  # Cloudy radiance (with respect to wave number)
@@ -2164,6 +2203,13 @@ numerics.mean:
   - 235094  # Time-mean soil temperature
   - 235095  # Time-mean snow depth
   - 235096  # Time-mean snow cover
+  - 235097  # Time-mean wind speed
+  - 235098  # Time-mean pressure
+  - 235100  # Time-mean potential vorticity
+  - 235101  # Time-mean specific rain water content
+  - 235102  # Time-mean specific snow water content
+  - 235103  # Time-mean eta-coordinate vertical velocity
+  - 235117  # Time-mean most-unstable CAPE
   - 235129  # Time-mean geopotential
   - 235130  # Time-mean temperature
   - 235131  # Time-mean U component of wind
@@ -2173,8 +2219,11 @@ numerics.mean:
   - 235135  # Time-mean vertical velocity
   - 235136  # Time-mean total column water
   - 235137  # Time-mean total column vertically-integrated water vapour
+  - 235138  # Time-mean vorticity (relative)
   - 235141  # Time-mean snow depth
   - 235151  # Time-mean mean sea level pressure
+  - 235152  # Time-mean logarithm of surface pressure
+  - 235155  # Time-mean divergence
   - 235157  # Time-mean relative humidity
   - 235159  # Time-mean boundary layer height
   - 235165  # Time-mean 10 metre U wind component
@@ -2183,12 +2232,27 @@ numerics.mean:
   - 235186  # Time-mean low cloud cover
   - 235187  # Time-mean medium cloud cover
   - 235188  # Time-mean high cloud cover
+  - 235203  # Time-mean ozone mass mixing ratio
   - 235238  # Time-mean temperature of snow layer
   - 235243  # Time-mean forecast albedo
   - 235244  # Time-mean forecast surface roughness
   - 235245  # Time-mean forecast logarithm of surface roughness for heat
-  - 260441  # Time-mean total precipitation rate
-  - 260477  # Time-mean snow melt rate in the last 24h
+  - 235246  # Time-mean specific cloud liquid water content
+  - 235247  # Time-mean specific cloud ice water content
+  - 235248  # Time-mean fraction of cloud cover
+  - 235257  # Time-mean K index
+  - 235258  # Time-mean total totals index
+  - 235262  # Time-mean clear air turbulence (CAT)
+  - 235271  # Time-mean soil wetness index (total layer)
+  - 235272  # Time-mean soil wetness index (root zone)
+  - 235273  # Time-mean soil wetness index(layer)
+  - 235274  # Time-mean floodplain depth
+  - 235275  # Time-mean floodplain flooded fraction
+  - 235276  # Time-mean floodplain flooded area
+  - 235277  # Time-mean river fraction
+  - 235278  # Time-mean river area
+  - 235279  # Time-mean fraction of river coverage plus river related flooding
+  - 235280  # Time-mean area of river coverage plus river related flooding
   - 263000  # Time-mean sea ice thickness
   - 263001  # Time-mean sea ice area fraction
   - 263002  # Time-mean snow thickness over sea ice
@@ -2767,7 +2831,6 @@ numerics.accumulated:
   - 260427  # Accumulated surface upward short-wave radiation flux, clear sky
   - 260428  # Accumulated surface downward long-wave radiation flux, clear sky
   - 260430  # Percolation
-  - 260434  # Time-integrated evapotranspiration rate in the last 24h
   - 260564  # Energy release component (as defined by the U.S Forest Service National Fire-Danger Rating System)
   - 260645  # Time integral of total solid precipitation flux
   - 260652  # Time-integrated eastward turbulent surface stress due to orographic form drag
@@ -4344,12 +4407,9 @@ rate.mass-flux:
   - 260365  # Percolation rate
   - 260430  # Percolation
   - 260433  # Evapotranspiration rate
-  - 260434  # Time-integrated evapotranspiration rate in the last 24h
   - 260436  # Potential evapotranspiration rate
-  - 260441  # Time-mean total precipitation rate
   - 260443  # Water runoff and drainage rate
   - 260475  # Snow melt rate
-  - 260477  # Time-mean snow melt rate in the last 24h
   - 260645  # Time integral of total solid precipitation flux
   - 262130  # Net surface upward water flux
   - 262131  # Fresh water flux into sea water (from rivers)
@@ -4418,6 +4478,7 @@ rate.mass-flux:
   - 453000  # Aerosol source/gain mass flux
 
 rate.volume:
+  - 235270  # Time-mean discharge from rivers or streams
   - 240032  # River outflow of water
   - 240033  # Floodplain outflow of water
   - 240034  # Floodpath outflow of water
@@ -4782,6 +4843,7 @@ ratio:
   - 261010  # Anopheles vector to host ratio
   - 409000  # Volume-mean total column mixing ratio
   - 454000  # Mass mixing ratio from volcanoes
+  - 459000  # Asymmetry Factor
 
 ratio.area:
   - 66  # Leaf area index, low vegetation
@@ -5010,7 +5072,14 @@ ratio.fraction:
   - 235044  # Sunshine duration fraction
   - 235093  # Time-mean fraction of snow cover
   - 235243  # Time-mean forecast albedo
+  - 235248  # Time-mean fraction of cloud cover
+  - 235275  # Time-mean floodplain flooded fraction
+  - 235277  # Time-mean river fraction
+  - 235279  # Time-mean fraction of river coverage plus river related flooding
   - 240016  # Water fraction
+  - 240036  # Floodplain flooded fraction
+  - 240038  # River fraction
+  - 240040  # Fraction of river coverage plus river related flooding
   - 260039  # Rain fraction of total cloud water
   - 260103  # Cloud amount
   - 260117  # Ice fraction of total condensate
@@ -5035,6 +5104,7 @@ ratio.fraction:
   - 263005  # Time-mean sea ice albedo
   - 263017  # Time-mean sea ice melt pond fraction
   - 263020  # Time-mean sea ice fraction tendency due to parameterization
+  - 458000  # Single scattering albedo
 
 ratio.mass:
   - 75  # Specific rain water content
@@ -5427,7 +5497,12 @@ ratio.mass:
   - 232015  # Dense dead wood moisture content
   - 235006  # Mean specific humidity tendency due to parametrisations
   - 235089  # Time-mean 2 metre specific humidity
+  - 235101  # Time-mean specific rain water content
+  - 235102  # Time-mean specific snow water content
   - 235133  # Time-mean specific humidity
+  - 235203  # Time-mean ozone mass mixing ratio
+  - 235246  # Time-mean specific cloud liquid water content
+  - 235247  # Time-mean specific cloud ice water content
   - 260017  # Condensate
   - 260018  # Cloud mixing ratio
   - 260019  # Ice water mixing ratio

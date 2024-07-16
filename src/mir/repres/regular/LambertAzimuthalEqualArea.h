@@ -18,17 +18,17 @@
 namespace mir::repres::regular {
 
 
-class LambertAzimuthalEqualArea : public RegularGrid {
+class LambertAzimuthalEqualArea final : public RegularGrid {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    LambertAzimuthalEqualArea(const param::MIRParametrisation&);
+    explicit LambertAzimuthalEqualArea(const param::MIRParametrisation&);
+
     LambertAzimuthalEqualArea(const Projection&, const util::BoundingBox&, const LinearSpacing& x,
                               const LinearSpacing& y, const util::Shape&);
-    LambertAzimuthalEqualArea(const LambertAzimuthalEqualArea&) = delete;
 
     // -- Destructor
     // None
@@ -37,8 +37,7 @@ public:
     // None
 
     // -- Operators
-
-    LambertAzimuthalEqualArea& operator=(const LambertAzimuthalEqualArea&) = delete;
+    // None
 
     // -- Methods
     // None

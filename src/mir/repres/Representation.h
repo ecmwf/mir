@@ -203,6 +203,7 @@ public:
     ~RepresentationHandle();
     const Representation* operator->() const { return representation_; }
     operator const Representation*() const { return representation_; }
+    operator bool() const { return representation_ != nullptr; }
 
 private:
     RepresentationHandle& operator=(const RepresentationHandle&) = delete;

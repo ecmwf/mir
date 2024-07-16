@@ -28,7 +28,8 @@ namespace detail {
  * 30 November 2015)
  */
 struct SpaceViewInternal {
-    SpaceViewInternal(const param::MIRParametrisation&);
+    explicit SpaceViewInternal(const param::MIRParametrisation&);
+
     RegularGrid::Projection projection_;
     RegularGrid::Projection projectionGreenwich_;
     util::BoundingBox bbox_;
@@ -55,15 +56,14 @@ private:
 }  // namespace detail
 
 
-class SpaceView final : public detail::SpaceViewInternal, public RegularGrid {
+class SpaceView final : protected detail::SpaceViewInternal, public RegularGrid {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    SpaceView(const param::MIRParametrisation&);
-    SpaceView(const SpaceView&) = delete;
+    explicit SpaceView(const param::MIRParametrisation&);
 
     // -- Destructor
     // None
@@ -72,8 +72,7 @@ public:
     // None
 
     // -- Operators
-
-    SpaceView& operator=(const SpaceView&) = delete;
+    // None
 
     // -- Methods
     // None

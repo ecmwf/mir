@@ -15,12 +15,14 @@
 #include <sstream>
 #include <vector>
 
+#include "eckit/filesystem/PathName.h"
 #include "eckit/system/Library.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/api/MIRJob.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/RawInput.h"
+#include "mir/method/WeightMatrix.h"
 #include "mir/output/RawOutput.h"
 #include "mir/output/ResizableOutput.h"
 #include "mir/param/SimpleParametrisation.h"
@@ -201,7 +203,7 @@ CASE("Example 1") {
 
         std::ostringstream ss;
         ss << meta2;
-        EXPECT(ss.str() == "{\"area\":[1,-1,-1,1],\"grid\":[2,2]}");
+        EXPECT(ss.str() == R"({"area":[1,-1,-1,1],"grid":[2,2]})");
     }
 
 
@@ -226,7 +228,7 @@ CASE("Example 1") {
 
         std::ostringstream ss;
         ss << meta2;
-        EXPECT(ss.str() == "{\"area\":[1,-1,-1,1],\"grid\":[2,2]}");
+        EXPECT(ss.str() == R"({"area":[1,-1,-1,1],"grid":[2,2]})");
     }
 }
 
@@ -273,7 +275,7 @@ CASE("Example 2") {
 
         std::ostringstream ss;
         ss << meta2;
-        EXPECT(ss.str() == "{\"area\":[1,-1,-1,1],\"grid\":[2,2]}");
+        EXPECT(ss.str() == R"({"area":[1,-1,-1,1],"grid":[2,2]})");
     }
 
 
@@ -298,7 +300,71 @@ CASE("Example 2") {
 
         std::ostringstream ss;
         ss << meta2;
-        EXPECT(ss.str() == "{\"area\":[1,-1,-1,1],\"grid\":[2,2]}");
+        EXPECT(ss.str() == R"({"area":[1,-1,-1,1],"grid":[2,2]})");
+    }
+}
+
+
+CASE("Example 3") {
+    auto& log = Log::info();
+
+
+    SECTION("grid=unstructured regridded") {
+        const double missingValue    = 42.;
+        const eckit::PathName matrix = "raw_memory_example_3.mat";
+
+
+        // input metadata & data
+        param::SimpleParametrisation meta1;
+
+        meta1.set("gridded", true);
+        meta1.set("gridType", "unstructured_grid");
+        meta1.set("numberOfPoints", 3);
+        meta1.set("missing_value", missingValue);
+
+        std::vector<double> values1(3, 1.);
+        std::unique_ptr<input::MIRInput> input(new input::RawInput(values1.data(), values1.size(), meta1));
+
+
+        // output metadata (empty) & data (resizable)
+        param::SimpleParametrisation meta2;
+        std::vector<double> values2;
+        std::unique_ptr<output::MIROutput> output(new output::ResizableOutput(values2, meta2));
+
+
+        // matrix file
+        if (!matrix.exists()) {
+            method::WeightMatrix W(4, 3);
+            W.setFromTriplets({{0, 0, 1.}, {0, 1, 1.}, {0, 2, 1.}, {1, 0, 2.}, {1, 1, 1.}, {1, 2, -1.}, {2, 2, 1.}});
+            W.save(matrix);
+        }
+
+
+        // job
+        api::MIRJob job;
+        job.set("grid", std::vector<double>{2., 2.});
+        job.set("area", std::vector<double>{1., -1., -1., 1.});
+        job.set("interpolation", "matrix");
+        job.set("interpolation-matrix", matrix);
+
+        log << job << std::endl;
+
+
+        // process
+        job.execute(*input, *output);
+
+        EXPECT(values2.size() == 4);
+
+        EXPECT_EQUAL(values2[0], 3.);
+        EXPECT_EQUAL(values2[1], 2.);
+        EXPECT_EQUAL(values2[2], 1.);
+        EXPECT_EQUAL(values2[3], missingValue);
+
+        log << "output metadata: " << meta2 << std::endl;
+
+        std::ostringstream ss;
+        ss << meta2;
+        EXPECT(ss.str() == R"({"area":[1,-1,-1,1],"grid":[2,2],"missing_value":42})");
     }
 }
 

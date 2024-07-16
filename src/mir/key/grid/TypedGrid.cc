@@ -22,6 +22,7 @@
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/repres/regular/Lambert.h"
 #include "mir/repres/regular/LambertAzimuthalEqualArea.h"
+#include "mir/repres/regular/PolarStereographic.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 
@@ -61,16 +62,16 @@ void TypedGrid::parametrisation(const std::string& grid, param::SimpleParametris
     // set a new parametrisation containing only required or optional keys
     param::SimpleParametrisation p;
     for (auto& kv_str : eckit::StringTools::split(";", grid)) {
-        auto kv = eckit::StringTools::split("=", kv_str);
-        if (kv.size() != 2) {
-            throw exception::UserError("Gridded2TypedGrid: invalid key=value pair, got '" + kv_str + "'");
+        if (auto it = kv_str.find("="); it != std::string::npos) {
+            if (auto k = kv_str.substr(0, it), v = kv_str.substr(it + 1); !k.empty() && !v.empty()) {
+                if (requiredKeys_.find(k) != requiredKeys_.end() || optionalKeys_.find(k) != optionalKeys_.end()) {
+                    p.set(k, v);
+                    continue;
+                }
+            }
         }
 
-        auto& key   = kv[0];
-        auto& value = kv[1];
-        if (requiredKeys_.find(key) != requiredKeys_.end() || optionalKeys_.find(key) != optionalKeys_.end()) {
-            p.set(key, value);
-        }
+        throw exception::UserError("TypedGrid: invalid key=value pair, got '" + kv_str + "'");
     }
 
     // check for missing keys, set return parametrisation
@@ -84,7 +85,7 @@ size_t TypedGrid::gaussianNumber() const {
     param::SimpleParametrisation param;
     parametrisation(key_, param);
 
-    long N;
+    long N = 0;
     return param.get("gaussianNumber", N) && N > 0 ? size_t(N) : default_gaussian_number();
 }
 
@@ -177,6 +178,14 @@ static const TypedGenericPattern<TypedGeneric<repres::regular::LambertAzimuthalE
     {"standardParallelInDegrees", "centralLongitudeInDegrees", "Ni", "Nj", "grid", "latitudeOfFirstGridPointInDegrees",
      "longitudeOfFirstGridPointInDegrees"},
     {"gaussianNumber", "shapeOfTheEarth", "radius", "earthMajorAxis", "earthMinorAxis"});
+
+
+static const TypedGenericPattern<TypedGeneric<repres::regular::PolarStereographic>> __pattern3(
+    "^gridType=polar_stereographic;.*$",
+    {"proj", "LaDInDegrees", "orientationOfTheGridInDegrees", "southPoleOnProjectionPlane", "Ni", "Nj", "grid",
+     "latitudeOfFirstGridPointInDegrees", "longitudeOfFirstGridPointInDegrees"},
+    {"gaussianNumber", "shapeOfTheEarth", "radius", "earthMajorAxis", "earthMinorAxis", "iScansNegatively",
+     "jScansPositively"});
 
 
 }  // namespace mir::key::grid

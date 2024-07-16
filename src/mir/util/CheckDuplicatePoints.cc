@@ -34,14 +34,12 @@ void check_duplicate_points(const std::string& title, const std::vector<double>&
 
 void check_duplicate_points(const std::string& title, const std::vector<double>& latitudes,
                             const std::vector<double>& longitudes, const param::MIRParametrisation& parametrisation) {
-    bool check = true;
-    if (!parametrisation.get("checkDuplicatePoints", check)) {
-        static const bool checkDuplicatePoints = eckit::Resource<bool>("$MIR_CHECK_DUPLICATE_POINTS", true);
+    static const bool check = eckit::Resource<bool>("$MIR_CHECK_DUPLICATE_POINTS", true);
 
-        check = checkDuplicatePoints;
-    }
+    bool checkDuplicatePoints = check;
+    parametrisation.get("checkDuplicatePoints", checkDuplicatePoints);
 
-    if (!check) {
+    if (!checkDuplicatePoints) {
         return;
     }
 
