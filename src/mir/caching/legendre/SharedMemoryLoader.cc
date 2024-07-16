@@ -124,7 +124,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
     std::ostringstream msg("SharedMemoryLoader: ");
 
     msg << "path='" << real << "', hostname='" << eckit::Main::hostname() << "'";
-    Log::info() << msg.str() << std::endl;
+    Log::debug() << msg.str() << std::endl;
 
     if (real.asString().size() >= INFO_PATH - 1) {
         Log::warning() << msg.str() << ", path name too long, maximum=" << INFO_PATH;
