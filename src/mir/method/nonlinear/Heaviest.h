@@ -22,8 +22,8 @@ struct Heaviest : NonLinear {
     Heaviest(const param::MIRParametrisation&);
 
 private:
-    bool treatment(MethodWeighted::Matrix& A, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& B,
-                   const MIRValuesVector&, const double& missingValue) const override;
+    bool treatment(DenseMatrix& A, WeightMatrix& W, DenseMatrix& B, const MIRValuesVector&,
+                   const double& missingValue) const override;
     bool sameAs(const NonLinear&) const override;
     void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;

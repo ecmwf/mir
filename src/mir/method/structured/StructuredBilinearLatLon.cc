@@ -82,7 +82,7 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
     //    outfile.precision(2);
 
     // fill sparse matrix using triplets (reserve assuming all-quadrilateral interpolations)
-    triplet_vector_t triplets;
+    std::vector<WeightMatrix::Triplet> triplets;
     size_t nbOutputPoints = out.numberOfPoints();
     triplets.reserve(4 * nbOutputPoints);
 
@@ -108,7 +108,7 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
 
                 const double w = 1. / double(par.size());
                 for (const size_t& jp : par) {
-                    triplets.push_back(WeightMatrix::Triplet(ip, jp, w));
+                    triplets.emplace_back(ip, jp, w);
                 }
 
                 //            outfile << std::fixed
@@ -253,7 +253,7 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
                 //                      << wb << " "
                 //                      << std::endl;
 
-                triplet_vector_t trip(
+                std::vector<WeightMatrix::Triplet> trip(
                     {WeightMatrix::Triplet(ip, bot_i_rgt, w_br), WeightMatrix::Triplet(ip, bot_i_lft, w_bl),
                      WeightMatrix::Triplet(ip, top_i_rgt, w_tr), WeightMatrix::Triplet(ip, top_i_lft, w_tl)});
 

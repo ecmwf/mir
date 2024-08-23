@@ -18,24 +18,6 @@
 #include "mir/method/MethodWeighted.h"
 
 
-namespace eckit {
-class JSON;
-class MD5;
-namespace linalg {
-class Matrix;
-}
-}  // namespace eckit
-
-namespace mir {
-namespace method {
-class WeightMatrix;
-}
-namespace param {
-class MIRParametrisation;
-}
-}  // namespace mir
-
-
 namespace mir::method::nonlinear {
 
 
@@ -44,13 +26,15 @@ public:
     explicit NonLinear(const param::MIRParametrisation&);
 
     NonLinear(const NonLinear&)      = delete;
+    NonLinear(NonLinear&&)           = delete;
+    void operator=(NonLinear&&)      = delete;
     void operator=(const NonLinear&) = delete;
 
     virtual ~NonLinear();
 
     /// Update interpolation linear system to account for non-linearities
-    virtual bool treatment(MethodWeighted::Matrix& A, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& B,
-                           const MIRValuesVector&, const double& missingValue) const = 0;
+    virtual bool treatment(DenseMatrix& A, WeightMatrix& W, DenseMatrix& B, const MIRValuesVector&,
+                           const double& missingValue) const = 0;
 
     virtual bool sameAs(const NonLinear&) const = 0;
     virtual void hash(eckit::MD5&) const        = 0;
@@ -78,14 +62,16 @@ private:
     std::string name_;
     virtual NonLinear* make(const param::MIRParametrisation&) = 0;
 
-    NonLinearFactory(const NonLinearFactory&)            = delete;
-    NonLinearFactory& operator=(const NonLinearFactory&) = delete;
-
 protected:
-    NonLinearFactory(const std::string& name);
+    explicit NonLinearFactory(const std::string& name);
     virtual ~NonLinearFactory();
 
 public:
+    NonLinearFactory(const NonLinearFactory&)            = delete;
+    NonLinearFactory(NonLinearFactory&&)                 = delete;
+    NonLinearFactory& operator=(NonLinearFactory&&)      = delete;
+    NonLinearFactory& operator=(const NonLinearFactory&) = delete;
+
     static const NonLinear* build(const std::string& name, const param::MIRParametrisation&);
     static void list(std::ostream&);
 };
@@ -96,7 +82,7 @@ class NonLinearBuilder : public NonLinearFactory {
     NonLinear* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
-    NonLinearBuilder(const std::string& name) : NonLinearFactory(name) {}
+    explicit NonLinearBuilder(const std::string& name) : NonLinearFactory(name) {}
 };
 
 

@@ -80,7 +80,7 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
                  << std::endl;
 
     // fill sparse matrix using triplets (reserve assuming all-triangle interpolations)
-    triplet_vector_t triplets;
+    std::vector<WeightMatrix::Triplet> triplets;
     size_t nbOutputPoints = out.numberOfPoints();
     triplets.reserve(3 * nbOutputPoints);
 
@@ -94,7 +94,7 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
             auto i = it->index();
             ASSERT(i < nbOutputPoints);
 
-            triplet_vector_t trip;
+            std::vector<WeightMatrix::Triplet> trip;
             const auto& p = it->pointUnrotated();
 
             const bool too_much_north = p.lat() > max_lat;

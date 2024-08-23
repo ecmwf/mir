@@ -63,7 +63,7 @@ void StructuredMethod::left_right_lon_indexes(const Longitude& in, const std::ve
     ASSERT(coords[left].lat() == coords[right].lat());
 }
 
-void StructuredMethod::normalise(triplet_vector_t& triplets) const {
+void StructuredMethod::normalise(std::vector<WeightMatrix::Triplet>& triplets) const {
     ASSERT(triplets.size());
 
     // sum all calculated weights for normalisation

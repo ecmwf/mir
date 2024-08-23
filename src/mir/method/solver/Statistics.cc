@@ -33,8 +33,7 @@ Statistics::Statistics(const param::MIRParametrisation& param, stats::Field* fie
 }
 
 
-void Statistics::solve(const MethodWeighted::Matrix& A, const MethodWeighted::WeightMatrix& W,
-                       MethodWeighted::Matrix& B, const double& missingValue) const {
+void Statistics::solve(const DenseMatrix& A, const WeightMatrix& W, DenseMatrix& B, const double& missingValue) const {
     // statistics of columns per row
     ASSERT(A.cols() == 1);
     ASSERT(B.cols() == 1);
