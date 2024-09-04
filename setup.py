@@ -25,10 +25,11 @@ def extract(prefix: str) -> Iterable[Tuple[str, List[str]]]:
 data_files = [ 
      ("lib", [f"/{target_root}lib64/{e}" for e in os.listdir(f"/{target_root}lib64") if e.endswith("so")]),
 ]
-data_files.extend(extract("etc/mir"))
-data_files.extend(extract("share/eccodes/samples"))
-data_files.extend(extract("share/eccodes/definitions"))
-# sadly it seems one cant list+generator in python
+# configs of eckit, mir, eccodes
+data_files.extend(extract("etc"))
+# expectedly redundant since we compile eccodes with memfs instead of definitions/samples
+data_files.extend(extract("share"))
+# sadly it seems one cant list+generator in python, so we have to extend
 
 setup(
     name="mir",
