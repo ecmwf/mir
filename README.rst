@@ -1,22 +1,17 @@
 mir-python - Cython interface to MIR
 ====================================
 
-Building
---------
+Building a Wheel
+----------------
 
-Requires a recent version of Cython_ and Python 3::
+Run::
 
-  export MIR_INCLUDE_DIRS=<path1>:<path2>:...
-  export MIR_LIB_DIR=<path1>:<path2>:...
-  python3 setup.py build_ext -i
+  BUILD_ROOT=<...> python -m build --installer uv
 
-Or from a bundle (mir-bundle, mars-client-bundle, pgen-bundle, ...) ::
-
-  MIR_BUNDLE_SOURCE_DIR=<path> MIR_BUNDLE_BUILD_DIR=<path> python3 setup.py build_ext -i
-
-This will build the ``mir`` extension module in the current directory.
-
-.. _Cython: https://cython.org/
+Which will create a python wheel in the dist directory, to be published to pypi or locally installed to a venv.
+The `BUILD_ROOT` should be a directory with installs of eckit, eccodes and mir (see `build.sh` on how to obtain that).
+Alternatively, just run `build-docker.sh`, which mounts this current directory, builds the required libraries,
+and proceeds with the wheel building as above.
 
 Example
 -------

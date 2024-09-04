@@ -1,53 +1,52 @@
 import os
+from typing import Iterable, Tuple, List
+from itertools import groupby
+
 from distutils.core import setup
 from distutils.extension import Extension
 
 from Cython.Build import cythonize
 from Cython.Distutils import build_ext
 
-home = os.environ.get("HOME")
-source = os.environ.get(
-    "MIR_BUNDLE_SOURCE_DIR", os.path.join(home, "git", "mir-bundle")
-)
-build = os.environ.get(
-    "MIR_BUNDLE_BUILD_DIR", os.path.join(home, "build", "mir-bundle")
-)
+target_root = os.getenv("BUILD_ROOT", "/target/")
+include_dirs = [f"/{target_root}/include"]
+library_dirs = [f"/{target_root}/lib64"]
+libraries = ["mir"]
 
-library_dirs = (
-    os.environ.get("MIR_LIB_DIR").split(":")
-    if "MIR_LIB_DIR" in os.environ
-    else [os.path.join(build, "lib")]
-)
 
-include_dirs = (
-    os.environ.get("MIR_INCLUDE_DIRS").split(":")
-    if "MIR_INCLUDE_DIRS" in os.environ
-    else [
-        os.path.join(base, pkg, "src")
-        for base in [source, build]
-        for pkg in ["mir", "eckit", "eccodes"]
-    ]
-)
+def extract(prefix: str) -> Iterable[Tuple[str, List[str]]]:
+    walk = os.walk(f"{target_root}{prefix}")
+    # need: (relative prefix, list of full paths
+    mapped = ((e[0][len(target_root):], f"{e[0]}/{f}") for e in walk for f in e[2])
+    for k, g in groupby(mapped, lambda e: e[0]):
+       	yield (k, list(e[1] for e in g))
 
-print("library_dirs:", " ".join(library_dirs))
-print("include_dirs:", " ".join(include_dirs))
+# note this is tied to 'rpath' of linker invocation in the Extension
+data_files = [ 
+     ("lib", [f"/{target_root}lib64/{e}" for e in os.listdir(f"/{target_root}lib64") if e.endswith("so")]),
+]
+data_files.extend(extract("etc/mir"))
+data_files.extend(extract("share/eccodes/samples"))
+data_files.extend(extract("share/eccodes/definitions"))
+# sadly it seems one cant list+generator in python
 
-# FIXME: sort out how to discover MIR libraries
 setup(
-    name="mir-python",
+    name="mir",
     version="0.2.0",
+    setup_requires=['wheel'],
     ext_modules=cythonize(
         Extension(
             "mir",
-            ["mir.pyx", "pyio.cc"],
+            ["src/mir/mir.pyx", "src/mir/pyio.cc"],
             language="c++",
-            libraries=["mir"],
+            libraries=libraries,
             library_dirs=library_dirs,
-            runtime_library_dirs=library_dirs,
-            include_dirs=include_dirs,
+            include_dirs=include_dirs + ['src/mir'],
             extra_compile_args=["-std=c++17"],
-            extra_link_args=["-std=c++17"],
+            extra_link_args=["-std=c++17", "-Wl,-rpath,$ORIGIN/../.."],
         ),
         compiler_directives={"language_level": 3, "c_string_encoding": "default"},
     ),
+    data_files=data_files,
+    include_package_data=True,
 )
