@@ -1,6 +1,10 @@
 set -ex
 set -o pipefail
 
+# run in the base image
+yum install -y clang
+alias python=/opt/python/cp311-cp311/bin/python
+
 mkdir -p /src /target /build/eccodes /build/eckit /build/atlas /build/mir \
 	&& cd /src \
 	&& git clone --depth=1 --branch=master https://github.com/ecmwf/ecbuild \
@@ -34,7 +38,6 @@ cd /build/mir \
 	&& make test \
 	&& make install
 
-yum install -y clang
 cd /src/mir-python \
 	&& SOURCE_LIB_ROOT=/target/ /opt/python/cp311-cp311/bin/python -m build --installer uv -w .
 
