@@ -12,11 +12,7 @@ requires-python=">=3.10,<3.12"
 [tool.setuptools]
 # NOTE perhaps add a fine-grained exclude so that we eg keep headers only
 # https://setuptools.pypa.io/en/latest/userguide/datafiles.html#exclude-package-data
-include-package-data = false 
-
-# [tool.setuptools.packages.find]
-# where = ["src"]
-
-# [tool.setuptools.package-data]
-# mir = ["*.h"]
-
+# however, beware of the interaction with data_files -- with `true` it crashes on
+# absolute paths etc. Fine-graining such as `tool.setuptools.package-data` may be also
+# needed
+include-package-data = false

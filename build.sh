@@ -26,7 +26,7 @@ cd /build/mir \
 
 yum install -y clang
 cd /src/mir-python \
-	&& /opt/python/cp311-cp311/bin/python -m build --installer uv .
+	&& SOURCE_LIB_ROOT=/target/ /opt/python/cp311-cp311/bin/python -m build --installer uv -w .
 
 # now eg
 # uv pip install ./dist/mir_python-0.0.1-cp311-cp311-linux_x86_64.whl
