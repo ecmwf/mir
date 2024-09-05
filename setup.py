@@ -25,15 +25,17 @@ if (source_lib_root := os.getenv("SOURCE_LIB_ROOT", "")):
 	# NOTE the `-rpath` to linker must hit the `lib` which the data_files install to
 	extra_link_args = ["-std=c++17", "-Wl,-rpath,$ORIGIN/../.."]
 	data_files = [
-		("lib", [f"{source_lib_root}lib64/{e}" for e in os.listdir(f"{source_lib_root}lib64") if e.endswith("so")]),
+		("lib", [f"{source_lib_root}lib64/{e}" for e in os.listdir(f"{source_lib_root}lib64") if ".so" in e]),
 	]
 	# etc & share: configs of eckit, mir, eccodes
 	# sadly it seems one cant list+generator in python, so we have to extend
 	data_files.extend(extract("etc/eccodes"))
 	data_files.extend(extract("etc/eckit"))
+	data_files.extend(extract("etc/atlas"))
 	data_files.extend(extract("etc/mir"))
 	data_files.extend(extract("share/eccodes")) # possibly redundant since we compile eccodes with memfs
 	data_files.extend(extract("share/eckit"))
+	data_files.extend(extract("etc/atlas"))
 	data_files.extend(extract("share/mir"))
 	kwargs_set = {
 		"data_files": data_files,

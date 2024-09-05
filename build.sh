@@ -1,27 +1,37 @@
 set -ex
+set -o pipefail
 
-ECCODES_VERSION=2.35.1
-
-mkdir -p /src /target /build/eccodes /build/eckit /build/mir \
+mkdir -p /src /target /build/eccodes /build/eckit /build/atlas /build/mir \
 	&& cd /src \
-	&& git clone https://github.com/ecmwf/ecbuild \
-	&& git clone https://github.com/ecmwf/eckit \
-	&& git clone https://github.com/ecmwf/mir \
-	&& curl "https://confluence.ecmwf.int/download/attachments/45757960/eccodes-${ECCODES_VERSION}-Source.tar.gz?api=v2" --output eccodes.tar.gz && tar xzf eccodes.tar.gz
+	&& git clone --depth=1 --branch=master https://github.com/ecmwf/ecbuild \
+	&& git clone --depth=1 --branch=2.36.0 https://github.com/ecmwf/eccodes \
+	&& git clone --depth=1 --branch=1.27.0 https://github.com/ecmwf/eckit \
+	&& git clone --depth=1 --branch=0.37.0 https://github.com/ecmwf/atlas \
+	&& git clone --depth=1 --branch=1.22.0 https://github.com/ecmwf/mir \
 
 cd /build/eccodes \
-	&& /src/ecbuild/bin/ecbuild "/src/eccodes-${ECCODES_VERSION}-Source/" -DENABLE_AEC=0 -DENABLE_PYTHON=0 -DENABLE_BUILD_TOOLS=0 -DENABLE_JPG_LIBJASPER=0 -DENABLE_MEMFS=1 -DENABLE_INSTALL_ECCODES_DEFINITIONS=0 -DENABLE_INSTALL_ECCODES_SAMPLES=0 -DCMAKE_INSTALL_PREFIX=/target \
+	&& /src/ecbuild/bin/ecbuild --prefix=/target /src/eccodes -DENABLE_AEC=0 -DENABLE_PYTHON=0 -DENABLE_BUILD_TOOLS=0 -DENABLE_JPG_LIBJASPER=0 -DENABLE_MEMFS=1 -DENABLE_INSTALL_ECCODES_DEFINITIONS=0 -DENABLE_INSTALL_ECCODES_SAMPLES=0 \
 	&& make -j10 \
+	&& make test \
 	&& make install
 
 cd /build/eckit \
 	&& /src/ecbuild/bin/ecbuild --prefix=/target /src/eckit \
 	&& make -j10 \
+	&& make test \
 	&& make install
+
+cd /build/atlas \
+	&& /src/ecbuild/bin/ecbuild --prefix=/target /src/atlas \
+	&& make -j10 \
+	&& make test \
+	&& make install
+
 
 cd /build/mir \
 	&& /src/ecbuild/bin/ecbuild --prefix=/target /src/mir -DENABLE_MIR_DOWNLOAD_MASKS=OFF \
 	&& make -j10 \
+	&& make test \
 	&& make install
 
 yum install -y clang
