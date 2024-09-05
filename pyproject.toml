@@ -4,10 +4,24 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mir-python"
-version = "0.0.1"
-description = "Demonstrate SO usage"
-license = { text = "Apache License Version 2.0" }
+version = "0.2.0"
+description = "Don't use this"
 requires-python=">=3.10,<3.12"
+authors = [
+	{ name = "European Centre for Medium-Range Weather Forecasts (ECMWF)", email = "software.support@ecmwf.int" }
+]
+classifiers=[
+	"Development Status :: 3 - Alpha",
+	"Intended Audience :: Developers",
+	"License :: OSI Approved :: Apache Software License",
+	"Programming Language :: Python :: 3.10",
+	"Programming Language :: Python :: 3.11",
+	"Programming Language :: Cython",
+	"Programming Language :: Python :: Implementation :: CPython",
+	"Operating System :: POSIX :: Linux",
+	"Operating System :: MacOS",
+	"Topic :: Scientific/Engineering",
+]
 
 [tool.setuptools]
 # NOTE perhaps add a fine-grained exclude so that we eg keep headers only
