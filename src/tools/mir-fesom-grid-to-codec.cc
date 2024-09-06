@@ -11,13 +11,12 @@
 
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <fstream>
 #include <vector>
-// #include <type_traits>
 
 #include "eckit/codec/codec.h"
-#include "eckit/filesystem/PathName.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 
@@ -29,50 +28,49 @@
 namespace mir::tools {
 
 
-// static_assert(std::is_same_v<eckit::linalg::Scalar, double>, "Scalar == double");
-// static_assert(std::is_same_v<eckit::linalg::Index, std::int32_t>, "Index == std::int32_t");
+template <int N>
+struct nod_t : std::array<double, 3> {
+    size_t idx = 0;
+    size_t tag = 0;
 
+    value_type& lon    = (*this)[0];
+    value_type& lat    = (*this)[1];
+    value_type& height = (*this)[2];
 
-struct xyz_t {
-    double xyz[3] = {0, 0, 0};
+    nod_t() : array{} { static_assert(N == 2 || N == 3); }
 
-    double& x = xyz[0];
-    double& y = xyz[1];
-    double& z = xyz[2];
+    void read(std::istream& in) {
+        in >> idx;
+        std::for_each_n(begin(), N, [&](auto& entry) { ASSERT(in >> entry && in); });
+        in >> tag;
+    }
 
-    xyz_t(double lon, double lat) {
-        const auto r = 6371229.; // [m]
+    friend std::ostream& operator<<(std::ostream& out, const nod_t& n) {
+        const auto r    = 6371229. + n.height;  // [m]
+        const auto lonr = n.lon * M_PI / 180.;  // [rad]
+        const auto latr = n.lat * M_PI / 180.;  // [rad]
 
-        auto lonr = lon * M_PI / 180.;
-        auto latr = lat * M_PI / 180.;
+        const auto x = r * std::cos(latr) * std::cos(lonr);
+        const auto y = r * std::cos(latr) * std::sin(lonr);
+        const auto z = r * std::sin(latr);
 
-        x = r * std::cos(latr) * std::cos(lonr);
-        y = r * std::cos(latr) * std::sin(lonr);
-        z = r * std::sin(latr);
+        return out << n.idx << ' ' << x << ' ' << y << ' ' << z;
     }
 };
 
 
-struct nod2d_t {
-    size_t idx = 0;
-    size_t tag = 0;
-    double ll[2] = {0,0};
+template <int N, int T>
+struct elem_t : std::array<size_t, N> {
 
-    double& lon = ll[0];
-    double& lat = ll[1];
+    void read(std::istream& in) {
+        std::for_each_n(elem_t::begin(), N, [&](auto& entry) { ASSERT(in >> entry && entry > 0 && in); });
+    }
 
-    bool read(std::istream& in) { return (in >> idx >> lon >> lat >> tag) && in; }
-};
-
-
-struct elem2d_t {
-    size_t abc[3] = {0,0,0};
-
-    size_t& a = abc[0];
-    size_t& b = abc[1];
-    size_t& c = abc[2];
-
-    bool read(std::istream& in) { return (in >> a >> b >> c) && in; }
+    friend std::ostream& operator<<(std::ostream& out, const elem_t& e) {
+        out << T << " 0";
+        std::for_each_n(e.begin(), N, [&](auto& entry) { out << ' ' << entry; });
+        return out;
+    }
 };
 
 
@@ -83,7 +81,14 @@ struct MIRFESOMGridToCodec : public MIRTool {
         options_.push_back(new SimpleOption<std::string>("nod2d", "nod2d.out file"));
         options_.push_back(new SimpleOption<std::string>("elem2d", "elem2d.out file"));
 
-        options_.push_back(new SimpleOption<std::string>("output-gmsh", "Gmsh output file (.msh)"));
+        options_.push_back(new SimpleOption<std::string>("nod3d", "nod3d.out file"));
+        options_.push_back(new SimpleOption<std::string>("elem3d", "elem3d.out file"));
+
+        options_.push_back(new SimpleOption<std::string>("aux3d", "aux3d.out file"));
+        options_.push_back(new SimpleOption<std::string>("depth", "depth.out file"));
+
+        options_.push_back(new SimpleOption<std::string>("output-gmsh-2d", "Gmsh output file, 2D structures (.msh)"));
+        options_.push_back(new SimpleOption<std::string>("output-gmsh-3d", "Gmsh output file, 3D structures (.msh)"));
     }
 
     int numberOfPositionalArguments() const override { return 1; }
@@ -98,56 +103,74 @@ struct MIRFESOMGridToCodec : public MIRTool {
     void execute(const eckit::option::CmdArgs& args) override {
         ASSERT(args.count() == numberOfPositionalArguments());
 
-        auto read_file = [](const eckit::PathName& path, auto& list) {
-            ASSERT(path.exists());
+        auto read_file = [](const std::string& path, auto& list) {
             std::ifstream in(path);
+            ASSERT(in);
 
             size_t n = 0;
             ASSERT(in >> n);
 
             list.resize(n);
-            for (auto& entry : list) {
-                ASSERT(entry.read(in));
-            }
+            std::for_each(list.begin(), list.end(), [&](auto& entry) { entry.read(in); });
         };
 
-        std::vector<nod2d_t> nod2d;
-        read_file(args.getString("nod2d"), nod2d);
-
-        std::vector<elem2d_t> elem2d;
-        read_file(args.getString("elem2d"), elem2d);
-
-
-        // Output Gmsh .msh format
-        if (auto fn = args.getString("output-gmsh", ""); !fn.empty()){
-            std::ofstream out(fn);
+        auto write_gmsh = [](const std::string& path, const auto& nod, const auto& elem) {
+            std::ofstream out(path);
             ASSERT(out);
 
             out << "$MeshFormat"
                    "\n2.2 0 8"
                    "\n$EndMeshFormat";
 
-            out << "\n$Nodes\n" << nod2d.size();
-            for (size_t i = 0; i < nod2d.size(); ++i) {
-                xyz_t p(nod2d[i].lon, nod2d[i].lat);
-                out << "\n" << (i + 1) << ' ' << p.x << ' ' << p.y << ' ' << p.z;
-            }
+            out << "\n$Nodes\n" << nod.size();
+            std::for_each(nod.begin(), nod.end(), [&](const auto& n) {
+                out << "\n" << n;
+            });
             out << "\n$EndNodes";
 
-            out << "\n$Elements\n" << elem2d.size();
-            for (size_t i = 0; i < elem2d.size(); ++i) {
-                out << "\n" << (i + 1) << " 2 0 " << elem2d[i].a << ' ' << elem2d[i].b << ' ' << elem2d[i].c;
-            }
+            out << "\n$Elements\n" << elem.size();
+            std::for_each(elem.begin(), elem.end(), [&](const auto& e) {
+                static auto i = 1;
+                out << "\n" << i++ << ' ' << e;
+            });
             out << "\n$EndElements";
+        };
+
+
+        // Read FESOM data structures in 2D (mandatory) and 3D (optional)
+
+        std::vector<nod_t<2>> nod2d;
+        read_file(args.getString("nod2d"), nod2d);
+        ASSERT(!nod2d.empty());
+
+        std::vector<elem_t<3, 2>> elem2d;
+        read_file(args.getString("elem2d"), elem2d);
+        ASSERT(!elem2d.empty());
+
+        std::vector<nod_t<3>> nod3d;
+        if (auto path = args.getString("nod3d", ""); !path.empty()) {
+            read_file(path, nod3d);
+        }
+
+        std::vector<elem_t<4, 4>> elem3d;
+        if (auto path = args.getString("elem3d", ""); !path.empty()) {
+            read_file(path, elem3d);
+        }
+
+
+        // Write Gmsh .msh(s)
+
+        if (auto path = args.getString("output-gmsh-2d", ""); !path.empty()) {
+            write_gmsh(path, nod2d, elem2d);
+        }
+
+        if (auto path = args.getString("output-gmsh-3d", ""); !path.empty()) {
+            write_gmsh(path, nod3d, elem3d);
         }
 
 
 #if 0
-        auto ia_key = args.getString("ia", "ia");
-        auto ja_key = args.getString("ja", "ja");
-        auto a_key  = args.getString("a", "a");
-
-        // eckit::codec file
+        eckit::PathName fcodec(args(0));
         eckit::PathName fcodec(args(0));
         if (!fcodec.exists()) {
             throw exception::UserError("File does not exist: '" + fcodec + "'", Here());
