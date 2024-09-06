@@ -13,10 +13,12 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <cstdint>
 #include <fstream>
 #include <vector>
 
 #include "eckit/codec/codec.h"
+#include "eckit/filesystem/PathName.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 
@@ -27,6 +29,8 @@
 
 namespace mir::tools {
 
+
+const uint64_t FESOM_CODEC_VERSION = 0;
 
 template <int N>
 struct nod_t : std::array<double, 3> {
@@ -56,14 +60,15 @@ struct nod_t : std::array<double, 3> {
 
         return out << n.idx << ' ' << x << ' ' << y << ' ' << z;
     }
+
+    static size_t static_size() { return N; }
 };
 
 
 template <int N, int T>
 struct elem_t : std::array<size_t, N> {
-
     void read(std::istream& in) {
-        std::for_each_n(elem_t::begin(), N, [&](auto& entry) { ASSERT(in >> entry && entry > 0 && in); });
+        std::for_each_n(elem_t::begin(), N, [&](auto& entry) { ASSERT(in >> entry && entry >= 1 && in); });
     }
 
     friend std::ostream& operator<<(std::ostream& out, const elem_t& e) {
@@ -71,6 +76,26 @@ struct elem_t : std::array<size_t, N> {
         std::for_each_n(e.begin(), N, [&](auto& entry) { out << ' ' << entry; });
         return out;
     }
+
+    static size_t static_size() { return N; }
+};
+
+
+template <typename T>
+struct vector_t : std::vector<T> {
+    auto flatten(bool minus_one = false) const {
+        std::vector<typename vector_t::value_type::value_type> flat(
+            vector_t::empty() ? 0 : (vector_t::size() * vector_t::front().size()));
+
+        std::for_each(vector_t::begin(), vector_t::end(), [&flat, minus_one](const auto& entry) {
+            std::for_each(entry.begin(), entry.end(),
+                          [&flat, minus_one](const auto& value) { flat.push_back(minus_one ? value - 1 : value); });
+        });
+
+        return flat;
+    }
+
+    std::array<size_t, 2> shape() const { return {vector_t::size(), T::static_size()}; }
 };
 
 
@@ -123,9 +148,7 @@ struct MIRFESOMGridToCodec : public MIRTool {
                    "\n$EndMeshFormat";
 
             out << "\n$Nodes\n" << nod.size();
-            std::for_each(nod.begin(), nod.end(), [&](const auto& n) {
-                out << "\n" << n;
-            });
+            std::for_each(nod.begin(), nod.end(), [&](const auto& n) { out << "\n" << n; });
             out << "\n$EndNodes";
 
             out << "\n$Elements\n" << elem.size();
@@ -137,22 +160,23 @@ struct MIRFESOMGridToCodec : public MIRTool {
         };
 
 
-        // Read FESOM data structures in 2D (mandatory) and 3D (optional)
+        // Read FESOM data structures in 2D/3D (only nod2d is mandatory)
 
-        std::vector<nod_t<2>> nod2d;
+        vector_t<nod_t<2>> nod2d;
         read_file(args.getString("nod2d"), nod2d);
         ASSERT(!nod2d.empty());
 
-        std::vector<elem_t<3, 2>> elem2d;
-        read_file(args.getString("elem2d"), elem2d);
-        ASSERT(!elem2d.empty());
+        vector_t<elem_t<3, 2>> elem2d;
+        if (auto path = args.getString("elem2d", ""); !path.empty()) {
+            read_file(path, elem2d);
+        }
 
-        std::vector<nod_t<3>> nod3d;
+        vector_t<nod_t<3>> nod3d;
         if (auto path = args.getString("nod3d", ""); !path.empty()) {
             read_file(path, nod3d);
         }
 
-        std::vector<elem_t<4, 4>> elem3d;
+        vector_t<elem_t<4, 4>> elem3d;
         if (auto path = args.getString("elem3d", ""); !path.empty()) {
             read_file(path, elem3d);
         }
@@ -161,61 +185,51 @@ struct MIRFESOMGridToCodec : public MIRTool {
         // Write Gmsh .msh(s)
 
         if (auto path = args.getString("output-gmsh-2d", ""); !path.empty()) {
-            write_gmsh(path, nod2d, elem2d);
+            if (!elem2d.empty()) {
+                write_gmsh(path, nod2d, elem2d);
+            }
         }
 
         if (auto path = args.getString("output-gmsh-3d", ""); !path.empty()) {
-            write_gmsh(path, nod3d, elem3d);
-        }
-
-
-#if 0
-        eckit::PathName fcodec(args(0));
-        eckit::PathName fcodec(args(0));
-        if (!fcodec.exists()) {
-            throw exception::UserError("File does not exist: '" + fcodec + "'", Here());
-        }
-
-        eckit::codec::RecordReader reader(fcodec);
-
-        std::uint64_t Nr = 0;
-        std::uint64_t Nc = 0;
-        std::vector<std::int32_t> ia;
-        std::vector<std::int32_t> ja;
-        std::vector<double> a;
-
-        std::uint64_t version = 0;
-        reader.read("version", version).wait();
-
-        if (version == 0) {
-            reader.read(Nr_key, Nr);
-            reader.read(Nc_key, Nc);
-            reader.read(ia_key, ia);
-            reader.read(ja_key, ja);
-            reader.read(a_key, a);
-            reader.wait();
-
-            if (std::string nnz_key; args.get("nnz", nnz_key)) {
-                std::uint64_t nnz = 0;
-                reader.read(nnz_key, nnz).wait();
-
-                ASSERT(a.size() == nnz);
+            if (!nod3d.empty() && !elem3d.empty()) {
+                write_gmsh(path, nod3d, elem3d);
             }
+        }
 
-            ASSERT(0 < Nr);
-            ASSERT(0 < Nc);
-            ASSERT(ia.size() == (Nr + 1));
-            ASSERT(ja.size() == a.size());
+
+        // Write eckit::codec file
+
+        eckit::codec::RecordWriter record;
+        record.set("version", FESOM_CODEC_VERSION);
+
+        if (elem2d.empty() && nod3d.empty() && elem3d.empty()) {
+            ASSERT(nod2d.shape()[1] == 2);
+            auto n = nod2d.shape()[0];
+
+            std::vector<double> longitude(n);
+            std::transform(nod2d.begin(), nod2d.end(), longitude.begin(), [](const auto& n) { return n.lon; });
+
+            std::vector<double> latitude(n);
+            std::transform(nod2d.begin(), nod2d.end(), latitude.begin(), [](const auto& n) { return n.lat; });
+
+            record.set("n", eckit::codec::ref(n));
+            record.set("longitude", eckit::codec::ref(longitude));
+            record.set("latitude", eckit::codec::ref(latitude));
         }
         else {
-            throw exception::SeriousBug("unsupported version: " + std::to_string(version), Here());
+            record.set("nod2d_shape", eckit::codec::ref(nod2d.shape()));
+            record.set("elem2d_shape", eckit::codec::ref(elem2d.shape()));
+            record.set("nod3d_shape", eckit::codec::ref(nod3d.shape()));
+            record.set("elem3d_shape", eckit::codec::ref(elem3d.shape()));
+
+            record.set("nod2d", eckit::codec::ref(nod2d.flatten()));
+            record.set("elem2d", eckit::codec::ref(elem2d.flatten(true)));
+            record.set("nod3d", eckit::codec::ref(nod3d.flatten()));
+            record.set("elem3d", eckit::codec::ref(elem3d.flatten(true)));
         }
 
-        // ensure 0-based indexing
-        if (const auto base = ia.front(); base != 0) {
-            std::for_each(ia.begin(), ia.end(), [base](auto& i) { i -= base; });
-        }
-#endif
+        eckit::PathName path(args(0));
+        record.write(path);
     }
 };
 
