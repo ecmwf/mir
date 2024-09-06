@@ -27,7 +27,8 @@ endforeach()
 
 if(eckit_HAVE_ECKIT_CODEC)
     foreach(tool IN ITEMS
-        mir-codec-to-weight-matrix)
+        mir-codec-to-weight-matrix
+        mir-fesom-grid-to-codec)
         ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir eckit_codec ${mir_INSTALL_TOOLS})
     endforeach()
 endif()
