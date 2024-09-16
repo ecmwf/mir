@@ -25,9 +25,8 @@ namespace mir::method::nonlinear {
 NoNonLinear::NoNonLinear(const param::MIRParametrisation& param) : NonLinear(param) {}
 
 
-bool NoNonLinear::treatment(MethodWeighted::Matrix& /*A*/, MethodWeighted::WeightMatrix& /*W*/,
-                            MethodWeighted::Matrix& /*B*/, const MIRValuesVector& /*unused*/,
-                            const double& /*missingValue*/) const {
+bool NoNonLinear::treatment(DenseMatrix& /*A*/, WeightMatrix& /*W*/, DenseMatrix& /*B*/,
+                            const MIRValuesVector& /*unused*/, const double& /*missingValue*/) const {
     // no non-linear treatment
     return false;
 }

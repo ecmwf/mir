@@ -25,8 +25,8 @@ namespace mir::method::nonlinear {
 Heaviest::Heaviest(const param::MIRParametrisation& param) : NonLinear(param) {}
 
 
-bool Heaviest::treatment(MethodWeighted::Matrix& /*A*/, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& /*B*/,
-                         const MIRValuesVector& /*unused*/, const double& /*missingValue*/) const {
+bool Heaviest::treatment(DenseMatrix& /*A*/, WeightMatrix& W, DenseMatrix& /*B*/, const MIRValuesVector& /*unused*/,
+                         const double& /*missingValue*/) const {
 
     auto* data = const_cast<WeightMatrix::Scalar*>(W.data());
 

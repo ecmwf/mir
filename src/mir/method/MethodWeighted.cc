@@ -359,13 +359,13 @@ void MethodWeighted::setReorderCols(reorder::Reorder* r) {
 }
 
 
-void MethodWeighted::setOperandMatricesFromVectors(WeightMatrix::Matrix& A, WeightMatrix::Matrix& B,
-                                                   const MIRValuesVector& Avector, const MIRValuesVector& Bvector,
-                                                   const double& missingValue, const data::Space& space) const {
+void MethodWeighted::setOperandMatricesFromVectors(DenseMatrix& A, DenseMatrix& B, const MIRValuesVector& Avector,
+                                                   const MIRValuesVector& Bvector, const double& missingValue,
+                                                   const data::Space& space) const {
 
     // set input matrix B (from A = W × B)
     // FIXME: remove const_cast once Matrix provides read-only view
-    WeightMatrix::Matrix Bwrap(const_cast<double*>(Bvector.data()), Bvector.size(), 1);
+    DenseMatrix Bwrap(const_cast<double*>(Bvector.data()), Bvector.size(), 1);
 
     space.linearise(Bwrap, B, missingValue);
 
@@ -374,25 +374,25 @@ void MethodWeighted::setOperandMatricesFromVectors(WeightMatrix::Matrix& A, Weig
     if (B.cols() == 1) {
 
         // FIXME: remove const_cast once Matrix provides read-only view
-        WeightMatrix::Matrix Awrap(const_cast<double*>(Avector.data()), Avector.size(), 1);
+        DenseMatrix Awrap(const_cast<double*>(Avector.data()), Avector.size(), 1);
         A.swap(Awrap);
     }
     else {
 
-        WeightMatrix::Matrix Awrap(Avector.size(), B.cols());
+        DenseMatrix Awrap(Avector.size(), B.cols());
         Awrap.setZero();
         A.swap(Awrap);
     }
 }
 
 
-void MethodWeighted::setVectorFromOperandMatrix(const WeightMatrix::Matrix& A, MIRValuesVector& Avector,
+void MethodWeighted::setVectorFromOperandMatrix(const DenseMatrix& A, MIRValuesVector& Avector,
                                                 const double& missingValue, const data::Space& space) const {
 
     // set output vector A (from A = W × B)
     // FIXME: remove const_cast once Matrix provides read-only view
     ASSERT(Avector.size() == A.rows());
-    WeightMatrix::Matrix Awrap(const_cast<double*>(Avector.data()), Avector.size(), 1);
+    DenseMatrix Awrap(const_cast<double*>(Avector.data()), Avector.size(), 1);
 
     space.unlinearise(A, Awrap, missingValue);
 }
@@ -476,8 +476,8 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
         const data::Space& sp = data::SpaceChooser::lookup(space);
 
         MIRValuesVector result(npts_out);  // field.update() takes ownership with std::swap()
-        WeightMatrix::Matrix A;
-        WeightMatrix::Matrix B;
+        DenseMatrix A;
+        DenseMatrix B;
         setOperandMatricesFromVectors(B, A, result, field.values(i), missingValue, sp);
         ASSERT(A.rows() == npts_inp);
         ASSERT(B.rows() == npts_out);

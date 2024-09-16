@@ -30,7 +30,7 @@ Multiply::Multiply(const param::MIRParametrisation& param) :
     Solver(param), backend_(eckit::linalg::LinearAlgebraSparse::backend()) {}
 
 
-void Multiply::solve(const MethodWeighted::Matrix& A, const MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& B,
+void Multiply::solve(const DenseMatrix& A, const WeightMatrix& W, DenseMatrix& B,
                      const double& /*missingValue*/) const {
     ASSERT(A.rows() == W.cols());
     ASSERT(B.rows() == W.rows());

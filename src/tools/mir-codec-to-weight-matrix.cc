@@ -55,7 +55,7 @@ public:
         shape.cols_ = Nc_;
 
         Layout layout;
-        layout.outer_ = ia_;
+        layout.outer_ = reinterpret_cast<decltype(Layout::outer_)>(ia_);
         layout.inner_ = ja_;
         layout.data_  = a_;
 

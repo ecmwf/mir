@@ -58,7 +58,7 @@ void Cressman::operator()(size_t ip, const Point3& point,
     if (eckit::types::is_strictly_greater(sum, 0.)) {
         for (size_t j = 0; j < nbPoints; ++j) {
             size_t jp = neighbours[j].payload();
-            triplets.emplace_back(WeightMatrix::Triplet(ip, jp, weights[j] / sum));
+            triplets.emplace_back(ip, jp, weights[j] / sum);
         }
     }
 }

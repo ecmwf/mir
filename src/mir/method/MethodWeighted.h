@@ -16,6 +16,8 @@
 #include <utility>
 #include <vector>
 
+#include "eckit/linalg/Matrix.h"
+
 #include "mir/method/Cropping.h"
 #include "mir/method/Method.h"
 #include "mir/method/WeightMatrix.h"
@@ -55,12 +57,12 @@ class MIRStatistics;
 namespace mir::method {
 
 
+using DenseMatrix = eckit::linalg::Matrix;
+
+
 class MethodWeighted : public Method {
 public:
     // -- Types
-
-    using WeightMatrix = method::WeightMatrix;
-    using Matrix       = eckit::linalg::Matrix;
 
     using CacheKeys = std::pair<std::string, std::string>;
 
@@ -133,13 +135,13 @@ private:
                       WeightMatrix&, const lsm::LandSeaMasks&, const Cropping&) const;
 
     /// Get interpolation operand matrices, from A = W B
-    virtual void setOperandMatricesFromVectors(WeightMatrix::Matrix& A, WeightMatrix::Matrix& B,
-                                               const MIRValuesVector& Avector, const MIRValuesVector& Bvector,
-                                               const double& missingValue, const data::Space&) const;
+    virtual void setOperandMatricesFromVectors(DenseMatrix& A, DenseMatrix& B, const MIRValuesVector& Avector,
+                                               const MIRValuesVector& Bvector, const double& missingValue,
+                                               const data::Space&) const;
 
     /// Get interpolation operand matrices, from A = W B
-    virtual void setVectorFromOperandMatrix(const WeightMatrix::Matrix& A, MIRValuesVector& Avector,
-                                            const double& missingValue, const data::Space&) const;
+    virtual void setVectorFromOperandMatrix(const DenseMatrix& A, MIRValuesVector& Avector, const double& missingValue,
+                                            const data::Space&) const;
 
     // -- Overridden methods
 

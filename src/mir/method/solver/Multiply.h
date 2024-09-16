@@ -27,8 +27,7 @@ namespace mir::method::solver {
 struct Multiply : Solver {
     explicit Multiply(const param::MIRParametrisation&);
 
-    void solve(const MethodWeighted::Matrix& A, const MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& B,
-               const double& missingValue) const override;
+    void solve(const DenseMatrix& A, const WeightMatrix& W, DenseMatrix& B, const double& missingValue) const override;
 
 private:
     bool sameAs(const Solver&) const override;

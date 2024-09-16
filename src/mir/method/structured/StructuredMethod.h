@@ -36,16 +36,13 @@ public:
     ~StructuredMethod() override;
 
 protected:
-    // Utility types
-    using triplet_vector_t = std::vector<WeightMatrix::Triplet>;
-
     // Find nearest West-East bounding i indices
     void left_right_lon_indexes(const Longitude& in, const std::vector<PointLatLon>& coords, size_t start, size_t end,
                                 size_t& left, size_t& right) const;
 
 
     // Normalize weights triplets such that sum(weights) = 1
-    void normalise(triplet_vector_t& triplets) const;
+    void normalise(std::vector<WeightMatrix::Triplet>& triplets) const;
 
     // Get lat/lon point coordinates from representation
     void getRepresentationPoints(const repres::Representation&, std::vector<PointLatLon>&, Latitude& minimum,

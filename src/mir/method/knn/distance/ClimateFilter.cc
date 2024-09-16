@@ -80,7 +80,7 @@ void ClimateFilter::operator()(size_t ip, const Point3& point,
     // normalise all weights according to the total, and set sparse matrix triplets
     for (size_t j = 0; j < nbPoints; ++j) {
         size_t jp = neighbours[j].payload();
-        triplets.emplace_back(WeightMatrix::Triplet(ip, jp, weights[j] / sum));
+        triplets.emplace_back(ip, jp, weights[j] / sum);
     }
 }
 
