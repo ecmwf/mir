@@ -12,6 +12,8 @@
 
 #include "mir/caching/LegendreCache.h"
 
+#include "eckit/config/Resource.h"
+
 #include "mir/config/LibMir.h"
 
 

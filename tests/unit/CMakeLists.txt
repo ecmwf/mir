@@ -48,6 +48,15 @@ if(mir_HAVE_ATLAS)
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
 
+if(mir_HAVE_NETCDF)
+    ecbuild_add_test(
+        TARGET            mir_tests_unit_interpolation_netcdf
+        SOURCES           interpolation_netcdf.cc
+        LIBS              mir
+        ENVIRONMENT       ${_testEnvironment}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+endif()
+
 if(ENABLE_BUILD_TOOLS)
     foreach(_t MIR-637.grib2)
         ecbuild_add_test(

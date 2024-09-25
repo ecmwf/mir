@@ -189,38 +189,41 @@ struct MIR : MIRTool {
             "Linear algebra sparse backend (default '" + eckit::linalg::LinearAlgebraSparse::backend().name() + "')"));
         options_.push_back(new FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
 
-#if mir_HAVE_ATLAS
-        for (const auto& which : std::vector<std::string>{"input", "output"}) {
-            options_.push_back(
-                new SimpleOption<std::string>(which + "-mesh-generator", "Mesh generator for " + which + " grid"));
-            options_.push_back(
-                new SimpleOption<bool>(which + "-mesh-cell-centres", "Calculate cell centres for " + which + " mesh"));
-            options_.push_back(new SimpleOption<bool>(which + "-mesh-cell-longest-diagonal",
-                                                      "Calculate cells longest diagonal for " + which + " mesh"));
-            options_.push_back(new SimpleOption<bool>(which + "-mesh-node-lumped-mass-matrix",
-                                                      "Calculate node-lumped mass matrix for " + which + " mesh"));
-            options_.push_back(new SimpleOption<bool>(which + "-mesh-node-to-cell-connectivity",
-                                                      "Calculate node-to-cell connectivity for " + which + " mesh"));
-            options_.push_back(new SimpleOption<std::string>(
-                which + "-mesh-file-ll",
-                "Output file for " + which + " grid, in lon/lat coordinates (default <empty>)"));
-            options_.push_back(new SimpleOption<std::string>(
-                which + "-mesh-file-xy", "Output file for " + which + " grid, in X/Y coordinates (default <empty>)"));
-            options_.push_back(new SimpleOption<std::string>(
-                which + "-mesh-file-xyz",
-                "Output file for " + which + " grid, in X/Y/Z coordinates (default <empty>)"));
-            options_.push_back(new SimpleOption<bool>(which + "-mesh-generator-three-dimensional",
-                                                      "Generate 3-dimensional " + which + " mesh"));
-            options_.push_back(new SimpleOption<bool>(which + "-mesh-generator-triangulate",
-                                                      "Generate triangulated " + which + " mesh"));
-            options_.push_back(new SimpleOption<double>(
-                which + "-mesh-generator-angle", "Generate with quadrilateral tolerance angle on " + which + " mesh"));
-            options_.push_back(new SimpleOption<bool>(which + "-mesh-generator-force-include-north-pole",
-                                                      "Generate including North pole on " + which + " mesh"));
-            options_.push_back(new SimpleOption<bool>(which + "-mesh-generator-force-include-south-pole",
-                                                      "Generate including South pole on " + which + " mesh"));
+        if constexpr (HAVE_ATLAS) {
+            for (const auto& which : std::vector<std::string>{"input", "output"}) {
+                options_.push_back(
+                    new SimpleOption<std::string>(which + "-mesh-generator", "Mesh generator for " + which + " grid"));
+                options_.push_back(new SimpleOption<bool>(which + "-mesh-cell-centres",
+                                                          "Calculate cell centres for " + which + " mesh"));
+                options_.push_back(new SimpleOption<bool>(which + "-mesh-cell-longest-diagonal",
+                                                          "Calculate cells longest diagonal for " + which + " mesh"));
+                options_.push_back(new SimpleOption<bool>(which + "-mesh-node-lumped-mass-matrix",
+                                                          "Calculate node-lumped mass matrix for " + which + " mesh"));
+                options_.push_back(
+                    new SimpleOption<bool>(which + "-mesh-node-to-cell-connectivity",
+                                           "Calculate node-to-cell connectivity for " + which + " mesh"));
+                options_.push_back(new SimpleOption<std::string>(
+                    which + "-mesh-file-ll",
+                    "Output file for " + which + " grid, in lon/lat coordinates (default <empty>)"));
+                options_.push_back(new SimpleOption<std::string>(
+                    which + "-mesh-file-xy",
+                    "Output file for " + which + " grid, in X/Y coordinates (default <empty>)"));
+                options_.push_back(new SimpleOption<std::string>(
+                    which + "-mesh-file-xyz",
+                    "Output file for " + which + " grid, in X/Y/Z coordinates (default <empty>)"));
+                options_.push_back(new SimpleOption<bool>(which + "-mesh-generator-three-dimensional",
+                                                          "Generate 3-dimensional " + which + " mesh"));
+                options_.push_back(new SimpleOption<bool>(which + "-mesh-generator-triangulate",
+                                                          "Generate triangulated " + which + " mesh"));
+                options_.push_back(
+                    new SimpleOption<double>(which + "-mesh-generator-angle",
+                                             "Generate with quadrilateral tolerance angle on " + which + " mesh"));
+                options_.push_back(new SimpleOption<bool>(which + "-mesh-generator-force-include-north-pole",
+                                                          "Generate including North pole on " + which + " mesh"));
+                options_.push_back(new SimpleOption<bool>(which + "-mesh-generator-force-include-south-pole",
+                                                          "Generate including South pole on " + which + " mesh"));
+            }
         }
-#endif
 
         options_.push_back(
             new SimpleOption<double>("counter-upper-limit", "Statistics count values below lower limit"));
@@ -361,10 +364,10 @@ struct MIR : MIRTool {
             "legendre-loader", "Select how to load Legendre coefficients in memory"));
 #endif
 
-#if mir_HAVE_OMP
-        options_.push_back(
-            new SimpleOption<size_t>("parallel-omp-num-threads", "Set number of threads for OMP parallel regions"));
-#endif
+        if constexpr (HAVE_OMP) {
+            options_.push_back(
+                new SimpleOption<size_t>("parallel-omp-num-threads", "Set number of threads for OMP parallel regions"));
+        }
 
         //==============================================
         // Only show these options if debug channel is active

@@ -37,10 +37,10 @@ CASE("interpolations") {
     jobs[1].set("area", "40/20/20/40");
     jobs[1].set("frame", 2);
 
-#if mir_HAVE_ATLAS
-    jobs[2].set("caching", false);
-    jobs[2].set("rotation", "-89/10");
-#endif
+    if constexpr (HAVE_ATLAS) {
+        jobs[2].set("caching", false);
+        jobs[2].set("rotation", "-89/10");
+    }
 
 
     SECTION("gridded to gridded (GRIB)") {
@@ -62,58 +62,39 @@ CASE("interpolations") {
     }
 
 
-#if mir_HAVE_NETCDF
-#if atlas_HAVE_TESSELATION
-    SECTION("gridded to gridded (netCDF)") {
-        param::SimpleParametrisation args;
-        args.set("input", "checkDuplicatePoints: False");
+    if constexpr (HAVE_ATLAS) {
+        SECTION("spectral to gridded (scalar)") {
+            param::SimpleParametrisation args;
 
-        for (const auto& job : jobs) {
-            std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build("../data/nemo.nc", args));
-            output::EmptyOutput output;
+            for (const auto& job : jobs) {
+                std::unique_ptr<input::MIRInput> input(
+                    input::MIRInputFactory::build("../data/param=t,level=1000,resol=20", args));
+                output::EmptyOutput output;
 
-            while (input->next()) {
-                job.execute(*input, output);
+                while (input->next()) {
+                    job.execute(*input, output);
+                }
+            }
+        }
+
+
+        SECTION("spectral to gridded (vod2uv)") {
+            param::SimpleParametrisation args;
+            args.set("vod2uv", true);
+
+            for (auto& job : jobs) {
+                std::unique_ptr<input::MIRInput> input(
+                    input::MIRInputFactory::build("../data/param=vo_d,level=1000,resol=20", args));
+                output::EmptyOutput output;
+
+                job.set("vod2uv", true);
+
+                while (input->next()) {
+                    job.execute(*input, output);
+                }
             }
         }
     }
-#endif
-#endif
-
-
-#if mir_HAVE_ATLAS
-    SECTION("spectral to gridded (scalar)") {
-        param::SimpleParametrisation args;
-
-        for (const auto& job : jobs) {
-            std::unique_ptr<input::MIRInput> input(
-                input::MIRInputFactory::build("../data/param=t,level=1000,resol=20", args));
-            output::EmptyOutput output;
-
-            while (input->next()) {
-                job.execute(*input, output);
-            }
-        }
-    }
-
-
-    SECTION("spectral to gridded (vod2uv)") {
-        param::SimpleParametrisation args;
-        args.set("vod2uv", true);
-
-        for (auto& job : jobs) {
-            std::unique_ptr<input::MIRInput> input(
-                input::MIRInputFactory::build("../data/param=vo_d,level=1000,resol=20", args));
-            output::EmptyOutput output;
-
-            job.set("vod2uv", true);
-
-            while (input->next()) {
-                job.execute(*input, output);
-            }
-        }
-    }
-#endif
 }
 
 
