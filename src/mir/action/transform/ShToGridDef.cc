@@ -17,7 +17,7 @@
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/UnstructuredGrid.h"
+#include "mir/repres/other/UnstructuredGrid.h"
 #include "mir/util/Exceptions.h"
 
 
@@ -66,7 +66,7 @@ const char* ShToGridDef<Invtrans>::ShToGridDef::name() const {
 
 template <class Invtrans>
 const repres::Representation* ShToGridDef<Invtrans>::outputRepresentation() const {
-    return new repres::UnstructuredGrid(griddef_);
+    return new repres::other::UnstructuredGrid(griddef_);
 }
 
 

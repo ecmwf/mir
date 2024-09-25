@@ -17,7 +17,7 @@
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/UnstructuredGrid.h"
+#include "mir/repres/other/UnstructuredGrid.h"
 #include "mir/util/Exceptions.h"
 
 
@@ -69,7 +69,7 @@ const char* ShToPoints<Invtrans>::name() const {
 
 template <class Invtrans>
 const repres::Representation* ShToPoints<Invtrans>::outputRepresentation() const {
-    return new repres::UnstructuredGrid(latitudes_, longitudes_);
+    return new repres::other::UnstructuredGrid(latitudes_, longitudes_);
 }
 
 
