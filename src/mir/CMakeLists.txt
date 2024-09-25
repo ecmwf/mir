@@ -499,8 +499,6 @@ list(APPEND mir_srcs
     repres/Iterator.h
     repres/Representation.cc
     repres/Representation.h
-    repres/UnstructuredGrid.cc
-    repres/UnstructuredGrid.h
     repres/gauss/Gaussian.cc
     repres/gauss/Gaussian.h
     repres/gauss/GaussianIterator.cc
@@ -541,6 +539,8 @@ list(APPEND mir_srcs
     repres/latlon/RotatedLL.h
     repres/other/None.cc
     repres/other/None.h
+    repres/other/UnstructuredGrid.cc
+    repres/other/UnstructuredGrid.h
     repres/regular/Lambert.cc
     repres/regular/Lambert.h
     repres/regular/LambertAzimuthalEqualArea.cc

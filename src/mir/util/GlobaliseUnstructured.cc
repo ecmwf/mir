@@ -18,7 +18,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/repres/UnstructuredGrid.h"
+#include "mir/repres/other/UnstructuredGrid.h"
 #include "mir/search/PointSearch.h"
 #include "mir/util/Exceptions.h"
 
@@ -52,7 +52,7 @@ size_t GlobaliseUnstructured::appendGlobalPoints(std::vector<double>& latitudes,
 
 
     // setup k-d tree on temporary unstructured grid
-    repres::UnstructuredGrid unstructuredGrid(latitudes, longitudes);
+    repres::other::UnstructuredGrid unstructuredGrid(latitudes, longitudes);
     const search::PointSearch tree(parametrisation_, unstructuredGrid);
 
 

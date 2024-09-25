@@ -25,7 +25,7 @@
 #include "eckit/utils/Translator.h"
 
 #include "mir/data/MIRField.h"
-#include "mir/repres/UnstructuredGrid.h"
+#include "mir/repres/other/UnstructuredGrid.h"
 #include "mir/util/CheckDuplicatePoints.h"
 #include "mir/util/Exceptions.h"
 
@@ -322,7 +322,7 @@ const param::MIRParametrisation& GeoPointsFileInput::parametrisation(size_t whic
 
 
 data::MIRField GeoPointsFileInput::field() const {
-    data::MIRField field(new repres::UnstructuredGrid(latitudes_, longitudes_), hasMissing_, missingValue_);
+    data::MIRField field(new repres::other::UnstructuredGrid(latitudes_, longitudes_), hasMissing_, missingValue_);
 
     // copy, to preserve consistent internal state
     MIRValuesVector values(values_);
