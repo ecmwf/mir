@@ -15,11 +15,13 @@
 #include <cmath>
 #include <cstdint>
 #include <fstream>
+#include <memory>
 #include <vector>
 
 #include "eckit/codec/codec.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/option/CmdArgs.h"
+#include "eckit/option/FactoryOption.h"
 #include "eckit/option/SimpleOption.h"
 
 #include "mir/tools/MIRTool.h"
@@ -32,16 +34,19 @@ namespace mir::tools {
 
 const uint64_t FESOM_CODEC_VERSION = 0;
 
+
 template <int N>
 struct nod_t : std::array<double, 3> {
+    static_assert(N == 2 || N == 3);
+
+    nod_t() : array{0., 0., 0.} {}
+
     size_t idx = 0;
     size_t tag = 0;
 
     value_type& lon    = (*this)[0];
     value_type& lat    = (*this)[1];
     value_type& height = (*this)[2];
-
-    nod_t() : array{} { static_assert(N == 2 || N == 3); }
 
     void read(std::istream& in) {
         in >> idx;
@@ -99,8 +104,159 @@ struct vector_t : std::vector<T> {
 };
 
 
+constexpr auto READ_FILE = [](const std::string& path, auto& list) {
+    std::ifstream in(path);
+    ASSERT(in);
+
+    size_t n = 0;
+    ASSERT(in >> n);
+    ASSERT(0 < n);
+
+    list.resize(n);
+    std::for_each(list.begin(), list.end(), [&](auto& entry) { entry.read(in); });
+};
+
+
+constexpr auto WRITE_GMSH = [](const eckit::PathName& path, const auto& nod, const auto& elem) {
+    ASSERT(path.extension() == ".msh");
+
+    std::ofstream out(path);
+    ASSERT(out);
+
+    out << "$MeshFormat"
+           "\n2.2 0 8"
+           "\n$EndMeshFormat";
+
+    out << "\n$Nodes\n" << nod.size();
+    std::for_each(nod.begin(), nod.end(), [&](const auto& n) { out << "\n" << n; });
+    out << "\n$EndNodes";
+
+    if (!elem.empty()) {
+        out << "\n$Elements\n" << elem.size();
+        std::for_each(elem.begin(), elem.end(), [&](const auto& e) {
+            static auto i = 1;
+            out << "\n" << i++ << ' ' << e;
+        });
+        out << "\n$EndElements";
+    }
+};
+
+
+struct FESOM {
+    explicit FESOM(const eckit::option::CmdArgs& args) {
+        READ_FILE(args.getString("nod2d", ""), nod2d);  // mandatory
+
+        if (auto path = args.getString("elem2d", ""); !path.empty()) {
+            READ_FILE(path, elem2d);
+        }
+
+        if (auto path = args.getString("nod3d", ""); !path.empty()) {
+            READ_FILE(path, nod3d);
+        }
+
+        if (auto path = args.getString("elem3d", ""); !path.empty()) {
+            READ_FILE(path, elem3d);
+        }
+    }
+
+    vector_t<nod_t<2>> nod2d;
+    vector_t<elem_t<3, 2>> elem2d;
+    vector_t<nod_t<3>> nod3d;
+    vector_t<elem_t<4, 4>> elem3d;
+};
+
+
+struct Format {
+    virtual void write(const eckit::PathName&, const FESOM&) const = 0;
+    virtual ~Format()                                              = default;
+
+    static Format* build(const std::string&);
+    static void list(std::ostream&);
+};
+
+
+struct FormatNone : Format {
+    void write(const eckit::PathName&, const FESOM&) const override {}
+};
+
+
+struct FormatCodecAll : Format {
+    void write(const eckit::PathName& path, const FESOM& fesom) const override {
+        eckit::codec::RecordWriter record;
+        record.set("version", FESOM_CODEC_VERSION);
+
+        record.set("nod2d_shape", eckit::codec::ref(fesom.nod2d.shape()));
+        record.set("elem2d_shape", eckit::codec::ref(fesom.elem2d.shape()));
+        record.set("nod3d_shape", eckit::codec::ref(fesom.nod3d.shape()));
+        record.set("elem3d_shape", eckit::codec::ref(fesom.elem3d.shape()));
+
+        record.set("nod2d", eckit::codec::ref(fesom.nod2d.flatten()));
+        record.set("elem2d", eckit::codec::ref(fesom.elem2d.flatten(true)));
+        record.set("nod3d", eckit::codec::ref(fesom.nod3d.flatten()));
+        record.set("elem3d", eckit::codec::ref(fesom.elem3d.flatten(true)));
+
+        record.write(path);
+    }
+};
+
+
+struct FormatCodecLL : Format {
+    void write(const eckit::PathName& path, const FESOM& fesom) const override {
+        eckit::codec::RecordWriter record;
+        record.set("version", FESOM_CODEC_VERSION);
+
+        auto n = fesom.nod2d.shape()[0];
+        record.set("n", eckit::codec::ref(n));
+
+        std::vector<double> latitude(n);
+        std::transform(fesom.nod2d.begin(), fesom.nod2d.end(), latitude.begin(), [](const auto& n) { return n.lat; });
+        record.set("latitude", eckit::codec::ref(latitude));
+
+        std::vector<double> longitude(n);
+        std::transform(fesom.nod2d.begin(), fesom.nod2d.end(), longitude.begin(), [](const auto& n) { return n.lon; });
+        record.set("longitude", eckit::codec::ref(longitude));
+
+        record.write(path);
+    }
+};
+
+
+struct FormatGmsh2D : Format {
+    void write(const eckit::PathName& path, const FESOM& fesom) const override {
+        WRITE_GMSH(path, fesom.nod2d, fesom.elem2d);
+    }
+};
+
+
+struct FormatGmsh3D : Format {
+    void write(const eckit::PathName& path, const FESOM& fesom) const override {
+        WRITE_GMSH(path, fesom.nod3d, fesom.elem3d);
+    }
+};
+
+
+Format* Format::build(const std::string& name) {
+    return name == "none"                       ? static_cast<Format*>(new FormatNone)
+           : name == "codec-all"                ? static_cast<Format*>(new FormatCodecAll)
+           : name == "codec-latitude-longitude" ? static_cast<Format*>(new FormatCodecLL)
+           : name == "gmsh-2d"                  ? static_cast<Format*>(new FormatGmsh2D)
+           : name == "gmsh-3d"                  ? static_cast<Format*>(new FormatGmsh3D)
+                                                : throw exception::SeriousBug("Format: unknown '" + name + "'");
+}
+
+
+void Format::list(std::ostream& out) {
+    out << "none, "
+           "codec-all, "
+           "codec-latitude-longitude,"
+           "gmsh-2d, "
+           "gmsh-3d";
+}
+
+
 struct MIRFESOMGridToCodec : public MIRTool {
     MIRFESOMGridToCodec(int argc, char** argv) : MIRTool(argc, argv) {
+        using eckit::option::FactoryOption;
         using eckit::option::SimpleOption;
 
         options_.push_back(new SimpleOption<std::string>("nod2d", "nod2d.out file"));
@@ -109,11 +265,7 @@ struct MIRFESOMGridToCodec : public MIRTool {
         options_.push_back(new SimpleOption<std::string>("nod3d", "nod3d.out file"));
         options_.push_back(new SimpleOption<std::string>("elem3d", "elem3d.out file"));
 
-        options_.push_back(new SimpleOption<std::string>("aux3d", "aux3d.out file"));
-        options_.push_back(new SimpleOption<std::string>("depth", "depth.out file"));
-
-        options_.push_back(new SimpleOption<std::string>("output-gmsh-2d", "Gmsh output file, 2D structures (.msh)"));
-        options_.push_back(new SimpleOption<std::string>("output-gmsh-3d", "Gmsh output file, 3D structures (.msh)"));
+        options_.push_back(new FactoryOption<Format>("format", "output format"));
     }
 
     int numberOfPositionalArguments() const override { return 1; }
@@ -128,108 +280,13 @@ struct MIRFESOMGridToCodec : public MIRTool {
     void execute(const eckit::option::CmdArgs& args) override {
         ASSERT(args.count() == numberOfPositionalArguments());
 
-        auto read_file = [](const std::string& path, auto& list) {
-            std::ifstream in(path);
-            ASSERT(in);
+        // Read FESOM data structures in 2D/3D
+        FESOM fesom(args);
 
-            size_t n = 0;
-            ASSERT(in >> n);
-
-            list.resize(n);
-            std::for_each(list.begin(), list.end(), [&](auto& entry) { entry.read(in); });
-        };
-
-        auto write_gmsh = [](const std::string& path, const auto& nod, const auto& elem) {
-            std::ofstream out(path);
-            ASSERT(out);
-
-            out << "$MeshFormat"
-                   "\n2.2 0 8"
-                   "\n$EndMeshFormat";
-
-            out << "\n$Nodes\n" << nod.size();
-            std::for_each(nod.begin(), nod.end(), [&](const auto& n) { out << "\n" << n; });
-            out << "\n$EndNodes";
-
-            out << "\n$Elements\n" << elem.size();
-            std::for_each(elem.begin(), elem.end(), [&](const auto& e) {
-                static auto i = 1;
-                out << "\n" << i++ << ' ' << e;
-            });
-            out << "\n$EndElements";
-        };
-
-
-        // Read FESOM data structures in 2D/3D (only nod2d is mandatory)
-
-        vector_t<nod_t<2>> nod2d;
-        read_file(args.getString("nod2d"), nod2d);
-        ASSERT(!nod2d.empty());
-
-        vector_t<elem_t<3, 2>> elem2d;
-        if (auto path = args.getString("elem2d", ""); !path.empty()) {
-            read_file(path, elem2d);
-        }
-
-        vector_t<nod_t<3>> nod3d;
-        if (auto path = args.getString("nod3d", ""); !path.empty()) {
-            read_file(path, nod3d);
-        }
-
-        vector_t<elem_t<4, 4>> elem3d;
-        if (auto path = args.getString("elem3d", ""); !path.empty()) {
-            read_file(path, elem3d);
-        }
-
-
-        // Write Gmsh .msh(s)
-
-        if (auto path = args.getString("output-gmsh-2d", ""); !path.empty()) {
-            if (!elem2d.empty()) {
-                write_gmsh(path, nod2d, elem2d);
-            }
-        }
-
-        if (auto path = args.getString("output-gmsh-3d", ""); !path.empty()) {
-            if (!nod3d.empty() && !elem3d.empty()) {
-                write_gmsh(path, nod3d, elem3d);
-            }
-        }
-
-
-        // Write eckit::codec file
-
-        eckit::codec::RecordWriter record;
-        record.set("version", FESOM_CODEC_VERSION);
-
-        if (elem2d.empty() && nod3d.empty() && elem3d.empty()) {
-            ASSERT(nod2d.shape()[1] == 2);
-            auto n = nod2d.shape()[0];
-
-            std::vector<double> longitude(n);
-            std::transform(nod2d.begin(), nod2d.end(), longitude.begin(), [](const auto& n) { return n.lon; });
-
-            std::vector<double> latitude(n);
-            std::transform(nod2d.begin(), nod2d.end(), latitude.begin(), [](const auto& n) { return n.lat; });
-
-            record.set("n", eckit::codec::ref(n));
-            record.set("longitude", eckit::codec::ref(longitude));
-            record.set("latitude", eckit::codec::ref(latitude));
-        }
-        else {
-            record.set("nod2d_shape", eckit::codec::ref(nod2d.shape()));
-            record.set("elem2d_shape", eckit::codec::ref(elem2d.shape()));
-            record.set("nod3d_shape", eckit::codec::ref(nod3d.shape()));
-            record.set("elem3d_shape", eckit::codec::ref(elem3d.shape()));
-
-            record.set("nod2d", eckit::codec::ref(nod2d.flatten()));
-            record.set("elem2d", eckit::codec::ref(elem2d.flatten(true)));
-            record.set("nod3d", eckit::codec::ref(nod3d.flatten()));
-            record.set("elem3d", eckit::codec::ref(elem3d.flatten(true)));
-        }
-
-        eckit::PathName path(args(0));
-        record.write(path);
+        // Write eckit::codec/Gmsh file
+        std::unique_ptr<Format> {
+            Format::build(args.getString("format", "codec-latitude-longitude"))
+        } -> write(args(0), fesom);
     }
 };
 
