@@ -17,7 +17,7 @@
 #include "eckit/filesystem/PathName.h"
 
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/other/UnstructuredGrid.h"
+#include "mir/repres/UnstructuredGrid.h"
 #include "mir/util/Exceptions.h"
 
 
@@ -55,7 +55,7 @@ void Gridded2GridDef::print(std::ostream& out) const {
 
 
 const repres::Representation* Gridded2GridDef::outputRepresentation() const {
-    return new repres::other::UnstructuredGrid(griddef_);
+    return new repres::UnstructuredGrid(griddef_);
 }
 
 

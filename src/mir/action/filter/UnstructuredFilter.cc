@@ -21,7 +21,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
-#include "mir/repres/other/UnstructuredGrid.h"
+#include "mir/repres/UnstructuredGrid.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Types.h"
 
@@ -59,7 +59,7 @@ void UnstructuredFilter::execute(context::Context& ctx) const {
         longitudes.at(it->index()) = p[1];
     }
 
-    field.representation(new repres::other::UnstructuredGrid(latitudes, longitudes));
+    field.representation(new repres::UnstructuredGrid(latitudes, longitudes));
 }
 
 
