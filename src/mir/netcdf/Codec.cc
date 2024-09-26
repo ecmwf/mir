@@ -146,12 +146,12 @@ CodecFactory::CodecFactory(const std::string& name) : name_(name) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-    if (m->find(name) != m->end()) {
-        throw exception::SeriousBug("CodecFactory: duplicate '" + name + "'");
+    if (auto j = m->find(name); j == m->end()) {
+        (*m)[name] = this;
+        return;
     }
 
-    ASSERT(m->find(name) == m->end());
-    (*m)[name] = this;
+    throw exception::SeriousBug("CodecFactory: duplicate '" + name + "'");
 }
 
 
@@ -168,13 +168,24 @@ Codec* CodecFactory::build(const std::string& name, const Variable& variable) {
 
     Log::debug() << "CodecFactory: looking for '" << name << "'" << std::endl;
 
-    auto j = m->find(name);
-    if (j == m->end()) {
-        list(Log::error() << "CodecFactory: unknown '" << name << "', choices are: ");
-        throw exception::SeriousBug("CodecFactory: unknown '" + name + "'");
+    if (auto j = m->find(name); j == m->end()) {
+        return j->second->make(variable);
     }
 
-    return j->second->make(variable);
+    auto trim = [](const std::string& str, const std::string& trimmable) -> std::string {
+        size_t first = str.find_first_not_of(trimmable);
+        size_t last  = str.find_last_not_of(trimmable);
+
+        return first == std::string::npos || last == 0 ? "" : str.substr(first, last - first + 1);
+    };
+
+    if (auto name_trimmed = trim(name, " \t\n\r\f\v"); name_trimmed != name) {
+        Log::warning() << "CodecFactory: looking for (trimmed) '" << name << "'" << std::endl;
+        return build(name_trimmed, variable);
+    }
+
+    list(Log::error() << "CodecFactory: unknown '" << name << "', choices are: ");
+    throw exception::SeriousBug("CodecFactory: unknown '" + name + "'");
 }
 
 
@@ -184,7 +195,7 @@ void CodecFactory::list(std::ostream& out) {
 
     const char* sep = "";
     for (const auto& j : *m) {
-        out << sep << j.first;
+        out << sep << "'" << j.first << "'";
         sep = ", ";
     }
 }
