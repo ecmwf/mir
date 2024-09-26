@@ -142,9 +142,9 @@ constexpr auto WRITE_GMSH = [](const eckit::PathName& path, const auto& nod, con
 };
 
 
-struct FESOM {
-    explicit FESOM(const eckit::option::CmdArgs& args) {
-        READ_FILE(args.getString("nod2d", ""), nod2d);  // mandatory
+struct FESOMData {
+    explicit FESOMData(const eckit::option::CmdArgs& args) {
+        READ_FILE(args.getString("nod2d"), nod2d);  // mandatory
 
         if (auto path = args.getString("elem2d", ""); !path.empty()) {
             READ_FILE(path, elem2d);
@@ -167,8 +167,8 @@ struct FESOM {
 
 
 struct Format {
-    virtual void write(const eckit::PathName&, const FESOM&) const = 0;
-    virtual ~Format()                                              = default;
+    virtual void write(const eckit::PathName&, const FESOMData&) const = 0;
+    virtual ~Format()                                                  = default;
 
     static Format* build(const std::string&);
     static void list(std::ostream&);
@@ -176,12 +176,12 @@ struct Format {
 
 
 struct FormatNone : Format {
-    void write(const eckit::PathName&, const FESOM&) const override {}
+    void write(const eckit::PathName&, const FESOMData&) const override {}
 };
 
 
 struct FormatCodecAll : Format {
-    void write(const eckit::PathName& path, const FESOM& fesom) const override {
+    void write(const eckit::PathName& path, const FESOMData& fesom) const override {
         eckit::codec::RecordWriter record;
         record.set("version", FESOM_CODEC_VERSION);
 
@@ -201,7 +201,7 @@ struct FormatCodecAll : Format {
 
 
 struct FormatCodecLL : Format {
-    void write(const eckit::PathName& path, const FESOM& fesom) const override {
+    void write(const eckit::PathName& path, const FESOMData& fesom) const override {
         eckit::codec::RecordWriter record;
         record.set("version", FESOM_CODEC_VERSION);
 
@@ -222,14 +222,14 @@ struct FormatCodecLL : Format {
 
 
 struct FormatGmsh2D : Format {
-    void write(const eckit::PathName& path, const FESOM& fesom) const override {
+    void write(const eckit::PathName& path, const FESOMData& fesom) const override {
         WRITE_GMSH(path, fesom.nod2d, fesom.elem2d);
     }
 };
 
 
 struct FormatGmsh3D : Format {
-    void write(const eckit::PathName& path, const FESOM& fesom) const override {
+    void write(const eckit::PathName& path, const FESOMData& fesom) const override {
         WRITE_GMSH(path, fesom.nod3d, fesom.elem3d);
     }
 };
@@ -280,8 +280,8 @@ struct MIRFESOMGridToCodec : public MIRTool {
     void execute(const eckit::option::CmdArgs& args) override {
         ASSERT(args.count() == numberOfPositionalArguments());
 
-        // Read FESOM data structures in 2D/3D
-        FESOM fesom(args);
+        // Read FESOMData data structures in 2D/3D
+        FESOMData fesom(args);
 
         // Write eckit::codec/Gmsh file
         std::unique_ptr<Format> {
