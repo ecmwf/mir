@@ -823,6 +823,11 @@ else()
 endif()
 
 
+if(eckit_HAVE_ECKIT_GEO)
+    list(APPEND mir_srcs repres/FESOM.cc repres/FESOM.h)
+endif()
+
+
 if(mir_HAVE_NETCDF)
     list(APPEND mir_srcs
         input/NetcdfFileInput.cc
@@ -972,6 +977,9 @@ ecbuild_add_library(
 
 if(mir_HAVE_ATLAS)
     target_link_libraries(mir PUBLIC atlas)
+endif()
+if(eckit_HAVE_ECKIT_GEO)
+    target_link_libraries(mir PUBLIC eckit_geo)
 endif()
 if(mir_HAVE_NETCDF)
     target_link_libraries(mir PRIVATE NetCDF::NetCDF_C)
