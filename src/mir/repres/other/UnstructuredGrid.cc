@@ -25,7 +25,6 @@
 #include "eckit/utils/MD5.h"
 
 #include "mir/api/MIRJob.h"
-#include "mir/api/mir_config.h"
 #include "mir/iterator/UnstructuredIterator.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/CheckDuplicatePoints.h"
@@ -35,32 +34,9 @@
 #include "mir/util/Log.h"
 #include "mir/util/MeshGeneratorParameters.h"
 
-#if mir_HAVE_ATLAS
-#include "mir/key/grid/ORCAPattern.h"
-#include "mir/repres/proxy/ORCA.h"
-#endif
 
+namespace mir::repres::other {
 
-namespace mir::repres {
-
-
-template <>
-Representation* RepresentationBuilder<other::UnstructuredGrid>::make(const param::MIRParametrisation& param) {
-#if mir_HAVE_ATLAS
-    // specially-named unstructured grids
-    std::string grid;
-    if (param.get("grid", grid)) {
-        if (!key::grid::ORCAPattern::match(grid, param).empty()) {
-            return new proxy::ORCA(param);
-        }
-    }
-#endif
-
-    return new other::UnstructuredGrid(param);
-}
-
-
-namespace other {
 
 UnstructuredGrid::UnstructuredGrid(const param::MIRParametrisation& parametrisation) {
     parametrisation.get("latitudes", latitudes_);
@@ -299,7 +275,4 @@ static const RepresentationBuilder<UnstructuredGrid> triangular_grid("triangular
 static const RepresentationBuilder<UnstructuredGrid> unstructured_grid("unstructured_grid");
 
 
-}  // namespace other
-
-
-}  // namespace mir::repres
+}  // namespace mir::repres::other

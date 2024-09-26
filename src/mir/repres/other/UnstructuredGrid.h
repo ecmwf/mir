@@ -58,7 +58,7 @@ public:
                      const std::vector<double>& longitudes, bool binary);
 
     // -- Overridden methods
-
+    // None
 
     // -- Class members
     // None

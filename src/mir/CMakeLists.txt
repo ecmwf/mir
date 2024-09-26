@@ -780,10 +780,6 @@ if(mir_HAVE_ATLAS)
         key/grid/HEALPixPattern.h
         key/grid/NamedHEALPix.cc
         key/grid/NamedHEALPix.h
-        key/grid/NamedORCA.cc
-        key/grid/NamedORCA.h
-        key/grid/ORCAPattern.cc
-        key/grid/ORCAPattern.h
         method/ProxyMethod.cc
         method/ProxyMethod.h
         method/fe/BuildNodeLumpedMassMatrix.cc
@@ -810,8 +806,6 @@ if(mir_HAVE_ATLAS)
         reorder/HEALPix.h
         repres/proxy/HEALPix.cc
         repres/proxy/HEALPix.h
-        repres/proxy/ORCA.cc
-        repres/proxy/ORCA.h
         repres/proxy/ProxyGrid.cc
         repres/proxy/ProxyGrid.h
         repres/unsupported/HEALPixNested.cc
@@ -824,7 +818,7 @@ endif()
 
 
 if(eckit_HAVE_ECKIT_GEO)
-    list(APPEND mir_srcs repres/FESOM.cc repres/FESOM.h)
+    list(APPEND mir_srcs repres/FESOM.cc repres/FESOM.h repres/ORCA.cc repres/ORCA.h)
 endif()
 
 
