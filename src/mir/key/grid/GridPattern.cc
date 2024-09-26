@@ -105,7 +105,7 @@ const Grid* GridPattern::lookup(const std::string& name) {
             k = j;
         }
         else {
-            Log::debug() << "GridPattern: '" << j->second->pattern_ << "' no match" << std::endl;
+            // Log::debug() << "GridPattern: '" << j->second->pattern_ << "' no match" << std::endl;
         }
     }
 

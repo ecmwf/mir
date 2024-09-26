@@ -199,14 +199,16 @@ class RepresentationHandle {
 
 public:
     RepresentationHandle(const Representation*);
-    explicit RepresentationHandle(const RepresentationHandle&);
+    RepresentationHandle(const RepresentationHandle&);
     ~RepresentationHandle();
+
+    RepresentationHandle& operator=(const RepresentationHandle&) = delete;
+    RepresentationHandle& operator=(RepresentationHandle&&)      = delete;
+
     const Representation* operator->() const { return representation_; }
     operator const Representation*() const { return representation_; }
-    operator bool() const { return representation_ != nullptr; }
 
-private:
-    RepresentationHandle& operator=(const RepresentationHandle&) = delete;
+    explicit operator bool() const { return representation_ != nullptr; }
 };
 
 
@@ -214,14 +216,16 @@ class RepresentationFactory {
     std::string name_;
     virtual Representation* make(const param::MIRParametrisation&) = 0;
 
-    RepresentationFactory(const RepresentationFactory&)            = delete;
-    RepresentationFactory& operator=(const RepresentationFactory&) = delete;
-
 protected:
     explicit RepresentationFactory(const std::string&);
     virtual ~RepresentationFactory();
 
 public:
+    RepresentationFactory(const RepresentationFactory&)            = delete;
+    RepresentationFactory(RepresentationFactory&&)                 = delete;
+    RepresentationFactory& operator=(RepresentationFactory&&)      = delete;
+    RepresentationFactory& operator=(const RepresentationFactory&) = delete;
+
     // This is 'const' as the representation uses reference counting
     // Represention should always be immutable
     static const Representation* build(const param::MIRParametrisation&);
