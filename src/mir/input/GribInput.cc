@@ -31,6 +31,7 @@
 #include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
 
+#include "mir/api/mir_config.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/grib/Config.h"
@@ -42,6 +43,11 @@
 #include "mir/util/Mutex.h"
 #include "mir/util/ValueMap.h"
 #include "mir/util/Wind.h"
+
+#if eckit_HAVE_ECKIT_GEO
+#include "eckit/geo/Grid.h"
+#include "eckit/geo/spec/Custom.h"
+#endif
 
 
 namespace mir::input {
@@ -1011,11 +1017,23 @@ bool GribInput::get(const std::string& name, std::vector<float>& value) const {
 
 bool GribInput::get(const std::string& name, std::string& value) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
-
     ASSERT(grib_);
-    const auto* key = get_key(name, grib_);
 
+    if (std::string uid; name == "gridType" && get("uid", uid)) {
+        using spec_ptr = std::unique_ptr<eckit::geo::Spec>;
+
+        spec_ptr spec_uid(new eckit::geo::spec::Custom{{{"uid", uid}}});
+        spec_ptr spec(eckit::geo::GridFactory::make_spec(*spec_uid));
+
+        if (spec->has("type")) {
+            value = spec->get_string("type");
+            return true;
+        }
+    }
+
+    const auto* key = get_key(name, grib_);
     ASSERT(key != nullptr);
+
     if (std::strlen(key) == 0) {
         return false;
     }

@@ -21,6 +21,8 @@
 #cmakedefine01 mir_HAVE_PNG
 #cmakedefine01 mir_HAVE_OMP
 
+#cmakedefine01 eckit_HAVE_ECKIT_GEO
+
 
 constexpr bool _to_bool(int x = 0) {
     return x != 0;
