@@ -14,15 +14,20 @@
 
 #include <memory>
 
-#include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Gridded.h"
-#include "mir/util/Grib.h"
 
 
 namespace eckit::geo {
-class Grid;
 class Spec;
+namespace grid {
+class FESOM;
+}
 }  // namespace eckit::geo
+
+
+namespace mir::param {
+class MIRParametrisation;
+}
 
 
 namespace mir::repres {
@@ -34,6 +39,8 @@ public:
 
     explicit FESOM(const std::string& uid);
     explicit FESOM(const param::MIRParametrisation&);
+
+    explicit FESOM(eckit::geo::Spec*);
 
     FESOM(const FESOM&) = delete;
     FESOM(FESOM&&)      = delete;
@@ -50,8 +57,14 @@ public:
 private:
     // -- Members
 
-    mutable std::unique_ptr<eckit::geo::Grid> grid_;
+    mutable std::unique_ptr<eckit::geo::grid::FESOM> grid_;
+
+    std::unique_ptr<eckit::geo::Spec> spec_user_;
     std::unique_ptr<eckit::geo::Spec> spec_;
+
+    // -- Methods
+
+    eckit::geo::grid::FESOM& grid() const;
 
     // -- Overridden methods
 
