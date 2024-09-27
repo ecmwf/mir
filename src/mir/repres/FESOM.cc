@@ -21,10 +21,13 @@
 #include "eckit/geo/Grid.h"
 #include "eckit/geo/grid/FESOM.h"
 
+#include "eckit/geo/spec/Custom.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/grid/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
+#include "mir/repres/other/UnstructuredGrid.h"
+#include "mir/util/BoundingBox.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
@@ -35,7 +38,7 @@ namespace mir::repres {
 
 // order is important for makeName()
 static const std::vector<std::pair<std::string, std::string>> GRIB_KEYS{
-    {"fesom_arrangement", "unstructuredGridSubtype"}, {"uid", "uuidOfHGrid"}};
+    {"fesom_arrangement", "unstructuredGridSubtype"}, {"fesom_uid", "uuidOfHGrid"}};
 
 
 FESOM::FESOM(const std::string& uid) : spec_(eckit::geo::SpecByUID::instance().get(uid).spec()) {
@@ -164,7 +167,14 @@ struct FESOMPattern : key::grid::GridPattern {
             void print(std::ostream& out) const override { out << "NamedFESOM[key=" << key_ << "]"; }
             size_t gaussianNumber() const override { return default_gaussian_number(); }
 
-            const Representation* representation() const override { return new FESOM(key_); }
+            const Representation* representation() const override {
+                eckit::geo::spec::Custom grid{{{"grid", key_}}};
+                std::unique_ptr<eckit::geo::Spec> spec{eckit::geo::GridFactory::make_spec(grid)};
+
+                // key is either a recognized name, or a uid
+                return new FESOM(spec->has("fesom_uid") ? spec->get_string("fesom_uid") : key_);
+            }
+
             const Representation* representation(const util::Rotation&) const override { NOTIMP; }
         };
 
@@ -184,7 +194,27 @@ struct FESOMPattern : key::grid::GridPattern {
 };
 
 
-static const RepresentationBuilder<FESOM> __grid("fesom");
+const Representation* FESOM::croppedRepresentation(const util::BoundingBox& bbox) const {
+    auto container = grid_->container();
+    ASSERT(container);
+
+    std::vector<double> lat;
+    std::vector<double> lon;
+
+    for (size_t i = 0; i < container->size(); ++i) {
+        const auto p = container->get(i);
+
+        if (const auto& q = std::get<eckit::geo::PointLonLat>(p); bbox.contains(Point2{q.lat, q.lon})) {
+            lat.push_back(q.lat);
+            lon.push_back(q.lon);
+        }
+    }
+
+    return new other::UnstructuredGrid(lat, lon);
+}
+
+
+static const RepresentationBuilder<FESOM> __grid("FESOM");
 
 static const FESOMPattern __pattern1("^[pP][iI]$");
 static const FESOMPattern __pattern2("^[dD][aA][rR][tT]$");

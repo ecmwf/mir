@@ -25,11 +25,6 @@ class ORCA;
 }  // namespace eckit::geo
 
 
-namespace mir::param {
-class MIRParametrisation;
-}
-
-
 namespace mir::repres {
 
 
@@ -55,7 +50,7 @@ public:
 private:
     // -- Members
 
-    mutable std::unique_ptr<eckit::geo::grid::ORCA> grid_;
+    std::unique_ptr<eckit::geo::grid::ORCA> grid_;
     std::unique_ptr<eckit::geo::Spec> spec_;
 
     // -- Overridden methods
@@ -75,6 +70,11 @@ private:
     bool includesNorthPole() const override { return true; }
     bool includesSouthPole() const override { return true; }
     bool isPeriodicWestEast() const override { return true; }
+
+    atlas::Grid atlasGrid() const override;
+
+    // Return a cropped version
+    const Representation* croppedRepresentation(const util::BoundingBox&) const override;
 
     void print(std::ostream&) const override;
 };

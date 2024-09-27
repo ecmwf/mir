@@ -15,18 +15,20 @@
 #include <algorithm>
 #include <cctype>
 #include <ostream>
-#include <string>
-#include <utility>
 #include <vector>
 
+#include "eckit/config/LocalConfiguration.h"
 #include "eckit/geo/Grid.h"
 #include "eckit/geo/grid/ORCA.h"
+#include "eckit/geo/spec/Custom.h"
 
 #include "mir/api/mir_config.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/grid/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
+#include "mir/repres/other/UnstructuredGrid.h"
+#include "mir/util/BoundingBox.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
@@ -36,9 +38,24 @@
 namespace mir::repres {
 
 
+struct key_t {
+    std::string geo;
+    std::string atlas;
+    std::string grib;
+};
+
+
+enum key_index_t
+{
+    GEO,
+    ATLAS,
+    GRIB
+};
+
 // order is important for makeName()
-static const std::vector<std::pair<std::string, std::string>> GRIB_KEYS{
-    {"orca_name", "unstructuredGridType"}, {"orca_arrangement", "unstructuredGridSubtype"}, {"uid", "uuidOfHGrid"}};
+static const std::vector<key_t> KEYS{{"orca_name", "orca_name", "unstructuredGridType"},
+                                     {"orca_arrangement", "orca_arrangement", "unstructuredGridSubtype"},
+                                     {"orca_uid", "uid", "uuidOfHGrid"}};
 
 
 ORCA::ORCA(const std::string& uid) : spec_(eckit::geo::SpecByUID::instance().get(uid).spec()) {
@@ -69,8 +86,8 @@ bool ORCA::sameAs(const Representation& other) const {
 
 void ORCA::makeName(std::ostream& out) const {
     const auto* sep = "";
-    for (const auto& key : GRIB_KEYS) {
-        out << sep << spec_->get_string(key.first);
+    for (const auto& key : KEYS) {
+        out << sep << spec_->get_string(key.geo);
         sep = "_";
     }
 }
@@ -85,9 +102,9 @@ void ORCA::fillGrib(grib_info& info) const {
     info.grid.grid_type        = GRIB_UTIL_GRID_SPEC_UNSTRUCTURED;
     info.packing.editionNumber = 2;
 
-    for (const auto& key : GRIB_KEYS) {
-        auto value = spec_->get_string(key.first);
-        info.extra_set(key.second.c_str(), value.c_str());
+    for (const auto& key : KEYS) {
+        auto value = spec_->get_string(key.geo);
+        info.extra_set(key.grib.c_str(), value.c_str());
     }
 }
 
@@ -107,8 +124,6 @@ void ORCA::fillMeshGen(util::MeshGeneratorParameters& params) const {
 
 
 Iterator* ORCA::iterator() const {
-    ASSERT(spec_);
-
     struct ORCAIterator : Iterator {
         explicit ORCAIterator(const eckit::geo::grid::ORCA& grid) : grid_{grid}, n_(grid.size()) {}
 
@@ -167,6 +182,16 @@ void ORCA::validate(const MIRValuesVector& values) const {
 }
 
 
+atlas::Grid ORCA::atlasGrid() const {
+    eckit::LocalConfiguration config;
+    for (const auto& key : KEYS) {
+        config.set(key.atlas, spec_->get_string(key.geo));
+    }
+
+    return ::atlas::Grid(config);
+}
+
+
 struct ORCAPattern : key::grid::GridPattern {
     explicit ORCAPattern(const std::string& name) : GridPattern(name) {}
 
@@ -179,7 +204,14 @@ struct ORCAPattern : key::grid::GridPattern {
             void print(std::ostream& out) const override { out << "NamedORCA[key=" << key_ << "]"; }
             size_t gaussianNumber() const override { return default_gaussian_number(); }
 
-            const Representation* representation() const override { return new ORCA(key_); }
+            const Representation* representation() const override {
+                eckit::geo::spec::Custom grid{{{"grid", key_}}};
+                std::unique_ptr<eckit::geo::Spec> spec{eckit::geo::GridFactory::make_spec(grid)};
+
+                // key is either a recognized name, or a uid
+                return new ORCA(spec->has("orca_uid") ? spec->get_string("orca_uid") : key_);
+            }
+
             const Representation* representation(const util::Rotation&) const override { NOTIMP; }
         };
 
@@ -203,6 +235,26 @@ struct ORCAPattern : key::grid::GridPattern {
         return n;
     }
 };
+
+
+const Representation* ORCA::croppedRepresentation(const util::BoundingBox& bbox) const {
+    auto container = grid_->container();
+    ASSERT(container);
+
+    std::vector<double> lat;
+    std::vector<double> lon;
+
+    for (size_t i = 0; i < container->size(); ++i) {
+        const auto p = container->get(i);
+
+        if (const auto& q = std::get<eckit::geo::PointLonLat>(p); bbox.contains(Point2{q.lat, q.lon})) {
+            lat.push_back(q.lat);
+            lon.push_back(q.lon);
+        }
+    }
+
+    return new other::UnstructuredGrid(lat, lon);
+}
 
 
 static const RepresentationBuilder<ORCA> __grid("ORCA");
