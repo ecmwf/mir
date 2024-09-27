@@ -40,8 +40,6 @@ public:
     explicit FESOM(const std::string& uid);
     explicit FESOM(const param::MIRParametrisation&);
 
-    explicit FESOM(eckit::geo::Spec*);
-
     FESOM(const FESOM&) = delete;
     FESOM(FESOM&&)      = delete;
 
@@ -58,13 +56,7 @@ private:
     // -- Members
 
     mutable std::unique_ptr<eckit::geo::grid::FESOM> grid_;
-
-    std::unique_ptr<eckit::geo::Spec> spec_user_;
     std::unique_ptr<eckit::geo::Spec> spec_;
-
-    // -- Methods
-
-    eckit::geo::grid::FESOM& grid() const;
 
     // -- Overridden methods
 
@@ -77,6 +69,7 @@ private:
 
     Iterator* iterator() const override;
     size_t numberOfPoints() const override;
+    void validate(const MIRValuesVector&) const override;
 
     bool includesNorthPole() const override { return true; }
     bool includesSouthPole() const override { return true; }

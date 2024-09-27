@@ -21,14 +21,12 @@
 
 #include "eckit/geo/Grid.h"
 #include "eckit/geo/grid/ORCA.h"
-#include "eckit/geo/spec/Custom.h"
 
 #include "mir/api/mir_config.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/grid/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
-#include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
@@ -42,13 +40,16 @@ namespace mir::repres {
 static const std::vector<std::pair<std::string, std::string>> GRIB_KEYS{
     {"orca_name", "unstructuredGridType"}, {"orca_arrangement", "unstructuredGridSubtype"}, {"uid", "uuidOfHGrid"}};
 
-static const std::vector<std::string> SPEC_KEYS{"orca_name", "orca_arrangement", "orca_uid", "dimensions", "type"};
 
-
-ORCA::ORCA(const std::string& uid) :
-    spec_(eckit::geo::GridFactory::make_spec(eckit::geo::spec::Custom{{{"uid", uid}}})) {
+ORCA::ORCA(const std::string& uid) : spec_(eckit::geo::SpecByUID::instance().get(uid).spec()) {
     ASSERT(spec_);
     ASSERT(spec_->get_string("type") == "ORCA");
+    for (const std::string& key : {"orca_name", "orca_arrangement", "orca_uid", "dimensions"}) {
+        ASSERT(spec_->has(key));
+    }
+
+    grid_ = std::make_unique<eckit::geo::grid::ORCA>(*spec_);
+    ASSERT(grid_);
 }
 
 
@@ -60,22 +61,9 @@ ORCA::ORCA(const param::MIRParametrisation& param) :
     }()) {}
 
 
-ORCA::ORCA(eckit::geo::Spec* user) : spec_user_{user} {
-    ASSERT(spec_user_);
-
-    spec_.reset(eckit::geo::GridFactory::make_spec(*spec_user_));
-    ASSERT(spec_);
-
-    ASSERT(spec_->get_string("type") == "FESOM");
-    for (const std::string& key : SPEC_KEYS) {
-        ASSERT(spec_->has(key));
-    }
-}
-
-
 bool ORCA::sameAs(const Representation& other) const {
     const auto* o = dynamic_cast<const ORCA*>(&other);
-    return (o != nullptr) && grid().uid() == o->grid().uid();
+    return (o != nullptr) && grid_->uid() == o->grid_->uid();
 }
 
 
@@ -118,16 +106,59 @@ void ORCA::fillMeshGen(util::MeshGeneratorParameters& params) const {
 }
 
 
-size_t ORCA::numberOfPoints() const {
-    auto shape = spec_->get_unsigned_vector("shape");
-    ASSERT(shape.size() == 2);
+Iterator* ORCA::iterator() const {
+    ASSERT(spec_);
 
-    return shape[0] * shape[1];
+    struct ORCAIterator : Iterator {
+        explicit ORCAIterator(const eckit::geo::grid::ORCA& grid) : grid_{grid}, n_(grid.size()) {}
+
+        void print(std::ostream& out) const override {
+            out << "ORCAIterator[";
+            Iterator::print(out);
+            out << ",i=" << i_ << ",n=" << n_ << "]";
+        }
+
+        bool next(Latitude& lat, Longitude& lon) override {
+            if (!container_) {
+                container_ = grid_.container();
+                ASSERT(container_);
+            }
+            else if (++i_ >= n_) {
+                return false;
+            }
+
+            const auto p  = container_->get(i_);
+            const auto& q = std::get<eckit::geo::PointLonLat>(p);
+
+            lat = q.lat;
+            lon = q.lon;
+
+            return true;
+        }
+
+        size_t index() const override { return i_; }
+
+        const eckit::geo::grid::ORCA& grid_;
+        std::shared_ptr<eckit::geo::Container> container_;
+        size_t i_ = 0;
+        size_t n_;
+    };
+
+    ASSERT(grid_);
+    return new ORCAIterator(*grid_);
+}
+
+
+size_t ORCA::numberOfPoints() const {
+    auto dimensions = spec_->get_unsigned_vector("dimensions");
+    ASSERT(dimensions.size() == 2);
+
+    return dimensions[0] * dimensions[1];
 }
 
 
 void ORCA::validate(const MIRValuesVector& values) const {
-    size_t count = numberOfPoints();
+    auto count = numberOfPoints();
 
     Log::debug() << "ORCA::validate checked " << Log::Pretty(values.size(), {"value"}) << ", iterator counts "
                  << Log::Pretty(count) << "." << std::endl;
@@ -147,9 +178,9 @@ struct ORCAPattern : key::grid::GridPattern {
 
             void print(std::ostream& out) const override { out << "NamedORCA[key=" << key_ << "]"; }
             size_t gaussianNumber() const override { return default_gaussian_number(); }
-            const repres::Representation* representation() const override { return new repres::ORCA(key_); }
 
-            const repres::Representation* representation(const util::Rotation&) const override { NOTIMP; }
+            const Representation* representation() const override { return new ORCA(key_); }
+            const Representation* representation(const util::Rotation&) const override { NOTIMP; }
         };
 
         return new NamedORCA(name);

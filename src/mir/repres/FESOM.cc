@@ -20,7 +20,6 @@
 
 #include "eckit/geo/Grid.h"
 #include "eckit/geo/grid/FESOM.h"
-#include "eckit/geo/spec/Custom.h"
 
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/grid/NamedGrid.h"
@@ -28,6 +27,7 @@
 #include "mir/repres/Iterator.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
+#include "mir/util/Log.h"
 
 
 namespace mir::repres {
@@ -37,13 +37,16 @@ namespace mir::repres {
 static const std::vector<std::pair<std::string, std::string>> GRIB_KEYS{
     {"fesom_arrangement", "unstructuredGridSubtype"}, {"uid", "uuidOfHGrid"}};
 
-static const std::vector<std::string> SPEC_KEYS{"fesom_arrangement", "fesom_uid", "shape", "type"};
 
-
-FESOM::FESOM(const std::string& uid) :
-    spec_(eckit::geo::GridFactory::make_spec(eckit::geo::spec::Custom{{{"uid", uid}}})) {
+FESOM::FESOM(const std::string& uid) : spec_(eckit::geo::SpecByUID::instance().get(uid).spec()) {
     ASSERT(spec_);
     ASSERT(spec_->get_string("type") == "FESOM");
+    for (const std::string& key : {"fesom_arrangement", "fesom_uid", "shape"}) {
+        ASSERT(spec_->has(key));
+    }
+
+    grid_ = std::make_unique<eckit::geo::grid::FESOM>(*spec_);
+    ASSERT(grid_);
 }
 
 
@@ -55,32 +58,9 @@ FESOM::FESOM(const param::MIRParametrisation& param) :
     }()) {}
 
 
-FESOM::FESOM(eckit::geo::Spec* user) : spec_user_{user} {
-    ASSERT(spec_user_);
-
-    spec_.reset(eckit::geo::GridFactory::make_spec(*spec_user_));
-    ASSERT(spec_);
-
-    ASSERT(spec_->get_string("type") == "FESOM");
-    for (const std::string& key : SPEC_KEYS) {
-        ASSERT(spec_->has(key));
-    }
-}
-
-
-eckit::geo::grid::FESOM& FESOM::grid() const {
-    if (!grid_) {
-        grid_ = std::make_unique<eckit::geo::grid::FESOM>(*spec_);
-        ASSERT(grid_);
-    }
-
-    return *grid_;
-}
-
-
 bool FESOM::sameAs(const Representation& other) const {
     const auto* o = dynamic_cast<const FESOM*>(&other);
-    return (o != nullptr) && grid().uid() == o->grid().uid();
+    return (o != nullptr) && grid_->uid() == o->grid_->uid();
 }
 
 
@@ -118,26 +98,28 @@ Iterator* FESOM::iterator() const {
     ASSERT(spec_);
 
     struct FESOMIterator : Iterator {
-        explicit FESOMIterator(const eckit::geo::grid::FESOM& grid) :
-            grid_{grid}, container_{grid_.container()}, n_(grid.size()) {
-            ASSERT(container_);
-        }
+        explicit FESOMIterator(const eckit::geo::grid::FESOM& grid) : grid_{grid}, n_(grid.size()) {}
 
         void print(std::ostream& out) const override {
             out << "FESOMIterator[";
             Iterator::print(out);
-            out << ",spec=" << grid_.spec_str() << ",i=" << i_ << ",n=" << n_ << "]";
+            out << ",i=" << i_ << ",n=" << n_ << "]";
         }
 
         bool next(Latitude& lat, Longitude& lon) override {
-            if (i_ >= n_) {
+            if (!container_) {
+                container_ = grid_.container();
+                ASSERT(container_);
+            }
+            else if (++i_ >= n_) {
                 return false;
             }
 
-            const auto p = container_->get(i_++);
-            const auto q = std::get<eckit::geo::PointLonLat>(p);
-            lat          = q.lat;
-            lon          = q.lon;
+            const auto p  = container_->get(i_);
+            const auto& q = std::get<eckit::geo::PointLonLat>(p);
+
+            lat = q.lat;
+            lon = q.lon;
 
             return true;
         }
@@ -150,12 +132,23 @@ Iterator* FESOM::iterator() const {
         size_t n_;
     };
 
-    return new FESOMIterator(grid());
+    ASSERT(grid_);
+    return new FESOMIterator(*grid_);
 }
 
 
 size_t FESOM::numberOfPoints() const {
     return spec_->get_unsigned("shape");
+}
+
+
+void FESOM::validate(const MIRValuesVector& values) const {
+    auto count = numberOfPoints();
+
+    Log::debug() << "FESOM::validate checked " << Log::Pretty(values.size(), {"value"}) << ", iterator counts "
+                 << Log::Pretty(count) << "." << std::endl;
+
+    ASSERT_VALUES_SIZE_EQ_ITERATOR_COUNT("FESOM", values.size(), count);
 }
 
 
@@ -171,10 +164,7 @@ struct FESOMPattern : key::grid::GridPattern {
             void print(std::ostream& out) const override { out << "NamedFESOM[key=" << key_ << "]"; }
             size_t gaussianNumber() const override { return default_gaussian_number(); }
 
-            const Representation* representation() const override {
-                return new FESOM(new eckit::geo::spec::Custom{{{"type", "FESOM"}, {"grid", key_}}});
-            }
-
+            const Representation* representation() const override { return new FESOM(key_); }
             const Representation* representation(const util::Rotation&) const override { NOTIMP; }
         };
 
@@ -182,8 +172,6 @@ struct FESOMPattern : key::grid::GridPattern {
     }
 
     std::string canonical(const std::string& name, const param::MIRParametrisation&) const override {
-        // "DART" or "pi"
-
         auto n = name;
         std::transform(n.begin(), n.end(), n.begin(), [](auto c) { return std::toupper(c); });
 

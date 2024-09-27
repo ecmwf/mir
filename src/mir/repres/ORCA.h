@@ -40,8 +40,6 @@ public:
     explicit ORCA(const std::string& uid);
     explicit ORCA(const param::MIRParametrisation&);
 
-    explicit ORCA(eckit::geo::Spec*);
-
     ORCA(const ORCA&) = delete;
     ORCA(ORCA&&)      = delete;
 
@@ -58,13 +56,7 @@ private:
     // -- Members
 
     mutable std::unique_ptr<eckit::geo::grid::ORCA> grid_;
-
-    std::unique_ptr<eckit::geo::Spec> spec_user_;
     std::unique_ptr<eckit::geo::Spec> spec_;
-
-    // -- Methods
-
-    eckit::geo::grid::ORCA& grid() const;
 
     // -- Overridden methods
 
