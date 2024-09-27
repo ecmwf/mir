@@ -20,17 +20,20 @@
 
 #include "eckit/geo/Grid.h"
 #include "eckit/geo/grid/FESOM.h"
-
 #include "eckit/geo/spec/Custom.h"
+
+#include "mir/api/mir_config.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/grid/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/other/UnstructuredGrid.h"
+#include "mir/util/Atlas.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
+#include "mir/util/MeshGeneratorParameters.h"
 
 
 namespace mir::repres {
@@ -97,9 +100,33 @@ void FESOM::fillJob(api::MIRJob& job) const {
 }
 
 
-Iterator* FESOM::iterator() const {
-    ASSERT(spec_);
+void FESOM::fillMeshGen(util::MeshGeneratorParameters& params) const {
+#if mir_HAVE_ATLAS
+    if (params.meshGenerator_.empty()) {
+        params.meshGenerator_ = "delaunay";
+    }
+#endif
+}
 
+
+atlas::Grid FESOM::atlasGrid() const {
+    std::vector<atlas::PointXY> data;
+    data.reserve(numberOfPoints());
+
+    auto container = grid_->container();
+    ASSERT(container);
+
+    for (size_t i = 0; i < container->size(); ++i) {
+        const auto p  = container->get(i);
+        const auto& q = std::get<eckit::geo::PointLonLat>(p);
+        data.emplace_back(q.lon, q.lat);  // notice the order
+    }
+
+    return atlas::UnstructuredGrid(std::move(data));
+}
+
+
+Iterator* FESOM::iterator() const {
     struct FESOMIterator : Iterator {
         explicit FESOMIterator(const eckit::geo::grid::FESOM& grid) : grid_{grid}, n_(grid.size()) {}
 

@@ -61,6 +61,9 @@ private:
 
     void fillGrib(grib_info&) const override;
     void fillJob(api::MIRJob&) const override;
+    void fillMeshGen(util::MeshGeneratorParameters&) const override;
+
+    atlas::Grid atlasGrid() const override;
 
     Iterator* iterator() const override;
     size_t numberOfPoints() const override;
