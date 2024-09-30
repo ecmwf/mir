@@ -818,7 +818,7 @@ endif()
 
 
 if(eckit_HAVE_ECKIT_GEO)
-    list(APPEND mir_srcs repres/FESOM.cc repres/FESOM.h repres/ORCA.cc repres/ORCA.h)
+    list(APPEND mir_srcs repres/FESOM.cc repres/FESOM.h repres/ICON.cc repres/ICON.h repres/ORCA.cc repres/ORCA.h)
 endif()
 
 
