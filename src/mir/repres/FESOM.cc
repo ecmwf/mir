@@ -245,6 +245,7 @@ static const RepresentationBuilder<FESOM> __grid("FESOM");
 
 static const FESOMPattern __pattern1("^[pP][iI]$");
 static const FESOMPattern __pattern2("^[dD][aA][rR][tT]$");
+static const FESOMPattern __pattern3("^[nN][gG]5$");
 
 
 }  // namespace mir::repres
