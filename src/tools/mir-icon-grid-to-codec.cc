@@ -14,10 +14,8 @@
 #include <cmath>
 #include <cstdint>
 #include <fstream>
-#include <map>
 #include <memory>
 #include <string>
-#include <variant>
 #include <vector>
 
 #include "eckit/codec/codec.h"
@@ -32,7 +30,7 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 
-#include <eccodes.h>
+#include "eccodes.h"
 #if mir_HAVE_NETCDF
 #include "netcdf"
 #endif
@@ -92,44 +90,6 @@ void read_grib(const std::string& path, ICONData& icon) {
 
 void read_netcdf(const std::string& path, ICONData& icon) {
 #if mir_HAVE_NETCDF
-    using atttribute_t = std::variant<int, double, std::string>;
-
-    static atttribute_t a_int{int{}};
-    static atttribute_t a_double{double{}};
-    static atttribute_t a_string{std::string{}};
-
-    static const std::map<std::string, atttribute_t&> ATTRIBUTES{
-        {"Creator", a_string},
-        {"ICON_grid_file_uri", a_string},
-        {"NCO", a_string},
-        {"centre", a_int},
-        {"crs_id", a_string},
-        {"crs_name", a_string},
-        {"ellipsoid_name", a_string},
-        {"global_grid", a_int},
-        {"grid_ID", a_int},
-        {"grid_level", a_int},
-        {"grid_mapping_name", a_string},
-        {"grid_root", a_int},
-        {"history", a_string},
-        {"institution", a_string},
-        {"inverse_flattening", a_double},
-        {"max_childdom", a_int},
-        {"max_refin_c_ctrl", a_int},
-        {"number_of_grid_used", a_int},
-        {"outname_style", a_int},
-        {"parent_grid_ID", a_int},
-        {"semi_major_axis", a_double},
-        {"source", a_string},
-        {"subcentre", a_int},
-        {"title", a_string},
-        {"uuidOfChiHGrid_1", a_string},
-        {"uuidOfHGrid", a_string},
-        {"uuidOfOriginalHGrid", a_string},
-        {"uuidOfParHGrid", a_string},
-    };
-
-
     try {
         auto read_values = [](const netCDF::NcVar& var, std::vector<double>& values) {
             ASSERT(values.empty());
@@ -151,28 +111,55 @@ void read_netcdf(const std::string& path, ICONData& icon) {
         };
 
         netCDF::NcFile f(path, netCDF::NcFile::read);
-        eckit::JSON j(Log::info());
 
-        for (const auto& att : f.getAtts()) {
-            if (auto a = ATTRIBUTES.find(att.first); a != ATTRIBUTES.end()) {
-                if (std::holds_alternative<int>(a->second)) {
-                    int value = 0;
-                    att.second.getValues(&value);
-                    j << att.first << value;
-                }
-                else if (std::holds_alternative<double>(a->second)) {
-                    double value = 0;
-                    att.second.getValues(&value);
-                    j << att.first << value;
-                }
-                else if (std::holds_alternative<std::string>(a->second)) {
-                    std::string value;
-                    att.second.getValues(value);
-                    j << att.first << value;
-                }
+        eckit::JSON j{Log::info()};
+        j.startObject();
+
+        for (const auto& [key, att] : f.getAtts()) {
+            static const std::vector<std::string> ints{
+                "centre",        "grid_root",      "global_grid",      "grid_ID",
+                "grid_level",    "max_childdom",   "max_refin_c_ctrl", "number_of_grid_used",
+                "outname_style", "parent_grid_ID", "subcentre"};
+            static const std::vector<std::string> doubles{"inverse_flattening", "semi_major_axis"};
+            static const std::vector<std::string> strings{"Creator",
+                                                          "ICON_grid_file_uri",
+                                                          "NCO",
+                                                          "crs_id",
+                                                          "crs_name",
+                                                          "ellipsoid_name",
+                                                          "grid_mapping_name",
+                                                          "history",
+                                                          "institution",
+                                                          "source",
+                                                          "title",
+                                                          "uuidOfChiHGrid_1",
+                                                          "uuidOfHGrid",
+                                                          "uuidOfOriginalHGrid",
+                                                          "uuidOfParHGrid"};
+
+            if (std::find(ints.begin(), ints.end(), key) != ints.end()) {
+                int value = 0;
+                att.getValues(&value);
+                j << key << value;
+                continue;
+            }
+
+            if (std::find(doubles.begin(), doubles.end(), key) != doubles.end()) {
+                double value = 0.;
+                att.getValues(&value);
+                j << key << value;
+                continue;
+            }
+
+            if (std::find(strings.begin(), strings.end(), key) != strings.end()) {
+                std::string value;
+                att.getValues(value);
+                j << key << value;
+                continue;
             }
         }
 
+        j.endObject();
         Log::info() << std::endl;
 
         read_values(f.getVar("clat"), icon.lat);
@@ -307,7 +294,7 @@ struct MIRICONGridToCodec : public MIRTool {
 
     void usage(const std::string& tool) const override {
         Log::info() << "\n"
-                    << "Conversion of ICON grid GRIB2 files into eckit::codec file\n"
+                    << "Conversion of ICON grid GRIB2/netCDF files into eckit::codec file\n"
                     << "\n"
                     << "Usage: " << tool << " <file.g2> <file.codec>" << std::endl;
     }
