@@ -207,7 +207,42 @@ struct FormatCodecAll : Format {
 };
 
 
-struct FormatCodecLL : Format {
+struct FormatCodecC : Format {
+    void write(const eckit::PathName& path, const FESOMData& fesom) const override {
+        eckit::codec::RecordWriter record;
+        record.set("version", FESOM_CODEC_VERSION);
+
+        ASSERT(!fesom.nod2d.empty());
+        ASSERT(!fesom.elem2d.empty());
+
+        auto n = fesom.nod2d.shape()[0];
+        auto e = fesom.elem2d.shape()[0];
+        record.set("n", eckit::codec::ref(e));  // vectors size (# elements)
+
+        std::vector<double> lat;
+        std::vector<double> lon;
+        lat.reserve(e);
+        lon.reserve(e);
+
+        for (const auto& e : fesom.elem2d) {
+            ASSERT(e.size() == 3);
+            ASSERT(0 < e[0] && e[0] <= n);  // numbering is 1-based
+            ASSERT(0 < e[1] && e[1] <= n);
+            ASSERT(0 < e[2] && e[2] <= n);
+
+            lat.push_back((fesom.nod2d[e[0] - 1].lat + fesom.nod2d[e[1] - 1].lat + fesom.nod2d[e[2] - 1].lat) / 3.);
+            lon.push_back((fesom.nod2d[e[0] - 1].lon + fesom.nod2d[e[1] - 1].lon + fesom.nod2d[e[2] - 1].lon) / 3.);
+        }
+
+        record.set("latitude", eckit::codec::ref(lat));
+        record.set("longitude", eckit::codec::ref(lon));
+
+        record.write(path);
+    }
+};
+
+
+struct FormatCodecN : Format {
     void write(const eckit::PathName& path, const FESOMData& fesom) const override {
         eckit::codec::RecordWriter record;
         record.set("version", FESOM_CODEC_VERSION);
@@ -243,19 +278,21 @@ struct FormatGmsh3D : Format {
 
 
 Format* Format::build(const std::string& name) {
-    return name == "none"                       ? static_cast<Format*>(new FormatNone)
-           : name == "codec-all"                ? static_cast<Format*>(new FormatCodecAll)
-           : name == "codec-latitude-longitude" ? static_cast<Format*>(new FormatCodecLL)
-           : name == "gmsh-2d"                  ? static_cast<Format*>(new FormatGmsh2D)
-           : name == "gmsh-3d"                  ? static_cast<Format*>(new FormatGmsh3D)
-                                                : throw exception::SeriousBug("Format: unknown '" + name + "'");
+    return name == "none"        ? static_cast<Format*>(new FormatNone)
+           : name == "codec-all" ? static_cast<Format*>(new FormatCodecAll)
+           : name == "codec-c"   ? static_cast<Format*>(new FormatCodecC)
+           : name == "codec-n"   ? static_cast<Format*>(new FormatCodecN)
+           : name == "gmsh-2d"   ? static_cast<Format*>(new FormatGmsh2D)
+           : name == "gmsh-3d"   ? static_cast<Format*>(new FormatGmsh3D)
+                                 : throw exception::SeriousBug("Format: unknown '" + name + "'");
 }
 
 
 void Format::list(std::ostream& out) {
     out << "none, "
            "codec-all, "
-           "codec-latitude-longitude,"
+           "codec-c, "
+           "codec-n, "
            "gmsh-2d, "
            "gmsh-3d";
 }
