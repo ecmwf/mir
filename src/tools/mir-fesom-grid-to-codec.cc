@@ -167,8 +167,15 @@ struct FESOMData {
 
 
 struct Format {
+    Format()          = default;
+    virtual ~Format() = default;
+
+    Format(const Format&)            = delete;
+    Format(Format&&)                 = delete;
+    Format& operator=(const Format&) = delete;
+    Format& operator=(Format&&)      = delete;
+
     virtual void write(const eckit::PathName&, const FESOMData&) const = 0;
-    virtual ~Format()                                                  = default;
 
     static Format* build(const std::string&);
     static void list(std::ostream&);

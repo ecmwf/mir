@@ -110,12 +110,12 @@ void read_netcdf(const std::string& path, ICONData& icon) {
             }
         };
 
-        netCDF::NcFile f(path, netCDF::NcFile::read);
+        netCDF::NcFile file(path, netCDF::NcFile::read);
 
         eckit::JSON j{Log::info()};
         j.startObject();
 
-        for (const auto& [key, att] : f.getAtts()) {
+        for (const auto& [key, att] : file.getAtts()) {
             static const std::vector<std::string> ints{
                 "centre",        "grid_root",      "global_grid",      "grid_ID",
                 "grid_level",    "max_childdom",   "max_refin_c_ctrl", "number_of_grid_used",
@@ -162,8 +162,8 @@ void read_netcdf(const std::string& path, ICONData& icon) {
         j.endObject();
         Log::info() << std::endl;
 
-        read_values(f.getVar("clat"), icon.lat);
-        read_values(f.getVar("clon"), icon.lon);
+        read_values(file.getVar("clat"), icon.lat);
+        read_values(file.getVar("clon"), icon.lon);
 
         ASSERT(icon.lat.size() == icon.lon.size());
         ASSERT(!icon.lat.empty());
@@ -178,8 +178,15 @@ void read_netcdf(const std::string& path, ICONData& icon) {
 
 
 struct Format {
+    Format()          = default;
+    virtual ~Format() = default;
+
+    Format(const Format&)            = delete;
+    Format(Format&&)                 = delete;
+    Format& operator=(const Format&) = delete;
+    Format& operator=(Format&&)      = delete;
+
     virtual void write(const eckit::PathName&, const ICONData&) const = 0;
-    virtual ~Format()                                                 = default;
 
     static Format* build(const std::string&);
     static void list(std::ostream&);
@@ -304,12 +311,12 @@ struct MIRICONGridToCodec : public MIRTool {
 
         // Detect format
         bool is_netcdf = [](const std::string& path) -> bool {
-            std::ifstream f(path, std::ios::binary);
-            ASSERT(f);
+            std::ifstream file(path, std::ios::binary);
+            ASSERT(file);
 
             int magic = 0;
             for (size_t i = 0; i < 4; ++i) {
-                if (unsigned char c = 0; f >> c) {
+                if (unsigned char c = 0; file >> c) {
                     magic <<= 8;
                     magic |= c;
                 }
