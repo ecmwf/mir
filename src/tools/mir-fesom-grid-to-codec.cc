@@ -125,12 +125,13 @@ struct elem_t : std::array<size_t, N> {
 template <typename T>
 struct vector_t : std::vector<T> {
     auto flatten() const {
-        std::vector<typename vector_t::value_type::value_type> flat(
-            vector_t::empty() ? 0 : (vector_t::size() * vector_t::front().size()));
-
-        std::for_each(vector_t::begin(), vector_t::end(), [&flat](const auto& entry) {
-            std::for_each(entry.begin(), entry.end(), [&flat](const auto& value) { flat.push_back(value); });
-        });
+        std::vector<typename T::value_type> flat;
+        if (!vector_t::empty()) {
+            flat.reserve(vector_t::size() * vector_t::front().size());
+            std::for_each(vector_t::begin(), vector_t::end(), [&flat](const auto& entry) {
+                std::for_each(entry.begin(), entry.end(), [&flat](const auto& value) { flat.push_back(value); });
+            });
+        }
 
         return flat;
     }
@@ -258,11 +259,6 @@ struct Format {
 };
 
 
-struct FormatNone : Format {
-    void write(const eckit::PathName&, const FESOMData&) const override {}
-};
-
-
 struct FormatCodecAll : Format {
     void write(const eckit::PathName& path, const FESOMData& fesom) const override {
         eckit::codec::RecordWriter record;
@@ -348,6 +344,22 @@ struct FormatCodecN : Format {
 };
 
 
+struct FormatCodecConnectivity : Format {
+    void write(const eckit::PathName& path, const FESOMData& fesom) const override {
+        ASSERT(!fesom.elem2d.empty() || !fesom.elem3d.empty());
+
+        eckit::codec::RecordWriter record;
+        record.set("version", FESOM_CODEC_VERSION);
+
+        auto elem2d = fesom.elem2d.flatten();
+        record.set("elem2d_shape", eckit::codec::ref(fesom.elem2d.shape()));
+        record.set("elem2d", eckit::codec::ref(elem2d));
+
+        record.write(path);
+    }
+};
+
+
 struct FormatGmsh2D : Format {
     void write(const eckit::PathName& path, const FESOMData& fesom) const override {
         WRITE_GMSH(path, fesom.nod2d, fesom.elem2d);
@@ -362,14 +374,8 @@ struct FormatGmsh3D : Format {
 };
 
 
-struct CalculateUIDN : Format {
+struct CalculateUID : Format {
     void write(const eckit::PathName&, const FESOMData& fesom) const override {
-        eckit::MD5 hash;
-        calculate_uid_n(fesom, hash);
-        Log::info() << hash.digest() << std::endl;
-    }
-
-    static void calculate_uid_n(const FESOMData& fesom, eckit::MD5& hash) {
         ASSERT(eckit_LITTLE_ENDIAN);
 
         std::vector<double> lon;
@@ -382,50 +388,51 @@ struct CalculateUIDN : Format {
             lat.push_back(n.lat);
         }
 
-        hash.add(lat.data(), static_cast<long>(lat.size() * sizeof(double)));
-        hash.add(lon.data(), static_cast<long>(lon.size() * sizeof(double)));
-    }
-};
+        {
+            eckit::MD5 hash;
 
+            hash.add(lat.data(), static_cast<long>(lat.size() * sizeof(double)));
+            hash.add(lon.data(), static_cast<long>(lon.size() * sizeof(double)));
 
-struct CalculateUIDC : Format {
-    void write(const eckit::PathName&, const FESOMData& fesom) const override {
-        ASSERT(eckit_LITTLE_ENDIAN);
+            Log::info() << "uid(N): " << hash.digest() << std::endl;
+        }
 
-        eckit::MD5 hash;
+        if (!fesom.elem2d.empty()) {
+            // cannot be chained with above
+            eckit::MD5 hash;
 
-        std::make_unique<CalculateUIDN>()->calculate_uid_n(fesom, hash);
+            Log::info().precision(16);
+            Log::info() << "#elem2d: " << fesom.elem2d.size() << ", elem2d[.]:" << fesom.elem2d.back() << std::endl;
+            hash.add(lat.data(), static_cast<long>(lat.size() * sizeof(double)));
+            hash.add(lon.data(), static_cast<long>(lon.size() * sizeof(double)));
+            hash.add(fesom.elem2d.data(),
+                     static_cast<long>(fesom.elem2d.size() * sizeof(decltype(FESOMData::elem2d)::value_type)));
 
-        ASSERT(!fesom.elem2d.empty());
-        hash.add(fesom.elem2d.data(),
-                 static_cast<long>(fesom.elem2d.size() * sizeof(decltype(FESOMData::elem2d)::value_type)));
-
-        Log::info() << hash.digest() << std::endl;
+            Log::info() << "uid(C): " << hash.digest() << std::endl;
+        }
     }
 };
 
 
 Format* Format::build(const std::string& name) {
-    return name == "none"              ? static_cast<Format*>(new FormatNone)
-           : name == "codec-all"       ? static_cast<Format*>(new FormatCodecAll)
-           : name == "codec-c"         ? static_cast<Format*>(new FormatCodecC)
-           : name == "codec-n"         ? static_cast<Format*>(new FormatCodecN)
-           : name == "gmsh-2d"         ? static_cast<Format*>(new FormatGmsh2D)
-           : name == "gmsh-3d"         ? static_cast<Format*>(new FormatGmsh3D)
-           : name == "calculate-uid-c" ? static_cast<Format*>(new CalculateUIDC)
-           : name == "calculate-uid-n" ? static_cast<Format*>(new CalculateUIDN)
-                                       : throw exception::SeriousBug("Format: unknown '" + name + "'");
+    return name == "codec-all"            ? new FormatCodecAll
+           : name == "codec-c"            ? new FormatCodecC
+           : name == "codec-n"            ? new FormatCodecN
+           : name == "codec-connectivity" ? new FormatCodecConnectivity
+           : name == "gmsh-2d"            ? new FormatGmsh2D
+           : name == "gmsh-3d"            ? new FormatGmsh3D
+           : name == "calculate-uid"      ? static_cast<Format*>(new CalculateUID)
+                                          : throw exception::SeriousBug("Format: unknown '" + name + "'");
 }
 
 
 void Format::list(std::ostream& out) {
-    out << "none, "
-           "codec-all, "
+    out << "codec-all, "
            "codec-c, "
            "codec-n, "
+           "codec-connectivity, "
            "gmsh-2d, "
            "gmsh-3d, "
-           "calculate-uid-c, "
            "calculate-uid-n";
 }
 
