@@ -154,7 +154,7 @@ Iterator* ORCA::iterator() const {
         size_t index() const override { return i_; }
 
         const eckit::geo::grid::ORCA& grid_;
-        std::shared_ptr<eckit::geo::Container> container_;
+        std::shared_ptr<eckit::geo::PointsContainer> container_;
         size_t i_ = 0;
         size_t n_;
     };
