@@ -240,7 +240,7 @@ struct MIR : MIRTool {
             new VectorOption<double>("mode-real-values", "Statistics mode bin ranges value (default 0/1)", 0));
 
         //==============================================
-        options_.push_back(new Separator("Filtering"));
+        options_.push_back(new Separator("Filtering (gridded)"));
         options_.push_back(new FactoryOption<key::Area>("area", "area cropping/masking"));
         options_.push_back(new FactoryOption<key::Area::Mode>("area-mode", "area cropping/masking mode"));
         options_.push_back(new SimpleOption<eckit::PathName>("bitmap", "Bitmap file to apply"));
@@ -262,6 +262,8 @@ struct MIR : MIRTool {
             "Unstructured grid globalise minimum distance to insert missing values if needed (default 555975. [m])"));
         options_.push_back(new SimpleOption<bool>("unstructured", "Convert to unstructured grid"));
 
+        //==============================================
+        options_.push_back(new Separator("Filtering (spectral)"));
         options_.push_back(new SimpleOption<bool>("cesaro", "Cesàro summation filtering"));
         options_.push_back(new SimpleOption<double>("cesaro-k", "Cesàro summation k (default 2.)"));
         options_.push_back(new SimpleOption<size_t>(
@@ -354,6 +356,12 @@ struct MIR : MIRTool {
         options_.push_back(new SimpleOption<std::string>("plan", "String containing a plan definition"));
         options_.push_back(new SimpleOption<eckit::PathName>("plan-script", "File containing a plan definition"));
         options_.push_back(new SimpleOption<eckit::PathName>("dump-weights-info", "Dump weights information to file"));
+
+        //==============================================
+        options_.push_back(new Separator("Tiling"));
+        options_.push_back(new VectorOption<long>("tile", "Tiling Ni/Nj[/i/j]", 0));
+        options_.push_back(new FactoryOption<output::MIROutputFactory>("tile-format", "Output tile format"));
+        options_.push_back(new SimpleOption<std::string>("tile-kml", "Output MKL file"));
 
         //==============================================
         options_.push_back(new Separator("Caching"));

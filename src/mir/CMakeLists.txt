@@ -465,6 +465,8 @@ list(APPEND mir_srcs
     output/RawOutput.h
     output/ResizableOutput.cc
     output/ResizableOutput.h
+    output/Tile.cc
+    output/Tile.h
     output/ValuesOutput.cc
     output/ValuesOutput.h
     output/VectorOutput.cc
