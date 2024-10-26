@@ -270,8 +270,13 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     bool vod2uv   = option(user, "vod2uv", false);
     bool uv2uv    = option(user, "uv2uv", false) || uv_input;  // where "MIR knowledge of winds" is hardcoded
 
-    if (vod2uv && uv_input) {
-        throw exception::UserError("ECMWFStyle: option 'vod2uv' is incompatible with input U/V");
+    if (vod2uv) {
+        if (uv2uv) {
+            throw exception::UserError("ECMWFStyle: option 'vod2uv' is incompatible with 'uv2uv'");
+        }
+        if (uv_input) {
+            throw exception::UserError("ECMWFStyle: option 'vod2uv' is incompatible with input U/V");
+        }
     }
 
     if (resol.resultIsSpectral()) {
@@ -281,12 +286,22 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     auto target = target_gridded_from_parametrisation(parametrisation_, false);
     if (!target.empty()) {
         if (resol.resultIsSpectral()) {
-
             plan.add("transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-") + target);
+
+            if (uv2uv) {
+                plan.add("filter.adjust-winds-scale-cos-latitude");
+            }
+
+            if ((vod2uv || uv2uv) && rotation) {
+                plan.add("filter.adjust-winds-directions");
+            }
         }
         else {
-
             resol.prepare(plan);
+
+            if (uv2uv) {
+                plan.add("filter.adjust-winds-scale-cos-latitude");
+            }
 
             // if the intermediate grid is the same as the target grid, the interpolation to the
             // intermediate grid is not followed by an additional interpolation
@@ -294,16 +309,8 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
             if (rotation || !user.get("grid", grid) || grid != resol.gridname()) {
                 plan.add("interpolate.grid2" + target);
             }
-        }
 
-        if (vod2uv || uv2uv) {
-            ASSERT(vod2uv != uv2uv);
-
-            if (uv2uv) {
-                plan.add("filter.adjust-winds-scale-cos-latitude");
-            }
-
-            if (rotation) {
+            if ((vod2uv || uv2uv) && rotation) {
                 plan.add("filter.adjust-winds-directions");
             }
         }

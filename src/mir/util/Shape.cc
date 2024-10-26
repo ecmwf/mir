@@ -22,13 +22,45 @@
 namespace mir::util {
 
 
-Shape::Shape(const param::MIRParametrisation& param) {
+Shape::Shape(const param::MIRParametrisation& param) : a(util::Earth::radius()), b(a) {
     provided = param.get("shapeOfTheEarth", code = 6);
+    if (provided) {
+        switch (code) {
+            case 0:
+                a = b = 6367470.;
+                break;
+            case 1:
+                param.get("radius", a);
+                b = a;
+                break;
+            case 2:
+                a = 6378160.;
+                b = 6356775.;
+                break;
+            case 3:
+                param.get("earthMajorAxis", a);
+                param.get("earthMinorAxis", b);
+                a *= 1000.;
+                b *= 1000.;
+                break;
+            case 5:
+                a = 6378137.;
+                b = 6356752.314;
+                break;
+            case 6:
+                // default
+                break;
+            case 7:
+                param.get("earthMajorAxis", a);
+                param.get("earthMinorAxis", b);
+                break;
+            default:
+                break;
+        }
+    }
 
-    bool isOblate = false;
-    param.get("earthIsOblate", isOblate);
-    param.get(isOblate ? "earthMajorAxis" : "radius", a = util::Earth::radius());
-    param.get(isOblate ? "earthMinorAxis" : "radius", b = util::Earth::radius());
+    param.get("radius", a) || param.get("earthMajorAxis", a);
+    param.get("radius", b) || param.get("earthMinorAxis", b);
 }
 
 

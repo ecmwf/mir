@@ -12,8 +12,6 @@
 
 #include "mir/repres/regular/Lambert.h"
 
-#include <cmath>
-
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Angles.h"
 #include "mir/util/Exceptions.h"
@@ -88,8 +86,8 @@ void Lambert::fillGrib(grib_info& info) const {
     info.grid.longitudeOfSouthernPoleInDegrees = longitudeOfSouthernPoleInDegrees_;
     info.grid.uvRelativeToGrid                 = uvRelativeToGrid_ ? 1 : 0;
 
-    info.extra_set("DxInMetres", std::abs(x().step()));
-    info.extra_set("DyInMetres", std::abs(y().step()));
+    info.extra_set("DxInMetres", x().step());
+    info.extra_set("DyInMetres", y().step());
     info.extra_set("Latin1InDegrees", reference[LLCOORDS::LAT]);
     info.extra_set("Latin2InDegrees", reference[LLCOORDS::LAT]);
     info.extra_set("LoVInDegrees", writeLonPositive_ ? util::normalise_longitude(reference[LLCOORDS::LON], 0)
