@@ -19,6 +19,10 @@ md5GridSection=f5dc74ec36353f4c83f7de3bf46e1aef, centre:i=98, gridName=O640, edi
 md5GridSection=6ae0076681a2541abe053ab52fa60f30, centre:i=84/85, gridType=lambert, edition=1:
   - first_point_bottom_left: true
 
+# gridType=polar_stereographic does not support the default area method
+gridType=polar_stereographic:
+  - area-mode: mask
+
 # gridType=space_view does not support the default interpolation method
 gridType=space_view:
   - interpolation: k-nearest
