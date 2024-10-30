@@ -1,0 +1,6 @@
+# input
+gridType=polar_stereographic.grib2
+# mir
+--area=66.5/-24.5/63.4/-13.5 --area-mode=crop
+# plan
+AreaCropper[bbox=BoundingBox[north=66.5,west=-24.5,south=63.4,east=-13.5]]|Save[output=...]
