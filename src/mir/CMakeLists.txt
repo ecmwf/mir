@@ -790,6 +790,8 @@ if(mir_HAVE_ATLAS)
         key/grid/NamedORCA.h
         key/grid/ORCAPattern.cc
         key/grid/ORCAPattern.h
+        method/PixelStatistics.cc
+        method/PixelStatistics.h
         method/ProxyMethod.cc
         method/ProxyMethod.h
         method/fe/BuildNodeLumpedMassMatrix.cc

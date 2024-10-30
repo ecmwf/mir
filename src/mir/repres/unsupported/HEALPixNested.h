@@ -43,7 +43,8 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    size_t Nside() const { return ring_.Nside_; }
 
     // -- Overridden methods
     // None
