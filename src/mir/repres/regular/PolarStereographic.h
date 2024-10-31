@@ -59,6 +59,9 @@ private:
     double LaDInDegrees_;
     double orientationOfTheGridInDegrees_;
     bool southPoleOnProjectionPlane_;
+    bool writeLaDInDegrees_;
+    bool writeLonPositive_;
+    bool uvRelativeToGrid_;
 
     // -- Methods
     // None

@@ -1,11 +1,11 @@
 # input
-gridType=polar_stereographic.grib2
+gridType=polar_stereographic.grib1
 # mir
 --grid=gridType=polar_stereographic
 # grib_get
 gridType=polar_stereographic
-edition=2
-Ni=2869
-Nj=2869
-Dx=2500000
-Dy=2500000
+edition=1
+Ni=1121
+Nj=881
+Dx=4763
+Dy=4763
