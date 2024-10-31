@@ -4,6 +4,7 @@ gridType=polar_stereographic.grib2
 --grid=gridType=polar_stereographic
 # grib_get
 gridType=polar_stereographic
+edition=2
 Ni=2869
 Nj=2869
 Dx=2500000
