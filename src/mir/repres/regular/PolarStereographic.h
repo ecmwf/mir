@@ -12,6 +12,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "mir/repres/regular/RegularGrid.h"
 
 
@@ -25,7 +27,8 @@ public:
 
     // -- Constructors
 
-    explicit PolarStereographic(const param::MIRParametrisation&);
+    PolarStereographic(const param::MIRParametrisation&);
+    PolarStereographic(const PolarStereographic&) = delete;
 
     // -- Destructor
     // None
@@ -34,7 +37,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    PolarStereographic& operator=(const PolarStereographic&) = delete;
 
     // -- Methods
     // None
@@ -50,7 +54,11 @@ public:
 
 private:
     // -- Members
-    // None
+
+    std::string proj_;
+    double LaDInDegrees_;
+    double orientationOfTheGridInDegrees_;
+    bool southPoleOnProjectionPlane_;
 
     // -- Methods
     // None
@@ -58,6 +66,7 @@ private:
     // -- Overridden methods
 
     void fillGrib(grib_info&) const override;
+    void fillJob(api::MIRJob&) const override;
 
     // -- Class members
     // None
