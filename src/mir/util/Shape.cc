@@ -16,14 +16,13 @@
 
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Grib.h"
 
 
 namespace mir::util {
 
 
 Shape::Shape(const param::MIRParametrisation& param) {
-    param.get("edition", edition = 0);
-
     provided = param.get("shapeOfTheEarth", code = 6);
 
     bool isOblate = false;
@@ -33,7 +32,7 @@ Shape::Shape(const param::MIRParametrisation& param) {
 }
 
 
-Shape::Shape(const Projection::Spec& spec) : edition(0) {
+Shape::Shape(const Projection::Spec& spec) {
     if (spec.has("radius")) {
         code = 1L;
         a = b = spec.getDouble("radius");
@@ -54,7 +53,19 @@ Shape::Shape(const Projection::Spec& spec) : edition(0) {
 
 
 void Shape::fillGrib(grib_info& info, const Projection::Spec& spec) const {
+    const static std::string EDITION{"edition"};
+
     // GRIB2 encoding of user-provided shape
+    auto edition = info.packing.editionNumber;
+
+    for (long j = 0; j < info.packing.extra_settings_count; ++j) {
+        const auto& set = info.packing.extra_settings[j];
+        if (set.name == EDITION && set.type == CODES_TYPE_LONG) {
+            edition = set.long_value;
+            break;
+        }
+    }
+
     if (edition != 2) {
         return;
     }
@@ -91,11 +102,7 @@ void Shape::fillGrib(grib_info& info, const Projection::Spec& spec) const {
 
 
 void Shape::fillJob(api::MIRJob& job, const Projection::Spec& spec) const {
-    // GRIB2 encoding of user-provided shape
-    if (edition != 2) {
-        return;
-    }
-
+    // MIRJob encoding of user-provided shape
     std::ostringstream shape;
 
     // shape given by radius or semi-major/minor axis
@@ -130,7 +137,7 @@ void Shape::fillJob(api::MIRJob& job, const Projection::Spec& spec) const {
     std::string grid;
     ASSERT(job.get("grid", grid) && !grid.empty());
 
-    job.set("grid", grid + ";" + shape.str());
+    job.set("grid", grid + shape.str());
 }
 
 
