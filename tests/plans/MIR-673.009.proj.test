@@ -1,6 +1,6 @@
 # input
 gridType=polar_stereographic.grib2
 # mir
---same=data.in.MIR-673.004.test
+--same=data.in.MIR-673.009.proj.test
 # plan
 Gridded2TypedGrid[grid={"LaDInDegrees":"90","Ni":"2869","Nj":"2869","grid":"2500/2500","gridType":"polar_stereographic","iScansNegatively":"0","jScansPositively":"1","latitudeOfFirstGridPointInDegrees":"42.1138","longitudeOfFirstGridPointInDegrees":"-71.6168","orientationOfTheGridInDegrees":"-30","proj":"+proj=stere +lat_ts=90.000003 +lat_0=90 +lon_0=-30.000001 +k_0=1 +x_0=0 +y_0=0 +R=6371229.000000","shapeOfTheEarth":"6","southPoleOnProjectionPlane":"0"},interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|Save[output=...]
