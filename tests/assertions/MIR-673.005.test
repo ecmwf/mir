@@ -1,0 +1,11 @@
+# input
+gridType=polar_stereographic.grib1
+# mir
+--grid=gridType=polar_stereographic
+# grib_get
+gridType=polar_stereographic
+edition=1
+Ni=1121
+Nj=881
+Dx=4763
+Dy=4763

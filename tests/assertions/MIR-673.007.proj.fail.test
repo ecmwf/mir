@@ -1,0 +1,4 @@
+# input
+gridType=polar_stereographic.grib1
+# mir
+--area=49/-92/41/-76 --area-mode=crop
