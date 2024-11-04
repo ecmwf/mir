@@ -66,6 +66,7 @@ public:
     SimpleParametrisation& set(const std::string& name, const std::vector<int>& value);
     SimpleParametrisation& set(const std::string& name, const std::vector<long>& value);
     SimpleParametrisation& set(const std::string& name, const std::vector<long long>& value);
+    SimpleParametrisation& set(const std::string& name, const std::vector<bool>& value);
     SimpleParametrisation& set(const std::string& name, const std::vector<size_t>& value);
     SimpleParametrisation& set(const std::string& name, const std::vector<float>& value);
     SimpleParametrisation& set(const std::string& name, const std::vector<double>& value);
@@ -95,6 +96,7 @@ public:
 
     bool get(const std::string& name, std::vector<int>& value) const override;
     bool get(const std::string& name, std::vector<long>& value) const override;
+    bool get(const std::string& name, std::vector<bool>& value) const;
     bool get(const std::string& name, std::vector<float>& value) const override;
     bool get(const std::string& name, std::vector<double>& value) const override;
     bool get(const std::string& name, std::vector<std::string>& value) const override;

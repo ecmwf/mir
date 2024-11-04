@@ -158,6 +158,12 @@ const char* TNamed<std::vector<std::string>>() {
     return "vector<string>";
 }
 
+template <>
+const char* TNamed<std::vector<bool>>() {
+    return "vector<bool>";
+}
+
+
 
 template <class T>
 static void conversion_warning(const char* /*from*/, const char* /*to*/, const std::string& /*name*/,
@@ -226,6 +232,10 @@ public:
         throw exception::CannotConvert(TNamed<T>(), "vector<string>", name, value_);
     }
 
+    void get(const std::string& name, std::vector<bool>& /*value*/) const  {
+        throw exception::CannotConvert(TNamed<T>(), "vector<bool>", name, value_);
+    }
+
     bool matchAll(const std::string& name, const MIRParametrisation& other) const override {
         T value;
         return other.get(name, value) && value_ == value;
@@ -267,6 +277,11 @@ void TSettings<std::vector<long>>::print(std::ostream& out) const {
 template <>
 void TSettings<std::vector<double>>::print(std::ostream& out) const {
     _put(out, value_);
+}
+
+template <>
+void TSettings<std::vector<bool>>::print(std::ostream& out) const {
+    _put(out, value_);  // Uses the `_put` helper function for formatting
 }
 
 
@@ -443,6 +458,10 @@ void TSettings<std::vector<double>>::get(const std::string& /*name*/, std::vecto
     value = value_;
 }
 
+template <>
+void TSettings<std::vector<bool>>::get(const std::string& /*name*/, std::vector<bool>& value) const {
+    value = value_;
+}
 
 template <>
 void TSettings<int>::get(const std::string& name, std::string& value) const {
@@ -551,6 +570,18 @@ void TSettings<std::vector<std::string>>::get(const std::string& name, std::stri
     std::string sep;
     for (const auto& entry : value_) {
         value += sep + entry;
+        sep = "/";
+    }
+}
+
+template <>
+void TSettings<std::vector<bool>>::get(const std::string& name, std::string& value) const {
+    conversion_warning("vector<bool>", "string", name, value_);
+    value.clear();
+
+    const char* sep = "";
+    for (const auto& entry : value_) {
+        value += sep + std::to_string(entry);
         sep = "/";
     }
 }
@@ -776,6 +807,10 @@ SimpleParametrisation& SimpleParametrisation::set(const std::string& name, const
 
 
 SimpleParametrisation& SimpleParametrisation::set(const std::string& name, const std::vector<std::string>& value) {
+    _set(name, value);
+    return *this;
+}
+SimpleParametrisation& SimpleParametrisation::set(const std::string& name, const std::vector<bool>& value) {
     _set(name, value);
     return *this;
 }

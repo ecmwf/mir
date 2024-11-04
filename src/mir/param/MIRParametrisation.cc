@@ -89,4 +89,17 @@ bool MIRParametrisation::get(const std::string& name, std::vector<long long>& va
     return false;
 }
 
+bool MIRParametrisation::get(const std::string& name, std::vector<bool>& value) const {
+    std::vector<int> v;  // Intermediate vector
+    if (get(name, v)) {  // Attempt to retrieve as std::vector<int>
+        value.clear();
+        value.reserve(v.size());
+        for (const int& i : v) {
+            value.push_back(i != 0);  // Convert each int to bool (0 -> false, non-zero -> true)
+        }
+        return true;
+    }
+    return false;
+}
+
 }  // namespace mir::param
