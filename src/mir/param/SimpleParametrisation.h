@@ -96,7 +96,7 @@ public:
 
     bool get(const std::string& name, std::vector<int>& value) const override;
     bool get(const std::string& name, std::vector<long>& value) const override;
-    bool get(const std::string& name, std::vector<bool>& value) const;
+    bool get(const std::string& name, std::vector<bool>& value) const override;
     bool get(const std::string& name, std::vector<float>& value) const override;
     bool get(const std::string& name, std::vector<double>& value) const override;
     bool get(const std::string& name, std::vector<std::string>& value) const override;

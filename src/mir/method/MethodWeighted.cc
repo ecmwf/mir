@@ -178,7 +178,8 @@ void MethodWeighted::createMatrix(context::Context& ctx, const repres::Represent
     parametrisation_.get("imm", bitmask);
     if (bitmask){
         std::vector<bool> vec_bitmask;
-         applyIMM(W,vec_bitmask);
+	parametrisation_.get("imm-mask", vec_bitmask);
+        applyIMM(W,vec_bitmask);
         if (matrixValidate_) {
             W.validate("applyMasks");
         }

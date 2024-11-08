@@ -90,16 +90,9 @@ bool MIRParametrisation::get(const std::string& name, std::vector<long long>& va
 }
 
 bool MIRParametrisation::get(const std::string& name, std::vector<bool>& value) const {
-    std::vector<int> v;  // Intermediate vector
-    if (get(name, v)) {  // Attempt to retrieve as std::vector<int>
-        value.clear();
-        value.reserve(v.size());
-        for (const int& i : v) {
-            value.push_back(i != 0);  // Convert each int to bool (0 -> false, non-zero -> true)
-        }
-        return true;
-    }
-    return false;
-}
+	 std::ostringstream os;
+	 os << "MIRParametrisation::get(const std::string& name, std::vector<bool>& value) not implemented for " << *this;
+	 throw exception::SeriousBug(os.str());
 
+ }
 }  // namespace mir::param

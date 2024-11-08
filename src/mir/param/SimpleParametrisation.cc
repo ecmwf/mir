@@ -54,6 +54,7 @@ public:
     virtual void get(const std::string& name, std::vector<float>& value) const       = 0;
     virtual void get(const std::string& name, std::vector<double>& value) const      = 0;
     virtual void get(const std::string& name, std::vector<std::string>& value) const = 0;
+    virtual void get(const std::string& name, std::vector<bool>& value) const = 0;
 
     virtual bool matchAll(const std::string& name, const MIRParametrisation&) const = 0;
     virtual bool matchAny(const std::string& name, const MIRParametrisation&) const = 0;
@@ -673,6 +674,9 @@ bool SimpleParametrisation::get(const std::string& name, std::vector<double>& va
     return _get(name, value);
 }
 
+bool SimpleParametrisation::get(const std::string& name, std::vector<bool>& value) const {
+    return _get(name, value);
+}
 
 bool SimpleParametrisation::get(const std::string& /*name*/, std::vector<std::string>& /*value*/) const {
     NOTIMP;

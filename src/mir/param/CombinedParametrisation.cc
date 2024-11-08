@@ -108,6 +108,10 @@ bool CombinedParametrisation::get(const std::string& name, std::vector<double>& 
     return _get(name, value);
 }
 
+bool CombinedParametrisation::get(const std::string& name, std::vector<bool>& value) const {
+    return _get(name, value);
+}
+
 bool CombinedParametrisation::get(const std::string& name, std::vector<std::string>& value) const {
     return _get(name, value);
 }
