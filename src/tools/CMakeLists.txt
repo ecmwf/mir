@@ -2,6 +2,7 @@
 ecbuild_add_executable(TARGET mir-tool OUTPUT_NAME mir SOURCES mir.cc LIBS mir ${mir_INSTALL_TOOLS})
 
 foreach(tool IN ITEMS
+    mir-bounding-box
     mir-climate-filter
     mir-compare  # NOTE: set in the testing scripts, however not used
     mir-compute
