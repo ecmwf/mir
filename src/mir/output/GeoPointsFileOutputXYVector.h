@@ -58,7 +58,7 @@ protected:
     // -- Overridden methods
 
     // From MIROutput
-    virtual size_t save(const param::MIRParametrisation&, context::Context&) override;
+    size_t save(const param::MIRParametrisation&, context::Context&) override;
 
     // -- Class members
     // None

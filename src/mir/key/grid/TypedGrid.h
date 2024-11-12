@@ -29,7 +29,7 @@ public:
 
     // -- Destructor
 
-    virtual ~TypedGrid() override;
+    ~TypedGrid() override;
 
     // -- Convertors
     // None

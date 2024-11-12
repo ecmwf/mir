@@ -32,7 +32,7 @@ public:
 
     // -- Destructor
 
-    virtual ~FromPL() override = default;
+    ~FromPL() override = default;
 
     // -- Convertors
     // None
@@ -60,8 +60,8 @@ protected:
     // None
 
     // -- Overridden methods
-    virtual void fillGrib(grib_info&) const override;
-    virtual void fillJob(api::MIRJob&) const override;
+    void fillGrib(grib_info&) const override;
+    void fillJob(api::MIRJob&) const override;
     atlas::Grid atlasGrid() const override;
     void makeName(std::ostream&) const override;
     bool sameAs(const Representation&) const override;

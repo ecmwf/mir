@@ -35,7 +35,7 @@ public:
 
     // -- Destructor
 
-    virtual ~EndAction() override;
+    ~EndAction() override;
 
     // -- Convertors
     // None
@@ -87,8 +87,8 @@ private:
     bool sameAs(const Action&) const override;
     bool isEndAction() const override;
 
-    virtual void print(std::ostream&) const override;
-    virtual void custom(std::ostream&) const override;
+    void print(std::ostream&) const override;
+    void custom(std::ostream&) const override;
 
     // -- Class members
     // None
