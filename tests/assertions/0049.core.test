@@ -1,0 +1,5 @@
+# Mars request
+regular_ll.2-2.grib1
+# Mir tool options
+$MIR_DEBUG=1
+--grid=1/1 --interpolation=nn --point-search-trees=mapped-anonymous-memory
