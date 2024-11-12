@@ -429,14 +429,9 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
     ASSERT(W.cols() == npts_inp);
 
     std::vector<size_t> forceMissing;  // reserving size unnecessary (not the general case)
-    {
-        auto begin = W.begin(0);
-        auto end(begin);
-        for (size_t r = 0; r < W.rows(); r++) {
-            if (begin == (end = W.end(r))) {
-                forceMissing.push_back(r);
-            }
-            begin = end;
+    for (size_t r = 0; r < W.rows(); ++r) {
+        if (W.outer()[r] == W.outer()[r + 1]) {
+            forceMissing.push_back(r);
         }
     }
 
