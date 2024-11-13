@@ -169,21 +169,30 @@ struct MIRScripToWeightMatrix : public MIRTool {
                 return ia[i] != ia[j] ? ia[i] < ia[j] : ja[i] != ja[j] ? ja[i] < ja[j] : a[i] < a[j];
             });
 
-            decltype(ia) ia_unsorted(nnz);
+            decltype(ia) ia_unsorted(Nr + 1, 0);
             decltype(ja) ja_unsorted(nnz);
             ia.swap(ia_unsorted);
             ja.swap(ja_unsorted);
 
             const auto base = static_cast<Index>(args.getUnsigned("base", DEFAULT_BASE));
             for (size_t n = 0; n < nnz; ++n) {
-                ia[n] = ia_unsorted[sorted[n]] - base;
-                ja[n] = ja_unsorted[sorted[n]] - base;
-                ASSERT(0 <= ia[n] && ia[n] < Nr);
-                ASSERT(0 <= ja[n] && ja[n] < Nc);
+                auto r = ia_unsorted[sorted[n]] - base;
+                auto c = ja_unsorted[sorted[n]] - base;
+                ASSERT(0 <= r && r < Nr);
+                ASSERT(0 <= c && c < Nc);
+
+                ia[r + 1]++;
+                ja[n] = c;
             }
 
             ia_unsorted.clear();
             ja_unsorted.clear();
+
+            for (size_t r = 0; r < Nr; ++r) {
+                ia[r + 1] += ia[r];
+            }
+
+            ASSERT(ia.front() == 0 && ia.back() == nnz);
 
             decltype(a) a_unsorted(nnz);
             a.swap(a_unsorted);
