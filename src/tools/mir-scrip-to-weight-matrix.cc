@@ -131,7 +131,7 @@ struct MIRScripToWeightMatrix : public MIRTool {
             netCDF::NcFile f(args(0), netCDF::NcFile::read);
 
             Nr  = f.getDim(args.getString("nr", DEFAULT_DIM_NR)).getSize();
-            Nc  = f.getDim(args.getString("nr", DEFAULT_DIM_NC)).getSize();
+            Nc  = f.getDim(args.getString("nc", DEFAULT_DIM_NC)).getSize();
             nnz = f.getDim(args.getString("nnz", DEFAULT_DIM_NNZ)).getSize();
 
             ASSERT(Nr > 0);
@@ -143,12 +143,12 @@ struct MIRScripToWeightMatrix : public MIRTool {
             ia.resize(nnz);  // NOTE: not compressed
             var_ia.getVar(ia.data());
 
-            auto var_ja = f.getVar(args.getString("ia", DEFAULT_VAR_JA));
+            auto var_ja = f.getVar(args.getString("ja", DEFAULT_VAR_JA));
             ASSERT(var_ja.getDimCount() == 1 && var_ja.getDim(0).getSize() == nnz);
             ja.resize(nnz);
             var_ja.getVar(ja.data());
 
-            auto var_a = f.getVar(args.getString("ia", DEFAULT_VAR_A));
+            auto var_a = f.getVar(args.getString("a", DEFAULT_VAR_A));
             ASSERT(var_a.getDimCount() == 2 && var_a.getDim(0).getSize() == nnz && var_a.getDim(1).getSize() == 1);
             a.resize(nnz);
             var_a.getVar(a.data());
@@ -158,7 +158,7 @@ struct MIRScripToWeightMatrix : public MIRTool {
         }
 
 
-        // matrix conversion to 0-based indexing and sorting
+        // matrix conversion to 0-based indexing, sorting and compression
         {
             std::vector<size_t> sorted(nnz);
             for (size_t n = 0; n < nnz; ++n) {
@@ -166,7 +166,7 @@ struct MIRScripToWeightMatrix : public MIRTool {
             }
 
             std::sort(sorted.begin(), sorted.end(), [&](auto i, auto j) {
-                return ia[i] != ia[j] ? ia[i] < ia[j] : ja[i] != ja[j] ? ja[i] < ja[j] : a[i] < a[j];
+                return ia[i] != ia[j] ? ia[i] < ia[j] : ja[i] != ja[j] ? ja[i] < ja[j] : i < j;
             });
 
             decltype(ia) ia_unsorted(Nr + 1, 0);
