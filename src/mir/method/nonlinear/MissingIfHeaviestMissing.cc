@@ -28,40 +28,39 @@ namespace mir::method::nonlinear {
 MissingIfHeaviestMissing::MissingIfHeaviestMissing(const param::MIRParametrisation& param) : NonLinear(param) {}
 
 
-bool MissingIfHeaviestMissing::treatment(DenseMatrix& /*A*/, WeightMatrix& W, DenseMatrix& /*B*/,
-                                         const MIRValuesVector& values, const double& missingValue) const {
+bool MissingIfHeaviestMissing::treatment(MethodWeighted::Matrix& /*A*/, MethodWeighted::WeightMatrix& W,
+                                         MethodWeighted::Matrix& /*B*/, const MIRValuesVector& values,
+                                         const double& missingValue) const {
 
     // correct matrix weigths for the missing values
-    ASSERT(W.cols() == values.size());
 
+    ASSERT(W.cols() == values.size());
+    auto* outer = W.outer();
+    auto* inner = W.inner();
     auto* data = const_cast<WeightMatrix::Scalar*>(W.data());
     bool modif = false;
 
-    WeightMatrix::Size i = 0;
-    WeightMatrix::iterator it(W);
-    for (WeightMatrix::Size r = 0; r < W.rows(); ++r) {
-        const WeightMatrix::iterator end = W.end(r);
 
-        // count missing values, accumulate weights (disregarding missing values) and find maximum weight in row
-        size_t i_missing         = i;
+    for (WeightMatrix::Size r = 0; r < W.rows(); ++r) {
+        WeightMatrix::Size row_start = outer[r];
+        WeightMatrix::Size row_end = outer[r + 1];  // Marks the end of this row
+
+        // Initialize variables for tracking missing values and weights in the row
+        size_t i_missing         = row_start;
         size_t N_missing         = 0;
-        size_t N_entries         = 0;
+        size_t N_entries         = row_end - row_start;
         double sum               = 0.;
         double heaviest          = -1.;
         bool heaviest_is_missing = false;
 
-        WeightMatrix::iterator kt(it);
-        WeightMatrix::Size k = i;
-        for (; it != end; ++it, ++i, ++N_entries) {
-
-            const bool miss = values[it.col()] == missingValue;
+        for (WeightMatrix::Size i = row_start; i < row_end; ++i) {
+            const bool miss = values[inner[i]] == missingValue;
 
             if (miss) {
                 ++N_missing;
                 i_missing = i;
-            }
-            else {
-                sum += *it;
+            } else {
+                sum += data[i];
             }
 
             if (heaviest < data[i]) {
@@ -70,21 +69,18 @@ bool MissingIfHeaviestMissing::treatment(DenseMatrix& /*A*/, WeightMatrix& W, De
             }
         }
 
-        // weights redistribution: zero-weight all missing values, linear re-weighting for the others;
-        // if all values are missing, or the closest value is missing, force missing value
         if (N_missing > 0) {
             if (N_missing == N_entries || heaviest_is_missing || eckit::types::is_approximately_equal(sum, 0.)) {
 
-                for (WeightMatrix::Size j = k; j < k + N_entries; ++j) {
-                    data[j] = j == i_missing ? 1. : 0.;
+                for (WeightMatrix::Size i = row_start; i < row_end; ++i) {
+                    data[i] = (i == i_missing) ? 1. : 0.;
                 }
-            }
-            else {
+            } else {
 
                 const double factor = 1. / sum;
-                for (WeightMatrix::Size j = k; j < k + N_entries; ++j, ++kt) {
-                    const bool miss = values[kt.col()] == missingValue;
-                    data[j]         = miss ? 0. : (factor * data[j]);
+                for (WeightMatrix::Size i = row_start; i < row_end; ++i) {
+                    const bool miss = values[inner[i]] == missingValue;
+                    data[i] = miss ? 0. : (factor * data[i]);
                 }
             }
             modif = true;
