@@ -790,6 +790,8 @@ if(mir_HAVE_ATLAS)
         key/grid/ORCAPattern.h
         method/ProxyMethod.cc
         method/ProxyMethod.h
+        method/ProxyWeightedMethod.cc
+        method/ProxyWeightedMethod.h
         method/fe/BuildNodeLumpedMassMatrix.cc
         method/fe/BuildNodeLumpedMassMatrix.h
         method/fe/CalculateCellLongestDiagonal.cc

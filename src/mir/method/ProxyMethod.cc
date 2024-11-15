@@ -54,9 +54,9 @@ struct GridBoxMaximum final : public ProxyMethod {
 };
 
 
-static const MethodBuilder<StructuredBicubic> __method1("structured-bicubic");
-static const MethodBuilder<StructuredBilinear> __method2("structured-bilinear");
-static const MethodBuilder<StructuredBiquasicubic> __method3("structured-biquasicubic");
+static const MethodBuilder<StructuredBicubic> __method1("structured-bicubic-matrix-free");
+static const MethodBuilder<StructuredBilinear> __method2("structured-bilinear-matrix-free");
+static const MethodBuilder<StructuredBiquasicubic> __method3("structured-biquasicubic-matrix-free");
 static const MethodBuilder<GridBoxAverage> __method4("grid-box-average-matrix-free");
 static const MethodBuilder<GridBoxMaximum> __method5("grid-box-maximum-matrix-free");
 
