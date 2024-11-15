@@ -721,7 +721,9 @@ list(APPEND mir_srcs
     util/ValueMap.cc
     util/ValueMap.h
     util/Wind.cc
-    util/Wind.h)
+    util/Wind.h
+    util/allocator/InPlaceAllocator.cc
+    util/allocator/InPlaceAllocator.h)
 
 
 if(mir_HAVE_ATLAS)
