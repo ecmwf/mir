@@ -115,6 +115,9 @@ struct MIR : MIRTool {
         options_.push_back(
             new FactoryOption<method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
 
+        options_.push_back(new FactoryOption<method::MethodFactory>("intermediate-interpolation",
+                                                                    "Grid to grid intermediate interpolation method"));
+
         options_.push_back(
             new FactoryOption<stats::FieldFactory>("interpolation-statistics", "Statistics interpolation method"));
 

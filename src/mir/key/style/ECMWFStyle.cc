@@ -24,7 +24,10 @@
 #include "mir/key/grid/Grid.h"
 #include "mir/key/resol/Resol.h"
 #include "mir/output/MIROutput.h"
+#include "mir/param/CombinedParametrisation.h"
+#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/param/RuntimeParametrisation.h"
 #include "mir/param/SameParametrisation.h"
 #include "mir/repres/latlon/LatLon.h"
 #include "mir/util/BoundingBox.h"
@@ -333,7 +336,8 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
 
 
 void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
-    const auto& user = parametrisation_.userParametrisation();
+    const auto& user  = parametrisation_.userParametrisation();
+    const auto& field = parametrisation_.fieldParametrisation();
 
     bool rotation = user.has("rotation");
     bool vod2uv   = option(user, "vod2uv", false);
@@ -345,6 +349,21 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
     }
 
     add_formula(plan, user, {"gridded", "raw"});
+
+    if (std::string intint; user.get("intermediate-interpolation", intint) && !intint.empty()) {
+        if (std::string intgrid; user.get("intgrid", intgrid) && !intgrid.empty()) {
+            auto runtime = new param::RuntimeParametrisation{parametrisation_};
+            runtime->set("interpolation", intint);
+            runtime->set("grid", intgrid);
+            runtime->unset("rotation");
+
+            static param::DefaultParametrisation defaults;
+            auto recombined = std::make_unique<param::CombinedParametrisation>(*runtime, field, defaults);
+            auto target     = target_gridded_from_parametrisation(*recombined, false);
+
+            plan.add("interpolate.grid2" + target, runtime);
+        }
+    }
 
     auto target = target_gridded_from_parametrisation(parametrisation_, rotation);
     if (!target.empty()) {
