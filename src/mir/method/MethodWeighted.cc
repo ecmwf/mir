@@ -653,79 +653,72 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
 }
 
 void MethodWeighted::applyIMM(WeightMatrix& W, std::vector<bool> imask) const {
-    trace::Timer timer("MethodWeighted::applyIMM");
-    auto& log = Log::debug();
-    
-    log << "MethodWeighted::applyIMM" << std::endl;
+   trace::Timer timer("MethodWeighted::applyIMM");
+auto& log = Log::debug();
 
-    log << "mask size=" << imask.size() << " == #cols=" << W.cols() << std::endl;
+log << "MethodWeighted::applyIMM" << std::endl;
+log << "mask size=" << imask.size() << " == #cols=" << W.cols() << std::endl;
 
-    ASSERT(imask.size() == W.cols());
-   
-    auto* data = const_cast<WeightMatrix::Scalar*>(W.data());
-    WeightMatrix::Size i = 0;
-    WeightMatrix::iterator it(W);
-    size_t fix = 0;
+// Ensure that the mask size matches the number of columns in W
+ASSERT(imask.size() == W.cols());
 
-    for (WeightMatrix::Size r = 0; r < W.rows(); ++r) {
+auto* data = const_cast<WeightMatrix::Scalar*>(W.data());
+auto* outer = W.outer();
+auto* inner = W.inner();
+size_t fix = 0;
 
-        const WeightMatrix::iterator end = W.end(r);
+// Iterate over each row
+for (WeightMatrix::Size r = 0; r < W.rows(); ++r) {
+    WeightMatrix::Size row_start = outer[r];
+    WeightMatrix::Size row_end = outer[r + 1];
 
-        // count missing values, accumulate weights (disregarding missing values) and find maximum weight in row
-        size_t i_missing         = i;
-        size_t N_missing         = 0;
-        size_t N_entries         = 0;
-        double sum               = 0.;
-        double heaviest          = -1.;
-        bool heaviest_is_missing = false;
+    size_t i_missing = row_start;
+    size_t N_missing = 0;
+    size_t N_entries = row_end - row_start;
+    double sum = 0.0;
+    double heaviest = -1.0;
+    bool heaviest_is_missing = false;
 
-        WeightMatrix::iterator kt(it);
-        WeightMatrix::Size k = i;
-        for (; it != end; ++it, ++i, ++N_entries) {
+    // Iterate over the entries in the current row
+    for (WeightMatrix::Size i = row_start; i < row_end; ++i) {
+        const bool miss = imask[inner[i]] == 0.0;
 
-            const bool miss =  imask[it.col()]==0.;
-
-            if (miss) {
-               
-                ++N_missing;
-                i_missing = i;
-            }
-            else {
-                sum += *it;
-            }
-
-            if (heaviest < data[i]) {
-                heaviest            = data[i];
-                heaviest_is_missing = miss;
-            }
+        if (miss) {
+            ++N_missing;
+            i_missing = i;
+        } else {
+            sum += data[i];
         }
 
-        // weights redistribution: zero-weight all missing values, linear re-weighting for the others;
-        // if all values are missing, or the closest value is missing, force missing value
-        if (N_missing > 0) {
-             fix++;
-            if (N_missing == N_entries || heaviest_is_missing || eckit::types::is_approximately_equal(sum, 0.)) {
-
-                for (WeightMatrix::Size j = k; j < k + N_entries; ++j) {
-                    data[j] = j == i_missing ? 1. : 0.;
-                }
-            }
-            else {
-
-                const double factor = 1. / sum;
-                for (WeightMatrix::Size j = k; j < k + N_entries; ++j, ++kt) {
-                    const bool miss = imask[kt.col()]==0.;
-                    data[j]         = miss ? 0. : (factor * data[j]);
-                }
-            }
-          
+        if (heaviest < data[i]) {
+            heaviest = data[i];
+            heaviest_is_missing = miss;
         }
     }
 
-          // log corrections
-        log << "MethodWeighted: applyIMM corrected " << Log::Pretty(fix) << " out of "
-            << Log::Pretty(W.rows(), {"Weight matrix rows"}) << std::endl;
+    // Weights redistribution: zero-weight all missing values, linear re-weighting for the others
+    if (N_missing > 0) {
+        ++fix;
+        if (N_missing == N_entries || heaviest_is_missing || eckit::types::is_approximately_equal(sum, 0.0)) {
+            // All values are missing or the heaviest is missing; set only i_missing to 1
+            for (WeightMatrix::Size i = row_start; i < row_end; ++i) {
+                data[i] = (i == i_missing) ? 1.0 : 0.0;
+            }
+        } else {
+            // Scale non-missing entries so they sum to 1
+            const double factor = 1.0 / sum;
+            for (WeightMatrix::Size i = row_start; i < row_end; ++i) {
+                const bool miss = imask[inner[i]] == 0.0;
+                data[i] = miss ? 0.0 : (factor * data[i]);
+            }
+        }
+    }
 }
+
+// Log the number of corrections made
+log << "MethodWeighted: applyIMM corrected " << Log::Pretty(fix) << " out of "
+    << Log::Pretty(W.rows(), {"Weight matrix rows"}) << std::endl;
+}     
 
 void MethodWeighted::hash(eckit::MD5& md5) const {
     md5.add(name());
