@@ -13,6 +13,7 @@
 #include "mir/method/ProxyWeightedMethod.h"
 
 #include <ostream>
+#include <vector>
 
 #include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
@@ -20,15 +21,23 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/allocator/InPlaceAllocator.h"
 
 
 namespace mir::method {
 
 
+namespace {
+
+
 struct StructuredBicubic final : public ProxyWeightedMethod {
     explicit StructuredBicubic(const param::MIRParametrisation& param) :
-        ProxyWeightedMethod(param, "structured-bicubic") {}
+        ProxyWeightedMethod(param, "structured-bicubic", "serial-halo to serial") {}
 };
+
+
+}  // namespace
 
 
 static const MethodFactory* METHODS[]{
@@ -36,10 +45,12 @@ static const MethodFactory* METHODS[]{
 };
 
 
-ProxyWeightedMethod::ProxyWeightedMethod(const param::MIRParametrisation& param, const std::string& type) :
-    MethodWeighted(param), type_(type) {
-    options_ = {"type", type};
-    options_.set("matrix_free", false);
+ProxyWeightedMethod::ProxyWeightedMethod(const param::MIRParametrisation& param, const std::string& interpolation_type,
+                                         const std::string& renumber_type) :
+    MethodWeighted(param), type_(interpolation_type) {
+    interpol_.set("matrix_free", false);
+    interpol_.set("type", interpolation_type);
+    renumber_.set("type", renumber_type);
 }
 
 
@@ -55,25 +66,25 @@ int ProxyWeightedMethod::version() const {
 
 void ProxyWeightedMethod::hash(eckit::MD5& h) const {
     MethodWeighted::hash(h);
-    h.add(options_);
+    h.add(interpol_);
 }
 
 
 bool ProxyWeightedMethod::sameAs(const Method& other) const {
-    auto digest = [](const auto& options) {
+    auto digest = [](const auto& config) {
         eckit::MD5 h;
-        h.add(options);
+        config.hash(h);
         return h.digest();
     };
 
     const auto* o = dynamic_cast<const ProxyWeightedMethod*>(&other);
-    return (o != nullptr) && name() == std::string{o->name()} && digest(options_) == digest(o->options_) &&
-           MethodWeighted::sameAs(*o);
+    return (o != nullptr) && name() == std::string{o->name()} && digest(interpol_) == digest(o->interpol_) &&
+           digest(renumber_) == digest(o->renumber_) && MethodWeighted::sameAs(*o);
 }
 
 
 void ProxyWeightedMethod::print(std::ostream& out) const {
-    out << "ProxyWeightedMethod[options=" << options_ << ",";
+    out << "ProxyWeightedMethod[interpolation=" << interpol_ << ",renumber=" << renumber_ << ",";
     MethodWeighted::print(out);
     out << "]";
 }
@@ -81,7 +92,7 @@ void ProxyWeightedMethod::print(std::ostream& out) const {
 
 void ProxyWeightedMethod::json(eckit::JSON& j) const {
     j.startObject();
-    j << "options" << options_.json(eckit::JSON::Formatting::compact());
+    j << "options" << interpol_.json(eckit::JSON::Formatting::compact());
     MethodWeighted::json(j);
     j.endObject();
 }
@@ -89,36 +100,38 @@ void ProxyWeightedMethod::json(eckit::JSON& j) const {
 
 void ProxyWeightedMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& in,
                                    const repres::Representation& out) const {
-    atlas::Interpolation interpol(options_, in.atlasGrid(), out.atlasGrid());
-
-    auto cache = interpol.createCache();
-    ASSERT(cache);
-
-    const auto* entry = dynamic_cast<const atlas::interpolation::MatrixCacheEntry*>(cache.get("Matrix"));
-    ASSERT(entry != nullptr);
-
-    W.swap(const_cast<eckit::linalg::SparseMatrix&>(entry->matrix()));
-
-    auto& fs = interpol.source();
-    const auto gi{atlas::array::make_view<atlas::gidx_t, 1>(fs.global_index())};
-
-    atlas::gidx_t min = std::numeric_limits<atlas::gidx_t>::max();
-    atlas::gidx_t max = std::numeric_limits<atlas::gidx_t>::min();
-    for (size_t i = 0; i < gi.size(); ++i) {
-        min = std::min(min, gi(i));
-        max = std::max(max, gi(i));
+    // interpolation matrix build and assign (with a halo on the source grid)
+    atlas::Interpolation interpol{interpol_, in.atlasGrid(), out.atlasGrid()};
+    {
+        atlas::interpolation::MatrixCache cache{interpol};
+        const auto& M = cache.matrix();
+        W.swap(const_cast<eckit::linalg::SparseMatrix&>(M));
     }
 
-    std::cout << "min: " << min << std::endl;
-    std::cout << "max: " << max << std::endl;
+    // fold serial+halo into serial
+    const auto Nr = out.numberOfPoints();
+    const auto Nc = in.numberOfPoints();
+    ASSERT(Nr == W.rows());
+    ASSERT(Nc < W.cols());
 
+    {
+        const auto& fs = interpol.source();
+        const auto gidx{atlas::array::make_view<atlas::gidx_t, 1>(fs.global_index())};
 
-    auto Nr   = W.rows();
-    auto Nc   = W.cols();
-    auto Nin  = in.numberOfPoints();
-    auto Nout = out.numberOfPoints();
-    ASSERT(Nr == Nout);
-    ASSERT(Nc == Nin);
+        auto* a = const_cast<eckit::linalg::Scalar*>(W.data());
+        for (auto c = Nc; c < W.cols(); ++c) {
+            ASSERT(1 <= gidx[c] && gidx[c] < Nc + 1);  // (global indexing is 1-based)
+            a[gidx[c] - 1] += a[c];
+            a[c] = 0.;
+        }
+        W.prune();
+    }
+
+    // reshape matrix
+    WeightMatrix M(new util::allocator::InPlaceAllocator{
+        Nr, Nc, W.nonZeros(), const_cast<eckit::linalg::Index*>(W.outer()),
+        const_cast<eckit::linalg::Index*>(W.inner()), const_cast<eckit::linalg::Scalar*>(W.data())});
+    W.swap(M);
 }
 
 

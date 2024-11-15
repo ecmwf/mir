@@ -24,22 +24,19 @@ class ProxyWeightedMethod : public MethodWeighted {
 protected:
     // -- Constructor
 
-    ProxyWeightedMethod(const param::MIRParametrisation&, const std::string& type);
+    ProxyWeightedMethod(const param::MIRParametrisation&, const std::string& interpolation_type,
+                        const std::string& renumber_type = "");
 
     // -- Destructor
 
     ~ProxyWeightedMethod() override = default;
 
-    // -- Methods
-
-    const auto& options() const { return options_; }
-    auto& options() { return options_; }
-
 private:
     // -- Members
 
     const std::string type_;
-    atlas::util::Config options_;
+    atlas::util::Config interpol_;
+    atlas::util::Config renumber_;
 
     // -- Overridden methods
 
