@@ -24,19 +24,22 @@ class ProxyWeightedMethod : public MethodWeighted {
 protected:
     // -- Constructor
 
-    ProxyWeightedMethod(const param::MIRParametrisation&, const std::string& interpolation_type,
-                        const std::string& renumber_type = "");
+    ProxyWeightedMethod(const param::MIRParametrisation&, const std::string& interpolation_type);
 
     // -- Destructor
 
     ~ProxyWeightedMethod() override = default;
+
+protected:
+    // -- Methods
+
+    void foldSourceHalo(const atlas::Interpolation&, size_t Nr, size_t Nc, WeightMatrix&) const;
 
 private:
     // -- Members
 
     const std::string type_;
     atlas::util::Config interpol_;
-    atlas::util::Config renumber_;
 
     // -- Overridden methods
 
@@ -51,8 +54,6 @@ private:
 
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
                   const repres::Representation& out) const override;
-
-    bool validateMatrixWeights() const override;
 };
 
 
