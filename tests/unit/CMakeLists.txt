@@ -30,6 +30,7 @@ foreach(_t
     statistics
     style
     vector-space
+    weight_matrix
     wind)
     ecbuild_add_test(
         TARGET            mir_tests_unit_${_t}
