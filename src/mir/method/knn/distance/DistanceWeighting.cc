@@ -85,4 +85,9 @@ void DistanceWeightingFactory::list(std::ostream& out) {
 }
 
 
+bool DistanceWeighting::validateMatrixWeights() const {
+    return true;
+}
+
+
 }  // namespace mir::method::knn::distance
