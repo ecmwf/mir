@@ -162,4 +162,9 @@ void KNearestNeighbours::print(std::ostream& out) const {
 }
 
 
+bool KNearestNeighbours::validateMatrixWeights() const {
+    return distanceWeighting().validateMatrixWeights();
+}
+
+
 }  // namespace mir::method::knn
