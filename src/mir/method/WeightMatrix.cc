@@ -13,6 +13,7 @@
 #include "mir/method/WeightMatrix.h"
 
 #include <cmath>
+#include <limits>
 #include <sstream>
 #include <unordered_set>
 
@@ -131,7 +132,9 @@ void WeightMatrix::validate(const char* when, Check check) const {
             check_duplicates &= cols.insert(it.col()).second;
         }
 
-        auto check_sum = eckit::types::is_approximately_equal(sum, 0.) || eckit::types::is_approximately_equal(sum, 1.);
+        constexpr auto EPS = 1.e2 * std::numeric_limits<Scalar>::epsilon();
+        auto check_sum =
+            eckit::types::is_approximately_equal(sum, 0., EPS) || eckit::types::is_approximately_equal(sum, 1., EPS);
 
         // ignore checks as required
         check_duplicates |= !check.duplicates;
