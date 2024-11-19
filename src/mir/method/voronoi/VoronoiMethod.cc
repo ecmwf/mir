@@ -168,8 +168,8 @@ void VoronoiMethod::print(std::ostream& out) const {
 }
 
 
-bool VoronoiMethod::validateMatrixWeights() const {
-    return false;
+WeightMatrix::Check VoronoiMethod::validateMatrixWeights() const {
+    return {true, true, false};
 }
 
 

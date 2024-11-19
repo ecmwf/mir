@@ -162,7 +162,7 @@ void KNearestNeighbours::print(std::ostream& out) const {
 }
 
 
-bool KNearestNeighbours::validateMatrixWeights() const {
+WeightMatrix::Check KNearestNeighbours::validateMatrixWeights() const {
     return distanceWeighting().validateMatrixWeights();
 }
 

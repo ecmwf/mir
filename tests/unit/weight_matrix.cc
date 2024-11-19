@@ -24,14 +24,13 @@ CASE("WeightMatrix::validate") {
         const auto* when{"out-of-bounds"};
         const std::string what{
             "Invalid weight matrix (out-of-bounds): 1 row error, "
-            "row 2: weights out-of-bounds, "
-            "weights sum not 0 or 1 (sum=-0.1, 1-sum=1.1), contents: (2,2,-0.1)"};
+            "row 2: weights out-of-bounds, contents: (2,2,-0.1)"};
 
         method::WeightMatrix W(3, 3);
         W.setFromTriplets({{0, 0, 1.}, {1, 1, 0.}, {2, 2, -0.1}});
 
         try {
-            W.validate(when);
+            W.validate(when, {false, true, false});
             ASSERT(false);
         }
         catch (exception::InvalidWeightMatrix& e) {
@@ -51,7 +50,7 @@ CASE("WeightMatrix::validate") {
         W.setFromTriplets({{0, 0, 1.}, {1, 1, 0.5}, {2, 2, 0.1}});
 
         try {
-            W.validate(when);
+            W.validate(when, {false, false, true});
             ASSERT(false);
         }
         catch (exception::InvalidWeightMatrix& e) {
@@ -70,7 +69,7 @@ CASE("WeightMatrix::validate") {
         W.setFromTriplets({{0, 0, 1.}, {1, 1, 0.5}, {1, 1, 0.5}});
 
         try {
-            W.validate(when);
+            W.validate(when, {true, false, false});
             ASSERT(false);
         }
         catch (exception::InvalidWeightMatrix& e) {
@@ -90,7 +89,7 @@ CASE("WeightMatrix::validate") {
         W.setFromTriplets({{0, 0, 0.5}, {0, 0, 0.5}, {1, 1, 0.5}});
 
         try {
-            W.validate(when);
+            W.validate(when, {true, false, true});
             ASSERT(false);
         }
         catch (exception::InvalidWeightMatrix& e) {

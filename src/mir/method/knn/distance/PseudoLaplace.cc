@@ -127,9 +127,9 @@ void PseudoLaplace::hash(eckit::MD5& h) const {
 }
 
 
-bool PseudoLaplace::validateMatrixWeights() const {
+WeightMatrix::Check PseudoLaplace::validateMatrixWeights() const {
     // this method does not produce bounded interpolation weights
-    return false;
+    return {true, false, false};
 }
 
 

@@ -85,8 +85,8 @@ void DistanceWeightingFactory::list(std::ostream& out) {
 }
 
 
-bool DistanceWeighting::validateMatrixWeights() const {
-    return true;
+WeightMatrix::Check DistanceWeighting::validateMatrixWeights() const {
+    return {};
 }
 
 

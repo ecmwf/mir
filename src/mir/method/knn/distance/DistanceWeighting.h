@@ -47,7 +47,7 @@ public:
 
     virtual void hash(eckit::MD5&) const = 0;
 
-    virtual bool validateMatrixWeights() const;
+    virtual WeightMatrix::Check validateMatrixWeights() const;
 
 private:
     virtual void json(eckit::JSON&) const   = 0;

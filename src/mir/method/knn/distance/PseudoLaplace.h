@@ -29,7 +29,7 @@ private:
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;
 
-    bool validateMatrixWeights() const override;
+    WeightMatrix::Check validateMatrixWeights() const override;
 };
 
 

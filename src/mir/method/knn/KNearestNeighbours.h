@@ -56,7 +56,7 @@ private:
     virtual const pick::Pick& pick() const                               = 0;
     virtual const distance::DistanceWeighting& distanceWeighting() const = 0;
 
-    virtual bool validateMatrixWeights() const;
+    WeightMatrix::Check validateMatrixWeights() const override;
 };
 
 

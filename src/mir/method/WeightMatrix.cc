@@ -16,6 +16,7 @@
 #include <sstream>
 #include <unordered_set>
 
+#include "eckit/config/Resource.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/util/Exceptions.h"
@@ -102,7 +103,12 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
 }
 
 
-void WeightMatrix::validate(const char* when) const {
+void WeightMatrix::validate(const char* when, Check check) const {
+    static bool matrixValidate = eckit::Resource<bool>("$MIR_MATRIX_VALIDATE", true);
+    if (!matrixValidate || (!check.duplicates && !check.bounds && !check.sum)) {
+        return;
+    }
+
     constexpr size_t Nerrors = 10;
     size_t errors            = 0;
 
@@ -114,20 +120,25 @@ void WeightMatrix::validate(const char* when) const {
         Scalar sum = 0.;
         std::unordered_set<Size> cols;
 
-        bool check_bounds        = true;
-        bool check_no_duplicates = true;
+        auto check_bounds     = true;
+        auto check_duplicates = true;
         for (auto it = begin(r); it != end(r); ++it) {
             auto a = *it;
             check_bounds &= eckit::types::is_approximately_greater_or_equal(a, 0.) &&
                             eckit::types::is_approximately_greater_or_equal(1., a);
             sum += a;
 
-            check_no_duplicates &= cols.insert(it.col()).second;
+            check_duplicates &= cols.insert(it.col()).second;
         }
 
         auto check_sum = eckit::types::is_approximately_equal(sum, 0.) || eckit::types::is_approximately_equal(sum, 1.);
 
-        if (!check_bounds || !check_sum || !check_no_duplicates) {
+        // ignore checks as required
+        check_duplicates |= !check.duplicates;
+        check_bounds |= !check.bounds;
+        check_sum |= !check.sum;
+
+        if (!check_bounds || !check_sum || !check_duplicates) {
             if (errors < Nerrors) {
                 what << sep << "row " << r << ": ";
                 const char* s = "";
@@ -142,7 +153,7 @@ void WeightMatrix::validate(const char* when) const {
                     s = ", ";
                 }
 
-                if (!check_no_duplicates) {
+                if (!check_duplicates) {
                     what << s << "duplicate indices";
                     s = ", ";
                 }
