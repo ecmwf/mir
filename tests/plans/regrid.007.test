@@ -1,0 +1,6 @@
+# input
+regular_ll.2-2.grib2
+# mir
+--grid=N160 --interpolation=k-nearest-neighbours --nearest-method=nclosest-or-nearest --nclosest=10 --distance=100000. --distance-weighting=gaussian --distance-weighting-gaussian-stddev=10000. --non-linear=missing-if-all-missing
+# plan
+Gridded2NamedGrid[grid=N160,interpolation=k-nearest-neighbours,method=KNearestNeighbours[nonLinear[MissingIfAllMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,nearestMethod=NClosestOrNearest[nclosest=10,distanceTolerance=1],distanceWeighting=GaussianDistanceWeighting[stddev=10000]]]|Save[output=...]

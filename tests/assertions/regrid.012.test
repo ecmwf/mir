@@ -1,0 +1,6 @@
+# input
+regular_ll.2-2.grib2
+# mir
+--nabla=scalar-gradient
+# grib_get
+# (none)

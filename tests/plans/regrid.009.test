@@ -1,0 +1,6 @@
+# input
+regular_ll.2-2.grib2
+# mir
+--grid=O320 --interpolation=structured-bilinear
+# plan
+Gridded2NamedGrid[grid=O320,interpolation=structured-bilinear,method=ProxyMethod[options=LocalConfiguration[root={type => structured-bilinear , matrix_free => true}],cropping=none]]|Save[output=...]

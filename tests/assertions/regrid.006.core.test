@@ -1,0 +1,7 @@
+# input
+regular_ll.2-2.grib2
+# mir
+--grid=1/1 --interpolation=grid-box-statistics --interpolation-statistics=maximum
+# grib_get
+Ni=360
+Nj=181

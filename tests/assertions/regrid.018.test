@@ -1,0 +1,7 @@
+# input
+param=z,level=1,levtype=ml,resol=20.grib2
+# mir
+--grid=1/1 --intgrid=O20 --spectral-order=cubic
+# grib_get
+Ni=360
+Nj=181

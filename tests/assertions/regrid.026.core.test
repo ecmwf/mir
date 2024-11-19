@@ -1,0 +1,9 @@
+# input
+regular_ll.2-2.grib2
+# mir
+--grid=0.75/0.75 --basic-angle=decimal
+# grib_get
+latitudeOfFirstGridPointInDegrees=90
+iDirectionIncrement=750000
+basicAngleOfTheInitialProductionDomain=0
+subdivisionsOfBasicAngle=MISSING

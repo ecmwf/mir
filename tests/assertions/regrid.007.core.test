@@ -1,0 +1,6 @@
+# input
+regular_ll.2-2.grib2
+# mir
+--grid=N160 --interpolation=k-nearest-neighbours --nearest-method=nclosest-or-nearest --nclosest=10 --distance=100000. --distance-weighting=gaussian --distance-weighting-gaussian-stddev=10000. --non-linear=missing-if-all-missing
+# grib_get
+gridName=N160
