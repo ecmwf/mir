@@ -93,6 +93,5 @@ bool MIRParametrisation::get(const std::string& name, std::vector<bool>& value) 
 	 std::ostringstream os;
 	 os << "MIRParametrisation::get(const std::string& name, std::vector<bool>& value) not implemented for " << *this;
 	 throw exception::SeriousBug(os.str());
-
  }
 }  // namespace mir::param

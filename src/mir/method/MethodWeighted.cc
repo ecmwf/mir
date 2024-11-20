@@ -178,7 +178,7 @@ void MethodWeighted::createMatrix(context::Context& ctx, const repres::Represent
     parametrisation_.get("imm", bitmask);
     if (bitmask){
         std::vector<bool> vec_bitmask;
-	parametrisation_.get("imm-mask", vec_bitmask);
+        parametrisation_.get("imm-mask", vec_bitmask);
         applyIMM(W,vec_bitmask);
         if (matrixValidate_) {
             W.validate("applyMasks");
@@ -225,6 +225,7 @@ MethodWeighted::CacheKeys MethodWeighted::getDiskAndMemoryCacheKeys(const repres
         std::string missing_mask_key;
         parametrisation_.get("imm-name", missing_mask_key);
         memory_key += "_" + missing_mask_key;
+        disk_key += "_" + missing_mask_key;
      }
     return {disk_key, memory_key};
 }
@@ -652,7 +653,7 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
         << Log::Pretty(W.rows(), {"output point"}) << std::endl;
 }
 
-void MethodWeighted::applyIMM(WeightMatrix& W, std::vector<bool> imask) const {
+void MethodWeighted::applyIMM(WeightMatrix& W, const std::vector<bool>& imask) const {
    trace::Timer timer("MethodWeighted::applyIMM");
 auto& log = Log::debug();
 
@@ -681,7 +682,7 @@ for (WeightMatrix::Size r = 0; r < W.rows(); ++r) {
 
     // Iterate over the entries in the current row
     for (WeightMatrix::Size i = row_start; i < row_end; ++i) {
-        const bool miss = imask[inner[i]] == 0.0;
+        const bool miss = !imask[inner[i]];
 
         if (miss) {
             ++N_missing;
@@ -708,7 +709,7 @@ for (WeightMatrix::Size r = 0; r < W.rows(); ++r) {
             // Scale non-missing entries so they sum to 1
             const double factor = 1.0 / sum;
             for (WeightMatrix::Size i = row_start; i < row_end; ++i) {
-                const bool miss = imask[inner[i]] == 0.0;
+                const bool miss = !imask[inner[i]];
                 data[i] = miss ? 0.0 : (factor * data[i]);
             }
         }

@@ -38,7 +38,8 @@ DefaultParametrisation::DefaultParametrisation() {
     set("lsm-value-threshold", 0.5);
 
     set("imm", false);
-
+    set("imm-name", "bitmasked");
+    set("imm-mask", std::vector<bool>{});
 
     set("spectral-order", "linear");
 
