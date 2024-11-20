@@ -40,7 +40,7 @@ bool MissingIfHeaviestMissing::treatment(MethodWeighted::Matrix& /*A*/, MethodWe
     auto* data = const_cast<WeightMatrix::Scalar*>(W.data());
     bool modif = false;
 
-
+    #pragma omp parallel for reduction(||:modif) shared(outer, inner, data, values, missingValue, W)
     for (WeightMatrix::Size r = 0; r < W.rows(); ++r) {
         WeightMatrix::Size row_start = outer[r];
         WeightMatrix::Size row_end = outer[r + 1];  // Marks the end of this row
