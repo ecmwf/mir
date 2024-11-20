@@ -28,9 +28,8 @@ namespace mir::method::nonlinear {
 MissingIfHeaviestMissing::MissingIfHeaviestMissing(const param::MIRParametrisation& param) : NonLinear(param) {}
 
 
-bool MissingIfHeaviestMissing::treatment(MethodWeighted::Matrix& /*A*/, MethodWeighted::WeightMatrix& W,
-                                         MethodWeighted::Matrix& /*B*/, const MIRValuesVector& values,
-                                         const double& missingValue) const {
+bool MissingIfHeaviestMissing::treatment(DenseMatrix& /*A*/, WeightMatrix& W, DenseMatrix& /*B*/,
+                                         const MIRValuesVector& values, const double& missingValue) const {
 
     // correct matrix weigths for the missing values
 
