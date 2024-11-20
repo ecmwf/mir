@@ -44,6 +44,10 @@
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
+#pragma omp declare reduction(vec_merge_sorted : std::vector<size_t> : \
+    omp_out.insert(omp_out.end(), omp_in.begin(), omp_in.end()); \
+    std::inplace_merge(omp_out.begin(), omp_out.begin() + omp_out.size() - omp_in.size(), omp_out.end())) \
+    initializer(omp_priv = decltype(omp_orig)())
 
 namespace mir::method {
 
@@ -429,6 +433,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
     ASSERT(W.cols() == npts_inp);
 
     std::vector<size_t> forceMissing;  // reserving size unnecessary (not the general case)
+    #pragma omp parallel for reduction(vec_merge_sorted:forceMissing)
     for (size_t r = 0; r < W.rows(); ++r) {
         if (W.outer()[r] == W.outer()[r + 1]) {
             forceMissing.push_back(r);
