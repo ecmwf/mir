@@ -37,6 +37,9 @@ DefaultParametrisation::DefaultParametrisation() {
     set("lsm-weight-adjustment", 0.2);
     set("lsm-value-threshold", 0.5);
 
+    set("imm", false);
+
+
     set("spectral-order", "linear");
 
     set("compare", "scalar");
