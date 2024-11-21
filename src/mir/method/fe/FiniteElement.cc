@@ -57,7 +57,6 @@ static void init() {
 namespace {
 
 
-using triplet_vector_t    = std::vector<WeightMatrix::Triplet>;
 using element_tree_t      = atlas::interpolation::method::ElemIndex3;
 using failed_projection_t = std::pair<size_t, PointLatLon>;
 
@@ -74,7 +73,7 @@ struct element_t : std::vector<size_t> {
 
     virtual bool intersects(const atlas::interpolation::method::Ray&, double eps) = 0;
 
-    void append_triplets(size_t i, size_t nbRealPoints, triplet_vector_t& t) const {
+    void append_triplets(size_t i, size_t nbRealPoints, std::vector<WeightMatrix::Triplet>& t) const {
         ASSERT(size() == weights.size());
 
         bool normalise = std::any_of(cbegin(), cend(), [nbRealPoints](size_t i) { return i >= nbRealPoints; });
@@ -322,8 +321,8 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
     size_t nbFailures              = 0;
 
     std::forward_list<failed_projection_t> failures;
-    triplet_vector_t weights_triplets;             // structure to fill-in sparse matrix
-    weights_triplets.reserve(nbOutputPoints * 4);  // preallocate space as if all elements where quads
+    std::vector<WeightMatrix::Triplet> weights_triplets;  // structure to fill-in sparse matrix
+    weights_triplets.reserve(nbOutputPoints * 4);         // preallocate space as if all elements where quads
 
 
     {

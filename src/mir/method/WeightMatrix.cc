@@ -13,7 +13,11 @@
 #include "mir/method/WeightMatrix.h"
 
 #include <cmath>
+#include <limits>
+#include <sstream>
+#include <unordered_set>
 
+#include "eckit/config/Resource.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/util/Exceptions.h"
@@ -100,54 +104,80 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
 }
 
 
-void WeightMatrix::validate(const char* when) const {
-    constexpr size_t Nerrors = 50;
-    constexpr size_t Nvalues = 10;
+void WeightMatrix::validate(const char* when, Check check) const {
+    static bool matrixValidate = eckit::Resource<bool>("$MIR_MATRIX_VALIDATE", true);
+    if (!matrixValidate || (!check.duplicates && !check.bounds && !check.sum)) {
+        return;
+    }
 
-    size_t errors = 0;
+    constexpr size_t Nerrors = 10;
+    size_t errors            = 0;
 
+    std::ostringstream what;
+    const char* sep = "";
+
+    // check for weights out of bounds 0 <= W(i,j) <= 1, sum(W(i,:))=(0,1), and dulplicate column indices
     for (Size r = 0; r < rows(); r++) {
+        Scalar sum = 0.;
+        std::unordered_set<Size> cols;
 
-        // check for W(i,j)<0, or W(i,j)>1, or sum(W(i,:))!=(0,1)
-        double sum = 0.;
-        bool ok    = true;
-
-        for (const_iterator it = begin(r); it != end(r); ++it) {
-            double a = *it;
-            ok &= eckit::types::is_approximately_greater_or_equal(a, 0.) &&
-                  eckit::types::is_approximately_greater_or_equal(1., a);
+        auto check_bounds     = true;
+        auto check_duplicates = true;
+        for (auto it = begin(r); it != end(r); ++it) {
+            auto a = *it;
+            check_bounds &= eckit::types::is_approximately_greater_or_equal(a, 0.) &&
+                            eckit::types::is_approximately_greater_or_equal(1., a);
             sum += a;
+
+            check_duplicates &= cols.insert(it.col()).second;
         }
 
-        ok &= (eckit::types::is_approximately_equal(sum, 0.) || eckit::types::is_approximately_equal(sum, 1.));
-        if (ok) {
-            continue;
-        }
+        constexpr auto EPS = 1.e2 * std::numeric_limits<Scalar>::epsilon();
+        auto check_sum =
+            eckit::types::is_approximately_equal(sum, 0., EPS) || eckit::types::is_approximately_equal(sum, 1., EPS);
 
-        // log issues, per row
-        if (Log::debug_active()) {
+        // ignore checks as required
+        check_duplicates |= !check.duplicates;
+        check_bounds |= !check.bounds;
+        check_sum |= !check.sum;
+
+        if (!check_bounds || !check_sum || !check_duplicates) {
             if (errors < Nerrors) {
-                if (errors == 0) {
-                    Log::debug() << "WeightMatrix::validate(" << when << ") failed " << std::endl;
+                what << sep << "row " << r << ": ";
+                const char* s = "";
+
+                if (!check_bounds) {
+                    what << s << "weights out-of-bounds";
+                    s = ", ";
                 }
 
-                Log::debug() << "Row: " << r;
-                size_t n = 0;
-                for (const_iterator it = begin(r); it != end(r); ++it, ++n) {
-                    if (n > Nvalues) {
-                        Log::debug() << " ...";
-                        break;
-                    }
-                    Log::debug() << " [" << *it << "]";
+                if (!check_sum) {
+                    what << s << "weights sum not 0 or 1 (sum=" << sum << ", 1-sum=" << (1 - sum) << ")";
+                    s = ", ";
                 }
 
-                Log::debug() << " sum=" << sum << ", 1-sum " << (1 - sum) << std::endl;
+                if (!check_duplicates) {
+                    what << s << "duplicate indices";
+                    s = ", ";
+                }
+
+                what << s << "contents: ";
+                s = "";
+                for (auto it = begin(r); it != end(r); ++it) {
+                    what << s << '(' << it.row() << ',' << it.col() << ',' << *it << ')';
+                    s = ", ";
+                }
             }
-            else if (errors == Nerrors) {
-                Log::debug() << "..." << std::endl;
-            }
+
             errors++;
+            sep = ", ";
         }
+    }
+
+    if (errors > 0) {
+        std::ostringstream errors_str;
+        errors_str << Log::Pretty{errors, {"row error"}};
+        throw exception::InvalidWeightMatrix{when, errors_str.str() + ", " + what.str()};
     }
 }
 

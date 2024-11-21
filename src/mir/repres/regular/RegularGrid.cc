@@ -23,6 +23,7 @@
 #include "eckit/utils/MD5.h"
 #include "eckit/utils/StringTools.h"
 
+#include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Domain.h"
@@ -207,18 +208,28 @@ size_t RegularGrid::numberOfPoints() const {
 }
 
 
-bool RegularGrid::isPeriodicWestEast() const {
-    return false;
-}
-
-
 void RegularGrid::fillGrib(grib_info& info) const {
     // shape of the reference system
     shape_.fillGrib(info, grid_.projection().spec());
 
     // scanningMode
-    info.grid.iScansNegatively = x_.back() < x_.front() ? 1L : 0L;
+    info.grid.iScansNegatively = x_.front() < x_.back() ? 0L : 1L;
     info.grid.jScansPositively = y_.front() < y_.back() ? 1L : 0L;
+}
+
+
+void RegularGrid::fillJob(api::MIRJob& job) const {
+    // shape of the reference system
+    shape_.fillJob(job, grid_.projection().spec());
+
+    // scanningMode
+    std::string grid;
+    ASSERT(job.get("grid", grid) && !grid.empty());
+
+    grid += ";iScansNegatively=" + std::to_string(x().front() < x().back() ? 0 : 1);
+    grid += ";jScansPositively=" + std::to_string(y().front() < y().back() ? 1 : 0);
+
+    job.set("grid", grid);
 }
 
 
@@ -229,6 +240,12 @@ bool RegularGrid::includesNorthPole() const {
 
 bool RegularGrid::includesSouthPole() const {
     return bbox_.south() == Latitude::SOUTH_POLE;
+}
+
+
+bool RegularGrid::isPeriodicWestEast() const {
+    return includesNorthPole() || includesSouthPole() ||
+           (bbox_.east().value() - bbox_.west().value() >= Longitude::GLOBE.value());
 }
 
 

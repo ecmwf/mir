@@ -1,11 +1,36 @@
+/*
+ * (C) Copyright 1996- ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
+
+
 #pragma once
 
 #include "mir/mir_ecbuild_config.h"
 
 #include "mir/api/mir_version.h"
 
+
 #cmakedefine01 mir_HAVE_ATLAS
 #cmakedefine01 mir_HAVE_NETCDF
 #cmakedefine01 mir_HAVE_PNG
 #cmakedefine01 mir_HAVE_OMP
 
+
+constexpr bool _to_bool(int x = 0) {
+    return x != 0;
+}
+
+constexpr bool HAVE_ATLAS  = _to_bool(@mir_HAVE_ATLAS@);
+constexpr bool HAVE_NETCDF = _to_bool(@mir_HAVE_NETCDF@);
+constexpr bool HAVE_PNG    = _to_bool(@mir_HAVE_PNG@);
+constexpr bool HAVE_OMP    = _to_bool(@mir_HAVE_OMP@);
+
+constexpr bool HAVE_TESSELATION = _to_bool(@atlas_HAVE_TESSELATION@);
+constexpr bool HAVE_PROJ        = _to_bool(@atlas_HAVE_PROJ@);

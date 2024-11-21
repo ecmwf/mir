@@ -1,0 +1,6 @@
+# input
+param=z,level=1,levtype=ml,resol=20.grib2
+# mir
+--truncation=19
+# plan
+ShTruncate[truncation=19]|Save[output=...]

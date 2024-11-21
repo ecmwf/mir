@@ -1,0 +1,6 @@
+# input
+gridType=polar_stereographic.grib1
+# mir
+--grid=1/1
+# grib_get
+gridType=regular_ll

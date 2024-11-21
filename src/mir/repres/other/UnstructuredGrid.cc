@@ -62,7 +62,6 @@ Representation* RepresentationBuilder<other::UnstructuredGrid>::make(const param
 
 namespace other {
 
-
 UnstructuredGrid::UnstructuredGrid(const param::MIRParametrisation& parametrisation) {
     parametrisation.get("latitudes", latitudes_);
     parametrisation.get("longitudes", longitudes_);

@@ -1,0 +1,9 @@
+# input
+regular_ll.2-2.grib2
+# mir
+--grid=0.75/0.75 --basic-angle=fraction
+# grib_get
+latitudeOfFirstGridPoint=120
+iDirectionIncrement=1
+basicAngleOfTheInitialProductionDomain=3
+subdivisionsOfBasicAngle=4

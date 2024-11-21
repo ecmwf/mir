@@ -84,25 +84,25 @@ CASE("NamedGrid") {
         }
     }
 
-#if mir_HAVE_ATLAS
-    SECTION("numberOfPoints (N)") {
-        std::vector<test_t> tests{
-            {"N128", 88838, 88838, {90, 0, -90, 359.297}},
-            {"N320", 542080, 13437, {-60, 50, -90, 180}},
-            {"N640", 2140702, 52654, {-60, 50, -90, 180}},
-        };
+    if constexpr (HAVE_ATLAS) {
+        SECTION("numberOfPoints (N)") {
+            std::vector<test_t> tests{
+                {"N128", 88838, 88838, {90, 0, -90, 359.297}},
+                {"N320", 542080, 13437, {-60, 50, -90, 180}},
+                {"N640", 2140702, 52654, {-60, 50, -90, 180}},
+            };
 
-        for (const auto& t : tests) {
-            log << "Test " + t.grid + " (global)" << std::endl;
-            repres::RepresentationHandle global(key::grid::Grid::lookup(t.grid).representation());
-            EXPECT(global->numberOfPoints() == t.numberOfPoints);
+            for (const auto& t : tests) {
+                log << "Test " + t.grid + " (global)" << std::endl;
+                repres::RepresentationHandle global(key::grid::Grid::lookup(t.grid).representation());
+                EXPECT(global->numberOfPoints() == t.numberOfPoints);
 
-            log << "Test " + t.grid + " (cropped)" << std::endl;
-            repres::RepresentationHandle local(global->croppedRepresentation(t.bbox));
-            EXPECT(local->numberOfPoints() == t.numberOfCroppedPoints);
+                log << "Test " + t.grid + " (cropped)" << std::endl;
+                repres::RepresentationHandle local(global->croppedRepresentation(t.bbox));
+                EXPECT(local->numberOfPoints() == t.numberOfCroppedPoints);
+            }
         }
     }
-#endif
 
     log.precision(old);
 }

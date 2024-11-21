@@ -127,6 +127,12 @@ void PseudoLaplace::hash(eckit::MD5& h) const {
 }
 
 
+WeightMatrix::Check PseudoLaplace::validateMatrixWeights() const {
+    // this method does not produce bounded interpolation weights
+    return {true, false, false};
+}
+
+
 static const DistanceWeightingBuilder<PseudoLaplace> __distance("pseudo-laplace");
 
 

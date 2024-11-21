@@ -38,7 +38,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Area() override;
+    ~Area() override;
 
     // -- Convertors
     // None
@@ -72,7 +72,7 @@ protected:
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action&) const override;
+    bool sameAs(const Action&) const override;
 
     // -- Class members
     // None

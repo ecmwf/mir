@@ -1,0 +1,6 @@
+# input
+regular_ll.2-2.grib2
+# mir
+--grid=gridType=lambert;latitudeOfFirstGridPointInDegrees=52.041;longitudeOfFirstGridPointInDegrees=1.639;grid=2500./2500.;Ni=739;Nj=949;LaDInDegrees=63.;LoVInDegrees=15.
+# plan
+Gridded2TypedGrid[grid={"LaDInDegrees":"63.","LoVInDegrees":"15.","Ni":"739","Nj":"949","grid":"2500./2500.","gridType":"lambert","latitudeOfFirstGridPointInDegrees":"52.041","longitudeOfFirstGridPointInDegrees":"1.639"},interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|Save[output=...]

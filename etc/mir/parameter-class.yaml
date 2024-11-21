@@ -390,6 +390,8 @@ density.mass:
   - 235080  # Time-mean snow density
   - 235087  # Time-mean total column liquid water
   - 235088  # Time-mean total column cloud ice water
+  - 235113  # Time-mean soil moisture top 20 cm
+  - 235114  # Time-mean soil moisture top 100 cm
   - 235136  # Time-mean total column water
   - 235137  # Time-mean total column vertically-integrated water vapour
   - 260001  # Total column graupel
@@ -452,6 +454,8 @@ density.volume:
   - 200042  # Volumetric soil water layer 4 difference
   - 228093  # Volumetric soil moisture
   - 235077  # Time-mean volumetric soil moisture
+  - 235118  # Time-mean volumetric soil moisture top 20 cm
+  - 235119  # Time-mean volumetric soil moisture top 100 cm
   - 260199  # Volumetric soil moisture
   - 260200  # Volumetric wilting point
   - 260210  # Liquid volumetric soil moisture (non-frozen)
@@ -459,6 +463,8 @@ density.volume:
   - 260213  # Volumetric direct evaporation cease (soil moisture)
   - 260216  # Volumetric saturation of soil moisture
   - 260644  # Volumetric soil ice
+  - 260665  # Volumetric soil moisture top 20 cm
+  - 260666  # Volumetric soil moisture top 100 cm
 
 vector-space.1d-angle-degree-asymmetric:
   - 3031  # Wind direction
@@ -1782,6 +1788,8 @@ intensity:
   - 235098  # Time-mean pressure
   - 235100  # Time-mean potential vorticity
   - 235103  # Time-mean eta-coordinate vertical velocity
+  - 235115  # Time-mean soil temperature top 20 cm
+  - 235116  # Time-mean soil temperature top 100 cm
   - 235117  # Time-mean most-unstable CAPE
   - 235129  # Time-mean geopotential
   - 235130  # Time-mean temperature
@@ -1944,6 +1952,7 @@ intensity:
   - 261020  # Physiological equivalent temperature
   - 261021  # Saturation water vapor pressure
   - 261022  # Wet-bulb potential temperature
+  - 261023  # Wet-bulb temperature
   - 262000  # Sea ice thickness
   - 262002  # Snow thickness over sea ice
   - 262003  # Eastward sea ice velocity
@@ -2075,11 +2084,12 @@ intensity:
   - 404000  # Dry deposition velocity
   - 450000  # Aerosol number density
   - 457000  # Aerosol optical depth
+  - 462000  # Aerosol extinction coefficient
 
 intensity.spectral-density:
   - 460000  # Aerosol backscatter from top of atmosphere
   - 461000  # Aerosol backscatter from ground
-    
+
 intensity.spectral-intensity:
   - 3119  # Radiance (with respect to wave number)
   - 260550  # Cloudy radiance (with respect to wave number)
@@ -2209,7 +2219,13 @@ numerics.mean:
   - 235101  # Time-mean specific rain water content
   - 235102  # Time-mean specific snow water content
   - 235103  # Time-mean eta-coordinate vertical velocity
+  - 235113  # Time-mean soil moisture top 20 cm
+  - 235114  # Time-mean soil moisture top 100 cm
+  - 235115  # Time-mean soil temperature top 20 cm
+  - 235116  # Time-mean soil temperature top 100 cm
   - 235117  # Time-mean most-unstable CAPE
+  - 235118  # Time-mean volumetric soil moisture top 20 cm
+  - 235119  # Time-mean volumetric soil moisture top 100 cm
   - 235129  # Time-mean geopotential
   - 235130  # Time-mean temperature
   - 235131  # Time-mean U component of wind
@@ -4476,6 +4492,10 @@ rate.mass-flux:
   - 451000  # Aerosol negative fixer mass flux
   - 452000  # Aerosol sink/loss mass flux
   - 453000  # Aerosol source/gain mass flux
+  - 463000  # Emission mass flux from commercial buildings heating
+  - 464000  # Emission mass flux from residential heating
+  - 465000  # Emission mass flux from oil refineries and transformation industry
+  - 466000  # Emission mass flux from gas production
 
 rate.volume:
   - 235270  # Time-mean discharge from rivers or streams
@@ -5248,6 +5268,7 @@ ratio.mass:
   - 211046  # Aerosol precursor mixing ratio
   - 211047  # Aerosol small mode mixing ratio
   - 211048  # Aerosol large mode mixing ratio
+  - 211059  # Water vapour (chemistry) difference
   - 211061  # Carbon Dioxide
   - 211062  # Methane
   - 211063  # Nitrous oxide

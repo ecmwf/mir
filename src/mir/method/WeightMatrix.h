@@ -15,50 +15,39 @@
 #include <iosfwd>
 #include <vector>
 
-#include "eckit/linalg/Matrix.h"
 #include "eckit/linalg/SparseMatrix.h"
 
 
 namespace mir::method {
 
 
-class WeightMatrix : public eckit::linalg::SparseMatrix {
-
-public:  // types
+class WeightMatrix final : public eckit::linalg::SparseMatrix {
+public:
     using Triplet = eckit::linalg::Triplet;
-    using Matrix  = eckit::linalg::Matrix;
-    using Vector  = eckit::linalg::Vector;
     using Scalar  = eckit::linalg::Scalar;
     using Size    = eckit::linalg::Size;
 
-public:  // methods
+    struct Check {
+        bool duplicates = true;
+        bool bounds     = true;
+        bool sum        = true;
+    };
+
+public:
     WeightMatrix(SparseMatrix::Allocator* = nullptr);
 
     WeightMatrix(const eckit::PathName&);
 
     WeightMatrix(Size rows, Size cols);
 
-    void setFromTriplets(const std::vector<Triplet>&);
+    void setFromTriplets(const std::vector<WeightMatrix::Triplet>&);
 
     void cleanup(const double& pruneEpsilon = 0);
 
-    void validate(const char* when) const;
+    // Validate interpolation weights (default check matrix structure only)
+    void validate(const char* when, Check = {true, false, false}) const;
 
-    using SparseMatrix::cols;
-    using SparseMatrix::rows;
-
-    using SparseMatrix::footprint;
-    using SparseMatrix::load;
-    using SparseMatrix::prune;
-    using SparseMatrix::save;
-    using SparseMatrix::setIdentity;
-
-    using SparseMatrix::begin;
-    using SparseMatrix::const_iterator;
-    using SparseMatrix::end;
-    using SparseMatrix::iterator;
-
-private:  // members
+private:
     void print(std::ostream&) const;
 
     friend std::ostream& operator<<(std::ostream& out, const WeightMatrix& m) {

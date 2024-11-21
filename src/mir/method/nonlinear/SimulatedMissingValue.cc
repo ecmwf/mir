@@ -32,9 +32,8 @@ SimulatedMissingValue::SimulatedMissingValue(const param::MIRParametrisation& pa
 }
 
 
-bool SimulatedMissingValue::treatment(MethodWeighted::Matrix& /*A*/, MethodWeighted::WeightMatrix& W,
-                                      MethodWeighted::Matrix& /*B*/, const MIRValuesVector& values,
-                                      const double& /*ignored*/) const {
+bool SimulatedMissingValue::treatment(DenseMatrix& /*A*/, WeightMatrix& W, DenseMatrix& /*B*/,
+                                      const MIRValuesVector& values, const double& /*ignored*/) const {
     using eckit::types::is_approximately_equal;
 
     auto missingValue = [this](double value) { return is_approximately_equal(value, missingValue_, epsilon_); };

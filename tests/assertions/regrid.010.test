@@ -1,0 +1,6 @@
+# input
+regular_ll.2-2.grib2
+# mir
+--grid=O160 --interpolation=structured-bicubic
+# grib_get
+gridName=O160

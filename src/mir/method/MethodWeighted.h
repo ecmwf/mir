@@ -16,6 +16,8 @@
 #include <utility>
 #include <vector>
 
+#include "eckit/linalg/Matrix.h"
+
 #include "mir/method/Cropping.h"
 #include "mir/method/Method.h"
 #include "mir/method/WeightMatrix.h"
@@ -55,12 +57,12 @@ class MIRStatistics;
 namespace mir::method {
 
 
+using DenseMatrix = eckit::linalg::Matrix;
+
+
 class MethodWeighted : public Method {
 public:
     // -- Types
-
-    using WeightMatrix = method::WeightMatrix;
-    using Matrix       = eckit::linalg::Matrix;
 
     using CacheKeys = std::pair<std::string, std::string>;
 
@@ -112,7 +114,6 @@ private:
     std::unique_ptr<const reorder::Reorder> reorderRows_;
     std::unique_ptr<const reorder::Reorder> reorderCols_;
 
-    bool matrixValidate_;
     bool matrixAssemble_;
 
     // -- Methods
@@ -126,21 +127,21 @@ private:
     virtual void applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const;
     virtual void applyIMM(WeightMatrix&, const std::vector<bool>&) const;
     virtual lsm::LandSeaMasks getMasks(const repres::Representation& in, const repres::Representation& out) const;
-    virtual bool validateMatrixWeights() const;
+    virtual WeightMatrix::Check validateMatrixWeights() const;
 
     void computeMatrixWeights(context::Context&, const repres::Representation& in, const repres::Representation& out,
-                              WeightMatrix&, bool validate) const;
+                              WeightMatrix&) const;
     void createMatrix(context::Context&, const repres::Representation& in, const repres::Representation& out,
                       WeightMatrix&, const lsm::LandSeaMasks&, const Cropping&) const;
 
     /// Get interpolation operand matrices, from A = W B
-    virtual void setOperandMatricesFromVectors(WeightMatrix::Matrix& A, WeightMatrix::Matrix& B,
-                                               const MIRValuesVector& Avector, const MIRValuesVector& Bvector,
-                                               const double& missingValue, const data::Space&) const;
+    virtual void setOperandMatricesFromVectors(DenseMatrix& A, DenseMatrix& B, const MIRValuesVector& Avector,
+                                               const MIRValuesVector& Bvector, const double& missingValue,
+                                               const data::Space&) const;
 
     /// Get interpolation operand matrices, from A = W B
-    virtual void setVectorFromOperandMatrix(const WeightMatrix::Matrix& A, MIRValuesVector& Avector,
-                                            const double& missingValue, const data::Space&) const;
+    virtual void setVectorFromOperandMatrix(const DenseMatrix& A, MIRValuesVector& Avector, const double& missingValue,
+                                            const data::Space&) const;
 
     // -- Overridden methods
 

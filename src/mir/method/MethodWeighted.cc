@@ -19,6 +19,7 @@
 #include <sstream>
 #include <string>
 
+#include "eckit/config/Resource.h"
 #include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
@@ -80,7 +81,6 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation)
     parametrisation_.get("pole-displacement-in-degree", poleDisplacement_);
     ASSERT(poleDisplacement_ >= 0);
 
-    matrixValidate_ = eckit::Resource<bool>("$MIR_MATRIX_VALIDATE", false);
     matrixAssemble_ = parametrisation_.userParametrisation().has("filter");
 
     std::string nonLinear = "missing-if-heaviest-missing";
@@ -164,14 +164,15 @@ void MethodWeighted::createMatrix(context::Context& ctx, const repres::Represent
                                   const repres::Representation& out, WeightMatrix& W, const lsm::LandSeaMasks& masks,
                                   const Cropping& /*cropping*/) const {
     trace::ResourceUsage usage(std::string("MethodWeighted::createMatrix [") + name() + "]");
+    const auto checks = validateMatrixWeights();
 
-    computeMatrixWeights(ctx, in, out, W, validateMatrixWeights());
+    // matrix validation always happens after creation, because the matrix can/will be cached
+    computeMatrixWeights(ctx, in, out, W);
+    W.validate("computeMatrixWeights", checks);
 
     if (masks.active() && masks.cacheable()) {
         applyMasks(W, masks);
-        if (matrixValidate_) {
-            W.validate("applyMasks");
-        }
+        W.validate("applyMasks", checks);
     }
 
     bool bitmask;
@@ -284,9 +285,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     // it will be cached in memory nevertheless
     if (masks.active() && !masks.cacheable()) {
         applyMasks(W, masks);
-        if (matrixValidate_) {
-            W.validate("applyMasks");
-        }
+        W.validate("applyMasks", validateMatrixWeights());
     }
 
 
@@ -379,13 +378,13 @@ void MethodWeighted::setReorderCols(reorder::Reorder* r) {
 }
 
 
-void MethodWeighted::setOperandMatricesFromVectors(WeightMatrix::Matrix& A, WeightMatrix::Matrix& B,
-                                                   const MIRValuesVector& Avector, const MIRValuesVector& Bvector,
-                                                   const double& missingValue, const data::Space& space) const {
+void MethodWeighted::setOperandMatricesFromVectors(DenseMatrix& A, DenseMatrix& B, const MIRValuesVector& Avector,
+                                                   const MIRValuesVector& Bvector, const double& missingValue,
+                                                   const data::Space& space) const {
 
     // set input matrix B (from A = W × B)
     // FIXME: remove const_cast once Matrix provides read-only view
-    WeightMatrix::Matrix Bwrap(const_cast<double*>(Bvector.data()), Bvector.size(), 1);
+    DenseMatrix Bwrap(const_cast<double*>(Bvector.data()), Bvector.size(), 1);
 
     space.linearise(Bwrap, B, missingValue);
 
@@ -394,25 +393,25 @@ void MethodWeighted::setOperandMatricesFromVectors(WeightMatrix::Matrix& A, Weig
     if (B.cols() == 1) {
 
         // FIXME: remove const_cast once Matrix provides read-only view
-        WeightMatrix::Matrix Awrap(const_cast<double*>(Avector.data()), Avector.size(), 1);
+        DenseMatrix Awrap(const_cast<double*>(Avector.data()), Avector.size(), 1);
         A.swap(Awrap);
     }
     else {
 
-        WeightMatrix::Matrix Awrap(Avector.size(), B.cols());
+        DenseMatrix Awrap(Avector.size(), B.cols());
         Awrap.setZero();
         A.swap(Awrap);
     }
 }
 
 
-void MethodWeighted::setVectorFromOperandMatrix(const WeightMatrix::Matrix& A, MIRValuesVector& Avector,
+void MethodWeighted::setVectorFromOperandMatrix(const DenseMatrix& A, MIRValuesVector& Avector,
                                                 const double& missingValue, const data::Space& space) const {
 
     // set output vector A (from A = W × B)
     // FIXME: remove const_cast once Matrix provides read-only view
     ASSERT(Avector.size() == A.rows());
-    WeightMatrix::Matrix Awrap(const_cast<double*>(Avector.data()), Avector.size(), 1);
+    DenseMatrix Awrap(const_cast<double*>(Avector.data()), Avector.size(), 1);
 
     space.unlinearise(A, Awrap, missingValue);
 }
@@ -423,8 +422,8 @@ lsm::LandSeaMasks MethodWeighted::getMasks(const repres::Representation& in, con
 }
 
 
-bool MethodWeighted::validateMatrixWeights() const {
-    return true;
+WeightMatrix::Check MethodWeighted::validateMatrixWeights() const {
+    return {};
 }
 
 
@@ -500,8 +499,8 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
         const data::Space& sp = data::SpaceChooser::lookup(space);
 
         MIRValuesVector result(npts_out);  // field.update() takes ownership with std::swap()
-        WeightMatrix::Matrix A;
-        WeightMatrix::Matrix B;
+        DenseMatrix A;
+        DenseMatrix B;
         setOperandMatricesFromVectors(B, A, result, field.values(i), missingValue, sp);
         ASSERT(A.rows() == npts_inp);
         ASSERT(B.rows() == npts_out);
@@ -517,9 +516,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
                 trace::Timer t(str.str());
 
                 if (n->treatment(A, M, B, field.values(i), missingValue)) {
-                    if (matrixValidate_) {
-                        M.validate(str.str().c_str());
-                    }
+                    M.validate(str.str().c_str(), validateMatrixWeights());
                 }
             }
 
@@ -551,7 +548,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
 
 void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::Representation& in,
-                                          const repres::Representation& out, WeightMatrix& W, bool validate) const {
+                                          const repres::Representation& out, WeightMatrix& W) const {
     auto timing(ctx.statistics().computeMatrixTimer());
 
     if (in.sameAs(out) && !matrixAssemble_) {
@@ -587,11 +584,6 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::R
             eckit::linalg::SparseMatrix w(W.rows(), W.cols(), trips);
             W.swap(w);
         }
-    }
-
-    // matrix validation always happens after creation, because the matrix can/will be cached
-    if (validate) {
-        W.validate("computeMatrixWeights");
     }
 }
 

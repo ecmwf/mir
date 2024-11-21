@@ -45,8 +45,8 @@ void GridBoxMethod::print(std::ostream& out) const {
 }
 
 
-bool GridBoxMethod::validateMatrixWeights() const {
-    return false;
+WeightMatrix::Check GridBoxMethod::validateMatrixWeights() const {
+    return {true, true, false};
 }
 
 

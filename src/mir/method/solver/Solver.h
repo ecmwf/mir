@@ -44,8 +44,8 @@ public:
     void operator=(const Solver&) = delete;
     void operator=(Solver&&)      = delete;
 
-    virtual void solve(const MethodWeighted::Matrix& A, const MethodWeighted::WeightMatrix& W,
-                       MethodWeighted::Matrix& B, const double& missingValue) const = 0;
+    virtual void solve(const DenseMatrix& A, const WeightMatrix& W, DenseMatrix& B,
+                       const double& missingValue) const = 0;
 
     virtual bool sameAs(const Solver&) const = 0;
     virtual void hash(eckit::MD5&) const     = 0;

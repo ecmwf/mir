@@ -12,6 +12,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "mir/repres/regular/RegularGrid.h"
 
 
@@ -50,7 +52,14 @@ public:
 
 private:
     // -- Members
-    // None
+
+    std::string proj_;
+    double LaDInDegrees_;
+    double orientationOfTheGridInDegrees_;
+    bool southPoleOnProjectionPlane_;
+    bool writeLaDInDegrees_;
+    bool writeLonPositive_;
+    bool uvRelativeToGrid_;
 
     // -- Methods
     // None
@@ -58,6 +67,7 @@ private:
     // -- Overridden methods
 
     void fillGrib(grib_info&) const override;
+    void fillJob(api::MIRJob&) const override;
 
     // -- Class members
     // None

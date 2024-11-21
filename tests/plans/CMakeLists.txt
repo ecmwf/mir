@@ -3,15 +3,24 @@ find_program(MARS_SCRIPT NAMES "mars" "false")
 
 ecbuild_configure_file(mir-test.sh.in mir-test.sh @ONLY)
 
-file(GLOB_RECURSE test_files LIST_DIRECTORIES false *.test)
-foreach(_t ${test_files})
-    ecbuild_add_test(
-        TARGET      ${_t}
-        CONDITION   MARS_SCRIPT
-        COMMAND     mir-test.sh
-        ARGS        ${_t}
-        ENVIRONMENT ${_testEnvironment})
-endforeach()
+if(MARS_SCRIPT)
+    file(GLOB_RECURSE test_files LIST_DIRECTORIES false *.test)
+
+    foreach(_t ${test_files})
+        ecbuild_add_test(
+            TARGET      ${_t}
+            CONDITION   MARS_SCRIPT
+            COMMAND     mir-test.sh
+            ARGS        ${_t}
+            ENVIRONMENT ${_testEnvironment})
+        if((_t MATCHES "[.]fail[.]") OR
+           (_t MATCHES "[.]lsm[.]" AND NOT HAVE_MIR_DOWNLOAD_MASKS) OR
+           (NOT mir_HAVE_ATLAS AND NOT (_t MATCHES "[.]core[.]")) OR
+           (NOT atlas_HAVE_PROJ AND (_t MATCHES "[.]proj[.]")))
+            set_tests_properties(${_t} PROPERTIES WILL_FAIL TRUE)
+        endif()
+    endforeach()
+endif()
 
 if(EXISTS ${CMAKE_BINARY_DIR}/share/plugins/atlas-orca.yml)
     file(GLOB_RECURSE test_files LIST_DIRECTORIES false *.test.atlas-orca)

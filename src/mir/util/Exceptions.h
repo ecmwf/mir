@@ -55,4 +55,14 @@ public:
 };
 
 
+class InvalidWeightMatrix : public eckit::Exception {
+public:
+    InvalidWeightMatrix(const char* when, const std::string& what) {
+        std::ostringstream os;
+        os << "Invalid weight matrix (" << when << "): " << what;
+        reason(os.str());
+    }
+};
+
+
 }  // namespace mir::exception
