@@ -26,7 +26,6 @@
 #include "eckit/config/Resource.h"
 #include "eckit/io/Buffer.h"
 #include "eckit/io/MemoryHandle.h"
-#include "eckit/io/StdFile.h"
 #include "eckit/serialisation/HandleStream.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
@@ -34,6 +33,8 @@
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/grib/Config.h"
+#include "mir/input/GriddefInput.h"
+#include "mir/param/DefaultParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
@@ -1141,52 +1142,32 @@ bool GribInput::handle(grib_handle* h) {
 }
 
 
-void GribInput::auxilaryValues(const std::string& path, std::vector<double>& values) const {
-    util::lock_guard<util::recursive_mutex> lock(mutex_);
-
-    eckit::AutoStdFile f(path);
-
-    int e;
-    grib_handle* h = nullptr;
-
-    // We cannot use GribFileInput to read these files, because lat/lon files are also
-    // has grid_type = triangular_grid, and we will create a loop
-
-    try {
-        h = codes_grib_handle_new_from_file(nullptr, f, &e);
-        grib_call(e, path.c_str());
-        size_t count;
-        GRIB_CALL(codes_get_size(h, "values", &count));
-
-        size_t size = count;
-        values.resize(count);
-        GRIB_CALL(codes_get_double_array(h, "values", values.data(), &size));
-        ASSERT(count == size);
-
-        long missingValuesPresent;
-        GRIB_CALL(codes_get_long(h, "missingValuesPresent", &missingValuesPresent));
-        ASSERT(!missingValuesPresent);
-
-        codes_handle_delete(h);
-    }
-    catch (...) {
-        codes_handle_delete(h);
-        throw;
-    }
-}
-
-
 void GribInput::setAuxiliaryInformation(const util::ValueMap& map) {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
+    auto load = [](const eckit::PathName& path, std::vector<double>& values) {
+        Log::info() << "GribInput::setAuxiliaryInformation: '" << path << "'" << std::endl;
+
+        static const param::DefaultParametrisation param;
+        std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build(path.asString(), param));
+        ASSERT(input->next());
+
+        auto field = input->field();
+        ASSERT(field.dimensions() == 1);
+
+        values = field.values(0);
+    };
+
     for (const auto& kv : map) {
-        if (kv.first == "latitudes") {
-            Log::debug() << "Loading auxilary file '" << kv.second << "'" << std::endl;
-            auxilaryValues(kv.second, latitudes_);
+        if (kv.first == "griddef") {
+            GriddefInput::load(kv.second, latitudes_, longitudes_);
+            ASSERT(latitudes_.size() == longitudes_.size());
+        }
+        else if (kv.first == "latitudes") {
+            load(kv.second, latitudes_);
         }
         else if (kv.first == "longitudes") {
-            Log::debug() << "Loading auxilary file '" << kv.second << "'" << std::endl;
-            auxilaryValues(kv.second, longitudes_);
+            load(kv.second, longitudes_);
         }
     }
 }
