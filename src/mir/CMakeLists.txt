@@ -246,6 +246,8 @@ list(APPEND mir_srcs
     input/GribMemoryInput.h
     input/GribStreamInput.cc
     input/GribStreamInput.h
+    input/GriddefInput.cc
+    input/GriddefInput.h
     input/MIRInput.cc
     input/MIRInput.h
     input/MultiDimensionalGribFileInput.cc
@@ -457,6 +459,8 @@ list(APPEND mir_srcs
     output/GribOutput.h
     output/GribStreamOutput.cc
     output/GribStreamOutput.h
+    output/GriddefOutput.cc
+    output/GriddefOutput.h
     output/MIROutput.cc
     output/MIROutput.h
     output/MultiDimensionalOutput.cc
