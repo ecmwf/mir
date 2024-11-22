@@ -12,9 +12,13 @@
 
 #include "mir/input/ArtificialInput.h"
 
-#include <iomanip>
+#include <map>
+#include <ostream>
 #include <sstream>
 
+#include "mir/data/MIRField.h"
+#include "mir/input/GriddefInput.h"
+#include "mir/param/CombinedParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -47,6 +51,12 @@ size_t ArtificialInput::dimensions() const {
 }
 
 
+ArtificialInput::ArtificialInput() :
+    inputParametrisation_(new param::CombinedParametrisation(parametrisation_, *this, parametrisation_)), calls_(0) {
+    ASSERT(inputParametrisation_);
+}
+
+
 param::SimpleParametrisation& ArtificialInput::parametrisation(size_t which) {
     ASSERT(which == 0);
     return parametrisation_;
@@ -55,7 +65,7 @@ param::SimpleParametrisation& ArtificialInput::parametrisation(size_t which) {
 
 const param::MIRParametrisation& ArtificialInput::parametrisation(size_t which) const {
     ASSERT(which == 0);
-    return parametrisation_;
+    return *inputParametrisation_;
 }
 
 
@@ -70,12 +80,44 @@ void ArtificialInput::setAuxiliaryInformation(const util::ValueMap& map) {
             parametrisation_.set("grid", grid);
         }
     }
+
     if (!parametrisation_.has("rotation")) {
         std::vector<double> rotation(2, 0);
         if (parametrisation_.get("south_pole_latitude", rotation[0]) &&
             parametrisation_.get("south_pole_longitude", rotation[1])) {
             parametrisation_.set("rotation", rotation);
         }
+    }
+
+    auto load = [](const eckit::PathName& path, std::vector<double>& values) {
+        Log::info() << "ArtificialInput::setAuxiliaryInformation: '" << path << "'" << std::endl;
+
+        static const param::SimpleParametrisation empty;
+        std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build(path.asString(), empty));
+        ASSERT(input->next());
+
+        auto field = input->field();
+        ASSERT(field.dimensions() == 1);
+
+        values = field.values(0);
+    };
+
+    if (std::string path; parametrisation_.get("griddef", path)) {
+        GriddefInput::load(path, latitudes_, longitudes_);
+    }
+
+    if (std::string lats, lons; parametrisation_.get("latitudes", lats) && parametrisation_.get("longitudes", lons)) {
+        load(lats, latitudes_);
+        load(lons, longitudes_);
+    }
+
+    ASSERT(latitudes_.size() == longitudes_.size());
+    if (!parametrisation_.has("numberOfDataPoints")) {
+        parametrisation_.set("numberOfDataPoints", latitudes_.size());
+    }
+
+    if (!parametrisation_.has("paramId")) {
+        parametrisation_.set("paramId", 255L /*missing*/);
     }
 }
 
@@ -91,63 +133,19 @@ bool ArtificialInput::sameAs(const MIRInput& other) const {
 }
 
 
-bool ArtificialInput::has(const std::string& name) const {
-    return parametrisation_.has(name) || FieldParametrisation::has(name);
-}
-
-
-bool ArtificialInput::get(const std::string& name, std::string& value) const {
-    return parametrisation_.get(name, value) || FieldParametrisation::get(name, value);
-}
-
-
-bool ArtificialInput::get(const std::string& name, bool& value) const {
-    return parametrisation_.get(name, value) || FieldParametrisation::get(name, value);
-}
-
-
-bool ArtificialInput::get(const std::string& name, int& value) const {
-    return parametrisation_.get(name, value) || FieldParametrisation::get(name, value);
-}
-
-
 bool ArtificialInput::get(const std::string& name, long& value) const {
-    return parametrisation_.get(name, value) || FieldParametrisation::get(name, value);
+    static const std::string PARAM_ID("paramId");
+    return name == PARAM_ID ? parametrisation_.get(name, value) : FieldParametrisation::get(name, value);
 }
 
 
-bool ArtificialInput::get(const std::string& name, float& value) const {
-    return parametrisation_.get(name, value) || FieldParametrisation::get(name, value);
+void ArtificialInput::latitudes(std::vector<double>& values) const {
+    values = latitudes_;
 }
 
 
-bool ArtificialInput::get(const std::string& name, double& value) const {
-    return parametrisation_.get(name, value) || FieldParametrisation::get(name, value);
-}
-
-
-bool ArtificialInput::get(const std::string& name, std::vector<int>& value) const {
-    return parametrisation_.get(name, value) || FieldParametrisation::get(name, value);
-}
-
-
-bool ArtificialInput::get(const std::string& name, std::vector<long>& value) const {
-    return parametrisation_.get(name, value) || FieldParametrisation::get(name, value);
-}
-
-
-bool ArtificialInput::get(const std::string& name, std::vector<float>& value) const {
-    return parametrisation_.get(name, value) || FieldParametrisation::get(name, value);
-}
-
-
-bool ArtificialInput::get(const std::string& name, std::vector<double>& value) const {
-    return parametrisation_.get(name, value) || FieldParametrisation::get(name, value);
-}
-
-
-bool ArtificialInput::get(const std::string& name, std::vector<std::string>& value) const {
-    return parametrisation_.get(name, value) || FieldParametrisation::get(name, value);
+void ArtificialInput::longitudes(std::vector<double>& values) const {
+    values = longitudes_;
 }
 
 
@@ -174,8 +172,6 @@ ArtificialInputFactory::~ArtificialInputFactory() {
 ArtificialInput* ArtificialInputFactory::build(const std::string& name, const param::MIRParametrisation& param) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
-
-    //    Log::debug() << "ArtificialInputFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
