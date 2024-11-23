@@ -1,7 +1,7 @@
 # input
 /dev/null
 # mir
---input={artificialInput:constant,constant:0.,gridded:True,gridType:unstructured_grid,griddef:$tests_assertions_dir/weather-params.pts} --add-random=uniform-int-distribution{a:1,b:3} --griddef=$tests_assertions_dir/ICON.griddef --format=grib
+--input={artificialInput:constant,constant:0.,gridded:True,gridType:unstructured_grid,griddef:$tests_assertions_dir/weather-params.pts} --add-random=uniform-int-distribution{a:1,b:3} --griddef=$tests_assertions_dir/ICON.griddef --format=grib --interpolation=nn
 # grib_get
 gridType=unstructured_grid
 numberOfDataPoints=20480
