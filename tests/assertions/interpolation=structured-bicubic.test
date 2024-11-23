@@ -1,7 +1,0 @@
-# input
-regular_ll.2-2.grib2
-# mir
---interpolation=structured-bicubic --grid=1/1
-# grib_get
-Ni = 360
-Nj = 181
