@@ -49,12 +49,13 @@ GridBoxAverage::GridBoxAverage(const param::MIRParametrisation& parametrisation)
 void GridBoxAverage::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, const repres::Representation& in,
                               const repres::Representation& out) const {
     auto& log = Log::debug();
-    log << "GridBoxMethod::assemble (input: " << in << ", output: " << out << ")" << std::endl;
-
+    log << "GridBoxMethod::assemble"
+           "\ninput: "
+        << in << "\ndomain: " << in.domain() << "\noutput: " << out << "\ndomain: " << out.domain() << std::endl;
 
     if (!in.domain().contains(out.domain())) {
         std::ostringstream msg;
-        msg << "GridBoxMethod: input must contain output (input:" << in.domain() << ", output:" << out.domain() << ")";
+        msg << "GridBoxMethod: input domain must contain output domain";
         throw exception::UserError(msg.str());
     }
 
@@ -185,7 +186,7 @@ const char* GridBoxAverage::name() const {
 
 
 int GridBoxAverage::version() const {
-    return 3;
+    return 4;
 }
 
 

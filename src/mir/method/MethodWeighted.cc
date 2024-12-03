@@ -65,7 +65,7 @@ static caching::WeightCache& matrix_cache_disk(const param::MIRParametrisation& 
 const static std::map<eckit::Hash::digest_t, std::string> KNOWN_METHOD{
     {"73e1dd539879ffbbbb22d6bc789c2262", "linear"},
     {"7738675c7e2c64d463718049ebef6563", "nearest-neighbour"},
-    {"a81efab621096650c20a978062cdd169", "grid-box-average"},
+    {"0346db910681bffd0d518b49923879dc", "grid-box-average"},
 };
 
 
