@@ -17,6 +17,7 @@
 #include <utility>
 
 #include "mir/repres/gauss/GaussianIterator.h"
+#include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/GridBox.h"
 
@@ -68,22 +69,29 @@ std::vector<util::GridBox> RegularGG::gridBoxes() const {
     // latitude edges
     std::vector<double> latEdges = calculateUnrotatedGridBoxLatitudeEdges();
 
+    const auto dom   = domain();
+    const auto north = dom.north().value();
+    const auto west  = dom.west();
+    const auto south = dom.south().value();
+    const auto east  = dom.east();
+
+    const auto periodic = isPeriodicWestEast();
+
 
     // longitude edges
-    bool periodic = isPeriodicWestEast();
-    auto lon0     = bbox_.west();
-    auto inc      = (bbox_.east() - bbox_.west()).fraction() / (Ni_ - 1);
+    auto lon0 = west;
+    auto we   = (east - west).fraction() / (periodic ? Ni_ : Ni_ - 1);
     eckit::Fraction half(1, 2);
 
-    std::vector<double> lonEdges(Ni_ + 1, 0.);
-    lonEdges[0] = (lon0 - inc / 2).value();
+    std::vector<double> lonEdges(Ni_ + 1);
+    lonEdges[0] = (lon0 - we / 2).value();
     for (size_t i = 0; i < Ni_; ++i) {
-        lonEdges[i + 1] = (lon0 + (i + half) * inc).value();
+        lonEdges[i + 1] = (lon0 + (i + half) * we).value();
     }
 
     if (!periodic) {
-        lonEdges.front() = std::max(bbox_.west().value(), lonEdges.front());
-        lonEdges.back()  = std::min(bbox_.east().value(), lonEdges.back());
+        lonEdges.front() = std::max(west.value(), lonEdges.front());
+        lonEdges.back()  = std::min(east.value(), lonEdges.back());
     }
 
 
@@ -96,9 +104,9 @@ std::vector<util::GridBox> RegularGG::gridBoxes() const {
 
         for (size_t i = 0; i < Ni_; ++i) {
             auto l = lon1;
-            lon1   = l + Longitude(inc * (i + half));
-            r.emplace_back(std::min(bbox_.north().value(), latEdges[j]), lonEdges[i],
-                           std::max(bbox_.south().value(), latEdges[j + 1]), lonEdges[i + 1]);
+            lon1   = l + Longitude(we * (i + half));
+            r.emplace_back(std::min(north, latEdges[j]), lonEdges[i], std::max(south, latEdges[j + 1]),
+                           lonEdges[i + 1]);
         }
 
         ASSERT(periodic ? lon0 == lon1.normalise(lon0) : lon0 <= lon1.normalise(lon0));
