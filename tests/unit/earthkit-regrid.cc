@@ -10,28 +10,18 @@
  */
 
 
-#include <filesystem>
-#include <fstream>
-#include <iostream>
 #include <memory>
-#include <numeric>
-#include <random>
 #include <sstream>
 #include <string>
 #include <vector>
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/parser/YAMLParser.h"
-#include "eckit/system/Library.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/api/MIRJob.h"
-#include "mir/data/MIRField.h"
 #include "mir/input/RawInput.h"
-#include "mir/method/WeightMatrix.h"
 #include "mir/output/EmptyOutput.h"
-#include "mir/output/RawOutput.h"
-#include "mir/output/ResizableOutput.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Log.h"
 
@@ -43,8 +33,13 @@ CASE("InterpolationSpec integration test") {
     auto& log = Log::info();
 
 
-    // temporary file for dumping weights info_path
-    eckit::PathName info_path{std::filesystem::temp_directory_path() / "dump-weights-info"};
+    // temporary file for dumping weights info_path (should be local and unique)
+    eckit::PathName info_path{
+        "mir_tests_unit"
+        "_"
+        "earthkit-regrid"
+        "_"
+        "dump-weights-info"};
 
 
     param::SimpleParametrisation meta;
