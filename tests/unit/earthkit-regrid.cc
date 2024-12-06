@@ -64,7 +64,9 @@ CASE("InterpolationSpec integration test") {
     // extract "interpolation" node from the dumped info
     auto info_interpolation = [](const auto& path) {
         auto value = eckit::YAMLParser::decodeFile(path);
-        return (std::ostringstream{} << value["interpolation"]).str();
+        std::ostringstream ss;
+        ss << value["interpolation"];
+        return ss.str();
     };
 
 
