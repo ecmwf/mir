@@ -13,6 +13,7 @@ foreach(_t
     action_graph
     area
     bounding_box
+    earthkit-regrid
     formula
     gaussian_grid
     grib_basic_angle

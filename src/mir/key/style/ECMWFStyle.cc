@@ -273,6 +273,10 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     bool vod2uv   = option(user, "vod2uv", false);
     bool uv2uv    = option(user, "uv2uv", false) || uv_input;  // where "MIR knowledge of winds" is hardcoded
 
+    if (vod2uv && uv2uv) {
+        throw exception::UserError("ECMWFStyle: option 'vod2uv' is incompatible with option 'uv2uv'");
+    }
+
     if (vod2uv && uv_input) {
         throw exception::UserError("ECMWFStyle: option 'vod2uv' is incompatible with input U/V");
     }
@@ -284,12 +288,20 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     auto target = target_gridded_from_parametrisation(parametrisation_, false);
     if (!target.empty()) {
         if (resol.resultIsSpectral()) {
-
             plan.add("transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-") + target);
+
+            if (uv2uv) {
+                plan.add("filter.adjust-winds-scale-cos-latitude");
+            }
         }
         else {
-
             resol.prepare(plan);
+
+            // apply u = U / cos(theta) first, as the associated supporting grid is typically Gaussian
+            // hence avoiding bad conditioning at the poles
+            if (uv2uv) {
+                plan.add("filter.adjust-winds-scale-cos-latitude");
+            }
 
             // if the intermediate grid is the same as the target grid, the interpolation to the
             // intermediate grid is not followed by an additional interpolation
@@ -300,12 +312,6 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
         }
 
         if (vod2uv || uv2uv) {
-            ASSERT(vod2uv != uv2uv);
-
-            if (uv2uv) {
-                plan.add("filter.adjust-winds-scale-cos-latitude");
-            }
-
             if (rotation) {
                 plan.add("filter.adjust-winds-directions");
             }

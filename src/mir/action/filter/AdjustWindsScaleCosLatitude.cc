@@ -14,7 +14,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <limits>
 #include <memory>
 #include <ostream>
 
@@ -45,24 +44,24 @@ void AdjustWindsScaleCosLatitude::print(std::ostream& out) const {
 
 
 void AdjustWindsScaleCosLatitude::execute(context::Context& ctx) const {
-    data::MIRField& field = ctx.field();
-    ASSERT(field.dimensions() > 0);
+    auto& field = ctx.field();
 
+    ASSERT(field.dimensions() > 0);
+    ASSERT(!field.hasMissing());
 
     // determine scaling vector (all fields share the same representation)
     const size_t N = field.values(0).size();
     ASSERT(N > 0);
 
-    const repres::Representation* representation(field.representation());
+    const auto* representation(field.representation());
     ASSERT(representation);
 
-    std::vector<double> scale(N, std::numeric_limits<double>::quiet_NaN());
+    std::vector<double> scale(N);
     for (const std::unique_ptr<repres::Iterator> it(representation->iterator()); it->next();) {
-        const auto& p      = it->pointUnrotated();
-        scale[it->index()] = (p.lat() == Latitude::SOUTH_POLE) ? 0.
-                             : (p.lat() == Latitude::NORTH_POLE)
+        const auto lat     = it->pointUnrotated().lat();
+        scale[it->index()] = (lat == Latitude::SOUTH_POLE || lat == Latitude::NORTH_POLE)
                                  ? 0.
-                                 : 1. / std::cos(util::degree_to_radian(p.lat().value()));
+                                 : 1. / std::cos(util::degree_to_radian(lat.value()));
     }
 
     // apply scaling to each field component directly
@@ -70,10 +69,8 @@ void AdjustWindsScaleCosLatitude::execute(context::Context& ctx) const {
         auto& values = field.direct(i);
         ASSERT(values.size() == N);
 
-        std::transform(
-            values.begin(), values.end(), scale.begin(), values.begin(), [](const double& a, const double& b) {
-                return std::isfinite(a) && std::isfinite(b) ? a * b : std::numeric_limits<double>::quiet_NaN();
-            });
+        std::transform(values.begin(), values.end(), scale.begin(), values.begin(),
+                       [](const double& a, const double& b) { return a * b; });
     }
 }
 
