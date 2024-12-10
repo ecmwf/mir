@@ -377,14 +377,20 @@ struct ProcessingT {
 };
 
 
+struct WindCache {
+    static const util::Wind::Defaults& defaults() {
+        static const util::Wind::Defaults def;
+        return def;
+    };
+} static const WIND;
+
+
 static ProcessingT<long>* is_wind_component_uv() {
     return new ProcessingT<long>([](grib_handle* h, long& value) {
         long paramId = 0;
         GRIB_CALL(codes_get_long(h, "paramId", &paramId));
-        static const util::Wind::Defaults def;
-        long ind = paramId % 1000;
-        value    = (ind == def.u ? 1 : ind == def.v ? 2 : 0);
-        return value;
+        const auto id = paramId % 1000;
+        return value  = id == WIND.defaults().u ? 1 : id == WIND.defaults().v ? 2 : 0;
     });
 }
 
@@ -393,10 +399,8 @@ static ProcessingT<long>* is_wind_component_vod() {
     return new ProcessingT<long>([](grib_handle* h, long& value) {
         long paramId = 0;
         GRIB_CALL(codes_get_long(h, "paramId", &paramId));
-        static const util::Wind::Defaults def;
-        long ind = paramId % 1000;
-        value    = (ind == def.vo ? 1 : ind == def.d ? 2 : 0);
-        return value;
+        const auto id = paramId % 1000;
+        return value  = id == WIND.defaults().vo ? 1 : id == WIND.defaults().d ? 2 : 0;
     });
 }
 

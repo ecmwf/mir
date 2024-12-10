@@ -311,6 +311,10 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
             }
         }
 
+        if (uv2uv) {
+            plan.add("filter.adjust-winds-at-poles");
+        }
+
         if (vod2uv || uv2uv) {
             if (rotation) {
                 plan.add("filter.adjust-winds-directions");
