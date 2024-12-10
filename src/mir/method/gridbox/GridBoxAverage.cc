@@ -186,7 +186,7 @@ const char* GridBoxAverage::name() const {
 
 
 int GridBoxAverage::version() const {
-    return 4;
+    return 5;
 }
 
 

@@ -162,6 +162,11 @@ void KNearestNeighbours::print(std::ostream& out) const {
 }
 
 
+int KNearestNeighbours::version() const {
+    return 1;
+}
+
+
 WeightMatrix::Check KNearestNeighbours::validateMatrixWeights() const {
     return distanceWeighting().validateMatrixWeights();
 }
