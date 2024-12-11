@@ -40,7 +40,6 @@ void AdjustWindsAtPoles::print(std::ostream& out) const {
 void AdjustWindsAtPoles::execute(context::Context& ctx) const {
     auto& field = ctx.field();
 
-    ASSERT(field.dimensions() % 2 == 0);
     ASSERT(field.dimensions() > 0);
 
     const auto missingValue = field.hasMissing() ? field.missingValue() : std::numeric_limits<double>::quiet_NaN();
@@ -65,22 +64,38 @@ void AdjustWindsAtPoles::execute(context::Context& ctx) const {
         }
     }
 
+    if (field.dimensions() % 2 == 0) {
+        // two-component mode: set v to zero at pole(s)
+        for (size_t i = 0; i < field.dimensions(); i += 2) {
+            auto& u = field.direct(i);
+            auto& v = field.direct(i + 1);
+            ASSERT(u.size() == N);
+            ASSERT(v.size() == N);
 
-    // set v to zero at pole(s)
-    for (size_t i = 0; i < field.dimensions(); i += 2) {
-        auto& u = field.direct(i);
-        auto& v = field.direct(i + 1);
-        ASSERT(u.size() == N);
-        ASSERT(v.size() == N);
-
-        for (const auto& indices : {north, south}) {
-            for (const auto& idx : indices) {
-                if (u[idx] == missingValue || v[idx] == missingValue) {
-                    u[idx] = missingValue;
-                    v[idx] = missingValue;
+            for (const auto& indices : {north, south}) {
+                for (const auto& idx : indices) {
+                    if (u[idx] == missingValue || v[idx] == missingValue) {
+                        u[idx] = missingValue;
+                        v[idx] = missingValue;
+                    }
+                    else {
+                        v[idx] = 0;
+                    }
                 }
-                else {
-                    v[idx] = 0;
+            }
+        }
+    }
+    else {
+        // single-component mode: set u, v to zero at pole(s)
+        for (size_t i = 0; i < field.dimensions(); ++i) {
+            auto& v = field.direct(i);
+            ASSERT(v.size() == N);
+
+            for (const auto& indices : {north, south}) {
+                for (const auto& idx : indices) {
+                    if (v[idx] != missingValue) {
+                        v[idx] = 0.;
+                    }
                 }
             }
         }
