@@ -191,10 +191,10 @@ public:
 */
 
 
-void wrongly_encoded_grib(const std::string& msg) {
+void wrongly_encoded_grib(const std::string& msg, bool forceThrow = false) {
     static bool abortIfWronglyEncodedGRIB = eckit::Resource<bool>("$MIR_ABORT_IF_WRONGLY_ENCODED_GRIB", false);
 
-    if (abortIfWronglyEncodedGRIB) {
+    if (abortIfWronglyEncodedGRIB || forceThrow) {
         Log::error() << msg << std::endl;
         throw exception::UserError(msg);
     }
@@ -733,6 +733,13 @@ data::MIRField GribInput::field() const {
         GRIB_CALL(codes_get_long_array(grib_, "pl", pl.data(), &size));
         ASSERT(count_pl == size);
 
+        if (auto pl_sum = static_cast<size_t>(std::accumulate(pl.begin(), pl.end(), 0L)); pl_sum != values.size()) {
+            wrongly_encoded_grib("GribInput: sum of pl array (" + std::to_string(pl_sum) +
+                                     ") does not match the size of values array (" + std::to_string(values.size()) +
+                                     ")",
+                                 true);
+        }
+
         // NOTE: this fix ties with the method get(const std::string &name, std::vector<long> &value)
         if (std::find(pl.rbegin(), pl.rend(), 0) != pl.rend()) {
 
@@ -760,11 +767,11 @@ data::MIRField GribInput::field() const {
             for (auto p1 = pl.begin(), p2 = pl_fixed.begin(); p1 != pl.end(); ++p1, ++p2) {
                 if (*p1 == 0) {
                     ASSERT(*p2 > 0);
-                    auto Ni = size_t(*p2);
+                    auto Ni = static_cast<size_t>(*p2);
                     values_extended.insert(values_extended.end(), Ni, missingValue);
                 }
                 else {
-                    auto Ni = size_t(*p1);
+                    auto Ni = static_cast<size_t>(*p1);
                     ASSERT(i + Ni <= count);
 
                     values_extended.insert(values_extended.end(), &values[i], &values[i + Ni]);
@@ -777,7 +784,7 @@ data::MIRField GribInput::field() const {
             values.swap(values_extended);
 
             ASSERT(get("pl", pl));
-            size_t pl_sum = size_t(std::accumulate(pl.begin(), pl.end(), 0L));
+            auto pl_sum = static_cast<size_t>(std::accumulate(pl.begin(), pl.end(), 0L));
             ASSERT(pl_sum == values.size());
         }
     }
