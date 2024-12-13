@@ -191,7 +191,7 @@ public:
 */
 
 
-void wrongly_encoded_grib(const std::string& msg, bool forceThrow = false) {
+void wrongly_encoded_grib(const std::string& msg) {
     static bool abortIfWronglyEncodedGRIB = eckit::Resource<bool>("$MIR_ABORT_IF_WRONGLY_ENCODED_GRIB", false);
 
     if (abortIfWronglyEncodedGRIB || forceThrow) {
@@ -735,9 +735,7 @@ data::MIRField GribInput::field() const {
 
         if (auto pl_sum = static_cast<size_t>(std::accumulate(pl.begin(), pl.end(), 0L)); pl_sum != values.size()) {
             wrongly_encoded_grib("GribInput: sum of pl array (" + std::to_string(pl_sum) +
-                                     ") does not match the size of values array (" + std::to_string(values.size()) +
-                                     ")",
-                                 true);
+                                 ") does not match the size of values array (" + std::to_string(values.size()) + ")");
         }
 
         // NOTE: this fix ties with the method get(const std::string &name, std::vector<long> &value)
