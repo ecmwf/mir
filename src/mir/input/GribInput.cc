@@ -194,7 +194,7 @@ public:
 void wrongly_encoded_grib(const std::string& msg) {
     static bool abortIfWronglyEncodedGRIB = eckit::Resource<bool>("$MIR_ABORT_IF_WRONGLY_ENCODED_GRIB", false);
 
-    if (abortIfWronglyEncodedGRIB || forceThrow) {
+    if (abortIfWronglyEncodedGRIB) {
         Log::error() << msg << std::endl;
         throw exception::UserError(msg);
     }
