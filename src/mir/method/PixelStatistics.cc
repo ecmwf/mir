@@ -13,17 +13,16 @@
 #include "mir/method/PixelStatistics.h"
 
 #include <algorithm>
-#include <bitset>
 #include <numeric>
 #include <typeinfo>
 #include <utility>
 
+#include "eckit/linalg/Triplet.h"
 #include "eckit/log/JSON.h"
-#include "eckit/types/Fraction.h"``
+#include "eckit/types/Fraction.h"
 #include "eckit/utils/MD5.h"
 #include "eckit/utils/StringTools.h"
 
-#include "mir/linalg/spm/OwnedAllocator.h"
 #include "mir/method/solver/Statistics.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/reorder/HEALPix.h"
@@ -37,6 +36,21 @@ namespace mir::method {
 
 
 static const MethodBuilder<PixelStatistics> __builder("pixel-statistics");
+
+
+namespace {
+
+
+struct Biplet : std::pair<size_t, size_t> {
+    using pair::pair;
+    operator WeightMatrix::Triplet() const { return {first, second, 1. /*non-zero*/}; }
+    bool operator<(const Biplet& other) const {
+        return first < other.first || (first == other.first && second < other.second);
+    }
+};
+
+
+}  // namespace
 
 
 PixelStatistics::PixelStatistics(const param::MIRParametrisation& param) : MethodWeighted(param) {
@@ -72,19 +86,18 @@ const char* PixelStatistics::name() const {
 
 void PixelStatistics::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& in,
                                const repres::Representation& out) const {
-    using linalg::spm::OwnedAllocator;
+    using eckit::linalg::Size;
+    using eckit::linalg::Triplet;
 
     struct healpix_info_t {
-        healpix_info_t(const repres::Representation& r, const std::string& which) {
-            auto is_power_of_2 = [](size_t n) -> bool { return std::bitset<sizeof(size_t) * 8>(n).count() == 1; };
-
+        healpix_info_t(const repres::Representation& r, const std::string& which) : Npoints(r.numberOfPoints()) {
             std::string msg;
-
             try {
-                if (Nside = dynamic_cast<const repres::proxy::HEALPix&>(r).Nside(); is_power_of_2(Nside)) {
-                    nested = false;
-                    return;
-                }
+                Nside     = dynamic_cast<const repres::proxy::HEALPix&>(r).Nside();
+                nested    = false;
+                to_nested = reorder::HEALPixRingToNested{}.reorder(Npoints);
+                to_ring   = reorder::HEALPixNestedToRing{}.reorder(Npoints);
+                return;
             }
             catch (std::bad_cast& e) {
                 msg += " (" + std::string{e.what()} + ")";
@@ -103,63 +116,37 @@ void PixelStatistics::assemble(util::MIRStatistics&, WeightMatrix& W, const repr
                                        msg};
         }
 
-        size_t Nside = 0;
+        size_t native_to_nested(size_t i) { return nested ? i : to_nested.at(i); }
+        size_t nested_to_native(size_t i) { return nested ? i : to_ring.at(i); }
+
+        Size Npoints = 0;
+        Size Nside   = 0;
         bool nested  = false;
+        reorder::Renumber to_nested;
+        reorder::Renumber to_ring;
     };
 
 
     // Assemble (nested-to-nested)
-    OwnedAllocator::Size Nr = out.numberOfPoints();
-    OwnedAllocator::Size Nc = in.numberOfPoints();
-
     healpix_info_t hin(in, "input");
     healpix_info_t hout(out, "output");
 
+    auto Nc = static_cast<Size>(hin.Npoints);
+    auto Nr = static_cast<Size>(hout.Npoints);
+
+    std::vector<Triplet> triplets;
+    triplets.reserve(std::max(hin.Npoints, hout.Npoints));
+
     if (hin.Nside == hout.Nside) {
         // Permute
-        std::vector<OwnedAllocator::Index> ia(Nr + 1);
-        std::iota(ia.begin(), ia.end(), 0);
-
-        auto ja(ia);
-        ja.pop_back();
-
-        WeightMatrix M(new OwnedAllocator{Nr, Nc, ja.size(), std::move(ia), std::move(ja),
-                                          std::vector<OwnedAllocator::Scalar>(ja.size(), 1.)});
-        W.swap(M);
-    }
-    else if (hin.Nside < hout.Nside) {
-        // Super-sample
-        const auto N = (hout.Nside / hin.Nside) * (hout.Nside / hin.Nside);
-
-        std::vector<OwnedAllocator::Index> ia(Nr + 1);
-        std::iota(ia.begin(), ia.end(), 0);
-
-        std::vector<OwnedAllocator::Index> ja;
-        ja.reserve(Nr * N);
-        for (OwnedAllocator::Index i = 0; i < Nc; ++i) {
-            ja.insert(ja.end(), N, i);
+        for (Size i = 0; i < Nr; ++i) {
+            triplets.emplace_back(i, i, 1.);
         }
 
-        WeightMatrix M(new OwnedAllocator{Nr, Nc, ja.size(), std::move(ia), std::move(ja),
-                                          std::vector<OwnedAllocator::Scalar>(ja.size(), 1.)});
-        W.swap(M);
+        W.setFromTriplets(triplets);
     }
-    else if (hin.Nside > hout.Nside) {
-        // Coarsen
-        const auto N = (hin.Nside / hout.Nside) * (hin.Nside / hout.Nside);
 
-        std::vector<OwnedAllocator::Index> ia(Nr + 1);
-        for (OwnedAllocator::Index i = 0; i <= Nr; ++i) {
-            ia[i] = i * N;
-        }
-
-        std::vector<OwnedAllocator::Index> ja(Nc);
-        std::iota(ja.begin(), ja.end(), 0);
-
-        WeightMatrix M(new OwnedAllocator{Nr, Nc, ja.size(), std::move(ia), std::move(ja),
-                                          std::vector<OwnedAllocator::Scalar>(ja.size(), 1. / N)});
-        W.swap(M);
-    }
+    ASSERT(false);
 }
 
 
