@@ -22,7 +22,6 @@
 #include "eckit/option/SimpleOption.h"
 
 #include "mir/reorder/Reorder.h"
-#include "mir/repres/Representation.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -64,6 +63,8 @@ void MIRMatrixReorder::execute(const eckit::option::CmdArgs& args) {
     // load input matrix
     eckit::linalg::SparseMatrix M;
     M.load(args(0));
+
+    Log::info() << M << std::endl;
 
 
     // renumbering maps

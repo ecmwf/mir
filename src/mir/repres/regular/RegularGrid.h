@@ -102,7 +102,9 @@ protected:
     bool isPeriodicWestEast() const override;
 
     void fillGrib(grib_info&) const override;
+    void fillJob(api::MIRJob&) const override;
     void fillMeshGen(util::MeshGeneratorParameters&) const override;
+
     void reorder(long scanningMode, MIRValuesVector&) const override;
     void validate(const MIRValuesVector&) const override;
     void makeName(std::ostream&) const override;

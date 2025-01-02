@@ -1,0 +1,6 @@
+# input
+regular_ll.2-2.grib2
+# mir
+--grid=O160 --interpolation=structured-bicubic
+# plan
+Gridded2NamedGrid[grid=O160,interpolation=structured-bicubic,method=ProxyMethod[options=LocalConfiguration[root={type => structured-bicubic , matrix_free => true}],cropping=none]]|Save[output=...]

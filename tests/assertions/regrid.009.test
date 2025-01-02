@@ -1,0 +1,6 @@
+# input
+regular_ll.2-2.grib2
+# mir
+--grid=O320 --interpolation=structured-bilinear
+# grib_get
+gridName=O320

@@ -22,23 +22,21 @@
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
 
-#if mir_HAVE_OMP
 extern "C" {
 void omp_set_num_threads(int);
 }
-#endif
 
 
 namespace mir::method {
 
 
 Method::Method(const param::MIRParametrisation& params) : parametrisation_(params) {
-#if mir_HAVE_OMP
-    int num_threads = 1;
-    if (params.get("parallel-omp-num-threads", num_threads)) {
-        omp_set_num_threads(num_threads);
+    if constexpr (HAVE_OMP) {
+        int num_threads = 1;
+        if (params.get("parallel-omp-num-threads", num_threads)) {
+            omp_set_num_threads(num_threads);
+        }
     }
-#endif
 }
 
 

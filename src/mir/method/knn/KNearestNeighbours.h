@@ -52,9 +52,12 @@ private:
     void print(std::ostream&) const override;
 
     const char* name() const override = 0;
+    int version() const override;
 
     virtual const pick::Pick& pick() const                               = 0;
     virtual const distance::DistanceWeighting& distanceWeighting() const = 0;
+
+    WeightMatrix::Check validateMatrixWeights() const override;
 };
 
 

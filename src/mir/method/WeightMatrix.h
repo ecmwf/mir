@@ -22,12 +22,18 @@ namespace mir::method {
 
 
 class WeightMatrix final : public eckit::linalg::SparseMatrix {
-public:  // types
+public:
     using Triplet = eckit::linalg::Triplet;
     using Scalar  = eckit::linalg::Scalar;
     using Size    = eckit::linalg::Size;
 
-public:  // methods
+    struct Check {
+        bool duplicates = true;
+        bool bounds     = true;
+        bool sum        = true;
+    };
+
+public:
     WeightMatrix(SparseMatrix::Allocator* = nullptr);
 
     WeightMatrix(const eckit::PathName&);
@@ -38,9 +44,10 @@ public:  // methods
 
     void cleanup(const double& pruneEpsilon = 0);
 
-    void validate(const char* when) const;
+    // Validate interpolation weights (default check matrix structure only)
+    void validate(const char* when, Check = {true, false, false}) const;
 
-private:  // members
+private:
     void print(std::ostream&) const;
 
     friend std::ostream& operator<<(std::ostream& out, const WeightMatrix& m) {

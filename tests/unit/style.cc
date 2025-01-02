@@ -82,8 +82,6 @@ CASE("ECMWFStyle") {
     Log::info() << std::boolalpha;
     static const param::DefaultParametrisation defaults;
 
-    std::vector<bool> _no_yes{false, true};
-    std::vector<bool> _yes_no{true, false};
     std::vector<std::string> _when{"prologue", "gridded", "spectral", "raw", "epilogue"};
 
 
@@ -110,14 +108,15 @@ CASE("ECMWFStyle") {
         const action::FormulaAction CORRECT_ACTION(p4);
 
 
-#if mir_HAVE_ATLAS
-        for (bool input_gridded : _yes_no) {
-#else
-        for (bool input_gridded : {true}) {
-#endif
+        std::vector<bool> inputs_gridded{true};
+        if constexpr (HAVE_ATLAS) {
+            inputs_gridded.push_back(false);
+        }
+
+        for (bool input_gridded : inputs_gridded) {
             TestingInput in(input_gridded);
 
-            for (bool output_gridded : _yes_no) {
+            for (bool output_gridded : {true, false}) {
                 if (input_gridded && !output_gridded) {
                     // this combination isn't supported
                     continue;
@@ -135,7 +134,7 @@ CASE("ECMWFStyle") {
                                                     : when == "spectral" ? (!input_gridded || !output_gridded)
                                                                          : true;
 
-                    for (bool addWrongArguments : _no_yes) {
+                    for (bool addWrongArguments : {false, true}) {
                         if (addWrongArguments) {
                             for (const std::string& wrongWhen : _when) {
                                 if (wrongWhen != when) {

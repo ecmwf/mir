@@ -1,0 +1,6 @@
+# input
+regular_ll.2-2.grib2
+# mir
+--grid=O32 --interpolation=nearest-neighbour --area=20/-40/-20/40
+# grib_get
+gridName=O32

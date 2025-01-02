@@ -14,6 +14,7 @@
 
 #include <iosfwd>
 #include <string>
+#include <vector>
 
 #include "eckit/memory/Counted.h"
 

@@ -13,7 +13,6 @@
 #pragma once
 
 #include "mir/api/mir_config.h"
-#if mir_HAVE_NETCDF
 
 #include <string>
 
@@ -134,6 +133,3 @@ private:
 
 
 }  // namespace mir::input
-
-
-#endif

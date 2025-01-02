@@ -19,6 +19,7 @@
 #include <sstream>
 #include <string>
 
+#include "eckit/config/Resource.h"
 #include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
@@ -64,7 +65,7 @@ static caching::WeightCache& matrix_cache_disk(const param::MIRParametrisation& 
 const static std::map<eckit::Hash::digest_t, std::string> KNOWN_METHOD{
     {"73e1dd539879ffbbbb22d6bc789c2262", "linear"},
     {"7738675c7e2c64d463718049ebef6563", "nearest-neighbour"},
-    {"a81efab621096650c20a978062cdd169", "grid-box-average"},
+    {"0346db910681bffd0d518b49923879dc", "grid-box-average"},
 };
 
 
@@ -80,7 +81,6 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation)
     parametrisation_.get("pole-displacement-in-degree", poleDisplacement_);
     ASSERT(poleDisplacement_ >= 0);
 
-    matrixValidate_ = eckit::Resource<bool>("$MIR_MATRIX_VALIDATE", false);
     matrixAssemble_ = parametrisation_.userParametrisation().has("filter");
 
     std::string nonLinear = "missing-if-heaviest-missing";
@@ -164,14 +164,15 @@ void MethodWeighted::createMatrix(context::Context& ctx, const repres::Represent
                                   const repres::Representation& out, WeightMatrix& W, const lsm::LandSeaMasks& masks,
                                   const Cropping& /*cropping*/) const {
     trace::ResourceUsage usage(std::string("MethodWeighted::createMatrix [") + name() + "]");
+    const auto checks = validateMatrixWeights();
 
-    computeMatrixWeights(ctx, in, out, W, validateMatrixWeights());
+    // matrix validation always happens after creation, because the matrix can/will be cached
+    computeMatrixWeights(ctx, in, out, W);
+    W.validate("computeMatrixWeights", checks);
 
     if (masks.active() && masks.cacheable()) {
         applyMasks(W, masks);
-        if (matrixValidate_) {
-            W.validate("applyMasks");
-        }
+        W.validate("applyMasks", checks);
     }
 }
 
@@ -264,9 +265,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     // it will be cached in memory nevertheless
     if (masks.active() && !masks.cacheable()) {
         applyMasks(W, masks);
-        if (matrixValidate_) {
-            W.validate("applyMasks");
-        }
+        W.validate("applyMasks", validateMatrixWeights());
     }
 
 
@@ -403,8 +402,8 @@ lsm::LandSeaMasks MethodWeighted::getMasks(const repres::Representation& in, con
 }
 
 
-bool MethodWeighted::validateMatrixWeights() const {
-    return true;
+WeightMatrix::Check MethodWeighted::validateMatrixWeights() const {
+    return {};
 }
 
 
@@ -493,9 +492,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
                 trace::Timer t(str.str());
 
                 if (n->treatment(A, M, B, field.values(i), missingValue)) {
-                    if (matrixValidate_) {
-                        M.validate(str.str().c_str());
-                    }
+                    M.validate(str.str().c_str(), validateMatrixWeights());
                 }
             }
 
@@ -527,7 +524,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
 
 void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::Representation& in,
-                                          const repres::Representation& out, WeightMatrix& W, bool validate) const {
+                                          const repres::Representation& out, WeightMatrix& W) const {
     auto timing(ctx.statistics().computeMatrixTimer());
 
     if (in.sameAs(out) && !matrixAssemble_) {
@@ -563,11 +560,6 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::R
             eckit::linalg::SparseMatrix w(W.rows(), W.cols(), trips);
             W.swap(w);
         }
-    }
-
-    // matrix validation always happens after creation, because the matrix can/will be cached
-    if (validate) {
-        W.validate("computeMatrixWeights");
     }
 }
 

@@ -1,0 +1,6 @@
+# input
+gridType=polar_stereographic.grib1
+# mir
+--area=49/-92/41/-76
+# plan
+AreaMasker[bbox=BoundingBox[north=49,west=-92,south=41,east=-76]]|Save[output=...]

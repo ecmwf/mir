@@ -14,6 +14,8 @@
 
 #include <sstream>
 
+#include "eckit/config/Resource.h"
+
 #include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/config/LibMir.h"
 #include "mir/method/WeightMatrix.h"
@@ -81,10 +83,7 @@ void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type&
     value_type tmp(matrix::MatrixLoaderFactory::build(manager.loader(), path));
     w.swap(tmp);
 
-    static bool matrixValidate = eckit::Resource<bool>("$MIR_MATRIX_VALIDATE", false);
-    if (matrixValidate) {
-        w.validate("fromCache");
-    }
+    w.validate("fromCache");  // check matrix structure (only)
 }
 
 

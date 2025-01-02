@@ -1,0 +1,7 @@
+# input
+ICON.shortName=lsm.grib2
+# mir
+--input={griddef:$tests_assertions_dir/ICON.griddef} --griddef=$tests_assertions_dir/weather-params.pts --format=grib --interpolation=nn
+# grib_get
+gridType=unstructured_grid
+numberOfDataPoints=7693

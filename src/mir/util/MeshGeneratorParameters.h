@@ -42,7 +42,7 @@ public:
 
     // -- Destructor
 
-    virtual ~MeshGeneratorParameters() override = default;
+    ~MeshGeneratorParameters() override = default;
 
     // -- Convertors
     // None

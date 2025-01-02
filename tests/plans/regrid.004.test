@@ -1,0 +1,6 @@
+# input
+regular_ll.2-2.grib2
+# mir
+--grid=O32 --interpolation=nearest-neighbour --area=20/-40/-20/40
+# plan
+Gridded2NamedGrid[grid=O32,interpolation=nearest-neighbour,method=KNearestNeighbours[nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=BoundingBox[north=20,west=-40,south=-20,east=40],lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,nearestMethod=NearestNeighbourWithLowestIndex[nclosest=4],distanceWeighting=InverseDistanceWeightingSquared[]]]|Save[output=...]

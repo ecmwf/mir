@@ -114,7 +114,6 @@ private:
     std::unique_ptr<const reorder::Reorder> reorderRows_;
     std::unique_ptr<const reorder::Reorder> reorderCols_;
 
-    bool matrixValidate_;
     bool matrixAssemble_;
 
     // -- Methods
@@ -127,10 +126,10 @@ private:
 
     virtual void applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const;
     virtual lsm::LandSeaMasks getMasks(const repres::Representation& in, const repres::Representation& out) const;
-    virtual bool validateMatrixWeights() const;
+    virtual WeightMatrix::Check validateMatrixWeights() const;
 
     void computeMatrixWeights(context::Context&, const repres::Representation& in, const repres::Representation& out,
-                              WeightMatrix&, bool validate) const;
+                              WeightMatrix&) const;
     void createMatrix(context::Context&, const repres::Representation& in, const repres::Representation& out,
                       WeightMatrix&, const lsm::LandSeaMasks&, const Cropping&) const;
 

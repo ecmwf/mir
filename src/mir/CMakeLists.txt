@@ -41,6 +41,8 @@ list(APPEND mir_srcs
     action/context/Context.h
     action/filter/AddRandomFilter.cc
     action/filter/AddRandomFilter.h
+    action/filter/AdjustWindsAtPoles.cc
+    action/filter/AdjustWindsAtPoles.h
     action/filter/AdjustWindsDirections.cc
     action/filter/AdjustWindsDirections.h
     action/filter/AdjustWindsScaleCosLatitude.cc
@@ -246,6 +248,8 @@ list(APPEND mir_srcs
     input/GribMemoryInput.h
     input/GribStreamInput.cc
     input/GribStreamInput.h
+    input/GriddefInput.cc
+    input/GriddefInput.h
     input/MIRInput.cc
     input/MIRInput.h
     input/MultiDimensionalGribFileInput.cc
@@ -457,6 +461,8 @@ list(APPEND mir_srcs
     output/GribOutput.h
     output/GribStreamOutput.cc
     output/GribStreamOutput.h
+    output/GriddefOutput.cc
+    output/GriddefOutput.h
     output/MIROutput.cc
     output/MIROutput.h
     output/MultiDimensionalOutput.cc

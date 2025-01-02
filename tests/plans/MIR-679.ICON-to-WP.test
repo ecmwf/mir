@@ -1,0 +1,6 @@
+# input
+ICON.shortName=lsm.grib2
+# mir
+--input={griddef:$tests_plans_dir/ICON.griddef} --griddef=$tests_plans_dir/weather-params.pts --format=grib --interpolation=nn
+# plan
+Gridded2GridDef[griddef=.../weather-params.pts]|Save[output=...]

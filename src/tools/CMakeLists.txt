@@ -2,6 +2,7 @@
 ecbuild_add_executable(TARGET mir-tool OUTPUT_NAME mir SOURCES mir.cc LIBS mir ${mir_INSTALL_TOOLS})
 
 foreach(tool IN ITEMS
+    mir-bounding-box
     mir-climate-filter
     mir-compare  # NOTE: set in the testing scripts, however not used
     mir-compute
@@ -30,6 +31,13 @@ if(eckit_HAVE_ECKIT_CODEC)
         mir-codec-to-weight-matrix)
         ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir eckit_codec ${mir_INSTALL_TOOLS})
     endforeach()
+
+    if(mir_HAVE_NETCDF)
+        foreach(tool IN ITEMS
+            mir-scrip-to-weight-matrix)
+            ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir eckit_codec NetCDF::NetCDF_CXX ${mir_INSTALL_TOOLS})
+        endforeach()
+    endif()
 endif()
 
 if(mir_HAVE_ATLAS)

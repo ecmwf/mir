@@ -30,9 +30,9 @@ protected:
     void print(std::ostream&) const override;
 
 private:
-    virtual const void* address() const override;
-    virtual size_t size() const override;
-    virtual bool inSharedMemory() const override;
+    const void* address() const override;
+    size_t size() const override;
+    bool inSharedMemory() const override;
 
 private:
     int fd_;

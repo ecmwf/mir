@@ -16,9 +16,14 @@
 #include "mir/util/Grib.h"
 
 
-namespace mir::param {
+namespace mir {
+namespace param {
 class MIRParametrisation;
-}  // namespace mir::param
+}
+namespace api {
+class MIRJob;
+}
+}  // namespace mir
 
 
 namespace mir::util {
@@ -30,16 +35,21 @@ struct Shape {
     Shape(const param::MIRParametrisation&);
     Shape(const Projection::Spec&);
     Shape() : code(6L), a(0.), b(0.), provided(false) {}
-    Shape(const Shape& other);
+
+    Shape(const Shape& other) = default;
+    Shape(Shape&&)            = default;
+
     virtual ~Shape() = default;
 
-    Shape& operator=(const Shape& other);
-    void fillGrib(grib_info& info, const Projection::Spec&) const;
+    Shape& operator=(const Shape&) = default;
+    Shape& operator=(Shape&&)      = default;
+
+    void fillGrib(grib_info&, const Projection::Spec&) const;
+    void fillJob(api::MIRJob&, const Projection::Spec&) const;
 
     long code;
     double a;
     double b;
-    long edition;
     bool provided;
 };
 

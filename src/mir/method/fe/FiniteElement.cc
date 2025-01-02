@@ -246,6 +246,11 @@ void FiniteElement::print(std::ostream& out) const {
 }
 
 
+int FiniteElement::version() const {
+    return 1;
+}
+
+
 bool FiniteElement::sameAs(const Method& other) const {
     const auto* o = dynamic_cast<const FiniteElement*>(&other);
     return (o != nullptr) && meshGeneratorParams_.sameAs(o->meshGeneratorParams_) &&

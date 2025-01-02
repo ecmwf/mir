@@ -11,9 +11,8 @@
 
 
 #include "mir/util/Atlas.h"
-#if mir_HAVE_ATLAS
-#error "mir/util/Atlas.cc cannot be included with Atlas present"
-#endif
+
+static_assert(!mir_HAVE_ATLAS, "mir/util/Atlas.cc cannot be included with Atlas present");
 
 #include <algorithm>
 

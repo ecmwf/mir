@@ -13,6 +13,7 @@ foreach(_t
     action_graph
     area
     bounding_box
+    earthkit-regrid
     formula
     gaussian_grid
     grib_basic_angle
@@ -30,6 +31,7 @@ foreach(_t
     statistics
     style
     vector-space
+    weight_matrix
     wind)
     ecbuild_add_test(
         TARGET            mir_tests_unit_${_t}
@@ -43,6 +45,15 @@ if(mir_HAVE_ATLAS)
     ecbuild_add_test(
         TARGET            mir_tests_unit_atlas
         SOURCES           atlas.cc
+        LIBS              mir
+        ENVIRONMENT       ${_testEnvironment}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+endif()
+
+if(mir_HAVE_NETCDF)
+    ecbuild_add_test(
+        TARGET            mir_tests_unit_interpolation_netcdf
+        SOURCES           interpolation_netcdf.cc
         LIBS              mir
         ENVIRONMENT       ${_testEnvironment}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})

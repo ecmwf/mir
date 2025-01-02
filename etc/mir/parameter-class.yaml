@@ -1952,6 +1952,7 @@ intensity:
   - 261020  # Physiological equivalent temperature
   - 261021  # Saturation water vapor pressure
   - 261022  # Wet-bulb potential temperature
+  - 261023  # Wet-bulb temperature
   - 262000  # Sea ice thickness
   - 262002  # Snow thickness over sea ice
   - 262003  # Eastward sea ice velocity

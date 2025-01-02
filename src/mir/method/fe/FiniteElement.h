@@ -105,6 +105,8 @@ private:
     void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
 
+    int version() const override;
+
     // -- Overridden methods
     // None
 

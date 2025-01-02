@@ -17,7 +17,6 @@
 #include "mir/netcdf/Type.h"
 
 #include <algorithm>
-#include <cstring>
 #include <ostream>
 #include <vector>
 
@@ -416,7 +415,7 @@ Value* TypeT<std::string>::attributeValue(int nc, int id, const char* name, size
 
     std::string value(len + 1, '\0');
     NC_CALL(nc_get_att_text(nc, id, name, value.data()), path);
-    auto* v = new ValueT<std::string>(*this, value);
+    auto* v = new ValueT<std::string>(*this, value.data());
     return v;
 }
 

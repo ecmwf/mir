@@ -40,17 +40,23 @@ do
         case $state in
 
             mars)
-            m=$(echo $n | tr '/' '_')
-            if [[ -f "${tests_plans_dir}/$m" ]]
+            m=$(echo $n)
+            if [[ -a "$m" ]]
             then
-                ln -sf "${tests_plans_dir}/$m" data.in.$t
-            elif [[ -f "${tmp_plans_dir}/$m" ]]
-            then
-                ln -sf "${tmp_plans_dir}/$m" data.in.$t
+                ln -sf "$m" data.in.$t
             else
-                echo "retrieve,$n,target=data.in.$t" > mars.r.$t
-                $mars_script mars.r.$t || rm data.in.$t
-                cp data.in.$t "${tmp_plans_dir}/$m"
+                m=$(echo $n | tr '/' '_')
+                if [[ -f "${tests_plans_dir}/$m" ]]
+                then
+                    ln -sf "${tests_plans_dir}/$m" data.in.$t
+                elif [[ -f "${tmp_plans_dir}/$m" ]]
+                then
+                    ln -sf "${tmp_plans_dir}/$m" data.in.$t
+                else
+                    echo "retrieve,$n,target=data.in.$t" > mars.r.$t
+                    $mars_script mars.r.$t || rm data.in.$t
+                    cp data.in.$t "${tmp_plans_dir}/$m"
+                fi
             fi
             state=mir
             ;;
