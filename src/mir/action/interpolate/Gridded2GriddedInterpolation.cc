@@ -30,12 +30,12 @@ namespace mir::action::interpolate {
 
 
 Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParametrisation& param) : Action(param) {
-
     ASSERT(param.get("interpolation", interpolation_));
     method_.reset(method::MethodFactory::build(interpolation_, param));
     ASSERT(method_);
 
     inputIntersectsOutput_ = !param.has("rotation");
+    param.get("interpolation-global-input", inputGlobal_);
 }
 
 
@@ -67,7 +67,7 @@ method::Cropping Gridded2GriddedInterpolation::cropping(context::Context& ctx) c
     const data::MIRField& field = ctx.field();
 
     repres::RepresentationHandle in(field.representation());
-    auto input = in->domain();
+    auto input = inputGlobal_ ? util::Domain{} : in->domain();
     auto output(outputBoundingBox());
 
     method::Cropping crop;
