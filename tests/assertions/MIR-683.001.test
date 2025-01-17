@@ -1,0 +1,12 @@
+# input
+gridType=lambert_azimuthal_equal_area.grib2
+# mir
+--grid=3/3 --interpolation=nn
+# grib_get
+numberOfDataPoints=462
+numberOfValues=462
+numberOfMissingValues=0
+latitudeOfFirstGridPointInDegrees=72
+longitudeOfFirstGridPointInDegrees=321
+latitudeOfLastGridPointInDegrees=33
+longitudeOfLastGridPointInDegrees=57

@@ -122,9 +122,10 @@ struct MIR : MIRTool {
             new FactoryOption<stats::FieldFactory>("interpolation-statistics", "Statistics interpolation method"));
 
         options_.push_back(new SimpleOption<eckit::PathName>("interpolation-matrix", "Interpolation matrix file"));
-
         options_.push_back(
             new SimpleOption<bool>("interpolation-matrix-free", "Matrix-free interpolation (proxy methods)"));
+        options_.push_back(
+            new SimpleOption<bool>("interpolation-global-input", "Interpolation input grid assumed global"));
 
 #if mir_HAVE_ATLAS
         options_.push_back(new FactoryOption<method::fe::FiniteElementFactory>("l2-projection-input-method",

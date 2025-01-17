@@ -1,0 +1,12 @@
+# input
+gridType=lambert,missingValuesPresent=0.grib2
+# mir
+--grid=3/3 --interpolation=nn
+# grib_get
+numberOfDataPoints=288
+numberOfValues=288
+numberOfMissingValues=0
+latitudeOfFirstGridPointInDegrees=84
+longitudeOfFirstGridPointInDegrees=342
+latitudeOfLastGridPointInDegrees=63
+longitudeOfLastGridPointInDegrees=87
