@@ -35,7 +35,7 @@ Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParam
     ASSERT(method_);
 
     inputIntersectsOutput_ = !param.has("rotation");
-    param.get("interpolation-global-input", inputGlobal_);
+    param.get("interpolation-global-input", inputGlobal_ = false);
 }
 
 
