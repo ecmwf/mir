@@ -659,6 +659,7 @@ list(APPEND mir_srcs
     util/DeprecatedFunctionality.h
     util/Domain.cc
     util/Domain.h
+    util/EckitGeo.h
     util/Error.cc
     util/Error.h
     util/Exceptions.h
@@ -725,6 +726,10 @@ list(APPEND mir_srcs
     util/Wind.cc
     util/Wind.h)
 
+if(mir_HAVE_ECKIT_GEO)
+else()
+    list(APPEND mir_srcs util/EckitGeo.cc)
+endif()
 
 if(mir_HAVE_ATLAS)
     list(APPEND mir_srcs
@@ -976,12 +981,18 @@ ecbuild_add_library(
     PUBLIC_INCLUDES    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/src>
     SOURCES            ${mir_srcs})
 
+if(mir_HAVE_ECKIT_GEO)
+    target_link_libraries(mir PUBLIC eckit_geo)
+endif()
+
 if(mir_HAVE_ATLAS)
     target_link_libraries(mir PUBLIC atlas)
 endif()
+
 if(mir_HAVE_NETCDF)
     target_link_libraries(mir PRIVATE NetCDF::NetCDF_C)
 endif()
+
 if(mir_HAVE_PNG)
     target_link_libraries(mir PRIVATE PNG::PNG)
 endif()
