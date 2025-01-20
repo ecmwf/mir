@@ -727,6 +727,9 @@ list(APPEND mir_srcs
     util/Wind.h)
 
 if(mir_HAVE_ECKIT_GEO)
+    list(APPEND mir_srcs
+        action/interpolate/Gridded2GridSpec.cc
+        key/grid/GridSpec.cc)
 else()
     list(APPEND mir_srcs util/EckitGeo.cc)
 endif()

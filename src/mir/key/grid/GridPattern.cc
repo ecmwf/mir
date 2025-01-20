@@ -110,8 +110,14 @@ const Grid* GridPattern::lookup(const std::string& name) {
     }
 
     if (k != m->cend()) {
+        static std::map<std::string, const Grid*> grids;
+
+        if (auto it = grids.find(name); it != grids.end()) {
+            return it->second;
+        }
+
         // This adds a new Grid to the map
-        return k->second->make(name);
+        return (grids[name] = k->second->make(name));
     }
 
 

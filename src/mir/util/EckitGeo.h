@@ -16,8 +16,10 @@
 
 #if mir_HAVE_ECKIT_GEO
 
+#include "eckit/geo/Grid.h"
 #include "eckit/geo/Ordering.h"
 #include "eckit/geo/Spec.h"
+#include "eckit/geo/spec/Custom.h"
 
 #else
 
