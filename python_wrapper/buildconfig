@@ -1,4 +1,4 @@
-# (C) Copyright 2024- ECMWF.
+# (C) Copyright 2025- ECMWF.
 #
 # This software is licensed under the terms of the Apache Licence Version 2.0
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -11,6 +11,6 @@
 # TODO we duplicate information -- pyproject.toml's `name` and `packages` are derivable from $NAME and must stay consistent
 
 NAME="mir"
-CMAKE_PARAMS="-DECKIT_PATH=/tmp/prereqs/eckitlib -Deccodes_ROOT=/tmp/prereqs/eccodeslib"
+CMAKE_PARAMS="-Deckit_ROOT=/tmp/mir/prereqs/eckitlib -Deccodes_ROOT=/tmp/mir/prereqs/eccodeslib"
 PYPROJECT_DIR="python_wrapper"
 DEPENDENCIES='["eckitlib", "eccodeslib"]'
