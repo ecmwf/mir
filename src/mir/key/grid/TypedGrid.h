@@ -28,8 +28,7 @@ public:
               const std::set<std::string>& optionalKeys = {});
 
     // -- Destructor
-
-    ~TypedGrid() override;
+    // None
 
     // -- Convertors
     // None

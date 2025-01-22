@@ -60,6 +60,7 @@ void GridPattern::list(std::ostream& out) {
     }
 }
 
+
 std::string GridPattern::match(const std::string& name, const param::MIRParametrisation& param) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);

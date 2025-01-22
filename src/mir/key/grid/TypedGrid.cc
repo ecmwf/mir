@@ -32,12 +32,9 @@ namespace mir::key::grid {
 
 TypedGrid::TypedGrid(const std::string& key, const std::set<std::string>& requiredKeys,
                      const std::set<std::string>& optionalKeys) :
-    Grid(key, typed_t), requiredKeys_(requiredKeys), optionalKeys_(optionalKeys) {
+    Grid(key, "typedgrid"), requiredKeys_(requiredKeys), optionalKeys_(optionalKeys) {
     requiredKeys_.insert("gridType");
 }
-
-
-TypedGrid::~TypedGrid() = default;
 
 
 void TypedGrid::print(std::ostream& out) const {
@@ -124,16 +121,9 @@ struct TypedGeneric final : public TypedGrid {
 
 template <typename TYPE>
 struct TypedGenericPattern final : public GridPattern {
-    TypedGenericPattern(const std::string& name, const std::set<std::string>& requiredKeys,
+    TypedGenericPattern(const std::string& pattern, const std::set<std::string>& requiredKeys,
                         const std::set<std::string>& optionalKeys = {}) :
-        GridPattern(name), requiredKeys_(requiredKeys), optionalKeys_(optionalKeys) {}
-
-    ~TypedGenericPattern() override = default;
-
-    TypedGenericPattern(const TypedGenericPattern&)            = delete;
-    TypedGenericPattern(TypedGenericPattern&&)                 = delete;
-    TypedGenericPattern& operator=(const TypedGenericPattern&) = delete;
-    TypedGenericPattern& operator=(TypedGenericPattern&&)      = delete;
+        GridPattern(pattern), requiredKeys_(requiredKeys), optionalKeys_(optionalKeys) {}
 
     const Grid* make(const std::string& name) const override { return new TYPE(name, requiredKeys_, optionalKeys_); }
 

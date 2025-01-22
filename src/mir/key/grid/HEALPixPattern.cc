@@ -24,10 +24,7 @@
 namespace mir::key::grid {
 
 
-HEALPixPattern::HEALPixPattern(const std::string& name) : GridPattern(name) {}
-
-
-HEALPixPattern::~HEALPixPattern() = default;
+HEALPixPattern::HEALPixPattern(const std::string& pattern) : GridPattern(pattern) {}
 
 
 void HEALPixPattern::print(std::ostream& out) const {

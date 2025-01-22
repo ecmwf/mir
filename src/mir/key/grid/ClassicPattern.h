@@ -25,19 +25,16 @@ public:
 
     // -- Constructors
 
-    ClassicPattern(const std::string& name);
-    ClassicPattern(const ClassicPattern&) = delete;
+    ClassicPattern(const std::string& pattern);
 
     // -- Destructor
-
-    ~ClassicPattern() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-
-    ClassicPattern& operator=(const ClassicPattern&) = delete;
+    // None
 
     // -- Methods
     // None

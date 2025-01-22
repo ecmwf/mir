@@ -16,7 +16,6 @@
 #include <string>
 
 #include "mir/param/SimpleParametrisation.h"
-#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -40,6 +39,7 @@ public:
     // -- Constructors
 
     Grid(const Grid&) = delete;
+    Grid(Grid&&)      = delete;
 
     // -- Destructor
     // None
@@ -50,6 +50,7 @@ public:
     // -- Operators
 
     Grid& operator=(const Grid&) = delete;
+    Grid& operator=(Grid&&)      = delete;
 
     // -- Methods
 
@@ -67,9 +68,7 @@ public:
 
     static void list(std::ostream&);
 
-    bool isNamed() const { return gridType_ == named_t; }
-    bool isTyped() const { return gridType_ == typed_t; }
-    bool isRegularLL() const { return gridType_ == regular_ll_t; }
+    const std::string& type() const { return type_; }
 
     // -- Overridden methods
     // None
@@ -92,7 +91,7 @@ protected:
 
     // -- Constructors
 
-    Grid(const std::string& key, grid_t);
+    Grid(const std::string& key, const std::string& type);
 
     // -- Destructor
 
@@ -100,7 +99,8 @@ protected:
 
     // -- Members
 
-    std::string key_;
+    const std::string key_;
+    const std::string type_;
 
     // -- Methods
 
@@ -117,9 +117,7 @@ protected:
 
 private:
     // -- Members
-
-    grid_t gridType_;
-    mutable util::recursive_mutex mutex_;
+    // None
 
     // -- Methods
     // None

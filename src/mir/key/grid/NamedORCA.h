@@ -26,7 +26,6 @@ public:
     // -- Constructors
 
     NamedORCA(const std::string& name);
-    NamedORCA(const NamedORCA&) = delete;
 
     // -- Destructor
     // None
@@ -35,8 +34,7 @@ public:
     // None
 
     // -- Operators
-
-    NamedORCA& operator=(const NamedORCA&) = delete;
+    // None
 
     // -- Methods
     // None

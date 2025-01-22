@@ -23,10 +23,7 @@
 namespace mir::key::grid {
 
 
-OctahedralPattern::OctahedralPattern(const std::string& name) : GridPattern(name) {}
-
-
-OctahedralPattern::~OctahedralPattern() = default;
+OctahedralPattern::OctahedralPattern(const std::string& pattern) : GridPattern(pattern) {}
 
 
 void OctahedralPattern::print(std::ostream& out) const {

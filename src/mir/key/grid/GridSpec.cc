@@ -53,7 +53,7 @@ protected:
 
 class GridSpecPattern : public GridPattern {
 public:
-    explicit GridSpecPattern(const std::string& name) : GridPattern(name) { auto x = name; }
+    explicit GridSpecPattern(const std::string& pattern) : GridPattern(pattern) {}
 
 private:
     void print(std::ostream& out) const override {
