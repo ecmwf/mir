@@ -10,50 +10,48 @@
  */
 
 
-#include "mir/action/interpolate/Gridded2UnrotatedGrid.h"
+#include "mir/action/interpolate/Gridded2GridSpec.h"
 
-#include <memory>
 #include <ostream>
 
 #include "mir/key/grid/Grid.h"
-#include "mir/util/EckitGeo.h"
 #include "mir/util/Exceptions.h"
 
 
 namespace mir::action::interpolate {
 
 
-class Gridded2GridSpec : public Gridded2UnrotatedGrid {
-public:
-    explicit Gridded2GridSpec(const param::MIRParametrisation& param) : Gridded2UnrotatedGrid(param) {
-        std::string gridspec;
-        ASSERT(key::grid::Grid::get("grid", gridspec, param));
+Gridded2GridSpec::Gridded2GridSpec(const param::MIRParametrisation& param) : Gridded2UnrotatedGrid(param) {
+    std::string gridspec;
+    ASSERT(key::grid::Grid::get("grid", gridspec, param));
 
-        grid_.reset(eckit::geo::GridFactory::make_from_string(gridspec));
-        ASSERT(grid_);
-    }
+    grid_.reset(eckit::geo::GridFactory::make_from_string(gridspec));
+    ASSERT(grid_);
+}
 
-private:
-    std::unique_ptr<const eckit::geo::Grid> grid_;
 
-    bool sameAs(const Action& other) const override {
-        const auto* o = dynamic_cast<const Gridded2GridSpec*>(&other);
-        return (o != nullptr) && (grid_ == o->grid_) && Gridded2GriddedInterpolation::sameAs(other);
-    }
+bool Gridded2GridSpec::sameAs(const Action& other) const {
+    const auto* o = dynamic_cast<const Gridded2GridSpec*>(&other);
+    return (o != nullptr) && (grid_ == o->grid_) && Gridded2GriddedInterpolation::sameAs(other);
+}
 
-    void print(std::ostream& out) const override {
-        out << "Gridded2GridSpec[gridspec=" << grid_->spec_str() << ",";
-        Gridded2UnrotatedGrid::print(out);
-        out << "]";
-    }
 
-    const char* name() const override { return "Gridded2GridSpec"; }
+void Gridded2GridSpec::print(std::ostream& out) const {
+    out << "Gridded2GridSpec[gridspec=" << grid_->spec_str() << ",";
+    Gridded2UnrotatedGrid::print(out);
+    out << "]";
+}
 
-    const repres::Representation* outputRepresentation() const override {
-        NOTIMP;
-        NOTIMP;
-    }
-};
+
+const char* Gridded2GridSpec::name() const {
+    return "Gridded2GridSpec";
+}
+
+
+const repres::Representation* Gridded2GridSpec::outputRepresentation() const {
+    NOTIMP;
+    NOTIMP;
+}
 
 
 static const ActionBuilder<Gridded2GridSpec> grid2grid("interpolate.grid2gridspec");

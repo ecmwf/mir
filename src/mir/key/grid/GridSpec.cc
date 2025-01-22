@@ -10,67 +10,47 @@
  */
 
 
-#include <memory>
+#pragma once
+
+#include "mir/key/grid/GridSpec.h"
+
 #include <ostream>
 
-#include "eckit/parser/YAMLParser.h"
-
-#include "mir/key/grid/Grid.h"
-#include "mir/key/grid/GridPattern.h"
-#include "mir/key/grid/NamedGrid.h"
-#include "mir/util/EckitGeo.h"
 #include "mir/util/Exceptions.h"
 
 
 namespace mir::key::grid {
 
 
-class GridSpec : public Grid {
-public:
-    GridSpec(const std::string& key) : Grid(key, "gridspec") {}
-
-    const repres::Representation* representation() const override {
-        std::cout << std::endl;
-        NOTIMP;
-    }
-
-    const repres::Representation* representation(const util::Rotation&) const override {
-        std::cout << std::endl;
-        NOTIMP;
-    }
-
-    const repres::Representation* representation(const param::MIRParametrisation&) const override {
-        std::cout << std::endl;
-        NOTIMP;
-    }
-
-    size_t gaussianNumber() const override { return default_gaussian_number(); }
-
-protected:
-    void print(std::ostream& out) const override { out << "GridSpec[key=" << key_ << "]"; }
-};
+GridSpec::GridSpec(const std::string& key) : Grid(key, "gridspec") {}
 
 
-class GridSpecPattern : public GridPattern {
-public:
-    explicit GridSpecPattern(const std::string& pattern) : GridPattern(pattern) {}
-
-private:
-    void print(std::ostream& out) const override {
-        auto x = pattern_;
-        out << "GridSpecPattern[pattern=" << pattern_ << "]";
-    }
-
-    const Grid* make(const std::string& name) const override { return new GridSpec(name); }
-
-    std::string canonical(const std::string& name, const param::MIRParametrisation&) const override {
-        std::unique_ptr<const eckit::geo::Grid> grid(eckit::geo::GridFactory::make_from_string(name));
-        return grid->spec_str();
-    }
-};
+const mir::repres::Representation* GridSpec::representation() const {
+    NOTIMP;
+    NOTIMP;
+}
 
 
-static const GridSpecPattern __pattern("^[{].*[}]$");
+const mir::repres::Representation* GridSpec::representation(const util::Rotation&) const {
+    NOTIMP;
+    NOTIMP;
+}
+
+
+const mir::repres::Representation* GridSpec::representation(const param::MIRParametrisation&) const {
+    NOTIMP;
+    NOTIMP;
+}
+
+
+size_t GridSpec::gaussianNumber() const {
+    return default_gaussian_number();
+}
+
+
+void GridSpec::print(std::ostream& out) const {
+    out << "GridSpec[key=" << key_ << "]";
+}
 
 
 }  // namespace mir::key::grid
