@@ -56,6 +56,8 @@ public:
 
     static std::string cacheLoader(cache_loader);
 
+    static std::string defaultGribSample();
+
 private:
     LibMir();
 

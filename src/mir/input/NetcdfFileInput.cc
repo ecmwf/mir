@@ -17,7 +17,6 @@
 #include "mir/data/MIRField.h"
 #include "mir/netcdf/Field.h"
 #include "mir/util/Exceptions.h"
-#include "mir/util/Grib.h"
 #include "mir/util/Log.h"
 #include "mir/util/ValueMap.h"
 
@@ -47,22 +46,8 @@ NetcdfFileInput::~NetcdfFileInput() {
 
 
 const netcdf::Field& NetcdfFileInput::currentField() const {
-    ASSERT(0 <= current_ && current_ < int(fields_.size()));
-    return *fields_[size_t(current_)];
-}
-
-
-grib_handle* NetcdfFileInput::gribHandle(size_t /*which*/) const {
-    // ASSERT(which == 0);
-    static grib_handle* handle = nullptr;
-    if (handle == nullptr) {
-        handle = codes_grib_handle_new_from_samples(nullptr, "GRIB1");
-
-        constexpr long MISSING = 255;
-        codes_set_long(handle, "paramId", MISSING);
-        ASSERT(handle);
-    }
-    return handle;
+    ASSERT(0 <= current_ && current_ < static_cast<int>(fields_.size()));
+    return *fields_[static_cast<size_t>(current_)];
 }
 
 
@@ -92,7 +77,7 @@ bool NetcdfFileInput::next() {
     FieldParametrisation::reset();
 
     current_++;
-    return size_t(current_) < fields_.size();
+    return static_cast<size_t>(current_) < fields_.size();
 }
 
 

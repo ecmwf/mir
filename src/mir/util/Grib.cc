@@ -17,6 +17,7 @@
 #include <ios>
 #include <utility>
 
+#include "mir/config/LibMir.h"
 #include "mir/util/Log.h"
 
 
@@ -158,4 +159,16 @@ void grib_info::extra_set(const char* key, const char* value) {
 
     strings_.emplace_back(value);
     set.string_value = strings_.back().c_str();
+}
+
+
+grib_handle* grib_handle_create() {
+    // NOTE: starts from GRIB1 to avoid supporting user-requested conversions of GRIB2 to 1
+    // FIXME: make this edition-independent
+    auto* handle = codes_grib_handle_new_from_samples(nullptr, mir::LibMir::defaultGribSample().c_str());
+
+    constexpr long MISSING = 255;
+    codes_set_long(handle, "paramId", MISSING);
+
+    return handle;
 }

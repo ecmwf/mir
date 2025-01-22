@@ -102,7 +102,6 @@ private:
     data::MIRField field() const override;
     bool next() override;
     size_t dimensions() const override;
-    grib_handle* gribHandle(size_t which) const override;
     void setAuxiliaryInformation(const util::ValueMap&) override;
 
     // From FieldParametrisation

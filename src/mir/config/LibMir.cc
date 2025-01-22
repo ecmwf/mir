@@ -104,6 +104,15 @@ std::string LibMir::cacheLoader(cache_loader l) {
 }
 
 
+std::string LibMir::defaultGribSample() {
+    using r = eckit::LibResource<std::string, LibMir>;
+
+    static const std::string defaultGribSample{r("$MIR_DEFAULT_GRIB_SAMPLE;mirDefaultGribSample", "GRIB1")};
+
+    return defaultGribSample;
+}
+
+
 const LibMir& LibMir::instance() {
     static LibMir libmir;
     return libmir;

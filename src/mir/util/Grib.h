@@ -96,3 +96,6 @@ void grib_reorder(std::vector<double>& values, long scanningMode, size_t Ni, siz
 
 
 void grib_get_unique_missing_value(const std::vector<double>& values, double& missingValue);
+
+
+grib_handle* grib_handle_create();
