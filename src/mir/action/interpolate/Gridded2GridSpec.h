@@ -14,7 +14,12 @@
 
 #include <memory>
 
-#include "mir/util/EckitGeo.h"
+#include "mir/param/MIRParametrisation.h"
+
+
+namespace eckit::geo {
+class Grid;
+}
 
 
 namespace mir::action::interpolate {
@@ -26,6 +31,7 @@ public:
 
 private:
     std::unique_ptr<const eckit::geo::Grid> grid_;
+    std::unique_ptr<param::MIRParametrisation> param_;
 
     bool sameAs(const Action&) const override;
     void print(std::ostream&) const override;

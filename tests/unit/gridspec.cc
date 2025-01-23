@@ -26,27 +26,30 @@
 namespace mir::tests::unit {
 
 
-CASE("gridspec") {
-    SECTION("output {grid: 1/1}") {
-        std::vector<double> values(9, 0.);
-        param::SimpleParametrisation meta;
-        meta.set("gridded", true);
-        meta.set("gridType", "regular_ll");
-        meta.set("north", 10.);
-        meta.set("west", 0.);
-        meta.set("south", 0.);
-        meta.set("east", 10.);
-        meta.set("south_north_increment", 5.);
-        meta.set("west_east_increment", 5.);
-        meta.set("Ni", 3);
-        meta.set("Nj", 3);
+CASE("gridspec as output (--grid={gridSpec})") {
+    output::EmptyOutput output;
 
-        output::EmptyOutput output;
+    param::SimpleParametrisation meta;
+    meta.set("gridded", true);
+    meta.set("gridType", "regular_ll");
+    meta.set("north", 20.);
+    meta.set("west", 0.);
+    meta.set("south", 0.);
+    meta.set("east", 10.);
+    meta.set("south_north_increment", 5.);
+    meta.set("west_east_increment", 5.);
+    meta.set("Ni", 3);
+    meta.set("Nj", 5);
 
+    for (const std::string& gridSpec : {
+             "{grid: 1/1}",
+             "{grid: [2, 1]}",
+             "{grid: O8}",
+         }) {
         api::MIRJob job;
-        job.set("grid", "{grid: 1/1}");
+        job.set("grid", gridSpec);
 
-        const param::SimpleParametrisation args;
+        std::vector<double> values(15, 0.);
         for (std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
              input->next();) {
             job.execute(*input, output);
