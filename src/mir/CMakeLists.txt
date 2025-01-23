@@ -733,7 +733,9 @@ if(mir_HAVE_ECKIT_GEO)
         key/grid/GridSpec.cc
         key/grid/GridSpec.h
         key/grid/GridSpecPattern.cc
-        key/grid/GridSpecPattern.h)
+        key/grid/GridSpecPattern.h
+        param/GridSpecParametrisation.cc
+        param/GridSpecParametrisation.h)
 else()
     list(APPEND mir_srcs util/EckitGeo.cc)
 endif()
