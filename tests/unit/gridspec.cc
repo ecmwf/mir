@@ -12,6 +12,7 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "eckit/testing/Test.h"
@@ -20,13 +21,39 @@
 #include "mir/input/MIRInput.h"
 #include "mir/input/RawInput.h"
 #include "mir/output/EmptyOutput.h"
+#include "mir/param/GridSpecParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
 
 
 namespace mir::tests::unit {
 
 
-CASE("gridspec as output (--grid={gridSpec})") {
+CASE("gridspec as input: --input={gridspec:{gridSpec}}") {
+    output::EmptyOutput output;
+
+    using test_t = std::pair<std::string, size_t>;
+
+    for (const auto& test : {
+             test_t{"{grid: 10/10}", 684},
+             {"{grid: [20, 10]}", 342},
+             {"{grid: O8}", 544},
+         }) {
+        param::GridSpecParametrisation meta(test.first);
+
+        api::MIRJob job;
+        job.set("input", "{gridspec: " + test.first + "}");
+        job.set("grid", std::vector<double>{1., 1.});
+
+        std::vector<double> values(test.second, 0.);
+        for (std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
+             input->next();) {
+            job.execute(*input, output);
+        }
+    }
+}
+
+
+CASE("gridspec as output: --grid={gridSpec}") {
     output::EmptyOutput output;
 
     param::SimpleParametrisation meta;

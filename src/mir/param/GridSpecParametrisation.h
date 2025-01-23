@@ -10,11 +10,7 @@
  */
 
 
-#include "mir/param/MIRParametrisation.h"
-
-#include <memory>
-
-#include "eckit/geo/spec/Custom.h"
+#include "mir/param/SimpleParametrisation.h"
 
 
 namespace eckit::geo {
@@ -25,34 +21,10 @@ class Grid;
 namespace mir::param {
 
 
-class GridSpecParametrisation final : public MIRParametrisation {
+class GridSpecParametrisation final : public SimpleParametrisation {
 public:
+    explicit GridSpecParametrisation(const std::string& gridspec);
     explicit GridSpecParametrisation(const eckit::geo::Grid&);
-
-private:
-    bool has(const std::string& name) const override { return custom_->has(name); }
-
-    bool get(const std::string& name, std::string& v) const override { return custom_->get(name, v); }
-    bool get(const std::string& name, bool& v) const override { return custom_->get(name, v); }
-    bool get(const std::string& name, int& v) const override { return custom_->get(name, v); }
-    bool get(const std::string& name, long& v) const override { return custom_->get(name, v); }
-    bool get(const std::string& name, float& v) const override { return custom_->get(name, v); }
-    bool get(const std::string& name, double& v) const override { return custom_->get(name, v); }
-
-    bool get(const std::string& name, std::vector<int>& v) const override { return custom_->get(name, v); }
-    bool get(const std::string& name, std::vector<long>& v) const override { return custom_->get(name, v); }
-    bool get(const std::string& name, std::vector<float>& v) const override { return custom_->get(name, v); }
-    bool get(const std::string& name, std::vector<double>& v) const override { return custom_->get(name, v); }
-    bool get(const std::string& name, std::vector<std::string>& v) const override { return custom_->get(name, v); }
-
-    bool get(const std::string& name, size_t& v) const override { return custom_->get(name, v); }
-    bool get(const std::string& name, std::vector<size_t>& v) const override { return custom_->get(name, v); }
-    bool get(const std::string& name, long long& v) const override { return custom_->get(name, v); }
-    bool get(const std::string& name, std::vector<long long>& v) const override { return custom_->get(name, v); }
-
-    void print(std::ostream&) const override;
-
-    std::unique_ptr<eckit::geo::spec::Custom> custom_;
 };
 
 
