@@ -14,10 +14,10 @@
 
 #include <ostream>
 
+#include "eckit/geo/Grid.h"
+
 #include "mir/key/grid/Grid.h"
-#include "mir/param/GridSpecParametrisation.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/EckitGeo.h"
 #include "mir/util/Exceptions.h"
 
 
@@ -29,23 +29,21 @@ Gridded2GridSpec::Gridded2GridSpec(const param::MIRParametrisation& param) : Gri
     std::string gridspec;
     ASSERT(key::grid::Grid::get("grid", gridspec, param));
 
-    grid_.reset(eckit::geo::GridFactory::make_from_string(gridspec));
-    ASSERT(grid_);
-
     // assign compatible parametrisation
-    param_.reset(new param::GridSpecParametrisation(*grid_));
+    param_.reset(new param::GridSpecParametrisation(eckit::geo::GridFactory::make_from_string(gridspec)));
     ASSERT(param_);
 }
 
 
 bool Gridded2GridSpec::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const Gridded2GridSpec*>(&other);
-    return (o != nullptr) && (grid_ == o->grid_) && Gridded2GriddedInterpolation::sameAs(other);
+    return (o != nullptr) && (param_->spec().str() == o->param_->spec().str()) &&
+           Gridded2GriddedInterpolation::sameAs(other);
 }
 
 
 void Gridded2GridSpec::print(std::ostream& out) const {
-    out << "Gridded2GridSpec[gridspec=" << grid_->spec_str() << ",";
+    out << "Gridded2GridSpec[gridspec=" << param_->spec() << ",";
     Gridded2UnrotatedGrid::print(out);
     out << "]";
 }

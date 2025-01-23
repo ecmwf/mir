@@ -14,7 +14,7 @@
 
 #include <memory>
 
-#include "mir/param/MIRParametrisation.h"
+#include "mir/param/GridSpecParametrisation.h"
 
 
 namespace eckit::geo {
@@ -30,8 +30,7 @@ public:
     explicit Gridded2GridSpec(const param::MIRParametrisation&);
 
 private:
-    std::unique_ptr<const eckit::geo::Grid> grid_;
-    std::unique_ptr<param::MIRParametrisation> param_;
+    std::unique_ptr<param::GridSpecParametrisation> param_;
 
     bool sameAs(const Action&) const override;
     void print(std::ostream&) const override;
