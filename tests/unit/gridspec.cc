@@ -28,7 +28,7 @@
 namespace mir::tests::unit {
 
 
-CASE("gridspec input/output") {
+CASE("GridSpec input/output") {
     output::EmptyOutput output;
 
     using test_t = std::pair<std::string, size_t>;
@@ -40,14 +40,14 @@ CASE("gridspec input/output") {
     };
 
 
-    SECTION("gridspec as input") {
-        for (const auto& test : tests) {
-            param::GridSpecParametrisation meta(test.first);
+    SECTION("GridSpec as input") {
+        for (const auto& test_input : tests) {
+            param::GridSpecParametrisation meta(test_input.first);
 
             api::MIRJob job;
             job.set("grid", std::vector<double>{5., 5.});
 
-            std::vector<double> values(test.second, 0.);
+            std::vector<double> values(test_input.second, 0.);
             for (std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
                  input->next();) {
                 job.execute(*input, output);
@@ -56,7 +56,7 @@ CASE("gridspec input/output") {
     }
 
 
-    SECTION("gridspec as output") {
+    SECTION("GridSpec as output") {
         param::SimpleParametrisation meta;
         meta.set("gridded", true);
         meta.set("gridType", "regular_ll");
@@ -69,9 +69,9 @@ CASE("gridspec input/output") {
         meta.set("Ni", 3);
         meta.set("Nj", 5);
 
-        for (const auto& test : tests) {
+        for (const auto& test_output : tests) {
             api::MIRJob job;
-            job.set("grid", test.first);
+            job.set("grid", test_output.first);
 
             std::vector<double> values(15, 0.);
             for (std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
@@ -82,7 +82,7 @@ CASE("gridspec input/output") {
     }
 
 
-    SECTION("gridspec as input and output") {
+    SECTION("GridSpec as input and output") {
         for (const auto& test_input : tests) {
             param::GridSpecParametrisation meta(test_input.first);
 
