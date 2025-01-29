@@ -13,6 +13,7 @@
 #pragma once
 
 #include <iosfwd>
+#include <numeric>
 
 
 struct grib_info;
@@ -49,21 +50,25 @@ struct Fraction {
 };
 
 
-Fraction::value_type lcm(Fraction::value_type a, Fraction::value_type b);
-
-
-template <typename... Longs>
-Fraction::value_type lcm(Fraction::value_type a, Fraction::value_type b, Longs... cde) {
-    return lcm(a, lcm(b, cde...));
+constexpr Fraction::value_type lcm(Fraction::value_type a) {
+    return a;
 }
 
 
-long gcd(long a, long b);
+template <typename... Values>
+constexpr Fraction::value_type lcm(Fraction::value_type a, Values... bc) {
+    return (std::lcm(a, lcm(bc...)));
+}
 
 
-template <typename... Longs>
-long gcd(long a, long b, Longs... cde) {
-    return gcd(a, gcd(b, cde...));
+constexpr Fraction::value_type gcd(Fraction::value_type a) {
+    return a;
+}
+
+
+template <typename... Values>
+constexpr Fraction::value_type gcd(Fraction::value_type a, Values... bc) {
+    return (std::gcd(a, gcd(bc...)));
 }
 
 
@@ -92,7 +97,7 @@ struct BasicAngle : Fraction {
     // -- Methods
 
     void fillGrib(grib_info&) const;
-    Fraction::value_type numerator(const Fraction&) const;
+    value_type numerator(const Fraction&) const;
 
     // -- Overridden methods
     // None

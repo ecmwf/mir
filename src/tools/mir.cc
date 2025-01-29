@@ -331,7 +331,7 @@ struct MIR : MIRTool {
         options_.push_back(new SimpleOption<bool>("delete-local-definition", "Remove GRIB local extension"));
 
         options_.push_back(new FactoryOption<grib::BasicAngle>(
-            "basic-angle", "GRIB basic angle and subdivisions (bounding box and grid increments, default false)"));
+            "basic-angle", "GRIB basic angle and subdivisions (bounding box and grid increments, default 'decimal')"));
         options_.push_back(
             new SimpleOption<std::string>("metadata", "GRIB extra metadata key/integer pairs (a=b,c=d,..)"));
 
