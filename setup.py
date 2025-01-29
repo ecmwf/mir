@@ -4,11 +4,9 @@ import sys
 from typing import Iterable, Tuple, List
 import warnings
 
-from distutils.core import setup
-from distutils.extension import Extension
 
 from Cython.Build import cythonize
-from Cython.Distutils import build_ext
+from setuptools import Extension, setup
 
 if (source_lib_root := os.getenv("SOURCE_LIB_ROOT", "")):
     # NOTE this whole branch is probably obsolete -- we dont want to build such wheels anymore
