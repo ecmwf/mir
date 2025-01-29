@@ -16,6 +16,7 @@
 #include "eckit/testing/Test.h"
 
 #include "mir/input/GribFileInput.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 
 

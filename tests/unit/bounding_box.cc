@@ -21,6 +21,7 @@
 #include "mir/key/grid/Grid.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Types.h"
 

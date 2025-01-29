@@ -262,6 +262,7 @@ list(APPEND mir_srcs
     input/RawInput.h
     input/VectorInput.cc
     input/VectorInput.h
+    iterator/UnstructuredIterator.cc
     iterator/UnstructuredIterator.h
     iterator/detail/RegularIterator.cc
     iterator/detail/RegularIterator.h

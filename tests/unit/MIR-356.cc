@@ -18,6 +18,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 
 

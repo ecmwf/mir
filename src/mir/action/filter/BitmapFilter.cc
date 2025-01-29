@@ -22,6 +22,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Bitmap.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Mutex.h"
 

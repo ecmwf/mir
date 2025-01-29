@@ -18,6 +18,7 @@
 
 #include "mir/method/fe/BuildNodeLumpedMassMatrix.h"
 #include "mir/method/fe/CalculateCellLongestDiagonal.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/MeshGeneratorParameters.h"

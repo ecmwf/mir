@@ -21,6 +21,7 @@
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/stats/detail/PNormsT.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Types.h"
 
