@@ -30,7 +30,7 @@ Gridded2GridSpec::Gridded2GridSpec(const param::MIRParametrisation& param) : Gri
     ASSERT(key::grid::Grid::get("grid", gridspec, param));
 
     // assign compatible parametrisation
-    param_.reset(new param::GridSpecParametrisation(eckit::geo::GridFactory::make_from_string(gridspec)));
+    param_ = std::make_unique<param::GridSpecParametrisation>(eckit::geo::GridFactory::make_from_string(gridspec));
     ASSERT(param_);
 }
 

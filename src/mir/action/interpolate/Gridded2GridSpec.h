@@ -17,11 +17,6 @@
 #include "mir/param/GridSpecParametrisation.h"
 
 
-namespace eckit::geo {
-class Grid;
-}
-
-
 namespace mir::action::interpolate {
 
 

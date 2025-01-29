@@ -735,6 +735,11 @@ if(mir_HAVE_ECKIT_GEO)
         key/grid/GridSpecPattern.h
         param/GridSpecParametrisation.cc
         param/GridSpecParametrisation.h)
+    if(mir_HAVE_ATLAS)
+        list(APPEND mir_srcs
+            action/transform/ShToGridSpec.cc
+            action/transform/ShToGridSpec.h)
+    endif()
 else()
     list(APPEND mir_srcs util/EckitGeo.cc)
 endif()
