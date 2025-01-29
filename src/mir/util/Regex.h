@@ -36,6 +36,9 @@ public:
 
     Regex(const std::string& pattern);
 
+    Regex(const Regex&) = delete;
+    Regex(Regex&&)      = delete;
+
     // -- Destructor
 
     virtual ~Regex() = default;
@@ -44,7 +47,10 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const Regex&) = delete;
+    void operator=(Regex&&)      = delete;
+
 
     // -- Methods
 
@@ -79,14 +85,6 @@ protected:
     // None
 
 private:
-    // -- Constructors
-
-    Regex(const Regex&) = delete;
-
-    // -- Operators
-
-    void operator=(const Regex&) = delete;
-
     // -- Members
 
     const std::string pattern_;

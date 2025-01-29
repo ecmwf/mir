@@ -127,14 +127,17 @@ class FiniteElementFactory : public MethodFactory {
     virtual FiniteElement* make(const param::MIRParametrisation&, const std::string& label) = 0;
     FiniteElement* make(const param::MIRParametrisation&) override                          = 0;
 
-    FiniteElementFactory(const FiniteElementFactory&)            = delete;
-    FiniteElementFactory& operator=(const FiniteElementFactory&) = delete;
-
 protected:
     FiniteElementFactory(const std::string&);
     ~FiniteElementFactory() override;
 
 public:
+    FiniteElementFactory(const FiniteElementFactory&) = delete;
+    FiniteElementFactory(FiniteElementFactory&&)      = delete;
+
+    void operator=(const FiniteElementFactory&) = delete;
+    void operator=(FiniteElementFactory&&)      = delete;
+
     static void list(std::ostream&);
     static FiniteElement* build(std::string& names, const std::string& label, const param::MIRParametrisation&);
 };

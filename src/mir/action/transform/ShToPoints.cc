@@ -34,10 +34,6 @@ ShToPoints<Invtrans>::ShToPoints(const param::MIRParametrisation& parametrisatio
 
 
 template <class Invtrans>
-ShToPoints<Invtrans>::~ShToPoints() = default;
-
-
-template <class Invtrans>
 bool ShToPoints<Invtrans>::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const ShToPoints*>(&other);
     return (o != nullptr) && (latitudes_ == o->latitudes_) && (longitudes_ == o->longitudes_);

@@ -29,9 +29,6 @@ Gridded2RotatedReducedGG::Gridded2RotatedReducedGG(const param::MIRParametrisati
 }
 
 
-Gridded2RotatedReducedGG::~Gridded2RotatedReducedGG() = default;
-
-
 bool Gridded2RotatedReducedGG::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const Gridded2RotatedReducedGG*>(&other);
     return (o != nullptr) && (N_ == o->N_) && Gridded2RotatedGrid::sameAs(other);

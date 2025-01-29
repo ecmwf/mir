@@ -38,9 +38,6 @@ BitmapFilter::BitmapFilter(const param::MIRParametrisation& parametrisation) : A
 }
 
 
-BitmapFilter::~BitmapFilter() = default;
-
-
 bool BitmapFilter::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const BitmapFilter*>(&other);
     return (o != nullptr) && (path_ == o->path_);

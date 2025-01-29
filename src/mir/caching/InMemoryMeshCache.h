@@ -38,7 +38,9 @@ public:
     // None
 
     // -- Constructors
-    // None
+
+    InMemoryMeshCache(const InMemoryMeshCache&) = delete;
+    InMemoryMeshCache(InMemoryMeshCache&&)      = delete;
 
     // -- Destructor
     // None
@@ -47,7 +49,9 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const InMemoryMeshCache&) = delete;
+    void operator=(InMemoryMeshCache&&)      = delete;
 
     // -- Methods
 
@@ -83,15 +87,13 @@ private:
     // -- Constructors
 
     InMemoryMeshCache();
-    InMemoryMeshCache(const InMemoryMeshCache&) = delete;
 
     // -- Destructor
 
     virtual ~InMemoryMeshCache() = default;
 
     // -- Operators
-
-    void operator=(const InMemoryMeshCache&) = delete;
+    // None
 
     // -- Members
     // None

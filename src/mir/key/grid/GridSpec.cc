@@ -10,8 +10,6 @@
  */
 
 
-#pragma once
-
 #include "mir/key/grid/GridSpec.h"
 
 #include <ostream>

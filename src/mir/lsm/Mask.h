@@ -40,7 +40,9 @@ public:
     // -- Constructors
 
     Mask();
+
     Mask(const Mask&) = delete;
+    Mask(Mask&&)      = delete;
 
     // -- Destructor
 
@@ -52,6 +54,7 @@ public:
     // -- Operators
 
     void operator=(const Mask&) = delete;
+    void operator=(Mask&&)      = delete;
 
     // -- Methods
 

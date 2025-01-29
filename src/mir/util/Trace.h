@@ -37,12 +37,16 @@ public:
 
 struct ResourceUsage : public Timer {
     explicit ResourceUsage(const std::string&);
+
+    ResourceUsage(const ResourceUsage&) = delete;
+    ResourceUsage(ResourceUsage&&)      = delete;
+
     ~ResourceUsage();
 
-private:
-    ResourceUsage(const ResourceUsage&)            = delete;
-    ResourceUsage& operator=(const ResourceUsage&) = delete;
+    void operator=(const ResourceUsage&) = delete;
+    void operator=(ResourceUsage&&)      = delete;
 
+private:
     eckit::ResourceUsage* info_;
 };
 

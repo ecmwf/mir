@@ -44,10 +44,6 @@ bool ShToRotatedOctahedralGG<Invtrans>::sameAs(const Action& other) const {
 
 
 template <class Invtrans>
-ShToRotatedOctahedralGG<Invtrans>::~ShToRotatedOctahedralGG() = default;
-
-
-template <class Invtrans>
 void ShToRotatedOctahedralGG<Invtrans>::print(std::ostream& out) const {
     out << "ShToRotatedOctahedralGG[";
     ShToGridded::print(out);

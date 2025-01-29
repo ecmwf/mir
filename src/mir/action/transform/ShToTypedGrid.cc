@@ -32,10 +32,6 @@ ShToTypedGrid<Invtrans>::ShToTypedGrid(const param::MIRParametrisation& parametr
 
 
 template <class Invtrans>
-ShToTypedGrid<Invtrans>::~ShToTypedGrid() = default;
-
-
-template <class Invtrans>
 bool ShToTypedGrid<Invtrans>::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const ShToTypedGrid*>(&other);
     return (o != nullptr) && (grid_ == o->grid_);

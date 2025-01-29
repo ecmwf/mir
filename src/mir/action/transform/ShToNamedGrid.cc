@@ -32,10 +32,6 @@ ShToNamedGrid<Invtrans>::ShToNamedGrid(const param::MIRParametrisation& parametr
 
 
 template <class Invtrans>
-ShToNamedGrid<Invtrans>::~ShToNamedGrid() = default;
-
-
-template <class Invtrans>
 bool ShToNamedGrid<Invtrans>::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const ShToNamedGrid*>(&other);
     return (o != nullptr) && (grid_ == o->grid_);

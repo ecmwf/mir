@@ -38,7 +38,9 @@ public:
     // -- Constructors
 
     explicit CartesianVector2DField(const repres::Representation*, bool hasMissing = false, double missingValue = 0);
+
     CartesianVector2DField(const CartesianVector2DField&) = delete;
+    CartesianVector2DField(CartesianVector2DField&&)      = delete;
 
     // -- Destructor
 
@@ -49,7 +51,8 @@ public:
 
     // -- Operators
 
-    CartesianVector2DField& operator=(const CartesianVector2DField&) = delete;
+    void operator=(const CartesianVector2DField&) = delete;
+    void operator=(CartesianVector2DField&&)      = delete;
 
     // -- Methods
 

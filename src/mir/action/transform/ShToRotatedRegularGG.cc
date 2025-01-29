@@ -37,10 +37,6 @@ ShToRotatedRegularGG<Invtrans>::ShToRotatedRegularGG(const param::MIRParametrisa
 
 
 template <class Invtrans>
-ShToRotatedRegularGG<Invtrans>::~ShToRotatedRegularGG() = default;
-
-
-template <class Invtrans>
 bool ShToRotatedRegularGG<Invtrans>::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const ShToRotatedRegularGG*>(&other);
     return (o != nullptr) && (N_ == o->N_) && (rotation_ == o->rotation_) && ShToGridded::sameAs(other);

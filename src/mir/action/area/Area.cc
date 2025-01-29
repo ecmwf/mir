@@ -49,9 +49,6 @@ Area::Area(const param::MIRParametrisation& parametrisation) : Action(parametris
 }
 
 
-Area::~Area() = default;
-
-
 void Area::apply(const repres::Representation& repres, util::BoundingBox& bbox, util::IndexMapping& mapping,
                  bool projection) {
     std::map<LL, size_t> m;

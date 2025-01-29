@@ -25,34 +25,15 @@ public:
 
     // -- Constructors
 
-    Copy(const param::MIRParametrisation&, output::MIROutput&);
-    Copy(const Copy&) = delete;
+    using EndAction::EndAction;
 
     // -- Destructor
-
-    ~Copy() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-
-    Copy& operator=(const Copy&) = delete;
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
     // None
 
     // -- Methods

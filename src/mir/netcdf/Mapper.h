@@ -26,16 +26,20 @@ class Mapper {
 public:
     Mapper(std::vector<T>& v, std::vector<bool>& set, bool& overlap);
     Mapper(Mapper<T>& parent, const std::vector<Reshape*>& reshape);
+
+    Mapper(const Mapper&) = delete;
+    Mapper(Mapper&&)      = delete;
+
     ~Mapper();
+
+    void operator=(const Mapper&) = delete;
+    void operator=(Mapper&&)      = delete;
 
     void overlap(bool on) { overlap_ = on; }
 
     void set(size_t i, T value);
 
 private:
-    Mapper(const Mapper&)            = delete;
-    Mapper& operator=(const Mapper&) = delete;
-
 private:
     std::vector<T>& v_;
     std::vector<bool>& set_;

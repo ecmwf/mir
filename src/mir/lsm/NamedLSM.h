@@ -85,9 +85,6 @@ class NamedMaskFactory {
     virtual void hashCacheKey(eckit::MD5&, const param::MIRParametrisation&, const repres::Representation&,
                               const std::string& which)                                                           = 0;
 
-    NamedMaskFactory(const NamedMaskFactory&)            = delete;
-    NamedMaskFactory& operator=(const NamedMaskFactory&) = delete;
-
 protected:
     const std::string name_;
     const std::string path_;
@@ -96,6 +93,12 @@ protected:
     virtual ~NamedMaskFactory();
 
 public:
+    NamedMaskFactory(const NamedMaskFactory&) = delete;
+    NamedMaskFactory(NamedMaskFactory&&)      = delete;
+
+    void operator=(const NamedMaskFactory&) = delete;
+    void operator=(NamedMaskFactory&&)      = delete;
+
     static Mask* build(const param::MIRParametrisation&, const repres::Representation&, const std::string& which);
     static std::string cacheKey(const param::MIRParametrisation&, const repres::Representation&,
                                 const std::string& which);

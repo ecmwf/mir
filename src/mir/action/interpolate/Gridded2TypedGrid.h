@@ -26,11 +26,10 @@ public:
 
     // -- Constructors
 
-    Gridded2TypedGrid(const param::MIRParametrisation&);
+    explicit Gridded2TypedGrid(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~Gridded2TypedGrid() override;
+    // None
 
     // -- Convertors
     // None

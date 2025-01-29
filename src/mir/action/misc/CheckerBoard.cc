@@ -27,12 +27,6 @@
 namespace mir::action {
 
 
-CheckerBoard::CheckerBoard(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {}
-
-
-CheckerBoard::~CheckerBoard() = default;
-
-
 bool CheckerBoard::sameAs(const Action& /*unused*/) const {
     return false;
 }

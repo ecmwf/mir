@@ -25,34 +25,15 @@ public:
 
     // -- Constructors
 
-    Set(const param::MIRParametrisation&, output::MIROutput&);
-    Set(const Set&) = delete;
+    using EndAction::EndAction;
 
     // -- Destructor
-
-    ~Set() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-
-    Set& operator=(const Set&) = delete;
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
     // None
 
     // -- Methods

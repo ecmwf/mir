@@ -28,12 +28,6 @@
 namespace mir::action {
 
 
-ReferencePattern::ReferencePattern(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {}
-
-
-ReferencePattern::~ReferencePattern() = default;
-
-
 bool ReferencePattern::sameAs(const Action& /*unused*/) const {
     return false;
 }

@@ -28,11 +28,10 @@ public:
 
     // -- Constructors
 
-    ShToGridDef(const param::MIRParametrisation&);
+    explicit ShToGridDef(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~ShToGridDef() override;
+    // None
 
     // -- Convertors
     // None

@@ -20,13 +20,6 @@
 namespace mir::action::io {
 
 
-Save::Save(const param::MIRParametrisation& parametrisation, output::MIROutput& output) :
-    EndAction(parametrisation, output) {}
-
-
-Save::~Save() = default;
-
-
 void Save::execute(context::Context& ctx) const {
     auto timing(ctx.statistics().saveTimer());
 

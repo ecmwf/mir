@@ -25,11 +25,10 @@ public:
 
     // -- Constructors
 
-    ShTruncate(const param::MIRParametrisation&);
+    explicit ShTruncate(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~ShTruncate() override;
+    // None
 
     // -- Convertors
     // None
@@ -39,23 +38,6 @@ public:
 
     // -- Methods
     // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-
-    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -76,12 +58,11 @@ private:
 
     // -- Overridden methods
 
+    void print(std::ostream&) const override;
+
     bool sameAs(const Action&) const override;
-
     void execute(context::Context&) const override;
-
     const char* name() const override;
-
     void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Class members

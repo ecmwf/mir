@@ -29,6 +29,7 @@
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Formula.h"
 #include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
 

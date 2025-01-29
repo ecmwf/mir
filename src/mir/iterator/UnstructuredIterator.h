@@ -31,6 +31,7 @@ public:
     }
 
     UnstructuredIterator(const UnstructuredIterator&) = delete;
+    UnstructuredIterator(UnstructuredIterator&&)      = delete;
 
     // -- Destructor
     // None
@@ -40,7 +41,8 @@ public:
 
     // -- Operators
 
-    UnstructuredIterator& operator=(const UnstructuredIterator&) = delete;
+    void operator=(const UnstructuredIterator&) = delete;
+    void operator=(UnstructuredIterator&&)      = delete;
 
     // -- Methods
     // None

@@ -27,7 +27,9 @@ public:
 
     None();
     None(const param::MIRParametrisation&);
+
     None(const None&) = delete;
+    None(None&&)      = delete;
 
     // -- Destructor
 
@@ -38,7 +40,8 @@ public:
 
     // -- Operators
 
-    None& operator=(const None&) = delete;
+    void operator=(const None&) = delete;
+    void operator=(None&&)      = delete;
 
     // -- Methods
     // None

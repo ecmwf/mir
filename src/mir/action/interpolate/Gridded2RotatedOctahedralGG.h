@@ -25,11 +25,11 @@ public:
 
     // -- Constructors
 
-    Gridded2RotatedOctahedralGG(const param::MIRParametrisation&);
+    explicit Gridded2RotatedOctahedralGG(const param::MIRParametrisation&);
 
     // -- Destructor
+    // None
 
-    ~Gridded2RotatedOctahedralGG() override;
 
     // -- Convertors
     // None

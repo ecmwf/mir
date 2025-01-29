@@ -18,12 +18,6 @@
 namespace mir::action {
 
 
-Noop::Noop(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {}
-
-
-Noop::~Noop() = default;
-
-
 bool Noop::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const Noop*>(&other);
     return (o != nullptr);

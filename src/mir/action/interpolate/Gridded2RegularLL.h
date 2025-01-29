@@ -27,11 +27,10 @@ public:
 
     // -- Constructors
 
-    Gridded2RegularLL(const param::MIRParametrisation&);
+    explicit Gridded2RegularLL(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~Gridded2RegularLL() override;
+    // None
 
     // -- Convertors
     // None

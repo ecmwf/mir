@@ -38,7 +38,9 @@ public:
     // -- Constructors
 
     ActionNode(const Action&, api::MIRWatcher*);
+
     ActionNode(const ActionNode&) = delete;
+    ActionNode(ActionNode&&)      = delete;
 
     // -- Destructor
 
@@ -49,7 +51,8 @@ public:
 
     // -- Operators
 
-    ActionNode& operator=(const ActionNode&) = delete;
+    void operator=(const ActionNode&) = delete;
+    void operator=(ActionNode&&)      = delete;
 
     // -- Methods
 

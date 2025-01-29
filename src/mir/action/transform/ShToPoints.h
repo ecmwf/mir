@@ -28,11 +28,10 @@ public:
 
     // -- Constructors
 
-    ShToPoints(const param::MIRParametrisation&);
+    explicit ShToPoints(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~ShToPoints() override;
+    // None
 
     // -- Convertors
     // None

@@ -19,12 +19,16 @@ namespace mir::netcdf {
 
 
 class InputDimension : public Dimension {
-    InputDimension(const InputDimension&)            = delete;
-    InputDimension& operator=(const InputDimension&) = delete;
-
 public:
     InputDimension(Dataset& owner, const std::string& name, int id, size_t len);
+
+    InputDimension(const InputDimension&) = delete;
+    InputDimension(InputDimension&&)      = delete;
+
     ~InputDimension() override;
+
+    void operator=(const InputDimension&) = delete;
+    void operator=(InputDimension&&)      = delete;
 
 private:
     // Members

@@ -32,10 +32,6 @@ ShToRegularGG<Invtrans>::ShToRegularGG(const param::MIRParametrisation& parametr
 
 
 template <class Invtrans>
-ShToRegularGG<Invtrans>::~ShToRegularGG() = default;
-
-
-template <class Invtrans>
 bool ShToRegularGG<Invtrans>::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const ShToRegularGG*>(&other);
     return (o != nullptr) && (N_ == o->N_);

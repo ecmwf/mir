@@ -663,7 +663,6 @@ list(APPEND mir_srcs
     util/Error.cc
     util/Error.h
     util/Exceptions.h
-    util/Formula.cc
     util/Formula.h
     util/FormulaBinop.cc
     util/FormulaBinop.h

@@ -46,7 +46,9 @@ public:
     // -- Constructors
 
     Action(const param::MIRParametrisation&);
+
     Action(const Action&) = delete;
+    Action(Action&&)      = delete;
 
     // -- Destructor
 
@@ -58,6 +60,7 @@ public:
     // -- Operators
 
     void operator=(const Action&) = delete;
+    void operator=(Action&&)      = delete;
 
     // -- Methods
 

@@ -31,11 +31,10 @@ public:
 
     // -- Constructors
 
-    ShVodToUV(const param::MIRParametrisation&);
+    explicit ShVodToUV(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~ShVodToUV() override;
+    // None
 
     // -- Convertors
     // None
@@ -55,23 +54,6 @@ public:
     // -- Class methods
     // None
 
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-
-    void print(std::ostream&) const override;
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
 private:
     // -- Members
 
@@ -81,6 +63,8 @@ private:
     // None
 
     // -- Overridden methods
+
+    void print(std::ostream&) const override;
 
     bool sameAs(const Action&) const override;
     void execute(context::Context&) const override;

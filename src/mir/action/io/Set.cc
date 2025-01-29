@@ -20,13 +20,6 @@
 namespace mir::action::io {
 
 
-Set::Set(const param::MIRParametrisation& parametrisation, output::MIROutput& output) :
-    EndAction(parametrisation, output) {}
-
-
-Set::~Set() = default;
-
-
 void Set::execute(context::Context& ctx) const {
     auto timing(ctx.statistics().saveTimer());
 

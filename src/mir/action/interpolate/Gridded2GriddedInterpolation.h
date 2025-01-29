@@ -38,7 +38,7 @@ public:
 
     // -- Constructors
 
-    Gridded2GriddedInterpolation(const param::MIRParametrisation&);
+    explicit Gridded2GriddedInterpolation(const param::MIRParametrisation&);
 
     // -- Destructor
 

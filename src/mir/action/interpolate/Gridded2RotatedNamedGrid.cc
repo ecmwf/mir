@@ -28,9 +28,6 @@ Gridded2RotatedNamedGrid::Gridded2RotatedNamedGrid(const param::MIRParametrisati
 }
 
 
-Gridded2RotatedNamedGrid::~Gridded2RotatedNamedGrid() = default;
-
-
 bool Gridded2RotatedNamedGrid::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const Gridded2RotatedNamedGrid*>(&other);
     return (o != nullptr) && (grid_ == o->grid_) && Gridded2RotatedGrid::sameAs(other);

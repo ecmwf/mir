@@ -25,11 +25,10 @@ public:
 
     // -- Constructors
 
-    Gridded2ReducedLLPLGiven(const param::MIRParametrisation&);
+    explicit Gridded2ReducedLLPLGiven(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~Gridded2ReducedLLPLGiven() override;
+    // None
 
     // -- Convertors
     // None

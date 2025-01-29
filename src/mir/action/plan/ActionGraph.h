@@ -47,7 +47,9 @@ public:
     // -- Constructors
 
     ActionGraph();
+
     ActionGraph(const ActionGraph&) = delete;
+    ActionGraph(ActionGraph&&)      = delete;
 
     // -- Destructor
 
@@ -58,7 +60,8 @@ public:
 
     // -- Operators
 
-    ActionGraph& operator=(const ActionGraph&) = delete;
+    void operator=(const ActionGraph&) = delete;
+    void operator=(ActionGraph&&)      = delete;
 
     // -- Methods
 

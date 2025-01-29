@@ -30,8 +30,7 @@ public:
     Gridded2ReducedGGPLGiven(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~Gridded2ReducedGGPLGiven() override;
+    // None
 
     // -- Convertors
     // None

@@ -26,11 +26,10 @@ public:
 
     // -- Constructors
 
-    ShToOctahedralGG(const param::MIRParametrisation&);
+    explicit ShToOctahedralGG(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~ShToOctahedralGG() override;
+    // None
 
     // -- Convertors
     // None

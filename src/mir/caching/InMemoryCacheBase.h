@@ -26,9 +26,12 @@ public:  // methods
     InMemoryCacheBase();
 
     InMemoryCacheBase(const InMemoryCacheBase&) = delete;
-    void operator=(const InMemoryCacheBase&)    = delete;
+    InMemoryCacheBase(InMemoryCacheBase&&)      = delete;
 
     virtual ~InMemoryCacheBase();
+
+    void operator=(const InMemoryCacheBase&) = delete;
+    void operator=(InMemoryCacheBase&&)      = delete;
 
     static InMemoryCacheUsage totalFootprint();
 
