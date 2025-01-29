@@ -25,7 +25,7 @@
 namespace mir::key::grid {
 
 
-RegularLL::RegularLL(const std::string& key) : Grid(key, regular_ll_t) {}
+RegularLL::RegularLL(const std::string& key) : Grid(key, "regular-ll") {}
 
 
 util::Increments RegularLL::increments() const {

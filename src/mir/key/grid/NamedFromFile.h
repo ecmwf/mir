@@ -27,7 +27,6 @@ public:
     // -- Constructors
 
     NamedFromFile(const std::string& name);
-    NamedFromFile(const NamedFromFile&) = delete;
 
     // -- Destructor
     // None
@@ -36,8 +35,7 @@ public:
     // None
 
     // -- Operators
-
-    NamedFromFile& operator=(const NamedFromFile&) = delete;
+    // None
 
     // -- Methods
     // None

@@ -26,22 +26,16 @@ public:
 
     // -- Constructors
 
-    explicit HEALPixPattern(const std::string& name);
-
-    HEALPixPattern(const HEALPixPattern&) = delete;
-    HEALPixPattern(HEALPixPattern&&)      = delete;
+    explicit HEALPixPattern(const std::string& pattern);
 
     // -- Destructor
-
-    ~HEALPixPattern() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-
-    HEALPixPattern& operator=(const HEALPixPattern&) = delete;
-    HEALPixPattern& operator=(HEALPixPattern&&)      = delete;
+    // None
 
     // -- Methods
     // None

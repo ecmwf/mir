@@ -18,57 +18,14 @@
 namespace mir::key::grid {
 
 
-class RegularLLPattern : public GridPattern {
+class GridSpecPattern : public GridPattern {
 public:
-    // -- Exceptions
-    // None
-
-    // -- Constructors
-
-    RegularLLPattern(const std::string& pattern);
-
-    // -- Destructor
-    // None
-
-    // -- Convertors
-    // None
-
-    // -- Operators
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
+    explicit GridSpecPattern(const std::string& pattern);
 
 private:
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-
     void print(std::ostream&) const override;
-    const Grid* make(const std::string&) const override;
+    const Grid* make(const std::string& name) const override;
     std::string canonical(const std::string& name, const param::MIRParametrisation&) const override;
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-    // -- Friends
-    // None
 };
 
 

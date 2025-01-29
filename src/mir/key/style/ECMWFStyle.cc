@@ -130,24 +130,27 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
     if (grid::Grid::get("grid", grid, param)) {
         const auto& g = grid::Grid::lookup(grid, field);
 
-        if (g.isRegularLL()) {
+        if (g.type() == "regular-ll") {
             std::vector<double> grid_v;
             if (forced || !field.has("gridded_regular_ll") || !same->get("grid", grid_v) || !same_points(user, field)) {
                 check_rotated_regular_ll();
-                return prefix + "regular-ll";
+                return prefix + g.type();
             }
 
             return "";
         }
 
-        if (g.isNamed()) {
+        if (g.type() == "namedgrid") {
             std::string field_grid;
             field.get("grid", field_grid);
-            return forced || grid != field_grid ? prefix + "namedgrid" : "";
+            if (forced || grid != field_grid) {
+                return prefix + g.type();
+            }
+
+            return "";
         }
 
-        ASSERT(g.isTyped());
-        return prefix + "typedgrid";
+        return prefix + g.type();
     }
 
     if (user.has("reduced")) {
