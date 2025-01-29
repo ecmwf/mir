@@ -1,0 +1,6 @@
+# input
+param=vo_d,level=1000,resol=20
+# mir
+--grid={grid:3/3} --interpolation=nn --intgrid=none --vod2uv
+# plan
+ShToGridSpec[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<vod2uv>,gridspec={"grid":[3,3]}]|Save[packing=simple,output=...]
