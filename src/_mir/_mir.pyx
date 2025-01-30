@@ -17,6 +17,13 @@ cimport std_defs as std
 
 cimport mir_pyio
 
+# init section -- ensure libmir.so is loaded
+import findlibs
+from ctypes import CDLL
+m = findlibs.find("mir")
+CDLL(m)
+
+# definitions
 cdef class Args:
     cdef int argc
     cdef char** argv

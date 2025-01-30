@@ -1,6 +1,8 @@
-import os
-from typing import Iterable, Tuple, List
 from itertools import groupby
+import os
+import sys
+from typing import Iterable, Tuple, List
+import warnings
 
 from distutils.core import setup
 from distutils.extension import Extension
@@ -8,8 +10,8 @@ from distutils.extension import Extension
 from Cython.Build import cythonize
 from Cython.Distutils import build_ext
 
-
 if (source_lib_root := os.getenv("SOURCE_LIB_ROOT", "")):
+    # NOTE this whole branch is probably obsolete -- we dont want to build such wheels anymore
 	print(f"assuming standalone wheel building, with {source_lib_root=}")
 
 	include_dirs = [f"{source_lib_root}/include"]
@@ -69,17 +71,23 @@ else:
 	}
 	print(f"assuming .so module building, with library_dirs: {' '.join(library_dirs)} and include_dirs: {' '.join(include_dirs)}")
 
+try:
+        from setup_utils import ext_kwargs as wheel_ext_kwargs
+        kwargs_set.update(wheel_ext_kwargs[sys.platform])
+except ImportError:
+        warnings.warn("failed to import setup_utils, won't mark the wheel as manylinux")
+
 setup(
 	name="mir-python",
 	version="0.2.0",
 	ext_modules=cythonize(
 		Extension(
-			"mir",
-			["src/mir/mir.pyx", "src/mir/pyio.cc"],
+			"_mir",
+			["src/_mir/_mir.pyx", "src/_mir/pyio.cc"],
 			language="c++",
 			libraries=["mir"],
 			library_dirs=library_dirs,
-			include_dirs=include_dirs + ['src/mir'],
+			include_dirs=include_dirs + ['src/_mir'],
 			extra_compile_args=["-std=c++17"],
 			**kwargs_ext,
 		),
