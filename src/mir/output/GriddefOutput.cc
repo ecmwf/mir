@@ -12,6 +12,7 @@
 
 #include "mir/output/GriddefOutput.h"
 
+#include <fstream>
 #include <ios>
 #include <memory>
 #include <ostream>
