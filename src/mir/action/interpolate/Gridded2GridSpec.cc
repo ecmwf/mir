@@ -25,7 +25,7 @@ namespace mir::action::interpolate {
 
 
 Gridded2GridSpec::Gridded2GridSpec(const param::MIRParametrisation& param) : Gridded2UnrotatedGrid(param) {
-    // assign grid
+    // assign gridspec
     std::string gridspec;
     ASSERT(key::grid::Grid::get("grid", gridspec, param));
 
@@ -37,8 +37,7 @@ Gridded2GridSpec::Gridded2GridSpec(const param::MIRParametrisation& param) : Gri
 
 bool Gridded2GridSpec::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const Gridded2GridSpec*>(&other);
-    return (o != nullptr) && (param_->spec().str() == o->param_->spec().str()) &&
-           Gridded2GriddedInterpolation::sameAs(other);
+    return (o != nullptr) && (param_->spec() == o->param_->spec()) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
 

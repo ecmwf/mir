@@ -26,7 +26,7 @@ namespace mir::action::transform {
 
 template <class Invtrans>
 ShToGridSpec<Invtrans>::ShToGridSpec(const param::MIRParametrisation& param) : ShToGridded(param) {
-    // assign grid
+    // assign gridspec
     std::string gridspec;
     ASSERT(key::grid::Grid::get("grid", gridspec, param));
 
@@ -39,7 +39,7 @@ ShToGridSpec<Invtrans>::ShToGridSpec(const param::MIRParametrisation& param) : S
 template <class Invtrans>
 bool ShToGridSpec<Invtrans>::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const ShToGridSpec*>(&other);
-    return (o != nullptr) && (param_->spec().str() == o->param_->spec().str());
+    return (o != nullptr) && (param_->spec() == o->param_->spec()) && ShToGridded::sameAs(other);
 }
 
 
