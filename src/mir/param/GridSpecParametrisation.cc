@@ -15,6 +15,7 @@
 #include <ostream>
 
 #include "eckit/geo/area/BoundingBox.h"
+#include "eckit/geo/grid/HEALPix.h"
 #include "eckit/geo/grid/ReducedGaussian.h"
 #include "eckit/geo/grid/RegularGaussian.h"
 #include "eckit/geo/grid/RegularLL.h"
@@ -72,6 +73,22 @@ struct MappingGridRegularGG : GridMapping {
 };
 
 
+struct MappingGridHEALPix : GridMapping {
+    explicit MappingGridHEALPix(const eckit::geo::Grid& _grid) :
+        grid_(dynamic_cast<const eckit::geo::grid::HEALPix&>(_grid)) {}
+
+    void fill(SimpleParametrisation& param) const override {
+        param.set("gridType", "healpix");
+        param.set("gridded", 1L);
+        param.set("Nside", grid_.Nside());
+        param.set("orderingConvention", grid_.ordering() == eckit::geo::Ordering::healpix_nested ? "nested" : "ring");
+        param.set("longitudeOfFirstGridPointInDegrees", 45.);
+    }
+
+    const eckit::geo::grid::HEALPix& grid_;
+};
+
+
 struct MappingGridReducedGG : GridMapping {
     explicit MappingGridReducedGG(const eckit::geo::Grid& _grid) :
         grid_(dynamic_cast<const eckit::geo::grid::ReducedGaussian&>(_grid)) {}
@@ -125,8 +142,9 @@ GridMapping* build_grid_mapping(const eckit::geo::Grid& grid) {
     const auto& type = grid.type();
     return type == "regular-ll"   ? static_cast<GridMapping*>(new MappingGridRegularLL(grid))
            : type == "regular-gg" ? static_cast<GridMapping*>(new MappingGridRegularGG(grid))
-           : type == "reduced-gg"
-               ? static_cast<GridMapping*>(new MappingGridReducedGG(grid))
+           : type == "reduced-gg" ? static_cast<GridMapping*>(new MappingGridReducedGG(grid))
+           : type == "healpix"
+               ? static_cast<GridMapping*>(new MappingGridHEALPix(grid))
                : throw exception::UserError("GridSpecParametrisation: unsupported grid mapping type: '" + type + "'");
 }
 

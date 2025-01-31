@@ -1,0 +1,6 @@
+# input
+/dev/null
+# mir
+--input={artificialInput:gridspec,gridspec:\\"{grid:2/2}\\"} --grid={grid:h2} --interpolation=nn
+# grib_get
+numberOfDataPoints=48

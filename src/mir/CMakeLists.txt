@@ -730,6 +730,8 @@ if(mir_HAVE_ECKIT_GEO)
     list(APPEND mir_srcs
         action/interpolate/Gridded2GridSpec.cc
         action/interpolate/Gridded2GridSpec.h
+        input/GridSpecInput.cc
+        input/GridSpecInput.h
         key/grid/GridSpec.cc
         key/grid/GridSpec.h
         key/grid/GridSpecPattern.cc
