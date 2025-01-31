@@ -13,7 +13,6 @@
 #include "mir/input/DistributionInput.h"
 
 #include <algorithm>
-#include <cmath>
 #include <memory>
 
 #include "mir/data/MIRField.h"
