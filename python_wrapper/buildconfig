@@ -13,4 +13,4 @@
 NAME="mir"
 CMAKE_PARAMS="-Deckit_ROOT=/tmp/mir/prereqs/eckitlib -Deccodes_ROOT=/tmp/mir/prereqs/eccodeslib"
 PYPROJECT_DIR="python_wrapper"
-DEPENDENCIES='["eckitlib", "eccodeslib"]'
+DEPENDENCIES='["eccodeslib", "eckitlib"]'
