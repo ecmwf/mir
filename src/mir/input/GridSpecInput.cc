@@ -12,8 +12,6 @@
 
 #include "mir/input/GridSpecInput.h"
 
-#include <memory>
-
 #include "eckit/geo/Grid.h"
 
 #include "mir/data/MIRField.h"
