@@ -30,7 +30,6 @@
 namespace mir::tests::unit {
 
 
-#if 0
 CASE("InterpolationSpec") {
     // output
     std::unique_ptr<output::MIROutput> output(new output::EmptyOutput);
@@ -157,7 +156,6 @@ CASE("InterpolationSpec") {
         EXPECT(info_interpolation(info_path) != EXPECTED_INTERPOLATION_GBA);
     }
 }
-#endif
 
 
 CASE("GridSpec") {
@@ -167,37 +165,14 @@ CASE("GridSpec") {
     std::unique_ptr<output::MIROutput> output(new output::EmptyOutput);
 
 
-    struct test_t {
-        std::string gridspec;
-        size_t size;
-    };
-
-    using tests_t = std::vector<test_t>;
-
-
-    auto test_gaussian_grids = [](const std::string& type) {
-        tests_t tests;
-        for (size_t N : {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024}) {
-            tests.emplace_back(test_t{"{grid: " + type + std::to_string(N) + "}", 0});
-        }
-
-        if (type == "O") {
-            tests.emplace_back(test_t{"{grid: " + type + std::to_string(2560) + "}", 0});
-        }
-
-        return tests;
-    };
-
-
     SECTION("HEALPix grids") {
         for (const auto& tests : []() {
-                 tests_t tests;
+                 std::vector<std::string> tests;
                  for (std::string ordering : {"", "ring", "nested"}) {
                      for (size_t N : {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024}) {
-                         tests.emplace_back(
-                             test_t{ordering.empty() ? "{grid: H" + std::to_string(N)
-                                                     : "{grid: H" + std::to_string(N) + ", ordering: " + ordering + "}",
-                                    12 * N * N});
+                         tests.emplace_back(ordering.empty()
+                                                ? "{grid: H" + std::to_string(N)
+                                                : "{grid: H" + std::to_string(N) + ", ordering: " + ordering + "}");
                      }
                  }
                  return tests;
@@ -206,31 +181,45 @@ CASE("GridSpec") {
     }
 
 
-    SECTION("Gaussian grids (N)") {
-        for (const auto& tests : test_gaussian_grids("N")) {
+    SECTION("Gaussian grids") {
+        for (const auto& tests : []() {
+                 std::vector<std::string> tests;
+                 for (const std::string& type : {"F", "O", "N"}) {
+                     for (size_t N : {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024}) {
+                         tests.emplace_back("{grid: " + type + std::to_string(N) + "}");
+                     }
+                     if (type == "O") {
+                         tests.emplace_back("{grid: O2560}");
+                     }
+                 }
+                 return tests;
+             }()) {
+            // TODO
         }
     }
 
 
     SECTION("Regular lat/lon grids") {
         for (const auto& tests : []() {
-                 tests_t tests;
+                 std::vector<std::string> tests;
                  for (double l : {
                           0.1, 0.125, 0.15, 0.2,  0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8,
                           0.9, 1.,    1.2,  1.25, 1.4,  1.5, 1.6, 1.8, 10., 2.,  2.5,  5.,
                       }) {
-                     tests.emplace_back(test_t{"{grid: [" + std::to_string(l) + ", " + std::to_string(l) + "]}", 0});
+                     tests.emplace_back("{grid: [" + std::to_string(l) + ", " + std::to_string(l) + "]}");
                  }
                  return tests;
              }()) {
+            // TODO
         }
     }
 
 
     SECTION("ORCA grids") {
-        for (const auto& test : tests_t{
-                 {"eORCA025_T", 0},
+        for (const auto& test : std::vector<std::string>{
+                 "eORCA025_T",
              }) {
+            // TODO
         }
     }
 }
