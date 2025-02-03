@@ -20,7 +20,7 @@ namespace mir::input {
 
 class GridSpecInput final : public ArtificialInput {
 public:
-    explicit GridSpecInput(const param::MIRParametrisation&);
+    explicit GridSpecInput(const std::string& gridspec = {});
 
 private:
     data::MIRField field() const override;

@@ -20,7 +20,7 @@ namespace mir::input {
 
 class ConstantInput final : public ArtificialInput {
 public:
-    explicit ConstantInput(const param::MIRParametrisation&);
+    ConstantInput() = default;
 
 private:
     data::MIRField field() const override;

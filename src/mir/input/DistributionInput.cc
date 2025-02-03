@@ -27,13 +27,10 @@ namespace mir::input {
 static const ArtificialInputBuilder<DistributionInput> __artificial("distribution");
 
 
-DistributionInput::DistributionInput(const param::MIRParametrisation& /*ignored*/) {}
-
-
 data::MIRField DistributionInput::field() const {
     ASSERT(dimensions() > 0);
 
-    std::string distribution = 0;
+    std::string distribution;
     parametrisation().get("distribution", distribution);
 
     data::MIRField field(parametrisation(0), false, 9999.);

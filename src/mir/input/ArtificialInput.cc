@@ -170,12 +170,12 @@ ArtificialInputFactory::~ArtificialInputFactory() {
 }
 
 
-ArtificialInput* ArtificialInputFactory::build(const std::string& name, const param::MIRParametrisation& param) {
+ArtificialInput* ArtificialInputFactory::build(const std::string& name) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (auto j = m->find(name); j != m->end()) {
-        return j->second->make(param);
+        return j->second->make();
     }
 
     list(Log::error() << "ArtificialInputFactory: unknown '" << name << "', choices are: ");

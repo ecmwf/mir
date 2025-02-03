@@ -20,7 +20,7 @@ namespace mir::input {
 
 class DistributionInput final : public ArtificialInput {
 public:
-    explicit DistributionInput(const param::MIRParametrisation&);
+    DistributionInput() = default;
 
 private:
     data::MIRField field() const override;

@@ -20,7 +20,7 @@ namespace mir::input {
 
 class DummyInput final : public ArtificialInput {
 public:
-    explicit DummyInput(const param::MIRParametrisation&);
+    DummyInput();
 
 private:
     data::MIRField field() const override;

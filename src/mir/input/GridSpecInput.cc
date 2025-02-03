@@ -27,8 +27,12 @@ namespace mir::input {
 static const ArtificialInputBuilder<GridSpecInput> __artificial("gridspec");
 
 
-GridSpecInput::GridSpecInput(const param::MIRParametrisation& /*ignored*/) {
+GridSpecInput::GridSpecInput(const std::string& gridspec) {
     parametrisation().set("gridded", true);
+
+    if (!gridspec.empty()) {
+        parametrisation().set("gridspec", gridspec);
+    }
 }
 
 

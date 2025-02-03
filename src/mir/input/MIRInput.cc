@@ -160,7 +160,7 @@ MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParame
     // Special case: artificial input
     auto ai = map.find("artificialInput");
     if (ai != map.end() && ai->second.isString()) {
-        return aux(ArtificialInputFactory::build(ai->second, param), map);
+        return aux(ArtificialInputFactory::build(ai->second), map);
     }
 
     // Special case: multi-dimensional input

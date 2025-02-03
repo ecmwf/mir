@@ -120,7 +120,7 @@ private:
 
 
 class ArtificialInputFactory {
-    virtual ArtificialInput* make(const param::MIRParametrisation&) = 0;
+    virtual ArtificialInput* make() = 0;
     const std::string name_;
 
 protected:
@@ -133,14 +133,14 @@ public:
     void operator=(const ArtificialInputFactory&)         = delete;
     void operator=(ArtificialInputFactory&&)              = delete;
 
-    static ArtificialInput* build(const std::string&, const param::MIRParametrisation&);
+    static ArtificialInput* build(const std::string&);
     static void list(std::ostream&);
 };
 
 
 template <class T>
 class ArtificialInputBuilder : public ArtificialInputFactory {
-    ArtificialInput* make(const param::MIRParametrisation& param) override { return new T(param); }
+    ArtificialInput* make() override { return new T; }
 
 public:
     explicit ArtificialInputBuilder(const std::string& name) : ArtificialInputFactory(name) {}
