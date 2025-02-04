@@ -19,7 +19,7 @@ set -euo pipefail
 rm -rf .venv
 uv venv --python python3.11 .venv
 source .venv/bin/activate
-uv pip install --upgrade setuptools build cython twine
+uv pip install --upgrade setuptools build cython twine wheel
 
 TEST_PYPI=${TEST_PYPI:-no}
 if [ "$TEST_PYPI" = "yes" ] ; then
