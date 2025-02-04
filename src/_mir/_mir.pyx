@@ -1,3 +1,12 @@
+# (C) Copyright 1996- ECMWF.
+#
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+#
+# In applying this licence, ECMWF does not waive the privileges and immunities
+# granted to it by virtue of its status as an intergovernmental organisation nor
+# does it submit to any jurisdiction.
+
 from cython.operator cimport dereference
 from libc.stdlib cimport malloc, free
 from libcpp.string cimport string
@@ -8,6 +17,13 @@ cimport std_defs as std
 
 cimport mir_pyio
 
+# init section -- ensure libmir.so is loaded
+import findlibs
+from ctypes import CDLL
+m = findlibs.find("mir")
+CDLL(m)
+
+# definitions
 cdef class Args:
     cdef int argc
     cdef char** argv
