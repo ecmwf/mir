@@ -38,4 +38,4 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
         # NOTE temporary thing until all the mess gets cleared
-      - run: rm -rf ./* ./.git ./.github
+      - run: rm -rf ./* ./.git ./.github ./.venv
