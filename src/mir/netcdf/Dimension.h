@@ -28,10 +28,14 @@ namespace mir::netcdf {
 class Dimension {
 public:
     Dimension(Dataset& owner, const std::string& name, size_t len);
+
+    Dimension(const Dimension&) = delete;
+    Dimension(Dimension&&)      = delete;
+
     virtual ~Dimension();
 
-    Dimension(const Dimension&)            = delete;
-    Dimension& operator=(const Dimension&) = delete;
+    void operator=(const Dimension&) = delete;
+    void operator=(Dimension&&)      = delete;
 
     const std::string& name() const;
     size_t count() const;

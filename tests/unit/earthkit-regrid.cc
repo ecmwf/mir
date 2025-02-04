@@ -20,6 +20,7 @@
 #include "eckit/testing/Test.h"
 
 #include "mir/api/MIRJob.h"
+#include "mir/api/mir_config.h"
 #include "mir/input/RawInput.h"
 #include "mir/output/EmptyOutput.h"
 #include "mir/param/SimpleParametrisation.h"
@@ -29,9 +30,9 @@
 namespace mir::tests::unit {
 
 
-CASE("InterpolationSpec integration test") {
-    auto& log = Log::info();
-
+CASE("InterpolationSpec") {
+    // output
+    std::unique_ptr<output::MIROutput> output(new output::EmptyOutput);
 
     // temporary file for dumping weights info_path (should be local and unique)
     eckit::PathName info_path{
@@ -72,7 +73,6 @@ CASE("InterpolationSpec integration test") {
 
     SECTION("interpolation=linear (default)") {
         std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
-        std::unique_ptr<output::MIROutput> output(new output::EmptyOutput);
 
         api::MIRJob job;
         job.set("grid", std::vector<double>{2., 2.});
@@ -87,7 +87,6 @@ CASE("InterpolationSpec integration test") {
 
     SECTION("interpolation=linear with non-default option(s)") {
         std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
-        std::unique_ptr<output::MIROutput> output(new output::EmptyOutput);
 
         api::MIRJob job;
         job.set("grid", std::vector<double>{2., 2.});
@@ -103,7 +102,6 @@ CASE("InterpolationSpec integration test") {
 
     SECTION("interpolation=nn (default)") {
         std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
-        std::unique_ptr<output::MIROutput> output(new output::EmptyOutput);
 
         api::MIRJob job;
         job.set("grid", std::vector<double>{2., 2.});
@@ -118,7 +116,6 @@ CASE("InterpolationSpec integration test") {
 
     SECTION("interpolation=nn with non-default option(s)") {
         std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
-        std::unique_ptr<output::MIROutput> output(new output::EmptyOutput);
 
         api::MIRJob job;
         job.set("grid", std::vector<double>{2., 2.});
@@ -134,7 +131,6 @@ CASE("InterpolationSpec integration test") {
 
     SECTION("interpolation=grid-box-average (default)") {
         std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
-        std::unique_ptr<output::MIROutput> output(new output::EmptyOutput);
 
         api::MIRJob job;
         job.set("grid", std::vector<double>{2., 2.});
@@ -148,7 +144,6 @@ CASE("InterpolationSpec integration test") {
 
     SECTION("interpolation=grid-box-average with non-default option(s)") {
         std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
-        std::unique_ptr<output::MIROutput> output(new output::EmptyOutput);
 
         api::MIRJob job;
         job.set("grid", std::vector<double>{2., 2.});
@@ -159,6 +154,73 @@ CASE("InterpolationSpec integration test") {
         job.execute(*input, *output);
 
         EXPECT(info_interpolation(info_path) != EXPECTED_INTERPOLATION_GBA);
+    }
+}
+
+
+CASE("GridSpec") {
+    auto& log = Log::info();
+
+    // output
+    std::unique_ptr<output::MIROutput> output(new output::EmptyOutput);
+
+
+    SECTION("HEALPix grids") {
+        for (const auto& tests : []() {
+                 std::vector<std::string> tests;
+                 for (std::string ordering : {"", "ring", "nested"}) {
+                     for (size_t N : {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024}) {
+                         tests.emplace_back(ordering.empty()
+                                                ? "{grid: H" + std::to_string(N)
+                                                : "{grid: H" + std::to_string(N) + ", ordering: " + ordering + "}");
+                     }
+                 }
+                 return tests;
+             }()) {
+        }
+    }
+
+
+    SECTION("Gaussian grids") {
+        for (const auto& tests : []() {
+                 std::vector<std::string> tests;
+                 for (const std::string& type : {"F", "O", "N"}) {
+                     for (size_t N : {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024}) {
+                         tests.emplace_back("{grid: " + type + std::to_string(N) + "}");
+                     }
+                     if (type == "O") {
+                         tests.emplace_back("{grid: O2560}");
+                     }
+                 }
+                 return tests;
+             }()) {
+            // TODO
+        }
+    }
+
+
+    SECTION("Regular lat/lon grids") {
+        for (const auto& tests : []() {
+                 std::vector<std::string> tests;
+                 for (double l : {
+                          0.1, 0.125, 0.15, 0.2,  0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8,
+                          0.9, 1.,    1.2,  1.25, 1.4,  1.5, 1.6, 1.8, 10., 2.,  2.5,  5.,
+                      }) {
+                     tests.emplace_back("{grid: [" + std::to_string(l) + ", " + std::to_string(l) + "]}");
+                 }
+                 return tests;
+             }()) {
+            // TODO
+        }
+    }
+
+
+    SECTION("ORCA grids") {
+        for (const auto& test : std::vector<std::string>{
+                 "eORCA025_T",
+             }) {
+            // TODO
+        }
     }
 }
 

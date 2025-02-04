@@ -21,6 +21,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/repres/gauss/GaussianIterator.h"
 #include "mir/util/BoundingBox.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Increments.h"
 #include "mir/util/Log.h"
 

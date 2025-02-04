@@ -29,9 +29,6 @@ Gridded2RotatedOctahedralGG::Gridded2RotatedOctahedralGG(const param::MIRParamet
 }
 
 
-Gridded2RotatedOctahedralGG::~Gridded2RotatedOctahedralGG() = default;
-
-
 bool Gridded2RotatedOctahedralGG::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const Gridded2RotatedOctahedralGG*>(&other);
     return (o != nullptr) && (N_ == o->N_) && Gridded2RotatedGrid::sameAs(other);

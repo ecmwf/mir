@@ -26,11 +26,10 @@ public:
 
     // -- Constructors
 
-    ShToRegularGG(const param::MIRParametrisation&);
+    explicit ShToRegularGG(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~ShToRegularGG() override;
+    // None
 
     // -- Convertors
     // None

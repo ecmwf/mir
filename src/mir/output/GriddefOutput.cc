@@ -12,6 +12,7 @@
 
 #include "mir/output/GriddefOutput.h"
 
+#include <fstream>
 #include <ios>
 #include <memory>
 #include <ostream>
@@ -23,6 +24,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir::output {

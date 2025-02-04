@@ -22,7 +22,7 @@ class NamedGrid : public Grid {
 protected:
     // -- Constructors
 
-    NamedGrid(const std::string& key) : Grid(key, named_t) {}
+    NamedGrid(const std::string& key) : Grid(key, "namedgrid") {}
 
     // -- Destructor
     // None

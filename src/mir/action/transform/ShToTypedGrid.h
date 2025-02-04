@@ -26,11 +26,10 @@ public:
 
     // -- Constructors
 
-    ShToTypedGrid(const param::MIRParametrisation&);
+    explicit ShToTypedGrid(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~ShToTypedGrid() override;
+    // None
 
     // -- Convertors
     // None

@@ -107,14 +107,17 @@ class PNGEncoderFactory {
     std::string name_;
     virtual PNGOutput::PNGEncoder* make(const param::MIRParametrisation&, const data::MIRField&) = 0;
 
-    PNGEncoderFactory(const PNGEncoderFactory&)            = delete;
-    PNGEncoderFactory& operator=(const PNGEncoderFactory&) = delete;
-
 protected:
     PNGEncoderFactory(const std::string&);
     virtual ~PNGEncoderFactory();
 
 public:
+    PNGEncoderFactory(const PNGEncoderFactory&) = delete;
+    PNGEncoderFactory(PNGEncoderFactory&&)      = delete;
+
+    void operator=(const PNGEncoderFactory&) = delete;
+    void operator=(PNGEncoderFactory&&)      = delete;
+
     // This is 'const' as the representation uses reference counting
     // Represention should always be immutable
     static const PNGOutput::PNGEncoder* build(const param::MIRParametrisation&, const data::MIRField&);

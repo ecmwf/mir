@@ -60,8 +60,11 @@ struct PNGOutput::PNGEncoder {
     PNGEncoder()          = default;
     virtual ~PNGEncoder() = default;
 
-    PNGEncoder(const PNGEncoder&)            = delete;
-    PNGEncoder& operator=(const PNGEncoder&) = delete;
+    PNGEncoder(const PNGEncoder&) = delete;
+    PNGEncoder(PNGEncoder&)       = delete;
+
+    void operator=(const PNGEncoder&) = delete;
+    void operator=(PNGEncoder&&)      = delete;
 
     virtual void encode(png_bytep&, const double&) const = 0;
     virtual int bit_depth() const                        = 0;

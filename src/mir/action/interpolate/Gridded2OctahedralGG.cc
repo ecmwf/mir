@@ -28,9 +28,6 @@ Gridded2OctahedralGG::Gridded2OctahedralGG(const param::MIRParametrisation& para
 }
 
 
-Gridded2OctahedralGG::~Gridded2OctahedralGG() = default;
-
-
 bool Gridded2OctahedralGG::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const Gridded2OctahedralGG*>(&other);
     return (o != nullptr) && (N_ == o->N_) && Gridded2GriddedInterpolation::sameAs(other);

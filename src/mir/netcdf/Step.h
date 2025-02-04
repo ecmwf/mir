@@ -23,12 +23,16 @@ class MergePlan;
 namespace mir::netcdf {
 
 class Step {
-    Step(const Step&)            = delete;
-    Step& operator=(const Step&) = delete;
-
 public:
-    Step()          = default;
+    Step() = default;
+
+    Step(const Step&) = delete;
+    Step(Step&&)      = delete;
+
     virtual ~Step() = default;
+
+    void operator=(const Step&) = delete;
+    void operator=(Step&&)      = delete;
 
     virtual int rank() const         = 0;
     virtual void execute(MergePlan&) = 0;

@@ -27,42 +27,19 @@ public:
 
     // -- Constructors
 
-    SetMetadata(const param::MIRParametrisation&);
-    SetMetadata(const SetMetadata&) = delete;
+    explicit SetMetadata(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~SetMetadata() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-
-    SetMetadata& operator=(const SetMetadata&) = delete;
+    // None
 
     // -- Methods
     // None
-
-    // -- Overridden methods
-    // None
-
-    void execute(context::Context&) const override;
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
-
-    std::map<std::string, long> metadata_;
-
-    // -- Methods
-
-    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -75,13 +52,17 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    std::map<std::string, long> metadata_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
+    void print(std::ostream&) const override;
+
+    void execute(context::Context&) const override;
     bool sameAs(const Action&) const override;
     const char* name() const override;
 

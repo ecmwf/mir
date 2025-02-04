@@ -37,9 +37,6 @@ CesaroSummationFilter::CesaroSummationFilter(const param::MIRParametrisation& pa
 }
 
 
-CesaroSummationFilter::~CesaroSummationFilter() = default;
-
-
 bool CesaroSummationFilter::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const CesaroSummationFilter*>(&other);
     return (o != nullptr) && (k_ == o->k_) && (Tmin_ == o->Tmin_);

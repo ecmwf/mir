@@ -13,7 +13,7 @@
 #pragma once
 
 #include <cmath>
-#include <limits>
+#include <iosfwd>
 #include <map>
 #include <vector>
 

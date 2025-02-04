@@ -27,11 +27,10 @@ public:
 
     // -- Constructors
 
-    Gridded2Points(const param::MIRParametrisation&);
+    explicit Gridded2Points(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~Gridded2Points() override;
+    // None
 
     // -- Convertors
     // None

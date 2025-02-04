@@ -28,11 +28,10 @@ public:
 
     // -- Constructors
 
-    ShToRegularLL(const param::MIRParametrisation&);
+    explicit ShToRegularLL(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~ShToRegularLL() override;
+    // None
 
     // -- Convertors
     // None

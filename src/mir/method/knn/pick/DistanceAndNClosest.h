@@ -20,7 +20,8 @@ namespace mir::method::knn::pick {
 
 
 struct DistanceAndNClosest : Pick {
-    DistanceAndNClosest(const param::MIRParametrisation&);
+    explicit DistanceAndNClosest(const param::MIRParametrisation&);
+
     void pick(const search::PointSearch&, const Point3&, neighbours_t&) const override;
     size_t n() const override;
     bool sameAs(const Pick&) const override;

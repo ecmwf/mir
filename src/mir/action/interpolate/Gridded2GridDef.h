@@ -25,11 +25,10 @@ public:
 
     // -- Constructors
 
-    Gridded2GridDef(const param::MIRParametrisation&);
+    explicit Gridded2GridDef(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~Gridded2GridDef() override;
+    // None
 
     // -- Convertors
     // None

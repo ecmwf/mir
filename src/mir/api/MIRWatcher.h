@@ -32,7 +32,9 @@ public:
     // -- Constructors
 
     MIRWatcher();
+
     MIRWatcher(const MIRWatcher&) = delete;
+    MIRWatcher(MIRWatcher&&)      = delete;
 
     // -- Destructor
 
@@ -42,7 +44,9 @@ public:
     // None
 
     // -- Operators
+
     void operator=(const MIRWatcher&) = delete;
+    void operator=(MIRWatcher&&)      = delete;
 
     // -- Methods
 

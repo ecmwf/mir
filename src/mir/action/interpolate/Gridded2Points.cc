@@ -31,9 +31,6 @@ Gridded2Points::Gridded2Points(const param::MIRParametrisation& parametrisation)
 }
 
 
-Gridded2Points::~Gridded2Points() = default;
-
-
 bool Gridded2Points::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const Gridded2Points*>(&other);
     return (o != nullptr) && (latitudes_ == o->latitudes_) && (longitudes_ == o->longitudes_) &&

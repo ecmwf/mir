@@ -29,39 +29,18 @@ public:
 
     // -- Constructors
 
-    BitmapFilter(const param::MIRParametrisation&);
-    BitmapFilter(const BitmapFilter&) = delete;
+    explicit BitmapFilter(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~BitmapFilter() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
 
-    BitmapFilter& operator=(const BitmapFilter&) = delete;
-
     // -- Methods
     // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-
-    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -82,6 +61,8 @@ private:
     util::Bitmap& bitmap() const;
 
     // -- Overridden methods
+
+    void print(std::ostream&) const override;
 
     void execute(context::Context&) const override;
     bool sameAs(const Action&) const override;

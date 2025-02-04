@@ -24,14 +24,6 @@
 namespace mir::action {
 
 
-GlobaliseFilter::GlobaliseFilter(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
-    // ASSERT(parametrisation.user().get("global", size_));
-}
-
-
-GlobaliseFilter::~GlobaliseFilter() = default;
-
-
 bool GlobaliseFilter::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const GlobaliseFilter*>(&other);
     return (o != nullptr);

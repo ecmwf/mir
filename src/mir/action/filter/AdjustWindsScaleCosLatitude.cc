@@ -28,10 +28,6 @@
 namespace mir::action {
 
 
-AdjustWindsScaleCosLatitude::AdjustWindsScaleCosLatitude(const param::MIRParametrisation& parametrisation) :
-    Action(parametrisation) {}
-
-
 bool AdjustWindsScaleCosLatitude::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const AdjustWindsScaleCosLatitude*>(&other);
     return (o != nullptr);

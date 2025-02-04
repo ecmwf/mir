@@ -35,9 +35,6 @@ Gridded2RotatedGrid::Gridded2RotatedGrid(const param::MIRParametrisation& parame
 }
 
 
-Gridded2RotatedGrid::~Gridded2RotatedGrid() = default;
-
-
 const util::Rotation& Gridded2RotatedGrid::rotation() const {
     return rotation_;
 }

@@ -14,8 +14,6 @@
 
 #include "mir/method/knn/distance/DistanceWeighting.h"
 
-#include "mir/util/Exceptions.h"
-
 
 namespace mir::lsm {
 class LandSeaMasks;
@@ -30,11 +28,9 @@ public:
     explicit DistanceWeightingWithLSM(const param::MIRParametrisation&);
 
     void operator()(size_t, const Point3&, const std::vector<search::PointSearch::PointValueType>&,
-                    std::vector<WeightMatrix::Triplet>&) const override {
-        throw exception::SeriousBug("DistanceWeightingWithLSM: not to be used directly");
-    }
+                    std::vector<WeightMatrix::Triplet>&) const override;
 
-    const DistanceWeighting* distanceWeighting(const param::MIRParametrisation&, const lsm::LandSeaMasks& lsm) const;
+    const DistanceWeighting* distanceWeighting(const param::MIRParametrisation&, const lsm::LandSeaMasks&) const;
 
 private:
     bool sameAs(const DistanceWeighting&) const override;
@@ -59,8 +55,8 @@ public:
     DistanceWeightingWithLSMFactory(const DistanceWeightingWithLSMFactory&) = delete;
     DistanceWeightingWithLSMFactory(DistanceWeightingWithLSMFactory&&)      = delete;
 
-    DistanceWeightingWithLSMFactory& operator=(const DistanceWeightingWithLSMFactory&) = delete;
-    DistanceWeightingWithLSMFactory& operator=(DistanceWeightingWithLSMFactory&&)      = delete;
+    void operator=(const DistanceWeightingWithLSMFactory&) = delete;
+    void operator=(DistanceWeightingWithLSMFactory&&)      = delete;
 
     static const DistanceWeighting* build(const std::string& name, const param::MIRParametrisation&,
                                           const lsm::LandSeaMasks&);

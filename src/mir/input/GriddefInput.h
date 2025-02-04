@@ -37,7 +37,7 @@ private:
     std::vector<double> longitudes_;
     size_t calls_;
 
-    const param::SimpleParametrisation empty_;
+    param::SimpleParametrisation parametrisation_;
 
     bool next() override;
     size_t dimensions() const override;

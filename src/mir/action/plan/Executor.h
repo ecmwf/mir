@@ -38,6 +38,7 @@ public:
     // -- Constructors
 
     Executor(const Executor&) = delete;
+    Executor(Executor&&)      = delete;
 
     // -- Destructor
     // None
@@ -47,7 +48,8 @@ public:
 
     // -- Operators
 
-    Executor& operator=(const Executor&) = delete;
+    void operator=(const Executor&) = delete;
+    void operator=(Executor&&)      = delete;
 
     // -- Methods
 

@@ -32,9 +32,6 @@ FrameFilter::FrameFilter(const param::MIRParametrisation& parametrisation) : Act
 }
 
 
-FrameFilter::~FrameFilter() = default;
-
-
 bool FrameFilter::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const FrameFilter*>(&other);
     return (o != nullptr) && (size_ == o->size_);

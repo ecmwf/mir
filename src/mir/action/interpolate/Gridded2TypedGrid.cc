@@ -31,9 +31,6 @@ Gridded2TypedGrid::Gridded2TypedGrid(const param::MIRParametrisation& parametris
 }
 
 
-Gridded2TypedGrid::~Gridded2TypedGrid() = default;
-
-
 bool Gridded2TypedGrid::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const Gridded2TypedGrid*>(&other);
 

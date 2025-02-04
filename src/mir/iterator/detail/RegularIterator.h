@@ -32,6 +32,7 @@ public:
                     const eckit::Fraction& ref, const eckit::Fraction& period);
 
     RegularIterator(const RegularIterator&) = delete;
+    RegularIterator(RegularIterator&&)      = delete;
 
     // -- Destructor
 
@@ -42,7 +43,8 @@ public:
 
     // -- Operators
 
-    RegularIterator& operator=(const RegularIterator&) = delete;
+    void operator=(const RegularIterator&) = delete;
+    void operator=(RegularIterator&&)      = delete;
 
     // -- Methods
 

@@ -27,11 +27,10 @@ public:
 
     // -- Constructors
 
-    ShToRotatedRegularGG(const param::MIRParametrisation&);
+    explicit ShToRotatedRegularGG(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~ShToRotatedRegularGG() override;
+    // None
 
     // -- Convertors
     // None

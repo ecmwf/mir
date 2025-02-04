@@ -1,0 +1,6 @@
+# input
+regular_ll.2-2.grib2
+# mir
+--grid={grid:3/3} --interpolation=nn
+# grib_get
+numberOfDataPoints=7320

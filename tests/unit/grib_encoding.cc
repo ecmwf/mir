@@ -25,6 +25,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/BoundingBox.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"

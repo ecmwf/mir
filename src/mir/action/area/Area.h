@@ -37,8 +37,7 @@ public:
     explicit Area(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~Area() override;
+    // None
 
     // -- Convertors
     // None

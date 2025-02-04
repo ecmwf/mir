@@ -27,11 +27,10 @@ public:
 
     // -- Constructors
 
-    ShToRotatedOctahedralGG(const param::MIRParametrisation&);
+    explicit ShToRotatedOctahedralGG(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~ShToRotatedOctahedralGG() override;
+    // None
 
     // -- Convertors
     // None

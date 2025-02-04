@@ -35,8 +35,7 @@ public:
 
     // -- Constructors
 
-    AddRandomFilter(const param::MIRParametrisation&);
-    AddRandomFilter(const AddRandomFilter&) = delete;
+    explicit AddRandomFilter(const param::MIRParametrisation&);
 
     // -- Destructor
     // None
@@ -45,23 +44,6 @@ public:
     // None
 
     // -- Operators
-
-    AddRandomFilter& operator=(const AddRandomFilter&) = delete;
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
     // None
 
     // -- Methods

@@ -15,12 +15,14 @@
 #include <vector>
 
 #include "eckit/option/CmdArgs.h"
+#include "eckit/option/FactoryOption.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
 
 #include "mir/action/calc/FormulaAction.h"
 #include "mir/action/context/Context.h"
 #include "mir/action/io/Save.h"
+#include "mir/grib/BasicAngle.h"
 #include "mir/input/MIRInput.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/CombinedParametrisation.h"
@@ -29,6 +31,7 @@
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Formula.h"
 #include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
 
@@ -63,6 +66,9 @@ struct MIRCompute : MIRTool {
         options_.push_back(new eckit::option::VectorOption<std::string>(
             "variables", "variable(s) replacing f/f1, f2, ... (variable;variable;...)", 0, ";"));
         options_.push_back(new eckit::option::VectorOption<long>("param-id", "GRIB paramId(s) (1;2;...)", 0, ";"));
+
+        options_.push_back(new eckit::option::FactoryOption<grib::BasicAngle>(
+            "basic-angle", "GRIB basic angle and subdivisions (bounding box and grid increments, default 'decimal')"));
     }
 
     int numberOfPositionalArguments() const override { return 2; }
@@ -81,7 +87,7 @@ struct MIRCompute : MIRTool {
                        "\n  % "
                     << tool
                     << " --formula=\"sqrt(a*a+b^2);a-b;a+b\" --variables=a;b --input=\"{multiDimensional: 2}\" "
-                       "--param-id=1;2;3 input.grib output.grib"
+                       "--param-id=1;2;3 --basic-angle=as-input input.grib output.grib"
                     << std::endl;
     }
 
@@ -107,6 +113,11 @@ void MIRCompute::execute(const eckit::option::CmdArgs& args) {
     args.get("param-id", paramids);
     ASSERT(paramids.empty() || paramids.size() == formulas.size());
 
+    std::string basicAngle = "decimal";
+    param.get("basic-angle", basicAngle);
+
+    param::SimpleParametrisation user;
+    user.set("basic-angle", basicAngle);
 
     // create input/output
     std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build(args(0), param));
@@ -120,7 +131,6 @@ void MIRCompute::execute(const eckit::option::CmdArgs& args) {
             context::Context ctx(*input, statistics);
 
             // run-time parametrisation
-            param::SimpleParametrisation user;
             user.set("formula", rename_formula_variables(formulas[i], variables));
             user.set("formula.metadata", paramids.empty() ? "" : "paramId=" + std::to_string(paramids[i]));
 

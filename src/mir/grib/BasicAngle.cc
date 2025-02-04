@@ -13,7 +13,6 @@
 #include "mir/grib/BasicAngle.h"
 
 #include <limits>
-// #include <numeric> std::lcm, std::gcd (C++ 17)
 #include <ostream>
 
 #include "eckit/types/Fraction.h"
@@ -29,37 +28,12 @@ namespace mir::grib {
 Fraction::Fraction(double d) : Fraction(eckit::Fraction(d)) {}
 
 
-Fraction::Fraction(const eckit::Fraction& frac) :
-    num(static_cast<value_type>(frac.numerator())), den(static_cast<value_type>(frac.denominator())) {
-    constexpr auto min = static_cast<eckit::Fraction::value_type>(std::numeric_limits<value_type>::lowest());
-    constexpr auto max = static_cast<eckit::Fraction::value_type>(std::numeric_limits<value_type>::max());
+Fraction::Fraction(const eckit::Fraction& frac) : num(frac.numerator()), den(frac.denominator()) {
+    constexpr auto min = std::numeric_limits<value_type>::lowest();
+    constexpr auto max = std::numeric_limits<value_type>::max();
     ASSERT(frac.denominator() != 0);
     ASSERT(min <= frac.denominator() && frac.denominator() <= max);
     ASSERT(min <= frac.numerator() && frac.numerator() <= max);
-}
-
-
-Fraction::value_type lcm(Fraction::value_type a, Fraction::value_type b) {
-    if (a == 0 || b == 0) {
-        return 0;
-    }
-
-    return a * (b / gcd(a, b));
-}
-
-
-Fraction::value_type gcd(Fraction::value_type a, Fraction::value_type b) {
-    if (a == 0 && b == 0) {
-        return 0;
-    }
-
-    // Euclidean algorithm
-    while (b != 0) {
-        auto r = a % b;
-        a      = b;
-        b      = r;
-    }
-    return a;
 }
 
 
@@ -78,6 +52,9 @@ BasicAngle::BasicAngle(const grib_info& info) :
 
 
 void BasicAngle::fillGrib(grib_info& info) const {
+    // FIXME limited functionality
+    ASSERT(info.grid.grid_type == CODES_UTIL_GRID_SPEC_REGULAR_LL);
+
     auto fill = [this, &info](const char* key, double value) {
         Fraction f(value);
         ASSERT(f.den != 0);

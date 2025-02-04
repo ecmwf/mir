@@ -36,12 +36,16 @@ class MultiFile;
 namespace mir::compare {
 
 class WhiteLister {
-    WhiteLister(const WhiteLister&)            = delete;
-    WhiteLister& operator=(const WhiteLister&) = delete;
-
 public:
     WhiteLister() = default;
+
+    WhiteLister(const WhiteLister&) = delete;
+    WhiteLister(WhiteLister&&)      = delete;
+
     virtual ~WhiteLister();
+
+    void operator=(const WhiteLister&) = delete;
+    void operator=(WhiteLister&&)      = delete;
 
     virtual bool whiteListed(const MultiFile&, const Field&) const = 0;
     virtual bool ignoreError(const MultiFile&, const Field&) const = 0;

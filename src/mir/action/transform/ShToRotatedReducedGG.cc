@@ -37,10 +37,6 @@ ShToRotatedReducedGG<Invtrans>::ShToRotatedReducedGG(const param::MIRParametrisa
 
 
 template <class Invtrans>
-ShToRotatedReducedGG<Invtrans>::~ShToRotatedReducedGG() = default;
-
-
-template <class Invtrans>
 bool ShToRotatedReducedGG<Invtrans>::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const ShToRotatedReducedGG*>(&other);
     return (o != nullptr) && (N_ == o->N_) && (rotation_ == o->rotation_) && ShToGridded::sameAs(other);

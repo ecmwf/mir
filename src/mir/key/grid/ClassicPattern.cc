@@ -23,10 +23,7 @@
 namespace mir::key::grid {
 
 
-ClassicPattern::ClassicPattern(const std::string& name) : GridPattern(name) {}
-
-
-ClassicPattern::~ClassicPattern() = default;
+ClassicPattern::ClassicPattern(const std::string& pattern) : GridPattern(pattern) {}
 
 
 void ClassicPattern::print(std::ostream& out) const {

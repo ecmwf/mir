@@ -31,10 +31,6 @@ ShToGridDef<Invtrans>::ShToGridDef(const param::MIRParametrisation& parametrisat
 
 
 template <class Invtrans>
-ShToGridDef<Invtrans>::~ShToGridDef() = default;
-
-
-template <class Invtrans>
 bool ShToGridDef<Invtrans>::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const ShToGridDef*>(&other);
     return (o != nullptr) && (griddef_ == o->griddef_);

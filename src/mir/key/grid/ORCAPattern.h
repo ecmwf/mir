@@ -25,19 +25,16 @@ public:
 
     // -- Constructors
 
-    ORCAPattern(const std::string& name);
-    ORCAPattern(const ORCAPattern&) = delete;
+    ORCAPattern(const std::string& pattern);
 
     // -- Destructor
-
-    ~ORCAPattern() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-
-    ORCAPattern& operator=(const ORCAPattern&) = delete;
+    // None
 
     // -- Methods
     // None

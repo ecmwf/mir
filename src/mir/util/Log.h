@@ -74,8 +74,11 @@ struct Log final : protected eckit::Log {
         Pretty(long count, const Plural& plural = Plural()) : plural_(plural), count_(static_cast<int>(count)) {}
         Pretty(size_t count, const Plural& plural = Plural()) : plural_(plural), count_(static_cast<int>(count)) {}
 
-        Pretty& operator=(const Pretty&) = delete;
-        Pretty(const Pretty&)            = delete;
+        Pretty(const Pretty&) = delete;
+        Pretty(Pretty&&)      = delete;
+
+        void operator=(const Pretty&) = delete;
+        void operator=(Pretty&&)      = delete;
 
     private:
         const Plural& plural_;

@@ -37,6 +37,8 @@ static void init() {
     m           = new std::map<std::string, ArtificialInputFactory*>();
 }
 
+static const param::SimpleParametrisation empty;
+
 
 ArtificialInput::~ArtificialInput() = default;
 
@@ -52,7 +54,7 @@ size_t ArtificialInput::dimensions() const {
 
 
 ArtificialInput::ArtificialInput() :
-    inputParametrisation_(new param::CombinedParametrisation(parametrisation_, *this, parametrisation_)), calls_(0) {
+    inputParametrisation_(new param::CombinedParametrisation(parametrisation_, *this, empty)), calls_(0) {
     ASSERT(inputParametrisation_);
 }
 
@@ -92,7 +94,6 @@ void ArtificialInput::setAuxiliaryInformation(const util::ValueMap& map) {
     auto load = [](const eckit::PathName& path, std::vector<double>& values) {
         Log::info() << "ArtificialInput::setAuxiliaryInformation: '" << path << "'" << std::endl;
 
-        static const param::SimpleParametrisation empty;
         std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build(path.asString(), empty));
         ASSERT(input->next());
 
@@ -169,17 +170,16 @@ ArtificialInputFactory::~ArtificialInputFactory() {
 }
 
 
-ArtificialInput* ArtificialInputFactory::build(const std::string& name, const param::MIRParametrisation& param) {
+ArtificialInput* ArtificialInputFactory::build(const std::string& name) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-    auto j = m->find(name);
-    if (j == m->end()) {
-        list(Log::error() << "ArtificialInputFactory: unknown '" << name << "', choices are: ");
-        Log::warning() << std::endl;
+    if (auto j = m->find(name); j != m->end()) {
+        return j->second->make();
     }
 
-    return j->second->make(param);
+    list(Log::error() << "ArtificialInputFactory: unknown '" << name << "', choices are: ");
+    throw exception::UserError("ArtificialInputFactory: unknown '" + name + "'");
 }
 
 

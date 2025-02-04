@@ -22,7 +22,7 @@
 namespace mir::input {
 
 
-RawInput::RawInput(const double* const values, size_t count, const param::SimpleParametrisation& metadata) :
+RawInput::RawInput(const double* const values, size_t count, const param::MIRParametrisation& metadata) :
     values_(values), count_(count), metadata_(metadata), dimensions_(1), calls_(0) {
     ASSERT_MSG(values != nullptr, "RawInput: values != nullptr");
     ASSERT_MSG(count > 0, "RawInput: count > 0");
@@ -74,8 +74,13 @@ data::MIRField RawInput::field() const {
 
 
 bool RawInput::sameAs(const MIRInput& other) const {
-    const auto* o = dynamic_cast<const RawInput*>(&other);
-    return (o != nullptr) && metadata_.matchAll(o->metadata_);
+    if (const auto* o = dynamic_cast<const RawInput*>(&other); o != nullptr) {
+        if (const auto* metadata = dynamic_cast<const param::SimpleParametrisation*>(&metadata_); metadata != nullptr) {
+            return metadata->matchAll(o->metadata_);
+        }
+    }
+
+    return false;
 }
 
 

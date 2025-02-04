@@ -31,18 +31,15 @@ public:
     // -- Constructors
 
     EndAction(const param::MIRParametrisation&, output::MIROutput&);
-    EndAction(const EndAction&) = delete;
 
     // -- Destructor
-
-    ~EndAction() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-
-    EndAction& operator=(const EndAction&) = delete;
+    // None
 
     // -- Methods
     // None

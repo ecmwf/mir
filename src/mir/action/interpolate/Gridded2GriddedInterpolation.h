@@ -38,7 +38,7 @@ public:
 
     // -- Constructors
 
-    Gridded2GriddedInterpolation(const param::MIRParametrisation&);
+    explicit Gridded2GriddedInterpolation(const param::MIRParametrisation&);
 
     // -- Destructor
 
@@ -89,6 +89,7 @@ private:
     std::string interpolation_;
     std::unique_ptr<method::Method> method_;
     bool inputIntersectsOutput_;
+    bool inputGlobal_;
 
     // -- Methods
 

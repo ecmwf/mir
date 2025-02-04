@@ -49,9 +49,6 @@ SetMetadata::SetMetadata(const param::MIRParametrisation& parametrisation) : Act
 }
 
 
-SetMetadata::~SetMetadata() = default;
-
-
 bool SetMetadata::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const SetMetadata*>(&other);
     return (o != nullptr) && (metadata_ == o->metadata_);

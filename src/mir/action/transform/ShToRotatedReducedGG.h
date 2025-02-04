@@ -27,11 +27,10 @@ public:
 
     // -- Constructors
 
-    ShToRotatedReducedGG(const param::MIRParametrisation&);
+    explicit ShToRotatedReducedGG(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~ShToRotatedReducedGG() override;
+    // None
 
     // -- Convertors
     // None

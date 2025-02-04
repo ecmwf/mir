@@ -27,11 +27,10 @@ public:
 
     // -- Constructors
 
-    Gridded2RotatedReducedGGPLGiven(const param::MIRParametrisation&);
+    explicit Gridded2RotatedReducedGGPLGiven(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~Gridded2RotatedReducedGGPLGiven() override;
+    // None
 
     // -- Convertors
     // None

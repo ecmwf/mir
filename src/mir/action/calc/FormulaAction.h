@@ -33,19 +33,16 @@ public:
 
     // -- Constructors
 
-    FormulaAction(const param::MIRParametrisation&);
-    FormulaAction(const FormulaAction&) = delete;
+    explicit FormulaAction(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~FormulaAction() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-
-    FormulaAction& operator=(const FormulaAction&) = delete;
+    // None
 
     // -- Methods
     // None

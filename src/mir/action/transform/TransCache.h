@@ -31,10 +31,14 @@ struct TransCache {
     cache_t transCache_;
 
     TransCache();
+
     TransCache(const TransCache&) = delete;
+    TransCache(TransCache&&)      = delete;
+
     ~TransCache();
 
-    TransCache& operator=(const TransCache&) = delete;
+    void operator=(const TransCache&) = delete;
+    void operator=(TransCache&&)      = delete;
 
     TransCache& operator=(cache_t&&);
 

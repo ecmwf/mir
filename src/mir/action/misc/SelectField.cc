@@ -28,9 +28,6 @@ SelectField::SelectField(const param::MIRParametrisation& parametrisation) : Act
 }
 
 
-SelectField::~SelectField() = default;
-
-
 bool SelectField::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const SelectField*>(&other);
     return (o != nullptr) && (which_ == o->which_);

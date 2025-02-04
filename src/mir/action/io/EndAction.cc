@@ -24,9 +24,6 @@ EndAction::EndAction(const param::MIRParametrisation& param, output::MIROutput& 
     Action(param), output_(output) {}
 
 
-EndAction::~EndAction() = default;
-
-
 bool EndAction::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const EndAction*>(&other);
     return (o != nullptr) && output_.sameAs(o->output_) &&
