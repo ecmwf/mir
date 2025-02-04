@@ -44,6 +44,10 @@ cdef extern from "mir/input/GridSpecInput.h" namespace "mir::input":
     cdef cppclass GridSpecInput(MIRInput):
         GridSpecInput(string)
 
+cdef extern from "mir/input/GriddefInput.h" namespace "mir::input":
+    cdef cppclass GriddefInput(MIRInput):
+        GriddefInput(eckit.PathName)
+
 cdef extern from "mir/output/MIROutput.h" namespace "mir::output":
     cdef cppclass MIROutput:
         pass
@@ -56,6 +60,10 @@ cdef extern from "mir/output/GribMemoryOutput.h" namespace "mir::output":
     cdef cppclass GribMemoryOutput(MIROutput):
         GribMemoryOutput(void*, size_t)
         size_t length()
+
+cdef extern from "mir/output/EmptyOutput.h" namespace "mir::output":
+    cdef cppclass EmptyOutput(MIROutput):
+        EmptyOutput()
 
 cdef extern from "mir/config/LibMir.h" namespace "mir":
     cdef cppclass LibMir:

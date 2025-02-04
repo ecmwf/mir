@@ -82,6 +82,18 @@ cdef class GridSpecInput(MIRInput):
     def __dealloc__(self):
         del self._input
 
+cdef class GriddefInput(MIRInput):
+    def __cinit__(self, string path):
+        self._input = new mir.GriddefInput(eckit.PathName(path))
+    def __dealloc__(self):
+        del self._input
+
+cdef class EmptyOutput(MIROutput):
+    def __cinit__(self):
+        self._output = new mir.EmptyOutput()
+    def __dealloc__(self):
+        del self._output
+
 cdef class GribMemoryOutput(MIROutput):
     def __cinit__(self, unsigned char[::1] buf):
         self._output = new mir.GribMemoryOutput(&buf[0], buf.nbytes)
