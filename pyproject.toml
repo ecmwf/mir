@@ -31,12 +31,9 @@ classifiers=[
 	"Operating System :: MacOS",
 	"Topic :: Scientific/Engineering",
 ]
-# TODO replace with just ["findlibs", "mirlib"] once we are out of test pypi only. Note this *prevents* any pypi upload!
 dependencies = [
         "findlibs",
-        "eccodeslib @ https://test-files.pythonhosted.org/packages/8c/b5/c5c4d0f51eb347eb8fce27bb3d7bac3eb4b3beb9ad15abf84cbdabbfc73b/eccodeslib-2.40.0-1-cp311-cp311-manylinux_2_28_x86_64.whl",
-        "eckitlib @ https://test-files.pythonhosted.org/packages/8b/9a/4291d51c32383fff17ff00091014ff4995d56d60fdd4d947029e7bdabae3/eckitlib-1.28.4-1-cp311-cp311-manylinux_2_28_x86_64.whl",
-        "mirlib @ https://test-files.pythonhosted.org/packages/5c/94/f35ac1779f64d4ddf3729ce9dc01cad56ae06be7d103ad64661a84eba9ba/mirlib-1.24.0-cp311-cp311-manylinux_2_28_x86_64.whl"
+        # "mirlib # TODO uncomment once mirlib on prod pypi for all platforms, otherwise apparently cant be built
 ]
 
 
