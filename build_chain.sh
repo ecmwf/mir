@@ -31,7 +31,7 @@ else
 fi
 
 # mir-python prereqs
-uv pip install $EXTRA_PIP eccodeslib eckit mirlib
+uv pip install $EXTRA_PIP eccodeslib eckitlib mirlib
 PRF=".venv/lib/python3.11/site-packages"
 if [ "$(uname)" == "Darwin" ] ; then L="lib" ; else L="lib64" ; fi
 export MIR_LIB_DIR="$PRF/eckitlib/$L:$PRF/eccodeslib/$L:$PRF/mirlib/$L"
