@@ -31,6 +31,8 @@ GriddefInput::GriddefInput(const eckit::PathName& path) : calls_(0) {
     load(path, latitudes_, longitudes_);
     ASSERT(latitudes_.size() == longitudes_.size());
     ASSERT(!latitudes_.empty());
+
+    parametrisation_.set("gridded", true);
 }
 
 
@@ -84,7 +86,7 @@ size_t GriddefInput::dimensions() const {
 
 const param::MIRParametrisation& GriddefInput::parametrisation(size_t which) const {
     ASSERT(which == 0);
-    return empty_;
+    return parametrisation_;
 }
 
 

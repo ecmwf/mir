@@ -90,6 +90,8 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation)
         addNonLinearTreatment(nonlinear::NonLinearFactory::build(n, parametrisation_));
         ASSERT(nonLinear_.back());
     }
+
+    parametrisation_.get("interpolation-matrix", interpolationMatrix_);
 }
 
 
@@ -196,9 +198,8 @@ MethodWeighted::CacheKeys MethodWeighted::getDiskAndMemoryCacheKeys(const repres
         version_str = std::to_string(v) + "/";
     }
 
-    std::string disk_key =
-        std::string{name()} + "/" + version_str + shortName_in + "/" + shortName_out + "-" + hash.digest();
-    std::string memory_key = disk_key;
+    auto disk_key = std::string{name()} + "/" + version_str + shortName_in + "/" + shortName_out + "-" + hash.digest();
+    auto memory_key = disk_key;
 
     // Add masks if any
     if (masks.active()) {
@@ -207,6 +208,10 @@ MethodWeighted::CacheKeys MethodWeighted::getDiskAndMemoryCacheKeys(const repres
         if (masks.cacheable()) {
             disk_key += masks_key;
         }
+    }
+
+    if (!interpolationMatrix_.empty()) {
+        disk_key = interpolationMatrix_;
     }
 
     return {disk_key, memory_key};
@@ -227,10 +232,10 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     log << "MethodWeighted::getMatrix land-sea masks: " << timer.elapsedSeconds(here) << ", "
         << (masks.active() ? "active" : "not active") << std::endl;
 
-    auto [disk_key, memory_key] = getDiskAndMemoryCacheKeys(in, out, masks);
+    const auto [disk_key, memory_key] = getDiskAndMemoryCacheKeys(in, out, masks);
     ASSERT(!disk_key.empty() && !memory_key.empty());
 
-    if (auto j = MATRIX_CACHE_MEMORY.find(memory_key); j != MATRIX_CACHE_MEMORY.end()) {
+    if (auto* j = MATRIX_CACHE_MEMORY.find(memory_key); j != MATRIX_CACHE_MEMORY.end()) {
         const auto& mat = *j;
         log << "MethodWeighted::getMatrix cache key: " << memory_key << " " << timer.elapsedSeconds(here)
             << ", found in memory cache (" << mat << ")" << std::endl;
