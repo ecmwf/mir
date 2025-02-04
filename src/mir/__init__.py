@@ -10,9 +10,9 @@
 # init section -- ensure libmir.so is loaded, utilizing findlibs instead of relying on rpath
 import findlibs
 from ctypes import CDLL
+
 m = findlibs.find("mir")
 CDLL(m)
 
 # import mir-python itself
 from _mir import *
-
