@@ -40,6 +40,10 @@ cdef extern from "mir/input/MultiDimensionalGribFileInput.h" namespace "mir::inp
     cdef cppclass MultiDimensionalGribFileInput(MIRInput):
         MultiDimensionalGribFileInput(eckit.PathName, size_t)
 
+cdef extern from "mir/input/GridSpecInput.h" namespace "mir::input":
+    cdef cppclass GridSpecInput(MIRInput):
+        GridSpecInput(string)
+
 cdef extern from "mir/output/MIROutput.h" namespace "mir::output":
     cdef cppclass MIROutput:
         pass

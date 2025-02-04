@@ -29,13 +29,13 @@ cdef class Args:
     cdef char** argv
 
     def __cinit__(self):
-        import sys 
+        import sys
 
         self.argc = len(sys.argv)
         self.argv = <char**> malloc(self.argc * sizeof(char*))
         for i, arg in enumerate(sys.argv):
             self.argv[i] = arg
-    
+
     def __dealloc__(self):
         free(self.argv)
 
@@ -73,6 +73,12 @@ cdef class GribFileOutput(MIROutput):
 cdef class GribMemoryInput(MIRInput):
     def __cinit__(self, const unsigned char[::1] data):
         self._input = new mir.GribMemoryInput(&data[0], data.nbytes)
+    def __dealloc__(self):
+        del self._input
+
+cdef class GridSpecInput(MIRInput):
+    def __cinit__(self, string gridspec):
+        self._input = new mir.GridSpecInput(gridspec)
     def __dealloc__(self):
         del self._input
 
