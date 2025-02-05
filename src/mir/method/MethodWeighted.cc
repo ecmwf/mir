@@ -20,6 +20,7 @@
 #include <string>
 
 #include "eckit/config/Resource.h"
+#include "eckit/filesystem/PathName.h"
 #include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
@@ -60,6 +61,12 @@ static caching::InMemoryCache<WeightMatrix> MATRIX_CACHE_MEMORY("mirMatrix", MIR
 static caching::WeightCache& matrix_cache_disk(const param::MIRParametrisation& parametrisation) {
     static caching::WeightCache cache(parametrisation);
     return cache;
+}
+
+
+static void matrix_write(const WeightMatrix& mat, const eckit::PathName& path) {
+    path.dirName().mkdir(0777);  // ensure directory exists
+    mat.save(path);
 }
 
 
@@ -210,10 +217,6 @@ MethodWeighted::CacheKeys MethodWeighted::getDiskAndMemoryCacheKeys(const repres
         }
     }
 
-    if (!interpolationMatrix_.empty()) {
-        disk_key = interpolationMatrix_;
-    }
-
     return {disk_key, memory_key};
 }
 
@@ -239,6 +242,11 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
         const auto& mat = *j;
         log << "MethodWeighted::getMatrix cache key: " << memory_key << " " << timer.elapsedSeconds(here)
             << ", found in memory cache (" << mat << ")" << std::endl;
+
+        if (!interpolationMatrix_.empty()) {
+            matrix_write(mat, interpolationMatrix_);
+        }
+
         return mat;
     }
 
@@ -274,6 +282,9 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
         W.validate("applyMasks", validateMatrixWeights());
     }
 
+    if (!interpolationMatrix_.empty()) {
+        matrix_write(W, interpolationMatrix_);
+    }
 
     log << "MethodWeighted::getMatrix create weights matrix: " << timer.elapsedSeconds(here) << std::endl;
     log << "MethodWeighted::getMatrix matrix W " << W << std::endl;
