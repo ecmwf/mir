@@ -32,11 +32,10 @@ jobs:
         # TODO convert this to be matrix-friendly. Note it's a bit tricky since
         # we'd ideally not reexecute the compile step multiple times, but it
         # (non-essentially) depends on a matrix-based step
-        # NOTE we dont use action checkout because it doesnt cleanup after itself correctly
-      - run: git clone --depth=1 --branch="${GITHUB_REF#refs/heads/}" https://github.com/$GITHUB_REPOSITORY /proj
-      - run: cd /proj && ./build_chain.sh
+      - uses: actions/checkout@v4
+      - run: ./build_chain.sh
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
         # NOTE temporary thing until all the mess gets cleared
-      - run: rm -rf ./* ./.git ./.github
+      - run: rm -rf ./* ./.git ./.github ./.venv

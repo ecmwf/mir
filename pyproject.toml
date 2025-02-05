@@ -31,10 +31,7 @@ classifiers=[
 	"Operating System :: MacOS",
 	"Topic :: Scientific/Engineering",
 ]
-dependencies = [
-        "findlibs",
-        # "mirlib # TODO uncomment once mirlib on prod pypi for all platforms, otherwise apparently cant be built
-]
+dependencies = ["findlibs", "mirlib"]
 
 
 [tool.setuptools]
