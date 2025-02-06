@@ -16,7 +16,7 @@ cdef extern from "mir/api/MIRJob.h" namespace "mir::api":
         MIRJob& set(string, int)
         MIRJob& set(string, double)
         MIRJob& set(string, double, double)
-        void execute(MIRInput, MIROutput)
+        void execute(MIRInput, MIROutput) except +
         void json(eckit.JSON&)
 
 cdef extern from "<sstream>" namespace "std" nogil:
