@@ -201,10 +201,16 @@ cdef class Grid:
 
     def __cinit__(self, spec:str=None, **kwargs):
         assert bool(spec) != bool(kwargs)
-        if kwargs:
-            from yaml import dump
-            spec = dump(kwargs, default_flow_style=True).strip()
-        self._grid = eckit_geo.GridFactory.make_from_string(spec.encode())
+
+        try:
+            if kwargs:
+                from yaml import dump
+                spec = dump(kwargs, default_flow_style=True).strip()
+            self._grid = eckit_geo.GridFactory.make_from_string(spec.encode())
+
+        except RuntimeError as e:
+            # opportunity to do something interesting
+            raise
 
     def to_latlons(self):
         cdef pair[vector[double], vector[double]] latlons = self._grid.to_latlons()

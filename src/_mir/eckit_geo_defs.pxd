@@ -33,4 +33,4 @@ cdef extern from "eckit/geo/Grid.h" namespace "eckit::geo":
 
     cdef cppclass GridFactory:
         @staticmethod
-        const Grid* make_from_string(const string)
+        const Grid* make_from_string(const string) except +
