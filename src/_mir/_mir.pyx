@@ -10,8 +10,11 @@
 from cython.operator cimport dereference
 from libc.stdlib cimport malloc, free
 from libcpp.string cimport string
+from libcpp.utility cimport pair
+from libcpp.vector cimport vector
 
 cimport eckit_defs as eckit
+cimport eckit_geo_defs as eckit_geo
 cimport mir_defs as mir
 cimport std_defs as std
 
@@ -192,3 +195,53 @@ cdef class Job:
         return jstr
 
     __repr__ = __str__
+
+cdef class Grid:
+    cdef const eckit_geo.Grid* _grid
+
+    def __cinit__(self, spec:str=None, **kwargs):
+        assert bool(spec) != bool(kwargs)
+        if kwargs:
+            from yaml import dump
+            spec = dump(kwargs, default_flow_style=True).strip()
+        self._grid = eckit_geo.GridFactory.make_from_string(spec.encode())
+
+    def to_latlons(self):
+        cdef pair[vector[double], vector[double]] latlons = self._grid.to_latlons()
+        return list(latlons.first), list(latlons.second)
+
+    def bounding_box(self) -> tuple:
+        cdef const eckit_geo.BoundingBox* bbox = &self._grid.boundingBox()
+        cdef double north = bbox.north
+        cdef double west = bbox.west
+        cdef double south = bbox.south
+        cdef double east = bbox.east
+        return north, west, south, east
+
+    @property
+    def spec_str(self) -> str:
+        return self._grid.spec_str().decode()
+
+    @property
+    def spec(self) -> dict:
+        from yaml import safe_load
+        return safe_load(self.spec_str)
+
+    @property
+    def type(self) -> str:
+        return self._grid.type().decode()
+
+    @property
+    def shape(self) -> list:
+        cdef vector[size_t] shape_vec = self._grid.shape()
+        return list(shape_vec)
+
+    def size(self) -> int:
+        return self._grid.size()
+
+    def __len__(self) -> int:
+        return self.size()
+
+    def __dealloc__(self):
+        del self._grid
+
