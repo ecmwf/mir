@@ -212,6 +212,11 @@ cdef class Grid:
             # opportunity to do something interesting
             raise
 
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Grid):
+            return NotImplemented
+        return self.spec_str == other.spec_str
+
     def to_latlons(self):
         cdef pair[vector[double], vector[double]] latlons = self._grid.to_latlons()
         return list(latlons.first), list(latlons.second)
