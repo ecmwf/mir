@@ -1,0 +1,8 @@
+# input
+regular_ll.2-2.grib2
+# mir
+--intgrid=o21 --grid=source
+# grib_get
+gridType=regular_ll
+iDirectionIncrementInDegrees=2
+jDirectionIncrementInDegrees=2
