@@ -132,6 +132,13 @@ size_t Grid::gaussianNumber() const {
 }
 
 
+std::string Grid::gridname() const {
+    std::ostringstream os;
+    os << "Grid::gridname() not implemented for " << *this;
+    throw exception::SeriousBug(os.str());
+}
+
+
 bool Grid::get(const std::string& key, std::string& value, const param::MIRParametrisation& param) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);

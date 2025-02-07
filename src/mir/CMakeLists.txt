@@ -811,6 +811,8 @@ if(mir_HAVE_ATLAS)
         key/grid/NamedORCA.h
         key/grid/ORCAPattern.cc
         key/grid/ORCAPattern.h
+        key/grid/SourcePattern.cc
+        key/grid/SourcePattern.h
         method/ProxyMethod.cc
         method/ProxyMethod.h
         method/fe/BuildNodeLumpedMassMatrix.cc

@@ -23,7 +23,8 @@ namespace mir::action::interpolate {
 
 
 Gridded2NamedGrid::Gridded2NamedGrid(const param::MIRParametrisation& param) : Gridded2UnrotatedGrid(param) {
-    ASSERT(key::grid::Grid::get("grid", grid_, parametrisation()) && !grid_.empty());
+    ASSERT(key::grid::Grid::get("grid", grid_, parametrisation()));
+    ASSERT(!grid_.empty());
 }
 
 
