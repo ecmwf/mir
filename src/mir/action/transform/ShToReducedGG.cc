@@ -55,6 +55,13 @@ void ShToReducedGG<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::
 
 
 template <class Invtrans>
+bool ShToReducedGG<Invtrans>::getGriddedTargetName(std::string& name) const {
+    name = "O" + std::to_string(N_);
+    return true;
+}
+
+
+template <class Invtrans>
 const char* ShToReducedGG<Invtrans>::name() const {
     return "ShToReducedGG";
 }

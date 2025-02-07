@@ -59,6 +59,13 @@ void ShToNamedGrid<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::
 
 
 template <class Invtrans>
+bool ShToNamedGrid<Invtrans>::getGriddedTargetName(std::string& name) const {
+    name = grid_;
+    return true;
+}
+
+
+template <class Invtrans>
 const char* ShToNamedGrid<Invtrans>::name() const {
     return "ShToNamedGrid";
 }

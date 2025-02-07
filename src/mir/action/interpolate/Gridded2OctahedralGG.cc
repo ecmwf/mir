@@ -47,6 +47,12 @@ const repres::Representation* Gridded2OctahedralGG::outputRepresentation() const
 }
 
 
+bool Gridded2OctahedralGG::getGriddedTargetName(std::string& name) const {
+    name = "O" + std::to_string(N_);
+    return true;
+}
+
+
 const char* Gridded2OctahedralGG::name() const {
     return "Gridded2OctahedralGG";
 }

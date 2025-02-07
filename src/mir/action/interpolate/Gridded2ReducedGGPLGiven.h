@@ -85,6 +85,8 @@ private:
     // From Gridded2GriddedInterpolation
     const repres::Representation* outputRepresentation() const override;
 
+    bool getGriddedTargetName(std::string&) const override;
+
     // -- Class members
     // None
 

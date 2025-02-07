@@ -66,6 +66,8 @@ private:
 
     void sh2grid(data::MIRField& field, const atlas_trans_t& trans, const param::MIRParametrisation&) const override;
 
+    bool getGriddedTargetName(std::string& name) const override;
+
     // -- Class members
     // None
 

@@ -49,6 +49,12 @@ const repres::Representation* Gridded2ReducedGGPLGiven::outputRepresentation() c
 }
 
 
+bool Gridded2ReducedGGPLGiven::getGriddedTargetName(std::string& name) const {
+    name = "N" + std::to_string(pl_.size());
+    return true;
+}
+
+
 const char* Gridded2ReducedGGPLGiven::name() const {
     return "Gridded2ReducedGGPLGiven";
 }

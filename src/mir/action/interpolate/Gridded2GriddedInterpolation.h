@@ -103,6 +103,8 @@ private:
 
     method::Cropping cropping(context::Context&) const;
 
+    bool isRegridAction() const override { return true; }
+
     // -- Class members
     // None
 

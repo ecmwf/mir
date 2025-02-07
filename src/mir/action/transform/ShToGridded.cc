@@ -293,6 +293,14 @@ void ShToGridded::estimate(context::Context& ctx, api::MIREstimation& estimation
 
 
 bool ShToGridded::mergeWithNext(const Action& next) {
+    // merge only if the target is the same
+    if (next.isRegridAction()) {
+        if (std::string name, nextName; getGriddedTargetName(name) && next.getGriddedTargetName(nextName)) {
+            if (name == nextName) {
+                return true;
+            }
+        }
+    }
 
     // make use of the area cropping action downstream (no merge)
     bool canMerge = "local" == options_.getString("type", "?");
@@ -316,11 +324,8 @@ bool ShToGridded::mergeWithNext(const Action& next) {
         // Magic super-powers!
         repres::RepresentationHandle out(outputRepresentation());
         cropping_.boundingBox(out->extendBoundingBox(bbox));
-
-        Log::debug() << "ShToGridded::mergeWithNext: "
-                     << "\n   " << oldAction.str() << "\n + " << next << "\n = " << *this << "\n + "
-                     << "(...)" << std::endl;
     }
+
     return false;
 }
 

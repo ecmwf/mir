@@ -55,6 +55,13 @@ void ShToOctahedralGG<Invtrans>::sh2grid(data::MIRField& field, const ShToGridde
 
 
 template <class Invtrans>
+bool ShToOctahedralGG<Invtrans>::getGriddedTargetName(std::string& name) const {
+    name = "O" + std::to_string(N_);
+    return true;
+}
+
+
+template <class Invtrans>
 const char* ShToOctahedralGG<Invtrans>::name() const {
     return "ShToOctahedralGG";
 }

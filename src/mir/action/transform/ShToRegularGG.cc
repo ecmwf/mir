@@ -55,6 +55,13 @@ void ShToRegularGG<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::
 
 
 template <class Invtrans>
+bool ShToRegularGG<Invtrans>::getGriddedTargetName(std::string& name) const {
+    name = "F" + std::to_string(N_);
+    return true;
+}
+
+
+template <class Invtrans>
 const char* ShToRegularGG<Invtrans>::name() const {
     return "ShToRegularGG";
 }

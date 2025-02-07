@@ -35,7 +35,7 @@ const Grid* SourcePattern::make(const std::string& name) const {
 
 
 std::string SourcePattern::canonical(const std::string& name, const param::MIRParametrisation& param) const {
-    return intgrid::Source(param, 0 /*unused*/).gridname();
+    return param.fieldParametrisation().has("truncation") ? intgrid::Source(param, 0 /*unused*/).gridname() : "";
 }
 
 

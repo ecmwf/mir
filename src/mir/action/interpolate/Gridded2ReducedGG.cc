@@ -47,6 +47,12 @@ const repres::Representation* Gridded2ReducedGG::outputRepresentation() const {
 }
 
 
+bool Gridded2ReducedGG::getGriddedTargetName(std::string& name) const {
+    name = "N" + std::to_string(N_);
+    return true;
+}
+
+
 const char* Gridded2ReducedGG::name() const {
     return "Gridded2ReducedGG";
 }

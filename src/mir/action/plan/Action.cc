@@ -63,7 +63,17 @@ bool Action::isCropAction() const {
 }
 
 
+bool Action::isRegridAction() const {
+    return false;
+}
+
+
 bool Action::canCrop() const {
+    return false;
+}
+
+
+bool Action::getGriddedTargetName(std::string&) const {
     return false;
 }
 

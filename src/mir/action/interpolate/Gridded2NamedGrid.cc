@@ -47,6 +47,12 @@ const repres::Representation* Gridded2NamedGrid::outputRepresentation() const {
 }
 
 
+bool Gridded2NamedGrid::getGriddedTargetName(std::string& name) const {
+    name = grid_;
+    return true;
+}
+
+
 const char* Gridded2NamedGrid::name() const {
     return "Gridded2NamedGrid";
 }
