@@ -66,7 +66,6 @@ private:
     const char* name() const override;
     const repres::Representation* outputRepresentation() const override;
     void print(std::ostream&) const override;
-
     void sh2grid(data::MIRField& field, const atlas_trans_t& trans, const param::MIRParametrisation&) const override;
 
     // -- Class members

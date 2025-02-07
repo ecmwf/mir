@@ -48,25 +48,6 @@ public:
     // -- Class methods
     // None
 
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-
-    // From Gridded2GriddedInterpolation
-    bool sameAs(const Action&) const override;
-    void print(std::ostream&) const override;
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
 private:
     // -- Members
 
@@ -77,10 +58,11 @@ private:
 
     // -- Overridden methods
 
-    // From Action
+    bool sameAs(const Action&) const override;
+    void print(std::ostream&) const override;
+
     const char* name() const override;
 
-    // From Gridded2GriddedInterpolation
     const repres::Representation* outputRepresentation() const override;
 
     bool getGriddedTargetName(std::string&) const override;
