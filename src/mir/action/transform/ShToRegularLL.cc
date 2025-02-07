@@ -26,13 +26,12 @@ namespace mir::action::transform {
 
 
 template <class Invtrans>
-ShToRegularLL<Invtrans>::ShToRegularLL(const param::MIRParametrisation& parametrisation) :
-    ShToGridded(parametrisation) {
-    key::Area::get(parametrisation_.userParametrisation(), bbox_);
+ShToRegularLL<Invtrans>::ShToRegularLL(const param::MIRParametrisation& param) : ShToGridded(param) {
+    key::Area::get(parametrisation().userParametrisation(), bbox_);
 
     std::vector<double> value;
 
-    ASSERT(parametrisation.userParametrisation().get("grid", value));
+    ASSERT(parametrisation().userParametrisation().get("grid", value));
     ASSERT_KEYWORD_GRID_SIZE(value.size());
     increments_ = util::Increments(value[0], value[1]);
 }

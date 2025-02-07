@@ -27,12 +27,11 @@
 namespace mir::action::filter {
 
 
-CesaroSummationFilter::CesaroSummationFilter(const param::MIRParametrisation& parametrisation) :
-    Action(parametrisation), k_(2.), Tmin_(1) {
-    parametrisation.get("cesaro-k", k_);
+CesaroSummationFilter::CesaroSummationFilter(const param::MIRParametrisation& param) : Action(param), k_(2.), Tmin_(1) {
+    parametrisation().get("cesaro-k", k_);
     ASSERT(0. <= k_);
 
-    parametrisation.get("cesaro-truncation", Tmin_);
+    parametrisation().get("cesaro-truncation", Tmin_);
     ASSERT(1 <= Tmin_);
 }
 

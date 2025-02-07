@@ -25,9 +25,8 @@ namespace mir::action::transform {
 
 
 template <class Invtrans>
-ShToReducedGGPLGiven<Invtrans>::ShToReducedGGPLGiven(const param::MIRParametrisation& parametrisation) :
-    ShToGridded(parametrisation) {
-    ASSERT(parametrisation_.userParametrisation().get("pl", pl_));
+ShToReducedGGPLGiven<Invtrans>::ShToReducedGGPLGiven(const param::MIRParametrisation& param) : ShToGridded(param) {
+    ASSERT(parametrisation().userParametrisation().get("pl", pl_));
 }
 
 

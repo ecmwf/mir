@@ -22,9 +22,8 @@
 namespace mir::action::interpolate {
 
 
-Gridded2OctahedralGG::Gridded2OctahedralGG(const param::MIRParametrisation& parametrisation) :
-    Gridded2UnrotatedGrid(parametrisation) {
-    ASSERT(parametrisation_.userParametrisation().get("octahedral", N_));
+Gridded2OctahedralGG::Gridded2OctahedralGG(const param::MIRParametrisation& param) : Gridded2UnrotatedGrid(param) {
+    ASSERT(parametrisation().userParametrisation().get("octahedral", N_));
 }
 
 

@@ -27,7 +27,7 @@ EndAction::EndAction(const param::MIRParametrisation& param, output::MIROutput& 
 bool EndAction::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const EndAction*>(&other);
     return (o != nullptr) && output_.sameAs(o->output_) &&
-           o->output_.sameParametrisation(parametrisation_, o->parametrisation_);
+           o->output_.sameParametrisation(parametrisation(), o->parametrisation());
 }
 
 
@@ -38,7 +38,7 @@ bool EndAction::isEndAction() const {
 
 void EndAction::print(std::ostream& out) const {
     out << name() << "[";
-    if (output().printParametrisation(out, parametrisation_)) {
+    if (output().printParametrisation(out, parametrisation())) {
         out << ",";
     }
     out << "output=" << output() << "]";
@@ -47,7 +47,7 @@ void EndAction::print(std::ostream& out) const {
 
 void EndAction::custom(std::ostream& out) const {
     out << name() << "[";
-    if (output().printParametrisation(out, parametrisation_)) {
+    if (output().printParametrisation(out, parametrisation())) {
         out << ",";
     }
     out << "output=...]";

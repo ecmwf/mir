@@ -24,9 +24,8 @@
 namespace mir::action::interpolate {
 
 
-Gridded2GridDef::Gridded2GridDef(const param::MIRParametrisation& parametrisation) :
-    Gridded2UnrotatedGrid(parametrisation) {
-    ASSERT(parametrisation_.userParametrisation().get("griddef", griddef_));
+Gridded2GridDef::Gridded2GridDef(const param::MIRParametrisation& param) : Gridded2UnrotatedGrid(param) {
+    ASSERT(parametrisation().userParametrisation().get("griddef", griddef_));
 }
 
 

@@ -30,11 +30,11 @@
 namespace mir::action::transform {
 
 
-ShVodToUV::ShVodToUV(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
+ShVodToUV::ShVodToUV(const param::MIRParametrisation& param) : Action(param) {
 
     // use the 'local' spectral transforms
     std::string type = "local";
-    parametrisation.get("atlas-trans-type", type);
+    parametrisation().get("atlas-trans-type", type);
 
     if (!atlas::trans::Trans::hasBackend(type)) {
         std::ostringstream msg;
@@ -74,8 +74,8 @@ void ShVodToUV::execute(context::Context& ctx) const {
 
 
     // get vo/d, allocate U/V
-    const MIRValuesVector& field_vo = field.values(0);
-    const MIRValuesVector& field_d  = field.values(1);
+    const auto& field_vo = field.values(0);
+    const auto& field_d  = field.values(1);
 
     Log::debug() << "ShVodToUV truncation=" << truncation << ", size=" << size << ", values=" << field_vo.size()
                  << std::endl;
@@ -91,8 +91,8 @@ void ShVodToUV::execute(context::Context& ctx) const {
 
 
     // transform
-    const int T         = int(truncation);
-    const int nb_coeff  = int(size);
+    const auto T        = static_cast<int>(truncation);
+    const auto nb_coeff = static_cast<int>(size);
     const int nb_fields = 1;
 
     atlas::trans::VorDivToUV vordiv_to_UV(T, options_);
@@ -104,7 +104,7 @@ void ShVodToUV::execute(context::Context& ctx) const {
     // configure paramIds for U/V
     long id_u = 0;
     long id_v = 0;
-    util::Wind::paramIds(parametrisation_, id_u, id_v);
+    util::Wind::paramIds(parametrisation(), id_u, id_v);
 
 
     field.update(result_U, 0);

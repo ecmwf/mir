@@ -94,12 +94,12 @@ public:
 
 protected:
     // -- Members
-
-    const param::MIRParametrisation& parametrisation_;
+    // None
 
     // -- Methods
 
     virtual void print(std::ostream&) const = 0;
+    const param::MIRParametrisation& parametrisation() const { return parametrisation_; }
 
     // -- Overridden methods
     // None
@@ -112,7 +112,8 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    const param::MIRParametrisation& parametrisation_;
 
     // -- Methods
 

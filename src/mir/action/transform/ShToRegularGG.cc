@@ -25,9 +25,8 @@ namespace mir::action::transform {
 
 
 template <class Invtrans>
-ShToRegularGG<Invtrans>::ShToRegularGG(const param::MIRParametrisation& parametrisation) :
-    ShToGridded(parametrisation) {
-    ASSERT(parametrisation_.userParametrisation().get("regular", N_));
+ShToRegularGG<Invtrans>::ShToRegularGG(const param::MIRParametrisation& param) : ShToGridded(param) {
+    ASSERT(parametrisation().userParametrisation().get("regular", N_));
 }
 
 

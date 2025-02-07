@@ -25,9 +25,8 @@ namespace mir::action::transform {
 
 
 template <class Invtrans>
-ShToOctahedralGG<Invtrans>::ShToOctahedralGG(const param::MIRParametrisation& parametrisation) :
-    ShToGridded(parametrisation) {
-    ASSERT(parametrisation_.userParametrisation().get("octahedral", N_));
+ShToOctahedralGG<Invtrans>::ShToOctahedralGG(const param::MIRParametrisation& param) : ShToGridded(param) {
+    ASSERT(parametrisation().userParametrisation().get("octahedral", N_));
 }
 
 

@@ -26,7 +26,7 @@
 namespace mir::action {
 
 
-Action::Action(const param::MIRParametrisation& parametrisation) : parametrisation_(parametrisation) {}
+Action::Action(const param::MIRParametrisation& param) : parametrisation_(param) {}
 
 
 Action::~Action() = default;

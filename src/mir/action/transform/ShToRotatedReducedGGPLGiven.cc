@@ -25,12 +25,12 @@ namespace mir::action::transform {
 
 
 template <class Invtrans>
-ShToRotatedReducedGGPLGiven<Invtrans>::ShToRotatedReducedGGPLGiven(const param::MIRParametrisation& parametrisation) :
-    ShToGridded(parametrisation) {
-    ASSERT(parametrisation_.userParametrisation().get("pl", pl_));
+ShToRotatedReducedGGPLGiven<Invtrans>::ShToRotatedReducedGGPLGiven(const param::MIRParametrisation& param) :
+    ShToGridded(param) {
+    ASSERT(parametrisation().userParametrisation().get("pl", pl_));
 
     std::vector<double> value;
-    ASSERT(parametrisation_.userParametrisation().get("rotation", value));
+    ASSERT(parametrisation().userParametrisation().get("rotation", value));
     ASSERT_KEYWORD_ROTATION_SIZE(value.size());
     rotation_ = util::Rotation(value[0], value[1]);
 }

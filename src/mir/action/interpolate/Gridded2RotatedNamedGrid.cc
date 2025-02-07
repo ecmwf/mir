@@ -22,9 +22,9 @@
 namespace mir::action::interpolate {
 
 
-Gridded2RotatedNamedGrid::Gridded2RotatedNamedGrid(const param::MIRParametrisation& parametrisation) :
-    Gridded2RotatedGrid(parametrisation) {
-    ASSERT(key::grid::Grid::get("grid", grid_, parametrisation) && !grid_.empty());
+Gridded2RotatedNamedGrid::Gridded2RotatedNamedGrid(const param::MIRParametrisation& param) :
+    Gridded2RotatedGrid(param) {
+    ASSERT(key::grid::Grid::get("grid", grid_, parametrisation()) && !grid_.empty());
 }
 
 
@@ -42,7 +42,7 @@ void Gridded2RotatedNamedGrid::print(std::ostream& out) const {
 
 
 const repres::Representation* Gridded2RotatedNamedGrid::outputRepresentation() const {
-    const auto& ng = key::grid::Grid::lookup(grid_);
+    const auto& ng = key::grid::Grid::lookup(grid_, parametrisation());
     return ng.representation(rotation());
 }
 
