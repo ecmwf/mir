@@ -12,7 +12,7 @@ requires = ["setuptools>=65", "Cython>=3.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mir-python"
+name = "mir"
 version = "0.3.0"
 description = "Don't use this"
 requires-python=">=3.9"
