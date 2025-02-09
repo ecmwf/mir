@@ -363,6 +363,8 @@ list(APPEND mir_srcs
     method/WeightMatrix.h
     method/gridbox/GridBoxAverage.cc
     method/gridbox/GridBoxAverage.h
+    method/gridbox/GridBoxAverage2ndOrder.cc
+    method/gridbox/GridBoxAverage2ndOrder.h
     method/gridbox/GridBoxMethod.cc
     method/gridbox/GridBoxMethod.h
     method/gridbox/GridBoxStatistics.cc
