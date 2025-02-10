@@ -25,6 +25,7 @@ set(TESTS
     iterator
     knn_weighting
     packing
+    polygon2
     raw_memory
     spectral_order
     statistics

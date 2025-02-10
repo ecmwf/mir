@@ -710,6 +710,8 @@ list(APPEND mir_srcs
     util/Point2ToPoint3.cc
     util/Point2ToPoint3.h
     util/PointLatLonT.h
+    util/Polygon2.cc
+    util/Polygon2.h
     util/Regex.cc
     util/Regex.h
     util/Rotation.cc

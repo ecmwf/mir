@@ -14,6 +14,9 @@
 
 #include <algorithm>
 #include <functional>
+#include <map>
+#include <memory>
+#include <vector>
 
 #include "eckit/linalg/SparseMatrix.h"
 #include "eckit/types/FloatCompare.h"
@@ -24,6 +27,7 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Point2ToPoint3.h"
+#include "mir/util/Polygon2.h"
 #include "mir/util/Trace.h"
 
 
@@ -36,12 +40,12 @@ namespace {
 const MethodBuilder<GridBoxAverage2ndOrder> __builder("grid-box-average-2nd-order");
 
 
-using closest_type       = std::vector<mir::search::PointSearch::PointValueType>;
-using grid_box_dual_type = std::vector<size_t>;
+using closest_type         = std::vector<search::PointSearch::PointValueType>;
+using polygon_indices_type = std::vector<size_t>;
 
 
-grid_box_dual_type grid_box_dual(const util::GridBox& gbox, const GridBoxMethod::GridBoxes& boxes,
-                                 const closest_type& closest_boxes, double epsilon = 1e-6) {
+polygon_indices_type grid_box_dual(const util::GridBox& gbox, const GridBoxMethod::GridBoxes& boxes,
+                                   const closest_type& closest_boxes, double epsilon = 1e-6) {
     enum Direction
     {
         N,
@@ -82,10 +86,8 @@ grid_box_dual_type grid_box_dual(const util::GridBox& gbox, const GridBoxMethod:
     ASSERT(neigh[W].size() <= 1);
     ASSERT(neigh[E].size() <= 1);
 
-    auto closed = !neigh[N].empty() && !neigh[W].empty() && !neigh[S].empty() && !neigh[E].empty();
-
     std::vector<size_t> dual;
-    dual.reserve(neigh[N].size() + neigh[W].size() + neigh[S].size() + neigh[E].size() + (closed ? 1 : 0));
+    dual.reserve(neigh[N].size() + neigh[W].size() + neigh[S].size() + neigh[E].size() + 1);
 
     for (const auto& d : neigh[N].empty()   ? std::vector<Direction>{W, S, E}
                          : neigh[W].empty() ? std::vector<Direction>{S, E, N}
@@ -95,40 +97,11 @@ grid_box_dual_type grid_box_dual(const util::GridBox& gbox, const GridBoxMethod:
         neigh[d].clear();
     }
 
-    if (closed) {
-        dual.insert(dual.end(), dual.front());
-    }
+    auto closed = !(neigh[N].empty() || neigh[W].empty() || neigh[S].empty() || neigh[E].empty());
+    dual.insert(dual.end(), closed ? dual.front() : closest_boxes.front().payload());
 
     return dual;
 }
-
-
-// struct ExplodedMatrix {
-//     ExplodedMatrix(const eckit::linalg::SparseMatrix& M) :
-//         Nr(M.rows()), Nc(M.cols()), ia(Nr + 1, 0), ja(M.nnz()), a(M.nnz()) {
-//         const auto base = static_cast<Index>(0);
-
-//         for (size_t n = 0; n < M.nnz(); ++n) {
-//             auto r = M.ia()[n] - base;
-//             auto c = M.ja()[n] - base;
-//             ASSERT(0 <= r && r < Nr);
-//             ASSERT(0 <= c && c < Nc);
-
-//             ia[r + 1]++;
-//             ja[n] = c;
-//         }
-//     }
-
-//     using Index  = eckit::linalg::Index;
-//     using Scalar = eckit::linalg::Scalar;
-//     using Size   = eckit::linalg::Size;
-
-//     const Size Nr;
-//     const Size Nc;
-//     std::vector<Index> ia;
-//     std::vector<Index> ja;
-//     std::vector<Scalar> a;
-// };
 
 
 }  // namespace
@@ -150,41 +123,84 @@ void GridBoxAverage2ndOrder::assemble(util::MIRStatistics& stats, WeightMatrix& 
     }
 
 
-    std::vector<grid_box_dual_type> dual;
+    struct grad_type {
+        const size_t j;
+        const size_t k;
+        const util::Polygon2 P;
+    };
+
+
+    std::vector<std::vector<grad_type>> grad;
+
     {
-        trace::ProgressTimer progress("GridBoxAverage2ndOrder: build dual mesh", in.numberOfPoints(),
+        trace::ProgressTimer progress("GridBoxAverage2ndOrder: source gradient", in.numberOfPoints(),
                                       {"grid box", "grid boxes"});
 
-        const GridBoxes boxes(in);
-        const auto R = boxes.getLongestGridBoxDiagonal() * 1.1;  // slightly larger than the longest diagonal
+        const GridBoxes inBoxes(in);
+        const auto R = inBoxes.getLongestGridBoxDiagonal() * 1.1;  // slightly larger than the longest diagonal
 
         auto tree = std::make_unique<search::PointSearch>(parametrisation_, in);
         util::Point2ToPoint3 point3(in, poleDisplacement());
         closest_type closest;
+
+        std::vector<Point2> P;
+        P.reserve(in.numberOfPoints());
+        for (const std::unique_ptr<repres::Iterator> it(in.iterator()); it->next();) {
+            P.emplace_back(it->pointRotated());
+        }
+
+        grad.reserve(in.numberOfPoints());
 
         for (const std::unique_ptr<repres::Iterator> it(in.iterator()); it->next();) {
             if (++progress) {
                 log << *tree << std::endl;
             }
 
+            const auto& box = inBoxes.at(it->index());
+            const util::Polygon2 clipper{{box.north(), box.west()},
+                                         {box.north(), box.east()},
+                                         {box.south(), box.east()},
+                                         {box.south(), box.west()}};
+
             tree->closestWithinRadius(point3(*(*it)), R, closest);
-            dual.emplace_back(grid_box_dual(boxes.at(it->index()), boxes, closest));
-        }
+            auto dual = grid_box_dual(box, inBoxes, closest);
+            ASSERT(dual.size() >= 3);
+
+            auto& grad_i = grad.emplace_back();
+            grad_i.reserve(dual.size());
+
+            for (int j = 0, k = 1, n = static_cast<int>(dual.size()); j < n; ++j, k = (k + 1) % n) {
+                util::Polygon2 tri{{P[dual[j]], it->pointRotated(), P[dual[k]]}};
+                tri.clip(clipper);
+
+                if (auto Ak = tri.area(); Ak > 0.) {
+                    grad_i.emplace_back(grad_type{dual[j], dual[k], std::move(tri)});
+                }
+            }
+            if (grad.size() >= 2)
+                break;
+        };
     }
-
-
-    NOTIMP;
 
 
     {
         trace::Timer time{"GridBoxAverage2ndOrder: assemble 2nd order"};
-        for (size_t i = 0; i < W.rows(); ++i) {
-            for (auto it = W.begin(i); it != W.end(i); ++it) {
-                ASSERT(it.col() < W.cols());
 
-                // TODO
+        std::vector<eckit::linalg::Triplet> triplets;
+        for (eckit::linalg::Size i = 0; i < W.rows(); ++i) {
+            std::map<eckit::linalg::Size, eckit::linalg::Scalar> row;
+            for (auto it = W.begin(i); it != W.end(i); ++it) {
+                row.emplace(it.col(), *it);
+            }
+
+            NOTIMP;
+
+            for (const auto& [j, a] : row) {
+                triplets.emplace_back(i, j, a);
             }
         }
+
+        W.setFromTriplets({triplets.begin(), triplets.end()});
     }
 }
 
