@@ -12,7 +12,10 @@
 
 #pragma once
 
+#include <vector>
+
 #include "mir/method/MethodWeighted.h"
+#include "mir/util/GridBox.h"
 
 
 namespace mir::method::gridbox {
@@ -21,6 +24,11 @@ namespace mir::method::gridbox {
 class GridBoxMethod : public MethodWeighted {
 public:
     using MethodWeighted::MethodWeighted;
+
+    struct GridBoxes : std::vector<util::GridBox> {
+        explicit GridBoxes(const repres::Representation&);
+        double getLongestGridBoxDiagonal() const;
+    };
 
 private:
     void hash(eckit::MD5&) const override;

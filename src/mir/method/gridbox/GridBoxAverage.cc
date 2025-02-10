@@ -26,7 +26,6 @@
 #include "mir/search/PointSearch.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
-#include "mir/util/GridBox.h"
 #include "mir/util/Log.h"
 #include "mir/util/Point2ToPoint3.h"
 #include "mir/util/Trace.h"
@@ -72,21 +71,6 @@ void GridBoxAverage::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, 
 
 
     // set input and output grid boxes
-    struct GridBoxes : std::vector<util::GridBox> {
-        explicit GridBoxes(const repres::Representation& rep) : vector(rep.gridBoxes()) {
-            ASSERT(size() == rep.numberOfPoints());
-        }
-
-        double getLongestGridBoxDiagonal() const {
-            double R = 0.;
-            for (const auto& box : *this) {
-                R = std::max(R, box.diagonal());
-            }
-            ASSERT(R > 0.);
-            return R;
-        }
-    };
-
     const GridBoxes inBoxes(in);
     const GridBoxes outBoxes(out);
     const auto R = inBoxes.getLongestGridBoxDiagonal() + outBoxes.getLongestGridBoxDiagonal();

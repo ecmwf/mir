@@ -15,6 +15,9 @@
 #include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
+#include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
+
 
 namespace mir::method::gridbox {
 
@@ -47,6 +50,22 @@ void GridBoxMethod::print(std::ostream& out) const {
 
 WeightMatrix::Check GridBoxMethod::validateMatrixWeights() const {
     return {true, true, false};
+}
+
+
+GridBoxMethod::GridBoxes::GridBoxes(const repres::Representation& rep) : vector(rep.gridBoxes()) {
+    ASSERT(size() == rep.numberOfPoints());
+}
+
+
+double GridBoxMethod::GridBoxes::getLongestGridBoxDiagonal() const {
+    double R = 0.;
+    for (const auto& box : *this) {
+        R = std::max(R, box.diagonal());
+    }
+
+    ASSERT(R > 0.);
+    return R;
 }
 
 

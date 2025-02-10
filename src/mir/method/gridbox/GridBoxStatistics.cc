@@ -26,7 +26,6 @@
 #include "mir/stats/Field.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
-#include "mir/util/GridBox.h"
 #include "mir/util/Log.h"
 #include "mir/util/Point2ToPoint3.h"
 #include "mir/util/Trace.h"
