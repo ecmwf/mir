@@ -243,9 +243,9 @@ cdef class Grid:
         return self._grid.type().decode()
 
     @property
-    def shape(self) -> list:
+    def shape(self) -> tuple:
         cdef vector[size_t] shape_vec = self._grid.shape()
-        return list(shape_vec)
+        return tuple(shape_vec)
 
     def size(self) -> int:
         return self._grid.size()
