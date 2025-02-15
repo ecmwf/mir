@@ -80,7 +80,7 @@ private:
     std::string factory() const override;
 
     // From Representation
-    std::vector<util::GridBox> gridBoxes() const override;
+    std::vector<util::GridBox> gridBoxes(bool dual) const override;
 
     // -- Class members
     // None

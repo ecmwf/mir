@@ -61,7 +61,7 @@ std::string RegularGG::factory() const {
 }
 
 
-std::vector<util::GridBox> RegularGG::gridBoxes() const {
+std::vector<util::GridBox> RegularGG::gridBoxes(bool dual) const {
     ASSERT(1 <= Ni_);
     ASSERT(1 <= Nj_);
 
@@ -111,8 +111,13 @@ std::vector<util::GridBox> RegularGG::gridBoxes() const {
 
         ASSERT(periodic ? lon0 == lon1.normalise(lon0) : lon0 <= lon1.normalise(lon0));
     }
-
     ASSERT(r.size() == Ni_ * Nj_);
+
+    if (dual) {
+        // FIXME
+        NOTIMP;
+    }
+
     return r;
 }
 

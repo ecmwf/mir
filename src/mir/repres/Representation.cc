@@ -56,7 +56,7 @@ RepresentationHandle::~RepresentationHandle() {
 }
 
 
-std::vector<util::GridBox> Representation::gridBoxes() const {
+std::vector<util::GridBox> Representation::gridBoxes(bool dual) const {
     std::ostringstream os;
     os << "Representation::gridBoxes() not implemented for " << *this;
     throw exception::SeriousBug(os.str());

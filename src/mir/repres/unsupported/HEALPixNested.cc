@@ -58,13 +58,13 @@ void HEALPixNested::print(std::ostream& out) const {
 }
 
 
-std::vector<util::GridBox> HEALPixNested::gridBoxes() const {
+std::vector<util::GridBox> HEALPixNested::gridBoxes(bool dual) const {
     const auto N = numberOfPoints();
 
     std::vector<util::GridBox> boxes;
     boxes.reserve(N);
 
-    auto boxes_ring = ring().gridBoxes();
+    auto boxes_ring = ring().gridBoxes(dual);
     for (auto r : reorder::HEALPixNestedToRing().reorder(N)) {
         boxes.push_back(boxes_ring.at(r));
     }

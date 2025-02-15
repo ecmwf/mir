@@ -112,7 +112,7 @@ void HEALPix::print(std::ostream& out) const {
 }
 
 
-std::vector<util::GridBox> HEALPix::gridBoxes() const {
+std::vector<util::GridBox> HEALPix::gridBoxes(bool dual) const {
     ::atlas::interpolation::method::GridBoxes boxes(atlasGridRef(), false);
 
     std::vector<util::GridBox> mirBoxes;
@@ -120,6 +120,12 @@ std::vector<util::GridBox> HEALPix::gridBoxes() const {
 
     std::for_each(boxes.cbegin(), boxes.cend(),
                   [&](const auto& box) { mirBoxes.emplace_back(box.north(), box.west(), box.south(), box.east()); });
+
+    if (dual) {
+        // FIXME
+        NOTIMP;
+    }
+
     return mirBoxes;
 }
 

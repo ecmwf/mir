@@ -40,7 +40,7 @@ void GridBoxIntegral::execute(const data::MIRField& field) {
     const repres::RepresentationHandle rep(field.representation());
     ASSERT(rep);
 
-    const auto boxes   = rep->gridBoxes();
+    const auto boxes   = rep->gridBoxes(false);
     const auto& values = field.values(0);
     ASSERT(values.size() == rep->numberOfPoints());
     ASSERT(values.size() == boxes.size());

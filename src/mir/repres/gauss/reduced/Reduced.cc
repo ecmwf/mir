@@ -288,7 +288,7 @@ void Reduced::estimate(api::MIREstimation& estimation) const {
 }
 
 
-std::vector<util::GridBox> Reduced::gridBoxes() const {
+std::vector<util::GridBox> Reduced::gridBoxes(bool dual) const {
     ASSERT(1 <= Nj_);
 
 
@@ -320,9 +320,9 @@ std::vector<util::GridBox> Reduced::gridBoxes() const {
         ASSERT(n >= s);
 
         // longitude edges
-        const auto w = west.fraction();
-        auto Nw      = (w / inc).integralPart();
-        if (Nw * inc < w) {
+        const auto _w = west.fraction();
+        auto Nw       = (_w / inc).integralPart();
+        if (Nw * inc < _w) {
             Nw += 1;
         }
 
@@ -356,8 +356,13 @@ std::vector<util::GridBox> Reduced::gridBoxes() const {
             ASSERT(lon0 <= lon1.normalise(lon0));
         }
     }
-
     ASSERT(r.size() == numberOfPoints());
+
+    if (dual) {
+        // FIXME
+        NOTIMP;
+    }
+
     return r;
 }
 

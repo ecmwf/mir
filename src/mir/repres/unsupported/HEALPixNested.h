@@ -81,7 +81,7 @@ private:
     void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
 
-    std::vector<util::GridBox> gridBoxes() const override;
+    std::vector<util::GridBox> gridBoxes(bool dual) const override;
 
     ::atlas::Grid atlasGrid() const override;
 

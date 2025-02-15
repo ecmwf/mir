@@ -72,7 +72,7 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
 
     // set input and output grid boxes
     struct GridBoxes : std::vector<util::GridBox> {
-        explicit GridBoxes(const repres::Representation& rep) : vector(rep.gridBoxes()) {
+        explicit GridBoxes(const repres::Representation& rep) : vector(rep.gridBoxes(false)) {
             ASSERT(size() == rep.numberOfPoints());
         }
 

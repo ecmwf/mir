@@ -54,7 +54,7 @@ CASE("grid boxes: West-East periodicity, reduced Gaussian grids") {
         repres::RepresentationHandle r(new repres::gauss::reduced::ReducedFromPL(pl.size() / 2, pl));
         ASSERT(r->domain().isPeriodicWestEast());
 
-        const auto boxes = r->gridBoxes();
+        const auto boxes = r->gridBoxes(false);
         EXPECT(boxes.size() == r->numberOfPoints());
         EXPECT(boxes.size() == 40);
 
@@ -78,7 +78,7 @@ CASE("grid boxes: West-East periodicity, reduced Gaussian grids") {
         repres::RepresentationHandle r(new repres::gauss::reduced::ReducedFromPL(pl.size() / 2, pl, bbox));
         ASSERT(!r->domain().isPeriodicWestEast());
 
-        const auto boxes = r->gridBoxes();
+        const auto boxes = r->gridBoxes(false);
         EXPECT(boxes.size() == r->numberOfPoints());
         EXPECT(boxes.size() == 11);
 
@@ -101,7 +101,7 @@ CASE("grid boxes: West-East periodicity, regular Gaussian grids") {
         repres::RepresentationHandle r(new repres::gauss::regular::RegularGG(1));
         ASSERT(r->domain().isPeriodicWestEast());
 
-        const auto boxes = r->gridBoxes();
+        const auto boxes = r->gridBoxes(false);
         EXPECT(boxes.size() == r->numberOfPoints());
         EXPECT(boxes.size() == 8);
 
@@ -124,7 +124,7 @@ CASE("grid boxes: West-East periodicity, regular Gaussian grids") {
         repres::RepresentationHandle r(new repres::gauss::regular::RegularGG(1, bbox));
         ASSERT(!r->domain().isPeriodicWestEast());
 
-        const auto boxes = r->gridBoxes();
+        const auto boxes = r->gridBoxes(false);
         EXPECT(boxes.size() == r->numberOfPoints());
         EXPECT(boxes.size() == 3);
 
@@ -146,7 +146,7 @@ CASE("grid boxes: West-East periodicity, regular lat/lon grids") {
         repres::RepresentationHandle r(new repres::latlon::RegularLL(util::Increments{inc, 90.}));
         ASSERT(r->domain().isPeriodicWestEast());
 
-        const auto boxes = r->gridBoxes();
+        const auto boxes = r->gridBoxes(false);
         EXPECT(boxes.size() == r->numberOfPoints());
         EXPECT(boxes.size() == 60);
 
@@ -168,7 +168,7 @@ CASE("grid boxes: West-East periodicity, regular lat/lon grids") {
         repres::RepresentationHandle r(new repres::latlon::RegularLL(util::Increments{inc, 90.}, bbox));
         ASSERT(!r->domain().isPeriodicWestEast());
 
-        const auto boxes = r->gridBoxes();
+        const auto boxes = r->gridBoxes(false);
         EXPECT(boxes.size() == r->numberOfPoints());
         EXPECT(boxes.size() == 22);
 
@@ -200,7 +200,7 @@ CASE("grid boxes: West-East periodicity, reduced lat/lon grids") {
         repres::RepresentationHandle r(new repres::latlon::ReducedLL(param));
         ASSERT(r->domain().isPeriodicWestEast());
 
-        const auto boxes = r->gridBoxes();
+        const auto boxes = r->gridBoxes(false);
         EXPECT(boxes.size() == r->numberOfPoints());
         EXPECT(boxes.size() == 40);
 
@@ -232,7 +232,7 @@ CASE("grid boxes: West-East periodicity, reduced lat/lon grids") {
         repres::RepresentationHandle r(new repres::latlon::ReducedLL(param));
         ASSERT(!r->domain().isPeriodicWestEast());
 
-        const auto boxes = r->gridBoxes();
+        const auto boxes = r->gridBoxes(false);
         EXPECT(boxes.size() == r->numberOfPoints());
         EXPECT(boxes.size() == 22);
 
@@ -249,11 +249,16 @@ CASE("grid boxes: West-East periodicity, reduced lat/lon grids") {
 }
 
 
+CASE("grid boxes dual: reduced Gaussian grids") {
+    SECTION("periodic") {}
+}
+
+
 CASE("MIR-666") {
     // shifted grid, with finely-adjusted bounding box
     repres::RepresentationHandle r(new repres::latlon::RegularLL(
         util::Increments{0.05, 0.05}, util::BoundingBox{0.025, 27.875, -0.025, 57.825}, {-0.025, 27.875}));
-    const auto boxes = r->gridBoxes();
+    const auto boxes = r->gridBoxes(false);
 }
 
 

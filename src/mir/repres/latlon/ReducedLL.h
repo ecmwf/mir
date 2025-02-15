@@ -97,7 +97,7 @@ private:
     bool getLongestElementDiagonal(double&) const override;
 
     // From Representation
-    std::vector<util::GridBox> gridBoxes() const override;
+    std::vector<util::GridBox> gridBoxes(bool dual) const override;
     const Representation* croppedRepresentation(const util::BoundingBox&) const override;
 
     // -- Class members

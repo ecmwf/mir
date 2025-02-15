@@ -74,7 +74,7 @@ private:
     // From Representation
     const RegularLL* croppedRepresentation(const util::BoundingBox&) const override;
     util::BoundingBox extendBoundingBox(const util::BoundingBox&) const override;
-    std::vector<util::GridBox> gridBoxes() const override;
+    std::vector<util::GridBox> gridBoxes(bool dual) const override;
 
     std::string factory() const override;
 

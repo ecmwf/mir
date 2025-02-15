@@ -53,7 +53,7 @@ WeightMatrix::Check GridBoxMethod::validateMatrixWeights() const {
 }
 
 
-GridBoxMethod::GridBoxes::GridBoxes(const repres::Representation& rep) : vector(rep.gridBoxes()) {
+GridBoxMethod::GridBoxes::GridBoxes(const repres::Representation& rep) : vector(rep.gridBoxes(false)) {
     ASSERT(size() == rep.numberOfPoints());
 }
 

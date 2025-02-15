@@ -272,7 +272,7 @@ Iterator* ReducedLL::iterator() const {
     return new ReducedLLIterator(pl_, domain());
 }
 
-std::vector<util::GridBox> ReducedLL::gridBoxes() const {
+std::vector<util::GridBox> ReducedLL::gridBoxes(bool dual) const {
     const auto dom   = domain();
     const auto north = dom.north();
     const auto west  = dom.west();
@@ -341,8 +341,13 @@ std::vector<util::GridBox> ReducedLL::gridBoxes() const {
             ASSERT(lon0 <= lon1.normalise(lon0));
         }
     }
-
     ASSERT(r.size() == numberOfPoints());
+
+    if (dual) {
+        // FIXME
+        NOTIMP;
+    }
+
     return r;
 }
 

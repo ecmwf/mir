@@ -65,7 +65,7 @@ struct MIRGridBoxArea : MIRTool {
             auto& area = field.direct(0);
 
             size_t i = 0;
-            for (const auto& box : repres::RepresentationHandle(field.representation())->gridBoxes()) {
+            for (const auto& box : repres::RepresentationHandle(field.representation())->gridBoxes(false)) {
                 area[i++] = box.area();
             }
 

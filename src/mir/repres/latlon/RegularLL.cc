@@ -145,7 +145,7 @@ util::BoundingBox RegularLL::extendBoundingBox(const util::BoundingBox& bbox) co
     return extended;
 }
 
-std::vector<util::GridBox> RegularLL::gridBoxes() const {
+std::vector<util::GridBox> RegularLL::gridBoxes(bool dual) const {
     const auto dom   = domain();
     const auto north = dom.north();
     const auto west  = dom.west();
@@ -210,8 +210,13 @@ std::vector<util::GridBox> RegularLL::gridBoxes() const {
 
         ASSERT(periodic ? lon0 == lon1.normalise(lon0) : lon0 <= lon1.normalise(lon0));
     }
-
     ASSERT(r.size() == numberOfPoints());
+
+    if (dual) {
+        // FIXME
+        NOTIMP;
+    }
+
     return r;
 }
 
