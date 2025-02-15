@@ -114,10 +114,12 @@ void HEALPix::print(std::ostream& out) const {
 
 std::vector<util::GridBox> HEALPix::gridBoxes() const {
     ::atlas::interpolation::method::GridBoxes boxes(atlasGridRef(), false);
-    std::vector<util::GridBox> mirBoxes(boxes.size());
-    std::transform(boxes.cbegin(), boxes.cend(), mirBoxes.begin(), [](const auto& other) {
-        return util::GridBox{other.north(), other.west(), other.south(), other.east()};
-    });
+
+    std::vector<util::GridBox> mirBoxes;
+    mirBoxes.reserve(boxes.size());
+
+    std::for_each(boxes.cbegin(), boxes.cend(),
+                  [&](const auto& box) { mirBoxes.emplace_back(box.north(), box.west(), box.south(), box.east()); });
     return mirBoxes;
 }
 
