@@ -213,8 +213,18 @@ std::vector<util::GridBox> RegularLL::gridBoxes(bool dual) const {
     ASSERT(r.size() == numberOfPoints());
 
     if (dual) {
-        // FIXME
-        NOTIMP;
+        for (int j = 0, nj = static_cast<int>(nj_); j < nj; ++j) {
+            for (int i = 0, ni = static_cast<int>(ni_); i < ni; ++i) {
+                using index_t = util::GridBox::DualIndices::value_type;
+
+                index_t n = i + ni * (j == 0 ? j : j - 1);
+                index_t s = i + ni * (j == nj - 1 ? j : j + 1);
+                index_t w = j * ni + (periodic ? ((i - 1) % ni + ni) % ni : (i == 0 ? i : i - 1));
+                index_t e = j * ni + (periodic ? (i + 1) % ni : (i == ni - 1 ? i : i + 1));
+
+                r.at(j * ni + i).dual({n, w, s, e}, {r[n].centre(), r[w].centre(), r[s].centre(), r[e].centre()});
+            }
+        }
     }
 
     return r;
