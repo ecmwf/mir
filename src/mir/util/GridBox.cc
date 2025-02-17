@@ -18,6 +18,7 @@
 
 #include "eckit/types/FloatCompare.h"
 
+#include "mir/util/Angles.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Latitude.h"
@@ -25,6 +26,31 @@
 
 
 namespace mir::util {
+
+
+namespace {
+
+
+constexpr double EPS = 1e-9;
+
+
+inline bool is_latitude_approximately_equal(double l1, double l2, double epsilon) {
+    return eckit::types::is_approximately_equal(l1, l2, epsilon);
+}
+
+
+inline bool is_longitude_approximately_equal(double l1, double l2, double epsilon) {
+    const auto mm = std::minmax(l1, l2);
+    return eckit::types::is_approximately_equal(mm.first, util::normalise_longitude(mm.second, mm.first), epsilon);
+}
+
+
+inline bool is_longitude_less_than(double l1, double l2, double min) {
+    return util::normalise_longitude(l1, min) < util::normalise_longitude(l2, min);
+}
+
+
+}  // namespace
 
 
 GridBox::Dual::Dual(const GridBox& box, const DualIndices& indices, const DualPolygon& polygon) :
@@ -191,6 +217,26 @@ bool GridBox::intersects(GridBox& other) const {
         return true;
     }
     return false;
+}
+
+
+bool GridBox::sameNorth(const GridBox& other) const {
+    return is_latitude_approximately_equal(north_, other.north_, EPS);
+}
+
+
+bool GridBox::sameWest(const GridBox& other) const {
+    return is_longitude_approximately_equal(west_, other.west_, EPS);
+}
+
+
+bool GridBox::sameSouth(const GridBox& other) const {
+    return is_latitude_approximately_equal(south_, other.south_, EPS);
+}
+
+
+bool GridBox::sameEast(const GridBox& other) const {
+    return is_longitude_approximately_equal(east_, other.east_, EPS);
 }
 
 

@@ -74,6 +74,11 @@ public:
     bool contains(const Point2&) const;
     bool intersects(GridBox&) const;
 
+    bool sameNorth(const GridBox&) const;
+    bool sameWest(const GridBox&) const;
+    bool sameSouth(const GridBox&) const;
+    bool sameEast(const GridBox&) const;
+
     double north() const { return north_; }
     double west() const { return west_; }
     double south() const { return south_; }
