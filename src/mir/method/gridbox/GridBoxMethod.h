@@ -26,7 +26,7 @@ public:
     using MethodWeighted::MethodWeighted;
 
     struct GridBoxes : std::vector<util::GridBox> {
-        explicit GridBoxes(const repres::Representation&);
+        explicit GridBoxes(const repres::Representation&, bool dual = false);
         double getLongestGridBoxDiagonal() const;
     };
 
