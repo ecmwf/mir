@@ -13,6 +13,7 @@
 #include "mir/util/GridBox.h"
 
 #include <algorithm>
+#include <cmath>
 #include <ostream>
 
 #include "eckit/types/FloatCompare.h"
@@ -24,6 +25,96 @@
 
 
 namespace mir::util {
+
+
+GridBox::Dual::Dual(const GridBox& box, const DualIndices& indices, const DualPolygon& polygon) :
+    proj(box.centre()), C(box.centre()) {
+    ASSERT(indices.size() == polygon.size());
+    reserve(indices.size());
+
+    DualPolygon box_s{proj.to_stereo({box.north(), box.west()}), proj.to_stereo({box.south(), box.west()}),
+                      proj.to_stereo({box.south(), box.east()}), proj.to_stereo({box.north(), box.east()})};
+    box_s.simplify();
+
+    for (int j = 0, k = 1, N = static_cast<int>(indices.size()); j < N; ++j, k = (k + 1) % N) {
+        Polygon2 clipper{{0., 0.}, proj.to_stereo(polygon[j]), proj.to_stereo(polygon[k])};
+        clipper.simplify();
+
+        auto poly = box_s;
+        poly.clip(clipper);
+
+        if (!poly.empty()) {
+            emplace_back(std::move(poly), indices[j], indices[k]);
+        }
+    }
+}
+
+
+std::vector<GridBox::DualPartition> GridBox::Dual::intersect(const GridBox& box) const {
+    std::vector<GridBox::DualPartition> r;
+    r.reserve(size());
+
+    // calculate in local (stereographic) coordinates, return in (lat, lon) coordinates
+    DualPolygon box_s{proj.to_stereo({box.north(), box.west()}), proj.to_stereo({box.south(), box.west()}),
+                      proj.to_stereo({box.south(), box.east()}), proj.to_stereo({box.north(), box.east()})};
+    box_s.simplify();
+
+    for (const auto& p : *this) {
+        auto dual_s = p.poly;
+        dual_s.clip(box_s);
+
+        if (!dual_s.empty()) {
+            Polygon2 dual(dual_s);
+            std::for_each(dual.begin(), dual.end(), [this](auto& p) { p = proj.to_latlon(p); });
+            r.emplace_back(std::move(dual_s), p.j, p.k);
+        }
+    }
+
+    return r;
+}
+
+
+GridBox::Dual::LatLonToStereographic::LatLonToStereographic(Point2 C) :
+    R([](double latr, double lonr) {
+        return eckit::maths::Matrix3<double>{std::sin(lonr),
+                                             -std::cos(lonr),
+                                             0.,
+                                             std::cos(lonr) * std::sin(latr),
+                                             std::sin(lonr) * std::sin(latr),
+                                             -std::cos(latr),
+                                             std::cos(lonr) * std::cos(latr),
+                                             std::sin(lonr) * std::cos(latr),
+                                             std::sin(latr)};
+    }(degree_to_radian(C[0]), degree_to_radian(C[1]))),
+    Ri([](double latr, double lonr) -> eckit::maths::Matrix3<double> {
+        return eckit::maths::Matrix3<double>{std::sin(lonr),
+                                             std::cos(lonr) * std::sin(latr),
+                                             std::cos(lonr) * std::cos(latr),
+                                             -std::cos(lonr),
+                                             std::sin(lonr) * std::sin(latr),
+                                             std::sin(lonr) * std::cos(latr),
+                                             0.,
+                                             -std::cos(latr),
+                                             std::sin(latr)};
+    }(degree_to_radian(C[0]), degree_to_radian(C[1]))) {}
+
+
+Point2 GridBox::Dual::LatLonToStereographic::to_stereo(Point2 P) const {
+    Point3 P3;
+    Earth::convertSphericalToCartesian({P[1], P[0]}, P3);
+    auto S = R * eckit::geo::Point3{P3[0], P3[1], P3[2]};
+    return {S[0] / (1. + S[2]), S[1] / (1. + S[2])};
+}
+
+
+Point2 GridBox::Dual::LatLonToStereographic::to_latlon(Point2 S) const {
+    const auto d = 1. / (1. + S[0] * S[0] + S[1] * S[1]);
+    const auto Q = Ri * eckit::geo::Point3{2. * S[0] * d, 2. * S[1] * d, (-1. + S[0] * S[0] + S[1] * S[1]) * d};
+
+    Point2 P;
+    Earth::convertCartesianToSpherical({Q[0], Q[1], Q[2]}, P);
+    return {P[1], P[0]};
+}
 
 
 GridBox::GridBox(double north, double west, double south, double east) :
@@ -45,6 +136,20 @@ double GridBox::diagonal() const {
 
 Point2 GridBox::centre() const {
     return {0.5 * (north_ + south_), 0.5 * (west_ + east_)};
+}
+
+
+void GridBox::dual(DualIndices&& indices, DualPolygon&& polygon) {
+    ASSERT(!indices.empty());
+    ASSERT(indices.size() == polygon.size());
+
+    dual_.reset(new Dual{*this, std::move(indices), std::move(polygon)});
+}
+
+
+const GridBox::Dual& GridBox::dual() const {
+    ASSERT(dual_);
+    return *dual_;
 }
 
 
