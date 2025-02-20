@@ -25,6 +25,7 @@
 #include "mir/search/PointSearch.h"
 #include "mir/stats/Field.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Earth.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/GridBox.h"
 #include "mir/util/Log.h"
@@ -108,11 +109,10 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
         const auto R = outBoxes.getLongestGridBoxDiagonal();
 
         auto point_2D = [](const Point3& point) -> Point2 {
-            atlas::PointLonLat pll;
-            util::Earth::convertCartesianToSpherical(point, pll);
+            auto pll = util::Earth::convertCartesianToSpherical(point);
 
             // notice the order
-            return {pll[1], pll[0]};
+            return {pll.lat, pll.lon};
         };
 
         for (size_t i = 0; i < outBoxes.size(); ++i) {

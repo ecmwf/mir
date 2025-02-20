@@ -51,11 +51,11 @@ void PseudoLaplace::operator()(size_t ip, const Point3& point,
     double Rz  = 0;
 
     for (size_t j = 0; j < npts; ++j) {
-        D[j] = Point3::sub(neighbours[j].point(), point);
+        D[j] = neighbours[j].point() - point;
 
-        auto dx = D[j][XYZCOORDS::XX];
-        auto dy = D[j][XYZCOORDS::YY];
-        auto dz = D[j][XYZCOORDS::ZZ];
+        auto dx = D[j].X;
+        auto dy = D[j].Y;
+        auto dz = D[j].Z;
 
         Ixx += dx * dx;
         Ixy += dx * dy;
@@ -86,7 +86,7 @@ void PseudoLaplace::operator()(size_t ip, const Point3& point,
 
     double sum = 0;
     for (size_t j = 0; j < npts; ++j) {
-        auto weight = 1. + Point3::dot(L, D[j]);
+        auto weight = 1. + dot(L, D[j]);
         triplets.emplace_back(ip, neighbours[j].payload(), weight);
         sum += weight;
     }

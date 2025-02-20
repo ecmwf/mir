@@ -25,6 +25,7 @@
 
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Earth.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Trace.h"
@@ -138,13 +139,12 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
                 boundWestEast(p.lon(), size_t(pl[j_south]), pl_sum[j_south], q[2], q[3]);
 
                 // convert working longitude/latitude coordinates to 3D
-                atlas::PointXYZ qp[4];
+                Point3 qp[4];
                 for (size_t k = 0; k < 4; ++k) {
                     const auto& ll = icoords[q[k]];
 
                     // notice the order
-                    atlas::PointLonLat lonlat(ll.lon().value(), ll.lat().value());
-                    atlas::util::Earth::convertSphericalToCartesian(lonlat, qp[k]);
+                    qp[k] = util::Earth::convertSphericalToCartesian({ll.lon().value(), ll.lat().value()});
                 }
 
                 /*
@@ -174,18 +174,17 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
                 const size_t T[4][3] = {{1, 0, 2}, {2, 3, 1}, {0, 2, 3}, {3, 1, 0}};
                 size_t w             = eckit::types::is_strictly_greater(dist2_q0_q3, dist2_q1_q2) ? 0 : 2;
 
-                const Point3 p3d = it->point3D();
-                const atlas::interpolation::method::Ray ray(p3d.data());
+                const auto p{it->point3D()};
+                const atlas::interpolation::method::Ray ray({p.X, p.Y, p.Z});
                 atlas::interpolation::method::Intersect inter;
 
                 using atlas::interpolation::element::Triag3D;
-                Triag3D tri = Triag3D(qp[T[w][0]].data(), qp[T[w][1]].data(), qp[T[w][2]].data());
+                Triag3D tri{atlas::PointXYZ{qp[T[w][0]][0], qp[T[w][0]][1], qp[T[w][0]][2]},
+                            atlas::PointXYZ{qp[T[w][1]][0], qp[T[w][1]][1], qp[T[w][1]][2]},
+                            atlas::PointXYZ{qp[T[w][2]][0], qp[T[w][2]][1], qp[T[w][2]][2]}};
                 if (!(inter = tri.intersects(ray, edgeEpsilon))) {
                     ++w;
-                    tri = Triag3D(qp[T[w][0]].data(), qp[T[w][1]].data(), qp[T[w][2]].data());
-                    if (!(inter = tri.intersects(ray, edgeEpsilon))) {
-                        throw exception::UserError("Cannot determine an intersecting triangle (consider", Here());
-                    }
+                    throw exception::UserError("Cannot determine an intersecting triangle (consider", Here());
                 }
                 ASSERT(inter);
 

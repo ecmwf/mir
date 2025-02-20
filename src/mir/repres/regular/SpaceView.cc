@@ -25,6 +25,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Angles.h"
+#include "mir/util/Earth.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Trace.h"
 
@@ -104,8 +105,10 @@ SpaceViewInternal::SpaceViewInternal(const param::MIRParametrisation& param) {
 
 
     // longest element diagonal, a multiple of a reference central element diagonal (avoiding distortion)
-    LongestElementDiagonal_ =
-        20. * util::Earth::distance(projection_.lonlat({-rx / 2, ry / 2}), projection_.lonlat({rx / 2, -ry / 2}));
+    const auto p = projection_.lonlat({-rx / 2, ry / 2});
+    const auto q = projection_.lonlat({rx / 2, -ry / 2});
+
+    LongestElementDiagonal_ = 20. * util::Earth::distance({p.lon(), p.lat()}, {q.lon(), q.lat()});
     ASSERT(0. < LongestElementDiagonal_);
 
 
@@ -158,7 +161,7 @@ SpaceViewInternal::SpaceViewInternal(const param::MIRParametrisation& param) {
 }
 
 
-const std::vector<RegularGrid::PointLonLat>& SpaceViewInternal::lonlat() const {
+const std::vector<PointLonLat>& SpaceViewInternal::lonlat() const {
     if (lonlat_.empty()) {
         trace::Timer timer("SpaceView: pre-calculate (lon, lat) coordinates");
 
@@ -168,16 +171,15 @@ const std::vector<RegularGrid::PointLonLat>& SpaceViewInternal::lonlat() const {
         size_t index = 0;
         for (const auto& _y : y()) {
             for (const auto& _x : x()) {
-                auto& ll = lonlat_[index++];
-                ll       = projectionGreenwich_.lonlat({_x, _y});
-                if (std::isfinite(ll.lon()) && std::isfinite(ll.lat())) {
-                    ASSERT(-90. < ll.lon() && ll.lon() < 90.);
-                    ASSERT(-90. < ll.lat() && ll.lat() < 90.);
+                auto& ll = (lonlat_[index++] = {std::numeric_limits<double>::quiet_NaN(),
+                                                std::numeric_limits<double>::quiet_NaN()});
 
-                    ll.lon() += Lop_;
-                }
-                else {
-                    ll = {std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN()};
+                auto pll = projectionGreenwich_.lonlat({_x, _y});
+                if (std::isfinite(pll.lon()) && std::isfinite(pll.lat())) {
+                    ASSERT(-90. < pll.lon() && pll.lon() < 90.);
+                    ASSERT(-90. < pll.lat() && pll.lat() < 90.);
+
+                    ll = {pll.lon() + Lop_, pll.lat()};
                 }
             }
         }
@@ -217,9 +219,9 @@ Iterator* SpaceView::iterator() const {
             while (count_ < lonlat_.size()) {
                 // only one of (lon, lat) needs to be checked
                 const auto& ll = lonlat_[count_++];
-                if (std::isfinite(ll.lon())) {
-                    _lat = lat(ll.lat());
-                    _lon = lon(ll.lon());
+                if (std::isfinite(ll.lon)) {
+                    _lat = lat(ll.lat);
+                    _lon = lon(ll.lon);
                     return true;
                 }
             }

@@ -18,6 +18,7 @@
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/util/Atlas.h"
+#include "mir/util/Earth.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Latitude.h"
 #include "mir/util/LongitudeDouble.h"
@@ -34,7 +35,7 @@ GridBox::GridBox(double north, double west, double south, double east) :
 
 
 double GridBox::area() const {
-    return Earth::area({west_, north_}, {east_, south_});
+    return Earth::area(north_, west_, south_, east_);
 }
 
 

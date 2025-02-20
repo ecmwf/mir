@@ -59,10 +59,11 @@ RegularGrid::RegularGrid(const param::MIRParametrisation& param, const RegularGr
     ASSERT(param.get("grid", grid));
     ASSERT_KEYWORD_GRID_SIZE(grid.size());
 
-    Point2 firstLL;
-    ASSERT(param.get("latitudeOfFirstGridPointInDegrees", firstLL[LLCOORDS::LAT]));
-    ASSERT(param.get("longitudeOfFirstGridPointInDegrees", firstLL[LLCOORDS::LON]));
-    auto first = projection.xy(firstLL);
+    double firstLat = 0;
+    double firstLon = 0;
+    ASSERT(param.get("latitudeOfFirstGridPointInDegrees", firstLat));
+    ASSERT(param.get("longitudeOfFirstGridPointInDegrees", firstLon));
+    auto first = projection.xy({firstLon, firstLat});
 
     param.get("iScansPositively", xPlus_);  // iScansPositively != 0
     param.get("jScansPositively", yPlus_);  // jScansPositively == 0
@@ -270,7 +271,7 @@ Iterator* RegularGrid::iterator() const {
         Projection projection_;
         const LinearSpacing& x_;
         const LinearSpacing& y_;
-        PointLonLat pLonLat_;
+        atlas::PointLonLat pLonLat_;
 
         size_t ni_;
         size_t nj_;

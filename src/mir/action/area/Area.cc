@@ -60,10 +60,9 @@ void Area::apply(const repres::Representation& repres, util::BoundingBox& bbox, 
 
     bool first = true;
 
-    // Point can be     interpreted "projected" or "non-projected"/"unrotated"
+    // Point can be interpreted "projected" or "non-projected"/"unrotated"
     for (const std::unique_ptr<repres::Iterator> it(repres.iterator()); it->next();) {
-        const auto point(projection ? PointLatLon(it->pointRotated().x(), it->pointRotated().y())
-                                    : it->pointUnrotated());
+        const auto point(projection ? PointLatLon(it->pointRotated().X, it->pointRotated().Y) : it->pointUnrotated());
 
         // Log::debug() << point << " ====> " << bbox.contains(point) << std::endl;
 

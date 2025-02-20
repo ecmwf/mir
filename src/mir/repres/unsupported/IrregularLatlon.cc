@@ -20,6 +20,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Earth.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/MeshGeneratorParameters.h"
@@ -87,8 +88,7 @@ bool IrregularLatlon::getLongestElementDiagonal(double& d) const {
         const auto& latAwayFromEquator(latitudes_[away ? j - 1 : j]);
         const auto& latCloserToEquator(latitudes_[away ? j : j - 1]);
 
-        d = std::max(d, util::Earth::distance(atlas::PointLonLat(0., latCloserToEquator),
-                                              atlas::PointLonLat(we, latAwayFromEquator)));
+        d = std::max(d, util::Earth::distance({0., latCloserToEquator}, {we, latAwayFromEquator}));
     }
 
     ASSERT(d > 0.);

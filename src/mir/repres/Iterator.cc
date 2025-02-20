@@ -15,6 +15,7 @@
 #include <ostream>
 
 #include "mir/util/Atlas.h"
+#include "mir/util/Earth.h"
 #include "mir/util/Exceptions.h"
 
 
@@ -63,12 +64,7 @@ Iterator& Iterator::next() {
 
 Point3 Iterator::point_3D(const Point2& point) {
     // notice the order
-    const atlas::PointLonLat pll(point[1], point[0]);
-
-    atlas::PointXYZ pxyz;
-    util::Earth::convertSphericalToCartesian(pll, pxyz);
-
-    return pxyz;
+    return util::Earth::convertSphericalToCartesian({point[1], point[0]});
 }
 
 

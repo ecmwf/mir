@@ -278,11 +278,11 @@ CASE("GaussianIterator") {
 
             ASSERT(git->next());
             EXPECT(globe.contains(*(*git)));
-            EXPECT(eckit::geometry::points_equal(*(*git), t.globalP1));
+            EXPECT(points_equal(*(*git), t.globalP1));
 
             ASSERT(git->next());
             EXPECT(globe.contains(*(*git)));
-            EXPECT(eckit::geometry::points_equal(*(*git), t.globalP2));
+            EXPECT(points_equal(*(*git), t.globalP2));
 
             log << "Test " + t.grid + " (cropped)" << std::endl;
             repres::RepresentationHandle cropped(global->croppedRepresentation(t.bbox));
@@ -292,11 +292,11 @@ CASE("GaussianIterator") {
 
             ASSERT(cit->next());
             EXPECT(t.bbox.contains(*(*cit)));
-            EXPECT(eckit::geometry::points_equal(*(*cit), t.localP1));
+            EXPECT(points_equal(*(*cit), t.localP1));
 
             ASSERT(cit->next());
             EXPECT(t.bbox.contains(*(*cit)));
-            EXPECT(eckit::geometry::points_equal(*(*cit), t.localP2));
+            EXPECT(points_equal(*(*cit), t.localP2));
         }
     }
 
@@ -319,11 +319,11 @@ CASE("GaussianIterator") {
 
         ASSERT(git->next());
         EXPECT(globe.contains(*(*git)));
-        EXPECT(eckit::geometry::points_equal(*(*git), t.globalP1));
+        EXPECT(points_equal(*(*git), t.globalP1));
 
         ASSERT(git->next());
         EXPECT(globe.contains(*(*git)));
-        EXPECT(eckit::geometry::points_equal(*(*git), t.globalP2));
+        EXPECT(points_equal(*(*git), t.globalP2));
 
         log << "Test " + t.grid + " (cropped)" << std::endl;
         repres::RepresentationHandle cropped(global->croppedRepresentation(t.bbox));
@@ -333,11 +333,11 @@ CASE("GaussianIterator") {
 
         ASSERT(cit->next());
         EXPECT(t.bbox.contains(*(*cit)));
-        EXPECT(eckit::geometry::points_equal(*(*cit), t.localP1));
+        EXPECT(points_equal(*(*cit), t.localP1));
 
         ASSERT(cit->next());
         EXPECT(t.bbox.contains(*(*cit)));
-        EXPECT(eckit::geometry::points_equal(*(*cit), t.localP2));
+        EXPECT(points_equal(*(*cit), t.localP2));
     }
 
 

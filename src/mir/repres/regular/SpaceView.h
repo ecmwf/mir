@@ -37,7 +37,7 @@ struct SpaceViewInternal {
     RegularGrid::LinearSpacing x() const { return {xa_, xb_, Nx_, true}; }
     RegularGrid::LinearSpacing y() const { return {ya_, yb_, Ny_, true}; }
 
-    const std::vector<RegularGrid::PointLonLat>& lonlat() const;
+    const std::vector<PointLonLat>& lonlat() const;
 
     long Nx_;
     long Ny_;
@@ -49,7 +49,7 @@ struct SpaceViewInternal {
     double Lop_;
 
 private:
-    mutable std::vector<RegularGrid::PointLonLat> lonlat_;
+    mutable std::vector<PointLonLat> lonlat_;
 };
 
 

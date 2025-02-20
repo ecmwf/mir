@@ -365,7 +365,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
     if (std::string intint; user.get("intermediate-interpolation", intint) && !intint.empty()) {
         if (std::string intgrid; user.get("intgrid", intgrid) && !intgrid.empty()) {
-            auto runtime = new param::RuntimeParametrisation{parametrisation_};
+            auto* runtime = new param::RuntimeParametrisation{parametrisation_};
             runtime->set("interpolation", intint);
             runtime->set("grid", intgrid);
             runtime->unset("rotation");

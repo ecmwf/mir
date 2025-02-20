@@ -660,6 +660,8 @@ list(APPEND mir_srcs
     util/DeprecatedFunctionality.h
     util/Domain.cc
     util/Domain.h
+    util/Earth.cc
+    util/Earth.h
     util/EckitGeo.h
     util/Error.cc
     util/Error.h
@@ -995,7 +997,7 @@ ecbuild_add_library(
     INSTALL_HEADERS    LISTED
     HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/mir
     TEMPLATES          caching/InMemoryCache.cc
-    PUBLIC_LIBS        eckit_linalg eckit_geometry eckit_option eckit eccodes
+    PUBLIC_LIBS        eckit_linalg eckit_geo eckit_option eckit eccodes
     PUBLIC_INCLUDES    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/src>
     SOURCES            ${mir_srcs})
 

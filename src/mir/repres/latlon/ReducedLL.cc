@@ -26,6 +26,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Earth.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/GridBox.h"
 #include "mir/util/MeshGeneratorParameters.h"
@@ -101,8 +102,7 @@ bool ReducedLL::getLongestElementDiagonal(double& d) const {
         auto& latAwayFromEquator(std::abs(lat1.value()) > std::abs(lat2.value()) ? lat1 : lat2);
         auto& latCloserToEquator(std::abs(lat1.value()) > std::abs(lat2.value()) ? lat2 : lat1);
 
-        d = std::max(d, util::Earth::distance(atlas::PointLonLat(0., latCloserToEquator.value()),
-                                              atlas::PointLonLat(we, latAwayFromEquator.value())));
+        d = std::max(d, util::Earth::distance({0., latCloserToEquator.value()}, {we, latAwayFromEquator.value()}));
 
         lat1 = lat2;
         lat2 -= sn;

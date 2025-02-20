@@ -16,6 +16,7 @@
 
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
+#include "mir/util/Earth.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 
@@ -60,19 +61,21 @@ void LambertAzimuthalEqualArea::fillGrib(grib_info& info) const {
     info.grid.grid_type        = CODES_UTIL_GRID_SPEC_LAMBERT_AZIMUTHAL_EQUAL_AREA;
     info.packing.editionNumber = 2;
 
-    Point2 reference = grid().projection().lonlat({0., 0.});
-    Point2 firstLL   = grid().projection().lonlat({x().front(), y().front()});
+    auto _ll = [](const auto& p) { return mir::PointLonLat{p.lon(), p.lat()}; };
+
+    auto reference = _ll(grid().projection().lonlat({0., 0.}));
+    auto firstLL   = _ll(grid().projection().lonlat({x().front(), y().front()}));
 
     info.grid.Ni = static_cast<long>(x().size());
     info.grid.Nj = static_cast<long>(y().size());
 
-    info.grid.latitudeOfFirstGridPointInDegrees  = firstLL[LLCOORDS::LAT];
-    info.grid.longitudeOfFirstGridPointInDegrees = firstLL[LLCOORDS::LON];
+    info.grid.latitudeOfFirstGridPointInDegrees  = firstLL.lat;
+    info.grid.longitudeOfFirstGridPointInDegrees = firstLL.lon;
 
     info.extra_set("DxInMetres", std::abs(x().step()));
     info.extra_set("DyInMetres", std::abs(y().step()));
-    info.extra_set("standardParallelInDegrees", reference[LLCOORDS::LAT]);
-    info.extra_set("centralLongitudeInDegrees", reference[LLCOORDS::LON]);
+    info.extra_set("standardParallelInDegrees", reference.lat);
+    info.extra_set("centralLongitudeInDegrees", reference.lon);
 
     // some extra keys are edition-specific, so parent call is here
     RegularGrid::fillGrib(info);
@@ -92,14 +95,16 @@ const Representation* LambertAzimuthalEqualArea::croppedRepresentation(const uti
             auto j = it->index() / Ni;
             if (i == firsti && j == firstj) {
                 const auto& latlon = *(*it);
-                return projection.xy(PointLonLat{latlon[1], latlon[0]});
+
+                const auto p = projection.xy({latlon[1], latlon[0]});
+                return {p.x(), p.y()};
             }
         }
         throw exception::UserError("LambertAzimuthalEqualArea::croppedRepresentation: cannot find first point");
     }(mm.first.i, mm.first.j);
 
-    auto spacex = linspace(first.x(), std::abs(x().step()), static_cast<long>(mm.second.i - mm.first.i + 1), xPlus());
-    auto spacey = linspace(first.y(), std::abs(y().step()), static_cast<long>(mm.second.j - mm.first.j + 1), yPlus());
+    auto spacex = linspace(first.X, std::abs(x().step()), static_cast<long>(mm.second.i - mm.first.i + 1), xPlus());
+    auto spacey = linspace(first.Y, std::abs(y().step()), static_cast<long>(mm.second.j - mm.first.j + 1), yPlus());
 
     return new LambertAzimuthalEqualArea(projection, bbox, spacex, spacey, shape());
 }

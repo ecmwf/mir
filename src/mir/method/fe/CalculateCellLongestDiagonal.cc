@@ -20,6 +20,7 @@
 #include "atlas/util/Topology.h"
 
 #include "mir/util/Atlas.h"
+#include "mir/util/Earth.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Types.h"
@@ -60,7 +61,7 @@ double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh, bool include_
         // - nb_cols == 3 implies triangle
         // - nb_cols == 4 implies quadrilateral
         // - no other element is supported at this time
-        PointXYZ P[4];
+        Point3 P[4];
         const auto& connectivity = mesh.cells().node_connectivity();
 
         for (idx_t e = 0; e < connectivity.rows(); ++e) {
@@ -74,7 +75,7 @@ double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh, bool include_
             // (combinations of ni in [0, nb_cols[ and nj in [ni+1, nb_cols[)
             for (idx_t ni = 0; ni < nb_cols; ++ni) {
                 auto i = connectivity(e, ni);
-                P[ni].assign(coords(i, 0), coords(i, 1), coords(i, 2));
+                P[ni]  = {coords(i, 0), coords(i, 1), coords(i, 2)};
             }
 
             for (idx_t ni = 0; ni < nb_cols - 1; ++ni) {

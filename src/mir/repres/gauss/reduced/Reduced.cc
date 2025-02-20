@@ -30,6 +30,7 @@
 #include "mir/util/Atlas.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Earth.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/GridBox.h"
@@ -465,8 +466,8 @@ bool Reduced::getLongestElementDiagonal(double& d) const {
         auto& latAwayFromEquator(std::abs(l1.value()) > std::abs(l2.value()) ? l1 : l2);
         auto& latCloserToEquator(std::abs(l1.value()) > std::abs(l2.value()) ? l2 : l1);
 
-        d = std::max(d, util::Earth::distance(atlas::PointLonLat(0., latCloserToEquator.value()),
-                                              atlas::PointLonLat(we, latAwayFromEquator.value())));
+        d = std::max(d, util::Earth::distance(PointLonLat(0., latCloserToEquator.value()),
+                                              PointLonLat(we, latAwayFromEquator.value())));
     }
 
     ASSERT(d > 0.);

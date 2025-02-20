@@ -31,6 +31,7 @@
 #include "mir/stats/detail/Counter.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Atlas.h"
+#include "mir/util/Earth.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
@@ -244,7 +245,7 @@ size_t diff(Log::Channel& out, double toleranceLat, double toleranceLon, const C
 }
 
 
-const neighbours_t& getNeighbours(Point2 p, size_t n, const repres::Representation& rep,
+const neighbours_t& getNeighbours(PointLonLat p, size_t n, const repres::Representation& rep,
                                   const param::MIRParametrisation& param) {
     static std::map<std::string, neighbours_t> cache;
 
@@ -254,8 +255,7 @@ const neighbours_t& getNeighbours(Point2 p, size_t n, const repres::Representati
         return cached->second;
     }
 
-    search::PointSearch::PointType pt;
-    util::Earth::convertSphericalToCartesian(p, pt);
+    auto pt = util::Earth::convertSphericalToCartesian(p);
 
     search::PointSearch sptree(param, rep);
 
@@ -301,11 +301,11 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
     args.get("nclosest", nclosest);
 
 
-    Point2 p;
+    PointLonLat p;
     std::vector<double> closest;
     if (args.get("closest", closest)) {
         ASSERT(closest.size() == 2);
-        p = Point2(closest[1], closest[0]);
+        p = {closest[1], closest[0]};
     }
     else {
         nclosest = 0;
@@ -349,12 +349,12 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                 size_t c = 1;
                 for (const auto& n : getNeighbours(p, nclosest, *rep, args_wrap)) {
                     size_t i = n.payload();
-                    Point2 q(crd->longitudes()[i], crd->latitudes()[i]);
+                    PointLonLat q(crd->longitudes()[i], crd->latitudes()[i]);
                     ASSERT(i < values.size());
 
                     constexpr double THOUSAND = 1000;
                     log << "- " << c++ << " -"
-                        << " index=" << i << " latitude=" << q[1] << " longitude=" << q[0]
+                        << " index=" << i << " latitude=" << q.lat << " longitude=" << q.lon
                         << " distance=" << util::Earth::distance(p, q) / THOUSAND << " (km)"
                         << " value=" << values[i] << std::endl;
                 }

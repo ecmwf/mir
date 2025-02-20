@@ -12,17 +12,7 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-
-#include "eckit/config/LocalConfiguration.h"
-#include "eckit/geometry/Point2.h"
-#include "eckit/geometry/Point3.h"
-#include "eckit/geometry/SphereT.h"
-#include "eckit/utils/Hash.h"
-
 #include "mir/api/mir_config.h"
-#include "mir/util/Types.h"
 
 #if mir_HAVE_ATLAS
 #include "atlas/functionspace.h"
@@ -47,18 +37,25 @@
 #include "atlas/trans/LegendreCacheCreator.h"
 #include "atlas/trans/Trans.h"
 #include "atlas/util/Config.h"
-#include "atlas/util/Earth.h"
 #include "atlas/util/GaussianLatitudes.h"
 #include "atlas/util/Point.h"
 #include "atlas/util/Rotation.h"
 #else
+#include <string>
+#include <vector>
+
+#include "eckit/config/LocalConfiguration.h"
+#include "eckit/geometry/Point2.h"
+#include "eckit/geometry/Point3.h"
+#include "eckit/geometry/SphereT.h"
+#include "eckit/utils/Hash.h"
+
+#include "mir/util/Types.h"
 
 
-namespace eckit {
-namespace option {
+namespace eckit::option {
 class CmdArgs;
-}
-}  // namespace eckit
+}  // namespace eckit::option
 
 
 namespace atlas {
@@ -123,9 +120,6 @@ void gaussian_quadrature_npole_spole(size_t N, double* latitudes, double* weight
 struct DatumIFS {
     static constexpr double radius() { return 6371229.; }
 };
-
-
-using Earth = eckit::geometry::SphereT<DatumIFS>;
 
 
 struct Rotation : PointLonLat {
@@ -282,12 +276,3 @@ public:
 
 
 #endif
-
-
-namespace mir::util {
-
-
-using atlas::util::Earth;
-
-
-}  // namespace mir::util

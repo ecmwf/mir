@@ -73,13 +73,13 @@ RegularGrid::Projection Lambert::make_projection(const param::MIRParametrisation
 void Lambert::fillGrib(grib_info& info) const {
     info.grid.grid_type = CODES_UTIL_GRID_SPEC_LAMBERT_CONFORMAL;
 
-    Point2 first = {firstPointBottomLeft() ? x().min() : x().front(), firstPointBottomLeft() ? y().min() : y().front()};
-    Point2 firstLL   = grid().projection().lonlat(first);
-    Point2 reference = grid().projection().lonlat({0., 0.});
+    auto firstLL = grid().projection().lonlat(
+        {firstPointBottomLeft() ? x().min() : x().front(), firstPointBottomLeft() ? y().min() : y().front()});
+    auto reference = grid().projection().lonlat({0., 0.});
 
-    info.grid.latitudeOfFirstGridPointInDegrees = firstLL[LLCOORDS::LAT];
+    info.grid.latitudeOfFirstGridPointInDegrees = firstLL.lat();
     info.grid.longitudeOfFirstGridPointInDegrees =
-        writeLonPositive_ ? util::normalise_longitude(firstLL[LLCOORDS::LON], 0) : firstLL[LLCOORDS::LON];
+        writeLonPositive_ ? util::normalise_longitude(firstLL.lon(), 0) : firstLL.lon();
 
     info.grid.Ni = static_cast<long>(x().size());
     info.grid.Nj = static_cast<long>(y().size());
@@ -90,13 +90,12 @@ void Lambert::fillGrib(grib_info& info) const {
 
     info.extra_set("DxInMetres", std::abs(x().step()));
     info.extra_set("DyInMetres", std::abs(y().step()));
-    info.extra_set("Latin1InDegrees", reference[LLCOORDS::LAT]);
-    info.extra_set("Latin2InDegrees", reference[LLCOORDS::LAT]);
-    info.extra_set("LoVInDegrees", writeLonPositive_ ? util::normalise_longitude(reference[LLCOORDS::LON], 0)
-                                                     : reference[LLCOORDS::LON]);
+    info.extra_set("Latin1InDegrees", reference.lat());
+    info.extra_set("Latin2InDegrees", reference.lat());
+    info.extra_set("LoVInDegrees", writeLonPositive_ ? util::normalise_longitude(reference.lon(), 0) : reference.lon());
 
     if (writeLaDInDegrees_) {
-        info.extra_set("LaDInDegrees", reference[LLCOORDS::LAT]);
+        info.extra_set("LaDInDegrees", reference.lat());
     }
 
     // some extra keys are edition-specific, so parent call is here

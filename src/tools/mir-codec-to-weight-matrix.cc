@@ -17,6 +17,7 @@
 #include "eckit/codec/codec.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/linalg/SparseMatrix.h"
+#include "eckit/linalg/allocator/NonOwningAllocator.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 
@@ -35,47 +36,6 @@ static_assert(std::is_same_v<eckit::linalg::Index, std::int32_t>, "Index == std:
 using Index  = eckit::linalg::Index;
 using Scalar = eckit::linalg::Scalar;
 using Size   = eckit::linalg::Size;
-
-
-class InPlaceAllocator : public eckit::linalg::SparseMatrix::Allocator {
-public:
-    using Layout = eckit::linalg::SparseMatrix::Layout;
-    using Shape  = eckit::linalg::SparseMatrix::Shape;
-
-    InPlaceAllocator(Size Nr, Size Nc, Size nnz, Index* ia, Index* ja, Scalar* a) :
-        Nr_(Nr), Nc_(Nc), nnz_(nnz), ia_(ia), ja_(ja), a_(a) {
-        ASSERT(ia_ != nullptr);
-        ASSERT(ja_ != nullptr);
-        ASSERT(a_ != nullptr);
-    }
-
-    Layout allocate(Shape& shape) override {
-        shape.size_ = nnz_;
-        shape.rows_ = Nr_;
-        shape.cols_ = Nc_;
-
-        Layout layout;
-        layout.outer_ = reinterpret_cast<decltype(Layout::outer_)>(ia_);
-        layout.inner_ = ja_;
-        layout.data_  = a_;
-
-        return layout;
-    }
-
-    void deallocate(Layout, Shape) override {}
-
-    void print(std::ostream&) const override { NOTIMP; }
-
-    bool inSharedMemory() const override { return false; }
-
-private:
-    const Size Nr_;
-    const Size Nc_;
-    const Size nnz_;
-    Index* ia_;  // NOTE: not owned
-    Index* ja_;
-    Scalar* a_;
-};
 
 
 struct MIRCodecToWeightMatrix : public MIRTool {
@@ -162,9 +122,9 @@ struct MIRCodecToWeightMatrix : public MIRTool {
         };
 
         // create matrix
-        eckit::linalg::SparseMatrix M(new InPlaceAllocator(size(Nr), size(Nc), size(a.size()),
-                                                           const_cast<Index*>(ia.data()), const_cast<Index*>(ja.data()),
-                                                           const_cast<Scalar*>(a.data())));
+        eckit::linalg::SparseMatrix M(new eckit::linalg::allocator::NonOwningAllocator(
+            size(Nr), size(Nc), size(a.size()), const_cast<Index*>(ia.data()), const_cast<Index*>(ja.data()),
+            const_cast<Scalar*>(a.data())));
 
         // eckit::linalg::SparseMatrix file
         eckit::PathName fmat(args(1));

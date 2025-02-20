@@ -62,12 +62,13 @@ PolarStereographic::PolarStereographic(const param::MIRParametrisation& param) :
 void PolarStereographic::fillGrib(grib_info& info) const {
     info.grid.grid_type = CODES_UTIL_GRID_SPEC_POLAR_STEREOGRAPHIC;
 
-    Point2 first   = {x().front(), y().front()};
-    Point2 firstLL = grid().projection().lonlat(first);
+    auto _ll = [](const auto& p) { return mir::PointLonLat{p.lon(), p.lat()}; };
 
-    info.grid.latitudeOfFirstGridPointInDegrees = firstLL[LLCOORDS::LAT];
+    auto firstLL = _ll(grid().projection().lonlat({x().front(), y().front()}));
+
+    info.grid.latitudeOfFirstGridPointInDegrees = firstLL.lat;
     info.grid.longitudeOfFirstGridPointInDegrees =
-        writeLonPositive_ ? util::normalise_longitude(firstLL[LLCOORDS::LON], 0) : firstLL[LLCOORDS::LON];
+        writeLonPositive_ ? util::normalise_longitude(firstLL.lon, 0) : firstLL.lon;
 
     info.grid.Ni = static_cast<long>(x().size());
     info.grid.Nj = static_cast<long>(y().size());
@@ -88,8 +89,9 @@ void PolarStereographic::fillGrib(grib_info& info) const {
 
 
 void PolarStereographic::fillJob(api::MIRJob& job) const {
-    Point2 first   = {x().front(), y().front()};
-    Point2 firstLL = grid().projection().lonlat(first);
+    auto _ll = [](const auto& p) { return mir::PointLonLat{p.lon(), p.lat()}; };
+
+    auto firstLL = _ll(grid().projection().lonlat({x().front(), y().front()}));
 
     std::ostringstream grid;
     grid << "gridType=polar_stereographic;"
@@ -100,8 +102,8 @@ void PolarStereographic::fillJob(api::MIRJob& job) const {
          << "Ni=" << x().size() << ";"
          << "Nj=" << y().size() << ";"
          << "grid=" << std::abs(x().step()) << "/" << std::abs(y().step()) << ";"
-         << "latitudeOfFirstGridPointInDegrees=" << firstLL[LLCOORDS::LAT] << ";"
-         << "longitudeOfFirstGridPointInDegrees=" << firstLL[LLCOORDS::LON];
+         << "latitudeOfFirstGridPointInDegrees=" << firstLL.lat << ";"
+         << "longitudeOfFirstGridPointInDegrees=" << firstLL.lon;
 
     job.set("grid", grid.str());
 

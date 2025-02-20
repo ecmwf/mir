@@ -28,7 +28,6 @@ public:
     // -- Types
 
     using LinearSpacing = ::atlas::grid::LinearSpacing;
-    using PointLonLat   = ::atlas::PointLonLat;
     using Projection    = ::atlas::Projection;
 
     struct ij_t {
