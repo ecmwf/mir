@@ -60,24 +60,6 @@ bool projection::ProjectionFactory::has(const std::string&) {
 }
 
 
-void util::gaussian_latitudes_npole_equator(size_t N, double* latitudes) {
-    std::vector<double> tmp(2 * N);
-    codes_get_gaussian_latitudes(static_cast<long>(N), tmp.data());
-    std::copy_n(tmp.begin(), N, latitudes);
-}
-
-
-void util::gaussian_latitudes_npole_spole(size_t N, double* latitudes) {
-    codes_get_gaussian_latitudes(static_cast<long>(N), latitudes);
-}
-
-
-void util::gaussian_quadrature_npole_spole(size_t /*N*/, double* /*latitudes*/, double* /*weights*/) {
-    // used in interpolation=grid-box-average/maximum
-    NOTIMP;
-}
-
-
 util::Rotation::Rotation(const PointLonLat& southPole) :
     PointLonLat(mir::Longitude::GREENWICH.value(), mir::Latitude::SOUTH_POLE.value()) {
     ASSERT(southPole == *this);

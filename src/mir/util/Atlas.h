@@ -112,16 +112,6 @@ struct Library {
 namespace util {
 
 
-void gaussian_latitudes_npole_equator(size_t N, double* latitudes);
-void gaussian_latitudes_npole_spole(size_t N, double* latitudes);
-void gaussian_quadrature_npole_spole(size_t N, double* latitudes, double* weights);
-
-
-struct DatumIFS {
-    static constexpr double radius() { return 6371229.; }
-};
-
-
 struct Rotation : PointLonLat {
     // no rotation supported
     Rotation(const PointLonLat& southPole = {mir::Longitude::GREENWICH.value(), mir::Latitude::SOUTH_POLE.value()});

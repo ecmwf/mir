@@ -26,12 +26,11 @@ public:
 
     // -- Constructors
 
-    Gaussian(size_t N, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
-    Gaussian(const param::MIRParametrisation&);
+    explicit Gaussian(size_t N, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
+    explicit Gaussian(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~Gaussian() override;
+    // None
 
     // -- Convertors
     // None
@@ -41,11 +40,7 @@ public:
 
     // -- Methods
 
-    ///@return global Gaussian latitudes
     static const std::vector<double>& latitudes(size_t N);
-
-    ///@return global Gaussian quadrature weights
-    static const std::vector<double>& weights(size_t N);
 
     // -- Overridden methods
     // None
@@ -64,11 +59,7 @@ protected:
 
     // -- Methods
 
-    ///@return global Gaussian latitudes
     const std::vector<double>& latitudes() const;
-
-    ///@return global Gaussian quadrature weigths
-    const std::vector<double>& weights() const;
 
     bool angleApproximatelyEqual(const Latitude&, const Latitude&) const;
     bool angleApproximatelyEqual(const Longitude&, const Longitude&) const;

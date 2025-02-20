@@ -16,6 +16,7 @@
 #include <cmath>
 #include <map>
 
+#include "eckit/geo/util.h"
 #include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 
@@ -25,23 +26,11 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/MeshGeneratorParameters.h"
-#include "mir/util/Mutex.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
 
 namespace mir::repres {
-
-
-static util::once_flag once;
-static util::recursive_mutex* local_mutex         = nullptr;
-static std::map<size_t, std::vector<double> >* ml = nullptr;
-static std::map<size_t, std::vector<double> >* mw = nullptr;
-static void init() {
-    local_mutex = new util::recursive_mutex();
-    ml          = new std::map<size_t, std::vector<double> >();
-    mw          = new std::map<size_t, std::vector<double> >();
-}
 
 
 Gaussian::Gaussian(size_t N, const util::BoundingBox& bbox, double angularPrecision) :
@@ -60,9 +49,6 @@ Gaussian::Gaussian(const param::MIRParametrisation& parametrisation) :
     parametrisation.get("angular_precision", angularPrecision_);
     ASSERT(angularPrecision_ >= 0);
 }
-
-
-Gaussian::~Gaussian() = default;
 
 
 bool Gaussian::sameAs(const Representation& other) const {
@@ -165,33 +151,26 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool in) const {
 
 
 std::vector<double> Gaussian::calculateUnrotatedGridBoxLatitudeEdges() const {
-
-    // grid-box edge latitudes are the accumulated Gaussian quadrature weights
-    size_t Nj = N_ * 2;
+    // grid-box edge latitudes are the mid-points of the Gaussian latitudes
+    auto Nj = N_ * 2;
     ASSERT(Nj > 1);
 
-    const auto& w = weights();
-    ASSERT(w.size() == Nj);
+    const auto& lats = latitudes();
+    ASSERT(lats.size() == Nj);
 
     std::vector<double> edges(Nj + 1);
     auto f = edges.begin();
     auto b = edges.rbegin();
+    (*f++) = Latitude::NORTH_POLE.value();
+    (*b++) = Latitude::SOUTH_POLE.value();
 
-    *(f++) = Latitude::NORTH_POLE.value();
-    *(b++) = Latitude::SOUTH_POLE.value();
-
-    double wacc = -1.;
-    for (size_t j = 0; j < N_; ++j, ++b, ++f) {
-        wacc += 2. * w[j];
-        double deg = util::radian_to_degree(std::asin(wacc));
-        ASSERT(Latitude::SOUTH_POLE.value() <= deg && deg <= Latitude::NORTH_POLE.value());
-
-        *b = deg;
-        *f = -(*b);
+    for (size_t j = 1; j < N_; ++j) {
+        auto mid = (lats[j] + lats[j - 1]) / 2.;
+        (*f++)   = mid;
+        (*b++)   = -mid;
     }
 
     edges[N_] = 0.;  // exact value
-
     return edges;
 }
 
@@ -222,66 +201,12 @@ void Gaussian::fillJob(api::MIRJob& job) const {
 
 
 const std::vector<double>& Gaussian::latitudes(size_t N) {
-    util::call_once(once, init);
-    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
-
-    ASSERT(N);
-    auto j = ml->find(N);
-    if (j == ml->end()) {
-        trace::Timer timer("Gaussian latitudes " + std::to_string(N));
-
-        // calculate latitudes and insert in known-N-latitudes map
-        std::vector<double> latitudes(N * 2);
-        atlas::util::gaussian_latitudes_npole_spole(N, latitudes.data());
-
-        ml->operator[](N) = latitudes;
-        j                 = ml->find(N);
-    }
-    ASSERT(j != ml->end());
-
-
-    // these are the assumptions we expect from the Gaussian latitudes values
-    auto& lats = j->second;
-    ASSERT(2 * N == lats.size());
-    ASSERT(std::is_sorted(lats.begin(), lats.end(), [](double a, double b) { return a > b; }));
-
-    return lats;
-}
-
-
-const std::vector<double>& Gaussian::weights(size_t N) {
-    util::call_once(once, init);
-    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
-
-    ASSERT(N);
-    auto j = mw->find(N);
-    if (j == mw->end()) {
-        trace::Timer timer("Gaussian quadrature weights " + std::to_string(N));
-
-        // calculate quadrature weights and insert in known-N-weights map
-        // FIXME: innefficient interface, latitudes are discarded
-        std::vector<double> latitudes(N * 2);
-        std::vector<double>& weights = (*mw)[N];
-        weights.resize(N * 2);
-
-        atlas::util::gaussian_quadrature_npole_spole(N, latitudes.data(), weights.data());
-
-        j = mw->find(N);
-    }
-    ASSERT(j != mw->end());
-    ASSERT(j->second.size() == 2 * N);
-
-    return j->second;
+    return eckit::geo::util::gaussian_latitudes(N, false);
 }
 
 
 const std::vector<double>& Gaussian::latitudes() const {
     return latitudes(N_);
-}
-
-
-const std::vector<double>& Gaussian::weights() const {
-    return weights(N_);
 }
 
 
