@@ -163,7 +163,7 @@ void KNearestNeighbours::print(std::ostream& out) const {
 
 
 int KNearestNeighbours::version() const {
-    return 1;
+    return 0;
 }
 
 

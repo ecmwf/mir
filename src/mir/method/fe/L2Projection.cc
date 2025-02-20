@@ -136,7 +136,7 @@ void L2Projection::hash(eckit::MD5& md5) const {
 
 
 int L2Projection::version() const {
-    return 1;
+    return 0;
 }
 
 

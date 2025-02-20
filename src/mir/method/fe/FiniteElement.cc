@@ -248,7 +248,7 @@ void FiniteElement::print(std::ostream& out) const {
 
 
 int FiniteElement::version() const {
-    return 1;
+    return 0;
 }
 
 

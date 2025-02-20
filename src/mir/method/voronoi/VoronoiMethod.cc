@@ -179,7 +179,7 @@ const char* VoronoiMethod::name() const {
 
 
 int VoronoiMethod::version() const {
-    return 1;
+    return 0;
 }
 
 

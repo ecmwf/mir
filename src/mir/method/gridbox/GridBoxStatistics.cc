@@ -181,7 +181,7 @@ const char* GridBoxStatistics::name() const {
 
 
 int GridBoxStatistics::version() const {
-    return 5;
+    return 0;
 }
 
 
