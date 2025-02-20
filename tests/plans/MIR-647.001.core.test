@@ -1,0 +1,6 @@
+# input
+gridType=healpix,Nside=2,orderingConvention=nested.grib2
+# mir
+--grid=H2 --interpolation=nn
+# plan
+?

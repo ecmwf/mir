@@ -276,11 +276,15 @@ list(APPEND mir_srcs
     key/grid/Grid.h
     key/grid/GridPattern.cc
     key/grid/GridPattern.h
+    key/grid/HEALPixPattern.cc
+    key/grid/HEALPixPattern.h
     key/grid/NamedClassic.cc
     key/grid/NamedClassic.h
     key/grid/NamedFromFile.cc
     key/grid/NamedFromFile.h
     key/grid/NamedGrid.h
+    key/grid/NamedHEALPix.cc
+    key/grid/NamedHEALPix.h
     key/grid/NamedOctahedral.cc
     key/grid/NamedOctahedral.h
     key/grid/NamedRegular.cc
@@ -496,6 +500,8 @@ list(APPEND mir_srcs
     param/SameParametrisation.h
     param/SimpleParametrisation.cc
     param/SimpleParametrisation.h
+    reorder/HEALPix.cc
+    reorder/HEALPix.h
     reorder/Identity.cc
     reorder/Identity.h
     reorder/Reorder.cc
@@ -548,6 +554,8 @@ list(APPEND mir_srcs
     repres/other/None.h
     repres/other/UnstructuredGrid.cc
     repres/other/UnstructuredGrid.h
+    repres/proxy/HEALPix.cc
+    repres/proxy/HEALPix.h
     repres/regular/Lambert.cc
     repres/regular/Lambert.h
     repres/regular/LambertAzimuthalEqualArea.cc
@@ -568,6 +576,8 @@ list(APPEND mir_srcs
     repres/unsupported/AzimuthRange.h
     repres/unsupported/EquatorialAzimuthalEquidistant.cc
     repres/unsupported/EquatorialAzimuthalEquidistant.h
+    repres/unsupported/HEALPixNested.cc
+    repres/unsupported/HEALPixNested.h
     repres/unsupported/IrregularLatlon.cc
     repres/unsupported/IrregularLatlon.h
     repres/unsupported/RotatedSH.cc
@@ -805,10 +815,6 @@ if(mir_HAVE_ATLAS)
         caching/legendre/NoLoader.h
         caching/legendre/SharedMemoryLoader.cc
         caching/legendre/SharedMemoryLoader.h
-        key/grid/HEALPixPattern.cc
-        key/grid/HEALPixPattern.h
-        key/grid/NamedHEALPix.cc
-        key/grid/NamedHEALPix.h
         key/grid/NamedORCA.cc
         key/grid/NamedORCA.h
         key/grid/ORCAPattern.cc
@@ -837,16 +843,10 @@ if(mir_HAVE_ATLAS)
         method/structured/StructuredMethod.h
         output/GmshOutput.cc
         output/GmshOutput.h
-        reorder/HEALPix.cc
-        reorder/HEALPix.h
-        repres/proxy/HEALPix.cc
-        repres/proxy/HEALPix.h
         repres/proxy/ORCA.cc
         repres/proxy/ORCA.h
         repres/proxy/ProxyGrid.cc
         repres/proxy/ProxyGrid.h
-        repres/unsupported/HEALPixNested.cc
-        repres/unsupported/HEALPixNested.h
         stats/statistics/Integral.cc
         stats/statistics/Integral.h)
 else()

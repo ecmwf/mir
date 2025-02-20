@@ -1,0 +1,6 @@
+# input
+ORCA.grib2
+# mir
+--grid=H2 --interpolation=nn
+# plan
+?

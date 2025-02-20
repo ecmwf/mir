@@ -1,7 +1,6 @@
 # input
 gridType=healpix,Nside=32,orderingConvention=ring.grib2
 # mir
---grid=2/2
-# grib_get
-gridType=regular_ll
-numberOfDataPoints=16380
+--grid=2/2 --interpolation=nn
+# plan
+?

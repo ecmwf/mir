@@ -1,0 +1,6 @@
+# input
+gridType=reduced_gg,gridName=O8,shortName=q.grib2
+# mir
+--grid=H2 --interpolation=nn
+# plan
+?

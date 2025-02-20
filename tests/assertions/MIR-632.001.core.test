@@ -1,7 +1,7 @@
 # input
-gridType=reduced_gg,gridName=O8,shortName=q.grib2
+regular_ll.2-2.grib2
 # mir
---grid=H2
+--grid=H2 --interpolation=nn
 # grib_get
 gridType=healpix
 gridName=H2

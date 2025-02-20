@@ -1,7 +1,7 @@
 # input
 gridType=healpix,Nside=32,orderingConvention=ring.grib2
 # mir
---grid=O8
+--grid=F8 --interpolation=nn
 # grib_get
-gridType=reduced_gg
-numberOfDataPoints=544
+gridType=regular_gg
+numberOfDataPoints=512

@@ -1,7 +1,7 @@
 # input
 ORCA.grib2
 # mir
---grid=H2
+--grid=H2 --interpolation=nn
 # grib_get
 gridType=healpix
 gridName=H2
