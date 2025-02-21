@@ -45,8 +45,7 @@ public:
     // None
 
     // -- Methods
-
-    static std::vector<long> pls(const std::string&);
+    // None
 
     // -- Overridden methods
     // None

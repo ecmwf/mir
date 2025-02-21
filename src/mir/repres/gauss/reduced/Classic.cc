@@ -12,6 +12,8 @@
 
 #include "mir/repres/gauss/reduced/Classic.h"
 
+#include "eckit/geo/util.h"
+
 #include "mir/api/MIRJob.h"
 #include "mir/api/mir_config.h"
 #include "mir/util/Atlas.h"
@@ -31,7 +33,8 @@ Classic::Classic(size_t N, const util::BoundingBox& bbox, double angularPrecisio
     Latitude s = bbox.south();
     correctSouthNorth(s, n);
 
-    setNj(pls("N" + std::to_string(N_)), s, n);
+    auto pl = eckit::geo::util::reduced_classical_pl(N_);
+    setNj(pl, s, n);
 
     Longitude w = bbox.west();
     Longitude e = bbox.east();

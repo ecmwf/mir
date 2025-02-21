@@ -12,6 +12,8 @@
 
 #include "mir/repres/gauss/reduced/Octahedral.h"
 
+#include "eckit/geo/util.h"
+
 #include "mir/api/MIRJob.h"
 #include "mir/api/mir_config.h"
 #include "mir/util/Domain.h"
@@ -31,7 +33,8 @@ Octahedral::Octahedral(size_t N, const util::BoundingBox& bbox, double angularPr
     Latitude s = bbox.south();
     correctSouthNorth(s, n);
 
-    setNj(pls("O" + std::to_string(N_)), s, n);
+    auto pl = eckit::geo::util::reduced_octahedral_pl(N_);
+    setNj(pl, s, n);
 
     Longitude w = bbox.west();
     Longitude e = bbox.east();

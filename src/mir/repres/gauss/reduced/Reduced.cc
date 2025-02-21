@@ -39,22 +39,6 @@
 namespace mir::repres::gauss::reduced {
 
 
-template <typename T>
-std::vector<long> pl_convert(const T& nx) {
-    ASSERT(!nx.empty());
-    std::vector<long> pl(nx.size());
-    std::transform(nx.begin(), nx.end(), pl.begin(), [](typename T::value_type p) { return static_cast<long>(p); });
-    return pl;
-}
-
-
-template <>
-std::vector<long> pl_convert(const std::vector<long>& nx) {
-    ASSERT(!nx.empty());
-    return nx;
-}
-
-
 Reduced::Reduced(const param::MIRParametrisation& parametrisation) : Gaussian(parametrisation), k_(0), Nj_(N_ * 2) {
 
     // adjust latitudes, longitudes and re-set bounding box
@@ -219,13 +203,6 @@ const std::vector<long>& Reduced::pls() const {
     ASSERT(Nj_ > 0);
 
     return pl_;
-}
-
-
-std::vector<long> Reduced::pls(const std::string& name) {
-    atlas::ReducedGaussianGrid grid(name);
-    ASSERT(grid);
-    return pl_convert(grid.nx());
 }
 
 
