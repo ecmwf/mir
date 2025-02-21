@@ -108,7 +108,7 @@ SpaceViewInternal::SpaceViewInternal(const param::MIRParametrisation& param) {
     const auto p = projection_.lonlat({-rx / 2, ry / 2});
     const auto q = projection_.lonlat({rx / 2, -ry / 2});
 
-    LongestElementDiagonal_ = 20. * util::Earth::distance({p.lon(), p.lat()}, {q.lon(), q.lat()});
+    LongestElementDiagonal_ = 20. * util::Earth::distance({p.lon, p.lat}, {q.lon, q.lat});
     ASSERT(0. < LongestElementDiagonal_);
 
 
@@ -175,11 +175,11 @@ const std::vector<PointLonLat>& SpaceViewInternal::lonlat() const {
                                                 std::numeric_limits<double>::quiet_NaN()});
 
                 auto pll = projectionGreenwich_.lonlat({_x, _y});
-                if (std::isfinite(pll.lon()) && std::isfinite(pll.lat())) {
-                    ASSERT(-90. < pll.lon() && pll.lon() < 90.);
-                    ASSERT(-90. < pll.lat() && pll.lat() < 90.);
+                if (std::isfinite(pll.lon) && std::isfinite(pll.lat)) {
+                    ASSERT(-90. < pll.lon && pll.lon < 90.);
+                    ASSERT(-90. < pll.lat && pll.lat < 90.);
 
-                    ll = {pll.lon() + Lop_, pll.lat()};
+                    ll = {pll.lon + Lop_, pll.lat};
                 }
             }
         }

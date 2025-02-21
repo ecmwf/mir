@@ -21,7 +21,6 @@ static_assert(!mir_HAVE_ATLAS, "mir/util/Atlas.cc cannot be included with Atlas 
 #include "eckit/utils/Translator.h"
 
 #include "mir/util/Exceptions.h"
-#include "mir/util/Grib.h"
 
 
 namespace atlas {
@@ -61,9 +60,7 @@ bool projection::ProjectionFactory::has(const std::string&) {
 
 
 util::Rotation::Rotation(const PointLonLat& southPole) :
-    PointLonLat(mir::Longitude::GREENWICH.value(), mir::Latitude::SOUTH_POLE.value()) {
-    ASSERT(southPole == *this);
-}
+    southPole_(mir::Longitude::GREENWICH.value(), mir::Latitude::SOUTH_POLE.value()) {}
 
 
 namespace grid {

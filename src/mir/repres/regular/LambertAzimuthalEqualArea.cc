@@ -61,10 +61,8 @@ void LambertAzimuthalEqualArea::fillGrib(grib_info& info) const {
     info.grid.grid_type        = CODES_UTIL_GRID_SPEC_LAMBERT_AZIMUTHAL_EQUAL_AREA;
     info.packing.editionNumber = 2;
 
-    auto _ll = [](const auto& p) { return mir::PointLonLat{p.lon(), p.lat()}; };
-
-    auto reference = _ll(grid().projection().lonlat({0., 0.}));
-    auto firstLL   = _ll(grid().projection().lonlat({x().front(), y().front()}));
+    auto reference = grid().projection().lonlat({0., 0.});
+    auto firstLL   = grid().projection().lonlat({x().front(), y().front()});
 
     info.grid.Ni = static_cast<long>(x().size());
     info.grid.Nj = static_cast<long>(y().size());
@@ -96,8 +94,7 @@ const Representation* LambertAzimuthalEqualArea::croppedRepresentation(const uti
             if (i == firsti && j == firstj) {
                 const auto& latlon = *(*it);
 
-                const auto p = projection.xy({latlon[1], latlon[0]});
-                return {p.x(), p.y()};
+                return projection.xy({latlon[1], latlon[0]});
             }
         }
         throw exception::UserError("LambertAzimuthalEqualArea::croppedRepresentation: cannot find first point");

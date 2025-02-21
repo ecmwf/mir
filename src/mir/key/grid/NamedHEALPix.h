@@ -14,7 +14,7 @@
 
 
 #include "mir/key/grid/NamedGrid.h"
-#include "mir/repres/proxy/HEALPix.h"
+#include "mir/repres/HEALPix.h"
 
 
 namespace mir::key::grid {
@@ -24,7 +24,7 @@ class NamedHEALPix : public NamedGrid {
 public:
     // -- Types
 
-    using Ordering = repres::proxy::HEALPix::Ordering;
+    using Ordering = repres::HEALPix::Ordering;
 
     // -- Exceptions
     // None

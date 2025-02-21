@@ -69,8 +69,8 @@ RegularGrid::RegularGrid(const param::MIRParametrisation& param, const RegularGr
     param.get("jScansPositively", yPlus_);  // jScansPositively == 0
     param.get("first_point_bottom_left", firstPointBottomLeft_);
 
-    x_    = linspace(first.x(), grid[0], nx, firstPointBottomLeft_ || xPlus_);
-    y_    = linspace(first.y(), grid[1], ny, firstPointBottomLeft_ || yPlus_);
+    x_    = linspace(first.X, grid[0], nx, firstPointBottomLeft_ || xPlus_);
+    y_    = linspace(first.Y, grid[1], ny, firstPointBottomLeft_ || yPlus_);
     grid_ = {x_, y_, projection};
 
     atlas::RectangularDomain range({x_.min(), x_.max()}, {y_.min(), y_.max()}, "meters");
@@ -288,8 +288,8 @@ Iterator* RegularGrid::iterator() const {
         bool next(Latitude& _lat, Longitude& _lon) override {
             if (j_ < nj_ && i_ < ni_) {
                 pLonLat_ = projection_.lonlat({x_[i_], y_[j_]});
-                _lat     = lat(pLonLat_.lat());
-                _lon     = lon(pLonLat_.lon());
+                _lat     = lat(pLonLat_.lat);
+                _lon     = lon(pLonLat_.lon);
 
                 if (i_ > 0 || j_ > 0) {
                     count_++;

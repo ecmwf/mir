@@ -45,9 +45,6 @@
 #include <vector>
 
 #include "eckit/config/LocalConfiguration.h"
-#include "eckit/geometry/Point2.h"
-#include "eckit/geometry/Point3.h"
-#include "eckit/geometry/SphereT.h"
 #include "eckit/utils/Hash.h"
 
 #include "mir/util/Types.h"
@@ -61,18 +58,9 @@ class CmdArgs;
 namespace atlas {
 
 
-using PointXY  = eckit::geometry::Point2;
-using PointXYZ = eckit::geometry::Point3;
-
-
-struct PointLonLat : public eckit::geometry::Point2 {
-    using Point2::Point2;
-    double lon() const { return x_[0]; }
-    double lat() const { return x_[1]; }
-    double& lon() { return x_[0]; }
-    double& lat() { return x_[1]; }
-    //    operator mir::PointLatLon() const { return {lat(), lon()}; }
-};
+using PointXY     = eckit::geo::Point2;
+using PointXYZ    = eckit::geo::Point3;
+using PointLonLat = eckit::geo::PointLonLat;
 
 
 struct Domain {
@@ -112,13 +100,16 @@ struct Library {
 namespace util {
 
 
-struct Rotation : PointLonLat {
+struct Rotation {
     // no rotation supported
-    Rotation(const PointLonLat& southPole = {mir::Longitude::GREENWICH.value(), mir::Latitude::SOUTH_POLE.value()});
+    explicit Rotation(const PointLonLat& southPole = {mir::Longitude::GREENWICH.value(),
+                                                      mir::Latitude::SOUTH_POLE.value()});
     bool rotated() const { return false; }
-    inline void rotate(const double*) const {}
-    inline mir::Longitude south_pole_longitude() const { return lon(); }
-    inline mir::Latitude south_pole_latitude() const { return lat(); }
+    inline PointLonLat rotate(const PointLonLat& p) const { return p; }
+    inline PointLonLat southPole() const { return southPole_; }
+
+private:
+    PointLonLat southPole_;
 };
 
 
@@ -194,7 +185,7 @@ public:
     Projection(const Spec& spec) : spec_(spec) {}
     explicit operator bool() const { return true; }
     mir::Point2 xy(const mir::Point2& p) const { return p; }
-    mir::Point2 lonlat(const mir::Point2& p) const { return p; }
+    mir::PointLonLat lonlat(const mir::Point2& p) const { return {p.X, p.Y}; }
     Domain lonlatBoundingBox(const Domain& r) const { return r; }
 };
 

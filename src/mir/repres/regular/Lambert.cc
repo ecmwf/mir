@@ -77,9 +77,9 @@ void Lambert::fillGrib(grib_info& info) const {
         {firstPointBottomLeft() ? x().min() : x().front(), firstPointBottomLeft() ? y().min() : y().front()});
     auto reference = grid().projection().lonlat({0., 0.});
 
-    info.grid.latitudeOfFirstGridPointInDegrees = firstLL.lat();
+    info.grid.latitudeOfFirstGridPointInDegrees = firstLL.lat;
     info.grid.longitudeOfFirstGridPointInDegrees =
-        writeLonPositive_ ? util::normalise_longitude(firstLL.lon(), 0) : firstLL.lon();
+        writeLonPositive_ ? util::normalise_longitude(firstLL.lon, 0) : firstLL.lon;
 
     info.grid.Ni = static_cast<long>(x().size());
     info.grid.Nj = static_cast<long>(y().size());
@@ -90,12 +90,12 @@ void Lambert::fillGrib(grib_info& info) const {
 
     info.extra_set("DxInMetres", std::abs(x().step()));
     info.extra_set("DyInMetres", std::abs(y().step()));
-    info.extra_set("Latin1InDegrees", reference.lat());
-    info.extra_set("Latin2InDegrees", reference.lat());
-    info.extra_set("LoVInDegrees", writeLonPositive_ ? util::normalise_longitude(reference.lon(), 0) : reference.lon());
+    info.extra_set("Latin1InDegrees", reference.lat);
+    info.extra_set("Latin2InDegrees", reference.lat);
+    info.extra_set("LoVInDegrees", writeLonPositive_ ? util::normalise_longitude(reference.lon, 0) : reference.lon);
 
     if (writeLaDInDegrees_) {
-        info.extra_set("LaDInDegrees", reference.lat());
+        info.extra_set("LaDInDegrees", reference.lat);
     }
 
     // some extra keys are edition-specific, so parent call is here

@@ -508,6 +508,8 @@ list(APPEND mir_srcs
     reorder/Reorder.h
     repres/Gridded.cc
     repres/Gridded.h
+    repres/HEALPix.cc
+    repres/HEALPix.h
     repres/Iterator.cc
     repres/Iterator.h
     repres/Representation.cc
@@ -554,8 +556,6 @@ list(APPEND mir_srcs
     repres/other/None.h
     repres/other/UnstructuredGrid.cc
     repres/other/UnstructuredGrid.h
-    repres/proxy/HEALPix.cc
-    repres/proxy/HEALPix.h
     repres/regular/Lambert.cc
     repres/regular/Lambert.h
     repres/regular/LambertAzimuthalEqualArea.cc
@@ -576,8 +576,6 @@ list(APPEND mir_srcs
     repres/unsupported/AzimuthRange.h
     repres/unsupported/EquatorialAzimuthalEquidistant.cc
     repres/unsupported/EquatorialAzimuthalEquidistant.h
-    repres/unsupported/HEALPixNested.cc
-    repres/unsupported/HEALPixNested.h
     repres/unsupported/IrregularLatlon.cc
     repres/unsupported/IrregularLatlon.h
     repres/unsupported/RotatedSH.cc

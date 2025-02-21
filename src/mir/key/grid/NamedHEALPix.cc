@@ -14,7 +14,6 @@
 
 #include <ostream>
 
-#include "mir/repres/unsupported/HEALPixNested.h"
 #include "mir/util/Exceptions.h"
 
 
@@ -31,11 +30,7 @@ void NamedHEALPix::print(std::ostream& out) const {
 
 
 const repres::Representation* NamedHEALPix::representation() const {
-    if (ordering_ == Ordering::healpix_nested) {
-        return new repres::unsupported::HEALPixNested(Nside_);
-    }
-
-    return new repres::proxy::HEALPix(Nside_);
+    return new repres::HEALPix(Nside_, ordering_);
 }
 
 

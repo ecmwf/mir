@@ -49,13 +49,11 @@ Iterator& Iterator::next() {
     valid_ = next(lat_, lon_);
 
     if (valid_) {
-
-        atlas::PointLonLat p(lon_.value(), lat_.value());
-        rotation_.rotate(p.data());
+        auto p = rotation_.rotate({lon_.value(), lat_.value()});
 
         // notice the order
-        point_[0] = p.lat();
-        point_[1] = p.lon();
+        point_[0] = p.lat;
+        point_[1] = p.lon;
     }
 
     return *this;
@@ -79,7 +77,7 @@ void Iterator::print(std::ostream& out) const {
            "valid?"
         << valid_ << ",PointLatLon=";
     PointLatLon::print(out);
-    out << ",point=" << point_ << ",rotated?" << rotation_.rotated() << ",rotation=" << rotation_ << "]";
+    out << ",point=" << point_ << ",rotated?" << rotation_.rotated() << ",rotation=" << rotation_.southPole() << "]";
 }
 
 
