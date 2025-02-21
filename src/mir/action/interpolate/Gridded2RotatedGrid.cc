@@ -24,14 +24,8 @@
 namespace mir::action::interpolate {
 
 
-Gridded2RotatedGrid::Gridded2RotatedGrid(const param::MIRParametrisation& param) : Gridded2GriddedInterpolation(param) {
-
-    std::vector<double> value;
-    ASSERT(parametrisation().userParametrisation().get("rotation", value));
-
-    ASSERT_KEYWORD_ROTATION_SIZE(value.size());
-    rotation_ = util::Rotation(value[0], value[1]);
-}
+Gridded2RotatedGrid::Gridded2RotatedGrid(const param::MIRParametrisation& param) :
+    Gridded2GriddedInterpolation(param), rotation_(param) {}
 
 
 const util::Rotation& Gridded2RotatedGrid::rotation() const {

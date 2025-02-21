@@ -14,7 +14,6 @@
 
 #include <ostream>
 
-#include "mir/util/Atlas.h"
 #include "mir/util/Earth.h"
 #include "mir/util/Exceptions.h"
 
@@ -23,10 +22,7 @@ namespace mir {
 namespace repres {
 
 
-Iterator::Iterator(const util::Rotation& rotation) :
-    rotation_(atlas::PointLonLat(rotation.south_pole_longitude().normalise(Longitude::GREENWICH).value(),
-                                 rotation.south_pole_latitude().value())),
-    valid_(true) {}
+Iterator::Iterator(const util::Rotation& rotation) : rotation_(rotation.southPole()), valid_(true) {}
 
 
 Iterator::~Iterator() = default;

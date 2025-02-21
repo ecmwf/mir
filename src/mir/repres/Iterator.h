@@ -14,12 +14,10 @@
 
 #include <iosfwd>
 
-#include "mir/util/Atlas.h"
 #include "mir/util/Rotation.h"
 
 
-namespace mir {
-namespace repres {
+namespace mir::repres {
 
 
 class Iterator : protected PointLatLon {
@@ -73,7 +71,7 @@ protected:
     // -- Members
 
     Point2 point_;
-    atlas::util::Rotation rotation_;
+    util::Rotation rotation_;
     bool valid_;
 
     // -- Methods
@@ -115,5 +113,4 @@ private:
 };
 
 
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres

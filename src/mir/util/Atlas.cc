@@ -54,15 +54,6 @@ bool Domain::operator==(const Domain& other) const {
 }
 
 
-bool projection::ProjectionFactory::has(const std::string&) {
-    return false;
-}
-
-
-util::Rotation::Rotation(const PointLonLat& southPole) :
-    southPole_(mir::Longitude::GREENWICH.value(), mir::Latitude::SOUTH_POLE.value()) {}
-
-
 namespace grid {
 LinearSpacing::LinearSpacing(value_type a, value_type b, long n, bool endpoint) : Spacing(static_cast<size_t>(n)) {
     ASSERT(n > 1);

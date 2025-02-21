@@ -12,10 +12,12 @@
 
 #pragma once
 
+#include <memory>
 #include <utility>  // for pair
 
 #include "mir/repres/Gridded.h"
 #include "mir/util/Atlas.h"
+#include "mir/util/Projection.h"
 #include "mir/util/Shape.h"
 #include "mir/util/Types.h"
 
@@ -28,7 +30,7 @@ public:
     // -- Types
 
     using LinearSpacing = ::atlas::grid::LinearSpacing;
-    using Projection    = ::atlas::Projection;
+    using Projection    = util::Projection;
 
     struct ij_t {
         size_t i;
@@ -78,6 +80,8 @@ protected:
 
     // -- Methods
 
+    const Projection& projection() const;
+
     const ::atlas::RegularGrid& grid() const { return grid_; }
     const LinearSpacing& x() const { return x_; }
     const LinearSpacing& y() const { return y_; }
@@ -125,6 +129,8 @@ private:
     // -- Members
 
     ::atlas::RegularGrid grid_;
+    std::shared_ptr<Projection> projection_;
+
     LinearSpacing x_;
     LinearSpacing y_;
     util::Shape shape_;

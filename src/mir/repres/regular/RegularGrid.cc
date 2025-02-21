@@ -73,9 +73,7 @@ RegularGrid::RegularGrid(const param::MIRParametrisation& param, const RegularGr
     y_    = linspace(first.Y, grid[1], ny, firstPointBottomLeft_ || yPlus_);
     grid_ = {x_, y_, projection};
 
-    atlas::RectangularDomain range({x_.min(), x_.max()}, {y_.min(), y_.max()}, "meters");
-    auto bbox = projection.lonlatBoundingBox(range);
-    ASSERT(bbox);
+    auto bbox = projection.lonlatBoundingBox({x_.min(), x_.max()}, {y_.min(), y_.max()});
 
     // MIR-661 Grid projection handling covering the poles: account for "excessive" bounds
     Longitude west(bbox.west());
@@ -111,7 +109,7 @@ RegularGrid::Projection::Spec RegularGrid::make_proj_spec(const param::MIRParame
     std::string proj;
     param.get("proj", proj);
 
-    if (proj.empty() || !useProjIfAvailable || !::atlas::projection::ProjectionFactory::has("proj")) {
+    if (proj.empty() || !useProjIfAvailable) {
         return {};
     }
 
@@ -319,6 +317,12 @@ Iterator* RegularGrid::iterator() const {
     };
 
     return new RegularGridIterator(grid_.projection(), x_, y_);
+}
+
+
+const RegularGrid::Projection& RegularGrid::projection() const {
+    ASSERT(projection_);
+    return *projection_;
 }
 
 

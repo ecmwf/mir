@@ -16,6 +16,7 @@
 #include <utility>
 
 #include "mir/repres/gauss/GaussianIterator.h"
+#include "mir/util/Atlas.h"
 #include "mir/util/Grib.h"
 
 

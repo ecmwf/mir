@@ -25,13 +25,8 @@
 namespace mir::action {
 
 
-AdjustWindsDirections::AdjustWindsDirections(const param::MIRParametrisation& param) : Action(param) {
-    std::vector<double> rotation;
-    ASSERT(parametrisation().userParametrisation().get("rotation", rotation));
-    ASSERT_KEYWORD_ROTATION_SIZE(rotation.size());
-
-    rotation_ = util::Rotation(rotation[0], rotation[1]);
-}
+AdjustWindsDirections::AdjustWindsDirections(const param::MIRParametrisation& param) :
+    Action(param), rotation_(param) {}
 
 
 bool AdjustWindsDirections::sameAs(const Action& other) const {

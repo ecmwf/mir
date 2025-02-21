@@ -33,13 +33,11 @@
 #include "atlas/numerics/fvm/Method.h"
 #include "atlas/option.h"
 #include "atlas/output/Gmsh.h"
-#include "atlas/projection/detail/ProjectionFactory.h"
 #include "atlas/trans/LegendreCacheCreator.h"
 #include "atlas/trans/Trans.h"
 #include "atlas/util/Config.h"
 #include "atlas/util/GaussianLatitudes.h"
 #include "atlas/util/Point.h"
-#include "atlas/util/Rotation.h"
 #else
 #include <string>
 #include <vector>
@@ -47,6 +45,7 @@
 #include "eckit/config/LocalConfiguration.h"
 #include "eckit/utils/Hash.h"
 
+#include "mir/util/Projection.h"
 #include "mir/util/Types.h"
 
 
@@ -100,19 +99,6 @@ struct Library {
 namespace util {
 
 
-struct Rotation {
-    // no rotation supported
-    explicit Rotation(const PointLonLat& southPole = {mir::Longitude::GREENWICH.value(),
-                                                      mir::Latitude::SOUTH_POLE.value()});
-    bool rotated() const { return false; }
-    inline PointLonLat rotate(const PointLonLat& p) const { return p; }
-    inline PointLonLat southPole() const { return southPole_; }
-
-private:
-    PointLonLat southPole_;
-};
-
-
 struct Config : public eckit::LocalConfiguration {
     Config() : LocalConfiguration('.') {}
     Config(const std::string&, const std::string&) : LocalConfiguration('.') {}
@@ -161,32 +147,8 @@ struct LinearSpacing : public Spacing {
 }  // namespace grid
 
 
-namespace projection {
-struct ProjectionFactory {
-    static bool has(const std::string&);
-};
-}  // namespace projection
-
-
 struct MeshGenerator {
     using Parameters = util::Config;
-};
-
-
-class Projection {
-public:
-    using Spec = util::Config;
-    Spec spec_;
-    Spec spec() const { return spec_; }
-    void hash(eckit::Hash& h) const { spec_.hash(h); }
-
-    // no projection supported
-    Projection() = default;
-    Projection(const Spec& spec) : spec_(spec) {}
-    explicit operator bool() const { return true; }
-    mir::Point2 xy(const mir::Point2& p) const { return p; }
-    mir::PointLonLat lonlat(const mir::Point2& p) const { return {p.X, p.Y}; }
-    Domain lonlatBoundingBox(const Domain& r) const { return r; }
 };
 
 
@@ -200,7 +162,7 @@ public:
     Spec spec() const { return spec_; }
     void hash(eckit::Hash& h) const { spec_.hash(h); }
 
-    using Projection = atlas::Projection;
+    using Projection = mir::util::Projection;
 
     Grid() = default;
     Grid(const Spec& spec) : spec_(spec) {}

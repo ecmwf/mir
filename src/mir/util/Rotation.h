@@ -14,6 +14,8 @@
 
 #include <iosfwd>
 
+#include "eckit/geo/projection/Rotation.h"
+
 #include "mir/util/Types.h"
 
 
@@ -66,21 +68,10 @@ namespace mir::util {
  */
 class Rotation {
 public:
-    // -- Exceptions
-    // None
-
     // -- Constructors
     explicit Rotation(const param::MIRParametrisation&);
-    explicit Rotation(const Latitude& south_pole_latitude   = Latitude::SOUTH_POLE,
-                      const Longitude& south_pole_longitude = Longitude::GREENWICH,
-                      double south_pole_rotation_angle      = 0.);
-
-    // -- Destructor
-
-    ~Rotation() = default;
-
-    // -- Convertors
-    // None
+    explicit Rotation(const PointLonLat& south_pole = {Longitude::GREENWICH.value(), Latitude::SOUTH_POLE.value()},
+                      double angle                  = 0.);
 
     // -- Operators
 
@@ -88,65 +79,28 @@ public:
 
     // -- Methods
 
+    PointLonLat rotate(PointLonLat) const;
     atlas::Grid rotate(const atlas::Grid&) const;
+
     BoundingBox boundingBox(const BoundingBox&) const;
 
-    const Latitude& south_pole_latitude() const { return south_pole_latitude_; }
-
-    const Longitude& south_pole_longitude() const { return south_pole_longitude_; }
-
-    double south_pole_rotation_angle() const { return south_pole_rotation_angle_; }
+    PointLonLat southPole() const { return rotation_.southPole(); }
+    double angle() const { return rotation_.angle(); }
+    bool rotated() const { return rotation_.rotated(); }
 
     void fillGrib(grib_info&) const;
     void fillJob(api::MIRJob&) const;
     void makeName(std::ostream&) const;
 
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-
-    void print(std::ostream&) const;
-    atlas::Projection atlasProjection() const;
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
 private:
     // -- Members
 
-    Latitude south_pole_latitude_;
-    Longitude south_pole_longitude_;
-    double south_pole_rotation_angle_;
+    eckit::geo::projection::Rotation rotation_;
 
     // -- Methods
 
     void normalize();
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
+    void print(std::ostream&) const;
 
     // -- Friends
 

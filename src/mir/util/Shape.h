@@ -31,8 +31,6 @@ namespace mir::util {
 
 
 struct Shape {
-    using Projection = ::atlas::Projection;
-
     Shape(const param::MIRParametrisation&);
     Shape(const Projection::Spec&);
     Shape() : code(6L), a(0.), b(0.), provided(false) {}

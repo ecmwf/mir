@@ -61,8 +61,8 @@ void LambertAzimuthalEqualArea::fillGrib(grib_info& info) const {
     info.grid.grid_type        = CODES_UTIL_GRID_SPEC_LAMBERT_AZIMUTHAL_EQUAL_AREA;
     info.packing.editionNumber = 2;
 
-    auto reference = grid().projection().lonlat({0., 0.});
-    auto firstLL   = grid().projection().lonlat({x().front(), y().front()});
+    auto reference = projection().lonlat({0., 0.});
+    auto firstLL   = projection().lonlat({x().front(), y().front()});
 
     info.grid.Ni = static_cast<long>(x().size());
     info.grid.Nj = static_cast<long>(y().size());
@@ -84,17 +84,16 @@ const Representation* LambertAzimuthalEqualArea::croppedRepresentation(const uti
     auto mm = minmax_ij(bbox);
     auto Ni = x().size();
 
-    auto projection = grid().projection();
-    ASSERT(projection);
+    const auto& proj = projection();
 
-    auto first = [this, projection, Ni](size_t firsti, size_t firstj) -> Point2 {
+    auto first = [this, &proj, Ni](size_t firsti, size_t firstj) -> Point2 {
         for (std::unique_ptr<Iterator> it(iterator()); it->next();) {
             auto i = it->index() % Ni;
             auto j = it->index() / Ni;
             if (i == firsti && j == firstj) {
                 const auto& latlon = *(*it);
 
-                return projection.xy({latlon[1], latlon[0]});
+                return proj.xy({latlon[1], latlon[0]});
             }
         }
         throw exception::UserError("LambertAzimuthalEqualArea::croppedRepresentation: cannot find first point");
@@ -103,7 +102,7 @@ const Representation* LambertAzimuthalEqualArea::croppedRepresentation(const uti
     auto spacex = linspace(first.X, std::abs(x().step()), static_cast<long>(mm.second.i - mm.first.i + 1), xPlus());
     auto spacey = linspace(first.Y, std::abs(y().step()), static_cast<long>(mm.second.j - mm.first.j + 1), yPlus());
 
-    return new LambertAzimuthalEqualArea(projection, bbox, spacex, spacey, shape());
+    return new LambertAzimuthalEqualArea(proj, bbox, spacex, spacey, shape());
 }
 
 
