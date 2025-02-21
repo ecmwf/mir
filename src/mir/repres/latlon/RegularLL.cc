@@ -16,7 +16,6 @@
 
 #include "eckit/log/JSON.h"
 
-#include "mir/iterator/detail/RegularIterator.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Domain.h"
@@ -110,8 +109,6 @@ const RegularLL* RegularLL::croppedRepresentation(const util::BoundingBox& bbox)
 }
 
 util::BoundingBox RegularLL::extendBoundingBox(const util::BoundingBox& bbox) const {
-    using iterator::detail::RegularIterator;
-
     auto sn = increments_.south_north().latitude().fraction();
     auto we = increments_.west_east().longitude().fraction();
     ASSERT(sn > 0);
@@ -123,19 +120,19 @@ util::BoundingBox RegularLL::extendBoundingBox(const util::BoundingBox& bbox) co
     // adjust West/East to include bbox's West/East ('outwards')
     Longitude w = bbox.west();
     if (increments_.isPeriodic()) {
-        w = shift_we + RegularIterator::adjust(bbox.west().fraction() - shift_we, we, false);
+        w = shift_we + RegularSpacing::adjust(bbox.west().fraction() - shift_we, we, false);
     }
-    Longitude e = shift_we + RegularIterator::adjust(bbox.east().fraction() - shift_we, we, true);
+    Longitude e = shift_we + RegularSpacing::adjust(bbox.east().fraction() - shift_we, we, true);
 
 
     // adjust South/North to include bbox's South/North ('outwards')
-    auto s = shift_sn + RegularIterator::adjust(bbox.south().fraction() - shift_sn, sn, false);
+    auto s = shift_sn + RegularSpacing::adjust(bbox.south().fraction() - shift_sn, sn, false);
     if (s < Latitude::SOUTH_POLE.fraction()) {
-        s = shift_sn + RegularIterator::adjust(Latitude::SOUTH_POLE.fraction() - shift_sn, sn, true);
+        s = shift_sn + RegularSpacing::adjust(Latitude::SOUTH_POLE.fraction() - shift_sn, sn, true);
     }
-    auto n = shift_sn + RegularIterator::adjust(bbox.north().fraction() - shift_sn, sn, true);
+    auto n = shift_sn + RegularSpacing::adjust(bbox.north().fraction() - shift_sn, sn, true);
     if (n > Latitude::NORTH_POLE.fraction()) {
-        n = shift_sn + RegularIterator::adjust(Latitude::NORTH_POLE.fraction() - shift_sn, sn, false);
+        n = shift_sn + RegularSpacing::adjust(Latitude::NORTH_POLE.fraction() - shift_sn, sn, false);
     }
 
     // set bounding box

@@ -22,11 +22,13 @@
 #include "eckit/utils/MD5.h"
 
 #include "mir/api/MIRJob.h"
-#include "mir/api/mir_config.h"
 #include "mir/input/GriddefInput.h"
-#include "mir/iterator/UnstructuredIterator.h"
+#include "mir/key/grid/ORCAPattern.h"
 #include "mir/output/GriddefOutput.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Geo.h"
+#include "mir/repres/Iterator.h"
+#include "mir/repres/ORCA.h"
 #include "mir/util/CheckDuplicatePoints.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
@@ -34,26 +36,19 @@
 #include "mir/util/Log.h"
 #include "mir/util/MeshGeneratorParameters.h"
 
-#if mir_HAVE_ATLAS
-#include "mir/key/grid/ORCAPattern.h"
-#include "mir/repres/proxy/ORCA.h"
-#endif
-
 
 namespace mir::repres {
 
 
 template <>
 Representation* RepresentationBuilder<other::UnstructuredGrid>::make(const param::MIRParametrisation& param) {
-#if mir_HAVE_ATLAS
     // specially-named unstructured grids
     std::string grid;
     if (param.get("grid", grid)) {
         if (!key::grid::ORCAPattern::match(grid, param).empty()) {
-            return new proxy::ORCA(param);
+            return new ORCA(param);
         }
     }
-#endif
 
     return new other::UnstructuredGrid(param);
 }
@@ -62,36 +57,42 @@ Representation* RepresentationBuilder<other::UnstructuredGrid>::make(const param
 namespace other {
 
 
-UnstructuredGrid::UnstructuredGrid(const param::MIRParametrisation& parametrisation) {
-    parametrisation.get("latitudes", latitudes_);
-    parametrisation.get("longitudes", longitudes_);
-
+UnstructuredGrid::UnstructuredGrid(const std::vector<double>& latitudes, const std::vector<double>& longitudes,
+                                   const util::BoundingBox& bbox) :
+    Gridded(bbox), grid_(latitudes, longitudes), latitudes_(latitudes), longitudes_(longitudes) {
     if (latitudes_.size() != longitudes_.size()) {
         throw exception::UserError("UnstructuredGrid: requires 'latitudes'/'longitudes' with the same size");
     }
 
-    if (latitudes_.empty()) {
-        size_t numberOfPoints = 0;
-        parametrisation.get("numberOfPoints", numberOfPoints);
+    util::check_duplicate_points("UnstructuredGrid", latitudes_, longitudes_);
+}
 
-        if (numberOfPoints == 0) {
-            throw exception::UserError("UnstructuredGrid: requires 'latitudes'/'longitudes' or 'numberOfPoints'");
+
+UnstructuredGrid::UnstructuredGrid(const param::MIRParametrisation& param) :
+    UnstructuredGrid([](const auto& param) -> latlon_t {
+        std::vector<double> latitudes;
+        std::vector<double> longitudes;
+        if (!param.get("latitudes", latitudes) || !param.get("longitudes", longitudes)) {
+            size_t N = 0;
+            ASSERT(param.get("numberOfPoints", N));
+
+            // coordinates are unusable but unique
+            latitudes.assign(N, std::numeric_limits<double>::signaling_NaN());
+            longitudes.resize(N);
+            std::iota(longitudes.begin(), longitudes.end(), 0);
         }
 
-        // coordinates are unusable but unique
-        latitudes_.assign(numberOfPoints, std::numeric_limits<double>::signaling_NaN());
-        longitudes_.resize(numberOfPoints);
-        std::iota(longitudes_.begin(), longitudes_.end(), 0);
-    }
-
-    util::check_duplicate_points("UnstructuredGrid from MIRParametrisation", latitudes_, longitudes_, parametrisation);
-}
+        return {std::move(latitudes), std::move(longitudes)};
+    }(param)) {}
 
 
-UnstructuredGrid::UnstructuredGrid(const eckit::PathName& path) {
-    input::GriddefInput::load(path, latitudes_, longitudes_);
-    util::check_duplicate_points("UnstructuredGrid from " + path.asString(), latitudes_, longitudes_);
-}
+UnstructuredGrid::UnstructuredGrid(const eckit::PathName& path) :
+    UnstructuredGrid([](const auto& path) -> latlon_t {
+        std::vector<double> latitudes;
+        std::vector<double> longitudes;
+        input::GriddefInput::load(path, latitudes, longitudes);
+        return {std::move(latitudes), std::move(longitudes)};
+    }(path)) {}
 
 
 void UnstructuredGrid::save(const eckit::PathName& path, const std::vector<double>& latitudes,
@@ -102,15 +103,8 @@ void UnstructuredGrid::save(const eckit::PathName& path, const std::vector<doubl
 }
 
 
-UnstructuredGrid::UnstructuredGrid(const std::vector<double>& latitudes, const std::vector<double>& longitudes,
-                                   const util::BoundingBox& bbox) :
-    Gridded(bbox), latitudes_(latitudes), longitudes_(longitudes) {
-    if (latitudes_.size() != longitudes_.size()) {
-        throw exception::UserError("UnstructuredGrid: requires 'latitudes'/'longitudes' with the same size");
-    }
-
-    util::check_duplicate_points("UnstructuredGrid from arguments", latitudes_, longitudes_);
-}
+UnstructuredGrid::UnstructuredGrid(latlon_t&& latlon, const util::BoundingBox& bbox) :
+    UnstructuredGrid(latlon.first, latlon.second, bbox) {}
 
 
 UnstructuredGrid::~UnstructuredGrid() = default;
@@ -219,7 +213,7 @@ const Gridded* UnstructuredGrid::croppedRepresentation(const util::BoundingBox& 
 
 
 Iterator* UnstructuredGrid::iterator() const {
-    return new iterator::UnstructuredIterator(latitudes_, longitudes_);
+    return Geo::make_iterator(grid_);
 }
 
 

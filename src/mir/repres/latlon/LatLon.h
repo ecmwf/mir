@@ -12,6 +12,8 @@
 
 #pragma once
 
+#include "eckit/types/Fraction.h"
+
 #include "mir/repres/Gridded.h"
 #include "mir/util/Increments.h"
 
@@ -23,6 +25,36 @@ class LatLon : public Gridded {
 public:
     // -- Exceptions
     // None
+
+    // -- Types
+
+    class RegularSpacing {
+    public:
+        // -- Constructors
+
+        RegularSpacing(const eckit::Fraction& a, const eckit::Fraction& b, const eckit::Fraction& inc,
+                       const eckit::Fraction& ref);
+
+        RegularSpacing(const eckit::Fraction& a, const eckit::Fraction& b, const eckit::Fraction& inc,
+                       const eckit::Fraction& ref, const eckit::Fraction& period);
+
+        // -- Methods
+
+        static eckit::Fraction adjust(const eckit::Fraction& target, const eckit::Fraction& inc, bool up);
+
+        const eckit::Fraction& a() const { return a_; }
+        const eckit::Fraction& b() const { return b_; }
+        const eckit::Fraction& inc() const { return inc_; }
+        size_t n() const { return n_; }
+
+    private:
+        // -- Members
+
+        eckit::Fraction a_;
+        eckit::Fraction b_;
+        eckit::Fraction inc_;
+        size_t n_;
+    };
 
     // -- Constructors
 

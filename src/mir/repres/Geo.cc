@@ -60,7 +60,7 @@ size_t Geo::numberOfPoints() const {
 }
 
 
-Iterator* Geo::iterator() const {
+Iterator* Geo::make_iterator(const Grid& grid) {
     struct GeoIterator : Iterator {
         explicit GeoIterator(const Grid& grid) : it_(grid.begin()), end_(grid.end()), size_(grid.size()) {}
 
@@ -97,7 +97,12 @@ Iterator* Geo::iterator() const {
         }
     };
 
-    return new GeoIterator(*grid_);
+    return new GeoIterator(grid);
+}
+
+
+Iterator* Geo::iterator() const {
+    return make_iterator(*grid_);
 }
 
 

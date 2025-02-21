@@ -21,7 +21,6 @@
 #include "eckit/types/Fraction.h"
 
 #include "mir/data/MIRField.h"
-#include "mir/iterator/detail/RegularIterator.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Earth.h"
@@ -347,22 +346,19 @@ bool LatLon::LatLonIterator::next(Latitude& lat, Longitude& lon) {
 
 
 void LatLon::globaliseBoundingBox(util::BoundingBox& bbox, const util::Increments& inc, const PointLatLon& reference) {
-    using eckit::Fraction;
-    using iterator::detail::RegularIterator;
-
-    Fraction sn = inc.south_north().latitude().fraction();
-    Fraction we = inc.west_east().longitude().fraction();
+    auto sn = inc.south_north().latitude().fraction();
+    auto we = inc.west_east().longitude().fraction();
     ASSERT(sn > 0);
     ASSERT(we > 0);
 
-    Fraction shift_sn = (reference.lat().fraction() / sn).decimalPart() * sn;
-    Fraction shift_we = (reference.lon().fraction() / we).decimalPart() * we;
+    eckit::Fraction shift_sn = (reference.lat().fraction() / sn).decimalPart() * sn;
+    eckit::Fraction shift_we = (reference.lon().fraction() / we).decimalPart() * we;
 
 
     // Latitude limits
 
-    Latitude n = shift_sn + RegularIterator::adjust(Latitude::NORTH_POLE.fraction() - shift_sn, sn, false);
-    Latitude s = shift_sn + RegularIterator::adjust(Latitude::SOUTH_POLE.fraction() - shift_sn, sn, true);
+    Latitude n = shift_sn + RegularSpacing::adjust(Latitude::NORTH_POLE.fraction() - shift_sn, sn, false);
+    Latitude s = shift_sn + RegularSpacing::adjust(Latitude::SOUTH_POLE.fraction() - shift_sn, sn, true);
 
 
     // Longitude limits
@@ -371,10 +367,10 @@ void LatLon::globaliseBoundingBox(util::BoundingBox& bbox, const util::Increment
 
     Longitude w = bbox.west();
     if (inc.isPeriodic()) {
-        w = shift_we + RegularIterator::adjust(Longitude::GREENWICH.fraction() - shift_we, we, true);
+        w = shift_we + RegularSpacing::adjust(Longitude::GREENWICH.fraction() - shift_we, we, true);
     }
 
-    Longitude e = shift_we + RegularIterator::adjust(w.fraction() + Longitude::GLOBE.fraction() - shift_we, we, false);
+    Longitude e = shift_we + RegularSpacing::adjust(w.fraction() + Longitude::GLOBE.fraction() - shift_we, we, false);
     if (e - w == Longitude::GLOBE) {
         e -= we;
     }
@@ -387,19 +383,17 @@ void LatLon::globaliseBoundingBox(util::BoundingBox& bbox, const util::Increment
 
 void LatLon::correctBoundingBox(util::BoundingBox& bbox, size_t& ni, size_t& nj, const util::Increments& inc,
                                 const PointLatLon& reference) {
-    using iterator::detail::RegularIterator;
-
     // Latitude/longitude ranges
-    RegularIterator lat{bbox.south().fraction(), bbox.north().fraction(), inc.south_north().latitude().fraction(),
-                        reference.lat().fraction()};
+    const RegularSpacing lat{bbox.south().fraction(), bbox.north().fraction(), inc.south_north().latitude().fraction(),
+                             reference.lat().fraction()};
     auto n = lat.b();
     auto s = lat.a();
 
     nj = lat.n();
     ASSERT(nj > 0);
 
-    RegularIterator lon{bbox.west().fraction(), bbox.east().fraction(), inc.west_east().longitude().fraction(),
-                        reference.lon().fraction(), Longitude::GLOBE.fraction()};
+    const RegularSpacing lon{bbox.west().fraction(), bbox.east().fraction(), inc.west_east().longitude().fraction(),
+                             reference.lon().fraction(), Longitude::GLOBE.fraction()};
     auto w = lon.a();
     auto e = lon.b();
 
@@ -411,6 +405,64 @@ void LatLon::correctBoundingBox(util::BoundingBox& bbox, size_t& ni, size_t& nj,
     ASSERT(s + (nj - 1) * lat.inc() == n);
 
     bbox = {n, w, s, e};
+}
+
+LatLon::RegularSpacing::RegularSpacing(const eckit::Fraction& a, const eckit::Fraction& b, const eckit::Fraction& inc,
+                                       const eckit::Fraction& ref) :
+    inc_(inc) {
+    ASSERT(a <= b);
+    ASSERT(inc >= 0);
+
+    if (inc_ == 0) {
+
+        b_ = a_ = a;
+        n_      = 1;
+    }
+    else {
+
+        auto shift = (ref / inc_).decimalPart() * inc;
+        a_         = shift + adjust(a - shift, inc_, true);
+
+        if (b == a) {
+            b_ = a_;
+        }
+        else {
+
+            auto c = shift + adjust(b - shift, inc_, false);
+            c      = a_ + ((c - a_) / inc_).integralPart() * inc_;
+            b_     = c < a_ ? a_ : c;
+        }
+
+        n_ = size_t(((b_ - a_) / inc_).integralPart() + 1);
+    }
+    ASSERT(a_ <= b_);
+    ASSERT(n_ >= 1);
+}
+
+LatLon::RegularSpacing::RegularSpacing(const eckit::Fraction& a, const eckit::Fraction& b, const eckit::Fraction& inc,
+                                       const eckit::Fraction& ref, const eckit::Fraction& period) :
+    RegularSpacing(a, b, inc, ref) {
+    ASSERT(period > 0);
+
+    if ((n_ - 1) * inc_ >= period) {
+        n_ -= 1;
+        ASSERT(n_ * inc_ == period || (n_ - 1) * inc_ < period);
+
+        b_ = a_ + (n_ - 1) * inc_;
+    }
+}
+
+eckit::Fraction LatLon::RegularSpacing::adjust(const eckit::Fraction& target, const eckit::Fraction& inc, bool up) {
+    ASSERT(inc > 0);
+
+    auto r = target / inc;
+    auto n = r.integralPart();
+
+    if (!r.integer() && (r > 0) == up) {
+        n += (up ? 1 : -1);
+    }
+
+    return (n * inc);
 }
 
 

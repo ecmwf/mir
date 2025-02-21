@@ -12,7 +12,10 @@
 
 #pragma once
 
+#include <utility>
 #include <vector>
+
+#include "eckit/geo/grid/unstructured/UnstructuredGeneric.h"
 
 #include "mir/repres/Gridded.h"
 
@@ -27,9 +30,6 @@ namespace mir::repres::other {
 
 class UnstructuredGrid : public Gridded {
 public:
-    // -- Exceptions
-    // None
-
     // -- Constructors
 
     explicit UnstructuredGrid(const eckit::PathName&);
@@ -44,9 +44,6 @@ public:
 
     ~UnstructuredGrid() override;
 
-    // -- Convertors
-    // None
-
     // -- Operators
 
     void operator=(const UnstructuredGrid&)  = delete;
@@ -57,44 +54,26 @@ public:
     static void save(const eckit::PathName&, const std::vector<double>& latitudes,
                      const std::vector<double>& longitudes, bool binary);
 
-    // -- Overridden methods
-
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-
-    // From Representation
-    bool extendBoundingBoxOnIntersect() const override;
-    void print(std::ostream&) const override;
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
 private:
+    // -- Types
+
+    using latlon_t = std::pair<std::vector<double>, std::vector<double>>;
+
+    // -- Constructors
+
+    explicit UnstructuredGrid(latlon_t&&, const util::BoundingBox& = util::BoundingBox());
+
     // -- Members
+
+    eckit::geo::grid::unstructured::UnstructuredGeneric grid_;
 
     std::vector<double> latitudes_;
     std::vector<double> longitudes_;
 
-    // -- Methods
-    // None
-
     // -- Overridden methods
+
+    bool extendBoundingBoxOnIntersect() const override;
+    void print(std::ostream&) const override;
 
     void fillGrib(grib_info&) const override;
     void fillJob(api::MIRJob&) const override;
@@ -108,22 +87,12 @@ private:
     void makeName(std::ostream&) const override;
     bool sameAs(const Representation&) const override;
 
-    // Domain operations
     bool isPeriodicWestEast() const override;
     bool includesNorthPole() const override;
     bool includesSouthPole() const override;
 
     size_t numberOfPoints() const override;
     const Gridded* croppedRepresentation(const util::BoundingBox&) const override;
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-    // -- Friends
-    // None
 };
 
 

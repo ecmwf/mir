@@ -32,7 +32,7 @@ static const RepresentationBuilder<ORCA> __repres("orca");
 ORCA::ORCA(const Grid::uid_t& uid) :
     Geo(*std::unique_ptr<eckit::geo::spec::Custom>(new eckit::geo::spec::Custom{{"uid", uid}})),
     grid_(dynamic_cast<decltype(grid_)>(Geo::grid())) {
-    ASSERT(grid_.Grid::type() == "orca");
+    ASSERT(grid_.Grid::spec().get_string("type") == "orca");
 }
 
 

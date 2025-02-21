@@ -43,6 +43,10 @@ public:
     Geo& operator=(const Geo&) = delete;
     Geo& operator=(Geo&&)      = delete;
 
+    // Class Methods
+
+    static Iterator* make_iterator(const Grid&);
+
 protected:
     // -- Constructors
 
@@ -61,24 +65,11 @@ private:
 
     void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
-    // void makeName(std::ostream&) const override;
-
-    // void fillGrib(grib_info&) const override;
     void fillJob(api::MIRJob&) const override;
-    // void fillMeshGen(util::MeshGeneratorParameters&) const override;
-
     bool sameAs(const Representation&) const override;
     void validate(const MIRValuesVector& values) const override;
 
-    // ::atlas::Grid atlasGrid() const override;
-    // std::vector<util::GridBox> gridBoxes() const override;
-
     size_t numberOfPoints() const override;
-
-    // bool includesNorthPole() const override { return true; }
-    // bool includesSouthPole() const override { return true; }
-    // bool isPeriodicWestEast() const override { return true; }
-
     Iterator* iterator() const override;
 };
 

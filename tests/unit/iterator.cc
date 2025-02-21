@@ -16,10 +16,10 @@
 #include "eckit/types/Fraction.h"
 
 #include "mir/api/mir_config.h"
-#include "mir/iterator/detail/RegularIterator.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/gauss/GaussianIterator.h"
+#include "mir/repres/latlon/LatLon.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Increments.h"
@@ -57,12 +57,11 @@ CASE("MIR-390") {
 
 
     SECTION("LatLon::correctBoundingBox") {
-
-        using iterator::detail::RegularIterator;
+        using RegularSpacing = repres::latlon::LatLon::RegularSpacing;
 
         // Latitude/longitude ranges
-        RegularIterator lat{bbox.south().fraction(), bbox.north().fraction(), inc.south_north().latitude().fraction(),
-                            reference.lat().fraction()};
+        const RegularSpacing lat{bbox.south().fraction(), bbox.north().fraction(),
+                                 inc.south_north().latitude().fraction(), reference.lat().fraction()};
 
         auto n = lat.b();
         auto s = lat.a();
@@ -71,8 +70,8 @@ CASE("MIR-390") {
         EXPECTV(bbox.north().fraction() == n);
         EXPECTV(Nj = lat.n());
 
-        RegularIterator lon{bbox.west().fraction(), bbox.east().fraction(), inc.west_east().longitude().fraction(),
-                            reference.lon().fraction(), Longitude::GLOBE.fraction()};
+        const RegularSpacing lon{bbox.west().fraction(), bbox.east().fraction(), inc.west_east().longitude().fraction(),
+                                 reference.lon().fraction(), Longitude::GLOBE.fraction()};
 
         auto w = lon.a();
         auto e = lon.b();
