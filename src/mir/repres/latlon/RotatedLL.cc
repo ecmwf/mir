@@ -71,7 +71,7 @@ atlas::Grid RotatedLL::atlasGrid() const {
     atlas::StructuredGrid::YSpace yspace(
         atlas::grid::LinearSpacing(bbox_.north().value(), bbox_.south().value(), long(nj_)));
 
-    atlas::StructuredGrid unrotatedGrid(xspace, yspace, {}, dom);
+    atlas::StructuredGrid unrotatedGrid(xspace, yspace, {}, atlas::Domain{dom});
     return rotation_.rotate(unrotatedGrid);
 }
 

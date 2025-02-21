@@ -81,7 +81,7 @@ atlas::Grid RegularLL::atlasGrid() const {
     atlas::StructuredGrid::YSpace yspace(
         atlas::grid::LinearSpacing(bbox_.north().value(), bbox_.south().value(), long(nj_)));
 
-    return atlas::StructuredGrid(xspace, yspace, {}, dom);
+    return atlas::StructuredGrid(xspace, yspace, {}, atlas::Domain{dom});
 }
 
 void RegularLL::fillGrib(grib_info& info) const {

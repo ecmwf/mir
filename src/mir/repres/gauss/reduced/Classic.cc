@@ -13,6 +13,7 @@
 #include "mir/repres/gauss/reduced/Classic.h"
 
 #include "mir/api/MIRJob.h"
+#include "mir/util/Atlas.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Log.h"
 #include "mir/util/Types.h"
@@ -66,7 +67,7 @@ bool Classic::sameAs(const Representation& other) const {
 
 
 atlas::Grid Classic::atlasGrid() const {
-    return atlas::ReducedGaussianGrid("N" + std::to_string(N_), domain());
+    return atlas::ReducedGaussianGrid("N" + std::to_string(N_), atlas::Domain{domain()});
 }
 
 

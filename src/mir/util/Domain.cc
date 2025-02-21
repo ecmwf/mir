@@ -28,14 +28,8 @@ bool Domain::includesPoleSouth() const {
 }
 
 
-Domain::operator atlas::RectangularDomain() const {
-    return atlas::RectangularDomain({west().value(), east().value()}, {south().value(), north().value()});
-}
-
-
 void Domain::print(std::ostream& os) const {
-    os << "Domain["
-       << "north=" << north() << ",west=" << west() << ",south=" << south() << ",east=" << east()
+    os << "Domain[north=" << north() << ",west=" << west() << ",south=" << south() << ",east=" << east()
        << ",isGlobal=" << isGlobal() << "]";
 }
 

@@ -67,7 +67,7 @@ bool Octahedral::sameAs(const Representation& other) const {
 
 
 atlas::Grid Octahedral::atlasGrid() const {
-    return atlas::ReducedGaussianGrid("O" + std::to_string(N_), domain());
+    return atlas::ReducedGaussianGrid("O" + std::to_string(N_), atlas::Domain{domain()});
 }
 
 

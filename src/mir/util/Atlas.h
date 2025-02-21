@@ -45,6 +45,7 @@
 #include "eckit/config/LocalConfiguration.h"
 #include "eckit/utils/Hash.h"
 
+#include "mir/util/BoundingBox.h"
 #include "mir/util/Projection.h"
 #include "mir/util/Types.h"
 
@@ -68,10 +69,16 @@ struct Domain {
         const double min_;
         const double max_;
     };
-    const Range lon_ = {mir::Longitude::GREENWICH.value(), mir::Longitude::GLOBE.value()};
-    const Range lat_ = {mir::Latitude::SOUTH_POLE.value(), mir::Latitude::NORTH_POLE.value()};
-    Domain()         = default;
-    Domain(Range&& lon, Range&& lat, const std::string& /*units*/ = "");
+    const Range lon_;
+    const Range lat_;
+
+    explicit Domain(Range&& lon = {mir::Longitude::GREENWICH.value(), mir::Longitude::GLOBE.value()},
+                    Range&& lat = {mir::Latitude::SOUTH_POLE.value(), mir::Latitude::NORTH_POLE.value()},
+                    const std::string& /*units*/ = "");
+
+    explicit Domain(const mir::util::BoundingBox& bbox) :
+        Domain{{bbox.west().value(), bbox.east().value()}, {bbox.south().value(), bbox.north().value()}} {}
+
     inline double north() const { return lat_.max_; }
     inline double south() const { return lat_.min_; }
     inline double west() const { return lon_.min_; }
@@ -81,9 +88,6 @@ struct Domain {
     bool operator==(const Domain&) const;
     explicit operator bool() const { return true; }
 };
-
-
-using RectangularDomain = Domain;
 
 
 struct Library {
