@@ -14,6 +14,7 @@
 
 #include <ostream>
 
+#include "mir/api/mir_config.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
@@ -64,7 +65,11 @@ void RotatedOctahedral::fillJob(api::MIRJob& job) const {
 
 
 atlas::Grid RotatedOctahedral::atlasGrid() const {
+#if mir_HAVE_ATLAS
     return rotation_.rotate(Octahedral::atlasGrid());
+#else
+    NOTIMP;
+#endif
 }
 
 

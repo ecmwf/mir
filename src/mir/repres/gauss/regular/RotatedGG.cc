@@ -15,6 +15,7 @@
 #include <ostream>
 #include <utility>
 
+#include "mir/api/mir_config.h"
 #include "mir/repres/gauss/GaussianIterator.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Grib.h"
@@ -75,7 +76,11 @@ void RotatedGG::fillJob(api::MIRJob& job) const {
 
 
 atlas::Grid RotatedGG::atlasGrid() const {
+#if mir_HAVE_ATLAS
     return rotation_.rotate(Regular::atlasGrid());
+#else
+    NOTIMP;
+#endif
 }
 
 

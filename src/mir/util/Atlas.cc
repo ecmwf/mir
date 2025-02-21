@@ -87,44 +87,6 @@ idx_t StructuredGrid::nx() const {
 }
 
 
-GaussianGrid::GaussianGrid(const std::string& name, const Domain& domain) {
-    ASSERT(domain == Domain());
-    ASSERT(name.size() > 1);
-    spec_.set("name", name);
-
-    auto c = name.front();
-    auto n = eckit::Translator<std::string, idx_t>()(name.substr(1));
-    ASSERT(n > 0);
-
-    if (c == 'F' || c == 'f') {
-        pl_.assign(static_cast<size_t>(2 * n), 4 * n);
-        return;
-    }
-
-    if (c == 'O' || c == 'o') {
-        pl_.resize(static_cast<size_t>(2 * n));
-
-        auto a = pl_.begin();
-        auto b = pl_.rbegin();
-        for (idx_t j = 0, ni = 20; j < n; j++, ni += 4) {
-            *(a++) = *(b++) = ni;
-        }
-        return;
-    }
-
-    NOTIMP;
-}
-
-
-GaussianGrid::GaussianGrid(const std::vector<long>& pl, const Domain& domain) {
-    ASSERT(domain == Domain());
-    pl_ = pl;
-}
-
-
-UnstructuredGrid::UnstructuredGrid(std::vector<PointXY>&& points) : points_(points) {}
-
-
 trans::LegendreCache::LegendreCache(const void*, size_t) {
     NOTIMP;
 }

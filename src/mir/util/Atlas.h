@@ -43,7 +43,6 @@
 #include <vector>
 
 #include "eckit/config/LocalConfiguration.h"
-#include "eckit/utils/Hash.h"
 
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Projection.h"
@@ -164,12 +163,9 @@ public:
     using Spec = util::Config;
     Spec spec_;
     Spec spec() const { return spec_; }
-    void hash(eckit::Hash& h) const { spec_.hash(h); }
 
     using Projection = mir::util::Projection;
 
-    Grid() = default;
-    Grid(const Spec& spec) : spec_(spec) {}
     explicit operator bool() const { return true; }
     Projection projection() const;
 };
@@ -193,22 +189,7 @@ protected:
 };
 
 
-struct GaussianGrid : StructuredGrid {
-    GaussianGrid(const std::string& name, const Domain& = Domain());
-    GaussianGrid(const std::vector<long>& pl, const Domain& = Domain());
-    const std::vector<long>& nx() const { return pl_; }
-};
-
-
-struct UnstructuredGrid : Grid {
-    std::vector<PointXY> points_;
-    UnstructuredGrid(std::vector<PointXY>&&);
-};
-
-
-using RegularGrid         = StructuredGrid;
-using RegularGaussianGrid = GaussianGrid;
-using ReducedGaussianGrid = GaussianGrid;
+using RegularGrid = StructuredGrid;
 
 
 namespace trans {

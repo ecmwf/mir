@@ -14,6 +14,7 @@
 
 #include "eckit/utils/MD5.h"
 
+#include "mir/api/mir_config.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Domain.h"
 
@@ -58,7 +59,11 @@ void FromPL::fillJob(api::MIRJob& job) const {
 
 
 atlas::Grid FromPL::atlasGrid() const {
+#if mir_HAVE_ATLAS
     return atlas::ReducedGaussianGrid(pls(), atlas::Domain{domain()});
+#else
+    NOTIMP;
+#endif
 }
 
 

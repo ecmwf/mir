@@ -14,6 +14,7 @@
 
 #include <ostream>
 
+#include "mir/api/mir_config.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Grib.h"
 
@@ -68,7 +69,11 @@ void RotatedFromPL::fillJob(api::MIRJob& job) const {
 
 
 atlas::Grid RotatedFromPL::atlasGrid() const {
+#if mir_HAVE_ATLAS
     return rotation_.rotate(FromPL::atlasGrid());
+#else
+    NOTIMP;
+#endif
 }
 
 

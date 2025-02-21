@@ -16,6 +16,7 @@
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/api/MIRJob.h"
+#include "mir/api/mir_config.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Earth.h"
@@ -202,7 +203,11 @@ bool Regular::isPeriodicWestEast() const {
 }
 
 atlas::Grid Regular::atlasGrid() const {
+#if mir_HAVE_ATLAS
     return atlas::RegularGaussianGrid("F" + std::to_string(N_), atlas::Domain{domain()});
+#else
+    NOTIMP;
+#endif
 }
 
 void Regular::setNiNj() {

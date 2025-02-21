@@ -16,6 +16,7 @@
 
 #include "eckit/geo/spec/Custom.h"
 
+#include "mir/api/mir_config.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
@@ -72,7 +73,11 @@ void ORCA::fillMeshGen(util::MeshGeneratorParameters& params) const {
 
 
 ::atlas::Grid ORCA::atlasGrid() const {
+#if mir_HAVE_ATLAS
     return {::atlas::Grid::Spec("type", "ORCA").set("uid", grid_.uid())};
+#else
+    NOTIMP;
+#endif
 }
 
 

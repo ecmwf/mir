@@ -22,6 +22,7 @@
 #include "eckit/utils/MD5.h"
 
 #include "mir/api/MIRJob.h"
+#include "mir/api/mir_config.h"
 #include "mir/input/GriddefInput.h"
 #include "mir/key/grid/ORCAPattern.h"
 #include "mir/output/GriddefOutput.h"
@@ -161,7 +162,8 @@ util::Domain UnstructuredGrid::domain() const {
 
 
 atlas::Grid UnstructuredGrid::atlasGrid() const {
-    ASSERT(numberOfPoints());
+#if mir_HAVE_ATLAS
+    ASSERT(numberOfPoints() > 0);
 
     std::vector<atlas::PointXY> pts;
     pts.reserve(numberOfPoints());
@@ -171,6 +173,9 @@ atlas::Grid UnstructuredGrid::atlasGrid() const {
     }
 
     return atlas::UnstructuredGrid(std::move(pts));
+#else
+    NOTIMP;
+#endif
 }
 
 
