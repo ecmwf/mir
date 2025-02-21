@@ -14,7 +14,8 @@
 
 #include <ostream>
 
-#include "mir/api/MIRJob.h"
+#include "eckit/geo/spec/Custom.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
@@ -28,25 +29,19 @@ namespace mir::repres {
 static const RepresentationBuilder<ORCA> __repres("orca");
 
 
-ORCA::ORCA(const uid_t& uid) : grid_(uid) {}
+ORCA::ORCA(const Grid::uid_t& uid) :
+    Geo(*std::unique_ptr<eckit::geo::spec::Custom>(new eckit::geo::spec::Custom{{"uid", uid}})),
+    grid_(dynamic_cast<decltype(grid_)>(Geo::grid())) {
+    ASSERT(grid_.Grid::type() == "orca");
+}
 
 
 ORCA::ORCA(const param::MIRParametrisation& param) :
     ORCA([&param]() {
-        std::string uid;
+        Grid::uid_t uid;
         ASSERT(param.get("uid", uid));
         return uid;
     }()) {}
-
-
-void ORCA::json(eckit::JSON& j) const {
-    grid_.Grid::spec().json(j);
-}
-
-
-void ORCA::print(std::ostream& out) const {
-    out << "ORCA[spec=" << grid_.spec_str() << "]";
-}
 
 
 void ORCA::makeName(std::ostream& out) const {
@@ -58,19 +53,14 @@ void ORCA::fillGrib(grib_info& info) const {
     info.grid.grid_type        = GRIB_UTIL_GRID_SPEC_UNSTRUCTURED;
     info.packing.editionNumber = 2;
 
-    const auto orca_name = grid_.name();
-    info.extra_set("unstructuredGridType", orca_name.c_str());
+    const auto name = grid_.name();
+    info.extra_set("unstructuredGridType", name.c_str());
 
-    const auto orca_arrangement = grid_.arrangement();
-    info.extra_set("unstructuredGridSubtype", orca_arrangement.c_str());
+    const auto arrangement = grid_.arrangement();
+    info.extra_set("unstructuredGridSubtype", arrangement.c_str());
 
-    const auto orca_uid = grid_.uid();
-    info.extra_set("uuidOfHGrid", orca_uid.c_str());
-}
-
-
-void ORCA::fillJob(api::MIRJob& job) const {
-    job.set("grid", grid_.spec_str());
+    const auto uid = grid_.uid();
+    info.extra_set("uuidOfHGrid", uid.c_str());
 }
 
 
@@ -81,29 +71,8 @@ void ORCA::fillMeshGen(util::MeshGeneratorParameters& params) const {
 }
 
 
-bool mir::repres::ORCA::sameAs(const Representation& other) const {
-    const auto* o = dynamic_cast<const ORCA*>(&other);
-    return (o != nullptr) && grid_ == o->grid_;
-}
-
-
-void ORCA::validate(const MIRValuesVector& values) const {
-    ASSERT_VALUES_SIZE_EQ_ITERATOR_COUNT("ORCA", values.size(), numberOfPoints());
-}
-
-
 ::atlas::Grid ORCA::atlasGrid() const {
     return {::atlas::Grid::Spec("type", "ORCA").set("uid", grid_.uid())};
-}
-
-
-size_t ORCA::numberOfPoints() const {
-    return grid_.size();
-}
-
-
-Iterator* ORCA::iterator() const {
-    NOTIMP;
 }
 
 

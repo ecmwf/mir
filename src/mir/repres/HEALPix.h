@@ -14,13 +14,13 @@
 
 #include "eckit/geo/grid/HEALPix.h"
 
-#include "mir/repres/Gridded.h"
+#include "mir/repres/Geo.h"
 
 
 namespace mir::repres {
 
 
-class HEALPix : public Gridded {
+class HEALPix : public Geo {
 public:
     // -- Types
 
@@ -31,46 +31,24 @@ public:
     explicit HEALPix(size_t Nside, Ordering ordering = Ordering::healpix_ring);
     explicit HEALPix(const param::MIRParametrisation&);
 
-    HEALPix(const HEALPix&) = delete;
-    HEALPix(HEALPix&&)      = delete;
-
-    // -- Destructor
-
-    ~HEALPix() override = default;
-
-    // -- Operators
-
-    HEALPix& operator=(const HEALPix&) = delete;
-    HEALPix& operator=(HEALPix&&)      = delete;
-
 private:
     // -- Members
 
-    eckit::geo::grid::HEALPix grid_;
+    const eckit::geo::grid::HEALPix& grid_;
 
     // -- Overridden methods
 
-    void json(eckit::JSON&) const override;
-    void print(std::ostream&) const override;
     void makeName(std::ostream&) const override;
 
     void fillGrib(grib_info&) const override;
-    void fillJob(api::MIRJob&) const override;
     void fillMeshGen(util::MeshGeneratorParameters&) const override;
-
-    bool sameAs(const Representation&) const override;
-    void validate(const MIRValuesVector& values) const override;
 
     ::atlas::Grid atlasGrid() const override;
     std::vector<util::GridBox> gridBoxes() const override;
 
-    size_t numberOfPoints() const override;
-
     bool includesNorthPole() const override { return true; }
     bool includesSouthPole() const override { return true; }
     bool isPeriodicWestEast() const override { return true; }
-
-    Iterator* iterator() const override;
 };
 
 

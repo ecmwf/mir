@@ -510,6 +510,8 @@ list(APPEND mir_srcs
     reorder/Identity.h
     reorder/Reorder.cc
     reorder/Reorder.h
+    repres/Geo.cc
+    repres/Geo.h
     repres/Gridded.cc
     repres/Gridded.h
     repres/HEALPix.cc

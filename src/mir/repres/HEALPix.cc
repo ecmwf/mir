@@ -12,15 +12,12 @@
 
 #include "mir/repres/HEALPix.h"
 
-#include <cctype>
 #include <memory>
 #include <ostream>
 
 #include "eckit/geo/spec/Custom.h"
 
-#include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
@@ -37,13 +34,7 @@ namespace {
 const RepresentationBuilder<HEALPix> __repres("healpix");
 
 
-std::unique_ptr<eckit::geo::spec::Custom> spec_from_parametrisation(const param::MIRParametrisation& param) {
-    long Nside = 0;
-    param.get("Nside", Nside);
-
-    std::string ordering;
-    param.get("ordering", ordering);
-
+std::unique_ptr<eckit::geo::spec::Custom> spec_from_args(size_t Nside, HEALPix::Ordering ordering) {
     auto spec = std::make_unique<eckit::geo::spec::Custom>();
     spec->set("type", "HEALPix");
     spec->set("Nside", Nside);
@@ -53,23 +44,27 @@ std::unique_ptr<eckit::geo::spec::Custom> spec_from_parametrisation(const param:
 }
 
 
+std::unique_ptr<eckit::geo::spec::Custom> spec_from_parametrisation(const param::MIRParametrisation& param) {
+    long Nside = 0;
+    param.get("Nside", Nside);
+
+    std::string ordering;
+    param.get("ordering", ordering);
+
+    return spec_from_args(Nside,
+                          ordering == "nested" ? HEALPix::Ordering::healpix_nested : HEALPix::Ordering::healpix_ring);
+}
+
+
 }  // namespace
 
 
-HEALPix::HEALPix(size_t Nside, Ordering ordering) : grid_(Nside, ordering) {}
+HEALPix::HEALPix(size_t Nside, Ordering ordering) :
+    Geo(*spec_from_args(Nside, ordering)), grid_(dynamic_cast<decltype(grid_)>(Geo::grid())) {}
 
 
-HEALPix::HEALPix(const param::MIRParametrisation& param) : grid_(*spec_from_parametrisation(param)) {}
-
-
-void HEALPix::json(eckit::JSON& j) const {
-    grid_.Grid::spec().json(j);
-}
-
-
-void HEALPix::print(std::ostream& out) const {
-    out << "HEALPix[spec=" << grid_.spec_str() << "]";
-}
+HEALPix::HEALPix(const param::MIRParametrisation& param) :
+    Geo(*spec_from_parametrisation(param)), grid_(dynamic_cast<decltype(grid_)>(Geo::grid())) {}
 
 
 void HEALPix::makeName(std::ostream& out) const {
@@ -87,26 +82,10 @@ void HEALPix::fillGrib(grib_info& info) const {
 }
 
 
-void HEALPix::fillJob(api::MIRJob& job) const {
-    job.set("grid", grid_.spec_str());
-}
-
-
 void HEALPix::fillMeshGen(util::MeshGeneratorParameters& params) const {
     if (params.meshGenerator_.empty()) {
         params.meshGenerator_ = "structured";
     }
-}
-
-
-bool mir::repres::HEALPix::sameAs(const Representation& other) const {
-    const auto* o = dynamic_cast<const HEALPix*>(&other);
-    return (o != nullptr) && grid_ == o->grid_;
-}
-
-
-void HEALPix::validate(const MIRValuesVector& values) const {
-    ASSERT_VALUES_SIZE_EQ_ITERATOR_COUNT("HEALPix", values.size(), numberOfPoints());
 }
 
 
@@ -118,52 +97,6 @@ void HEALPix::validate(const MIRValuesVector& values) const {
 
 std::vector<util::GridBox> mir::repres::HEALPix::gridBoxes() const {
     NOTIMP;
-}
-
-
-size_t HEALPix::numberOfPoints() const {
-    return grid_.size();
-}
-
-
-Iterator* HEALPix::iterator() const {
-    struct GeoIterator : Iterator {
-        explicit GeoIterator(const eckit::geo::Grid& grid) : it_(grid.begin()), end_(grid.end()), size_(grid.size()) {}
-
-    private:
-        eckit::geo::Grid::iterator it_;
-        const eckit::geo::Grid::iterator end_;
-        const size_t size_;
-
-        void print(std::ostream& out) const override {
-            out << "GeoIterator[";
-            Iterator::print(out);
-            out << ",count=" << index() << ",size=" << size_ << "]";
-        }
-
-        bool next(Latitude& _lat, Longitude& _lon) override {
-            if (it_ != end_) {
-                const auto p  = *it_;
-                const auto& q = std::get<PointLonLat>(p);
-                point_[0]     = q.lat;
-                point_[1]     = q.lon;
-                _lat          = q.lat;
-                _lon          = q.lon;
-
-                ++it_;
-                return true;
-            }
-
-            return false;
-        }
-
-        size_t index() const override {
-            ASSERT(it_ != end_);
-            return it_->index();
-        }
-    };
-
-    return new GeoIterator(grid_);
 }
 
 
