@@ -15,7 +15,6 @@
 #include <cctype>
 #include <memory>
 #include <ostream>
-#include <sstream>
 
 #include "eckit/geo/spec/Custom.h"
 
@@ -33,6 +32,9 @@ namespace mir::repres {
 
 
 namespace {
+
+
+const RepresentationBuilder<HEALPix> __repres("healpix");
 
 
 std::unique_ptr<eckit::geo::spec::Custom> spec_from_parametrisation(const param::MIRParametrisation& param) {
@@ -86,9 +88,7 @@ void HEALPix::fillGrib(grib_info& info) const {
 
 
 void HEALPix::fillJob(api::MIRJob& job) const {
-    std::ostringstream os;
-    makeName(os);
-    job.set("grid", os.str());
+    job.set("grid", grid_.spec_str());
 }
 
 
@@ -111,12 +111,8 @@ void HEALPix::validate(const MIRValuesVector& values) const {
 
 
 ::atlas::Grid HEALPix::atlasGrid() const {
-    ::atlas::Grid::Spec config;
-    config.set("type", "healpix");
-    config.set("N", grid_.Nside());
-    config.set("ordering", grid_.ordering() == Ordering::healpix_nested ? "nested" : "ring");
-
-    return {config};
+    const auto* ordering = grid_.ordering() == Ordering::healpix_nested ? "nested" : "ring";
+    return {::atlas::Grid::Spec("type", "healpix").set("N", grid_.Nside()).set("ordering", ordering)};
 }
 
 
@@ -169,9 +165,6 @@ Iterator* HEALPix::iterator() const {
 
     return new GeoIterator(grid_);
 }
-
-
-static const RepresentationBuilder<HEALPix> __repres("healpix");
 
 
 }  // namespace mir::repres

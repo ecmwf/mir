@@ -12,7 +12,7 @@
 
 #pragma once
 
-#include "eckit/geo/grid/HEALPix.h"
+#include "eckit/geo/grid/ORCA.h"
 
 #include "mir/repres/Gridded.h"
 
@@ -20,33 +20,33 @@
 namespace mir::repres {
 
 
-class HEALPix : public Gridded {
+class ORCA : public Gridded {
 public:
     // -- Types
 
-    using Ordering = eckit::geo::Ordering;
+    using uid_t = eckit::geo::Grid::uid_t;
 
     // -- Constructors
 
-    explicit HEALPix(size_t Nside, Ordering ordering = Ordering::healpix_ring);
-    explicit HEALPix(const param::MIRParametrisation&);
+    explicit ORCA(const uid_t& uid);
+    explicit ORCA(const param::MIRParametrisation&);
 
-    HEALPix(const HEALPix&) = delete;
-    HEALPix(HEALPix&&)      = delete;
+    ORCA(const ORCA&) = delete;
+    ORCA(ORCA&&)      = delete;
 
     // -- Destructor
 
-    ~HEALPix() override = default;
+    ~ORCA() override = default;
 
     // -- Operators
 
-    HEALPix& operator=(const HEALPix&) = delete;
-    HEALPix& operator=(HEALPix&&)      = delete;
+    ORCA& operator=(const ORCA&) = delete;
+    ORCA& operator=(ORCA&&)      = delete;
 
 private:
     // -- Members
 
-    eckit::geo::grid::HEALPix grid_;
+    eckit::geo::grid::ORCA grid_;
 
     // -- Overridden methods
 
@@ -62,7 +62,6 @@ private:
     void validate(const MIRValuesVector& values) const override;
 
     ::atlas::Grid atlasGrid() const override;
-    std::vector<util::GridBox> gridBoxes() const override;
 
     size_t numberOfPoints() const override;
 
@@ -71,6 +70,24 @@ private:
     bool isPeriodicWestEast() const override { return true; }
 
     Iterator* iterator() const override;
+
+#if 0
+    // FUNKY
+    
+    const ::atlas::Grid::Spec spec_;
+    mutable ::atlas::Grid grid_;
+    
+    bool sameAs(const Representation&) const override;
+    void makeName(std::ostream&) const override;
+    
+    void fillGrib(grib_info&) const override;
+    void fillMeshGen(util::MeshGeneratorParameters&) const override;
+    void fillJob(api::MIRJob&) const override;
+    
+    size_t numberOfPoints() const override;
+    
+    void print(std::ostream&) const override;
+#endif
 };
 
 

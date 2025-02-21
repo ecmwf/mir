@@ -285,10 +285,14 @@ list(APPEND mir_srcs
     key/grid/NamedGrid.h
     key/grid/NamedHEALPix.cc
     key/grid/NamedHEALPix.h
+    key/grid/NamedORCA.cc
+    key/grid/NamedORCA.h
     key/grid/NamedOctahedral.cc
     key/grid/NamedOctahedral.h
     key/grid/NamedRegular.cc
     key/grid/NamedRegular.h
+    key/grid/ORCAPattern.cc
+    key/grid/ORCAPattern.h
     key/grid/OctahedralPattern.cc
     key/grid/OctahedralPattern.h
     key/grid/RegularLL.cc
@@ -512,6 +516,8 @@ list(APPEND mir_srcs
     repres/HEALPix.h
     repres/Iterator.cc
     repres/Iterator.h
+    repres/ORCA.cc
+    repres/ORCA.h
     repres/Representation.cc
     repres/Representation.h
     repres/gauss/Gaussian.cc
@@ -815,10 +821,6 @@ if(mir_HAVE_ATLAS)
         caching/legendre/NoLoader.h
         caching/legendre/SharedMemoryLoader.cc
         caching/legendre/SharedMemoryLoader.h
-        key/grid/NamedORCA.cc
-        key/grid/NamedORCA.h
-        key/grid/ORCAPattern.cc
-        key/grid/ORCAPattern.h
         key/grid/SourcePattern.cc
         key/grid/SourcePattern.h
         method/ProxyMethod.cc
@@ -843,10 +845,6 @@ if(mir_HAVE_ATLAS)
         method/structured/StructuredMethod.h
         output/GmshOutput.cc
         output/GmshOutput.h
-        repres/proxy/ORCA.cc
-        repres/proxy/ORCA.h
-        repres/proxy/ProxyGrid.cc
-        repres/proxy/ProxyGrid.h
         stats/statistics/Integral.cc
         stats/statistics/Integral.h)
 else()

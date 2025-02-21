@@ -12,9 +12,13 @@
 
 #include "mir/key/grid/NamedORCA.h"
 
+#include <memory>
 #include <ostream>
 
-#include "mir/repres/proxy/ORCA.h"
+#include "eckit/geo/Grid.h"
+#include "eckit/geo/spec/Custom.h"
+
+#include "mir/repres/ORCA.h"
 #include "mir/util/Exceptions.h"
 
 
@@ -30,7 +34,11 @@ void NamedORCA::print(std::ostream& out) const {
 
 
 const repres::Representation* NamedORCA::representation() const {
-    return new repres::proxy::ORCA(key_);
+    auto user = std::make_unique<eckit::geo::spec::Custom>();
+    user->set("grid", key_);
+
+    std::unique_ptr<eckit::geo::Spec> spec(eckit::geo::GridFactory::make_spec(*user));
+    return new repres::ORCA(spec->get_string("uid"));
 }
 
 
