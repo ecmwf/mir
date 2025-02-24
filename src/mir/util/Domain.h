@@ -12,6 +12,9 @@
 
 #pragma once
 
+#include "mir/api/mir_config.h"
+
+#include "mir/util/Atlas.h"
 #include "mir/util/BoundingBox.h"
 
 
@@ -23,6 +26,14 @@ public:
     // -- Constructors
 
     using BoundingBox::BoundingBox;
+
+#if mir_HAVE_ATLAS
+    // -- Convertors
+
+    operator ::atlas::Domain() const {
+        return ::atlas::RectangularDomain({west().value(), east().value()}, {south().value(), north().value()});
+    }
+#endif
 
     // -- Methods
 

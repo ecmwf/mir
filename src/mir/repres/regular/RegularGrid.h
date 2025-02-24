@@ -13,11 +13,12 @@
 #pragma once
 
 #include <memory>
-#include <utility>  // for pair
+
+#include "eckit/geo/Projection.h"
+#include "eckit/geo/spec/Custom.h"
 
 #include "mir/repres/Gridded.h"
 #include "mir/util/Atlas.h"
-#include "mir/util/Projection.h"
 #include "mir/util/Shape.h"
 #include "mir/util/Types.h"
 
@@ -30,20 +31,15 @@ public:
     // -- Types
 
     using LinearSpacing = ::atlas::grid::LinearSpacing;
-    using Projection    = util::Projection;
-
-    struct ij_t {
-        size_t i;
-        size_t j;
-    };
+    using Projection    = eckit::geo::Projection;
 
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    RegularGrid(const param::MIRParametrisation&, const Projection&);
-    RegularGrid(const Projection&, const util::BoundingBox&, const LinearSpacing& x, const LinearSpacing& y,
+    RegularGrid(const param::MIRParametrisation&, Projection::Spec*);
+    RegularGrid(Projection*, const util::BoundingBox&, const LinearSpacing& x, const LinearSpacing& y,
                 const util::Shape&);
 
     RegularGrid(const RegularGrid&) = delete;
@@ -82,18 +78,12 @@ protected:
 
     const Projection& projection() const;
 
-    const ::atlas::RegularGrid& grid() const { return grid_; }
     const LinearSpacing& x() const { return x_; }
     const LinearSpacing& y() const { return y_; }
-    const util::Shape& shape() const { return shape_; }
-    bool xPlus() const { return xPlus_; }
-    bool yPlus() const { return yPlus_; }
     bool firstPointBottomLeft() const { return firstPointBottomLeft_; }
 
-    static Projection::Spec make_proj_spec(const param::MIRParametrisation&);
+    static eckit::geo::spec::Custom* make_proj_spec(const param::MIRParametrisation&);
     static LinearSpacing linspace(double start, double step, long num, bool plus);
-
-    std::pair<ij_t, ij_t> minmax_ij(const util::BoundingBox&) const;
 
     // -- Overridden methods
 
@@ -114,7 +104,6 @@ protected:
     void print(std::ostream&) const override;
 
     bool extendBoundingBoxOnIntersect() const override;
-    bool crop(util::BoundingBox&, util::IndexMapping&) const override;
 
     ::atlas::Grid atlasGrid() const override;
     size_t numberOfPoints() const override;
@@ -128,9 +117,7 @@ protected:
 private:
     // -- Members
 
-    ::atlas::RegularGrid grid_;
-    std::shared_ptr<Projection> projection_;
-
+    std::unique_ptr<Projection> projection_;
     LinearSpacing x_;
     LinearSpacing y_;
     util::Shape shape_;

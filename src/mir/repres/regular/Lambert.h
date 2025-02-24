@@ -15,6 +15,11 @@
 #include "mir/repres/regular/RegularGrid.h"
 
 
+namespace eckit::geo::spec {
+class Custom;
+}
+
+
 namespace mir::repres::regular {
 
 
@@ -59,7 +64,7 @@ private:
 
     // -- Methods
 
-    static Projection make_projection(const param::MIRParametrisation&);
+    static eckit::geo::spec::Custom* make_projection(const param::MIRParametrisation&);
 
     // -- Overridden methods
 

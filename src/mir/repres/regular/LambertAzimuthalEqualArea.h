@@ -15,6 +15,11 @@
 #include "mir/repres/regular/RegularGrid.h"
 
 
+namespace eckit::geo::spec {
+class Custom;
+}
+
+
 namespace mir::repres::regular {
 
 
@@ -26,9 +31,6 @@ public:
     // -- Constructors
 
     explicit LambertAzimuthalEqualArea(const param::MIRParametrisation&);
-
-    LambertAzimuthalEqualArea(const Projection&, const util::BoundingBox&, const LinearSpacing& x,
-                              const LinearSpacing& y, const util::Shape&);
 
     // -- Destructor
     // None
@@ -57,12 +59,11 @@ private:
 
     // -- Methods
 
-    static Projection make_projection(const param::MIRParametrisation&);
+    static eckit::geo::spec::Custom* make_projection(const param::MIRParametrisation&);
 
     // -- Overridden methods
 
     void fillGrib(grib_info&) const override;
-    const Representation* croppedRepresentation(const util::BoundingBox&) const override;
 
     // -- Class members
     // None

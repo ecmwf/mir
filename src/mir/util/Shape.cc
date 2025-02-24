@@ -14,6 +14,8 @@
 
 #include <sstream>
 
+#include "eckit/geo/Spec.h"
+
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Earth.h"
@@ -34,17 +36,19 @@ Shape::Shape(const param::MIRParametrisation& param) {
 }
 
 
-Shape::Shape(const Projection::Spec& spec) {
+Shape::Shape(const Projection& proj) {
+    const auto& spec = proj.spec();
+
     if (spec.has("radius")) {
         code = 1L;
-        a = b = spec.getDouble("radius");
+        a = b = spec.get_double("radius");
         return;
     }
 
     if (spec.has("semi_major_axis") && spec.has("semi_minor_axis")) {
         code = 7L;
-        a    = spec.getDouble("semi_major_axis");
-        b    = spec.getDouble("semi_minor_axis");
+        a    = spec.get_double("semi_major_axis");
+        b    = spec.get_double("semi_minor_axis");
         return;
     }
 
@@ -54,7 +58,7 @@ Shape::Shape(const Projection::Spec& spec) {
 }
 
 
-void Shape::fillGrib(grib_info& info, const Projection::Spec& spec) const {
+void Shape::fillGrib(grib_info& info, const Projection& proj) const {
     const static std::string EDITION{"edition"};
 
     // GRIB2 encoding of user-provided shape
@@ -73,19 +77,19 @@ void Shape::fillGrib(grib_info& info, const Projection::Spec& spec) const {
     }
 
     // shape given by radius or semi-major/minor axis
-    if (provided) {
+    if (const auto& spec = proj.spec(); provided) {
         info.extra_set("shapeOfTheEarth", code);
         switch (code) {
             case 1:
-                info.extra_set("radius", spec.getDouble("radius", a));
+                info.extra_set("radius", spec.get_double("radius", a));
                 break;
             case 3:
-                info.extra_set("earthMajorAxis", spec.getDouble("semi_major_axis", a) / 1000.);
-                info.extra_set("earthMinorAxis", spec.getDouble("semi_minor_axis", b) / 1000.);
+                info.extra_set("earthMajorAxis", spec.get_double("semi_major_axis", a) / 1000.);
+                info.extra_set("earthMinorAxis", spec.get_double("semi_minor_axis", b) / 1000.);
                 break;
             case 7:
-                info.extra_set("earthMajorAxis", spec.getDouble("semi_major_axis", a));
-                info.extra_set("earthMinorAxis", spec.getDouble("semi_minor_axis", b));
+                info.extra_set("earthMajorAxis", spec.get_double("semi_major_axis", a));
+                info.extra_set("earthMinorAxis", spec.get_double("semi_minor_axis", b));
                 break;
             default:
                 break;
@@ -93,34 +97,34 @@ void Shape::fillGrib(grib_info& info, const Projection::Spec& spec) const {
     }
     else if (spec.has("radius")) {
         info.extra_set("shapeOfTheEarth", 1L);
-        info.extra_set("radius", spec.getDouble("radius"));
+        info.extra_set("radius", spec.get_double("radius"));
     }
     else if (spec.has("semi_major_axis") && spec.has("semi_minor_axis")) {
         info.extra_set("shapeOfTheEarth", 7L);
-        info.extra_set("earthMajorAxis", spec.getDouble("semi_major_axis"));
-        info.extra_set("earthMinorAxis", spec.getDouble("semi_minor_axis"));
+        info.extra_set("earthMajorAxis", spec.get_double("semi_major_axis"));
+        info.extra_set("earthMinorAxis", spec.get_double("semi_minor_axis"));
     }
 }
 
 
-void Shape::fillJob(api::MIRJob& job, const Projection::Spec& spec) const {
+void Shape::fillJob(api::MIRJob& job, const Projection& proj) const {
     // MIRJob encoding of user-provided shape
     std::ostringstream shape;
 
     // shape given by radius or semi-major/minor axis
-    if (provided) {
+    if (const auto& spec = proj.spec(); provided) {
         shape << ";shapeOfTheEarth=" << code;
         switch (code) {
             case 1:
-                shape << ";radius", spec.getDouble("radius", a);
+                shape << ";radius", spec.get_double("radius", a);
                 break;
             case 3:
-                shape << ";earthMajorAxis=" << spec.getDouble("semi_major_axis", a) / 1000.;
-                shape << ";earthMinorAxis=" << spec.getDouble("semi_minor_axis", b) / 1000.;
+                shape << ";earthMajorAxis=" << spec.get_double("semi_major_axis", a) / 1000.;
+                shape << ";earthMinorAxis=" << spec.get_double("semi_minor_axis", b) / 1000.;
                 break;
             case 7:
-                shape << ";earthMajorAxis=" << spec.getDouble("semi_major_axis", a);
-                shape << ";earthMinorAxis=" << spec.getDouble("semi_minor_axis", b);
+                shape << ";earthMajorAxis=" << spec.get_double("semi_major_axis", a);
+                shape << ";earthMinorAxis=" << spec.get_double("semi_minor_axis", b);
                 break;
             default:
                 break;
@@ -128,12 +132,12 @@ void Shape::fillJob(api::MIRJob& job, const Projection::Spec& spec) const {
     }
     else if (spec.has("radius")) {
         shape << ";shapeOfTheEarth=" << 1L;
-        shape << ";radius", spec.getDouble("radius");
+        shape << ";radius", spec.get_double("radius");
     }
     else if (spec.has("semi_major_axis") && spec.has("semi_minor_axis")) {
         shape << ";shapeOfTheEarth=" << 7L;
-        shape << ";earthMajorAxis=" << spec.getDouble("semi_major_axis");
-        shape << ";earthMinorAxis=" << spec.getDouble("semi_minor_axis");
+        shape << ";earthMajorAxis=" << spec.get_double("semi_major_axis");
+        shape << ";earthMinorAxis=" << spec.get_double("semi_minor_axis");
     }
 
     std::string grid;

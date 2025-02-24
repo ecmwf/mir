@@ -20,6 +20,8 @@
 #include <string>
 #include <vector>
 
+#include "eckit/geo/projection/PROJ.h"
+#include "eckit/geo/spec/Custom.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/param/MIRParametrisation.h"
@@ -36,9 +38,6 @@ namespace mir::repres::regular {
 static const RepresentationBuilder<SpaceView> __builder("space_view");
 
 
-namespace detail {
-
-
 template <typename EXTERNAL_T, typename INTERNAL_T = EXTERNAL_T>
 EXTERNAL_T get(const param::MIRParametrisation& param, const std::string& key) {
     INTERNAL_T value;
@@ -47,7 +46,7 @@ EXTERNAL_T get(const param::MIRParametrisation& param, const std::string& key) {
 }
 
 
-SpaceViewInternal::SpaceViewInternal(const param::MIRParametrisation& param) {
+SpaceView::SpaceViewInternal::SpaceViewInternal(const param::MIRParametrisation& param) {
     auto earthIsOblate = get<bool>(param, "earthIsOblate");
     auto a             = get<double>(param, earthIsOblate ? "earthMajorAxis" : "radius");
     auto b             = earthIsOblate ? get<double>(param, "earthMinorAxis") : a;
@@ -57,7 +56,7 @@ SpaceViewInternal::SpaceViewInternal(const param::MIRParametrisation& param) {
 
     auto h = (Nr - 1.) * a;
 
-    Lop_     = get<double>(param, "longitudeOfSubSatellitePointInDegrees");
+    Lop      = get<double>(param, "longitudeOfSubSatellitePointInDegrees");
     auto Lap = get<double>(param, "latitudeOfSubSatellitePointInDegrees");
     ASSERT(eckit::types::is_approximately_equal(Lap, 0.));
 
@@ -73,11 +72,15 @@ SpaceViewInternal::SpaceViewInternal(const param::MIRParametrisation& param) {
         return "+proj=geos +type=crs +sweep=y" + _h + _l + _e;
     };
 
-    projection_          = RegularGrid::Projection::Spec("type", "proj").set("proj", proj(h, a, b, Lop_));
-    projectionGreenwich_ = RegularGrid::Projection::Spec("type", "proj").set("proj", proj(h, a, b, 0));
+    using PROJ = eckit::geo::projection::PROJ;
+    using Spec = eckit::geo::spec::Custom;
+
+    projection.reset(new PROJ(Spec{{"type", "proj"}, {"proj", proj(h, a, b, Lop)}}));
+    projectionGreenwich.reset(new PROJ(Spec{{"type", "proj"}, {"proj", proj(h, a, b, 0)}}));
+    shape = util::Shape(*projection);
 
     // (x, y) space
-    Nx_ = get<long>(param, "Nx");
+    auto Nx_ = get<long>(param, "Nx");
     ASSERT(1 < Nx_);
 
     auto ip = get<bool>(param, "iScansPositively");
@@ -87,10 +90,10 @@ SpaceViewInternal::SpaceViewInternal(const param::MIRParametrisation& param) {
 
     auto rx = 2. * std::asin(1. / Nr) / dx * h;  // (height factor is PROJ-specific)
 
-    (ip ? xa_ : xb_) = rx * (-xp);
-    (ip ? xb_ : xa_) = rx * (-xp + double(Nx_ - 1));
+    double xa_ = ip ? rx * (-xp) : rx * (-xp + double(Nx_ - 1));
+    double xb_ = ip ? rx * (-xp + double(Nx_ - 1)) : rx * (-xp);
 
-    Ny_ = get<long>(param, "Ny");
+    auto Ny_ = get<long>(param, "Ny");
     ASSERT(1 < Ny_);
 
     auto jp = get<bool>(param, "jScansPositively");
@@ -100,16 +103,16 @@ SpaceViewInternal::SpaceViewInternal(const param::MIRParametrisation& param) {
 
     auto ry = 2. * std::asin(1. / Nr) / dy * h;  // (height factor is PROJ-specific)
 
-    (jp ? ya_ : yb_) = ry * (-yp);
-    (jp ? yb_ : ya_) = ry * (-yp + double(Ny_ - 1));
+    double ya_ = jp ? ry * (-yp) : ry * (-yp + double(Ny_ - 1));
+    double yb_ = jp ? ry * (-yp + double(Ny_ - 1)) : ry * (-yp);
 
 
     // longest element diagonal, a multiple of a reference central element diagonal (avoiding distortion)
-    const auto p = projection_.lonlat({-rx / 2, ry / 2});
-    const auto q = projection_.lonlat({rx / 2, -ry / 2});
+    const auto p = std::get<PointLonLat>(projection->inv(Point2{-rx / 2, ry / 2}));
+    const auto q = std::get<PointLonLat>(projection->inv(Point2{rx / 2, -ry / 2}));
 
-    LongestElementDiagonal_ = 20. * util::Earth::distance({p.lon, p.lat}, {q.lon, q.lat});
-    ASSERT(0. < LongestElementDiagonal_);
+    LongestElementDiagonal = 20. * util::Earth::distance({p.lon, p.lat}, {q.lon, q.lat});
+    ASSERT(0. < LongestElementDiagonal);
 
 
     // bounding box
@@ -120,8 +123,8 @@ SpaceViewInternal::SpaceViewInternal(const param::MIRParametrisation& param) {
     auto n = 90. - util::radian_to_degree(0.151347) + eps_ll;
     auto s = -n;
 
-    auto e = 90. - util::radian_to_degree(0.151853) + eps_ll + Lop_;
-    auto w = 2. * Lop_ - e;
+    auto e = 90. - util::radian_to_degree(0.151853) + eps_ll + Lop;
+    auto w = 2. * Lop - e;
 #else
     auto geometric_maximum = [](double x_min, double x_eps, const std::function<double(double)>& f,
                                 double f_eps = 1.e-9, size_t it_max = 1000) {
@@ -149,24 +152,27 @@ SpaceViewInternal::SpaceViewInternal(const param::MIRParametrisation& param) {
     auto eps_ll = 1e-6;
 
     auto max_lon = geometric_maximum(0., eps_xy, [&](double x) { return projectionGreenwich_.lonlat({x, 0}).lon(); });
-    auto w       = Lop_ - max_lon - eps_ll;
-    auto e       = Lop_ + max_lon + eps_ll;
+    auto w       = Lop - max_lon - eps_ll;
+    auto e       = Lop + max_lon + eps_ll;
 
     auto max_lat = geometric_maximum(0., eps_xy, [&](double y) { return projectionGreenwich_.lonlat({0, y}).lat(); });
     auto n       = max_lat + eps_ll;
     auto s       = -n;
 #endif
 
-    bbox_ = {n, w, s, e};
+    bbox = {n, w, s, e};
+
+    x = {xa_, xb_, Nx_, true};
+    y = {ya_, yb_, Ny_, true};
 }
 
 
-const std::vector<PointLonLat>& SpaceViewInternal::lonlat() const {
+const std::vector<PointLonLat>& SpaceView::lonlat() const {
     if (lonlat_.empty()) {
         trace::Timer timer("SpaceView: pre-calculate (lon, lat) coordinates");
 
         ASSERT(projectionGreenwich_);  // Greenwich-centred (avoids PROJ normalisation)
-        lonlat_.resize(Nx_ * Ny_);
+        lonlat_.resize(x().size() * y().size());
 
         size_t index = 0;
         for (const auto& _y : y()) {
@@ -174,12 +180,12 @@ const std::vector<PointLonLat>& SpaceViewInternal::lonlat() const {
                 auto& ll = (lonlat_[index++] = {std::numeric_limits<double>::quiet_NaN(),
                                                 std::numeric_limits<double>::quiet_NaN()});
 
-                auto pll = projectionGreenwich_.lonlat({_x, _y});
+                auto pll = std::get<PointLonLat>(projectionGreenwich_->inv(Point2{_x, _y}));
                 if (std::isfinite(pll.lon) && std::isfinite(pll.lat)) {
                     ASSERT(-90. < pll.lon && pll.lon < 90.);
                     ASSERT(-90. < pll.lat && pll.lat < 90.);
 
-                    ll = {pll.lon + Lop_, pll.lat};
+                    ll = {pll.lon + Lop, pll.lat};
                 }
             }
         }
@@ -190,13 +196,11 @@ const std::vector<PointLonLat>& SpaceViewInternal::lonlat() const {
 }
 
 
-}  // namespace detail
-
-
-SpaceView::SpaceView(const param::MIRParametrisation& param) :
-    detail::SpaceViewInternal(param),
-    RegularGrid(SpaceViewInternal::projection_, SpaceViewInternal::bbox_, SpaceViewInternal::x(),
-                SpaceViewInternal::y(), {param}) {}
+SpaceView::SpaceView(SpaceViewInternal&& internal) :
+    RegularGrid(internal.projection.release(), internal.bbox, internal.x, internal.y, internal.shape),
+    projectionGreenwich_(internal.projectionGreenwich.release()),
+    LongestElementDiagonal(internal.LongestElementDiagonal),
+    Lop(internal.Lop) {}
 
 
 void SpaceView::fillGrib(grib_info& /*info*/) const {
@@ -246,7 +250,7 @@ Iterator* SpaceView::iterator() const {
 
 
 bool SpaceView::getLongestElementDiagonal(double& d) const {
-    d = LongestElementDiagonal_;
+    d = LongestElementDiagonal;
     return true;
 }
 

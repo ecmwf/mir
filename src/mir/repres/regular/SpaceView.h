@@ -12,6 +12,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include "mir/repres/regular/RegularGrid.h"
 
 
@@ -27,43 +29,19 @@ namespace detail {
  * - [3] MSG Ground Segment LRIT/HRIT Mission Specific Implementation, EUMETSAT Document, (EUM/MSG/SPE/057 v7 e-signed.
  * 30 November 2015)
  */
-struct SpaceViewInternal {
-    explicit SpaceViewInternal(const param::MIRParametrisation&);
-
-    RegularGrid::Projection projection_;
-    RegularGrid::Projection projectionGreenwich_;
-    util::BoundingBox bbox_;
-
-    RegularGrid::LinearSpacing x() const { return {xa_, xb_, Nx_, true}; }
-    RegularGrid::LinearSpacing y() const { return {ya_, yb_, Ny_, true}; }
-
-    const std::vector<PointLonLat>& lonlat() const;
-
-    long Nx_;
-    long Ny_;
-    double xa_;
-    double xb_;
-    double ya_;
-    double yb_;
-    double LongestElementDiagonal_;
-    double Lop_;
-
-private:
-    mutable std::vector<PointLonLat> lonlat_;
-};
 
 
 }  // namespace detail
 
 
-class SpaceView final : protected detail::SpaceViewInternal, public RegularGrid {
+class SpaceView final : public RegularGrid {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    explicit SpaceView(const param::MIRParametrisation&);
+    explicit SpaceView(const param::MIRParametrisation& param) : SpaceView{SpaceViewInternal(param)} {}
 
     // -- Destructor
     // None
@@ -87,11 +65,37 @@ public:
     // None
 
 private:
+    // -- Types
+
+    struct SpaceViewInternal {
+        explicit SpaceViewInternal(const param::MIRParametrisation&);
+
+        std::unique_ptr<Projection> projection;
+        std::unique_ptr<Projection> projectionGreenwich;
+        util::BoundingBox bbox;
+        util::Shape shape;
+
+        RegularGrid::LinearSpacing x;
+        RegularGrid::LinearSpacing y;
+
+        double LongestElementDiagonal;
+        double Lop;
+    };
+
+    // -- Constructors
+
+    SpaceView(SpaceViewInternal&&);
+
     // -- Members
-    // None
+
+    const std::unique_ptr<Projection> projectionGreenwich_;
+    const double LongestElementDiagonal;
+    const double Lop;
+    mutable std::vector<PointLonLat> lonlat_;
 
     // -- Methods
-    // None
+
+    const std::vector<PointLonLat>& lonlat() const;
 
     // -- Overridden methods
 

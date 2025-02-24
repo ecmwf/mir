@@ -19,6 +19,7 @@
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/api/MIRJob.h"
+#include "mir/api/mir_config.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/BoundingBox.h"
@@ -40,7 +41,7 @@ area::BoundingBox bounding_box(Point2 min, Point2 max, const Projection&);
 namespace mir::util {
 
 
-Rotation::Rotation(const PointLonLat& south_pole, double rotation_angle) : rotation_(south_pole, rotation_angle) {
+Rotation::Rotation(PointLonLat south_pole, double rotation_angle) : rotation_(south_pole, rotation_angle) {
     normalize();
 }
 
@@ -104,22 +105,25 @@ bool Rotation::operator==(const Rotation& other) const {
 }
 
 
-PointLonLat Rotation::rotate(PointLonLat) const {
-    NOTIMP;
+PointLonLat Rotation::rotate(PointLonLat p) const {
+    return rotation_.fwd(p);
 }
 
 
 atlas::Grid Rotation::rotate(const atlas::Grid& grid) const {
-
+#if mir_HAVE_ATLAS
     // ensure grid is not rotated already
     ASSERT(!grid.projection());
 
-    Projection::Spec spec;
+    atlas::Projection::Spec spec;
     spec.set("type", "rotated_lonlat");
     spec.set("south_pole", std::vector<double>({rotation_.southPole().lon, rotation_.southPole().lat}));
     spec.set("rotation_angle", rotation_.angle());
 
     return {grid.spec().set("projection", spec)};
+#else
+    NOTIMP;
+#endif
 }
 
 

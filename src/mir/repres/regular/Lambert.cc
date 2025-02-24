@@ -14,6 +14,8 @@
 
 #include <cmath>
 
+#include "eckit/geo/spec/Custom.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Angles.h"
 #include "mir/util/Exceptions.h"
@@ -47,9 +49,8 @@ Lambert::Lambert(const param::MIRParametrisation& param) : RegularGrid(param, ma
 }
 
 
-RegularGrid::Projection Lambert::make_projection(const param::MIRParametrisation& param) {
-    auto spec = make_proj_spec(param);
-    if (!spec.empty()) {
+eckit::geo::spec::Custom* Lambert::make_projection(const param::MIRParametrisation& param) {
+    if (auto* spec = make_proj_spec(param); spec != nullptr) {
         return spec;
     }
 
@@ -62,20 +63,20 @@ RegularGrid::Projection Lambert::make_projection(const param::MIRParametrisation
     param.get("Latin1InDegrees", Latin1InDegrees = LaDInDegrees);
     param.get("Latin2InDegrees", Latin2InDegrees = LaDInDegrees);
 
-    return Projection::Spec("type", "lambert_conformal_conic")
-        .set("latitude1", Latin1InDegrees)
-        .set("latitude2", Latin2InDegrees)
-        .set("latitude0", LaDInDegrees)
-        .set("longitude0", LoVInDegrees);
+    return new eckit::geo::spec::Custom{{"type", "lambert_conformal_conic"},
+                                        {"latitude1", Latin1InDegrees},
+                                        {"latitude2", Latin2InDegrees},
+                                        {"latitude0", LaDInDegrees},
+                                        {"longitude0", LoVInDegrees}};
 }
 
 
 void Lambert::fillGrib(grib_info& info) const {
     info.grid.grid_type = CODES_UTIL_GRID_SPEC_LAMBERT_CONFORMAL;
 
-    auto firstLL = grid().projection().lonlat(
-        {firstPointBottomLeft() ? x().min() : x().front(), firstPointBottomLeft() ? y().min() : y().front()});
-    auto reference = grid().projection().lonlat({0., 0.});
+    auto reference = std::get<PointLonLat>(projection().inv(Point2{0., 0.}));
+    auto firstLL   = std::get<PointLonLat>(projection().inv(
+        Point2{firstPointBottomLeft() ? x().min() : x().front(), firstPointBottomLeft() ? y().min() : y().front()}));
 
     info.grid.latitudeOfFirstGridPointInDegrees = firstLL.lat;
     info.grid.longitudeOfFirstGridPointInDegrees =

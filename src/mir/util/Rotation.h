@@ -70,8 +70,10 @@ class Rotation {
 public:
     // -- Constructors
     explicit Rotation(const param::MIRParametrisation&);
-    explicit Rotation(const PointLonLat& south_pole = {Longitude::GREENWICH.value(), Latitude::SOUTH_POLE.value()},
-                      double angle                  = 0.);
+    explicit Rotation(PointLonLat south_pole, double angle);
+
+    Rotation() : rotation_({Longitude::GREENWICH.value(), Latitude::SOUTH_POLE.value()}, 0.) {}
+    Rotation(double south_pole_lat, double south_pole_lon) : Rotation({south_pole_lon, south_pole_lat}) {}
 
     // -- Operators
 

@@ -22,7 +22,7 @@ namespace mir {
 namespace repres {
 
 
-Iterator::Iterator(const util::Rotation& rotation) : rotation_(rotation.southPole()), valid_(true) {}
+Iterator::Iterator(const util::Rotation& rotation) : rotation_(rotation.southPole(), 0.), valid_(true) {}
 
 
 Iterator::~Iterator() = default;
