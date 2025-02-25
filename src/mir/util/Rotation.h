@@ -69,11 +69,12 @@ namespace mir::util {
 class Rotation {
 public:
     // -- Constructors
-    explicit Rotation(const param::MIRParametrisation&);
-    explicit Rotation(PointLonLat south_pole, double angle);
 
-    Rotation() : rotation_({Longitude::GREENWICH.value(), Latitude::SOUTH_POLE.value()}, 0.) {}
-    Rotation(double south_pole_lat, double south_pole_lon) : Rotation({south_pole_lon, south_pole_lat}) {}
+    explicit Rotation(const param::MIRParametrisation&);
+    explicit Rotation(PointLonLat south_pole = {Longitude::GREENWICH.value(), Latitude::SOUTH_POLE.value()},
+                      double angle           = 0);
+
+    Rotation(double south_pole_lat, double south_pole_lon) : Rotation(PointLonLat{south_pole_lon, south_pole_lat}) {}
 
     // -- Operators
 
@@ -86,7 +87,7 @@ public:
 
     BoundingBox boundingBox(const BoundingBox&) const;
 
-    PointLonLat southPole() const { return rotation_.southPole(); }
+    PointLonLat southPole() const { return rotation_.south_pole(); }
     double angle() const { return rotation_.angle(); }
     bool rotated() const { return rotation_.rotated(); }
 
@@ -101,7 +102,6 @@ private:
 
     // -- Methods
 
-    void normalize();
     void print(std::ostream&) const;
 
     // -- Friends

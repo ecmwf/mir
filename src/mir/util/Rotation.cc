@@ -31,38 +31,35 @@ namespace mir::util {
 
 
 Rotation::Rotation(PointLonLat south_pole, double rotation_angle) : rotation_(south_pole, rotation_angle) {
-    normalize();
 }
 
 
-Rotation::Rotation(const param::MIRParametrisation& parametrisation) {
-    PointLonLat sp{Longitude::GREENWICH.value(), Latitude::SOUTH_POLE.value()};
+Rotation::Rotation(const param::MIRParametrisation& param) :
+    Rotation(
+        [](const auto& param) -> PointLonLat {
+            PointLonLat sp{Longitude::GREENWICH.value(), Latitude::SOUTH_POLE.value()};
+            if (std::vector<double> rotation; param.get("rotation", rotation)) {
+                ASSERT_KEYWORD_ROTATION_SIZE(rotation.size());
+                return {rotation[1], rotation[0]};
+            }
 
-    if (std::vector<double> rotation; parametrisation.userParametrisation().get("rotation", rotation)) {
-        ASSERT_KEYWORD_ROTATION_SIZE(rotation.size());
-        sp = {rotation[1], rotation[0]};
-    }
-    else if (double lat = 0, lon = 0;
-             parametrisation.get("south_pole_latitude", lat) && parametrisation.get("south_pole_longitude", lon)) {
-        sp = {lon, lat};
-    }
+            if (double lat = 0, lon = 0;
+                param.get("south_pole_latitude", lat) && param.get("south_pole_longitude", lon)) {
+                return {lon, lat};
+            }
 
-    double angle = 0.;
-    parametrisation.get("south_pole_rotation_angle", angle);
-
-    rotation_ = eckit::geo::projection::Rotation(sp, angle);
-    normalize();
-}
-
-
-void Rotation::normalize() {
-    // south_pole_longitude_ = south_pole_longitude_.normalise(Longitude::GREENWICH);
-}
+            return sp;
+        }(param),
+        [](const auto& param) -> double {
+            double angle = 0.;
+            param.get("south_pole_rotation_angle", angle);
+            return angle;
+        }(param)) {}
 
 
 void Rotation::print(std::ostream& out) const {
     out << "Rotation["
-        << "south_pole_latitude=" << rotation_.southPole().lat << ",south_pole_longitude=" << rotation_.southPole().lon
+        << "south_pole_latitude=" << rotation_.south_pole().lat << ",south_pole_longitude=" << rotation_.south_pole().lon
         << ",south_pole_rotation_angle=" << rotation_.angle() << "]";
 }
 
@@ -72,8 +69,8 @@ void Rotation::fillGrib(grib_info& info) const {
 
     info.grid.grid_type = CODES_UTIL_GRID_SPEC_ROTATED_LL;
 
-    info.grid.latitudeOfSouthernPoleInDegrees  = rotation_.southPole().lat;
-    info.grid.longitudeOfSouthernPoleInDegrees = rotation_.southPole().lon;
+    info.grid.latitudeOfSouthernPoleInDegrees  = rotation_.south_pole().lat;
+    info.grid.longitudeOfSouthernPoleInDegrees = rotation_.south_pole().lon;
 
     // This is missing from the grib_spec
     // Remove that when supported
@@ -84,12 +81,12 @@ void Rotation::fillGrib(grib_info& info) const {
 
 
 void Rotation::fillJob(api::MIRJob& job) const {
-    job.set("rotation", rotation_.southPole().lat, rotation_.southPole().lon);
+    job.set("rotation", rotation_.south_pole().lat, rotation_.south_pole().lon);
 }
 
 
 bool Rotation::operator==(const Rotation& other) const {
-    return points_equal(rotation_.southPole(), other.rotation_.southPole()) &&
+    return points_equal(rotation_.south_pole(), other.rotation_.south_pole()) &&
            rotation_.angle() == other.rotation_.angle();
 }
 
@@ -106,7 +103,7 @@ atlas::Grid Rotation::rotate(const atlas::Grid& grid) const {
 
     atlas::Projection::Spec spec;
     spec.set("type", "rotated_lonlat");
-    spec.set("south_pole", std::vector<double>({rotation_.southPole().lon, rotation_.southPole().lat}));
+    spec.set("south_pole", std::vector<double>({rotation_.south_pole().lon, rotation_.south_pole().lat}));
     spec.set("rotation_angle", rotation_.angle());
 
     return {grid.spec().set("projection", spec)};
@@ -128,7 +125,7 @@ BoundingBox Rotation::boundingBox(const BoundingBox& bbox) const {
 
 
 void Rotation::makeName(std::ostream& out) const {
-    out << "-rot:" << rotation_.southPole().lat << ":" << rotation_.southPole().lon << ":" << rotation_.angle();
+    out << "-rot:" << rotation_.south_pole().lat << ":" << rotation_.south_pole().lon << ":" << rotation_.angle();
 }
 
 
