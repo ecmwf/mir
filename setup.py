@@ -2,6 +2,7 @@ from itertools import groupby
 import os
 import sys
 from typing import Iterable, Tuple, List
+from pathlib import Path
 import warnings
 
 
@@ -55,27 +56,18 @@ if source_lib_root := os.getenv("SOURCE_LIB_ROOT", ""):
         "extra_link_args": extra_link_args,
     }
 else:
-    home = os.environ.get("HOME")
-    source = os.environ.get(
-        "MIR_BUNDLE_SOURCE_DIR", os.path.join(home, "git", "mir-bundle")
+    home = os.getenv("HOME")
+    source = os.getenv("MIR_BUNDLE_SOURCE_DIR", str(Path(home, "git", "mir-bundle")))
+    build = os.getenv("MIR_BUNDLE_BUILD_DIR", str(Path(home, "build", "mir-bundle")))
+    library_dirs = os.getenv("MIR_LIB_DIR", str(Path(build, "lib"))).split(":")
+
+    include_dirs_default = ":".join(
+        str(Path(base, pkg, "src"))
+        for base in [source, build]
+        for pkg in ["mir", "eckit", "eccodes"]
     )
-    build = os.environ.get(
-        "MIR_BUNDLE_BUILD_DIR", os.path.join(home, "build", "mir-bundle")
-    )
-    library_dirs = (
-        os.environ.get("MIR_LIB_DIR").split(":")
-        if "MIR_LIB_DIR" in os.environ
-        else [os.path.join(build, "lib")]
-    )
-    include_dirs = (
-        os.environ.get("MIR_INCLUDE_DIRS").split(":")
-        if "MIR_INCLUDE_DIRS" in os.environ
-        else [
-            os.path.join(base, pkg, "src")
-            for base in [source, build]
-            for pkg in ["mir", "eckit", "eccodes"]
-        ]
-    )
+    include_dirs = os.getenv("MIR_INCLUDE_DIRS", include_dirs_default).split(":")
+
     extra_link_args = []
     kwargs_set = {}
     kwargs_ext = {
