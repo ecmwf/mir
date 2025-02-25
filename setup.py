@@ -5,9 +5,15 @@ from typing import Iterable, Tuple, List
 from pathlib import Path
 import warnings
 
-
 from Cython.Build import cythonize
 from setuptools import Extension, setup
+
+
+extra_include_dirs = []
+if "--without-numpy" not in sys.argv:
+    from numpy import get_include
+
+    extra_include_dirs = [get_include()]
 
 if source_lib_root := os.getenv("SOURCE_LIB_ROOT", ""):
     # NOTE this whole branch is probably obsolete -- we dont want to build such wheels anymore
@@ -39,8 +45,8 @@ if source_lib_root := os.getenv("SOURCE_LIB_ROOT", ""):
     ]
     # etc & share: configs of eckit, mir, eccodes
     # sadly it seems one cant list+generator in python, so we have to extend
-    data_files.extend(extract("etc/eccodes"))
     data_files.extend(extract("etc/eckit"))
+    data_files.extend(extract("etc/eccodes"))
     data_files.extend(extract("etc/atlas"))
     data_files.extend(extract("etc/mir"))
     data_files.extend(
@@ -64,7 +70,7 @@ else:
     include_dirs_default = ":".join(
         str(Path(base, pkg, "src"))
         for base in [source, build]
-        for pkg in ["mir", "eckit", "eccodes"]
+        for pkg in ["mir", "eccodes", "eckit"]
     )
     include_dirs = os.getenv("MIR_INCLUDE_DIRS", include_dirs_default).split(":")
 
@@ -95,7 +101,7 @@ setup(
             language="c++",
             libraries=["mir"],
             library_dirs=library_dirs,
-            include_dirs=include_dirs + ["src/_mir"],
+            include_dirs=include_dirs + extra_include_dirs + ["src/_mir"],
             extra_compile_args=["-std=c++17"],
             **kwargs_ext,
         ),
