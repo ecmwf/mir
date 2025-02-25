@@ -17,26 +17,21 @@
 #include "eckit/utils/MD5.h"
 
 #include "mir/param/MIRParametrisation.h"
-#include "mir/util/Exceptions.h"
 
 
 namespace mir::util {
 
-MeshGeneratorParameters::MeshGeneratorParameters() {
-    meshCellCentres_            = false;
-    meshCellLongestDiagonal_    = false;
-    meshNodeLumpedMassMatrix_   = false;
-    meshNodeToCellConnectivity_ = false;
-
+MeshGeneratorParameters::MeshGeneratorParameters(const param::MIRParametrisation& param, const std::string& l) :
+    meshCellCentres_(false),
+    meshCellLongestDiagonal_(false),
+    meshNodeLumpedMassMatrix_(false),
+    meshNodeToCellConnectivity_(false) {
     set("3d", true);
     set("triangulate", false);
     set("angle", 0.);
     set("force_include_north_pole", false);
     set("force_include_south_pole", false);
-}
 
-MeshGeneratorParameters::MeshGeneratorParameters(const param::MIRParametrisation& param, const std::string& l) :
-    MeshGeneratorParameters() {
     auto label(l.empty() ? "" : l + "-");
 
     const param::MIRParametrisation& user = param.userParametrisation();

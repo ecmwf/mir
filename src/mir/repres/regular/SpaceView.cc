@@ -162,8 +162,8 @@ SpaceView::SpaceViewInternal::SpaceViewInternal(const param::MIRParametrisation&
 
     bbox = {n, w, s, e};
 
-    x = {xa_, xb_, Nx_, true};
-    y = {ya_, yb_, Ny_, true};
+    x = LinearSpacing(xa_, xb_, Nx_, true);
+    y = LinearSpacing(ya_, yb_, Ny_, true);
 }
 
 

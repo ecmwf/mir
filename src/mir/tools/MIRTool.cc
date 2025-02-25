@@ -14,6 +14,7 @@
 
 #include "eckit/option/CmdArgs.h"
 
+#include "mir/api/mir_config.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
 
@@ -46,12 +47,16 @@ void MIRTool::run() {
 
 
 void MIRTool::init(const eckit::option::CmdArgs& args) {
+#if mir_HAVE_ATLAS
     atlas::Library::instance().initialise(args);
+#endif
 }
 
 
 void MIRTool::finish(const eckit::option::CmdArgs& /*unused*/) {
+#if mir_HAVE_ATLAS
     atlas::Library::instance().finalise();
+#endif
 }
 
 

@@ -168,8 +168,6 @@ list(APPEND mir_srcs
     caching/SharedMemoryKey.h
     caching/WeightCache.cc
     caching/WeightCache.h
-    caching/legendre/LegendreLoader.cc
-    caching/legendre/LegendreLoader.h
     caching/matrix/FileLoader.cc
     caching/matrix/FileLoader.h
     caching/matrix/MatrixLoader.cc
@@ -811,6 +809,8 @@ if(mir_HAVE_ATLAS)
         caching/LegendreCache.h
         caching/legendre/FileLoader.cc
         caching/legendre/FileLoader.h
+        caching/legendre/LegendreLoader.cc
+        caching/legendre/LegendreLoader.h
         caching/legendre/MappedMemoryLoader.cc
         caching/legendre/MappedMemoryLoader.h
         caching/legendre/NoLoader.cc
@@ -843,8 +843,10 @@ if(mir_HAVE_ATLAS)
         output/GmshOutput.h
         stats/statistics/Integral.cc
         stats/statistics/Integral.h)
-else()
-    list(APPEND mir_srcs util/Atlas.cc)
+
+    if(mir_HAVE_PNG)
+        list(APPEND mir_srcs output/PNGOutput.h output/PNGOutput.cc)
+    endif()
 endif()
 
 
@@ -980,10 +982,6 @@ if(mir_HAVE_NETCDF)
         netcdf/VirtualInputDimension.h
         netcdf/VirtualOutputDimension.cc
         netcdf/VirtualOutputDimension.h)
-endif()
-
-if(mir_HAVE_PNG)
-    list(APPEND mir_srcs output/PNGOutput.h output/PNGOutput.cc)
 endif()
 
 ecbuild_add_library(

@@ -27,17 +27,6 @@
 #include "mir/util/Grib.h"
 
 
-namespace eckit::geo {
-namespace area {
-class BoundingBox;
-}
-class Projection;
-namespace util {
-area::BoundingBox bounding_box(Point2 min, Point2 max, const Projection&);
-}
-}  // namespace eckit::geo
-
-
 namespace mir::util {
 
 
@@ -129,10 +118,12 @@ atlas::Grid Rotation::rotate(const atlas::Grid& grid) const {
 
 BoundingBox Rotation::boundingBox(const BoundingBox& bbox) const {
     // use [0, 360[ longitude range if periodic
-    auto after = eckit::geo::util::bounding_box({bbox.west().value(), bbox.south().value()},
-                                                {bbox.east().value(), bbox.north().value()}, rotation_);
-    return {after.north, after.periodic() ? Longitude::GREENWICH : after.west, after.south,
-            after.periodic() ? Longitude::GLOBE : after.east};
+    std::unique_ptr<eckit::geo::area::BoundingBox> after(eckit::geo::area::BoundingBox::make_from_projection(
+        PointLonLat{bbox.west().value(), bbox.south().value()}, PointLonLat{bbox.east().value(), bbox.north().value()},
+        rotation_));
+
+    return {after->north, after->periodic() ? Longitude::GREENWICH : after->west, after->south,
+            after->periodic() ? Longitude::GLOBE : after->east};
 }
 
 

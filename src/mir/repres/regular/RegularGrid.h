@@ -30,8 +30,32 @@ class RegularGrid : public Gridded {
 public:
     // -- Types
 
-    using LinearSpacing = ::atlas::grid::LinearSpacing;
-    using Projection    = eckit::geo::Projection;
+    struct LinearSpacing : protected std::vector<double> {
+        using Spec = eckit::geo::Spec;
+
+        using vector::vector;
+        LinearSpacing(value_type a, value_type b, long n, bool endpoint = true);
+
+        value_type step() const { return size() > 1 ? operator[](1) - operator[](0) : 0; }
+        const Spec& spec() const;
+
+        using vector::back;
+        using vector::front;
+        using vector::size;
+        using vector::operator[];
+
+        using vector::begin;
+        using vector::end;
+
+        value_type min() const { return front() < back() ? front() : back(); }
+        value_type max() const { return front() > back() ? front() : back(); }
+
+    private:
+        mutable std::shared_ptr<eckit::geo::spec::Custom> spec_;
+        bool endpoint_;
+    };
+
+    using Projection = eckit::geo::Projection;
 
     // -- Exceptions
     // None

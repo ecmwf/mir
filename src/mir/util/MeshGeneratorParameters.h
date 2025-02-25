@@ -28,28 +28,9 @@ namespace mir::util {
 
 class MeshGeneratorParameters : public atlas::MeshGenerator::Parameters {
 public:
-    // -- Types
-    // None
-
-    // -- Exceptions
-    // None
-
     // -- Constructors
 
-    MeshGeneratorParameters();
-    MeshGeneratorParameters(const param::MIRParametrisation&, const std::string& label = "");
-    MeshGeneratorParameters(const MeshGeneratorParameters&) = default;
-
-    // -- Destructor
-
-    ~MeshGeneratorParameters() override = default;
-
-    // -- Convertors
-    // None
-
-    // -- Operators
-
-    MeshGeneratorParameters& operator=(const MeshGeneratorParameters&) = default;
+    explicit MeshGeneratorParameters(const param::MIRParametrisation&, const std::string& label = "");
 
     // -- Members
 
@@ -68,47 +49,7 @@ public:
     void hash(eckit::Hash&) const override;
     void print(std::ostream&) const override;
 
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
 private:
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
     // -- Friends
 
     friend std::ostream& operator<<(std::ostream& s, const MeshGeneratorParameters& p) {

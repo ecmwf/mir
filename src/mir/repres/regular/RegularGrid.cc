@@ -20,7 +20,7 @@
 #include <vector>
 
 #include "eckit/config/Resource.h"
-#include "eckit/geo/AREA/BoundingBox.h"
+#include "eckit/geo/area/BoundingBox.h"
 #include "eckit/geo/spec/Custom.h"
 #include "eckit/utils/MD5.h"
 #include "eckit/utils/StringTools.h"
@@ -35,12 +35,34 @@
 #include "mir/util/MeshGeneratorParameters.h"
 
 
-namespace eckit::geo::util {
-area::BoundingBox bounding_box(Point2 min, Point2 max, const Projection&);
+namespace mir::repres::regular {
+
+
+const RegularGrid::LinearSpacing::Spec& RegularGrid::LinearSpacing::spec() const {
+    if (!spec_) {
+        spec_ = std::make_unique<eckit::geo::spec::Custom>();
+        spec_->set("type", "linear");
+        spec_->set("endpoint", endpoint_);
+        spec_->set("start", front());
+        spec_->set("end", back());
+        spec_->set("size", size());
+    }
+    return *spec_;
 }
 
 
-namespace mir::repres::regular {
+RegularGrid::LinearSpacing::LinearSpacing(value_type a, value_type b, long n, bool endpoint) :
+    vector(static_cast<size_t>(n)), endpoint_(endpoint) {
+    ASSERT(n > 1);
+    eckit::Fraction dx((b - a) / static_cast<double>(n - (endpoint ? 1 : 0)));
+    eckit::Fraction x(a);
+
+    resize(static_cast<size_t>(n));
+    for (auto& v : *this) {
+        v = x;
+        x += dx;
+    }
+}
 
 
 RegularGrid::RegularGrid(const param::MIRParametrisation& param, Projection::Spec* projection) :
@@ -84,14 +106,15 @@ RegularGrid::RegularGrid(const param::MIRParametrisation& param, Projection::Spe
 
     // use [0, 360[ longitude range if periodic
     // MIR-661 Grid projection handling covering the poles: account for "excessive" bounds
-    auto bbox = eckit::geo::util::bounding_box({x_.min(), y_.min()}, {x_.max(), y_.max()}, *projection_);
-    bbox_     = {
-        bbox.north,
-        bbox.periodic() ? Longitude::GREENWICH : bbox.west,
-        bbox.south,
-        bbox.periodic()                                     ? Longitude::GLOBE.value()
-            : bbox.east - bbox.west >= Longitude::GLOBE.value() ? bbox.west + Longitude::GLOBE.value()
-                                                                : bbox.east,
+    std::unique_ptr<eckit::geo::area::BoundingBox> bbox(eckit::geo::area::BoundingBox::make_from_projection(
+        Point2{x_.min(), y_.min()}, Point2{x_.max(), y_.max()}, *projection_));
+    bbox_ = {
+        bbox->north,
+        bbox->periodic() ? Longitude::GREENWICH : bbox->west,
+        bbox->south,
+        bbox->periodic()                                      ? Longitude::GLOBE.value()
+        : bbox->east - bbox->west >= Longitude::GLOBE.value() ? bbox->west + Longitude::GLOBE.value()
+                                                              : bbox->east,
     };
 }
 
@@ -143,7 +166,7 @@ eckit::geo::spec::Custom* RegularGrid::make_proj_spec(const param::MIRParametris
 
 RegularGrid::LinearSpacing RegularGrid::linspace(double start, double step, long num, bool plus) {
     ASSERT(step >= 0.);
-    return {start, start + step * static_cast<double>(plus ? num - 1 : 1 - num), num};
+    return LinearSpacing(start, start + step * static_cast<double>(plus ? num - 1 : 1 - num), num);
 }
 
 
@@ -288,9 +311,9 @@ const RegularGrid::Projection& RegularGrid::projection() const {
 
 void RegularGrid::makeName(std::ostream& out) const {
     eckit::MD5 h;
-    h << projection_->spec_str();
-    h << x_.spec();
-    h << y_.spec();
+    h << projection_->spec().str();
+    h << x_.spec().str();
+    h << y_.spec().str();
     h << firstPointBottomLeft_;
     if (shape_.provided) {
         h << shape_.code;
