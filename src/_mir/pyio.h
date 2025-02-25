@@ -14,10 +14,15 @@
 
 #include "Python.h"
 
+#include <memory>
+#include <string>
+
 #include "eckit/io/Buffer.h"
 
 #include "mir/input/GribInput.h"
+#include "mir/input/RawInput.h"
 #include "mir/output/GribOutput.h"
+#include "mir/param/SimpleParametrisation.h"
 
 
 class GribPyIOInput : public mir::input::GribInput {
@@ -47,4 +52,33 @@ private:
     void out(const void* message, size_t length, bool interpolated) override;
     void print(std::ostream&) const override;
     bool sameAs(const mir::output::MIROutput&) const override;
+};
+
+
+class ArrayInput final : public mir::input::MIRInput {
+public:
+    ArrayInput(PyObject* data, PyObject* metadata = nullptr);
+
+    ~ArrayInput() override {
+        PyBuffer_Release(&buffer_);
+        Py_DECREF(data_);
+        Py_DECREF(metadata_);
+    }
+
+    bool next() override { return input().next(); }
+    bool sameAs(const mir::input::MIRInput& other) const override { return input().sameAs(other); }
+    void print(std::ostream& out) const override;
+
+    const mir::param::MIRParametrisation& parametrisation(size_t /*which*/) const override { return *param_; }
+    mir::data::MIRField field() const override;
+
+private:
+    mir::input::MIRInput& input() { return *input_; }
+    const mir::input::MIRInput& input() const { return *input_; }
+
+    PyObject* data_;
+    PyObject* metadata_;
+    Py_buffer buffer_;
+    std::unique_ptr<mir::input::RawInput> input_;
+    std::unique_ptr<mir::param::SimpleParametrisation> param_;
 };

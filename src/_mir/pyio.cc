@@ -10,13 +10,16 @@
  */
 
 
-#include "Python.h"
-
 #include "pyio.h"
+
+#include <ostream>
+#include <stdexcept>
 
 #include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
 
+#include "mir/data/MIRField.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 
 
@@ -138,4 +141,111 @@ bool GribPyIOOutput::sameAs(const mir::output::MIROutput& other) const {
 
 void GribPyIOOutput::print(std::ostream& out) const {
     out << "GribPyIOOutput[]";
+}
+
+
+namespace {
+
+
+std::unique_ptr<mir::param::SimpleParametrisation> _make_parametrisation_from_dict(PyObject* dict) {
+    if (!PyDict_Check(dict)) {
+        throw std::runtime_error("_make_parametrisation_from_dict: expected a dict.");
+    }
+
+    auto params = std::make_unique<mir::param::SimpleParametrisation>();
+
+    PyObject* key;
+    PyObject* value;
+    Py_ssize_t pos = 0;
+    while (PyDict_Next(dict, &pos, &key, &value)) {
+        if (!PyUnicode_Check(key)) {
+            throw std::runtime_error("_make_parametrisation_from_dict: parameter keys must be strings.");
+        }
+        std::string keyStr = PyUnicode_AsUTF8(key);
+
+        if (PyLong_Check(value)) {
+            params->set(keyStr, PyLong_AsLong(value));
+        }
+        else if (PyFloat_Check(value)) {
+            params->set(keyStr, PyFloat_AsDouble(value));
+        }
+        else if (PyBool_Check(value)) {
+            params->set(keyStr, value == Py_True);
+        }
+        else if (PyUnicode_Check(value)) {
+            params->set(keyStr, std::string{PyUnicode_AsUTF8(value)});
+        }
+        else if (PyList_Check(value)) {
+            Py_ssize_t size = PyList_Size(value);
+            if (size == 0) {
+                throw std::runtime_error("_make_parametrisation_from_dict: empty list not supported for parameter: " +
+                                         keyStr);
+            }
+
+            // Determine type from the first element
+            if (auto* firstItem = PyList_GetItem(value, 0); PyLong_Check(firstItem)) {
+                std::vector<long> vec;
+                vec.reserve(size);
+                for (Py_ssize_t i = 0; i < size; ++i) {
+                    vec.emplace_back(PyLong_AsLong(PyList_GetItem(value, i)));
+                }
+                params->set(keyStr, vec);
+            }
+            else if (PyFloat_Check(firstItem)) {
+                std::vector<double> vec;
+                vec.reserve(size);
+                for (Py_ssize_t i = 0; i < size; ++i) {
+                    vec.emplace_back(PyFloat_AsDouble(PyList_GetItem(value, i)));
+                }
+                params->set(keyStr, vec);
+            }
+            else if (PyUnicode_Check(firstItem)) {
+                std::vector<std::string> vec;
+                vec.reserve(size);
+                for (Py_ssize_t i = 0; i < size; ++i) {
+                    vec.emplace_back(std::string{PyUnicode_AsUTF8(PyList_GetItem(value, i))});
+                }
+                params->set(keyStr, vec);
+            }
+            else {
+                throw std::runtime_error("_make_parametrisation_from_dict: unsupported list type for key: " + keyStr);
+            }
+        }
+        else {
+            throw std::runtime_error("_make_parametrisation_from_dict: unsupported type for key: " + keyStr);
+        }
+    }
+
+    return params;
+}
+
+
+}  // namespace
+
+
+ArrayInput::ArrayInput(PyObject* data, PyObject* metadata) : data_(data), metadata_(metadata) {
+    Py_INCREF(data_);
+    Py_INCREF(metadata_);
+
+    if (PyObject_GetBuffer(data_, &buffer_, PyBUF_CONTIG_RO | PyBUF_FORMAT) == -1 || strcmp(buffer_.format, "d") != 0) {
+        PyBuffer_Release(&buffer_);
+        throw std::runtime_error("ArrayInput: expected a contiguous buffer of doubles.");
+    }
+
+    param_ = metadata_ != Py_None ? _make_parametrisation_from_dict(metadata_) : std::make_unique<mir::param::SimpleParametrisation>();
+    ASSERT(param_);
+
+    input_ = std::make_unique<mir::input::RawInput>(static_cast<double*>(buffer_.buf),
+                                                    static_cast<size_t>(buffer_.len / sizeof(double)), *param_);
+    ASSERT(input_);
+}
+
+
+mir::data::MIRField ArrayInput::field() const {
+    return input().field();
+}
+
+
+void ArrayInput::print(std::ostream& out) const {
+    out << "ArrayInput[" << *input_ << "]";
 }

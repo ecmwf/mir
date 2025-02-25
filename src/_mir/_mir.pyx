@@ -117,6 +117,12 @@ cdef class GribPyIOOutput(MIROutput):
     def __dealloc__(self):
         del self._output
 
+cdef class ArrayInput(MIRInput):
+    def __cinit__(self, obj, metadata=None):
+        self._input = new mir_pyio.ArrayInput(obj, metadata)
+    def __dealloc__(self):
+        del self._input
+
 cdef class MultiDimensionalGribFileInput(MIRInput):
     def __cinit__(self, string path, int N):
         self._input = new mir.MultiDimensionalGribFileInput(eckit.PathName(path), N)
