@@ -84,8 +84,9 @@ class ArrayOutput final : public mir::output::MIROutput {
 public:
     ArrayOutput() = default;
 
-    const std::vector<double>& values() const { return values_; }
     const eckit::geo::Spec& gridspec() const;
+    std::string spec_str() const { return gridspec().str(); }
+    const std::vector<double>& values() const { return values_; }
 
 private:
     std::vector<double> values_;
