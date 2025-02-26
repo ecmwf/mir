@@ -118,8 +118,12 @@ cdef class GribPyIOOutput(MIROutput):
         del self._output
 
 cdef class ArrayInput(MIRInput):
-    def __cinit__(self, obj, metadata=None):
-        self._input = new mir_pyio.ArrayInput(obj, metadata)
+    def __cinit__(self, obj, gridspec):
+        if isinstance(gridspec, dict):
+            from yaml import dump            
+            gridspec = dump(gridspec, default_flow_style=True)
+
+        self._input = new mir_pyio.ArrayInput(obj, gridspec)
     def __dealloc__(self):
         del self._input
 

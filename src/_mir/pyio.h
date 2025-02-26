@@ -15,14 +15,12 @@
 #include "Python.h"
 
 #include <memory>
-#include <string>
 
 #include "eckit/io/Buffer.h"
 
 #include "mir/input/GribInput.h"
 #include "mir/input/RawInput.h"
 #include "mir/output/GribOutput.h"
-#include "mir/param/SimpleParametrisation.h"
 
 
 class GribPyIOInput : public mir::input::GribInput {
@@ -57,12 +55,12 @@ private:
 
 class ArrayInput final : public mir::input::MIRInput {
 public:
-    ArrayInput(PyObject* data, PyObject* metadata = nullptr);
+    ArrayInput(PyObject* data, PyObject* gridspec);
 
     ~ArrayInput() override {
         PyBuffer_Release(&buffer_);
         Py_DECREF(data_);
-        Py_DECREF(metadata_);
+        Py_DECREF(gridspec_);
     }
 
     bool next() override { return input().next(); }
@@ -77,8 +75,8 @@ private:
     const mir::input::MIRInput& input() const { return *input_; }
 
     PyObject* data_;
-    PyObject* metadata_;
+    PyObject* gridspec_;
     Py_buffer buffer_;
     std::unique_ptr<mir::input::RawInput> input_;
-    std::unique_ptr<mir::param::SimpleParametrisation> param_;
+    std::unique_ptr<mir::param::MIRParametrisation> param_;
 };
