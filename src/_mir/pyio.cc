@@ -13,15 +13,19 @@
 #include "pyio.h"
 
 #include <ostream>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 
 #include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
+#include "eckit/geo/Grid.h"
+#include "eckit/log/JSON.h"
 
+#include "mir/action/context/Context.h"
+#include "mir/api/MIRJob.h"
 #include "mir/data/MIRField.h"
-#include "mir/param/GridSpecParametrisation.h"
-#include "mir/param/SimpleParametrisation.h"
+#include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 
@@ -147,17 +151,18 @@ void GribPyIOOutput::print(std::ostream& out) const {
 }
 
 
-ArrayInput::ArrayInput(PyObject* data, PyObject* gridspec) : data_(data), gridspec_(gridspec) {
-    Py_INCREF(data_);
+ArrayInput::ArrayInput(PyObject* values, PyObject* gridspec) : values_(values), gridspec_(gridspec) {
+    Py_INCREF(values_);
     Py_INCREF(gridspec_);
 
-    if (PyObject_GetBuffer(data_, &buffer_, PyBUF_CONTIG_RO | PyBUF_FORMAT) == -1 || strcmp(buffer_.format, "d") != 0) {
+    if (PyObject_GetBuffer(values_, &buffer_, PyBUF_CONTIG_RO | PyBUF_FORMAT) == -1 ||
+        strcmp(buffer_.format, "d") != 0) {
         PyBuffer_Release(&buffer_);
-        throw std::runtime_error("ArrayInput: expected a contiguous buffer of doubles.");
+        throw std::runtime_error("ArrayInput: values expects a contiguous buffer of doubles.");
     }
 
     if (!PyUnicode_Check(gridspec_)) {
-        throw std::runtime_error("ArrayInput: expected a gridspec (string) for gridspec.");
+        throw std::runtime_error("ArrayInput: gridspec expects a string.");
     }
 
     param_ = std::make_unique<mir::param::GridSpecParametrisation>(std::string{PyUnicode_AsUTF8(gridspec_)});
@@ -169,6 +174,13 @@ ArrayInput::ArrayInput(PyObject* data, PyObject* gridspec) : data_(data), gridsp
 }
 
 
+ArrayInput::~ArrayInput() {
+    PyBuffer_Release(&buffer_);
+    Py_DECREF(values_);
+    Py_DECREF(gridspec_);
+}
+
+
 mir::data::MIRField ArrayInput::field() const {
     return input().field();
 }
@@ -176,4 +188,46 @@ mir::data::MIRField ArrayInput::field() const {
 
 void ArrayInput::print(std::ostream& out) const {
     out << "ArrayInput[" << *input_ << "]";
+}
+
+
+const eckit::geo::Spec& ArrayOutput::gridspec() const {
+    if (!gridspec_) {
+        throw std::runtime_error("ArrayOutput: no metadata.");
+    }
+
+    return gridspec_->spec();
+}
+
+
+size_t ArrayOutput::save(const mir::param::MIRParametrisation&, mir::context::Context& ctx) {
+    const auto& field = ctx.field();
+
+    // save values
+    ASSERT(field.dimensions() == 1);
+    field.validate();
+    values_ = field.values(0);
+
+    // save gridspec (a hack)
+    mir::api::MIRJob job;
+    mir::repres::RepresentationHandle(field.representation())->fillJob(job);
+
+    std::ostringstream spec;
+    eckit::JSON j(spec);
+    j << job;
+
+    gridspec_ =
+        std::make_unique<mir::param::GridSpecParametrisation>(eckit::geo::GridFactory::make_from_string(spec.str()));
+    ASSERT(gridspec_);
+
+    return 1;
+}
+
+
+void ArrayOutput::print(std::ostream& out) const {
+    out << "ArrayOutput[#values=" << values_.size() << ",gridspec=[";
+    if (gridspec_) {
+        out << gridspec_->spec();
+    }
+    out << "]]";
 }

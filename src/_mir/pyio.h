@@ -15,12 +15,14 @@
 #include "Python.h"
 
 #include <memory>
+#include <vector>
 
 #include "eckit/io/Buffer.h"
 
 #include "mir/input/GribInput.h"
 #include "mir/input/RawInput.h"
 #include "mir/output/GribOutput.h"
+#include "mir/param/GridSpecParametrisation.h"
 
 
 class GribPyIOInput : public mir::input::GribInput {
@@ -55,13 +57,9 @@ private:
 
 class ArrayInput final : public mir::input::MIRInput {
 public:
-    ArrayInput(PyObject* data, PyObject* gridspec);
+    ArrayInput(PyObject* values, PyObject* gridspec);
 
-    ~ArrayInput() override {
-        PyBuffer_Release(&buffer_);
-        Py_DECREF(data_);
-        Py_DECREF(gridspec_);
-    }
+    ~ArrayInput() override;
 
     bool next() override { return input().next(); }
     bool sameAs(const mir::input::MIRInput& other) const override { return input().sameAs(other); }
@@ -74,9 +72,34 @@ private:
     mir::input::MIRInput& input() { return *input_; }
     const mir::input::MIRInput& input() const { return *input_; }
 
-    PyObject* data_;
+    PyObject* values_;
     PyObject* gridspec_;
     Py_buffer buffer_;
     std::unique_ptr<mir::input::RawInput> input_;
     std::unique_ptr<mir::param::MIRParametrisation> param_;
+};
+
+
+class ArrayOutput final : public mir::output::MIROutput {
+public:
+    ArrayOutput() = default;
+
+    const std::vector<double>& values() const { return values_; }
+    const eckit::geo::Spec& gridspec() const;
+
+private:
+    std::vector<double> values_;
+    std::unique_ptr<mir::param::GridSpecParametrisation> gridspec_;
+
+    size_t save(const mir::param::MIRParametrisation&, mir::context::Context&) override;
+    void print(std::ostream&) const override;
+
+    bool sameAs(const MIROutput&) const override { return false; /*dummy*/ }
+    bool sameParametrisation(const mir::param::MIRParametrisation&,
+                             const mir::param::MIRParametrisation&) const override {
+        return false; /*dummy*/
+    }
+    bool printParametrisation(std::ostream&, const mir::param::MIRParametrisation&) const override {
+        return false; /*dummy*/
+    }
 };

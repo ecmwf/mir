@@ -127,6 +127,23 @@ cdef class ArrayInput(MIRInput):
     def __dealloc__(self):
         del self._input
 
+cdef class ArrayOutput(MIROutput):
+    def __cinit__(self):
+        self._output = new mir_pyio.ArrayOutput()
+    def __dealloc__(self):
+        del self._output
+    def spec_str(self):
+        pass
+        # cdef mir_pyio.ArrayOutput* out_ptr = <mir_pyio.ArrayOutput*> self._output
+        # cdef const string = out_ptr.spec_str()
+        # return string.decode()
+
+    def values(self):
+        cdef mir_pyio.ArrayOutput* out_ptr = <mir_pyio.ArrayOutput*> self._output
+        cdef const vector[double]* vec_ptr = &out_ptr.values()
+        cdef size_t n = vec_ptr[0].size()
+        return [vec_ptr[0][i] for i in range(n)]
+
 cdef class MultiDimensionalGribFileInput(MIRInput):
     def __cinit__(self, string path, int N):
         self._input = new mir.MultiDimensionalGribFileInput(eckit.PathName(path), N)

@@ -7,7 +7,11 @@
 # granted to it by virtue of its status as an intergovernmental organisation nor
 # does it submit to any jurisdiction.
 
+
 cimport mir_defs as mir
+from libcpp.string cimport string
+from libcpp.vector cimport vector
+
 
 cdef extern from "pyio.h":
     cdef cppclass GribPyIOInput(mir.MIRInput):
@@ -17,4 +21,9 @@ cdef extern from "pyio.h":
         GribPyIOOutput(object)
 
     cdef cppclass ArrayInput(mir.MIRInput):
-        ArrayInput(object, object)
+        ArrayInput(values, gridspec)
+
+    cdef cppclass ArrayOutput(mir.MIROutput):
+        ArrayOutput()
+        const vector[double]& values() const
+        string spec_str() const
