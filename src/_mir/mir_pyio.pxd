@@ -25,5 +25,5 @@ cdef extern from "pyio.h":
 
     cdef cppclass ArrayOutput(mir.MIROutput):
         ArrayOutput()
-        const vector[double]& values() const
+        vector[double]& values()
         string spec_str() const

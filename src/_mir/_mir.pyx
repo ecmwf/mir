@@ -137,7 +137,9 @@ cdef class ArrayOutput(MIROutput):
     def spec_str(self):
         return (<mir_pyio.ArrayOutput*> self._output).spec_str().decode()
     def values(self):
-        return array('d', (<mir_pyio.ArrayOutput*> self._output).values())
+        cdef double* data_ptr = (<mir_pyio.ArrayOutput*> self._output).values().data()
+        cdef Py_ssize_t size = (<mir_pyio.ArrayOutput*> self._output).values().size()        
+        return array('d', <double[:size]>data_ptr)
 
 cdef class MultiDimensionalGribFileInput(MIRInput):
     def __cinit__(self, string path, int N):

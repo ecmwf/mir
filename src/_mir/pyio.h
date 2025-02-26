@@ -86,7 +86,7 @@ public:
 
     const eckit::geo::Spec& gridspec() const;
     std::string spec_str() const { return gridspec().str(); }
-    const std::vector<double>& values() const { return values_; }
+    std::vector<double>& values()  { return values_; }
 
 private:
     std::vector<double> values_;
