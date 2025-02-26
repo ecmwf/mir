@@ -122,7 +122,7 @@ cdef class GribPyIOOutput(MIROutput):
 cdef class ArrayInput(MIRInput):
     def __cinit__(self, obj, gridspec):
         if isinstance(gridspec, dict):
-            from yaml import dump            
+            from yaml import dump
             gridspec = dump(gridspec, default_flow_style=True)
 
         self._input = new mir_pyio.ArrayInput(obj, gridspec)
@@ -134,11 +134,24 @@ cdef class ArrayOutput(MIROutput):
         self._output = new mir_pyio.ArrayOutput()
     def __dealloc__(self):
         del self._output
-    def spec_str(self):
-        return (<mir_pyio.ArrayOutput*> self._output).spec_str().decode()
+
+    @property
+    def spec_str(self) -> str:
+        return (<mir_pyio.ArrayOutput*> self._output).gridspec().decode()
+
+    @property
+    def spec(self) -> dict:
+        from yaml import safe_load
+        return safe_load(self.spec_str)
+
+    @property
+    def shape(self) -> tuple:
+        cdef vector[size_t] shape = (<mir_pyio.ArrayOutput*> self._output).shape()
+        return tuple(shape)
+
     def values(self):
         cdef double* data_ptr = (<mir_pyio.ArrayOutput*> self._output).values().data()
-        cdef Py_ssize_t size = (<mir_pyio.ArrayOutput*> self._output).values().size()        
+        cdef Py_ssize_t size = (<mir_pyio.ArrayOutput*> self._output).values().size()
         return array('d', <double[:size]>data_ptr)
 
 cdef class MultiDimensionalGribFileInput(MIRInput):
@@ -279,4 +292,3 @@ cdef class Grid:
 
     def __dealloc__(self):
         del self._grid
-

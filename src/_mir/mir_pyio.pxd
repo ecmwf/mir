@@ -8,9 +8,10 @@
 # does it submit to any jurisdiction.
 
 
-cimport mir_defs as mir
 from libcpp.string cimport string
 from libcpp.vector cimport vector
+
+cimport mir_defs as mir
 
 
 cdef extern from "pyio.h":
@@ -26,4 +27,5 @@ cdef extern from "pyio.h":
     cdef cppclass ArrayOutput(mir.MIROutput):
         ArrayOutput()
         vector[double]& values()
-        string spec_str() const
+        vector[size_t] shape()
+        string gridspec() const

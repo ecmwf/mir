@@ -22,7 +22,6 @@
 #include "mir/input/GribInput.h"
 #include "mir/input/RawInput.h"
 #include "mir/output/GribOutput.h"
-#include "mir/param/GridSpecParametrisation.h"
 
 
 class GribPyIOInput : public mir::input::GribInput {
@@ -84,13 +83,14 @@ class ArrayOutput final : public mir::output::MIROutput {
 public:
     ArrayOutput() = default;
 
-    const eckit::geo::Spec& gridspec() const;
-    std::string spec_str() const { return gridspec().str(); }
-    std::vector<double>& values()  { return values_; }
+    std::vector<double>& values() { return values_; }
+    std::vector<size_t> shape() { return shape_; }
+    std::string gridspec() const { return gridspec_; }
 
 private:
     std::vector<double> values_;
-    std::unique_ptr<mir::param::GridSpecParametrisation> gridspec_;
+    std::vector<size_t> shape_;
+    std::string gridspec_;
 
     size_t save(const mir::param::MIRParametrisation&, mir::context::Context&) override;
     void print(std::ostream&) const override;

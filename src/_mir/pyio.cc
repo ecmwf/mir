@@ -25,6 +25,7 @@
 #include "mir/action/context/Context.h"
 #include "mir/api/MIRJob.h"
 #include "mir/data/MIRField.h"
+#include "mir/param/GridSpecParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
@@ -191,15 +192,6 @@ void ArrayInput::print(std::ostream& out) const {
 }
 
 
-const eckit::geo::Spec& ArrayOutput::gridspec() const {
-    if (!gridspec_) {
-        throw std::runtime_error("ArrayOutput: no metadata.");
-    }
-
-    return gridspec_->spec();
-}
-
-
 size_t ArrayOutput::save(const mir::param::MIRParametrisation&, mir::context::Context& ctx) {
     const auto& field = ctx.field();
 
@@ -216,18 +208,22 @@ size_t ArrayOutput::save(const mir::param::MIRParametrisation&, mir::context::Co
     eckit::JSON j(spec);
     j << job;
 
-    gridspec_ =
-        std::make_unique<mir::param::GridSpecParametrisation>(eckit::geo::GridFactory::make_from_string(spec.str()));
-    ASSERT(gridspec_);
+    std::unique_ptr<const eckit::geo::Grid> grid(eckit::geo::GridFactory::make_from_string(spec.str()));
+    ASSERT(grid);
+
+    shape_    = grid->shape();
+    gridspec_ = grid->spec_str();
 
     return 1;
 }
 
 
 void ArrayOutput::print(std::ostream& out) const {
-    out << "ArrayOutput[#values=" << values_.size() << ",gridspec=[";
-    if (gridspec_) {
-        out << gridspec_->spec();
+    out << "ArrayOutput[#values=" << values_.size() << ",shape=[";
+    const auto* sep = "";
+    for (auto s : shape_) {
+        out << sep << s;
+        sep = ",";
     }
-    out << "]]";
+    out << "],gridspec=[" << gridspec_ << "]]";
 }
