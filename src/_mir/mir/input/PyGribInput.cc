@@ -10,13 +10,16 @@
  */
 
 
-#include "pyio.h"
+#include "mir/input/PyGribInput.h"
 
 #include <ostream>
 
 #include "eckit/config/Resource.h"
 
 #include "mir/util/Grib.h"
+
+
+namespace mir::input {
 
 
 static size_t buffer_size() {
@@ -52,19 +55,19 @@ static long pyio_readcb(void* data, void* buf, long len) {
 }
 
 
-GribPyIOInput::GribPyIOInput(PyObject* obj) : obj_(obj), buffer_(buffer_size()) {
+PyGribInput::PyGribInput(PyObject* obj) : obj_(obj), buffer_(buffer_size()) {
     ASSERT(obj_ != nullptr);
     Py_INCREF(obj_);
 }
 
 
-GribPyIOInput::~GribPyIOInput() {
+PyGribInput::~PyGribInput() {
     ASSERT(obj_ != nullptr);
     Py_DECREF(obj_);
 }
 
 
-bool GribPyIOInput::next() {
+bool PyGribInput::next() {
     ASSERT(obj_ != nullptr);
 
     handle(nullptr);
@@ -97,44 +100,14 @@ bool GribPyIOInput::next() {
 }
 
 
-bool GribPyIOInput::sameAs(const mir::input::MIRInput& other) const {
+bool PyGribInput::sameAs(const mir::input::MIRInput& other) const {
     return this == &other;
 }
 
 
-void GribPyIOInput::print(std::ostream& out) const {
-    out << "GribPyIOInput[]";
+void PyGribInput::print(std::ostream& out) const {
+    out << "PyGribInput[]";
 }
 
 
-GribPyIOOutput::GribPyIOOutput(PyObject* obj) : obj_(obj) {
-    ASSERT(obj_ != nullptr);
-    Py_INCREF(obj_);
-}
-
-
-GribPyIOOutput::~GribPyIOOutput() {
-    ASSERT(obj_ != nullptr);
-    Py_DECREF(obj_);
-}
-
-
-void GribPyIOOutput::out(const void* message, size_t length, bool) {
-    auto buf       = const_cast<char*>(reinterpret_cast<const char*>(message));
-    PyObject* view = PyMemoryView_FromMemory(buf, length, PyBUF_READ);
-    ASSERT(view != nullptr);
-    PyObject* res = PyObject_CallMethod(obj_, "write", "O", view);
-    ASSERT(res != nullptr);
-    Py_DECREF(res);
-    Py_DECREF(view);
-}
-
-
-bool GribPyIOOutput::sameAs(const mir::output::MIROutput& other) const {
-    return this == &other;
-}
-
-
-void GribPyIOOutput::print(std::ostream& out) const {
-    out << "GribPyIOOutput[]";
-}
+}  // namespace mir::input

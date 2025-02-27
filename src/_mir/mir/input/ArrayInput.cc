@@ -10,7 +10,7 @@
  */
 
 
-#include "array.h"
+ #include "mir/input/ArrayInput.h"
 
 #include <algorithm>
 #include <ostream>
@@ -19,18 +19,16 @@
 #include <string>
 
 #include "eckit/geo/Exceptions.h"
-#include "eckit/geo/Grid.h"
-#include "eckit/log/JSON.h"
 
-#include "mir/action/context/Context.h"
-#include "mir/api/MIRJob.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/GridSpecParametrisation.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/Grib.h"
 
 
-BaseArrayInput::BaseArrayInput(PyObject* values, PyObject* gridspec) : values_(values), gridspec_(gridspec) {
+namespace mir::input {
+
+
+ArrayInput::ArrayInput(PyObject* values, PyObject* gridspec) : values_(values), gridspec_(gridspec) {
     Py_INCREF(values_);
     Py_INCREF(gridspec_);
 
@@ -40,26 +38,7 @@ BaseArrayInput::BaseArrayInput(PyObject* values, PyObject* gridspec) : values_(v
 
     param_ = std::make_unique<mir::param::GridSpecParametrisation>(std::string{PyUnicode_AsUTF8(gridspec_)});
     ASSERT(param_);
-}
 
-
-BaseArrayInput::~BaseArrayInput() {
-    Py_DECREF(values_);
-    Py_DECREF(gridspec_);
-}
-
-
-mir::data::MIRField BaseArrayInput::field() const {
-    return input().field();
-}
-
-
-void BaseArrayInput::print(std::ostream& out) const {
-    out << "BaseArrayInput[" << *input_ << "]";
-}
-
-
-ArrayInput::ArrayInput(PyObject* values, PyObject* gridspec) : BaseArrayInput(values, gridspec) {
     if (PyObject_GetBuffer(values_, &buffer_, PyBUF_CONTIG_RO | PyBUF_FORMAT) == -1) {
         throw std::runtime_error("ArrayInput: Failed to get buffer.");
     }
@@ -86,41 +65,19 @@ ArrayInput::ArrayInput(PyObject* values, PyObject* gridspec) : BaseArrayInput(va
 
 ArrayInput::~ArrayInput() {
     PyBuffer_Release(&buffer_);
+    Py_DECREF(values_);
+    Py_DECREF(gridspec_);
 }
 
 
-size_t ArrayOutput::save(const mir::param::MIRParametrisation&, mir::context::Context& ctx) {
-    const auto& field = ctx.field();
-
-    // save values
-    ASSERT(field.dimensions() == 1);
-    field.validate();
-    values_ = field.values(0);
-
-    // save gridspec (a hack)
-    mir::api::MIRJob job;
-    mir::repres::RepresentationHandle(field.representation())->fillJob(job);
-
-    std::ostringstream spec;
-    eckit::JSON j(spec);
-    j << job;
-
-    std::unique_ptr<const eckit::geo::Grid> grid(eckit::geo::GridFactory::make_from_string(spec.str()));
-    ASSERT(grid);
-
-    shape_    = grid->shape();
-    gridspec_ = grid->spec_str();
-
-    return 1;
+mir::data::MIRField ArrayInput::field() const {
+    return input().field();
 }
 
 
-void BaseArrayOutput::print(std::ostream& out) const {
-    out << "BaseArrayOutput[#values=" << values_.size() << ",shape=[";
-    const auto* sep = "";
-    for (auto s : shape_) {
-        out << sep << s;
-        sep = ",";
-    }
-    out << "],gridspec=[" << gridspec_ << "]]";
+void ArrayInput::print(std::ostream& out) const {
+    out << "ArrayInput[" << *input_ << "]";
 }
+
+
+}  // namespace mir::input

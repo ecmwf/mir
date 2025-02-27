@@ -13,12 +13,10 @@ from libcpp.string cimport string
 from libcpp.utility cimport pair
 from libcpp.vector cimport vector
 
+cimport std_defs as std
 cimport eckit_defs as eckit
 cimport eckit_geo_defs as eckit_geo
 cimport mir_defs as mir
-cimport std_defs as std
-
-cimport mir_pyio
 
 from array import array
 
@@ -107,15 +105,15 @@ cdef class GribMemoryOutput(MIROutput):
     def __len__(self):
         return (<mir.GribMemoryOutput*>self._output).length()
 
-cdef class GribPyIOInput(MIRInput):
+cdef class PyGribInput(MIRInput):
     def __cinit__(self, obj):
-        self._input = new mir_pyio.GribPyIOInput(obj)
+        self._input = new mir.PyGribInput(obj)
     def __dealloc__(self):
         del self._input
 
-cdef class GribPyIOOutput(MIROutput):
+cdef class PyGribOutput(MIROutput):
     def __cinit__(self, obj):
-        self._output = new mir_pyio.GribPyIOOutput(obj)
+        self._output = new mir.PyGribOutput(obj)
     def __dealloc__(self):
         del self._output
 
@@ -125,7 +123,7 @@ cdef class ArrayInput(MIRInput):
             from yaml import dump
             gridspec = dump(gridspec, default_flow_style=True)
 
-        self._input = new mir_pyio.ArrayInput(values, gridspec)
+        self._input = new mir.ArrayInput(values, gridspec)
     def __dealloc__(self):
         del self._input
 
@@ -135,7 +133,7 @@ cdef class ArrayOutput(MIROutput):
     def __cinit__(self, typecode='d'):
         if typecode not in 'df':
             raise ValueError('Invalid typecode: %s' % self._typecode)
-        self._output = new mir_pyio.ArrayOutput()
+        self._output = new mir.ArrayOutput()
         self._typecode = typecode
 
     def __dealloc__(self):
@@ -143,7 +141,7 @@ cdef class ArrayOutput(MIROutput):
 
     @property
     def spec_str(self) -> str:
-        return (<mir_pyio.ArrayOutput*> self._output).gridspec().decode()
+        return (<mir.ArrayOutput*> self._output).gridspec().decode()
 
     @property
     def spec(self) -> dict:
@@ -152,12 +150,12 @@ cdef class ArrayOutput(MIROutput):
 
     @property
     def shape(self) -> tuple:
-        cdef vector[size_t] shape = (<mir_pyio.ArrayOutput*> self._output).shape()
+        cdef vector[size_t] shape = (<mir.ArrayOutput*> self._output).shape()
         return tuple(shape)
 
     def values(self):
-        cdef double* data_ptr = (<mir_pyio.ArrayOutput*> self._output).values().data()
-        cdef Py_ssize_t size = (<mir_pyio.ArrayOutput*> self._output).values().size()
+        cdef double* data_ptr = (<mir.ArrayOutput*> self._output).values().data()
+        cdef Py_ssize_t size = (<mir.ArrayOutput*> self._output).values().size()
         if (self._typecode == 'd'):
             return array('d', <double[:size]>data_ptr)
         if (self._typecode == 'f'):
@@ -204,13 +202,13 @@ cdef class Job:
             in_ = input
         else:
             assert hasattr(input, "read")
-            in_ = GribPyIOInput(input)
+            in_ = PyGribInput(input)
 
         if isinstance(output, MIROutput):
             out = output
         else:
             assert hasattr(output, "write")
-            out = GribPyIOOutput(output)
+            out = PyGribOutput(output)
 
         if not isinstance(in_, GribMemoryInput):
             while in_._input.next():

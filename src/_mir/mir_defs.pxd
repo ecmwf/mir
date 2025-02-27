@@ -7,8 +7,13 @@
 # granted to it by virtue of its status as an intergovernmental organisation nor
 # does it submit to any jurisdiction.
 
+
 from libcpp.string cimport string
+from libcpp.vector cimport vector
+
 cimport eckit_defs as eckit
+cimport mir_defs as mir
+
 
 cdef extern from "mir/api/MIRJob.h" namespace "mir::api":
     cdef cppclass MIRJob:
@@ -23,6 +28,13 @@ cdef extern from "<sstream>" namespace "std" nogil:
     cdef cppclass ostringstream:
         ostringstream& operator<<(MIRJob)
         string to_string "str" () const
+
+cdef extern from "mir/config/LibMir.h" namespace "mir":
+    cdef cppclass LibMir:
+        @staticmethod
+        string cacheDir()
+        @staticmethod
+        string homeDir()
 
 cdef extern from "mir/input/MIRInput.h" namespace "mir::input":
     cdef cppclass MIRInput:
@@ -48,6 +60,14 @@ cdef extern from "mir/input/GriddefInput.h" namespace "mir::input":
     cdef cppclass GriddefInput(MIRInput):
         GriddefInput(eckit.PathName)
 
+cdef extern from "mir/input/PyGribInput.h" namespace "mir::input":
+    cdef cppclass PyGribInput(mir.MIRInput):
+        PyGribInput(object)
+
+cdef extern from "mir/input/ArrayInput.h" namespace "mir::input":
+    cdef cppclass ArrayInput(mir.MIRInput):
+        ArrayInput(values, gridspec)
+
 cdef extern from "mir/output/MIROutput.h" namespace "mir::output":
     cdef cppclass MIROutput:
         pass
@@ -65,9 +85,14 @@ cdef extern from "mir/output/EmptyOutput.h" namespace "mir::output":
     cdef cppclass EmptyOutput(MIROutput):
         EmptyOutput()
 
-cdef extern from "mir/config/LibMir.h" namespace "mir":
-    cdef cppclass LibMir:
-        @staticmethod
-        string cacheDir()
-        @staticmethod
-        string homeDir()
+cdef extern from "mir/output/PyGribOutput.h" namespace "mir::output":
+    cdef cppclass PyGribOutput(mir.MIROutput):
+        PyGribOutput(object)
+
+cdef extern from "mir/output/ArrayOutput.h" namespace "mir::output":
+    cdef cppclass ArrayOutput(mir.MIROutput):
+        ArrayOutput()
+        vector[double]& values()
+        vector[size_t] shape() const
+        string gridspec() const
+

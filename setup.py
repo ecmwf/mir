@@ -99,7 +99,13 @@ setup(
     ext_modules=cythonize(
         Extension(
             "_mir",
-            ["src/_mir/_mir.pyx", "src/_mir/array.cc", "src/_mir/pyio.cc"],
+            [
+                "src/_mir/_mir.pyx",
+                "src/_mir/mir/input/ArrayInput.cc",
+                "src/_mir/mir/input/PyGribInput.cc",
+                "src/_mir/mir/output/ArrayOutput.cc",
+                "src/_mir/mir/output/PyGribOutput.cc",
+            ],
             language="c++",
             libraries=["mir"],
             library_dirs=library_dirs,

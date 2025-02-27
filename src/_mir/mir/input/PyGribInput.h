@@ -17,13 +17,15 @@
 #include "eckit/io/Buffer.h"
 
 #include "mir/input/GribInput.h"
-#include "mir/output/GribOutput.h"
 
 
-class GribPyIOInput : public mir::input::GribInput {
+namespace mir::input {
+
+
+class PyGribInput : public GribInput {
 public:
-    GribPyIOInput(PyObject*);
-    virtual ~GribPyIOInput();
+    PyGribInput(PyObject*);
+    virtual ~PyGribInput();
 
     bool next() override;
 
@@ -32,19 +34,8 @@ private:
     eckit::Buffer buffer_;
 
     void print(std::ostream&) const override;
-    bool sameAs(const mir::input::MIRInput&) const override;
+    bool sameAs(const MIRInput&) const override;
 };
 
 
-class GribPyIOOutput : public mir::output::GribOutput {
-public:
-    GribPyIOOutput(PyObject*);
-    virtual ~GribPyIOOutput();
-
-private:
-    PyObject* obj_;
-
-    void out(const void* message, size_t length, bool interpolated) override;
-    void print(std::ostream&) const override;
-    bool sameAs(const mir::output::MIROutput&) const override;
-};
+}  // namespace mir::input
