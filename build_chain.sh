@@ -24,7 +24,7 @@ TEST_PYPI=${TEST_PYPI:-no}
 if [ "$TEST_PYPI" = "yes" ] ; then
     EXTRA_PIP="--no-cache --index-url https://test.pypi.org/simple/"
     TARGET="--repository testpypi"
-else 
+else
     EXTRA_PIP=""
     TARGET=""
 fi

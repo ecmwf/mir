@@ -97,7 +97,7 @@ setup(
     ext_modules=cythonize(
         Extension(
             "_mir",
-            ["src/_mir/_mir.pyx", "src/_mir/pyio.cc"],
+            ["src/_mir/_mir.pyx", "src/_mir/array.cc", "src/_mir/pyio.cc"],
             language="c++",
             libraries=["mir"],
             library_dirs=library_dirs,

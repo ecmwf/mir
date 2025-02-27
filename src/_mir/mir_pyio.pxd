@@ -21,6 +21,7 @@ cdef extern from "pyio.h":
     cdef cppclass GribPyIOOutput(mir.MIROutput):
         GribPyIOOutput(object)
 
+cdef extern from "array.h":
     cdef cppclass ArrayInput(mir.MIRInput):
         ArrayInput(values, gridspec)
 

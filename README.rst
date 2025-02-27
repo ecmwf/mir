@@ -16,7 +16,7 @@ Or from a bundle (mir-bundle, mars-client-bundle, pgen-bundle, ...) ::
 This will build the ``mir`` extension module in the ``build/lib.<platform>/`` directory, so for example
 ``build/lib.linux-x86_64-cpython-311/mir.cpython-311-x86_64-linux-gnu.so``.
 
-Note this ``.so`` module is not standalone, ie, it requires externally installed mir etc to be present during 
+Note this ``.so`` module is not standalone, ie, it requires externally installed mir etc to be present during
 runtime. If you can't satisfy that, see the next section instead.
 
 .. _Cython: https://cython.org/
