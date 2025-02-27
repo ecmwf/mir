@@ -27,5 +27,5 @@ cdef extern from "pyio.h":
     cdef cppclass ArrayOutput(mir.MIROutput):
         ArrayOutput()
         vector[double]& values()
-        vector[size_t] shape()
+        vector[size_t] shape() const
         string gridspec() const

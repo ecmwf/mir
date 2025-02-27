@@ -85,7 +85,7 @@ public:
     ArrayOutput() = default;
 
     std::vector<double>& values() { return values_; }
-    std::vector<size_t> shape() { return shape_; }
+    std::vector<size_t> shape() const { return shape_; }
     std::string gridspec() const { return gridspec_; }
 
 private:
