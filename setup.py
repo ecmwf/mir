@@ -14,8 +14,11 @@ extra_include_dirs = []
 if "--without-numpy" not in sys.argv:
     from numpy import get_include
 
-    define_macros.append(("MIR_PYTHON_HAVE_NUMPY", None))
+    define_macros.append(("MIR_PYTHON_HAVE_NUMPY", 1))
+    define_macros.append(("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION"))
     extra_include_dirs = [get_include()]
+else:
+    define_macros.append(("MIR_PYTHON_HAVE_NUMPY", 0))
 
 if source_lib_root := os.getenv("SOURCE_LIB_ROOT", ""):
     # NOTE this whole branch is probably obsolete -- we dont want to build such wheels anymore
