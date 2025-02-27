@@ -74,6 +74,7 @@ private:
     PyObject* values_;
     PyObject* gridspec_;
     Py_buffer buffer_;
+    std::vector<double> converted_;
     std::unique_ptr<mir::input::RawInput> input_;
     std::unique_ptr<mir::param::MIRParametrisation> param_;
 };

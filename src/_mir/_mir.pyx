@@ -120,18 +120,24 @@ cdef class GribPyIOOutput(MIROutput):
         del self._output
 
 cdef class ArrayInput(MIRInput):
-    def __cinit__(self, obj, gridspec):
+    def __cinit__(self, values, gridspec):
         if isinstance(gridspec, dict):
             from yaml import dump
             gridspec = dump(gridspec, default_flow_style=True)
 
-        self._input = new mir_pyio.ArrayInput(obj, gridspec)
+        self._input = new mir_pyio.ArrayInput(values, gridspec)
     def __dealloc__(self):
         del self._input
 
 cdef class ArrayOutput(MIROutput):
-    def __cinit__(self):
+    cdef public str _typecode
+
+    def __cinit__(self, typecode='d'):
+        if typecode not in 'df':
+            raise ValueError('Invalid typecode: %s' % self._typecode)
         self._output = new mir_pyio.ArrayOutput()
+        self._typecode = typecode
+
     def __dealloc__(self):
         del self._output
 
@@ -152,7 +158,11 @@ cdef class ArrayOutput(MIROutput):
     def values(self):
         cdef double* data_ptr = (<mir_pyio.ArrayOutput*> self._output).values().data()
         cdef Py_ssize_t size = (<mir_pyio.ArrayOutput*> self._output).values().size()
-        return array('d', <double[:size]>data_ptr)
+        if (self._typecode == 'd'):
+            return array('d', <double[:size]>data_ptr)
+        if (self._typecode == 'f'):
+            return array('f', [<float> data_ptr[i] for i in range(size)])  # copy
+        raise ValueError('Invalid typecode: %s' % self._typecode)
 
 cdef class MultiDimensionalGribFileInput(MIRInput):
     def __cinit__(self, string path, int N):

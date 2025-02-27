@@ -12,13 +12,14 @@
 
 #include "pyio.h"
 
+#include <algorithm>
 #include <ostream>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 
 #include "eckit/config/Resource.h"
-#include "eckit/exception/Exceptions.h"
+#include "eckit/geo/Exceptions.h"
 #include "eckit/geo/Grid.h"
 #include "eckit/log/JSON.h"
 
@@ -156,12 +157,6 @@ ArrayInput::ArrayInput(PyObject* values, PyObject* gridspec) : values_(values), 
     Py_INCREF(values_);
     Py_INCREF(gridspec_);
 
-    if (PyObject_GetBuffer(values_, &buffer_, PyBUF_CONTIG_RO | PyBUF_FORMAT) == -1 ||
-        strcmp(buffer_.format, "d") != 0) {
-        PyBuffer_Release(&buffer_);
-        throw std::runtime_error("ArrayInput: values expects a contiguous buffer of doubles.");
-    }
-
     if (!PyUnicode_Check(gridspec_)) {
         throw std::runtime_error("ArrayInput: gridspec expects a string.");
     }
@@ -169,8 +164,25 @@ ArrayInput::ArrayInput(PyObject* values, PyObject* gridspec) : values_(values), 
     param_ = std::make_unique<mir::param::GridSpecParametrisation>(std::string{PyUnicode_AsUTF8(gridspec_)});
     ASSERT(param_);
 
-    input_ = std::make_unique<mir::input::RawInput>(static_cast<double*>(buffer_.buf),
-                                                    static_cast<size_t>(buffer_.len / sizeof(double)), *param_);
+    if (PyObject_GetBuffer(values_, &buffer_, PyBUF_CONTIG_RO | PyBUF_FORMAT) == -1) {
+        throw std::runtime_error("ArrayInput: Failed to get buffer.");
+    }
+
+    if (strcmp(buffer_.format, "d") == 0) {
+        auto size = static_cast<size_t>(buffer_.len / sizeof(double));
+        input_    = std::make_unique<mir::input::RawInput>(static_cast<double*>(buffer_.buf), size, *param_);
+    }
+    else if (strcmp(buffer_.format, "f") == 0) {
+        converted_.resize(buffer_.len / sizeof(float));
+        auto* src = static_cast<float*>(buffer_.buf);
+        std::copy(src, src + converted_.size(), converted_.begin());
+
+        input_ = std::make_unique<mir::input::RawInput>(converted_.data(), converted_.size(), *param_);
+    }
+    else {
+        PyBuffer_Release(&buffer_);
+        throw std::runtime_error("ArrayInput: Unsupported format. Expected 'd' or 'f'.");
+    }
     ASSERT(input_);
 }
 
