@@ -9,10 +9,12 @@ from Cython.Build import cythonize
 from setuptools import Extension, setup
 
 
+define_macros = []
 extra_include_dirs = []
 if "--without-numpy" not in sys.argv:
     from numpy import get_include
 
+    define_macros.append(("USE_NUMPY", None))
     extra_include_dirs = [get_include()]
 
 if source_lib_root := os.getenv("SOURCE_LIB_ROOT", ""):
@@ -103,6 +105,7 @@ setup(
             library_dirs=library_dirs,
             include_dirs=include_dirs + extra_include_dirs + ["src/_mir"],
             extra_compile_args=["-std=c++17"],
+            define_macros=define_macros,
             **kwargs_ext,
         ),
         compiler_directives={"language_level": 3, "c_string_encoding": "default"},

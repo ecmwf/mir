@@ -30,7 +30,7 @@
 #include "mir/util/Grib.h"
 
 
-ArrayInput::ArrayInput(PyObject* values, PyObject* gridspec) : values_(values), gridspec_(gridspec) {
+BaseArrayInput::BaseArrayInput(PyObject* values, PyObject* gridspec) : values_(values), gridspec_(gridspec) {
     Py_INCREF(values_);
     Py_INCREF(gridspec_);
 
@@ -40,7 +40,26 @@ ArrayInput::ArrayInput(PyObject* values, PyObject* gridspec) : values_(values), 
 
     param_ = std::make_unique<mir::param::GridSpecParametrisation>(std::string{PyUnicode_AsUTF8(gridspec_)});
     ASSERT(param_);
+}
 
+
+BaseArrayInput::~BaseArrayInput() {
+    Py_DECREF(values_);
+    Py_DECREF(gridspec_);
+}
+
+
+mir::data::MIRField BaseArrayInput::field() const {
+    return input().field();
+}
+
+
+void BaseArrayInput::print(std::ostream& out) const {
+    out << "BaseArrayInput[" << *input_ << "]";
+}
+
+
+ArrayInput::ArrayInput(PyObject* values, PyObject* gridspec) : BaseArrayInput(values, gridspec) {
     if (PyObject_GetBuffer(values_, &buffer_, PyBUF_CONTIG_RO | PyBUF_FORMAT) == -1) {
         throw std::runtime_error("ArrayInput: Failed to get buffer.");
     }
@@ -60,24 +79,13 @@ ArrayInput::ArrayInput(PyObject* values, PyObject* gridspec) : values_(values), 
         PyBuffer_Release(&buffer_);
         throw std::runtime_error("ArrayInput: Unsupported format. Expected 'd' or 'f'.");
     }
+
     ASSERT(input_);
 }
 
 
 ArrayInput::~ArrayInput() {
     PyBuffer_Release(&buffer_);
-    Py_DECREF(values_);
-    Py_DECREF(gridspec_);
-}
-
-
-mir::data::MIRField ArrayInput::field() const {
-    return input().field();
-}
-
-
-void ArrayInput::print(std::ostream& out) const {
-    out << "ArrayInput[" << *input_ << "]";
 }
 
 
@@ -107,8 +115,8 @@ size_t ArrayOutput::save(const mir::param::MIRParametrisation&, mir::context::Co
 }
 
 
-void ArrayOutput::print(std::ostream& out) const {
-    out << "ArrayOutput[#values=" << values_.size() << ",shape=[";
+void BaseArrayOutput::print(std::ostream& out) const {
+    out << "BaseArrayOutput[#values=" << values_.size() << ",shape=[";
     const auto* sep = "";
     for (auto s : shape_) {
         out << sep << s;
