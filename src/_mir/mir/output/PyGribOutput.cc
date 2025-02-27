@@ -10,7 +10,7 @@
  */
 
 
- #include "mir/output/PyGribOutput.h"
+#include "mir/output/PyGribOutput.h"
 
 #include <ostream>
 

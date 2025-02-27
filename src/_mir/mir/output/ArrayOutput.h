@@ -37,8 +37,7 @@ private:
     void print(std::ostream&) const override;
 
     bool sameAs(const MIROutput&) const override { return false; /*dummy*/ }
-    bool sameParametrisation(const param::MIRParametrisation&,
-                             const param::MIRParametrisation&) const override {
+    bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const override {
         return false; /*dummy*/
     }
     bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const override {
