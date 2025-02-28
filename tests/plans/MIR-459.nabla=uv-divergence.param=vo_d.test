@@ -4,4 +4,3 @@ date=20200308,level=1000,truncation=20,param=vo_d
 --vod2uv --grid=1/1 --nabla=uv-divergence
 # plan
 ShToNamedGrid[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<vod2uv>,grid=F21]|Gridded2RegularLL[increments=Increments[west_east=1,south_north=1],bbox=BoundingBox[north=90,west=0,south=-90,east=359],interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=1e-06,validateMesh=0,projectionFail=missing-value]]|UVDivergence[meshGeneratorParameters=...]|Save[packing=simple,output=...]
-

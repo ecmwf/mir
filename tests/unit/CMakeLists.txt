@@ -69,4 +69,3 @@ if(ENABLE_BUILD_TOOLS)
         set_tests_properties(mir_tests_unit_grib_fail_decode_${_t} PROPERTIES WILL_FAIL TRUE)
     endforeach()
 endif()
-

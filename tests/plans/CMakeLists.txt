@@ -44,4 +44,3 @@ ecbuild_add_test(
     ENVIRONMENT ${_testEnvironment}
     MIR_CONFIG_AREA=${_t}/area.yaml
     MIR_CONFIG_PARAMETERS=${_t}/parameters.yaml)
-

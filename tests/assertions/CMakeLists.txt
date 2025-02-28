@@ -44,4 +44,3 @@ if(NOT eccodes_HAVE_AEC)
         set_tests_properties(${_t} PROPERTIES WILL_FAIL TRUE)
     endforeach()
 endif()
-

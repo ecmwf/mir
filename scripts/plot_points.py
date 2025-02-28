@@ -9,9 +9,10 @@
 # granted to it by virtue of its status as an intergovernmental organisation nor
 # does it submit to any jurisdiction.
 
-from mpl_toolkits.basemap import Basemap
-import matplotlib.pyplot as plt
 import sys
+
+import matplotlib.pyplot as plt
+from mpl_toolkits.basemap import Basemap
 
 lats = []
 lons = []

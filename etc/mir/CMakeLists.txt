@@ -8,4 +8,3 @@ install(
 foreach(_f ${config_files})
     configure_file(${_f} "${CMAKE_BINARY_DIR}/etc/mir/${_f}" COPYONLY)
 endforeach()
-

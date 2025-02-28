@@ -3,4 +3,3 @@ gridType=regular_gg,gridName=F32,shortName=msl.grib1
 # mir
 --grid=O32 --interpolation=nn --point-search-trees=mapped-anonymous-memory
 # grib_get
-
