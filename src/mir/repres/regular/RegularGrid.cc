@@ -65,9 +65,9 @@ RegularGrid::LinearSpacing::LinearSpacing(value_type a, value_type b, long n, bo
 }
 
 
-RegularGrid::RegularGrid(const param::MIRParametrisation& param, Projection::Spec* projection) :
+RegularGrid::RegularGrid(const param::MIRParametrisation& param, eckit::geo::Spec* projection) :
     shape_(param),
-    projection_(Projection::make_from_spec(*std::unique_ptr<Projection::Spec>(projection))),
+    projection_(Projection::make_from_spec(*std::unique_ptr<eckit::geo::Spec>(projection))),
     xPlus_(true),
     yPlus_(false),
     firstPointBottomLeft_(false) {

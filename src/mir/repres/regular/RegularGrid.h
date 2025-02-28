@@ -62,7 +62,7 @@ public:
 
     // -- Constructors
 
-    RegularGrid(const param::MIRParametrisation&, Projection::Spec*);
+    RegularGrid(const param::MIRParametrisation&, eckit::geo::Spec*);
     RegularGrid(Projection*, const util::BoundingBox&, const LinearSpacing& x, const LinearSpacing& y,
                 const util::Shape&);
 
