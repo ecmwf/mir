@@ -7,9 +7,11 @@
 # granted to it by virtue of its status as an intergovernmental organisation nor
 # does it submit to any jurisdiction.
 
+
+from ctypes import CDLL
+
 # init section -- ensure libmir.so is loaded, utilizing findlibs instead of relying on rpath
 import findlibs
-from ctypes import CDLL
 
 m = findlibs.find("mir")
 CDLL(m)

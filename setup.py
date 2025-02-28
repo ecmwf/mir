@@ -1,13 +1,15 @@
-from itertools import groupby
 import os
 import sys
-from typing import Iterable, Tuple, List
-from pathlib import Path
 import warnings
+from itertools import groupby
+from pathlib import Path
+from typing import Iterable
+from typing import List
+from typing import Tuple
 
 from Cython.Build import cythonize
-from setuptools import Extension, setup
-
+from setuptools import Extension
+from setuptools import setup
 
 define_macros = []
 extra_include_dirs = []

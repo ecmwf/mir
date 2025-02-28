@@ -8,16 +8,16 @@
 # does it submit to any jurisdiction.
 
 
-from cython.operator cimport dereference
-from libc.stdlib cimport malloc, free
-from libcpp.string cimport string
-from libcpp.utility cimport pair
-from libcpp.vector cimport vector
-
-cimport std_defs as std
 cimport eckit_defs as eckit
 cimport eckit_geo_defs as eckit_geo
 cimport mir_defs as mir
+cimport std_defs as std
+from cython.operator cimport dereference
+from libc.stdlib cimport free
+from libc.stdlib cimport malloc
+from libcpp.string cimport string
+from libcpp.utility cimport pair
+from libcpp.vector cimport vector
 
 
 cdef extern from *:
@@ -30,8 +30,11 @@ except ImportError:
 
 
 # init section -- ensure libmir.so is loaded
-import findlibs
+
 from ctypes import CDLL
+
+import findlibs
+
 m = findlibs.find("mir")
 CDLL(m)
 
@@ -58,73 +61,97 @@ cdef init(Args args):
 _args = Args()
 init(_args)
 
+
 def home():
     return mir.LibMir.homeDir().decode()
+
 
 def cache():
     return mir.LibMir.cacheDir().decode()
 
+
 cdef class MIRInput:
     cdef mir.MIRInput* _input
+
 
 cdef class MIROutput:
     cdef mir.MIROutput* _output
 
+
 cdef class GribFileInput(MIRInput):
     def __cinit__(self, string path):
         self._input = new mir.GribFileInput(eckit.PathName(path))
+
     def __dealloc__(self):
         del self._input
+
 
 cdef class GribFileOutput(MIROutput):
     def __cinit__(self, string path):
         self._output = new mir.GribFileOutput(eckit.PathName(path))
+
     def __dealloc__(self):
         del self._output
+
 
 cdef class GribMemoryInput(MIRInput):
     def __cinit__(self, const unsigned char[::1] data):
         self._input = new mir.GribMemoryInput(&data[0], data.nbytes)
+
     def __dealloc__(self):
         del self._input
+
 
 cdef class GridSpecInput(MIRInput):
     def __cinit__(self, string gridspec):
         self._input = new mir.GridSpecInput(gridspec)
+
     def __dealloc__(self):
         del self._input
+
 
 cdef class GriddefInput(MIRInput):
     def __cinit__(self, string path):
         self._input = new mir.GriddefInput(eckit.PathName(path))
+
     def __dealloc__(self):
         del self._input
+
 
 cdef class EmptyOutput(MIROutput):
     def __cinit__(self):
         self._output = new mir.EmptyOutput()
+
     def __dealloc__(self):
         del self._output
+
 
 cdef class GribMemoryOutput(MIROutput):
     def __cinit__(self, unsigned char[::1] buf):
         self._output = new mir.GribMemoryOutput(&buf[0], buf.nbytes)
+
     def __dealloc__(self):
         del self._output
+
     def __len__(self):
         return (<mir.GribMemoryOutput*>self._output).length()
+
 
 cdef class PyGribInput(MIRInput):
     def __cinit__(self, obj):
         self._input = new mir.PyGribInput(obj)
+
     def __dealloc__(self):
         del self._input
+
 
 cdef class PyGribOutput(MIROutput):
     def __cinit__(self, obj):
         self._output = new mir.PyGribOutput(obj)
+
     def __dealloc__(self):
         del self._output
+
 
 cdef class ArrayInput(MIRInput):
     def __cinit__(self, values, gridspec):
@@ -133,8 +160,10 @@ cdef class ArrayInput(MIRInput):
             gridspec = dump(gridspec, default_flow_style=True)
 
         self._input = new mir.ArrayInput(values, gridspec)
+
     def __dealloc__(self):
         del self._input
+
 
 cdef class ArrayOutput(MIROutput):
     cdef public str _typecode
@@ -159,13 +188,13 @@ cdef class ArrayOutput(MIROutput):
         cdef vector[size_t] shape = (<mir.ArrayOutput*> self._output).shape()
         return tuple(shape)
 
-    def values(self, typecode=None, dtype=None):
+    def values(self, typecode = None, dtype = None):
         cdef double* data_ptr = (<mir.ArrayOutput*> self._output).values().data()
         cdef Py_ssize_t size = (<mir.ArrayOutput*> self._output).values().size()
         cdef vector[size_t] shape_vec = (<mir.ArrayOutput*> self._output).shape()
         cdef tuple shape = tuple(shape_vec)
 
-        if MIR_PYTHON_HAVE_NUMPY:
+        if MIR_PYTHON_HAVE_NUMPY and not typecode:
             import numpy as np
 
             assert dtype in (None, np.float32, np.float64)
@@ -180,16 +209,19 @@ cdef class ArrayOutput(MIROutput):
         else:
             from array import array
 
-            assert typecode in (None, 'd', 'f')
-            if typecode == 'f':
-                return array('f', [<float> data_ptr[i] for i in range(size)])  # copy
-            return array('d', <double[:size]>data_ptr) # no-copy
+            assert typecode in (None, "d", "f")
+            if typecode == "f":
+                return array("f", [<float> data_ptr[i] for i in range(size)])  # copy
+            return array("d", <double[:size]>data_ptr)  # no-copy
+
 
 cdef class MultiDimensionalGribFileInput(MIRInput):
     def __cinit__(self, string path, int N):
         self._input = new mir.MultiDimensionalGribFileInput(eckit.PathName(path), N)
+
     def __dealloc__(self):
         del self._input
+
 
 cdef class Job:
     cdef mir.MIRJob j
@@ -264,10 +296,11 @@ cdef class Job:
 
     __repr__ = __str__
 
+
 cdef class Grid:
     cdef const eckit_geo.Grid* _grid
 
-    def __cinit__(self, spec:str=None, **kwargs):
+    def __cinit__(self, spec: str = None, **kwargs):
         assert bool(spec) != bool(kwargs)
 
         try:

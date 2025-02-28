@@ -1,4 +1,4 @@
-# (C) Copyright 2025- ECMWF.
+# (C) Copyright 1996- ECMWF.
 #
 # This software is licensed under the terms of the Apache Licence Version 2.0
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -7,13 +7,16 @@
 # granted to it by virtue of its status as an intergovernmental organisation nor
 # does it submit to any jurisdiction.
 
+
 from libcpp.string cimport string
 from libcpp.utility cimport pair
 from libcpp.vector cimport vector
 
+
 cdef extern from "eckit/filesystem/PathName.h" namespace "eckit":
     cdef cppclass PathName:
         PathName(string)
+
 
 cdef extern from "eckit/geo/area/BoundingBox.h" namespace "eckit::geo::area":
     cdef cppclass BoundingBox:
@@ -21,6 +24,7 @@ cdef extern from "eckit/geo/area/BoundingBox.h" namespace "eckit::geo::area":
         const double& west
         const double& south
         const double& east
+
 
 cdef extern from "eckit/geo/Grid.h" namespace "eckit::geo":
     cdef cppclass Grid:
