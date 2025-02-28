@@ -20,7 +20,7 @@ repos:
   hooks:
   - id: ruff
     files: '\.py$'
-    exclude: '(dev/.*|.*_)\.py$'
+    exclude: '^(dev/.*|.*_)\.py$'
     args:
     - --line-length=110
     - --fix

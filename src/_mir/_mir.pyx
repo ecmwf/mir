@@ -188,6 +188,10 @@ cdef class ArrayOutput(MIROutput):
         cdef vector[size_t] shape = (<mir.ArrayOutput*> self._output).shape()
         return tuple(shape)
 
+    @property
+    def size(self) -> int:
+        return (<mir.ArrayOutput*> self._output).values().size()
+
     def values(self, typecode = None, dtype = None):
         cdef double* data_ptr = (<mir.ArrayOutput*> self._output).values().data()
         cdef Py_ssize_t size = (<mir.ArrayOutput*> self._output).values().size()
@@ -200,7 +204,8 @@ cdef class ArrayOutput(MIROutput):
             assert dtype in (None, np.float32, np.float64)
             if dtype == np.float32:
                 arr = np.array(<cnp.float64_t[:size]>data_ptr, dtype=np.float32)  # copy
-            arr = np.asarray(<cnp.float64_t[:size]>data_ptr)  # no-copy
+            else:
+                arr = np.asarray(<cnp.float64_t[:size]>data_ptr)  # no-copy
 
             if len(shape) > 1:
                 return arr.reshape(shape)
@@ -231,8 +236,22 @@ cdef class Job:
         for key, value in kwargs.items():
             self.set(key, value)
 
-    def set(self, string key, string value):
-        self.j.set(key, value)
+    def set(self, string key, value):
+        cdef string value_str
+        if isinstance(value, dict):
+            from yaml import dump
+            value_str = dump(value, default_flow_style=True).strip().encode()
+            self.j.set(key, value_str)
+        elif isinstance(value, str):
+            value_str = value.encode()
+            self.j.set(key, value_str)
+        elif isinstance(value, int):
+            self.j.set(key, <int>value)
+        elif isinstance(value, float):
+            self.j.set(key, <double>value)
+        else:
+            raise TypeError(f"Job: unsupported value type for set(): {type(value)}")
+
         return self
 
     # def set(self, string key, object value):
@@ -300,13 +319,15 @@ cdef class Job:
 cdef class Grid:
     cdef const eckit_geo.Grid* _grid
 
-    def __cinit__(self, spec: str = None, **kwargs):
+    def __cinit__(self, spec = None, **kwargs):
         assert bool(spec) != bool(kwargs)
 
+        if kwargs or isinstance(spec, dict):
+            from yaml import dump
+            spec = dump(kwargs if kwargs else spec, default_flow_style=True).strip()
+
         try:
-            if kwargs:
-                from yaml import dump
-                spec = dump(kwargs, default_flow_style=True).strip()
+            assert isinstance(spec, str)
             self._grid = eckit_geo.GridFactory.make_from_string(spec.encode())
 
         except RuntimeError as e:
