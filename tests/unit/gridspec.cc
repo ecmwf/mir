@@ -11,10 +11,11 @@
 
 
 #include <memory>
+#include <regex>
 #include <string>
-#include <utility>
 #include <vector>
 
+#include "eckit/geo/Grid.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/api/MIRJob.h"
@@ -31,23 +32,39 @@ namespace mir::tests::unit {
 CASE("GridSpec input/output") {
     output::EmptyOutput output;
 
-    using test_t = std::pair<std::string, size_t>;
+    struct test_t {
+        std::string grid;
+        std::string canonical;
+        size_t size;
+    };
 
     const std::vector<test_t> tests{
-        test_t{"{grid: 10/10}", 684},
-        {"{grid: [20, 10]}", 342},
-        {"{grid: O8}", 544},
+        test_t{"{grid: 10/10}", "{\"grid\":[10,10]}", 684},
+        {"{grid: [20, 10]}", "{\"grid\":[20,10]}", 342},
+        {"{grid: o8}", "{\"grid\":\"O8\"}", 544},
+        {"{grid: h2n}", "{\"grid\":\"H2\",\"ordering\":\"nested\"}", 48},
+        {"{grid: h2_ring}", "{\"grid\":\"H2\"}", 48},
+
     };
+
+
+    SECTION("GridSpec canonical") {
+        for (const auto& test : tests) {
+            std::unique_ptr<const eckit::geo::Grid> grid(eckit::geo::GridFactory::make_from_string(test.grid));
+            EXPECT(grid->size() == test.size);
+            EXPECT(grid->spec_str() == test.canonical);
+        }
+    }
 
 
     SECTION("GridSpec as input") {
         for (const auto& test_input : tests) {
-            param::GridSpecParametrisation meta(test_input.first);
+            param::GridSpecParametrisation meta(test_input.grid);
 
             api::MIRJob job;
             job.set("grid", std::vector<double>{5., 5.});
 
-            std::vector<double> values(test_input.second, 0.);
+            std::vector<double> values(test_input.size, 0.);
             for (std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
                  input->next();) {
                 job.execute(*input, output);
@@ -70,8 +87,14 @@ CASE("GridSpec input/output") {
         meta.set("Nj", 5);
 
         for (const auto& test_output : tests) {
+            // HEALPix is non-croppable
+            static const std::regex pattern(R"("grid":"H[1-9][0-9]*")");
+            if (std::regex_search(test_output.canonical, pattern)) {
+                continue;
+            }
+
             api::MIRJob job;
-            job.set("grid", test_output.first);
+            job.set("grid", test_output.grid);
 
             std::vector<double> values(15, 0.);
             for (std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
@@ -84,13 +107,13 @@ CASE("GridSpec input/output") {
 
     SECTION("GridSpec as input and output") {
         for (const auto& test_input : tests) {
-            param::GridSpecParametrisation meta(test_input.first);
+            param::GridSpecParametrisation meta(test_input.grid);
 
             for (const auto& test_output : tests) {
                 api::MIRJob job;
-                job.set("grid", test_output.first);
+                job.set("grid", test_output.grid);
 
-                std::vector<double> values(test_input.second, 0.);
+                std::vector<double> values(test_input.size, 0.);
                 for (std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
                      input->next();) {
                     job.execute(*input, output);
