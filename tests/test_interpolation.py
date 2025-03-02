@@ -32,15 +32,15 @@ def test_shapes_and_specs(grid, spec, shape):
 
 
 @pytest.mark.parametrize(
-    "input_grid, input_spec, input_shape, output_grid, output_spec, output_shape",
+    "input_grid, output_grid, output_spec, output_shape",
     [
-        (a[0], a[1], a[2], b[0], b[1], b[2])
+        (a[0], b[0], b[1], b[2])
         for a, b in product(GRIDSPECS, GRIDSPECS)
         if a != b
     ],
 )
 def test_interpolation_on_array(
-    input_grid, _, __, output_grid, output_spec, output_shape
+    input_grid, output_grid, output_spec, output_shape
 ):
     from array import array
 
@@ -76,15 +76,15 @@ def test_interpolation_on_array(
 
 
 @pytest.mark.parametrize(
-    "input_grid, input_spec, input_shape, output_grid, output_spec, output_shape",
+    "input_grid, output_grid, output_spec, output_shape",
     [
-        (a[0], a[1], a[2], b[0], b[1], b[2])
+        (a[0], b[0], b[1], b[2])
         for a, b in product(GRIDSPECS, GRIDSPECS)
         if a != b
     ],
 )
 def test_interpolation_on_nparray(
-    input_grid, _, __, output_grid, output_spec, output_shape
+    input_grid, output_grid, output_spec, output_shape
 ):
     import numpy as np
 
