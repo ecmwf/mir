@@ -45,11 +45,7 @@
 #include "mir/util/Mutex.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
-
-#pragma omp declare reduction(vec_merge_sorted : std::vector<size_t> : \
-    omp_out.insert(omp_out.end(), omp_in.begin(), omp_in.end()); \
-    std::inplace_merge(omp_out.begin(), omp_out.begin() + omp_out.size() - omp_in.size(), omp_out.end())) \
-    initializer(omp_priv = decltype(omp_orig)())
+#include "mir/util/OmpReductions.h"
 
 namespace mir::method {
 
