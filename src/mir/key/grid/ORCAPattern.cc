@@ -22,10 +22,7 @@
 namespace mir::key::grid {
 
 
-ORCAPattern::ORCAPattern(const std::string& name) : GridPattern(name) {}
-
-
-ORCAPattern::~ORCAPattern() = default;
+ORCAPattern::ORCAPattern(const std::string& pattern) : GridPattern(pattern) {}
 
 
 void ORCAPattern::print(std::ostream& out) const {

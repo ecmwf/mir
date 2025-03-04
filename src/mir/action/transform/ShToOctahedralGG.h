@@ -26,11 +26,10 @@ public:
 
     // -- Constructors
 
-    ShToOctahedralGG(const param::MIRParametrisation&);
+    explicit ShToOctahedralGG(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~ShToOctahedralGG() override;
+    // None
 
     // -- Convertors
     // None
@@ -64,8 +63,9 @@ private:
     const char* name() const override;
     const repres::Representation* outputRepresentation() const override;
     void print(std::ostream&) const override;
-
     void sh2grid(data::MIRField& field, const atlas_trans_t& trans, const param::MIRParametrisation&) const override;
+
+    bool getGriddedTargetName(std::string& name) const override;
 
     // -- Class members
     // None

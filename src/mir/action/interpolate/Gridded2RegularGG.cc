@@ -22,14 +22,10 @@
 namespace mir::action::interpolate {
 
 
-Gridded2RegularGG::Gridded2RegularGG(const param::MIRParametrisation& parametrisation) :
-    Gridded2UnrotatedGrid(parametrisation), N_(0) {
-    ASSERT(parametrisation_.userParametrisation().get("regular", N_));
+Gridded2RegularGG::Gridded2RegularGG(const param::MIRParametrisation& param) : Gridded2UnrotatedGrid(param), N_(0) {
+    ASSERT(parametrisation().userParametrisation().get("regular", N_));
     ASSERT(N_ > 0);
 }
-
-
-Gridded2RegularGG::~Gridded2RegularGG() = default;
 
 
 bool Gridded2RegularGG::sameAs(const Action& other) const {
@@ -49,6 +45,12 @@ void Gridded2RegularGG::print(std::ostream& out) const {
 
 const repres::Representation* Gridded2RegularGG::outputRepresentation() const {
     return new repres::gauss::regular::RegularGG(N_);
+}
+
+
+bool Gridded2RegularGG::getGriddedTargetName(std::string& name) const {
+    name = "F" + std::to_string(N_);
+    return true;
 }
 
 

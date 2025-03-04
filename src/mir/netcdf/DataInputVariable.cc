@@ -129,8 +129,8 @@ void DataInputVariable::get2DValues(MIRValuesVector& values, size_t index) const
     dims.pop_back();
 
     std::vector<size_t> coords(dims.size());
-    for (int i = int(dims.size()) - 1; i >= 0; i--) {
-        auto j    = size_t(i);
+    for (int i = static_cast<int>(dims.size()) - 1; i >= 0; i--) {
+        auto j    = static_cast<size_t>(i);
         coords[j] = (index % dims[j]);
         index /= dims[j];
     }
@@ -139,11 +139,8 @@ void DataInputVariable::get2DValues(MIRValuesVector& values, size_t index) const
         start[j] = coords[j];
     }
 
-    std::vector<double> data(nx * ny);
-    matrix_->read(data, start, count);
-
-    // FIXME: this copies, so is slow, but we could 'move' data instead
-    values.assign(data.begin(), data.end());
+    values.resize(nx * ny);
+    matrix_->read(values, start, count);
 }
 
 

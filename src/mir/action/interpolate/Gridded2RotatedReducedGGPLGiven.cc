@@ -23,14 +23,11 @@
 namespace mir::action::interpolate {
 
 
-Gridded2RotatedReducedGGPLGiven::Gridded2RotatedReducedGGPLGiven(const param::MIRParametrisation& parametrisation) :
-    Gridded2RotatedGrid(parametrisation) {
-    ASSERT(parametrisation_.userParametrisation().get("pl", pl_));
+Gridded2RotatedReducedGGPLGiven::Gridded2RotatedReducedGGPLGiven(const param::MIRParametrisation& param) :
+    Gridded2RotatedGrid(param) {
+    ASSERT(parametrisation().userParametrisation().get("pl", pl_));
     ASSERT(!pl_.empty());
 }
-
-
-Gridded2RotatedReducedGGPLGiven::~Gridded2RotatedReducedGGPLGiven() = default;
 
 
 bool Gridded2RotatedReducedGGPLGiven::sameAs(const Action& other) const {

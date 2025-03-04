@@ -74,10 +74,10 @@ void ThreadExecutor::execute(context::Context& ctx, const ActionNode& node) cons
 }
 
 
-void ThreadExecutor::parametrisation(const param::MIRParametrisation& parametrisation) {
+void ThreadExecutor::parametrisation(const param::MIRParametrisation& param) {
     util::call_once(once, init);
     size_t threads;
-    if (parametrisation.get("executor.threads", threads)) {
+    if (param.get("executor.threads", threads)) {
         pool->resize(threads);
     }
 }

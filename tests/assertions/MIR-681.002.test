@@ -1,0 +1,7 @@
+# input
+param=u_v,level=1000,resol=20
+# mir
+--grid=3/3 --uv2uv
+#--interpolation=grid-box-statistics --interpolation-statistics=minimum
+# grib_get (placeholder until values can be checked)
+numberOfPoints=7320

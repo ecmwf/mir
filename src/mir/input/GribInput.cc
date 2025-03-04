@@ -26,7 +26,6 @@
 #include "eckit/config/Resource.h"
 #include "eckit/io/Buffer.h"
 #include "eckit/io/MemoryHandle.h"
-#include "eckit/io/StdFile.h"
 #include "eckit/serialisation/HandleStream.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
@@ -34,6 +33,8 @@
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/grib/Config.h"
+#include "mir/input/GriddefInput.h"
+#include "mir/param/DefaultParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
@@ -376,14 +377,20 @@ struct ProcessingT {
 };
 
 
+struct WindCache {
+    static const util::Wind::Defaults& defaults() {
+        static const util::Wind::Defaults def;
+        return def;
+    };
+} static const WIND;
+
+
 static ProcessingT<long>* is_wind_component_uv() {
     return new ProcessingT<long>([](grib_handle* h, long& value) {
         long paramId = 0;
         GRIB_CALL(codes_get_long(h, "paramId", &paramId));
-        static const util::Wind::Defaults def;
-        long ind = paramId % 1000;
-        value    = (ind == def.u ? 1 : ind == def.v ? 2 : 0);
-        return value;
+        const auto id = paramId % 1000;
+        return value  = id == WIND.defaults().u ? 1 : id == WIND.defaults().v ? 2 : 0;
     });
 }
 
@@ -392,10 +399,8 @@ static ProcessingT<long>* is_wind_component_vod() {
     return new ProcessingT<long>([](grib_handle* h, long& value) {
         long paramId = 0;
         GRIB_CALL(codes_get_long(h, "paramId", &paramId));
-        static const util::Wind::Defaults def;
-        long ind = paramId % 1000;
-        value    = (ind == def.vo ? 1 : ind == def.d ? 2 : 0);
-        return value;
+        const auto id = paramId % 1000;
+        return value  = id == WIND.defaults().vo ? 1 : id == WIND.defaults().d ? 2 : 0;
     });
 }
 
@@ -728,6 +733,11 @@ data::MIRField GribInput::field() const {
         GRIB_CALL(codes_get_long_array(grib_, "pl", pl.data(), &size));
         ASSERT(count_pl == size);
 
+        if (auto pl_sum = static_cast<size_t>(std::accumulate(pl.begin(), pl.end(), 0L)); pl_sum != values.size()) {
+            wrongly_encoded_grib("GribInput: sum of pl array (" + std::to_string(pl_sum) +
+                                 ") does not match the size of values array (" + std::to_string(values.size()) + ")");
+        }
+
         // NOTE: this fix ties with the method get(const std::string &name, std::vector<long> &value)
         if (std::find(pl.rbegin(), pl.rend(), 0) != pl.rend()) {
 
@@ -755,11 +765,11 @@ data::MIRField GribInput::field() const {
             for (auto p1 = pl.begin(), p2 = pl_fixed.begin(); p1 != pl.end(); ++p1, ++p2) {
                 if (*p1 == 0) {
                     ASSERT(*p2 > 0);
-                    auto Ni = size_t(*p2);
+                    auto Ni = static_cast<size_t>(*p2);
                     values_extended.insert(values_extended.end(), Ni, missingValue);
                 }
                 else {
-                    auto Ni = size_t(*p1);
+                    auto Ni = static_cast<size_t>(*p1);
                     ASSERT(i + Ni <= count);
 
                     values_extended.insert(values_extended.end(), &values[i], &values[i + Ni]);
@@ -772,7 +782,7 @@ data::MIRField GribInput::field() const {
             values.swap(values_extended);
 
             ASSERT(get("pl", pl));
-            size_t pl_sum = size_t(std::accumulate(pl.begin(), pl.end(), 0L));
+            auto pl_sum = static_cast<size_t>(std::accumulate(pl.begin(), pl.end(), 0L));
             ASSERT(pl_sum == values.size());
         }
     }
@@ -1141,52 +1151,32 @@ bool GribInput::handle(grib_handle* h) {
 }
 
 
-void GribInput::auxilaryValues(const std::string& path, std::vector<double>& values) const {
-    util::lock_guard<util::recursive_mutex> lock(mutex_);
-
-    eckit::AutoStdFile f(path);
-
-    int e;
-    grib_handle* h = nullptr;
-
-    // We cannot use GribFileInput to read these files, because lat/lon files are also
-    // has grid_type = triangular_grid, and we will create a loop
-
-    try {
-        h = codes_grib_handle_new_from_file(nullptr, f, &e);
-        grib_call(e, path.c_str());
-        size_t count;
-        GRIB_CALL(codes_get_size(h, "values", &count));
-
-        size_t size = count;
-        values.resize(count);
-        GRIB_CALL(codes_get_double_array(h, "values", values.data(), &size));
-        ASSERT(count == size);
-
-        long missingValuesPresent;
-        GRIB_CALL(codes_get_long(h, "missingValuesPresent", &missingValuesPresent));
-        ASSERT(!missingValuesPresent);
-
-        codes_handle_delete(h);
-    }
-    catch (...) {
-        codes_handle_delete(h);
-        throw;
-    }
-}
-
-
 void GribInput::setAuxiliaryInformation(const util::ValueMap& map) {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
+    auto load = [](const eckit::PathName& path, std::vector<double>& values) {
+        Log::info() << "GribInput::setAuxiliaryInformation: '" << path << "'" << std::endl;
+
+        static const param::DefaultParametrisation param;
+        std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build(path.asString(), param));
+        ASSERT(input->next());
+
+        auto field = input->field();
+        ASSERT(field.dimensions() == 1);
+
+        values = field.values(0);
+    };
+
     for (const auto& kv : map) {
-        if (kv.first == "latitudes") {
-            Log::debug() << "Loading auxilary file '" << kv.second << "'" << std::endl;
-            auxilaryValues(kv.second, latitudes_);
+        if (kv.first == "griddef") {
+            GriddefInput::load(kv.second, latitudes_, longitudes_);
+            ASSERT(latitudes_.size() == longitudes_.size());
+        }
+        else if (kv.first == "latitudes") {
+            load(kv.second, latitudes_);
         }
         else if (kv.first == "longitudes") {
-            Log::debug() << "Loading auxilary file '" << kv.second << "'" << std::endl;
-            auxilaryValues(kv.second, longitudes_);
+            load(kv.second, longitudes_);
         }
     }
 }

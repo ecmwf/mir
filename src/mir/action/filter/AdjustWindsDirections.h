@@ -26,11 +26,10 @@ public:
 
     // -- Constructors
 
-    AdjustWindsDirections(const param::MIRParametrisation&);
+    explicit AdjustWindsDirections(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~AdjustWindsDirections() override;
+    // None
 
     // -- Convertors
     // None
@@ -50,23 +49,6 @@ public:
     // -- Class methods
     // None
 
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-
-    void print(std::ostream&) const override;
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
 private:
     // -- Members
 
@@ -76,6 +58,8 @@ private:
     // None
 
     // -- Overridden methods
+
+    void print(std::ostream&) const override;
 
     void execute(context::Context&) const override;
     bool sameAs(const Action&) const override;

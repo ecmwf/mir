@@ -27,9 +27,9 @@
 namespace mir::action {
 
 
-SetMetadata::SetMetadata(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
+SetMetadata::SetMetadata(const param::MIRParametrisation& param) : Action(param) {
     std::string metadata;
-    ASSERT(parametrisation.get("metadata", metadata));
+    ASSERT(parametrisation().get("metadata", metadata));
 
     // TODO: create a parser
     eckit::Tokenizer parse1(",");
@@ -47,9 +47,6 @@ SetMetadata::SetMetadata(const param::MIRParametrisation& parametrisation) : Act
         metadata_[w[0]] = s2l(w[1]);
     }
 }
-
-
-SetMetadata::~SetMetadata() = default;
 
 
 bool SetMetadata::sameAs(const Action& other) const {

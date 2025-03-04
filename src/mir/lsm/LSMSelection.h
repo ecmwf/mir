@@ -40,6 +40,7 @@ public:
     // -- Constructors
 
     LSMSelection(const LSMSelection&) = delete;
+    LSMSelection(LSMSelection&&)      = delete;
 
     // -- Convertors
     // None
@@ -47,6 +48,7 @@ public:
     // -- Operators
 
     void operator=(const LSMSelection&) = delete;
+    void operator=(LSMSelection&&)      = delete;
 
     // -- Methods
 

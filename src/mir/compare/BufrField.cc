@@ -24,6 +24,7 @@
 #include "eckit/option/SimpleOption.h"
 #include "eckit/utils/Tokenizer.h"
 
+#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 
 

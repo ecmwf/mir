@@ -23,12 +23,9 @@
 namespace mir::action {
 
 
-SelectField::SelectField(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
-    ASSERT(parametrisation_.get("which", which_));
+SelectField::SelectField(const param::MIRParametrisation& param) : Action(param) {
+    ASSERT(parametrisation().get("which", which_));
 }
-
-
-SelectField::~SelectField() = default;
 
 
 bool SelectField::sameAs(const Action& other) const {

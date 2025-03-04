@@ -30,9 +30,9 @@
 #include "mir/input/MIRInput.h"
 #include "mir/key/Area.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Gridded.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
@@ -82,8 +82,8 @@ size_t GribOutput::copy(const param::MIRParametrisation& /*unused*/, context::Co
         auto* h = input.gribHandle(i);  // Base class throws if input cannot provide handle
         ASSERT(h);
 
-        const void* message;
-        size_t size;
+        const void* message = nullptr;
+        size_t size         = 0;
 
         GRIB_CALL(codes_get_message(h, &message, &size));
 
@@ -97,27 +97,21 @@ size_t GribOutput::copy(const param::MIRParametrisation& /*unused*/, context::Co
 
 void GribOutput::estimate(const param::MIRParametrisation& param, api::MIREstimation& estimator,
                           context::Context& ctx) const {
-
-    const data::MIRField& field = ctx.field();
+    const auto& field = ctx.field();
     ASSERT(field.dimensions() == 1);
 
     field.representation()->estimate(estimator);
 
-    long bits = 0;
-    if (param.get("accuracy", bits)) {
-        estimator.accuracy(size_t(bits));
+    if (long accuracy = 0; param.get("accuracy", accuracy)) {
+        estimator.accuracy(static_cast<size_t>(accuracy));
     }
 
-    std::string packing;
-    if (param.get(packing, packing)) {
+    if (std::string packing; param.get(packing, packing)) {
         estimator.packing(packing);
-        // const grib::Packing &packer = grib::Packing::lookup(packing);
-        // packer.estimate(estimator, *field.representation());
     }
 
-    long edition;
-    if (param.get("edition", edition)) {
-        estimator.edition(size_t(edition));
+    if (long edition; param.get("edition", edition)) {
+        estimator.edition(static_cast<size_t>(edition));
     }
 }
 
@@ -236,8 +230,8 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
             GRIB_CALL(codes_set_long(h, "bitmapPresent", field.hasMissing()));
             GRIB_CALL(codes_set_double_array(h, "values", field.values(i).data(), field.values(i).size()));
 
-            const void* message;
-            size_t size;
+            const void* message = nullptr;
+            size_t size         = 0;
             GRIB_CALL(codes_get_message(h, &message, &size));
 
             GRIB_CALL(codes_check_message_header(message, size, PRODUCT_GRIB));
@@ -275,8 +269,6 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
         param.get("basic-angle", basicAngle);
 
         if (basicAngle == "as-input") {
-            ASSERT(info.grid.grid_type == CODES_UTIL_GRID_SPEC_REGULAR_LL);
-
             std::vector<long> fraction(2);
             GRIB_CALL(codes_get_long(h, "basicAngleOfTheInitialProductionDomain", &fraction[0]));
             GRIB_CALL(codes_get_long(h, "subdivisionsOfBasicAngle", &fraction[1]));
@@ -285,8 +277,6 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
             basic.fillGrib(info);
         }
         else if (basicAngle == "fraction") {
-            ASSERT(info.grid.grid_type == CODES_UTIL_GRID_SPEC_REGULAR_LL);
-
             grib::BasicAngle basic(info);
             basic.fillGrib(info);
         }
@@ -402,8 +392,8 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
 
         GRIB_CALL(err);
 
-        const void* message;
-        size_t size;
+        const void* message = nullptr;
+        size_t size         = 0;
         GRIB_CALL(codes_get_message(result, &message, &size));
 
         GRIB_CALL(codes_check_message_header(message, size, PRODUCT_GRIB));
@@ -487,8 +477,8 @@ size_t GribOutput::set(const param::MIRParametrisation& param, context::Context&
         GRIB_CALL(codes_set_double_array(h, "values", field.values(i).data(), field.values(i).size()));
 
 
-        const void* message;
-        size_t size;
+        const void* message = nullptr;
+        size_t size         = 0;
         GRIB_CALL(codes_get_message(h, &message, &size));
 
         GRIB_CALL(codes_check_message_header(message, size, PRODUCT_GRIB));

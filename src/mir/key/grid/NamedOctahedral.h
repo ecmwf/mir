@@ -26,7 +26,6 @@ public:
     // -- Constructors
 
     NamedOctahedral(const std::string& name, size_t N);
-    NamedOctahedral(const NamedOctahedral&) = delete;
 
     // -- Destructor
     // None
@@ -35,8 +34,7 @@ public:
     // None
 
     // -- Operators
-
-    NamedOctahedral& operator=(const NamedOctahedral&) = delete;
+    // None
 
     // -- Methods
     // None

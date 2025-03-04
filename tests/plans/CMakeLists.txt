@@ -16,6 +16,7 @@ if(MARS_SCRIPT)
         if((_t MATCHES "[.]fail[.]") OR
            (_t MATCHES "[.]lsm[.]" AND NOT HAVE_MIR_DOWNLOAD_MASKS) OR
            (NOT mir_HAVE_ATLAS AND NOT (_t MATCHES "[.]core[.]")) OR
+           (NOT mir_HAVE_ECKIT_GEO AND (_t MATCHES "[.]geo[.]")) OR
            (NOT atlas_HAVE_PROJ AND (_t MATCHES "[.]proj[.]")))
             set_tests_properties(${_t} PROPERTIES WILL_FAIL TRUE)
         endif()
@@ -43,4 +44,3 @@ ecbuild_add_test(
     ENVIRONMENT ${_testEnvironment}
     MIR_CONFIG_AREA=${_t}/area.yaml
     MIR_CONFIG_PARAMETERS=${_t}/parameters.yaml)
-

@@ -26,7 +26,7 @@ public:
 
     // -- Constructors
 
-    RawInput(const double* const values, size_t count, const param::SimpleParametrisation& metadata);
+    RawInput(const double* const values, size_t count, const param::MIRParametrisation& metadata);
 
     // -- Destructor
     // None
@@ -54,7 +54,7 @@ private:
 
     const double* const values_;
     const size_t count_;
-    const param::SimpleParametrisation& metadata_;
+    const param::MIRParametrisation& metadata_;
     size_t dimensions_;
     size_t calls_;
 

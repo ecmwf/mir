@@ -29,11 +29,10 @@ public:
 
     // -- Constructors
 
-    ShToRotatedReducedGGPLGiven(const param::MIRParametrisation&);
+    explicit ShToRotatedReducedGGPLGiven(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~ShToRotatedReducedGGPLGiven() override;
+    // None
 
     // -- Convertors
     // None

@@ -30,9 +30,9 @@ namespace mir::util {
 class ValueMap : public eckit::ValueMap {
 public:
     using eckit::ValueMap::ValueMap;
+    using eckit::ValueMap::operator=;
 
-    ValueMap(const eckit::Value&);
-    ValueMap() = default;
+    explicit ValueMap(const eckit::Value&);
 
     void set(eckit::Configured&) const;
     void set(param::SimpleParametrisation&) const;

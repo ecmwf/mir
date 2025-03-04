@@ -30,7 +30,9 @@ public:
     // -- Constructors
 
     Iterator(const util::Rotation& = util::Rotation());
+
     Iterator(const Iterator&) = delete;
+    Iterator(Iterator&&)      = delete;
 
     // -- Destructor
 
@@ -43,6 +45,7 @@ public:
     // -- Operators
 
     void operator=(const Iterator&) = delete;
+    void operator=(Iterator&&)      = delete;
 
     inline const Point2& operator*() const { return pointRotated(); }
 

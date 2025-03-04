@@ -28,12 +28,6 @@
 namespace mir::action {
 
 
-ReferencePattern::ReferencePattern(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {}
-
-
-ReferencePattern::~ReferencePattern() = default;
-
-
 bool ReferencePattern::sameAs(const Action& /*unused*/) const {
     return false;
 }
@@ -49,10 +43,10 @@ void ReferencePattern::execute(context::Context& ctx) const {
 
     repres::RepresentationHandle representation(field.representation());
     bool normalize = false;
-    parametrisation_.get("0-1", normalize);
+    parametrisation().get("0-1", normalize);
 
     std::vector<double> frequencies{6., 3.};
-    parametrisation_.get("frequencies", frequencies);
+    parametrisation().get("frequencies", frequencies);
 
     bool hasMissing     = field.hasMissing();
     double missingValue = field.missingValue();

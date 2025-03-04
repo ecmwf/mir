@@ -30,4 +30,3 @@ if(HAVE_MIR_DOWNLOAD_MASKS)
 
     endforeach()
 endif()
-

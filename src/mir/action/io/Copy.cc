@@ -23,18 +23,11 @@
 namespace mir::action::io {
 
 
-Copy::Copy(const param::MIRParametrisation& parametrisation, output::MIROutput& output) :
-    EndAction(parametrisation, output) {}
-
-
-Copy::~Copy() = default;
-
-
 void Copy::execute(context::Context& ctx) const {
     auto timing(ctx.statistics().saveTimer());
 
     // TODO: MIROutput::save/set/copy should be const
-    const_cast<output::MIROutput&>(output()).copy(parametrisation_, ctx);
+    const_cast<output::MIROutput&>(output()).copy(parametrisation(), ctx);
 }
 
 

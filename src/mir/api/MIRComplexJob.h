@@ -46,7 +46,9 @@ public:
     // -- Constructors
 
     MIRComplexJob();
+
     MIRComplexJob(const MIRComplexJob&) = delete;
+    MIRComplexJob(MIRComplexJob&&)      = delete;
 
     // -- Destructor
 
@@ -56,7 +58,9 @@ public:
     // None
 
     // -- Operators
+
     void operator=(const MIRComplexJob&) = delete;
+    void operator=(MIRComplexJob&&)      = delete;
 
     // -- Methods
 

@@ -41,7 +41,9 @@ public:
     // -- Constructors
 
     Resol(const param::MIRParametrisation&, bool forceNoIntermediateGrid);
+
     Resol(const Resol&) = delete;
+    Resol(Resol&&)      = delete;
 
     // -- Destructor
 
@@ -53,6 +55,7 @@ public:
     // -- Operators
 
     void operator=(const Resol&) = delete;
+    void operator=(Resol&&)      = delete;
 
     // -- Methods
 

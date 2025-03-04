@@ -24,9 +24,6 @@ namespace mir::input {
 static const ArtificialInputBuilder<ConstantInput> __artificial("constant");
 
 
-ConstantInput::ConstantInput(const param::MIRParametrisation& /*ignored*/) {}
-
-
 data::MIRField ConstantInput::field() const {
     ASSERT(dimensions() > 0);
 

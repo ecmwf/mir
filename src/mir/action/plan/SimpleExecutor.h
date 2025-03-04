@@ -28,7 +28,6 @@ public:
     // -- Constructors
 
     SimpleExecutor(const std::string& name);
-    SimpleExecutor(const SimpleExecutor&) = delete;
 
     // -- Destructor
     // None
@@ -37,28 +36,10 @@ public:
     // None
 
     // -- Operators
-
-    SimpleExecutor& operator=(const SimpleExecutor&) = delete;
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
     // None
 
     // -- Methods
-
-    void print(std::ostream&) const override;
+    // None
 
     // -- Overridden methods
     // None
@@ -77,7 +58,9 @@ private:
     // None
 
     // -- Overridden methods
-    //
+
+    void print(std::ostream&) const override;
+
     void execute(context::Context&, const ActionNode&) const override;
     void wait() const override;
     void parametrisation(const param::MIRParametrisation&) override;

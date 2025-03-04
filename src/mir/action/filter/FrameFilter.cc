@@ -27,12 +27,9 @@
 namespace mir::action {
 
 
-FrameFilter::FrameFilter(const param::MIRParametrisation& parametrisation) : Action(parametrisation), size_(0) {
-    ASSERT(parametrisation.userParametrisation().get("frame", size_));
+FrameFilter::FrameFilter(const param::MIRParametrisation& param) : Action(param), size_(0) {
+    ASSERT(parametrisation().userParametrisation().get("frame", size_));
 }
-
-
-FrameFilter::~FrameFilter() = default;
 
 
 bool FrameFilter::sameAs(const Action& other) const {

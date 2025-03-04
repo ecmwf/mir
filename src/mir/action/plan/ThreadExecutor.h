@@ -28,7 +28,6 @@ public:
     // -- Constructors
 
     ThreadExecutor(const std::string& name);
-    ThreadExecutor(const ThreadExecutor&) = delete;
 
     // -- Destructor
     // None
@@ -37,28 +36,10 @@ public:
     // None
 
     // -- Operators
-
-    ThreadExecutor& operator=(const ThreadExecutor&) = delete;
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
     // None
 
     // -- Methods
-
-    void print(std::ostream&) const override;
+    // None
 
     // -- Overridden methods
     // None
@@ -78,7 +59,9 @@ private:
 
     // -- Overridden methods
 
-    void execute(context::Context&, const ActionNode& node) const override;
+    void print(std::ostream&) const override;
+
+    void execute(context::Context&, const ActionNode&) const override;
     void wait() const override;
     void parametrisation(const param::MIRParametrisation&) override;
 

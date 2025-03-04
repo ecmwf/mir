@@ -28,8 +28,7 @@ public:
     using Gridded2GriddedInterpolation::Gridded2GriddedInterpolation;
 
     // -- Destructor
-
-    ~Gridded2UnrotatedGrid() override;
+    // None
 
     // -- Convertors
     // None

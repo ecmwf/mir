@@ -25,11 +25,11 @@ public:
 
     // -- Constructors
 
-    Gridded2RotatedReducedGG(const param::MIRParametrisation&);
+    explicit Gridded2RotatedReducedGG(const param::MIRParametrisation&);
 
     // -- Destructor
+    // None
 
-    ~Gridded2RotatedReducedGG() override;
 
     // -- Convertors
     // None

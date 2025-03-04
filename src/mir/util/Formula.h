@@ -12,8 +12,6 @@
 
 #pragma once
 
-#include <iosfwd>
-
 #include "mir/action/plan/Action.h"
 
 
@@ -23,15 +21,6 @@ namespace mir::util {
 class Formula : public action::Action {
 public:
     using Action::Action;
-    ~Formula() override;
-
-private:
-    void print(std::ostream&) const override = 0;
-
-    friend std::ostream& operator<<(std::ostream& out, const Formula& f) {
-        f.print(out);
-        return out;
-    }
 };
 
 

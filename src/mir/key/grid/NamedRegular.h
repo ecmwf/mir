@@ -26,7 +26,6 @@ public:
     // -- Constructors
 
     NamedRegular(const std::string& name, size_t N);
-    NamedRegular(const NamedRegular&) = delete;
 
     // -- Destructor
     // None
@@ -35,8 +34,7 @@ public:
     // None
 
     // -- Operators
-
-    NamedRegular& operator=(const NamedRegular&) = delete;
+    // None
 
     // -- Methods
     // None

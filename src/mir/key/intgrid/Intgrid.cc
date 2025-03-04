@@ -72,7 +72,7 @@ Intgrid* IntgridFactory::build(const std::string& name, const param::MIRParametr
     // Look for NamedGrid pattern matching
     std::string intgrid;
     if (grid::Grid::get("intgrid", intgrid, parametrisation)) {
-        if (grid::Grid::lookup(intgrid, parametrisation).isNamed()) {
+        if (grid::Grid::lookup(intgrid, parametrisation).type() == "namedgrid") {
             return new intgrid::NamedGrid(intgrid, parametrisation);
         }
     }

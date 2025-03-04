@@ -17,6 +17,7 @@
 #include "mir/lsm/LandSeaMasks.h"
 #include "mir/method/knn/pick/Pick.h"
 #include "mir/param/RuntimeParametrisation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir::method::knn {

@@ -25,19 +25,16 @@ public:
 
     // -- Constructors
 
-    RegularLLPattern(const std::string& name);
-    RegularLLPattern(const RegularLLPattern&) = delete;
+    RegularLLPattern(const std::string& pattern);
 
     // -- Destructor
-
-    ~RegularLLPattern() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-
-    RegularLLPattern& operator=(const RegularLLPattern&) = delete;
+    // None
 
     // -- Methods
     // None

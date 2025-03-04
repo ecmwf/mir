@@ -25,13 +25,9 @@ namespace mir::action::transform {
 
 
 template <class Invtrans>
-ShToGridDef<Invtrans>::ShToGridDef(const param::MIRParametrisation& parametrisation) : ShToGridded(parametrisation) {
-    ASSERT(parametrisation_.userParametrisation().get("griddef", griddef_));
+ShToGridDef<Invtrans>::ShToGridDef(const param::MIRParametrisation& param) : ShToGridded(param) {
+    ASSERT(parametrisation().userParametrisation().get("griddef", griddef_));
 }
-
-
-template <class Invtrans>
-ShToGridDef<Invtrans>::~ShToGridDef() = default;
 
 
 template <class Invtrans>

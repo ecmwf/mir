@@ -25,34 +25,15 @@ public:
 
     // -- Constructors
 
-    Save(const param::MIRParametrisation&, output::MIROutput&);
-    Save(const Save&) = delete;
+    using EndAction::EndAction;
 
     // -- Destructor
-
-    ~Save() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-
-    Save& operator=(const Save&) = delete;
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
     // None
 
     // -- Methods

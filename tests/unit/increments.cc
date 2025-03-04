@@ -26,6 +26,7 @@
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Increments.h"
 #include "mir/util/Log.h"
 #include "mir/util/Types.h"

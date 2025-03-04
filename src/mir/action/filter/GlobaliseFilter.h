@@ -25,43 +25,22 @@ public:
 
     // -- Constructors
 
-    GlobaliseFilter(const param::MIRParametrisation&);
-    GlobaliseFilter(const GlobaliseFilter&) = delete;
+    using Action::Action;
 
     // -- Destructor
-
-    ~GlobaliseFilter() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-
-    GlobaliseFilter& operator=(const GlobaliseFilter&) = delete;
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
     // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
-
-    void print(std::ostream&) const override;
-    bool deleteWithNext(const Action&) override;
+    // None
 
     // -- Class members
     // None
@@ -78,6 +57,9 @@ private:
 
     // -- Overridden methods
 
+    void print(std::ostream&) const override;
+
+    bool deleteWithNext(const Action&) override;
     void execute(context::Context&) const override;
     bool sameAs(const Action&) const override;
     const char* name() const override;

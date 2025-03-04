@@ -19,7 +19,8 @@ namespace mir::method::knn::pick {
 
 
 struct LongestElementDiagonalAndNClosest : Pick {
-    LongestElementDiagonalAndNClosest(const param::MIRParametrisation&);
+    explicit LongestElementDiagonalAndNClosest(const param::MIRParametrisation&);
+
     void pick(const search::PointSearch&, const Point3&, neighbours_t&) const override;
     size_t n() const override;
     bool sameAs(const Pick&) const override;

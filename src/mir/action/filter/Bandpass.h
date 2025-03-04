@@ -26,8 +26,6 @@ public:
     // -- Constructors
 
     explicit Bandpass(const param::MIRParametrisation&);
-    Bandpass(const Bandpass&) = delete;
-    Bandpass(Bandpass&&)      = delete;
 
     // -- Destructor
     // None
@@ -36,9 +34,7 @@ public:
     // None
 
     // -- Operators
-
-    void operator=(const Bandpass&) = delete;
-    void operator=(Bandpass&&)      = delete;
+    // None
 
     // -- Methods
     // None

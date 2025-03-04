@@ -19,6 +19,7 @@
 #include "eckit/utils/MD5.h"
 
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
 
@@ -46,6 +47,13 @@ DistanceWeightingWithLSM::DistanceWeightingWithLSM(const param::MIRParametrisati
     }
 
     method_ = name;
+}
+
+
+void DistanceWeightingWithLSM::operator()(size_t, const Point3&,
+                                          const std::vector<search::PointSearch::PointValueType>&,
+                                          std::vector<WeightMatrix::Triplet>&) const {
+    throw exception::SeriousBug("DistanceWeightingWithLSM: not to be used directly");
 }
 
 

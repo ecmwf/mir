@@ -11,9 +11,10 @@
 
 import argparse
 import sys
-import numpy as np
 
-from eccodes import GribMessage, GribFile
+import numpy as np
+from eccodes import GribFile
+from eccodes import GribMessage
 
 
 def spectrum(T, sh):

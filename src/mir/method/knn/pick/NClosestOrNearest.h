@@ -19,8 +19,9 @@ namespace mir::method::knn::pick {
 
 
 struct NClosestOrNearest : Pick {
-    NClosestOrNearest(size_t nClosest, double distanceTolerance = 1.);
-    NClosestOrNearest(const param::MIRParametrisation&);
+    explicit NClosestOrNearest(size_t nClosest, double distanceTolerance = 1.);
+    explicit NClosestOrNearest(const param::MIRParametrisation&);
+
     void pick(const search::PointSearch&, const Point3&, neighbours_t&) const override;
     size_t n() const override;
     bool sameAs(const Pick&) const override;

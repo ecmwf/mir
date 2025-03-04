@@ -48,4 +48,3 @@ if(mir_HAVE_ATLAS)
         ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir ${mir_INSTALL_TOOLS})
     endforeach()
 endif()
-
