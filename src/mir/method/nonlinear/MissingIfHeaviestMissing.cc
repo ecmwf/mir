@@ -41,13 +41,13 @@ bool MissingIfHeaviestMissing::treatment(DenseMatrix& /*A*/, WeightMatrix& W, De
 
     #pragma omp parallel for reduction(||:modif) 
     for (WeightMatrix::Size r = 0; r < W.rows(); ++r) {
-        WeightMatrix::Size row_start = outer[r];
-        WeightMatrix::Size row_end = outer[r + 1];  // Marks the end of this row
+        auto row_start = outer[r];
+        auto row_end = outer[r + 1];  // Marks the end of this row
 
         // Initialize variables for tracking missing values and weights in the row
-        size_t i_missing         = row_start;
+        auto i_missing         = row_start;
         size_t N_missing         = 0;
-        size_t N_entries         = row_end - row_start;
+        auto N_entries         = row_end - row_start;
         double sum               = 0.;
         double heaviest          = -1.;
         bool heaviest_is_missing = false;
