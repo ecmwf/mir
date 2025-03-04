@@ -34,7 +34,7 @@ bool MissingIfHeaviestMissing::treatment(DenseMatrix& /*A*/, WeightMatrix& W, De
     // correct matrix weigths for the missing values
 
     ASSERT(W.cols() == values.size());
-    auto* outer = W.outer();
+    auto* outer = W.outerIndex();
     auto* inner = W.inner();
     auto* data = const_cast<WeightMatrix::Scalar*>(W.data());
     bool modif = false;

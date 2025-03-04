@@ -452,7 +452,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
     std::vector<size_t> forceMissing;  // reserving size unnecessary (not the general case)
     #pragma omp parallel for reduction(vec_merge_sorted:forceMissing)
     for (size_t r = 0; r < W.rows(); ++r) {
-        if (W.outer()[r] == W.outer()[r + 1]) {
+        if (W.outerIndex()[r] == W.outerIndex()[r + 1]) {
             forceMissing.push_back(r);
         }
     }
