@@ -28,8 +28,11 @@ class Function {
 public:
     Function(const std::string&);
 
-    Function(const Function&)       = delete;
+    Function(const Function&) = delete;
+    Function(Function&&)      = delete;
+
     void operator=(const Function&) = delete;
+    void operator=(Function&&)      = delete;
 
     virtual ~Function();
 

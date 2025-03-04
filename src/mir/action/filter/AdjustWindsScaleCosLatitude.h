@@ -25,8 +25,7 @@ public:
 
     // -- Constructors
 
-    AdjustWindsScaleCosLatitude(const param::MIRParametrisation&);
-    AdjustWindsScaleCosLatitude(const AdjustWindsScaleCosLatitude&) = delete;
+    using Action::Action;
 
     // -- Destructor
     // None
@@ -35,28 +34,10 @@ public:
     // None
 
     // -- Operators
-
-    AdjustWindsScaleCosLatitude& operator=(const AdjustWindsScaleCosLatitude&) = delete;
-
-    // -- Methods
     // None
 
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-
-    void print(std::ostream&) const override;
+    //  -- Methods
+    //  None
 
     // -- Overridden methods
     // None
@@ -75,6 +56,8 @@ private:
     // None
 
     // -- Overridden methods
+
+    void print(std::ostream&) const override;
 
     void execute(context::Context&) const override;
     bool sameAs(const Action&) const override;

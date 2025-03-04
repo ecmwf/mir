@@ -22,6 +22,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Bitmap.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Mutex.h"
 
@@ -33,12 +34,9 @@ constexpr size_t CAPACITY = 256 * 1024 * 1024;
 static caching::InMemoryCache<util::Bitmap> cache("mirBitmap", CAPACITY, 0, "$MIR_BITMAP_CACHE_MEMORY_FOOTPRINT");
 
 
-BitmapFilter::BitmapFilter(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
-    ASSERT(parametrisation.userParametrisation().get("bitmap", path_));
+BitmapFilter::BitmapFilter(const param::MIRParametrisation& param) : Action(param) {
+    ASSERT(parametrisation().userParametrisation().get("bitmap", path_));
 }
-
-
-BitmapFilter::~BitmapFilter() = default;
 
 
 bool BitmapFilter::sameAs(const Action& other) const {

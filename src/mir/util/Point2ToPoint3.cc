@@ -37,9 +37,10 @@ Point2ToPoint3::Point3Displaced::Point3Displaced(double poleDisplacement) : eps_
 
 
 Point3 Point2ToPoint3::Point3Displaced::make_point3(const Point2& p2) const {
-    const Point2 p2d{p2[0], Latitude::NORTH_POLE == p2[1]   ? p2[1] - eps_
-                            : Latitude::SOUTH_POLE == p2[1] ? p2[1] + eps_
-                                                            : p2[1]};
+    const Point2 p2d{Latitude::NORTH_POLE <= p2[0] + eps_   ? p2[0] - eps_
+                     : Latitude::SOUTH_POLE >= p2[0] - eps_ ? p2[0] + eps_
+                                                            : p2[0],
+                     p2[1]};
     return repres::Iterator::point_3D(p2d);
 }
 

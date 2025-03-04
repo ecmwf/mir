@@ -10,13 +10,33 @@
  */
 
 
-#include "mir/util/Formula.h"
+#pragma once
+
+#include "mir/api/mir_config.h"
+
+#if mir_HAVE_ECKIT_GEO
+
+#include "eckit/geo/Area.h"
+#include "eckit/geo/Grid.h"
+#include "eckit/geo/Ordering.h"
+#include "eckit/geo/Projection.h"
+#include "eckit/geo/Spec.h"
+
+#else
 
 
-namespace mir::util {
+namespace eckit::geo {
 
 
-Formula::~Formula() = default;
+enum Ordering
+{
+};
 
 
-}  // namespace mir::util
+class Spec {};
+
+
+}  // namespace eckit::geo
+
+
+#endif

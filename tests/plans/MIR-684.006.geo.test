@@ -1,0 +1,6 @@
+# input
+/dev/null
+# mir
+--input={artificialInput:gridspec,gridspec:{grid:h2,ordering:nested}} --grid={grid:3/3} --interpolation=nn
+# plan
+Gridded2GridSpec[gridspec={"grid":[3,3]},interpolation=nn,method=KNearestNeighbours[nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,nearestMethod=NearestNeighbourWithLowestIndex[nclosest=4],distanceWeighting=InverseDistanceWeightingSquared[]]]|Save[packing=ccsds,edition=2,output=...]

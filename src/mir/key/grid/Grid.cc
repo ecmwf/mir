@@ -23,6 +23,7 @@
 #include "mir/key/grid/NamedFromFile.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 #include "mir/util/ValueMap.h"
 
 
@@ -66,9 +67,9 @@ static void read_configuration_files() {
 }
 
 
-Grid::Grid(const std::string& key, grid_t gridType) : key_(key), gridType_(gridType) {
+Grid::Grid(const std::string& key, const std::string& type) : key_(key), type_(type) {
     util::call_once(once, init);
-    util::lock_guard<util::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(local_mutex);
 
     ASSERT(m->insert({key, this}).second);
 }
@@ -76,7 +77,7 @@ Grid::Grid(const std::string& key, grid_t gridType) : key_(key), gridType_(gridT
 
 Grid::~Grid() {
     util::call_once(once, init);
-    util::lock_guard<util::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(local_mutex);
 
     ASSERT(m->find(key_) != m->end());
     m->erase(key_);
@@ -127,6 +128,13 @@ void Grid::parametrisation(const std::string& /*unused*/, param::SimpleParametri
 size_t Grid::gaussianNumber() const {
     std::ostringstream os;
     os << "Grid::gaussianNumber() not implemented for " << *this;
+    throw exception::SeriousBug(os.str());
+}
+
+
+std::string Grid::gridname() const {
+    std::ostringstream os;
+    os << "Grid::gridname() not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 

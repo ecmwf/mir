@@ -20,6 +20,7 @@
 #include <string>
 
 #include "eckit/config/Resource.h"
+#include "eckit/filesystem/PathName.h"
 #include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
@@ -38,6 +39,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/reorder/Reorder.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Mutex.h"
@@ -66,10 +68,16 @@ static caching::WeightCache& matrix_cache_disk(const param::MIRParametrisation& 
 }
 
 
+static void matrix_write(const WeightMatrix& mat, const eckit::PathName& path) {
+    path.dirName().mkdir(0777);  // ensure directory exists
+    mat.save(path);
+}
+
+
 const static std::map<eckit::Hash::digest_t, std::string> KNOWN_METHOD{
     {"73e1dd539879ffbbbb22d6bc789c2262", "linear"},
     {"7738675c7e2c64d463718049ebef6563", "nearest-neighbour"},
-    {"a81efab621096650c20a978062cdd169", "grid-box-average"},
+    {"0346db910681bffd0d518b49923879dc", "grid-box-average"},
 };
 
 
@@ -93,6 +101,8 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation)
         addNonLinearTreatment(nonlinear::NonLinearFactory::build(n, parametrisation_));
         ASSERT(nonLinear_.back());
     }
+
+    parametrisation_.get("interpolation-matrix", interpolationMatrix_);
 }
 
 
@@ -199,9 +209,8 @@ MethodWeighted::CacheKeys MethodWeighted::getDiskAndMemoryCacheKeys(const repres
         version_str = std::to_string(v) + "/";
     }
 
-    std::string disk_key =
-        std::string{name()} + "/" + version_str + shortName_in + "/" + shortName_out + "-" + hash.digest();
-    std::string memory_key = disk_key;
+    auto disk_key = std::string{name()} + "/" + version_str + shortName_in + "/" + shortName_out + "-" + hash.digest();
+    auto memory_key = disk_key;
 
     // Add masks if any
     if (masks.active()) {
@@ -230,13 +239,18 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     log << "MethodWeighted::getMatrix land-sea masks: " << timer.elapsedSeconds(here) << ", "
         << (masks.active() ? "active" : "not active") << std::endl;
 
-    auto [disk_key, memory_key] = getDiskAndMemoryCacheKeys(in, out, masks);
+    const auto [disk_key, memory_key] = getDiskAndMemoryCacheKeys(in, out, masks);
     ASSERT(!disk_key.empty() && !memory_key.empty());
 
-    if (auto j = MATRIX_CACHE_MEMORY.find(memory_key); j != MATRIX_CACHE_MEMORY.end()) {
+    if (auto* j = MATRIX_CACHE_MEMORY.find(memory_key); j != MATRIX_CACHE_MEMORY.end()) {
         const auto& mat = *j;
         log << "MethodWeighted::getMatrix cache key: " << memory_key << " " << timer.elapsedSeconds(here)
             << ", found in memory cache (" << mat << ")" << std::endl;
+
+        if (!interpolationMatrix_.empty()) {
+            matrix_write(mat, interpolationMatrix_);
+        }
+
         return mat;
     }
 
@@ -272,6 +286,9 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
         W.validate("applyMasks", validateMatrixWeights());
     }
 
+    if (!interpolationMatrix_.empty()) {
+        matrix_write(W, interpolationMatrix_);
+    }
 
     log << "MethodWeighted::getMatrix create weights matrix: " << timer.elapsedSeconds(here) << std::endl;
     log << "MethodWeighted::getMatrix matrix W " << W << std::endl;

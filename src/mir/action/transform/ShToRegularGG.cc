@@ -25,14 +25,9 @@ namespace mir::action::transform {
 
 
 template <class Invtrans>
-ShToRegularGG<Invtrans>::ShToRegularGG(const param::MIRParametrisation& parametrisation) :
-    ShToGridded(parametrisation) {
-    ASSERT(parametrisation_.userParametrisation().get("regular", N_));
+ShToRegularGG<Invtrans>::ShToRegularGG(const param::MIRParametrisation& param) : ShToGridded(param) {
+    ASSERT(parametrisation().userParametrisation().get("regular", N_));
 }
-
-
-template <class Invtrans>
-ShToRegularGG<Invtrans>::~ShToRegularGG() = default;
 
 
 template <class Invtrans>
@@ -56,6 +51,13 @@ template <class Invtrans>
 void ShToRegularGG<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
                                       const param::MIRParametrisation& parametrisation) const {
     Invtrans::sh2grid(field, trans, parametrisation);
+}
+
+
+template <class Invtrans>
+bool ShToRegularGG<Invtrans>::getGriddedTargetName(std::string& name) const {
+    name = "F" + std::to_string(N_);
+    return true;
 }
 
 

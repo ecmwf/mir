@@ -22,13 +22,9 @@
 namespace mir::action::interpolate {
 
 
-Gridded2OctahedralGG::Gridded2OctahedralGG(const param::MIRParametrisation& parametrisation) :
-    Gridded2UnrotatedGrid(parametrisation) {
-    ASSERT(parametrisation_.userParametrisation().get("octahedral", N_));
+Gridded2OctahedralGG::Gridded2OctahedralGG(const param::MIRParametrisation& param) : Gridded2UnrotatedGrid(param) {
+    ASSERT(parametrisation().userParametrisation().get("octahedral", N_));
 }
-
-
-Gridded2OctahedralGG::~Gridded2OctahedralGG() = default;
 
 
 bool Gridded2OctahedralGG::sameAs(const Action& other) const {
@@ -48,6 +44,12 @@ void Gridded2OctahedralGG::print(std::ostream& out) const {
 
 const repres::Representation* Gridded2OctahedralGG::outputRepresentation() const {
     return new repres::gauss::reduced::ReducedOctahedral(N_);
+}
+
+
+bool Gridded2OctahedralGG::getGriddedTargetName(std::string& name) const {
+    name = "O" + std::to_string(N_);
+    return true;
 }
 
 

@@ -32,6 +32,7 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
 #include "mir/util/Point2ToPoint3.h"
@@ -243,6 +244,11 @@ void FiniteElement::print(std::ostream& out) const {
             : projectionFail_ == ProjectionFail::missingValue    ? "missing-value"
                                                                  : NOTIMP)
         << "]";
+}
+
+
+int FiniteElement::version() const {
+    return 1;
 }
 
 

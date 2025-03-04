@@ -25,39 +25,19 @@ public:
 
     // -- Constructors
 
-    CesaroSummationFilter(const param::MIRParametrisation&);
-    CesaroSummationFilter(const CesaroSummationFilter&) = delete;
+    explicit CesaroSummationFilter(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~CesaroSummationFilter() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-
-    CesaroSummationFilter& operator=(const CesaroSummationFilter&) = delete;
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
     // None
 
     // -- Methods
-
-    void print(std::ostream&) const override;
+    // None
 
     // -- Overridden methods
     // None
@@ -78,6 +58,8 @@ private:
     // None
 
     // -- Overridden methods
+
+    void print(std::ostream&) const override;
 
     void execute(context::Context&) const override;
     bool sameAs(const Action&) const override;

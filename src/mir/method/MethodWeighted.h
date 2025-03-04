@@ -108,6 +108,7 @@ private:
     double pruneEpsilon_;
     double poleDisplacement_;
     Cropping cropping_;
+    std::string interpolationMatrix_;
 
     std::vector<std::unique_ptr<const nonlinear::NonLinear>> nonLinear_;
     std::unique_ptr<const solver::Solver> solver_;

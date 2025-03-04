@@ -27,9 +27,6 @@ NablaFilter::NablaFilter(const param::MIRParametrisation& param) : Action(param)
 }
 
 
-NablaFilter::~NablaFilter() = default;
-
-
 void NablaFilter::print(std::ostream& out) const {
     out << name() << "[meshGeneratorParameters=" << meshGeneratorParams_ << "]";
 }

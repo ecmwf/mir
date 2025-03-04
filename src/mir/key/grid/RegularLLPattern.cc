@@ -25,10 +25,7 @@
 namespace mir::key::grid {
 
 
-RegularLLPattern::RegularLLPattern(const std::string& name) : GridPattern(name) {}
-
-
-RegularLLPattern::~RegularLLPattern() = default;
+RegularLLPattern::RegularLLPattern(const std::string& pattern) : GridPattern(pattern) {}
 
 
 void RegularLLPattern::print(std::ostream& out) const {

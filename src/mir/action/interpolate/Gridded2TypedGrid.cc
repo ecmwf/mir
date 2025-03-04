@@ -22,16 +22,12 @@
 namespace mir::action::interpolate {
 
 
-Gridded2TypedGrid::Gridded2TypedGrid(const param::MIRParametrisation& parametrisation) :
-    Gridded2UnrotatedGrid(parametrisation) {
-    ASSERT(parametrisation_.userParametrisation().get("grid", grid_));
+Gridded2TypedGrid::Gridded2TypedGrid(const param::MIRParametrisation& param) : Gridded2UnrotatedGrid(param) {
+    ASSERT(parametrisation().userParametrisation().get("grid", grid_));
 
-    const auto& g = key::grid::Grid::lookup(grid_);
+    const auto& g = key::grid::Grid::lookup(grid_, parametrisation());
     g.parametrisation(grid_, gridParams_);
 }
-
-
-Gridded2TypedGrid::~Gridded2TypedGrid() = default;
 
 
 bool Gridded2TypedGrid::sameAs(const Action& other) const {
@@ -52,7 +48,7 @@ void Gridded2TypedGrid::print(std::ostream& out) const {
 
 
 const repres::Representation* Gridded2TypedGrid::outputRepresentation() const {
-    const auto& g = key::grid::Grid::lookup(grid_);
+    const auto& g = key::grid::Grid::lookup(grid_, parametrisation());
     return g.representation(gridParams_);
 }
 

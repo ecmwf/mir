@@ -91,17 +91,20 @@ class InMemoryCacheUser {
     InMemoryCache<T>& cache_;
     InMemoryCacheStatistics& statistics_;
 
-    InMemoryCacheUser(const InMemoryCacheUser&)            = delete;
-    InMemoryCacheUser& operator=(const InMemoryCacheUser&) = delete;
-
 public:
-    InMemoryCacheUser(InMemoryCacheUser&&) = default;
     InMemoryCacheUser(InMemoryCache<T>& cache, InMemoryCacheStatistics& statistics) :
         cache_(cache), statistics_(statistics) {
         cache_.startUsing();
     }
 
+    InMemoryCacheUser(const InMemoryCacheUser&) = delete;
+    InMemoryCacheUser(InMemoryCacheUser&&)      = delete;
+
+
     ~InMemoryCacheUser() { cache_.stopUsing(statistics_); }
+
+    void operator=(const InMemoryCacheUser&) = delete;
+    void operator=(InMemoryCacheUser&&)      = delete;
 };
 
 

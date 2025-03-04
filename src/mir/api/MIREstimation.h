@@ -21,11 +21,15 @@ namespace mir::api {
 
 class MIREstimation {
 public:
-    MIREstimation()          = default;
+    MIREstimation() = default;
+
+    MIREstimation(const MIREstimation&) = delete;
+    MIREstimation(MIREstimation&&)      = delete;
+
     virtual ~MIREstimation() = default;
 
-    MIREstimation(const MIREstimation&)            = delete;
-    MIREstimation& operator=(const MIREstimation&) = delete;
+    void operator=(const MIREstimation&) = delete;
+    void operator=(MIREstimation&&)      = delete;
 
     virtual void numberOfGridPoints(size_t count)                  = 0;
     virtual void missingValues(size_t count)                       = 0;

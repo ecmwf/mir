@@ -31,13 +31,13 @@
 namespace mir::action {
 
 
-FormulaAction::FormulaAction(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
+FormulaAction::FormulaAction(const param::MIRParametrisation& param) : Action(param) {
 
     std::string formula;
-    ASSERT(parametrisation.get("formula", formula));
+    ASSERT(parametrisation().get("formula", formula));
 
     std::string metadata;
-    ASSERT(parametrisation.get("formula.metadata", metadata));
+    ASSERT(parametrisation().get("formula.metadata", metadata));
 
     // TODO: create a parser
     eckit::Tokenizer parse1(",");
@@ -57,11 +57,8 @@ FormulaAction::FormulaAction(const param::MIRParametrisation& parametrisation) :
 
     std::istringstream in(formula);
     util::FormulaParser p(in);
-    formula_.reset(p.parse(parametrisation));
+    formula_.reset(p.parse(parametrisation()));
 }
-
-
-FormulaAction::~FormulaAction() = default;
 
 
 bool FormulaAction::sameAs(const Action& other) const {

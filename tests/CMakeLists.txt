@@ -30,4 +30,3 @@ if(mir_HAVE_ATLAS)
     add_subdirectory(plans)
 endif()
 add_subdirectory(unit)
-

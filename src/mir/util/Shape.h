@@ -13,8 +13,9 @@
 #pragma once
 
 #include "mir/util/Atlas.h"
-#include "mir/util/Grib.h"
 
+
+struct grib_info;
 
 namespace mir {
 namespace param {
@@ -36,8 +37,8 @@ struct Shape {
     Shape(const Projection::Spec&);
     Shape() : code(6L), a(0.), b(0.), provided(false) {}
 
-    Shape(const Shape& other) = default;
-    Shape(Shape&&)            = default;
+    Shape(const Shape&) = default;
+    Shape(Shape&&)      = default;
 
     virtual ~Shape() = default;
 

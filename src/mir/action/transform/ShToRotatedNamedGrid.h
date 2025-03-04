@@ -27,11 +27,10 @@ public:
 
     // -- Constructors
 
-    ShToRotatedNamedGrid(const param::MIRParametrisation&);
+    explicit ShToRotatedNamedGrid(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~ShToRotatedNamedGrid() override;
+    // None
 
     // -- Convertors
     // None

@@ -18,6 +18,7 @@
 #include "mir/stats/detail/AngleT.h"
 #include "mir/stats/detail/CentralMomentsT.h"
 #include "mir/stats/detail/ScalarT.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir::stats::method {

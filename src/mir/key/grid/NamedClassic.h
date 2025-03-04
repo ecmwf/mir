@@ -26,7 +26,6 @@ public:
     // -- Constructors
 
     NamedClassic(const std::string& name, size_t N);
-    NamedClassic(const NamedClassic&) = delete;
 
     // -- Destructor
     // None
@@ -35,8 +34,7 @@ public:
     // None
 
     // -- Operators
-
-    NamedClassic& operator=(const NamedClassic&) = delete;
+    // None
 
     // -- Methods
     // None

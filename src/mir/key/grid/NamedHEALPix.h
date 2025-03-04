@@ -33,9 +33,6 @@ public:
 
     NamedHEALPix(const std::string& name, size_t Nside, Ordering);
 
-    NamedHEALPix(const NamedHEALPix&) = delete;
-    NamedHEALPix(NamedHEALPix&&)      = delete;
-
     // -- Destructor
     // None
 
@@ -43,9 +40,7 @@ public:
     // None
 
     // -- Operators
-
-    NamedHEALPix& operator=(const NamedHEALPix&) = delete;
-    NamedHEALPix& operator=(NamedHEALPix&&)      = delete;
+    // None
 
     // -- Methods
     // None

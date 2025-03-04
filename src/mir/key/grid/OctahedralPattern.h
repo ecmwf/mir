@@ -25,19 +25,16 @@ public:
 
     // -- Constructors
 
-    OctahedralPattern(const std::string& name);
-    OctahedralPattern(const OctahedralPattern&) = delete;
+    OctahedralPattern(const std::string& pattern);
 
     // -- Destructor
-
-    ~OctahedralPattern() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-
-    OctahedralPattern& operator=(const OctahedralPattern&) = delete;
+    // None
 
     // -- Methods
     // None

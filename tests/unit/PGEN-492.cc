@@ -19,6 +19,7 @@
 #include "mir/input/GribFileInput.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir::tests::unit {

@@ -22,16 +22,12 @@
 namespace mir::action::interpolate {
 
 
-Gridded2Points::Gridded2Points(const param::MIRParametrisation& parametrisation) :
-    Gridded2UnrotatedGrid(parametrisation) {
-    ASSERT_MSG(parametrisation_.userParametrisation().get("latitudes", latitudes_) &&
-                   parametrisation_.userParametrisation().get("longitudes", longitudes_) && !latitudes_.empty() &&
+Gridded2Points::Gridded2Points(const param::MIRParametrisation& param) : Gridded2UnrotatedGrid(param) {
+    ASSERT_MSG(parametrisation().userParametrisation().get("latitudes", latitudes_) &&
+                   parametrisation().userParametrisation().get("longitudes", longitudes_) && !latitudes_.empty() &&
                    latitudes_.size() == longitudes_.size(),
                "Gridded2Points: requires 'latitudes' and 'longitudes', non-empty and of the same size");
 }
-
-
-Gridded2Points::~Gridded2Points() = default;
 
 
 bool Gridded2Points::sameAs(const Action& other) const {

@@ -31,6 +31,7 @@
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Formula.h"
 #include "mir/util/Log.h"
 
 // define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)

@@ -25,19 +25,16 @@ public:
 
     // -- Constructors
 
-    RegularPattern(const std::string& name);
-    RegularPattern(const RegularPattern&) = delete;
+    RegularPattern(const std::string& pattern);
 
     // -- Destructor
-
-    ~RegularPattern() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-
-    RegularPattern& operator=(const RegularPattern&) = delete;
+    // None
 
     // -- Methods
     // None

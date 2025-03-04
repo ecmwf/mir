@@ -178,4 +178,9 @@ const char* VoronoiMethod::name() const {
 }
 
 
+int VoronoiMethod::version() const {
+    return 1;
+}
+
+
 }  // namespace mir::method::voronoi

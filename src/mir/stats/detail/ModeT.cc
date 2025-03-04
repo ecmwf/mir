@@ -12,9 +12,11 @@
 
 #include "mir/stats/detail/ModeT.h"
 
+#include <limits>
 #include <ostream>
 
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir::stats::detail {

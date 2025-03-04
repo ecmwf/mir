@@ -43,11 +43,9 @@ public:
     // -- Constructors
 
     LandSeaMasks(const Mask& input, const Mask& output);
-    LandSeaMasks(const LandSeaMasks&);
 
     // -- Destructor
-
-    ~LandSeaMasks() = default;
+    // None
 
     // -- Convertors
     // None
@@ -79,7 +77,7 @@ public:
 
     static bool sameLandSeaMasks(const param::MIRParametrisation&, const param::MIRParametrisation&);
 
-protected:
+private:
     // -- Members
 
     const Mask& input_;
@@ -94,29 +92,6 @@ protected:
     // -- Methods
 
     void print(std::ostream&) const;
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-private:
-    // -- Members
-    // None
-
-    // -- Convertors
-    // None
-
-    // -- Operators
-
-    LandSeaMasks& operator=(const LandSeaMasks&) = delete;
-
-    // -- Methods
-    // None
 
     // -- Overridden methods
     // None

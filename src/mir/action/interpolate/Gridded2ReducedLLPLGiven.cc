@@ -20,11 +20,8 @@
 namespace mir::action::interpolate {
 
 
-Gridded2ReducedLLPLGiven::Gridded2ReducedLLPLGiven(const param::MIRParametrisation& parametrisation) :
-    Gridded2UnrotatedGrid(parametrisation) {}
-
-
-Gridded2ReducedLLPLGiven::~Gridded2ReducedLLPLGiven() = default;
+Gridded2ReducedLLPLGiven::Gridded2ReducedLLPLGiven(const param::MIRParametrisation& param) :
+    Gridded2UnrotatedGrid(param) {}
 
 
 bool Gridded2ReducedLLPLGiven::sameAs(const Action& /*other*/) const {

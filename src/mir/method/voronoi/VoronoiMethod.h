@@ -32,6 +32,7 @@ private:
     void print(std::ostream&) const override;
     WeightMatrix::Check validateMatrixWeights() const override;
     const char* name() const override;
+    int version() const override;
 
     knn::pick::NClosestOrNearest pick_;
 };

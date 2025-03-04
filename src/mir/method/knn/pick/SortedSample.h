@@ -20,7 +20,8 @@ namespace mir::method::knn::pick {
 
 
 struct SortedSample : Pick {
-    SortedSample(const param::MIRParametrisation&);
+    explicit SortedSample(const param::MIRParametrisation&);
+
     void pick(const search::PointSearch&, const Point3&, neighbours_t&) const override;
     size_t n() const override;
     bool sameAs(const Pick&) const override;

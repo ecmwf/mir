@@ -38,7 +38,7 @@ public:
 
     // -- Constructors
 
-    Gridded2GriddedInterpolation(const param::MIRParametrisation&);
+    explicit Gridded2GriddedInterpolation(const param::MIRParametrisation&);
 
     // -- Destructor
 
@@ -89,6 +89,7 @@ private:
     std::string interpolation_;
     std::unique_ptr<method::Method> method_;
     bool inputIntersectsOutput_;
+    bool inputGlobal_;
 
     // -- Methods
 
@@ -98,9 +99,11 @@ private:
 
     void execute(context::Context&) const override;
     bool mergeWithNext(const Action&) override;
-    bool canCrop() const override;
 
+    bool canCrop() const override;
     method::Cropping cropping(context::Context&) const;
+
+    bool isRegridAction() const override { return true; }
 
     // -- Class members
     // None

@@ -24,10 +24,7 @@ namespace mir::input {
 static const ArtificialInputBuilder<DummyInput> __artificial("dummy");
 
 
-static const param::SimpleParametrisation empty;
-
-
-DummyInput::DummyInput(const param::MIRParametrisation& /*ignored*/) {
+DummyInput::DummyInput() {
     parametrisation().set("gridded", true);
     parametrisation().set("gridType", "regular_ll");
     parametrisation().set("north", 90.0);

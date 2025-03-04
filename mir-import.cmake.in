@@ -4,4 +4,3 @@ find_dependency( eckit   HINTS @eckit_DIR@ )
 find_dependency( atlas   HINTS @atlas_DIR@ )
 
 set( MIR_LIBRARIES @MIR_LIBRARIES@ )
-

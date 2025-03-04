@@ -20,9 +20,6 @@
 namespace mir::action::interpolate {
 
 
-Gridded2UnrotatedGrid::~Gridded2UnrotatedGrid() = default;
-
-
 util::BoundingBox Gridded2UnrotatedGrid::outputBoundingBox() const {
     repres::RepresentationHandle out(outputRepresentation());
 

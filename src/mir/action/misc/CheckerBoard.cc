@@ -27,12 +27,6 @@
 namespace mir::action {
 
 
-CheckerBoard::CheckerBoard(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {}
-
-
-CheckerBoard::~CheckerBoard() = default;
-
-
 bool CheckerBoard::sameAs(const Action& /*unused*/) const {
     return false;
 }
@@ -47,10 +41,10 @@ void CheckerBoard::execute(context::Context& ctx) const {
 
     repres::RepresentationHandle representation(field.representation());
     bool normalize = false;
-    parametrisation_.get("0-1", normalize);
+    parametrisation().get("0-1", normalize);
 
     std::vector<size_t> frequencies{16, 8};
-    parametrisation_.get("frequencies", frequencies);
+    parametrisation().get("frequencies", frequencies);
 
     bool hasMissing     = field.hasMissing();
     double missingValue = field.missingValue();

@@ -25,20 +25,15 @@ namespace mir::action::transform {
 
 
 template <class Invtrans>
-ShToRotatedNamedGrid<Invtrans>::ShToRotatedNamedGrid(const param::MIRParametrisation& parametrisation) :
-    ShToGridded(parametrisation) {
-    ASSERT(parametrisation_.userParametrisation().get("grid", grid_));
+ShToRotatedNamedGrid<Invtrans>::ShToRotatedNamedGrid(const param::MIRParametrisation& param) : ShToGridded(param) {
+    ASSERT(parametrisation().userParametrisation().get("grid", grid_));
 
     std::vector<double> value;
-    ASSERT(parametrisation_.userParametrisation().get("rotation", value));
+    ASSERT(parametrisation().userParametrisation().get("rotation", value));
     ASSERT_KEYWORD_ROTATION_SIZE(value.size());
 
     rotation_ = util::Rotation(value[0], value[1]);
 }
-
-
-template <class Invtrans>
-ShToRotatedNamedGrid<Invtrans>::~ShToRotatedNamedGrid() = default;
 
 
 template <class Invtrans>
@@ -73,7 +68,7 @@ const char* ShToRotatedNamedGrid<Invtrans>::name() const {
 
 template <class Invtrans>
 const repres::Representation* ShToRotatedNamedGrid<Invtrans>::outputRepresentation() const {
-    const auto& ng = key::grid::Grid::lookup(grid_);
+    const auto& ng = key::grid::Grid::lookup(grid_, parametrisation());
     return ng.representation(rotation_);
 }
 

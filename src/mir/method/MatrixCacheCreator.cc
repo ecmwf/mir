@@ -18,6 +18,7 @@
 
 #include "mir/method/MatrixCacheCreator.h"
 #include "mir/method/MethodWeighted.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 
 

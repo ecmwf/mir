@@ -16,6 +16,7 @@
 
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 
 

@@ -31,8 +31,7 @@ public:
     NablaFilter(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~NablaFilter() override;
+    // None
 
     // -- Convertors
     // None

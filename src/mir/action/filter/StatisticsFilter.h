@@ -36,8 +36,7 @@ public:
 
     // -- Constructors
 
-    StatisticsFilter(const param::MIRParametrisation&);
-    StatisticsFilter(const StatisticsFilter&) = delete;
+    explicit StatisticsFilter(const param::MIRParametrisation&);
 
     // -- Destructor
     // None
@@ -46,23 +45,6 @@ public:
     // None
 
     // -- Operators
-
-    StatisticsFilter& operator=(const StatisticsFilter&) = delete;
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
     // None
 
     // -- Methods

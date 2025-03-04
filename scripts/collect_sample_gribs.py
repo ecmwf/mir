@@ -9,10 +9,11 @@
 # granted to it by virtue of its status as an intergovernmental organisation nor
 # does it submit to any jurisdiction.
 
-# To run on lxb15
-import gribapi
 import json
 import os
+
+# To run on lxb15
+import gribapi
 
 params = {}
 SCORES = {}

@@ -9,8 +9,9 @@
 # granted to it by virtue of its status as an intergovernmental organisation nor
 # does it submit to any jurisdiction.
 
-import gdal
 import sys
+
+import gdal
 
 # Build a mask, data from http://landcover.org/data/watermask/index.shtml
 
@@ -70,10 +71,10 @@ g = open("p.pgm", "w+b")
 
 lines = []
 for i in range(0, 256):
-    lines.append(bytearray([i for y in xrange(0, 172800)]))
+    lines.append(bytearray([i for y in range(0, 172800)]))
 
 g.write(header)
-for r in xrange(0, 86400):
+for r in range(0, 86400):
     g.write(lines[r % 256])
 
 # exit(0)
@@ -81,7 +82,7 @@ for r in xrange(0, 86400):
 mapping = {0.0: 0, 1.0: 255, 253: 200}
 X = {}
 for path in sys.argv[1:]:
-    print path
+    print(path)
     raster = gdal.Open(path)
     (
         top_left_x,
@@ -92,21 +93,21 @@ for path in sys.argv[1:]:
         n_s_pixel_resolution,
     ) = raster.GetGeoTransform()
 
-    # print "x=", top_left_x, " dx=", w_e_pixel_resolution
-    # print "y=", top_left_y, " dy=", n_s_pixel_resolution
+    # print("x=", top_left_x, " dx=", w_e_pixel_resolution)
+    # print("y=", top_left_y, " dy=", n_s_pixel_resolution)
     x = raster.GetProjection()
     assert (
         x
         == 'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433],AUTHORITY["EPSG","4326"]]'
     )
 
-    # print dir(raster)
+    # print(dir(raster))
     assert raster.RasterCount == 1
     band = raster.GetRasterBand(1)
     assert band.GetScale() == 1
     values = band.ReadAsArray()
     (width, height) = values.shape
-    print (width, height)
+    print(width, height)
 
     while top_left_x >= 360:
         top_left_x -= 360
@@ -117,10 +118,10 @@ for path in sys.argv[1:]:
     col = int(top_left_x * 172800 / 360 + 0.5)
     row = int((90 - top_left_y) * 86400 / 180 + 0.5)
 
-    print (col, row, col + width, row + height)
-    print (top_left_x, top_left_y)
+    print(col, row, col + width, row + height)
+    print(top_left_x, top_left_y)
 
-    for x in xrange(0, height):
+    for x in range(0, height):
         pos = len(header) + 172800 * (x + row - 1) + col
         assert pos > 0
         g.seek(pos)

@@ -25,12 +25,12 @@ namespace mir::action::transform {
 
 
 template <class Invtrans>
-ShToRotatedOctahedralGG<Invtrans>::ShToRotatedOctahedralGG(const param::MIRParametrisation& parametrisation) :
-    ShToGridded(parametrisation) {
-    ASSERT(parametrisation_.userParametrisation().get("octahedral", N_));
+ShToRotatedOctahedralGG<Invtrans>::ShToRotatedOctahedralGG(const param::MIRParametrisation& param) :
+    ShToGridded(param) {
+    ASSERT(parametrisation().userParametrisation().get("octahedral", N_));
 
     std::vector<double> value;
-    ASSERT(parametrisation_.userParametrisation().get("rotation", value));
+    ASSERT(parametrisation().userParametrisation().get("rotation", value));
     ASSERT_KEYWORD_ROTATION_SIZE(value.size());
     rotation_ = util::Rotation(value[0], value[1]);
 }
@@ -41,10 +41,6 @@ bool ShToRotatedOctahedralGG<Invtrans>::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const ShToRotatedOctahedralGG*>(&other);
     return (o != nullptr) && (N_ == o->N_) && (rotation_ == o->rotation_) && ShToGridded::sameAs(other);
 }
-
-
-template <class Invtrans>
-ShToRotatedOctahedralGG<Invtrans>::~ShToRotatedOctahedralGG() = default;
 
 
 template <class Invtrans>

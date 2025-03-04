@@ -25,9 +25,8 @@ namespace mir::action::transform {
 
 
 template <class Invtrans>
-ShToOctahedralGG<Invtrans>::ShToOctahedralGG(const param::MIRParametrisation& parametrisation) :
-    ShToGridded(parametrisation) {
-    ASSERT(parametrisation_.userParametrisation().get("octahedral", N_));
+ShToOctahedralGG<Invtrans>::ShToOctahedralGG(const param::MIRParametrisation& param) : ShToGridded(param) {
+    ASSERT(parametrisation().userParametrisation().get("octahedral", N_));
 }
 
 
@@ -36,10 +35,6 @@ bool ShToOctahedralGG<Invtrans>::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const ShToOctahedralGG*>(&other);
     return (o != nullptr) && (N_ == o->N_);
 }
-
-
-template <class Invtrans>
-ShToOctahedralGG<Invtrans>::~ShToOctahedralGG() = default;
 
 
 template <class Invtrans>
@@ -56,6 +51,13 @@ template <class Invtrans>
 void ShToOctahedralGG<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
                                          const param::MIRParametrisation& parametrisation) const {
     Invtrans::sh2grid(field, trans, parametrisation);
+}
+
+
+template <class Invtrans>
+bool ShToOctahedralGG<Invtrans>::getGriddedTargetName(std::string& name) const {
+    name = "O" + std::to_string(N_);
+    return true;
 }
 
 

@@ -43,7 +43,7 @@ public:
 
     // -- Constructors
 
-    ShToGridded(const param::MIRParametrisation&);
+    explicit ShToGridded(const param::MIRParametrisation&);
 
     // -- Destructor
 

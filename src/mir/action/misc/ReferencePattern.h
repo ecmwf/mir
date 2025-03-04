@@ -25,41 +25,19 @@ public:
 
     // -- Constructors
 
-    ReferencePattern(const param::MIRParametrisation&);
-    ReferencePattern(const ReferencePattern&) = delete;
+    using Action::Action;
 
     // -- Destructor
-
-    ~ReferencePattern() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-
-    ReferencePattern& operator=(const ReferencePattern&) = delete;
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    void execute(context::Context&) const override;
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
     // None
 
     // -- Methods
-
-    void print(std::ostream&) const override;
+    // None
 
     // -- Overridden methods
     // None
@@ -79,6 +57,9 @@ private:
 
     // -- Overridden methods
 
+    void print(std::ostream&) const override;
+
+    void execute(context::Context&) const override;
     bool sameAs(const Action&) const override;
     const char* name() const override;
 

@@ -26,7 +26,7 @@ public:
 
     // -- Constructors
 
-    AreaCropper(const param::MIRParametrisation& param) : Area(param) {}
+    using Area::Area;
 
     // -- Destructor
     // None

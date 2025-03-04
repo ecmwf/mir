@@ -29,6 +29,7 @@ public:
 
     MIRParametrisation();
     MIRParametrisation(const MIRParametrisation&) = delete;
+    MIRParametrisation(MIRParametrisation&&)      = delete;
 
     // -- Destructor
 
@@ -40,6 +41,7 @@ public:
     // -- Operators
 
     void operator=(const MIRParametrisation&) = delete;
+    void operator=(MIRParametrisation&&)      = delete;
 
     // -- Methods
 

@@ -35,6 +35,7 @@ public:
     // -- Constructors
 
     GridPattern(const GridPattern&) = delete;
+    GridPattern(GridPattern&&)      = delete;
 
     // -- Destructor
     // None
@@ -45,6 +46,7 @@ public:
     // -- Operators
 
     void operator=(const GridPattern&) = delete;
+    void operator=(GridPattern&&)      = delete;
 
     // -- Methods
 
@@ -62,7 +64,7 @@ public:
     // None
 
 protected:
-    GridPattern(const std::string&);
+    explicit GridPattern(const std::string& pattern);
     virtual ~GridPattern();
 
     // -- Members

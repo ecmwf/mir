@@ -13,4 +13,3 @@ foreach(_t ${test_files})
         set_tests_properties(${_t} PROPERTIES WILL_FAIL TRUE)
     endif()
 endforeach()
-

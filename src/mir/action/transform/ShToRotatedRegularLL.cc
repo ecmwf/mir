@@ -26,24 +26,19 @@ namespace mir::action::transform {
 
 
 template <class Invtrans>
-ShToRotatedRegularLL<Invtrans>::ShToRotatedRegularLL(const param::MIRParametrisation& parametrisation) :
-    ShToGridded(parametrisation) {
-    key::Area::get(parametrisation_.userParametrisation(), bbox_);
+ShToRotatedRegularLL<Invtrans>::ShToRotatedRegularLL(const param::MIRParametrisation& param) : ShToGridded(param) {
+    key::Area::get(parametrisation().userParametrisation(), bbox_);
 
     std::vector<double> value;
 
-    ASSERT(parametrisation.userParametrisation().get("grid", value));
+    ASSERT(parametrisation().userParametrisation().get("grid", value));
     ASSERT_KEYWORD_GRID_SIZE(value.size());
     increments_ = util::Increments(value[0], value[1]);
 
-    ASSERT(parametrisation.userParametrisation().get("rotation", value));
+    ASSERT(parametrisation().userParametrisation().get("rotation", value));
     ASSERT_KEYWORD_ROTATION_SIZE(value.size());
     rotation_ = util::Rotation(value[0], value[1]);
 }
-
-
-template <class Invtrans>
-ShToRotatedRegularLL<Invtrans>::~ShToRotatedRegularLL() = default;
 
 
 template <class Invtrans>

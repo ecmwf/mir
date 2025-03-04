@@ -25,39 +25,19 @@ public:
 
     // -- Constructors
 
-    FrameFilter(const param::MIRParametrisation&);
-    FrameFilter(const FrameFilter&) = delete;
+    explicit FrameFilter(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~FrameFilter() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-
-    FrameFilter& operator=(const FrameFilter&) = delete;
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
     // None
 
     // -- Methods
-
-    void print(std::ostream&) const override;
+    // None
 
     // -- Overridden methods
     // None
@@ -77,6 +57,8 @@ private:
     // None
 
     // -- Overridden methods
+
+    void print(std::ostream&) const override;
 
     void execute(context::Context&) const override;
     bool sameAs(const Action&) const override;

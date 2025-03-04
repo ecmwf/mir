@@ -20,18 +20,11 @@
 namespace mir::action::io {
 
 
-Save::Save(const param::MIRParametrisation& parametrisation, output::MIROutput& output) :
-    EndAction(parametrisation, output) {}
-
-
-Save::~Save() = default;
-
-
 void Save::execute(context::Context& ctx) const {
     auto timing(ctx.statistics().saveTimer());
 
     // TODO: MIROutput::save/set/copy should be const
-    const_cast<output::MIROutput&>(output()).save(parametrisation_, ctx);
+    const_cast<output::MIROutput&>(output()).save(parametrisation(), ctx);
 }
 
 
@@ -41,7 +34,7 @@ const char* Save::name() const {
 
 
 void Save::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
-    output().estimate(parametrisation_, estimation, ctx);
+    output().estimate(parametrisation(), estimation, ctx);
 }
 
 
