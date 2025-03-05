@@ -39,7 +39,7 @@ bool MissingIfHeaviestMissing::treatment(DenseMatrix& /*A*/, WeightMatrix& W, De
     auto* data = const_cast<WeightMatrix::Scalar*>(W.data());
     bool modif = false;
 
-    #pragma omp parallel for reduction(||:modif) 
+    #pragma omp parallel for reduction(||:modif)
     for (WeightMatrix::Size r = 0; r < W.rows(); ++r) {
         auto row_start = outer[r];
         auto row_end = outer[r + 1];  // Marks the end of this row

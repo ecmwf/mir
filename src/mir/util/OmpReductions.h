@@ -12,12 +12,11 @@
 
 #pragma once
 
-#include <vector>
+#include <omp.h>
 #include <algorithm>
-#include <omp.h> 
+#include <vector>
 
-#pragma omp declare reduction(vec_merge_sorted : std::vector<size_t> : \
-    omp_out.insert(omp_out.end(), omp_in.begin(), omp_in.end()); \
-    std::inplace_merge(omp_out.begin(), omp_out.begin() + omp_out.size() - omp_in.size(), omp_out.end())) \
-    initializer(omp_priv = std::vector<size_t>()) 
-
+#pragma omp declare reduction(                                                                                    \
+        vec_merge_sorted : std::vector<size_t> : omp_out.insert(omp_out.end(), omp_in.begin(), omp_in.end());     \
+            std::inplace_merge(omp_out.begin(), omp_out.begin() + omp_out.size() - omp_in.size(), omp_out.end())) \
+    initializer(omp_priv = std::vector<size_t>())
