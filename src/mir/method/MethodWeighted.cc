@@ -43,9 +43,9 @@
 #include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Mutex.h"
+#include "mir/util/Parallel.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
-#include "mir/util/OmpReductions.h"
 
 namespace mir::method {
 

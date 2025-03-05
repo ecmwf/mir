@@ -703,6 +703,7 @@ list(APPEND mir_srcs
     util/MeshGeneratorParameters.cc
     util/MeshGeneratorParameters.h
     util/Mutex.h
+    util/Parallel.h
     util/PlanParser.cc
     util/PlanParser.h
     util/Point2ToPoint3.cc
