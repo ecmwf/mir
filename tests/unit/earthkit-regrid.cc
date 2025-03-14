@@ -170,7 +170,7 @@ CASE("GridSpec") {
                  std::vector<std::string> tests;
                  for (std::string ordering : {"", "ring", "nested"}) {
                      for (size_t N : {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024}) {
-                         tests.emplace_back(ordering.empty()
+                         tests.emplace_back(ordering.empty() || ordering == "ring"
                                                 ? "{grid: H" + std::to_string(N)
                                                 : "{grid: H" + std::to_string(N) + ", ordering: " + ordering + "}");
                      }
