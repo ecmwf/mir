@@ -98,7 +98,8 @@ size_t PNGOutput::save(const param::MIRParametrisation& param, context::Context&
     std::unique_ptr<const PNGEncoder> encoder(PNGEncoderFactory::build(param, field));
     ASSERT(encoder);
 
-    for (size_t d = 0; d < field.dimensions(); d++) {
+    size_t d = 0;  // declared outside loop to avoid clobbering
+    for (; d < field.dimensions(); d++) {
         auto& values = field.values(d);
 
         eckit::PathName path(path_);
