@@ -687,6 +687,15 @@ data::MIRField GribInput::field() const {
 
     ASSERT(grib_);
 
+    if (grib_check_is_message_valid()) {
+        long valid = 1;
+        ASSERT(codes_get_long(grib_, "isMessageValid", &valid) == CODES_SUCCESS);
+
+        if (valid != 1) {
+            throw exception::ReadError("GribInput: invalid GRIB message");
+        }
+    }
+
     long localDefinitionNumber = 0;
     if (codes_get_long(grib_, "localDefinitionNumber", &localDefinitionNumber) == CODES_SUCCESS) {
         if (localDefinitionNumber == 4) {

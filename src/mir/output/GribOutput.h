@@ -14,8 +14,6 @@
 
 #include "mir/output/MIROutput.h"
 
-#include <memory>
-
 
 struct grib_info;
 struct grib_handle;

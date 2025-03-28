@@ -29,7 +29,7 @@ if(NOT TARGET OpenMP::OpenMP_CXX)
     set(mir_HAVE_OMP 0)
 endif()
 
-ecbuild_find_package(NAME eccodes VERSION 2.32 REQUIRED)
+ecbuild_find_package(NAME eccodes VERSION 2.40 REQUIRED)
 ecbuild_find_package(NAME eckit   VERSION 1.28 REQUIRED)
 
 ecbuild_add_option(FEATURE ECKIT_GEO DEFAULT OFF DESCRIPTION "support for eckit::geo" REQUIRED_PACKAGES "eckit VERSION 1.28")

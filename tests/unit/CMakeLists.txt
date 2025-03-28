@@ -59,12 +59,12 @@ foreach(_t ${TESTS})
 endforeach()
 
 if(ENABLE_BUILD_TOOLS)
-    foreach(_t MIR-637.grib2)
+    foreach(_t MIR-637.001.grib2 MIR-637.002.grib2)
         ecbuild_add_test(
             TARGET            mir_tests_unit_grib_fail_decode_${_t}
             COMMAND           mir-get-data
             ARGS              --dryrun ${_t}
-            ENVIRONMENT       ${_testEnvironment}
+            ENVIRONMENT       ${_testEnvironment} "MIR_GRIB_CHECK_IS_MESSAGE_VALID=1"
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
         set_tests_properties(mir_tests_unit_grib_fail_decode_${_t} PROPERTIES WILL_FAIL TRUE)
     endforeach()
