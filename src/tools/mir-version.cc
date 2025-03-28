@@ -116,6 +116,7 @@ struct MIRVersion : MIRTool {
             return;
         }
 
+        auto on_off = [](bool b) { return b ? "ON" : "OFF"; };
         auto& out = Log::info();
 
         if (!info) {
@@ -136,13 +137,13 @@ struct MIRVersion : MIRTool {
         out << '\n';
 
         out << "\nFeatures:";
-        out << "\n  HAVE_ATLAS       : " << HAVE_ATLAS;
-        out << "\n  HAVE_ECKIT_GEO   : " << HAVE_ECKIT_GEO;
-        out << "\n  HAVE_NETCDF      : " << HAVE_NETCDF;
-        out << "\n  HAVE_PNG         : " << HAVE_PNG;
-        out << "\n  HAVE_PROJ        : " << HAVE_PROJ;
-        out << "\n  HAVE_OMP         : " << HAVE_OMP;
-        out << "\n  HAVE_TESSELATION : " << HAVE_TESSELATION;
+        out << "\n  HAVE_ATLAS       : " << on_off(HAVE_ATLAS);
+        out << "\n  HAVE_ECKIT_GEO   : " << on_off(HAVE_ECKIT_GEO);
+        out << "\n  HAVE_NETCDF      : " << on_off(HAVE_NETCDF);
+        out << "\n  HAVE_PNG         : " << on_off(HAVE_PNG);
+        out << "\n  HAVE_PROJ        : " << on_off(HAVE_PROJ);
+        out << "\n  HAVE_OMP         : " << on_off(HAVE_OMP);
+        out << "\n  HAVE_TESSELATION : " << on_off(HAVE_TESSELATION);
         out << '\n';
 
         out << "\nLibraries:";
