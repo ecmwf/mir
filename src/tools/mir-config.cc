@@ -10,221 +10,119 @@
  */
 
 
-#include <cctype>
-#include <fstream>
-#include <map>
-#include <set>
-#include <sstream>
-#include <string>
+// #include <cctype>
+// #include <fstream>
+// #include <map>
+// #include <set>
+// #include <sstream>
+// #include <string>
 
-#include "eckit/filesystem/LocalPathName.h"
+#include "eckit/log/JSON.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
-#include "eckit/utils/StringTools.h"
 
-#include "mir/config/LibMir.h"
-#include "mir/input/GribFileInput.h"
-#include "mir/param/CombinedParametrisation.h"
-#include "mir/param/DefaultParametrisation.h"
-#include "mir/param/FieldParametrisation.h"
+#include "mir/api/mir_config.h"
 #include "mir/tools/MIRTool.h"
-#include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 
 
 namespace mir::tools {
 
 
-struct Param {
-    Param(const std::vector<std::string>& classes_v) : id(0), classes(classes_v.begin(), classes_v.end()) {}
-    long id;
-    std::string name;
-    std::set<std::string> classes;
-};
-
-
-struct Map : std::map<long, std::string> {
-    Map& move_or_remove(Param& p) {
-        if (!name.empty() && p.classes.find(name) != p.classes.end()) {
-            operator[](p.id) = p.name;
-        }
-        else {
-            erase(p.id);
-        }
-        p.classes.erase(name);
-
-        return *this;
-    }
-
-    void reset(const std::string& _name) {
-        ASSERT(!_name.empty());
-        name = _name;
-        clear();
-    }
-
-    friend std::ostream& operator<<(std::ostream& out, const Map& m) {
-        out << m.name << ":\n";
-        for (const auto& p : m) {
-            p.second.empty() ? (out << "- " << p.first << "\n")
-                             : (out << "- " << p.first << "  # " << p.second << "\n");
-        }
-        return out;
-    }
-
-    std::string name;
-};
-
-
-void display(const param::MIRParametrisation& metadata, const std::string& key) {
-    static param::SimpleParametrisation empty;
-    static param::DefaultParametrisation defaults;
-    const param::CombinedParametrisation combined(empty, metadata, defaults);
-    const param::MIRParametrisation& param(combined);
-
-    long paramId = 0;
-    ASSERT(metadata.get("paramId", paramId));
-
-    std::string value = "???";
-    param.get(key, value);
-
-    Log::info() << "paramId=" << paramId << ": " << key << "=" << value << std::endl;
-}
-
-
 struct MIRConfig : MIRTool {
     MIRConfig(int argc, char** argv) : MIRTool(argc, argv) {
-        using eckit::option::SimpleOption;
-
-        options_.push_back(new SimpleOption<long>("param-id", "Display configuration with paramId"));
-        options_.push_back(new SimpleOption<std::string>("key", "Display configuration with specific key"));
-        options_.push_back(new SimpleOption<std::string>("param-class", "Set class(es) for paramId, /-separated"));
-        options_.push_back(new SimpleOption<std::string>("param-name", "Set name for paramId"));
+        options_.push_back(new eckit::option::SimpleOption<bool>("json", "Display configuration in JSON"));
     }
 
     int minimumPositionalArguments() const override { return 0; }
 
     void usage(const std::string& tool) const override {
-        Log::info() << "\n"
-                       "Usage: "
-                    << tool
-                    << " [--key=key] [[--param-id=value]|[input1.grib [input2.grib [...]]]]"
-                       "\n"
-                       "Examples: "
-                       "\n"
-                       "  % "
-                    << tool
-                    << ""
-                       "\n"
-                       "  % "
-                    << tool
-                    << " --param-id=157"
-                       "\n"
-                       "  % "
-                    << tool << " --key=lsm input1.grib input2.grib" << std::endl;
+        Log::info() << "\nUsage: " << tool << " [--json]" << std::endl;
     }
 
-    void execute(const eckit::option::CmdArgs& args) override;
+    void execute(const eckit::option::CmdArgs& args) override {
+        bool json = false;
+        args.get("json", json);
+
+        if (json) {
+            eckit::JSON out(Log::info());
+            out.startObject();
+
+            out << "version" << mir_version();
+            out << "git-sha1" << mir_git_sha1();
+
+            out << "build";
+            out.startObject();
+            out << "type" << MIR_BUILD_TYPE;
+            out << "timestamp" << MIR_BUILD_TIMESTAMP;
+            out << "op. system" << (MIR_OS_NAME + std::string(" (") + MIR_OS_STR + std::string(")"));
+            out << "processor" << MIR_SYS_PROCESSOR;
+            out << "sources" << MIR_DEVELOPER_SRC_DIR;
+            out << "c++ compiler" << (MIR_CXX_COMPILER_ID + std::string(" ") + MIR_CXX_COMPILER_VERSION);
+            out << "flags" << MIR_CXX_FLAGS;
+            out.endObject();
+
+            out << "features";
+            out.startObject();
+            out << "HAVE_ATLAS" << HAVE_ATLAS;
+            out << "HAVE_ECKIT_GEO" << HAVE_ECKIT_GEO;
+            out << "HAVE_NETCDF" << HAVE_NETCDF;
+            out << "HAVE_PNG" << HAVE_PNG;
+            out << "HAVE_PROJ" << HAVE_PROJ;
+            out << "HAVE_OMP" << HAVE_OMP;
+            out << "HAVE_TESSELATION" << HAVE_TESSELATION;
+            out.endObject();
+
+            out.endObject();
+            return;
+        }
+
+        auto& out = Log::info();
+
+        out << "mir version " << mir_version() << ", git-sha1 " << mir_git_sha1() << '\n';
+
+        out << "\nBuild:";
+        out << "\n  type         : " << MIR_BUILD_TYPE;
+        out << "\n  timestamp    : " << MIR_BUILD_TIMESTAMP;
+        out << "\n  op. system   : " << (MIR_OS_NAME + std::string(" (") + MIR_OS_STR + std::string(")"));
+        out << "\n  processor    : " << MIR_SYS_PROCESSOR;
+        out << "\n  sources      : " << MIR_DEVELOPER_SRC_DIR;
+        out << "\n  c++ compiler : " << (MIR_CXX_COMPILER_ID + std::string(" ") + MIR_CXX_COMPILER_VERSION);
+        out << "\n  flags        : " << MIR_CXX_FLAGS;
+        out << '\n';
+
+        out << "\nFeatures:";
+        out << "\n  HAVE_ATLAS       : " << HAVE_ATLAS;
+        out << "\n  HAVE_ECKIT_GEO   : " << HAVE_ECKIT_GEO;
+        out << "\n  HAVE_NETCDF      : " << HAVE_NETCDF;
+        out << "\n  HAVE_PNG         : " << HAVE_PNG;
+        out << "\n  HAVE_PROJ        : " << HAVE_PROJ;
+        out << "\n  HAVE_OMP         : " << HAVE_OMP;
+        out << "\n  HAVE_TESSELATION : " << HAVE_TESSELATION;
+        out << std::endl;
+
+        /*
+        Build:
+          build type      : Release
+          timestamp       : 20250304004606
+          op. system      : Darwin-24.2.0 (macosx.64)
+          processor       : arm64
+          sources         : /tmp/eccodes-20250303-30948-xo4eyj/eccodes-2.40.0-Source
+          c++ compiler    : AppleClang 16.0.0.16000026
+          flags         :  -pipe
+
+        Features:
+          FORTRAN             : ON
+          AEC                 : ON
+          MEMFS               : OFF
+          ECCODES_THREADS     : ON
+          ECCODES_OMP_THREADS : OFF
+          JPG                 : ON
+          PNG                 : ON
+          NETCDF              : ON
+         */
+    };
 };
-
-
-void MIRConfig::execute(const eckit::option::CmdArgs& args) {
-
-    std::string key("interpolation");
-    args.get("key", key);
-
-    std::string klass;
-    if (args.get("param-class", klass)) {
-        Param param(eckit::StringTools::split("/", klass));
-        ASSERT(args.get("param-id", param.id));
-        args.get("param-name", param.name);
-
-        Map map;
-
-        const eckit::LocalPathName file = LibMir::configFile(LibMir::config_file::PARAMETER_CLASS).asString();
-        Log::info() << "File '" << file.fullName() << "' (read)" << std::endl;
-
-        eckit::LocalPathName tmp = file + ".tmp";
-        Log::info() << "File '" << tmp.fullName() << "' (temporary)" << std::endl;
-
-        {
-            std::ifstream i(file);
-            std::ofstream o(tmp);
-            if (!o) {
-                throw exception::WriteError("Cannot write to '" + tmp + "'");
-            }
-
-            o << "---\n\n";
-
-            for (std::string line; std::getline(i, line);) {
-                if (!line.empty() && std::isalpha(line[0]) != 0) {
-                    if (!map.name.empty()) {
-                        o << map.move_or_remove(param) << "\n";
-                    }
-
-                    map.reset(line.substr(0, line.find_first_of(':')));
-                    continue;
-                }
-
-                if (!line.empty() && line.substr(0, 2) == "- ") {
-                    auto c  = line.find_first_of('#');
-                    long id = 0;
-                    std::istringstream(line.substr(2, c)) >> id;
-                    std::string name(c != std::string::npos ? eckit::StringTools::trim(line.substr(c + 1)) : "");
-
-                    map[id] = name;
-                }
-            }
-
-            if (!map.name.empty()) {
-                o << map.move_or_remove(param) << "\n";
-            }
-
-            for (const auto& name : param.classes) {
-                map.reset(name);
-                o << map.move_or_remove(param) << "\n";
-            }
-        }
-
-        Log::info() << "File '" << file.fullName() << "' (write)" << std::endl;
-        eckit::LocalPathName::rename(tmp, file);
-        return;
-    }
-
-
-    // Display configuration for a paramId
-    long paramId = 0;
-    if (args.get("param-id", paramId) || args.count() == 0) {
-
-        class DummyField : public param::FieldParametrisation {
-            long paramId_;
-            void print(std::ostream& /*out*/) const override {}
-            bool get(const std::string& name, long& value) const override {
-                if (name == "paramId") {
-                    value = paramId_;
-                    return true;
-                }
-                return FieldParametrisation::get(name, value);
-            }
-
-        public:
-            explicit DummyField(long paramId) : paramId_(paramId) {}
-        };
-
-        display(DummyField(paramId), key);
-    }
-    else {
-
-        for (size_t i = 0; i < args.count(); i++) {
-
-            // Display configuration for each input file message(s)
-            input::GribFileInput grib(args(i));
-            while (grib.next()) {
-                input::MIRInput& input = grib;
-                display(input.parametrisation(), key);
-            }
-        }
-    }
-}
 
 
 }  // namespace mir::tools

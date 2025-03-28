@@ -8,6 +8,7 @@ foreach(tool IN ITEMS
     mir-compute
     mir-config
     mir-config-grib
+    mir-config-param
     mir-count
     mir-formula
     mir-gaussian-fractions
