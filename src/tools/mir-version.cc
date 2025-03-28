@@ -104,7 +104,7 @@ struct MIRVersion : MIRTool {
             out << "HAVE_TESSELATION" << HAVE_TESSELATION;
             out.endObject();
 
-            out << "features";
+            out << "libraries";
             out.startObject();
             static const Libraries libs;
             for (const auto& [key, val] : libs) {
