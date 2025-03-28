@@ -10,12 +10,7 @@
  */
 
 
-// #include <cctype>
-// #include <fstream>
-// #include <map>
-// #include <set>
-// #include <sstream>
-// #include <string>
+#include <string>
 
 #include "eckit/log/JSON.h"
 #include "eckit/option/CmdArgs.h"
@@ -100,27 +95,6 @@ struct MIRConfig : MIRTool {
         out << "\n  HAVE_OMP         : " << HAVE_OMP;
         out << "\n  HAVE_TESSELATION : " << HAVE_TESSELATION;
         out << std::endl;
-
-        /*
-        Build:
-          build type      : Release
-          timestamp       : 20250304004606
-          op. system      : Darwin-24.2.0 (macosx.64)
-          processor       : arm64
-          sources         : /tmp/eccodes-20250303-30948-xo4eyj/eccodes-2.40.0-Source
-          c++ compiler    : AppleClang 16.0.0.16000026
-          flags         :  -pipe
-
-        Features:
-          FORTRAN             : ON
-          AEC                 : ON
-          MEMFS               : OFF
-          ECCODES_THREADS     : ON
-          ECCODES_OMP_THREADS : OFF
-          JPG                 : ON
-          PNG                 : ON
-          NETCDF              : ON
-         */
     };
 };
 
