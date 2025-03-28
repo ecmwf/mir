@@ -6,7 +6,6 @@ foreach(tool IN ITEMS
     mir-climate-filter
     mir-compare  # NOTE: set in the testing scripts, however not used
     mir-compute
-    mir-config
     mir-config-grib
     mir-config-param
     mir-count
@@ -23,6 +22,7 @@ foreach(tool IN ITEMS
     mir-plot-lsm
     mir-points
     mir-statistics
+    mir-version
     mir-weight-matrix-diff)
     ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir ${mir_INSTALL_TOOLS})
 endforeach()

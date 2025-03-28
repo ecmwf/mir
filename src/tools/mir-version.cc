@@ -24,9 +24,10 @@
 namespace mir::tools {
 
 
-struct MIRConfig : MIRTool {
-    MIRConfig(int argc, char** argv) : MIRTool(argc, argv) {
-        options_.push_back(new eckit::option::SimpleOption<bool>("json", "Display configuration in JSON"));
+struct MIRVersion : MIRTool {
+    MIRVersion(int argc, char** argv) : MIRTool(argc, argv) {
+        options_.push_back(new eckit::option::SimpleOption<bool>("info", "Extra information"));
+        options_.push_back(new eckit::option::SimpleOption<bool>("json", "Display in JSON"));
     }
 
     int minimumPositionalArguments() const override { return 0; }
@@ -36,11 +37,22 @@ struct MIRConfig : MIRTool {
     }
 
     void execute(const eckit::option::CmdArgs& args) override {
+        bool info = false;
+        args.get("info", info);
+
         bool json = false;
         args.get("json", json);
 
         if (json) {
             eckit::JSON out(Log::info());
+
+            if (!info) {
+                out.startObject();
+                out << "version" << mir_version();
+                out.endObject();
+                return;
+            }
+
             out.startObject();
 
             out << "version" << mir_version();
@@ -74,6 +86,11 @@ struct MIRConfig : MIRTool {
 
         auto& out = Log::info();
 
+        if (!info) {
+            out << mir_version() << std::endl;
+            return;
+        }
+
         out << "mir version " << mir_version() << ", git-sha1 " << mir_git_sha1() << '\n';
 
         out << "\nBuild:";
@@ -103,6 +120,6 @@ struct MIRConfig : MIRTool {
 
 
 int main(int argc, char** argv) {
-    mir::tools::MIRConfig tool(argc, argv);
+    mir::tools::MIRVersion tool(argc, argv);
     return tool.start();
 }
