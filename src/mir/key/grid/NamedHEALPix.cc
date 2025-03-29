@@ -14,23 +14,24 @@
 
 #include <ostream>
 
+#include "mir/repres/HEALPix.h"
 #include "mir/util/Exceptions.h"
 
 
 namespace mir::key::grid {
 
 
-NamedHEALPix::NamedHEALPix(const std::string& name, size_t Nside, Ordering ordering) :
-    NamedGrid(name), Nside_(Nside), ordering_(ordering) {}
+NamedHEALPix::NamedHEALPix(const std::string& name, size_t Nside, bool nested) :
+    NamedGrid(name), Nside_(Nside), nested_(nested) {}
 
 
 void NamedHEALPix::print(std::ostream& out) const {
-    out << "NamedHEALPix[key=" << key_ << "]";
+    out << "NamedHEALPix[Nside=" << Nside_ << "nested=" << nested_ << "]";
 }
 
 
 const repres::Representation* NamedHEALPix::representation() const {
-    return new repres::HEALPix(Nside_, ordering_);
+    return new repres::HEALPix(Nside_, nested_);
 }
 
 

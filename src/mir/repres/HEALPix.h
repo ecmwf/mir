@@ -22,13 +22,9 @@ namespace mir::repres {
 
 class HEALPix : public Geo {
 public:
-    // -- Types
-
-    using Ordering = eckit::geo::Ordering;
-
     // -- Constructors
 
-    explicit HEALPix(size_t Nside, Ordering ordering = Ordering::healpix_ring);
+    explicit HEALPix(size_t Nside, bool nested = false);
     explicit HEALPix(const param::MIRParametrisation&);
 
 private:

@@ -14,7 +14,6 @@
 
 
 #include "mir/key/grid/NamedGrid.h"
-#include "mir/repres/HEALPix.h"
 
 
 namespace mir::key::grid {
@@ -22,45 +21,11 @@ namespace mir::key::grid {
 
 class NamedHEALPix : public NamedGrid {
 public:
-    // -- Types
-
-    using Ordering = repres::HEALPix::Ordering;
-
-    // -- Exceptions
-    // None
-
     // -- Constructors
 
-    NamedHEALPix(const std::string& name, size_t Nside, Ordering);
-
-    // -- Destructor
-    // None
-
-    // -- Convertors
-    // None
-
-    // -- Operators
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
+    NamedHEALPix(const std::string& name, size_t Nside, bool nested);
 
 protected:
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
-
     // -- Overridden methods
 
     void print(std::ostream&) const override;
@@ -68,32 +33,11 @@ protected:
     const repres::Representation* representation() const override;
     const repres::Representation* representation(const util::Rotation&) const override;
 
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
 private:
     // -- Members
 
     const size_t Nside_;
-    const Ordering ordering_;
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-    // -- Friends
-    // None
+    const bool nested_;
 };
 
 

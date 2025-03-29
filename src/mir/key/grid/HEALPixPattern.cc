@@ -38,8 +38,7 @@ const Grid* HEALPixPattern::make(const std::string& name) const {
 
     auto Nside = eckit::Translator<std::string, size_t>()(nested ? name.substr(1, name.size() - 8) : name.substr(1));
 
-    return new NamedHEALPix(name, Nside,
-                            nested ? NamedHEALPix::Ordering::healpix_nested : NamedHEALPix::Ordering::healpix_ring);
+    return new NamedHEALPix(name, Nside, nested);
 }
 
 

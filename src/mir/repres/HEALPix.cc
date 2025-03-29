@@ -35,11 +35,11 @@ namespace {
 const RepresentationBuilder<HEALPix> __repres("healpix");
 
 
-std::unique_ptr<eckit::geo::spec::Custom> spec_from_args(size_t Nside, HEALPix::Ordering ordering) {
+std::unique_ptr<eckit::geo::spec::Custom> spec_from_args(size_t Nside, bool nested) {
     auto spec = std::make_unique<eckit::geo::spec::Custom>();
     spec->set("type", "HEALPix");
     spec->set("Nside", Nside);
-    spec->set("ordering", ordering);
+    spec->set("ordering", nested ? "nested" : "ring");
 
     return spec;
 }
@@ -52,16 +52,19 @@ std::unique_ptr<eckit::geo::spec::Custom> spec_from_parametrisation(const param:
     std::string ordering;
     param.get("ordering", ordering);
 
-    return spec_from_args(Nside,
-                          ordering == "nested" ? HEALPix::Ordering::healpix_nested : HEALPix::Ordering::healpix_ring);
+    if (ordering != "nested" && ordering != "ring") {
+        throw exception::BadValue("HEALPix: invalid ordering '" + ordering + "'");
+    }
+
+    return spec_from_args(Nside, ordering == "nested");
 }
 
 
 }  // namespace
 
 
-HEALPix::HEALPix(size_t Nside, Ordering ordering) :
-    Geo(*spec_from_args(Nside, ordering)), grid_(dynamic_cast<decltype(grid_)>(Geo::grid())) {}
+HEALPix::HEALPix(size_t Nside, bool nested) :
+    Geo(*spec_from_args(Nside, nested)), grid_(dynamic_cast<decltype(grid_)>(Geo::grid())) {}
 
 
 HEALPix::HEALPix(const param::MIRParametrisation& param) :
@@ -69,7 +72,8 @@ HEALPix::HEALPix(const param::MIRParametrisation& param) :
 
 
 void HEALPix::makeName(std::ostream& out) const {
-    out << "H" << std::to_string(grid_.Nside()) << (grid_.ordering() == Ordering::healpix_nested ? "_nested" : "");
+    out << "H" << std::to_string(grid_.Nside())
+        << (grid_.ordering() == eckit::geo::Ordering::healpix_nested ? "_nested" : "");
 }
 
 
@@ -79,7 +83,7 @@ void HEALPix::fillGrib(grib_info& info) const {
 
     info.grid.longitudeOfFirstGridPointInDegrees = 45.;
 
-    info.extra_set("orderingConvention", grid_.ordering() == Ordering::healpix_nested ? "nested" : "ring");
+    info.extra_set("orderingConvention", grid_.ordering() == eckit::geo::Ordering::healpix_nested ? "nested" : "ring");
 }
 
 
@@ -92,7 +96,7 @@ void HEALPix::fillMeshGen(util::MeshGeneratorParameters& params) const {
 
 ::atlas::Grid HEALPix::atlasGrid() const {
 #if mir_HAVE_ATLAS
-    const auto* ordering = grid_.ordering() == Ordering::healpix_nested ? "nested" : "ring";
+    const auto* ordering = grid_.ordering() == eckit::geo::Ordering::healpix_nested ? "nested" : "ring";
     return {::atlas::Grid::Spec("type", "healpix").set("N", grid_.Nside()).set("ordering", ordering)};
 #else
     NOTIMP;
