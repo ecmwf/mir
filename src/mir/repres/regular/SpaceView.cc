@@ -108,8 +108,8 @@ SpaceView::SpaceViewInternal::SpaceViewInternal(const param::MIRParametrisation&
 
 
     // longest element diagonal, a multiple of a reference central element diagonal (avoiding distortion)
-    const auto p = std::get<PointLonLat>(projection->inv(Point2{-rx / 2, ry / 2}));
-    const auto q = std::get<PointLonLat>(projection->inv(Point2{rx / 2, -ry / 2}));
+    const auto p = std::get<PointLonLat>(projection->inv(PointXY{-rx / 2, ry / 2}));
+    const auto q = std::get<PointLonLat>(projection->inv(PointXY{rx / 2, -ry / 2}));
 
     LongestElementDiagonal = 20. * util::Earth::distance({p.lon, p.lat}, {q.lon, q.lat});
     ASSERT(0. < LongestElementDiagonal);
@@ -180,7 +180,7 @@ const std::vector<PointLonLat>& SpaceView::lonlat() const {
                 auto& ll = (lonlat_[index++] = {std::numeric_limits<double>::quiet_NaN(),
                                                 std::numeric_limits<double>::quiet_NaN()});
 
-                auto pll = std::get<PointLonLat>(projectionGreenwich_->inv(Point2{_x, _y}));
+                auto pll = std::get<PointLonLat>(projectionGreenwich_->inv(PointXY{_x, _y}));
                 if (std::isfinite(pll.lon) && std::isfinite(pll.lat)) {
                     ASSERT(-90. < pll.lon && pll.lon < 90.);
                     ASSERT(-90. < pll.lat && pll.lat < 90.);

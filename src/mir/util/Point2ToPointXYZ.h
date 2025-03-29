@@ -25,16 +25,16 @@ class Representation;
 namespace mir::util {
 
 
-struct Point2ToPoint3 final {
-    Point2ToPoint3(const repres::Representation&, double poleDisplacement);
-    Point3 operator()(const Point2&) const;
+struct Point2ToPointXYZ final {
+    Point2ToPointXYZ(const repres::Representation&, double poleDisplacement);
+    PointXYZ operator()(const PointXY&) const;
 
 private:
     struct Calculate {
         Calculate()          = default;
         virtual ~Calculate() = default;
 
-        virtual Point3 make_point3(const Point2&) const = 0;
+        virtual PointXYZ make_point3(const PointXY&) const = 0;
 
         Calculate(const Calculate&) = delete;
         Calculate(Calculate&&)      = delete;
@@ -43,13 +43,13 @@ private:
         void operator=(Calculate&&)      = delete;
     };
 
-    struct Point3Simple final : Calculate {
-        Point3 make_point3(const Point2&) const override;
+    struct PointXYZSimple final : Calculate {
+        PointXYZ make_point3(const PointXY&) const override;
     };
 
-    struct Point3Displaced final : Calculate {
-        explicit Point3Displaced(double poleDisplacement);
-        Point3 make_point3(const Point2&) const override;
+    struct PointXYZDisplaced final : Calculate {
+        explicit PointXYZDisplaced(double poleDisplacement);
+        PointXYZ make_point3(const PointXY&) const override;
         const double eps_;
     };
 

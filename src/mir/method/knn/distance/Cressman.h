@@ -24,7 +24,8 @@ namespace mir::method::knn::distance {
  */
 struct Cressman final : DistanceWeighting {
     explicit Cressman(const param::MIRParametrisation&);
-    void operator()(size_t ip, const Point3& point, const std::vector<search::PointSearch::PointValueType>& neighbours,
+    void operator()(size_t ip, const PointXYZ& point,
+                    const std::vector<search::PointSearch::PointValueType>& neighbours,
                     std::vector<WeightMatrix::Triplet>& triplets) const override;
 
 private:

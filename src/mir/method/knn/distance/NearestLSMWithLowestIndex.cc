@@ -55,7 +55,7 @@ NearestLSMWithLowestIndex::NearestLSMWithLowestIndex(const param::MIRParametrisa
 }
 
 
-void NearestLSMWithLowestIndex::operator()(size_t ip, const Point3& point,
+void NearestLSMWithLowestIndex::operator()(size_t ip, const PointXYZ& point,
                                            const std::vector<search::PointSearch::PointValueType>& neighbours,
                                            std::vector<WeightMatrix::Triplet>& triplets) const {
 
@@ -66,7 +66,7 @@ void NearestLSMWithLowestIndex::operator()(size_t ip, const Point3& point,
     Choice choice(false, std::numeric_limits<double>::infinity(), std::numeric_limits<size_t>::max());
     for (const auto& n : neighbours) {
         ASSERT(n.payload() < imask_.size());
-        Choice candidate(omask_[ip] == imask_[n.payload()], Point3::distance2(point, n.point()), n.payload());
+        Choice candidate(omask_[ip] == imask_[n.payload()], PointXYZ::distance2(point, n.point()), n.payload());
         if (candidate < choice) {
             choice = candidate;
         }

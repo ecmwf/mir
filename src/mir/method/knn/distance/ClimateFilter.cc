@@ -51,7 +51,7 @@ ClimateFilter::ClimateFilter(const param::MIRParametrisation& param) {
 }
 
 
-void ClimateFilter::operator()(size_t ip, const Point3& point,
+void ClimateFilter::operator()(size_t ip, const PointXYZ& point,
                                const std::vector<search::PointSearch::PointValueType>& neighbours,
                                std::vector<WeightMatrix::Triplet>& triplets) const {
 
@@ -65,7 +65,7 @@ void ClimateFilter::operator()(size_t ip, const Point3& point,
     std::vector<double> weights(nbPoints);
     double sum = 0.;
     for (size_t j = 0; j < nbPoints; ++j) {
-        auto r = Point3::distance(point, neighbours[j].point());
+        auto r = PointXYZ::distance(point, neighbours[j].point());
         auto h = r < halfDelta_ - delta_   ? 1.
                  : halfDelta_ + delta_ < r ? 0.
                                            : 0.5 + 0.5 * std::cos(M_PI_2 * (r - halfDelta_ + delta_) / delta_);

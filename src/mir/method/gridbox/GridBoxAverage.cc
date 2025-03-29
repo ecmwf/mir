@@ -28,7 +28,7 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/GridBox.h"
 #include "mir/util/Log.h"
-#include "mir/util/Point2ToPoint3.h"
+#include "mir/util/Point2ToPointXYZ.h"
 #include "mir/util/Trace.h"
 
 
@@ -91,7 +91,7 @@ void GridBoxAverage::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, 
     const GridBoxes outBoxes(out);
     const auto R = inBoxes.getLongestGridBoxDiagonal() + outBoxes.getLongestGridBoxDiagonal();
 
-    util::Point2ToPoint3 point3(in, poleDisplacement());
+    util::Point2ToPointXYZ point3(in, poleDisplacement());
 
     size_t nbFailures = 0;
     std::forward_list<std::pair<size_t, PointLatLon>> failures;

@@ -35,7 +35,7 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
-#include "mir/util/Point2ToPoint3.h"
+#include "mir/util/Point2ToPointXYZ.h"
 #include "mir/util/Trace.h"
 
 
@@ -317,7 +317,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
     const auto nbRealPts =
         inNodes.metadata().has("NbRealPts") ? inNodes.metadata().get<size_t>("NbRealPts") : nbInputPoints;
 
-    util::Point2ToPoint3 point3(out, poleDisplacement());
+    util::Point2ToPointXYZ point3(out, poleDisplacement());
 
     // some statistics
     size_t nbMaxElementsSearched   = 0;

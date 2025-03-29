@@ -95,7 +95,7 @@ RegularGrid::RegularGrid(const param::MIRParametrisation& param, eckit::geo::Spe
     double firstLon = 0;
     ASSERT(param.get("latitudeOfFirstGridPointInDegrees", firstLat));
     ASSERT(param.get("longitudeOfFirstGridPointInDegrees", firstLon));
-    auto first = std::get<Point2>(projection_->fwd(PointLonLat{firstLon, firstLat}));
+    auto first = std::get<PointXY>(projection_->fwd(PointLonLat{firstLon, firstLat}));
 
     param.get("iScansPositively", xPlus_);  // iScansPositively != 0
     param.get("jScansPositively", yPlus_);  // jScansPositively == 0
@@ -107,7 +107,7 @@ RegularGrid::RegularGrid(const param::MIRParametrisation& param, eckit::geo::Spe
     // use [0, 360[ longitude range if periodic
     // MIR-661 Grid projection handling covering the poles: account for "excessive" bounds
     std::unique_ptr<eckit::geo::area::BoundingBox> bbox(eckit::geo::area::BoundingBox::make_from_projection(
-        Point2{x_.min(), y_.min()}, Point2{x_.max(), y_.max()}, *projection_));
+        PointXY{x_.min(), y_.min()}, PointXY{x_.max(), y_.max()}, *projection_));
     bbox_ = {
         bbox->north,
         bbox->periodic() ? Longitude::GREENWICH : bbox->west,
@@ -268,7 +268,7 @@ Iterator* RegularGrid::iterator() const {
 
         bool next(Latitude& _lat, Longitude& _lon) override {
             if (j_ < nj_ && i_ < ni_) {
-                auto p = std::get<PointLonLat>(projection_.inv(Point2{x_[i_], y_[j_]}));
+                auto p = std::get<PointLonLat>(projection_.inv(PointXY{x_[i_], y_[j_]}));
                 _lat   = lat(p.lat);
                 _lon   = lon(p.lon);
 

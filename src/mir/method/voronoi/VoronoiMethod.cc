@@ -26,7 +26,7 @@
 #include "mir/search/PointSearch.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
-#include "mir/util/Point2ToPoint3.h"
+#include "mir/util/Point2ToPointXYZ.h"
 #include "mir/util/Trace.h"
 
 
@@ -70,7 +70,7 @@ void VoronoiMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, c
     }
 
 
-    util::Point2ToPoint3 point3(in, poleDisplacement());
+    util::Point2ToPointXYZ point3(in, poleDisplacement());
 
     auto Nin  = in.numberOfPoints();
     auto Nout = out.numberOfPoints();

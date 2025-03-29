@@ -27,7 +27,8 @@ namespace mir::method::knn::distance {
 // requires the LandSeaMasks from the interpolation method
 struct NearestLSMWithLowestIndex : DistanceWeightingWithLSM {
     NearestLSMWithLowestIndex(const param::MIRParametrisation&, const lsm::LandSeaMasks&);
-    void operator()(size_t ip, const Point3& point, const std::vector<search::PointSearch::PointValueType>& neighbours,
+    void operator()(size_t ip, const PointXYZ& point,
+                    const std::vector<search::PointSearch::PointValueType>& neighbours,
                     std::vector<WeightMatrix::Triplet>& triplets) const override;
 
 private:

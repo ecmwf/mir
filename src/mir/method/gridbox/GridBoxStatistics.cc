@@ -29,7 +29,7 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/GridBox.h"
 #include "mir/util/Log.h"
-#include "mir/util/Point2ToPoint3.h"
+#include "mir/util/Point2ToPointXYZ.h"
 #include "mir/util/Trace.h"
 
 
@@ -90,7 +90,7 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
 
     const GridBoxes outBoxes(out);
 
-    util::Point2ToPoint3 point3(in, poleDisplacement());
+    util::Point2ToPointXYZ point3(in, poleDisplacement());
 
     size_t nbFailures = 0;
     std::forward_list<std::pair<size_t, PointLatLon>> failures;
@@ -108,7 +108,7 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
 
         const auto R = outBoxes.getLongestGridBoxDiagonal();
 
-        auto point_2D = [](const Point3& point) -> Point2 {
+        auto point_2D = [](const PointXYZ& point) -> PointXY {
             auto pll = util::Earth::convertCartesianToSpherical(point);
 
             // notice the order

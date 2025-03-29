@@ -14,9 +14,9 @@
 
 #include <vector>
 
-#include "eckit/geo/Point2.h"
-#include "eckit/geo/Point3.h"
 #include "eckit/geo/PointLonLat.h"
+#include "eckit/geo/PointXY.h"
+#include "eckit/geo/PointXYZ.h"
 
 #include "mir/util/Latitude.h"
 #include "mir/util/LongitudeDouble.h"
@@ -31,9 +31,9 @@ namespace mir {
 using Longitude   = LongitudeFraction;
 using PointLatLon = util::PointLatLonT<Latitude, Longitude>;
 
-using eckit::geo::Point2;
-using eckit::geo::Point3;
-using eckit::geo::PointLonLat;
+using PointXY     = eckit::geo::PointXY;
+using PointXYZ    = eckit::geo::PointXYZ;
+using PointLonLat = eckit::geo::PointLonLat;
 
 using MIRValuesVector = std::vector<double>;
 

@@ -26,7 +26,7 @@ namespace mir::method::knn::distance {
 NearestNeighbour::NearestNeighbour(const param::MIRParametrisation& /*unused*/) {}
 
 
-void NearestNeighbour::operator()(size_t ip, const Point3& /*point*/,
+void NearestNeighbour::operator()(size_t ip, const PointXYZ& /*point*/,
                                   const std::vector<search::PointSearch::PointValueType>& neighbours,
                                   std::vector<WeightMatrix::Triplet>& triplets) const {
 

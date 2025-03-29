@@ -32,7 +32,7 @@ NearestLSM::NearestLSM(const param::MIRParametrisation& parametrisation, const l
 }
 
 
-void NearestLSM::operator()(size_t ip, const Point3& /*unused*/,
+void NearestLSM::operator()(size_t ip, const PointXYZ& /*unused*/,
                             const std::vector<search::PointSearch::PointValueType>& neighbours,
                             std::vector<WeightMatrix::Triplet>& triplets) const {
 

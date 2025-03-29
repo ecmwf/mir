@@ -47,15 +47,15 @@ NClosestOrNearest::NClosestOrNearest(const param::MIRParametrisation& param) {
 }
 
 
-void NClosestOrNearest::pick(const search::PointSearch& tree, const Point3& p, Pick::neighbours_t& closest) const {
+void NClosestOrNearest::pick(const search::PointSearch& tree, const PointXYZ& p, Pick::neighbours_t& closest) const {
     auto n = nClosest_ == 1 ? 2 : nClosest_;
     tree.closestNPoints(p, n, closest);
     ASSERT(closest.size() == n);
 
     // if closest and farthest nb. are at the same distance, other points can
     // also be (like near poles), so we return all points inside radius
-    auto nearest2  = Point3::distance2(p, closest.front().point());
-    auto farthest2 = Point3::distance2(p, closest.back().point());
+    auto nearest2  = PointXYZ::distance2(p, closest.front().point());
+    auto farthest2 = PointXYZ::distance2(p, closest.back().point());
     if (eckit::types::is_approximately_equal(nearest2, farthest2, distanceTolerance2_)) {
         auto radius = std::sqrt(farthest2) + distanceTolerance_;
         tree.closestWithinRadius(p, radius, closest);

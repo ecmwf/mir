@@ -100,10 +100,10 @@ CASE("GaussianIterator") {
         size_t numberOfPoints;
         size_t numberOfCroppedPoints;
         BoundingBox bbox;
-        Point2 globalP1;
-        Point2 globalP2;
-        Point2 localP1;
-        Point2 localP2;
+        PointXY globalP1;
+        PointXY globalP2;
+        PointXY localP1;
+        PointXY localP2;
     };
 
     BoundingBox globe;

@@ -30,8 +30,7 @@
 namespace mir::util {
 
 
-Rotation::Rotation(PointLonLat south_pole, double rotation_angle) : rotation_(south_pole, rotation_angle) {
-}
+Rotation::Rotation(PointLonLat south_pole, double rotation_angle) : rotation_(south_pole, rotation_angle) {}
 
 
 Rotation::Rotation(const param::MIRParametrisation& param) :
@@ -59,8 +58,9 @@ Rotation::Rotation(const param::MIRParametrisation& param) :
 
 void Rotation::print(std::ostream& out) const {
     out << "Rotation["
-        << "south_pole_latitude=" << rotation_.south_pole().lat << ",south_pole_longitude=" << rotation_.south_pole().lon
-        << ",south_pole_rotation_angle=" << rotation_.angle() << "]";
+        << "south_pole_latitude=" << rotation_.south_pole().lat
+        << ",south_pole_longitude=" << rotation_.south_pole().lon << ",south_pole_rotation_angle=" << rotation_.angle()
+        << "]";
 }
 
 

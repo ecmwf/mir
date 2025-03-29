@@ -31,7 +31,7 @@ LongestElementDiagonalAndNClosest::LongestElementDiagonalAndNClosest(const param
 }
 
 
-void LongestElementDiagonalAndNClosest::pick(const search::PointSearch& tree, const Point3& p,
+void LongestElementDiagonalAndNClosest::pick(const search::PointSearch& tree, const PointXYZ& p,
                                              Pick::neighbours_t& closest) const {
     // This method switches between k- and distance-based searches for performance
     ASSERT(0. < distance_);
@@ -39,7 +39,7 @@ void LongestElementDiagonalAndNClosest::pick(const search::PointSearch& tree, co
     if (nClosestFirst_) {
         tree.closestNPoints(p, nClosest_, closest);
 
-        auto r2 = Point3::distance2(p, closest.back().point());
+        auto r2 = PointXYZ::distance2(p, closest.back().point());
         if (r2 > distance2_) {
             tree.closestWithinRadius(p, distance_, closest);
             ASSERT(closest.size() <= nClosest_);

@@ -28,7 +28,7 @@ Iterator::Iterator(const util::Rotation& rotation) : rotation_(rotation.southPol
 Iterator::~Iterator() = default;
 
 
-const Point2& Iterator::pointRotated() const {
+const PointXY& Iterator::pointRotated() const {
     ASSERT(valid_);
     return point_;
 }
@@ -56,13 +56,13 @@ Iterator& Iterator::next() {
 }
 
 
-Point3 Iterator::point_3D(const Point2& point) {
+PointXYZ Iterator::point_3D(const PointXY& point) {
     // notice the order
     return util::Earth::convertSphericalToCartesian({point[1], point[0]});
 }
 
 
-Point3 Iterator::point3D() const {
+PointXYZ Iterator::point3D() const {
     ASSERT(valid_);
     return point_3D(point_);
 }

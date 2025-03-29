@@ -140,7 +140,7 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
                 boundWestEast(p.lon(), size_t(pl[j_south]), pl_sum[j_south], q[2], q[3]);
 
                 // convert working longitude/latitude coordinates to 3D
-                Point3 qp[4];
+                PointXYZ qp[4];
                 for (size_t k = 0; k < 4; ++k) {
                     const auto& ll = icoords[q[k]];
 
@@ -165,8 +165,8 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
 
                 // pick an "edge epsilon" based on a characteristic length (shortest diagonal length)
                 // (this scales linearly so it better compares with linear weights u,v,w)
-                const double dist2_q0_q3 = Point3::distance2(qp[3], qp[0]);
-                const double dist2_q1_q2 = Point3::distance2(qp[2], qp[1]);
+                const double dist2_q0_q3 = PointXYZ::distance2(qp[3], qp[0]);
+                const double dist2_q1_q2 = PointXYZ::distance2(qp[2], qp[1]);
 
                 const double edgeEpsilon = 1.e-11 * std::min(dist2_q0_q3, dist2_q1_q2);
                 ASSERT(edgeEpsilon >= 0);

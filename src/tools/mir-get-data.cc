@@ -108,7 +108,7 @@ struct CoordinatesFromRepresentation : Coordinates {
         lons_.assign(N, std::numeric_limits<double>::signaling_NaN());
 
         for (const std::unique_ptr<repres::Iterator> it(rep.iterator()); it->next();) {
-            const Point2& P(**it);
+            const PointXY& P(**it);
             lats_.at(it->index()) = P[0];
             lons_.at(it->index()) = P[1];
         }
@@ -202,7 +202,7 @@ size_t diff(Log::Channel& out, double toleranceLat, double toleranceLon, const C
     stats::detail::Counter statsLon(empty);
 
     auto showPointAt = [&](std::ostream& out, size_t n) -> std::ostream& {
-        return out << "\n\t@[0]=" << n << '\t' << Point2(lat1[n], lon1[n]) << '\t' << Point2(lat2[n], lon2[n]);
+        return out << "\n\t@[0]=" << n << '\t' << PointXY(lat1[n], lon1[n]) << '\t' << PointXY(lat2[n], lon2[n]);
     };
 
     auto showCoordMinMax = [&](std::ostream& out, const std::string& name, const coord_t& c) -> std::ostream& {
@@ -335,7 +335,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
             if (!atlas && !ecc && (nclosest == 0)) {
                 for (const std::unique_ptr<repres::Iterator> it(rep->iterator()); it->next();) {
-                    const Point2& P(**it);
+                    const PointXY& P(**it);
                     log << "\t" << P[0] << '\t' << P[1] << '\t' << values.at(it->index()) << std::endl;
                 }
 

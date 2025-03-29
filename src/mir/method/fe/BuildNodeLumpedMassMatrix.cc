@@ -83,15 +83,15 @@ atlas::Field& BuildNodeLumpedMassMatrix::operator()(atlas::Mesh& mesh) const {
 
             double nodalDistribution =
                 nb_cols == 3 ? oneThird * interpolation::element::Triag3D(
-                                              PointXYZ{coords(idx[0], 0), coords(idx[0], 1), coords(idx[0], 2)},
-                                              PointXYZ{coords(idx[1], 0), coords(idx[1], 1), coords(idx[1], 2)},
-                                              PointXYZ{coords(idx[2], 0), coords(idx[2], 1), coords(idx[2], 2)})
+                                              atlas::PointXYZ{coords(idx[0], 0), coords(idx[0], 1), coords(idx[0], 2)},
+                                              atlas::PointXYZ{coords(idx[1], 0), coords(idx[1], 1), coords(idx[1], 2)},
+                                              atlas::PointXYZ{coords(idx[2], 0), coords(idx[2], 1), coords(idx[2], 2)})
                                               .area()
                              : oneFourth * interpolation::element::Quad3D(
-                                               PointXYZ{coords(idx[0], 0), coords(idx[0], 1), coords(idx[0], 2)},
-                                               PointXYZ{coords(idx[1], 0), coords(idx[1], 1), coords(idx[1], 2)},
-                                               PointXYZ{coords(idx[2], 0), coords(idx[2], 1), coords(idx[2], 2)},
-                                               PointXYZ{coords(idx[3], 0), coords(idx[3], 1), coords(idx[3], 2)})
+                                               atlas::PointXYZ{coords(idx[0], 0), coords(idx[0], 1), coords(idx[0], 2)},
+                                               atlas::PointXYZ{coords(idx[1], 0), coords(idx[1], 1), coords(idx[1], 2)},
+                                               atlas::PointXYZ{coords(idx[2], 0), coords(idx[2], 1), coords(idx[2], 2)},
+                                               atlas::PointXYZ{coords(idx[3], 0), coords(idx[3], 1), coords(idx[3], 2)})
                                                .area();
 
             ASSERT(nodalDistribution > 0.);

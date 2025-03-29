@@ -28,7 +28,7 @@ namespace mir::method::knn::distance {
 PseudoLaplace::PseudoLaplace(const param::MIRParametrisation& /*unused*/) {}
 
 
-void PseudoLaplace::operator()(size_t ip, const Point3& point,
+void PseudoLaplace::operator()(size_t ip, const PointXYZ& point,
                                const std::vector<search::PointSearch::PointValueType>& neighbours,
                                std::vector<WeightMatrix::Triplet>& triplets) const {
     ASSERT(!neighbours.empty());
@@ -38,7 +38,7 @@ void PseudoLaplace::operator()(size_t ip, const Point3& point,
     triplets.reserve(npts);
 
     // calculate coefficients
-    std::vector<Point3> D(npts);
+    std::vector<PointXYZ> D(npts);
 
     double Ixx = 0;
     double Ixy = 0;
@@ -79,7 +79,7 @@ void PseudoLaplace::operator()(size_t ip, const Point3& point,
         return;
     }
 
-    Point3 L{
+    PointXYZ L{
         (-(Iyz * Iyz * Rx) + Iyy * Izz * Rx + Ixz * Iyz * Ry - Ixy * Izz * Ry - Ixz * Iyy * Rz + Ixy * Iyz * Rz) / a,
         (Ixz * Iyz * Rx - Ixy * Izz * Rx - Ixz * Ixz * Ry + Ixx * Izz * Ry + Ixy * Ixz * Rz - Ixx * Iyz * Rz) / b,
         (-(Ixz * Iyy * Rx) + Ixy * Iyz * Rx + Ixy * Ixz * Ry - Ixx * Iyz * Ry - Ixy * Ixy * Rz + Ixx * Iyy * Rz) / a};

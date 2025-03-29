@@ -57,8 +57,8 @@ void LambertAzimuthalEqualArea::fillGrib(grib_info& info) const {
     info.grid.grid_type        = CODES_UTIL_GRID_SPEC_LAMBERT_AZIMUTHAL_EQUAL_AREA;
     info.packing.editionNumber = 2;
 
-    auto reference = std::get<PointLonLat>(projection().inv(Point2{0., 0.}));
-    auto firstLL   = std::get<PointLonLat>(projection().inv(Point2{x().front(), y().front()}));
+    auto reference = std::get<PointLonLat>(projection().inv(PointXY{0., 0.}));
+    auto firstLL   = std::get<PointLonLat>(projection().inv(PointXY{x().front(), y().front()}));
 
     info.grid.Ni = static_cast<long>(x().size());
     info.grid.Nj = static_cast<long>(y().size());

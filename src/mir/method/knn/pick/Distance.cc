@@ -30,7 +30,7 @@ Distance::Distance(const param::MIRParametrisation& param) {
 }
 
 
-void Distance::pick(const search::PointSearch& tree, const Point3& p, Pick::neighbours_t& closest) const {
+void Distance::pick(const search::PointSearch& tree, const PointXYZ& p, Pick::neighbours_t& closest) const {
     tree.closestWithinRadius(p, distance_, closest);
 }
 

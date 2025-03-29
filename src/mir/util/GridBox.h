@@ -43,9 +43,9 @@ public:
 
     double area() const;
     double diagonal() const;
-    Point2 centre() const;
+    PointXY centre() const;
 
-    bool contains(const Point2&) const;
+    bool contains(const PointXY&) const;
     bool intersects(GridBox&) const;
 
     double north() const { return north_; }

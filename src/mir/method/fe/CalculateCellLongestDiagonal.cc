@@ -16,14 +16,10 @@
 #include <utility>
 
 #include "atlas/array.h"
+#include "atlas/mesh.h"
 #include "atlas/runtime/Trace.h"
+#include "atlas/util/Point.h"
 #include "atlas/util/Topology.h"
-
-#include "mir/util/Atlas.h"
-#include "mir/util/Earth.h"
-#include "mir/util/Exceptions.h"
-#include "mir/util/Log.h"
-#include "mir/util/Types.h"
 
 
 namespace mir::method::fe {
@@ -41,7 +37,7 @@ double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh, bool include_
 
     if (recompute) {
         ATLAS_TRACE("CalculateCellLongestDiagonal");
-        ASSERT(mesh.generated());
+        ATLAS_ASSERT(mesh.generated());
 
         auto& nodes       = mesh.nodes();
         const auto coords = atlas::array::make_view<double, 2>(nodes.field("xyz"));
@@ -54,14 +50,14 @@ double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh, bool include_
 
         // distance, up to Earth radius
         double d          = 0.;
-        const double dMax = util::Earth::radius();
+        const double dMax = atlas::util::Earth::radius();
 
 
         // assumes:
         // - nb_cols == 3 implies triangle
         // - nb_cols == 4 implies quadrilateral
         // - no other element is supported at this time
-        Point3 P[4];
+        PointXYZ P[4];
         const auto& connectivity = mesh.cells().node_connectivity();
 
         for (idx_t e = 0; e < connectivity.rows(); ++e) {
@@ -69,7 +65,7 @@ double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh, bool include_
                 continue;
             }
             auto nb_cols = connectivity.cols(e);
-            ASSERT(nb_cols == 3 || nb_cols == 4);
+            ATLAS_ASSERT(nb_cols == 3 || nb_cols == 4);
 
             // test edges and diagonals (quadrilaterals only)
             // (combinations of ni in [0, nb_cols[ and nj in [ni+1, nb_cols[)
@@ -84,9 +80,8 @@ double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh, bool include_
                     auto j = connectivity(e, nj);
 
                     if (include_virtual_points || (i < nbRealPts && j < nbRealPts)) {
-                        d = std::max(d, util::Earth::distance(P[ni], P[nj]));
+                        d = std::max(d, atlas::util::Earth::distance(P[ni], P[nj]));
                         if (d > dMax) {
-                            Log::warning() << "CalculateCellLongestDiagonal: limited to maximum " << dMax << "m";
                             mesh.metadata().set(name_, dMax);
                             return dMax;
                         }
@@ -95,7 +90,7 @@ double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh, bool include_
             }
         }
 
-        ASSERT(d > 0.);
+        ATLAS_ASSERT(d > 0.);
         mesh.metadata().set(name_, d);
     }
 

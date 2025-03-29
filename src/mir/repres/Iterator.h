@@ -45,15 +45,15 @@ public:
     void operator=(const Iterator&) = delete;
     void operator=(Iterator&&)      = delete;
 
-    inline const Point2& operator*() const { return pointRotated(); }
+    inline const PointXY& operator*() const { return pointRotated(); }
 
     // -- Methods
 
-    static Point3 point_3D(const Point2&);
+    static PointXYZ point_3D(const PointXY&);
 
-    const Point2& pointRotated() const;
+    const PointXY& pointRotated() const;
     const PointLatLon& pointUnrotated() const;
-    Point3 point3D() const;
+    PointXYZ point3D() const;
 
     Iterator& next();
     virtual size_t index() const = 0;
@@ -70,7 +70,7 @@ public:
 protected:
     // -- Members
 
-    Point2 point_;
+    PointXY point_;
     util::Rotation rotation_;
     bool valid_;
 

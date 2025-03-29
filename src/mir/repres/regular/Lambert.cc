@@ -74,9 +74,9 @@ eckit::geo::spec::Custom* Lambert::make_projection(const param::MIRParametrisati
 void Lambert::fillGrib(grib_info& info) const {
     info.grid.grid_type = CODES_UTIL_GRID_SPEC_LAMBERT_CONFORMAL;
 
-    auto reference = std::get<PointLonLat>(projection().inv(Point2{0., 0.}));
+    auto reference = std::get<PointLonLat>(projection().inv(PointXY{0., 0.}));
     auto firstLL   = std::get<PointLonLat>(projection().inv(
-        Point2{firstPointBottomLeft() ? x().min() : x().front(), firstPointBottomLeft() ? y().min() : y().front()}));
+        PointXY{firstPointBottomLeft() ? x().min() : x().front(), firstPointBottomLeft() ? y().min() : y().front()}));
 
     info.grid.latitudeOfFirstGridPointInDegrees = firstLL.lat;
     info.grid.longitudeOfFirstGridPointInDegrees =

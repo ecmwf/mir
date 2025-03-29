@@ -24,12 +24,12 @@ namespace mir::method::knn::pick {
 SortedSample::SortedSample(const param::MIRParametrisation& param) : sample_(param) {}
 
 
-void SortedSample::pick(const search::PointSearch& tree, const Point3& p, Pick::neighbours_t& closest) const {
+void SortedSample::pick(const search::PointSearch& tree, const PointXYZ& p, Pick::neighbours_t& closest) const {
     sample_.pick(tree, p, closest);
 
     std::sort(closest.begin(), closest.end(),
               [&p](const Pick::neighbours_t::value_type& a, const Pick::neighbours_t::value_type& b) {
-                  return Point3::distance2(a.point(), p) < Point3::distance2(b.point(), p);
+                  return PointXYZ::distance2(a.point(), p) < PointXYZ::distance2(b.point(), p);
               });
 }
 

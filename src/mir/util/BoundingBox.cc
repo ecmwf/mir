@@ -112,7 +112,7 @@ bool BoundingBox::contains(const PointLatLon& p) const {
 }
 
 
-bool BoundingBox::contains(const Point2& p) const {
+bool BoundingBox::contains(const PointXY& p) const {
     // notice the order
     return contains(p[0], p[1]);
 }

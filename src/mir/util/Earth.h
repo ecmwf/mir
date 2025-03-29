@@ -27,15 +27,15 @@ struct Earth : eckit::geo::geometry::Sphere {
 
     static double distance(const PointLonLat& a, const PointLonLat& b) { return Sphere::distance(radius(), a, b); }
 
-    static PointLonLat convertCartesianToSpherical(const Point3& p) {
+    static PointLonLat convertCartesianToSpherical(const PointXYZ& p) {
         return Sphere::convertCartesianToSpherical(radius(), p);
     }
 
-    static Point3 convertSphericalToCartesian(const PointLonLat& p, double height = 0.) {
+    static PointXYZ convertSphericalToCartesian(const PointLonLat& p, double height = 0.) {
         return Sphere::convertSphericalToCartesian(radius(), p, height);
     }
 
-    static double distance(const Point3& a, const Point3& b) { return Sphere::distance(radius(), a, b); }
+    static double distance(const PointXYZ& a, const PointXYZ& b) { return Sphere::distance(radius(), a, b); }
 
     static double area(double north, double west, double south, double east) {
         return Sphere::area(radius(), {north, west, south, east});

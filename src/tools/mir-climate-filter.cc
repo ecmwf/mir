@@ -240,7 +240,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
 
                     double sum = 0.;
                     for (size_t w = 0; w < Nw; ++w) {
-                        auto r = Point3::distance(P, closest[w].point());
+                        auto r = PointXYZ::distance(P, closest[w].point());
                         auto h = r < halfDelta - delta ? 1.
                                  : halfDelta + delta < r
                                      ? 0.

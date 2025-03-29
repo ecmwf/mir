@@ -44,12 +44,12 @@ double GridBox::diagonal() const {
 }
 
 
-Point2 GridBox::centre() const {
+PointXY GridBox::centre() const {
     return {0.5 * (north_ + south_), 0.5 * (west_ + east_)};
 }
 
 
-bool GridBox::contains(const Point2& p) const {
+bool GridBox::contains(const PointXY& p) const {
     return eckit::types::is_approximately_lesser_or_equal(south_, p[0]) &&
            eckit::types::is_approximately_lesser_or_equal(p[0], north_) &&
            eckit::types::is_approximately_lesser_or_equal(LongitudeDouble(p[1]).normalise(west_).value(), east_);

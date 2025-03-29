@@ -27,7 +27,7 @@ class DistanceWeightingWithLSM : public DistanceWeighting {
 public:
     explicit DistanceWeightingWithLSM(const param::MIRParametrisation&);
 
-    void operator()(size_t, const Point3&, const std::vector<search::PointSearch::PointValueType>&,
+    void operator()(size_t, const PointXYZ&, const std::vector<search::PointSearch::PointValueType>&,
                     std::vector<WeightMatrix::Triplet>&) const override;
 
     const DistanceWeighting* distanceWeighting(const param::MIRParametrisation&, const lsm::LandSeaMasks&) const;
