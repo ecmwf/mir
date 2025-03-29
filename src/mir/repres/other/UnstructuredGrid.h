@@ -35,7 +35,7 @@ public:
     explicit UnstructuredGrid(const eckit::PathName&);
     explicit UnstructuredGrid(const param::MIRParametrisation&);
     UnstructuredGrid(const std::vector<double>& latitudes, const std::vector<double>& longitudes,
-                     const util::BoundingBox& = util::BoundingBox());
+                     const util::BoundingBox& = util::BoundingBox(), bool checkDuplicatePoints = true);
 
     UnstructuredGrid(const UnstructuredGrid&) = delete;
     UnstructuredGrid(UnstructuredGrid&&)      = delete;
@@ -61,7 +61,7 @@ private:
 
     // -- Constructors
 
-    explicit UnstructuredGrid(latlon_t&&, const util::BoundingBox& = util::BoundingBox());
+    UnstructuredGrid(latlon_t&&, const util::BoundingBox&, bool checkDuplicatePoints);
 
     // -- Members
 

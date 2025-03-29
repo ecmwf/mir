@@ -59,41 +59,52 @@ namespace other {
 
 
 UnstructuredGrid::UnstructuredGrid(const std::vector<double>& latitudes, const std::vector<double>& longitudes,
-                                   const util::BoundingBox& bbox) :
+                                   const util::BoundingBox& bbox, bool checkDuplicatePoints) :
     Gridded(bbox), grid_(latitudes, longitudes), latitudes_(latitudes), longitudes_(longitudes) {
     if (latitudes_.size() != longitudes_.size()) {
         throw exception::UserError("UnstructuredGrid: requires 'latitudes'/'longitudes' with the same size");
     }
 
-    util::check_duplicate_points("UnstructuredGrid", latitudes_, longitudes_);
+    if (checkDuplicatePoints) {
+        util::check_duplicate_points("UnstructuredGrid", latitudes_, longitudes_);
+    }
 }
 
 
 UnstructuredGrid::UnstructuredGrid(const param::MIRParametrisation& param) :
-    UnstructuredGrid([](const auto& param) -> latlon_t {
-        std::vector<double> latitudes;
-        std::vector<double> longitudes;
-        if (!param.get("latitudes", latitudes) || !param.get("longitudes", longitudes)) {
-            size_t N = 0;
-            ASSERT(param.get("numberOfPoints", N));
+    UnstructuredGrid(
+        [](const auto& param) -> latlon_t {
+            std::vector<double> latitudes;
+            std::vector<double> longitudes;
+            if (!param.get("latitudes", latitudes) || !param.get("longitudes", longitudes)) {
+                size_t N = 0;
+                ASSERT(param.get("numberOfPoints", N));
 
-            // coordinates are unusable but unique
-            latitudes.assign(N, std::numeric_limits<double>::signaling_NaN());
-            longitudes.resize(N);
-            std::iota(longitudes.begin(), longitudes.end(), 0);
-        }
+                // coordinates are unusable but unique
+                latitudes.assign(N, std::numeric_limits<double>::signaling_NaN());
+                longitudes.resize(N);
+                std::iota(longitudes.begin(), longitudes.end(), 0);
+            }
 
-        return {std::move(latitudes), std::move(longitudes)};
-    }(param)) {}
+            return {std::move(latitudes), std::move(longitudes)};
+        }(param),
+        util::BoundingBox(param),
+        [](const auto& param) -> bool {
+            bool checkDuplicatePoints = true;
+            param.get("checkDuplicatePoints", checkDuplicatePoints);
+            return checkDuplicatePoints;
+        }(param)) {}
 
 
 UnstructuredGrid::UnstructuredGrid(const eckit::PathName& path) :
-    UnstructuredGrid([](const auto& path) -> latlon_t {
-        std::vector<double> latitudes;
-        std::vector<double> longitudes;
-        input::GriddefInput::load(path, latitudes, longitudes);
-        return {std::move(latitudes), std::move(longitudes)};
-    }(path)) {}
+    UnstructuredGrid(
+        [](const auto& path) -> latlon_t {
+            std::vector<double> latitudes;
+            std::vector<double> longitudes;
+            input::GriddefInput::load(path, latitudes, longitudes);
+            return {std::move(latitudes), std::move(longitudes)};
+        }(path),
+        {}, true) {}
 
 
 void UnstructuredGrid::save(const eckit::PathName& path, const std::vector<double>& latitudes,
@@ -104,8 +115,8 @@ void UnstructuredGrid::save(const eckit::PathName& path, const std::vector<doubl
 }
 
 
-UnstructuredGrid::UnstructuredGrid(latlon_t&& latlon, const util::BoundingBox& bbox) :
-    UnstructuredGrid(latlon.first, latlon.second, bbox) {}
+UnstructuredGrid::UnstructuredGrid(latlon_t&& latlon, const util::BoundingBox& bbox, bool checkDuplicatePoints) :
+    UnstructuredGrid(latlon.first, latlon.second, bbox, checkDuplicatePoints) {}
 
 
 UnstructuredGrid::~UnstructuredGrid() = default;
