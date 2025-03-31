@@ -28,9 +28,9 @@
 namespace mir::util {
 
 
-static double get(const param::MIRParametrisation& param, const char* key) {
-    double value = 0.;
-    ASSERT(param.get(key, value));
+static double get(const param::MIRParametrisation& param, const std::string& key, double dfault) {
+    auto value = dfault;
+    param.get(key, value);
     return value;
 }
 
@@ -55,7 +55,8 @@ BoundingBox::BoundingBox(const Latitude& north, const Longitude& west, const Lat
 
 
 BoundingBox::BoundingBox(const param::MIRParametrisation& param) :
-    BoundingBox(get(param, "north"), get(param, "west"), get(param, "south"), get(param, "east")) {}
+    BoundingBox(get(param, "north", Latitude::NORTH_POLE.value()), get(param, "west", Longitude::GREENWICH.value()),
+                get(param, "south", Latitude::SOUTH_POLE.value()), get(param, "east", Longitude::GLOBE.value())) {}
 
 
 BoundingBox::BoundingBox(const BoundingBox&) = default;
