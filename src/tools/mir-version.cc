@@ -117,7 +117,7 @@ struct MIRVersion : MIRTool {
         }
 
         auto on_off = [](bool b) { return b ? "ON" : "OFF"; };
-        auto& out = Log::info();
+        auto& out   = Log::info();
 
         if (!info) {
             out << mir_version() << std::endl;
