@@ -82,7 +82,7 @@ struct MappingGridHEALPix : GridMapping {
         param.set("gridType", "healpix");
         param.set("gridded", 1L);
         param.set("Nside", grid_.Nside());
-        param.set("orderingConvention", grid_.ordering() == eckit::geo::Ordering::healpix_nested ? "nested" : "ring");
+        param.set("orderingConvention", grid_.order());
         param.set("longitudeOfFirstGridPointInDegrees", 45.);
     }
 
