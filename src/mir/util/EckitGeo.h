@@ -18,7 +18,7 @@
 
 #include "eckit/geo/Area.h"
 #include "eckit/geo/Grid.h"
-#include "eckit/geo/Ordering.h"
+#include "eckit/geo/Order.h"
 #include "eckit/geo/Projection.h"
 #include "eckit/geo/Spec.h"
 
@@ -26,11 +26,6 @@
 
 
 namespace eckit::geo {
-
-
-enum Ordering
-{
-};
 
 
 class Spec {};
