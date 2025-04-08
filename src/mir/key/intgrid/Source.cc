@@ -12,6 +12,8 @@
 
 #include "mir/key/intgrid/Source.h"
 
+#include <algorithm>
+#include <cctype>  // for ::isdigit
 #include <memory>
 
 #include "mir/param/MIRParametrisation.h"
@@ -31,7 +33,11 @@ Source::Source(const param::MIRParametrisation& parametrisation, long /*unused*/
     ASSERT(spectralOrder);
 
     long T = 0;
-    if (!(parametrisation_.userParametrisation().get("truncation", T) && T > 0)) {
+    if (std::string truncation; parametrisation_.userParametrisation().get("truncation", truncation) &&
+                                !truncation.empty() && std::all_of(truncation.begin(), truncation.end(), ::isdigit)) {
+        T = std::stol(truncation);
+    }
+    else {
         ASSERT(parametrisation_.fieldParametrisation().get("truncation", T));
     }
     ASSERT(T > 0);

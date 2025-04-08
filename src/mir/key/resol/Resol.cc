@@ -19,11 +19,9 @@
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/key/intgrid/None.h"
-#include "mir/key/truncation/Ordinal.h"
 #include "mir/key/truncation/Truncation.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
-#include "mir/util/Log.h"
 #include "mir/util/SpectralOrder.h"
 
 
@@ -40,7 +38,7 @@ Resol::Resol(const param::MIRParametrisation& parametrisation, bool forceNoInter
     ASSERT(parametrisation_.fieldParametrisation().get("truncation", inputTruncation_));
     ASSERT(inputTruncation_ > 0);
 
-    long N = std::min(getTargetGaussianNumber(), getSourceGaussianNumber());
+    auto N = std::min(getTargetGaussianNumber(), getSourceGaussianNumber());
     ASSERT(N >= 0);
 
     // Setup intermediate grid (before truncation)
@@ -55,23 +53,17 @@ Resol::Resol(const param::MIRParametrisation& parametrisation, bool forceNoInter
     }
     ASSERT(intgrid_);
 
-    const std::string Gi = intgrid_->gridname();
+    const auto Gi = intgrid_->gridname();
     if (!Gi.empty()) {
-        N = long(grid::Grid::lookup(Gi, parametrisation_).gaussianNumber());
+        N = static_cast<long>(grid::Grid::lookup(Gi, parametrisation_).gaussianNumber());
         ASSERT(N > 0);
     }
 
     // Setup truncation
-    // NOTE: number takes priority over possible names
-    long T = 0;
-    if (parametrisation_.userParametrisation().get("truncation", T) && T > 0) {
-        truncation_ = std::make_unique<truncation::Ordinal>(T, parametrisation_);
-    }
-    else {
-        std::string name = "automatic";
-        parametrisation_.userParametrisation().get("truncation", name);
-        truncation_.reset(truncation::TruncationFactory::build(name, parametrisation_, N));
-    }
+    std::string truncation = "automatic";
+    parametrisation_.userParametrisation().get("truncation", truncation);
+
+    truncation_.reset(truncation::TruncationFactory::build(truncation, parametrisation_, N));
     ASSERT(truncation_);
 }
 
