@@ -660,7 +660,6 @@ list(APPEND mir_srcs
     util/DeprecatedFunctionality.h
     util/Domain.cc
     util/Domain.h
-    util/EckitGeo.h
     util/Error.cc
     util/Error.h
     util/Exceptions.h
@@ -744,8 +743,6 @@ if(mir_HAVE_ECKIT_GEO)
             action/transform/ShToGridSpec.cc
             action/transform/ShToGridSpec.h)
     endif()
-else()
-    list(APPEND mir_srcs util/EckitGeo.cc)
 endif()
 
 if(mir_HAVE_ATLAS)

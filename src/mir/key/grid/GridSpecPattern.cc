@@ -15,8 +15,9 @@
 #include <memory>
 #include <ostream>
 
+#include "eckit/geo/Grid.h"
+
 #include "mir/key/grid/GridSpec.h"
-#include "mir/util/EckitGeo.h"
 
 
 namespace mir::key::grid {
