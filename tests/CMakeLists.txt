@@ -15,6 +15,12 @@ if(NOT eccodes_HAVE_MEMFS)
     endif()
 endif()
 
+function(target_from_path path out_var)
+    file(RELATIVE_PATH _rel "${CMAKE_SOURCE_DIR}" "${path}")
+    string(MAKE_C_IDENTIFIER "${_rel}" _id)
+    string(REGEX REPLACE "_test$" "" result "${_id}")
+    set(${out_var} "${result}" PARENT_SCOPE)
+endfunction()
 
 # ecCodes really doesn't build tools, so disabling testing is required
 if(eccodes_HAVE_BUILD_TOOLS)

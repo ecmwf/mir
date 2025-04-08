@@ -7,8 +7,9 @@ if(MARS_SCRIPT)
     file(GLOB_RECURSE test_files LIST_DIRECTORIES false *.test)
 
     foreach(_t ${test_files})
+        target_from_path("${_t}" target)
         ecbuild_add_test(
-            TARGET      ${_t}
+            TARGET      ${target}
             CONDITION   MARS_SCRIPT
             COMMAND     mir-test.sh
             ARGS        ${_t}
@@ -18,7 +19,7 @@ if(MARS_SCRIPT)
            (NOT mir_HAVE_ATLAS AND NOT (_t MATCHES "[.]core[.]")) OR
            (NOT mir_HAVE_ECKIT_GEO AND (_t MATCHES "[.]geo[.]")) OR
            (NOT atlas_HAVE_PROJ AND (_t MATCHES "[.]proj[.]")))
-            set_tests_properties(${_t} PROPERTIES WILL_FAIL TRUE)
+            set_tests_properties(${target} PROPERTIES WILL_FAIL TRUE)
         endif()
     endforeach()
 endif()
@@ -26,8 +27,9 @@ endif()
 if(EXISTS ${CMAKE_BINARY_DIR}/share/plugins/atlas-orca.yml)
     file(GLOB_RECURSE test_files LIST_DIRECTORIES false *.test.atlas-orca)
     foreach(_t ${test_files})
+        target_from_path("${_t}" target)
         ecbuild_add_test(
-            TARGET      ${_t}
+            TARGET      ${target}
             CONDITION   MARS_SCRIPT
             COMMAND     mir-test.sh
             ARGS        ${_t}
@@ -36,8 +38,9 @@ if(EXISTS ${CMAKE_BINARY_DIR}/share/plugins/atlas-orca.yml)
 endif()
 
 set(_t ${CMAKE_CURRENT_SOURCE_DIR}/config)
+target_from_path("${_t}" target)
 ecbuild_add_test(
-    TARGET      ${_t}
+    TARGET      ${target}
     CONDITION   MARS_SCRIPT
     COMMAND     mir-test.sh
     ARGS        ${_t}.x
