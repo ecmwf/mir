@@ -17,7 +17,6 @@
 
 #include "eckit/types/Types.h"
 #include "eckit/utils/Tokenizer.h"
-#include "eckit/utils/Translator.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
@@ -26,6 +25,7 @@
 #include "mir/util/Formula.h"
 #include "mir/util/FormulaParser.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Translator.h"
 
 
 namespace mir::action {
@@ -42,7 +42,6 @@ FormulaAction::FormulaAction(const param::MIRParametrisation& param) : Action(pa
     // TODO: create a parser
     eckit::Tokenizer parse1(",");
     eckit::Tokenizer parse2("=");
-    eckit::Translator<std::string, long> s2l;
 
     std::vector<std::string> v;
     parse1(metadata, v);
@@ -52,7 +51,7 @@ FormulaAction::FormulaAction(const param::MIRParametrisation& param) : Action(pa
         parse2(j, w);
         ASSERT(w.size() == 2);
 
-        metadata_[w[0]] = s2l(w[1]);
+        metadata_[w[0]] = util::from_string<long>(w[1]);
     }
 
     std::istringstream in(formula);

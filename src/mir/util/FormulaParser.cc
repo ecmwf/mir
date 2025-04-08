@@ -12,14 +12,13 @@
 
 #include <memory>
 
-#include "eckit/utils/Translator.h"
-
 #include "mir/util/FormulaBinop.h"
 #include "mir/util/FormulaFunction.h"
 #include "mir/util/FormulaIdent.h"
 #include "mir/util/FormulaNumber.h"
 #include "mir/util/FormulaParser.h"
 #include "mir/util/FormulaString.h"
+#include "mir/util/Translator.h"
 
 
 namespace mir::util {
@@ -77,8 +76,7 @@ Formula* FormulaParser::parseNumber(const param::MIRParametrisation& parametrisa
         }
     }
 
-    eckit::Translator<std::string, double> s2d;
-    return new FormulaNumber(parametrisation, s2d(s));
+    return new FormulaNumber(parametrisation, from_string<double>(s));
 }
 
 

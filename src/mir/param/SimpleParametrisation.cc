@@ -20,11 +20,11 @@
 #include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/Tokenizer.h"
-#include "eckit/utils/Translator.h"
 #include "eckit/value/Value.h"
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Translator.h"
 
 
 namespace mir::param {
@@ -371,55 +371,48 @@ void TSettings<std::string>::get(const std::string& /*name*/, std::string& value
 template <>
 void TSettings<std::string>::get(const std::string& name, bool& value) const {
     conversion_warning("string", "bool", name, value_);
-    eckit::Translator<std::string, bool> translate;
-    value = translate(value_);
+    value = util::from_string<bool>(value_);
 }
 
 
 template <>
 void TSettings<std::string>::get(const std::string& name, int& value) const {
     conversion_warning("string", "int", name, value_);
-    eckit::Translator<std::string, int> translate;
-    value = translate(value_);
+    value = util::from_string<int>(value_);
 }
 
 
 template <>
 void TSettings<std::string>::get(const std::string& name, long& value) const {
     conversion_warning("string", "long", name, value_);
-    eckit::Translator<std::string, long> translate;
-    value = translate(value_);
+    value = util::from_string<long>(value_);
 }
 
 
 template <>
 void TSettings<std::string>::get(const std::string& name, size_t& value) const {
     conversion_warning("string", "size_t", name, value_);
-    eckit::Translator<std::string, size_t> translate;
-    value = translate(value_);
+    value = util::from_string<size_t>(value_);
 }
 
 
 template <>
 void TSettings<std::string>::get(const std::string& name, float& value) const {
     conversion_warning("string", "float", name, value_);
-    eckit::Translator<std::string, float> translate;
-    value = translate(value_);
+    value = util::from_string<float>(value_);
 }
 
 
 template <>
 void TSettings<std::string>::get(const std::string& name, double& value) const {
     conversion_warning("string", "double", name, value_);
-    eckit::Translator<std::string, double> translate;
-    value = translate(value_);
+    value = util::from_string<double>(value_);
 }
 
 
 template <>
 void TSettings<std::string>::get(const std::string& name, std::vector<double>& value) const {
     conversion_warning("string", "vector<double>", name, value_);
-    eckit::Translator<std::string, double> translate;
     eckit::Tokenizer parse("/");
 
     std::vector<std::string> v;
@@ -427,7 +420,7 @@ void TSettings<std::string>::get(const std::string& name, std::vector<double>& v
     value.clear();
     value.reserve(v.size());
     for (const std::string& j : v) {
-        value.push_back(translate(j));
+        value.push_back(util::from_string<double>(j));
     }
 }
 

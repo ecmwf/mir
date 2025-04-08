@@ -20,7 +20,6 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/parser/YAMLParser.h"
 #include "eckit/utils/Tokenizer.h"
-#include "eckit/utils/Translator.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
@@ -28,6 +27,7 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
+#include "mir/util/Translator.h"
 
 
 namespace mir::key {
@@ -96,13 +96,13 @@ bool Area::get(const param::MIRParametrisation& param, util::BoundingBox& bbox) 
         return true;
     }
 
-    eckit::Translator<std::string, double> t;
     std::vector<std::string> values;
 
     eckit::Tokenizer("/")(value, values);
     ASSERT_KEYWORD_AREA_SIZE(values.size());
 
-    bbox = {t(values[0]), t(values[1]), t(values[2]), t(values[3])};
+    bbox = {util::from_string<double>(values[0]), util::from_string<double>(values[1]),
+            util::from_string<double>(values[2]), util::from_string<double>(values[3])};
     return true;
 }
 

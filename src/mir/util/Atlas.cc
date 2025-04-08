@@ -18,10 +18,10 @@ static_assert(!mir_HAVE_ATLAS, "mir/util/Atlas.cc cannot be included with Atlas 
 
 #include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
-#include "eckit/utils/Translator.h"
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
+#include "mir/util/Translator.h"
 
 
 namespace atlas {
@@ -123,7 +123,7 @@ GaussianGrid::GaussianGrid(const std::string& name, const Domain& domain) {
     spec_.set("name", name);
 
     auto c = name.front();
-    auto n = eckit::Translator<std::string, idx_t>()(name.substr(1));
+    auto n = util::from_string<idx_t>(name.substr(1));
     ASSERT(n > 0);
 
     if (c == 'F' || c == 'f') {

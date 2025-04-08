@@ -720,6 +720,7 @@ list(APPEND mir_srcs
     util/SpectralOrderT.h
     util/Trace.cc
     util/Trace.h
+    util/Translator.h
     util/Types.h
     util/ValueMap.cc
     util/ValueMap.h

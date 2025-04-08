@@ -14,10 +14,9 @@
 
 #include <ostream>
 
-#include "eckit/utils/Translator.h"
-
 #include "mir/key/grid/NamedOctahedral.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Translator.h"
 
 
 namespace mir::key::grid {
@@ -32,7 +31,7 @@ void OctahedralPattern::print(std::ostream& out) const {
 
 
 const Grid* OctahedralPattern::make(const std::string& name) const {
-    return new NamedOctahedral(name, eckit::Translator<std::string, size_t>()(name.substr(1)));
+    return new NamedOctahedral(name, util::from_string<size_t>(name.substr(1)));
 }
 
 std::string OctahedralPattern::canonical(const std::string& name, const param::MIRParametrisation& /*unused*/) const {

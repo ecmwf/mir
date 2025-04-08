@@ -22,12 +22,12 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/serialisation/IfstreamStream.h"
 #include "eckit/utils/Tokenizer.h"
-#include "eckit/utils/Translator.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/repres/other/UnstructuredGrid.h"
 #include "mir/util/CheckDuplicatePoints.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Translator.h"
 
 
 namespace mir::input {
@@ -98,7 +98,6 @@ size_t GeoPointsFileInput::readText(std::ifstream& in) {
 
     eckit::Tokenizer parse_equals("=");
     eckit::Tokenizer parse(" \t");
-    eckit::Translator<std::string, double> s2d;
 
     char line[lenLineBuffer];
     bool data = false;
@@ -186,9 +185,9 @@ size_t GeoPointsFileInput::readText(std::ifstream& in) {
             std::vector<std::string> v;
             parse(line, v);
             if (v.size() >= 3) {
-                latitudes_.push_back(s2d(v[latIndex]));
-                longitudes_.push_back(s2d(v[lonIndex]));
-                values_.push_back(s2d(v.back()));
+                latitudes_.push_back(util::from_string<double>(v[latIndex]));
+                longitudes_.push_back(util::from_string<double>(v[lonIndex]));
+                values_.push_back(util::from_string<double>(v.back()));
             }
         }
     }
