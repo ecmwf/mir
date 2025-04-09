@@ -25,9 +25,8 @@ namespace mir::action::transform {
 
 
 template <class Invtrans>
-ShToReducedGGPLGiven<Invtrans>::ShToReducedGGPLGiven(const param::MIRParametrisation& parametrisation) :
-    ShToGridded(parametrisation) {
-    ASSERT(parametrisation_.userParametrisation().get("pl", pl_));
+ShToReducedGGPLGiven<Invtrans>::ShToReducedGGPLGiven(const param::MIRParametrisation& param) : ShToGridded(param) {
+    ASSERT(parametrisation().userParametrisation().get("pl", pl_));
 }
 
 
@@ -52,6 +51,13 @@ template <class Invtrans>
 void ShToReducedGGPLGiven<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
                                              const param::MIRParametrisation& parametrisation) const {
     Invtrans::sh2grid(field, trans, parametrisation);
+}
+
+
+template <class Invtrans>
+bool ShToReducedGGPLGiven<Invtrans>::getGriddedTargetName(std::string& name) const {
+    name = "N" + std::to_string(pl_.size());
+    return true;
 }
 
 

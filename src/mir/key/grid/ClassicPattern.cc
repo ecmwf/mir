@@ -14,10 +14,9 @@
 
 #include <ostream>
 
-#include "eckit/utils/Translator.h"
-
 #include "mir/key/grid/NamedClassic.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Translator.h"
 
 
 namespace mir::key::grid {
@@ -32,7 +31,7 @@ void ClassicPattern::print(std::ostream& out) const {
 
 
 const Grid* ClassicPattern::make(const std::string& name) const {
-    return new NamedClassic(name, eckit::Translator<std::string, size_t>()(name.substr(1)));
+    return new NamedClassic(name, util::from_string<size_t>(name.substr(1)));
 }
 
 

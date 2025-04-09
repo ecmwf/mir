@@ -24,7 +24,7 @@ void Set::execute(context::Context& ctx) const {
     auto timing(ctx.statistics().saveTimer());
 
     // TODO: MIROutput::save/set/copy should be const
-    const_cast<output::MIROutput&>(output()).set(parametrisation_, ctx);
+    const_cast<output::MIROutput&>(output()).set(parametrisation(), ctx);
 }
 
 
@@ -34,7 +34,7 @@ const char* Set::name() const {
 
 
 void Set::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
-    output().estimate(parametrisation_, estimation, ctx);
+    output().estimate(parametrisation(), estimation, ctx);
 }
 
 

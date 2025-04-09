@@ -15,10 +15,10 @@
 #include <ostream>
 
 #include "eckit/utils/StringTools.h"
-#include "eckit/utils/Translator.h"
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Translator.h"
 
 
 namespace mir::key::style {
@@ -45,10 +45,8 @@ const param::MIRParametrisation& CustomParametrisation::fieldParametrisation() c
 
 template <class T>
 static void fill(T& value, const std::vector<std::string>& params) {
-    eckit::Translator<std::string, T> t;
-
     ASSERT(params.size() == 1);
-    value = t(params[0]);
+    value = util::from_string<T>(params[0]);
 }
 
 
@@ -60,11 +58,9 @@ void fill(std::string& value, const std::vector<std::string>& params) {
 
 template <class T>
 static void fill(std::vector<T>& value, const std::vector<std::string>& params) {
-    eckit::Translator<std::string, T> t;
-
     value.clear();
     for (const auto& j : params) {
-        value.push_back(t(j));
+        value.push_back(util::from_string<T>(j));
     }
 }
 

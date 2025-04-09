@@ -19,12 +19,12 @@
 #include "eckit/log/JSON.h"
 #include "eckit/parser/YAMLParser.h"
 #include "eckit/utils/StringTools.h"
-#include "eckit/utils/Translator.h"
 
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
+#include "mir/util/Translator.h"
 #include "mir/util/ValueMap.h"
 
 
@@ -92,23 +92,22 @@ void Config::readConfigurationFiles(const eckit::PathName& path) {
     // value type conversions
     using eckit::StringTools;
 
-    eckit::Translator<std::string, long> i;
-    eckit::Translator<std::string, double> d;
-
     auto k = [](const std::string& key) {
         ASSERT(key.size() >= 2);
         return key.substr(0, key.size() - 2);
     };
 
-    auto vi = [&i](const std::vector<std::string>& values) {
+    auto vi = [](const std::vector<std::string>& values) {
         std::vector<long> v(values.size());
-        std::transform(values.begin(), values.end(), v.begin(), [&i](const std::string& s) { return i(s); });
+        std::transform(values.begin(), values.end(), v.begin(),
+                       [](const std::string& s) { return util::from_string<long>(s); });
         return v;
     };
 
-    auto vd = [&d](const std::vector<std::string>& values) {
+    auto vd = [](const std::vector<std::string>& values) {
         std::vector<double> v(values.size());
-        std::transform(values.begin(), values.end(), v.begin(), [&d](const std::string& s) { return d(s); });
+        std::transform(values.begin(), values.end(), v.begin(),
+                       [](const std::string& s) { return util::from_string<double>(s); });
         return v;
     };
 
@@ -133,8 +132,8 @@ void Config::readConfigurationFiles(const eckit::PathName& path) {
                                                    : id->set(key, values);
             }
             else {
-                StringTools::endsWith(key, ":i")   ? id->set(k(key), i(value))
-                : StringTools::endsWith(key, ":d") ? id->set(k(key), d(value))
+                StringTools::endsWith(key, ":i")   ? id->set(k(key), util::from_string<long>(value))
+                : StringTools::endsWith(key, ":d") ? id->set(k(key), util::from_string<double>(value))
                                                    : id->set(key, value);
             }
         }

@@ -26,8 +26,8 @@
 namespace mir::action::filter {
 
 
-ShTruncate::ShTruncate(const param::MIRParametrisation& parametrisation) : Action(parametrisation), truncation_(0) {
-    ASSERT(parametrisation.userParametrisation().get("truncation", truncation_));
+ShTruncate::ShTruncate(const param::MIRParametrisation& param) : Action(param), truncation_(0) {
+    ASSERT(parametrisation().userParametrisation().get("truncation", truncation_));
 
     ASSERT(truncation_ > 0);
 }

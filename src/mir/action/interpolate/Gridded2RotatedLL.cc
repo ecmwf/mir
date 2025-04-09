@@ -25,16 +25,16 @@
 namespace mir::action::interpolate {
 
 
-Gridded2RotatedLL::Gridded2RotatedLL(const param::MIRParametrisation& parametrisation) :
-    Gridded2RotatedGrid(parametrisation), reference_{0, 0} {
+Gridded2RotatedLL::Gridded2RotatedLL(const param::MIRParametrisation& param) :
+    Gridded2RotatedGrid(param), reference_{0, 0} {
 
     std::vector<double> value;
-    ASSERT(parametrisation_.get("grid", value));
+    ASSERT(parametrisation().get("grid", value));
     ASSERT_KEYWORD_GRID_SIZE(value.size());
 
     increments_ = util::Increments(value[0], value[1]);
 
-    if (key::Area::get(parametrisation_.userParametrisation(), bbox_)) {
+    if (key::Area::get(parametrisation().userParametrisation(), bbox_)) {
         reference_ = {bbox_.south(), bbox_.west()};
     }
 

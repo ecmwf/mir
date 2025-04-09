@@ -177,7 +177,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
         trace::Timer time("ShToGridded::caching");
 
         bool caching = LibMir::caching();
-        parametrisation_.get("caching", caching);
+        parametrisation().get("caching", caching);
 
         auto j = trans_cache.find(key);
         if (j != trans_cache.end()) {
@@ -202,7 +202,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
         else {
 
             ASSERT(creator.supported());
-            atlas::trans::Cache transCache = getTransCache(creator, key, parametrisation_, ctx);
+            atlas::trans::Cache transCache = getTransCache(creator, key, parametrisation(), ctx);
             ASSERT(transCache);
             trans = atlas_trans_t(transCache, grid, domain, truncation, options_);
         }
@@ -217,7 +217,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
     try {
 
         auto time(ctx.statistics().sh2gridTimer());
-        sh2grid(field, trans, parametrisation_);
+        sh2grid(field, trans, parametrisation());
     }
     catch (std::exception& e) {
         Log::error() << "ShToGridded::transform: " << e.what() << std::endl;
@@ -226,11 +226,11 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 }
 
 
-ShToGridded::ShToGridded(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
+ShToGridded::ShToGridded(const param::MIRParametrisation& param) : Action(param) {
 
     // use the 'local' spectral transforms
     std::string type = "local";
-    parametrisation.get("atlas-trans-type", type);
+    parametrisation().get("atlas-trans-type", type);
 
     if (!atlas::trans::Trans::hasBackend(type)) {
         std::ostringstream msg;
@@ -246,7 +246,7 @@ ShToGridded::ShToGridded(const param::MIRParametrisation& parametrisation) : Act
 
     // TODO: MIR-183 let Trans decide the best Legendre transform method
     bool flt = false;
-    parametrisation.userParametrisation().get("atlas-trans-flt", flt);
+    parametrisation().userParametrisation().get("atlas-trans-flt", flt);
     options_.set("flt", flt);
 }
 
@@ -293,6 +293,14 @@ void ShToGridded::estimate(context::Context& ctx, api::MIREstimation& estimation
 
 
 bool ShToGridded::mergeWithNext(const Action& next) {
+    // merge only if the target is the same
+    if (next.isRegridAction()) {
+        if (std::string name, nextName; getGriddedTargetName(name) && next.getGriddedTargetName(nextName)) {
+            if (name == nextName) {
+                return true;
+            }
+        }
+    }
 
     // make use of the area cropping action downstream (no merge)
     bool canMerge = "local" == options_.getString("type", "?");
@@ -316,11 +324,8 @@ bool ShToGridded::mergeWithNext(const Action& next) {
         // Magic super-powers!
         repres::RepresentationHandle out(outputRepresentation());
         cropping_.boundingBox(out->extendBoundingBox(bbox));
-
-        Log::debug() << "ShToGridded::mergeWithNext: "
-                     << "\n   " << oldAction.str() << "\n + " << next << "\n = " << *this << "\n + "
-                     << "(...)" << std::endl;
     }
+
     return false;
 }
 

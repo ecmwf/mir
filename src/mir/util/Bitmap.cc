@@ -17,10 +17,10 @@
 
 #include "eckit/io/StdFile.h"
 #include "eckit/utils/Tokenizer.h"
-#include "eckit/utils/Translator.h"
 
 #include "mir/util/Bitmap.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Translator.h"
 
 
 // TODO: Cache bitmaps
@@ -32,15 +32,14 @@ static void out(std::vector<std::vector<bool> >& bitmap, long row, const std::st
     ASSERT(row >= 0);
 
     if (prev >= 0) {
-        auto prevu = size_t(prev);
-        for (auto i = prevu + 1; i < size_t(row); i++) {
+        auto prevu = prev;
+        for (auto i = prevu + 1; i < row; i++) {
             bitmap[i] = bitmap[prevu];
         }
     }
 
     prev = row;
 
-    eckit::Translator<std::string, long> s2l;
     eckit::Tokenizer t1("/");
     eckit::Tokenizer t2("-");
 
@@ -50,8 +49,8 @@ static void out(std::vector<std::vector<bool> >& bitmap, long row, const std::st
     t1(line, r);
 
 
-    ASSERT(0 <= row && row < long(bitmap.size()));
-    auto& v = bitmap[size_t(row)];
+    ASSERT(0 <= row && row < static_cast<long>(bitmap.size()));
+    auto& v = bitmap[row];
 
     for (auto& i : r) {
 
@@ -62,12 +61,12 @@ static void out(std::vector<std::vector<bool> >& bitmap, long row, const std::st
             s.push_back(s[0]);
         }
 
-        long a = s2l(s[0]) - 1;
-        long b = s2l(s[1]) - 1;
+        auto a = from_string<long>(s[0]) - 1;
+        auto b = from_string<long>(s[1]) - 1;
 
         if (a >= 0) {
-            ASSERT(a < long(v.size()));
-            ASSERT(0 <= b && b < long(v.size()));
+            ASSERT(a < static_cast<long>(v.size()));
+            ASSERT(0 <= b && b < static_cast<long>(v.size()));
 
             for (auto j = size_t(a); j <= size_t(b); j++) {
                 v[j] = on;
@@ -94,7 +93,7 @@ Bitmap::Bitmap(const std::string& path) : path_(path), width_(0), height_(0) {
 void Bitmap::disseminationBitmap(const std::string& path) {
 
     eckit::AutoStdFile file(path);
-    int c;
+    int c = 0;
     std::string s;
 
     while ((c = fgetc(file)) != EOF) {
@@ -149,12 +148,11 @@ void Bitmap::disseminationBitmap(const std::string& path) {
     std::string t;
     long row  = -1;
     long prev = -1;
-    eckit::Translator<std::string, long> s2l;
 
     while (pos < s.size()) {
 
         if (s[pos] == ':') {
-            row = s2l(t) - 1;
+            row = from_string<long>(t) - 1;
             t   = "";
             pos++;
             continue;
@@ -176,7 +174,7 @@ void Bitmap::disseminationBitmap(const std::string& path) {
     }
 
     out(bitmap, row, t, on, prev);
-    out(bitmap, long(height_ - 1), t, on, prev);
+    out(bitmap, static_cast<long>(height_ - 1), t, on, prev);
 
     // out(bitmap);
 
@@ -190,21 +188,19 @@ void Bitmap::prodgenBitmap(const std::string& path, const std::string& destinati
         throw exception::CantOpenFile(path);
     }
 
-    eckit::Translator<std::string, size_t> s2l;
-
-    size_t no = s2l(number);
+    auto no = from_string<size_t>(number);
 
     while (in.getline(line, sizeof(line))) {
 
         std::string dest(line, line + 5);
-        size_t num = s2l(std::string(line + 6, line + 9));
+        auto num   = from_string<size_t>(std::string(line + 6, line + 9));
         bool ok    = (num == no && destination == dest);
 
         size_t size = 0;
         for (const char* c = line + 10; c != line + 20; ++c) {
             if (::isdigit(*c) != 0) {
                 size *= 10;
-                size += size_t(*c - '0');
+                size += static_cast<size_t>(*c - '0');
             }
         }
 

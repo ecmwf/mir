@@ -16,10 +16,10 @@
 #include <sstream>
 
 #include "eckit/utils/StringTools.h"
-#include "eckit/utils/Translator.h"
 
 #include "mir/key/grid/RegularLL.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Translator.h"
 
 
 namespace mir::key::grid {
@@ -42,9 +42,9 @@ std::string RegularLLPattern::canonical(const std::string& name, const param::MI
     auto split = eckit::StringTools::split("/", name);
     ASSERT(split.size() == 2);
 
-    eckit::Translator<std::string, double> d;
     std::ostringstream str;
-    str << d(split[0]) << '/' << d(split[1]);  // better than using std::to_string
+    str << util::from_string<double>(split[0]) << '/'
+        << util::from_string<double>(split[1]);  // better than using std::to_string
     return str.str();
 }
 

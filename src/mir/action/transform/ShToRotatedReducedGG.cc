@@ -25,12 +25,11 @@ namespace mir::action::transform {
 
 
 template <class Invtrans>
-ShToRotatedReducedGG<Invtrans>::ShToRotatedReducedGG(const param::MIRParametrisation& parametrisation) :
-    ShToGridded(parametrisation) {
-    ASSERT(parametrisation_.userParametrisation().get("reduced", N_));
+ShToRotatedReducedGG<Invtrans>::ShToRotatedReducedGG(const param::MIRParametrisation& param) : ShToGridded(param) {
+    ASSERT(parametrisation().userParametrisation().get("reduced", N_));
 
     std::vector<double> value;
-    ASSERT(parametrisation_.userParametrisation().get("rotation", value));
+    ASSERT(parametrisation().userParametrisation().get("rotation", value));
     ASSERT_KEYWORD_ROTATION_SIZE(value.size());
     rotation_ = util::Rotation(value[0], value[1]);
 }

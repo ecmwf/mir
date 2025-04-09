@@ -60,6 +60,7 @@ public:
 
     virtual void parametrisation(const std::string& grid, param::SimpleParametrisation&) const;
     virtual size_t gaussianNumber() const;
+    virtual std::string gridname() const;
 
     static size_t default_gaussian_number() { return 64; }
     static bool get(const std::string& key, std::string& value, const param::MIRParametrisation&);
@@ -68,6 +69,7 @@ public:
 
     static void list(std::ostream&);
 
+    const std::string& key() const { return key_; }
     const std::string& type() const { return type_; }
 
     // -- Overridden methods

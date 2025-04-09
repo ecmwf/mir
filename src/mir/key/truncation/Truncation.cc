@@ -60,23 +60,19 @@ TruncationFactory::~TruncationFactory() {
 
 Truncation* TruncationFactory::build(const std::string& name, const param::MIRParametrisation& parametrisation,
                                      long targetGaussianN) {
-    {
-        util::call_once(once, init);
-        util::lock_guard<util::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-        Log::debug() << "TruncationFactory: looking for '" << name << "'" << std::endl;
-        ASSERT(!name.empty());
+    Log::debug() << "TruncationFactory: looking for '" << name << "'" << std::endl;
+    ASSERT(!name.empty());
 
-        auto j = m->find(name);
-        if (j != m->end()) {
-            return j->second->make(parametrisation, targetGaussianN);
-        }
+    if (auto j = m->find(name); j != m->end()) {
+        return j->second->make(parametrisation, targetGaussianN);
+    }
 
-        // Look for a plain number
-        if (std::all_of(name.begin(), name.end(), ::isdigit)) {
-            long number = std::stol(name);
-            return new truncation::Ordinal(number, parametrisation);
-        }
+    // Look for a plain number
+    if (!name.empty() && std::all_of(name.begin(), name.end(), ::isdigit)) {
+        return new truncation::Ordinal(std::stol(name), parametrisation);
     }
 
     list(Log::error() << "TruncationFactory: unknown '" << name << "', choices are: ");

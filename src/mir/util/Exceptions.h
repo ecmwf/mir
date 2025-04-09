@@ -39,6 +39,7 @@ using eckit::BadValue;
 using eckit::CantOpenFile;
 using eckit::FailedSystemCall;
 using eckit::FunctionalityNotSupported;
+using eckit::ReadError;
 using eckit::SeriousBug;
 using eckit::UserError;
 using eckit::WriteError;

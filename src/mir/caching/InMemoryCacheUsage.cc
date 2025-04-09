@@ -16,9 +16,9 @@
 
 #include "eckit/serialisation/Stream.h"
 #include "eckit/utils/Tokenizer.h"
-#include "eckit/utils/Translator.h"
 
 #include "mir/util/Log.h"
+#include "mir/util/Translator.h"
 
 
 namespace mir::caching {
@@ -29,19 +29,17 @@ InMemoryCacheUsage::InMemoryCacheUsage() : memory_(0), shared_(0) {}
 InMemoryCacheUsage::InMemoryCacheUsage(size_t memory, size_t shared) : memory_(memory), shared_(shared) {}
 
 InMemoryCacheUsage::InMemoryCacheUsage(const std::string& s) : memory_(0), shared_(0) {
-
     eckit::Tokenizer parse(",");
-    eckit::Translator<std::string, size_t> s2l;
 
     std::vector<std::string> v;
     parse(s, v);
 
     if (!v.empty()) {
-        memory_ = s2l(v[0]);
+        memory_ = util::from_string<size_t>(v[0]);
     }
 
     if (v.size() >= 2) {
-        shared_ = s2l(v[1]);
+        shared_ = util::from_string<size_t>(v[1]);
     }
 }
 

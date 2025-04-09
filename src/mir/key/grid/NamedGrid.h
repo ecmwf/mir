@@ -22,7 +22,7 @@ class NamedGrid : public Grid {
 protected:
     // -- Constructors
 
-    NamedGrid(const std::string& key) : Grid(key, "namedgrid") {}
+    explicit NamedGrid(const std::string& key) : Grid(key, "namedgrid") {}
 
     // -- Destructor
     // None
@@ -42,6 +42,8 @@ protected:
     size_t gaussianNumber() const override                                             = 0;
     const repres::Representation* representation() const override                      = 0;
     const repres::Representation* representation(const util::Rotation&) const override = 0;
+
+    std::string gridname() const override { return key(); }
 
     // -- Class members
     // None

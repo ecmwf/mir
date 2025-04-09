@@ -17,7 +17,6 @@
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/utils/StringTools.h"
-#include "eckit/utils/Translator.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
@@ -26,6 +25,7 @@
 #include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Translator.h"
 #include "mir/util/Types.h"
 
 
@@ -62,7 +62,6 @@ struct MIRSpectralTransformPoints : MIRTool {
 
 void MIRSpectralTransformPoints::execute(const eckit::option::CmdArgs& args) {
     auto& log = Log::info();
-    eckit::Translator<std::string, double> to_double;
 
     std::string point = args.getString("point");
     auto points       = eckit::StringTools::split(" ", point);
@@ -75,7 +74,7 @@ void MIRSpectralTransformPoints::execute(const eckit::option::CmdArgs& args) {
         if (ll.size() != 2) {
             throw exception::UserError("Expecting lat/lon, got '" + pt + "'");
         }
-        pts->push_back({to_double(ll[1]), to_double(ll[0])});
+        pts->push_back({util::from_string<double>(ll[1]), util::from_string<double>(ll[0])});
     }
 
     ASSERT(!pts->empty());

@@ -660,7 +660,6 @@ list(APPEND mir_srcs
     util/DeprecatedFunctionality.h
     util/Domain.cc
     util/Domain.h
-    util/EckitGeo.h
     util/Error.cc
     util/Error.h
     util/Exceptions.h
@@ -720,6 +719,7 @@ list(APPEND mir_srcs
     util/SpectralOrderT.h
     util/Trace.cc
     util/Trace.h
+    util/Translator.h
     util/Types.h
     util/ValueMap.cc
     util/ValueMap.h
@@ -743,8 +743,6 @@ if(mir_HAVE_ECKIT_GEO)
             action/transform/ShToGridSpec.cc
             action/transform/ShToGridSpec.h)
     endif()
-else()
-    list(APPEND mir_srcs util/EckitGeo.cc)
 endif()
 
 if(mir_HAVE_ATLAS)
@@ -811,6 +809,8 @@ if(mir_HAVE_ATLAS)
         key/grid/NamedORCA.h
         key/grid/ORCAPattern.cc
         key/grid/ORCAPattern.h
+        key/grid/SourcePattern.cc
+        key/grid/SourcePattern.h
         method/ProxyMethod.cc
         method/ProxyMethod.h
         method/fe/BuildNodeLumpedMassMatrix.cc
@@ -1019,4 +1019,3 @@ if (HAS_SYS_STAT_ST_CTIMESPEC)
         PROPERTIES
         COMPILE_DEFINITIONS HAS_SYS_STAT_ST_CTIMESPEC)
 endif()
-

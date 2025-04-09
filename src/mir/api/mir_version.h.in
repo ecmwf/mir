@@ -14,4 +14,3 @@ unsigned int mir_version_int();
 const char * mir_version_str();
 
 const char * mir_git_sha1();
-

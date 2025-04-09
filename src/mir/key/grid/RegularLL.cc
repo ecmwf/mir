@@ -16,10 +16,10 @@
 
 #include "eckit/types/Fraction.h"
 #include "eckit/utils/StringTools.h"
-#include "eckit/utils/Translator.h"
 
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Translator.h"
 
 
 namespace mir::key::grid {
@@ -32,10 +32,7 @@ util::Increments RegularLL::increments() const {
     auto grid_str = eckit::StringTools::split("/", key_);
     ASSERT_KEYWORD_GRID_SIZE(grid_str.size());
 
-    eckit::Translator<std::string, double> cvt;
-    double grid_v[2] = {cvt(grid_str[0]), cvt(grid_str[1])};
-
-    return util::Increments(grid_v[0], grid_v[1]);
+    return util::Increments{util::from_string<double>(grid_str[0]), util::from_string<double>(grid_str[1])};
 }
 
 

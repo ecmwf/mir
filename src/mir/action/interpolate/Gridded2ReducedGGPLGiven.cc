@@ -22,9 +22,9 @@
 namespace mir::action::interpolate {
 
 
-Gridded2ReducedGGPLGiven::Gridded2ReducedGGPLGiven(const param::MIRParametrisation& parametrisation) :
-    Gridded2UnrotatedGrid(parametrisation) {
-    ASSERT(parametrisation_.userParametrisation().get("pl", pl_));
+Gridded2ReducedGGPLGiven::Gridded2ReducedGGPLGiven(const param::MIRParametrisation& param) :
+    Gridded2UnrotatedGrid(param) {
+    ASSERT(parametrisation().userParametrisation().get("pl", pl_));
 }
 
 
@@ -46,6 +46,12 @@ void Gridded2ReducedGGPLGiven::print(std::ostream& out) const {
 const repres::Representation* Gridded2ReducedGGPLGiven::outputRepresentation() const {
     size_t N = pl_.size() / 2;
     return new repres::gauss::reduced::ReducedFromPL(N, pl_);
+}
+
+
+bool Gridded2ReducedGGPLGiven::getGriddedTargetName(std::string& name) const {
+    name = "N" + std::to_string(pl_.size());
+    return true;
 }
 
 

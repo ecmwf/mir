@@ -1,0 +1,6 @@
+# input
+regular_ll.2-2.grib2
+# mir
+--intgrid=o21 --grid=source
+# plan
+Copy[]

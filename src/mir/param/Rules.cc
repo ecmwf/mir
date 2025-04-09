@@ -16,12 +16,12 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/JSON.h"
 #include "eckit/parser/YAMLParser.h"
-#include "eckit/utils/Translator.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Translator.h"
 
 
 namespace mir::param {
@@ -114,9 +114,6 @@ void Rules::print(std::ostream& s) const {
 
 
 void Rules::readConfigurationFiles() {
-    eckit::Translator<std::string, long> translate_to_long;
-    eckit::Translator<std::string, bool> translate_to_bool;
-
     warning_.clear();
 
     struct ConfigFile : private eckit::PathName {
@@ -165,7 +162,7 @@ void Rules::readConfigurationFiles() {
 
                 ASSERT(keyName != KLASS);
                 if (keyName == WARNING) {
-                    if (translate_to_bool(keyValue)) {
+                    if (util::from_string<bool>(keyValue)) {
                         warning_.insert(paramId);
                     }
                     continue;
@@ -205,7 +202,7 @@ void Rules::readConfigurationFiles() {
 
 
     for (const auto& i : parameters.map()) {
-        long paramId                  = translate_to_long(i.first);
+        auto paramId                  = util::from_string<long>(i.first);
         SimpleParametrisation& config = lookup(paramId);
 
         const eckit::ValueList& options = i.second;

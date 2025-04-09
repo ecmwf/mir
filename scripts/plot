@@ -9,8 +9,8 @@
 # granted to it by virtue of its status as an intergovernmental organisation nor
 # does it submit to any jurisdiction.
 
-import os
 import argparse
+import os
 import tempfile
 from sys import platform
 
@@ -85,6 +85,10 @@ def diff(x, y):
     return x - y
 
 
+def miss(x, y):
+    return m1 if (x == m1) == (y == m2) else [1, 2][y == m2]
+
+
 mproc = macro.mcont
 if args.wind:
     mproc = macro.mwind
@@ -124,7 +128,7 @@ if args.diff or args.error or args.miss:
 
         m1 = eccodes.codes_get(h1, "missingValue")
         m2 = eccodes.codes_get(h2, "missingValue")
-        proc = lambda x, y: m1 if (x == m1) == (y == m2) else [1, 2][y == m2]
+        proc = miss
     elif args.diff:
         proc = diff
     else:

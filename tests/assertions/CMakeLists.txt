@@ -16,8 +16,9 @@ if(MARS_SCRIPT)
     file(GLOB_RECURSE test_files LIST_DIRECTORIES false *.test)
 
     foreach(_t ${test_files})
+        target_from_path("${_t}" target)
         ecbuild_add_test(
-            TARGET      ${_t}
+            TARGET      ${target}
             COMMAND     mir-test.sh
             ARGS        ${_t}
             ENVIRONMENT ${_testEnvironment})
@@ -26,7 +27,7 @@ if(MARS_SCRIPT)
            (NOT mir_HAVE_ATLAS AND NOT (_t MATCHES "[.]core[.]")) OR
            (NOT mir_HAVE_ECKIT_GEO AND (_t MATCHES "[.]geo[.]")) OR
            (NOT atlas_HAVE_PROJ AND (_t MATCHES "[.]proj[.]")))
-            set_tests_properties(${_t} PROPERTIES WILL_FAIL TRUE)
+            set_tests_properties(${target} PROPERTIES WILL_FAIL TRUE)
         endif()
     endforeach()
 endif()
@@ -41,7 +42,7 @@ if(NOT eccodes_HAVE_AEC)
         MIR-513.packingType=grid_second_order.003.core.test
         MIR-513.packingType=grid_simple.003.core.test)
         get_filename_component(_t "${_r}" ABSOLUTE)
-        set_tests_properties(${_t} PROPERTIES WILL_FAIL TRUE)
+        target_from_path("${_t}" target)
+        set_tests_properties(${target} PROPERTIES WILL_FAIL TRUE)
     endforeach()
 endif()
-

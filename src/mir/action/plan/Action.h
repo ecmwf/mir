@@ -75,7 +75,11 @@ public:
     virtual bool deleteWithNext(const Action&);
     virtual bool isEndAction() const;
     virtual bool isCropAction() const;
+    virtual bool isRegridAction() const;
+
     virtual bool canCrop() const;
+    virtual bool getGriddedTargetName(std::string&) const;
+
     virtual util::BoundingBox outputBoundingBox() const;
 
     virtual void estimate(context::Context&, api::MIREstimation&) const;
@@ -94,12 +98,12 @@ public:
 
 protected:
     // -- Members
-
-    const param::MIRParametrisation& parametrisation_;
+    // None
 
     // -- Methods
 
     virtual void print(std::ostream&) const = 0;
+    const param::MIRParametrisation& parametrisation() const { return parametrisation_; }
 
     // -- Overridden methods
     // None
@@ -112,7 +116,8 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    const param::MIRParametrisation& parametrisation_;
 
     // -- Methods
 

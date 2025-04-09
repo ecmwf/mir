@@ -43,9 +43,9 @@ struct LL {
 };
 
 
-Area::Area(const param::MIRParametrisation& parametrisation) : Action(parametrisation), caching_(LibMir::caching()) {
-    ASSERT(key::Area::get(parametrisation_.userParametrisation(), bbox_));
-    parametrisation_.get("caching", caching_);
+Area::Area(const param::MIRParametrisation& param) : Action(param), caching_(LibMir::caching()) {
+    ASSERT(key::Area::get(parametrisation().userParametrisation(), bbox_));
+    parametrisation().get("caching", caching_);
 }
 
 

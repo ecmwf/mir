@@ -22,9 +22,9 @@
 namespace mir::action::interpolate {
 
 
-Gridded2RotatedReducedGG::Gridded2RotatedReducedGG(const param::MIRParametrisation& parametrisation) :
-    Gridded2RotatedGrid(parametrisation), N_(0) {
-    ASSERT(parametrisation_.userParametrisation().get("reduced", N_));
+Gridded2RotatedReducedGG::Gridded2RotatedReducedGG(const param::MIRParametrisation& param) :
+    Gridded2RotatedGrid(param), N_(0) {
+    ASSERT(parametrisation().userParametrisation().get("reduced", N_));
     ASSERT(N_ > 0);
 }
 

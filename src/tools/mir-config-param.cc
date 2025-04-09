@@ -91,8 +91,8 @@ void display(const param::MIRParametrisation& metadata, const std::string& key) 
 }
 
 
-struct MIRConfig : MIRTool {
-    MIRConfig(int argc, char** argv) : MIRTool(argc, argv) {
+struct MIRConfigParam : MIRTool {
+    MIRConfigParam(int argc, char** argv) : MIRTool(argc, argv) {
         using eckit::option::SimpleOption;
 
         options_.push_back(new SimpleOption<long>("param-id", "Display configuration with paramId"));
@@ -127,7 +127,7 @@ struct MIRConfig : MIRTool {
 };
 
 
-void MIRConfig::execute(const eckit::option::CmdArgs& args) {
+void MIRConfigParam::execute(const eckit::option::CmdArgs& args) {
 
     std::string key("interpolation");
     args.get("key", key);
@@ -231,6 +231,6 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
 
 
 int main(int argc, char** argv) {
-    mir::tools::MIRConfig tool(argc, argv);
+    mir::tools::MIRConfigParam tool(argc, argv);
     return tool.start();
 }

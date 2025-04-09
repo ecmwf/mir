@@ -99,9 +99,11 @@ private:
 
     void execute(context::Context&) const override;
     bool mergeWithNext(const Action&) override;
-    bool canCrop() const override;
 
+    bool canCrop() const override;
     method::Cropping cropping(context::Context&) const;
+
+    bool isRegridAction() const override { return true; }
 
     // -- Class members
     // None

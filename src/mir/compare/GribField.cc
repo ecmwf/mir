@@ -1190,8 +1190,6 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
         }
     }
 
-    static eckit::Translator<long, std::string> l2s;
-
     // long scanningMode = 0;
     // if (codes_get_long(h, "scanningMode", &scanningMode) == 0) {
     //     field->insert("scanningMode", scanningMode);
@@ -1203,7 +1201,7 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
     // }
 
     if (long edition = 0; codes_get_long(h, "edition", &edition) == 0) {
-        field->format("grib" + l2s(edition));
+        field->format("grib" + std::to_string(edition));
     }
 
     if (long missingValuesPresent = 0; codes_get_long(h, "missingValuesPresent", &missingValuesPresent) == 0) {

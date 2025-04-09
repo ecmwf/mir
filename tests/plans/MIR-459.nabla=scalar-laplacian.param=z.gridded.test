@@ -4,4 +4,3 @@ date=20200308,level=1000,grid=O80,param=z
 --nabla=scalar-laplacian
 # plan
 ScalarLaplacian[meshGeneratorParameters=...]|Save[output=...]
-

@@ -16,25 +16,24 @@
 
 #include "eckit/types/Types.h"
 #include "eckit/utils/Tokenizer.h"
-#include "eckit/utils/Translator.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Translator.h"
 
 
 namespace mir::action {
 
 
-SetMetadata::SetMetadata(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
+SetMetadata::SetMetadata(const param::MIRParametrisation& param) : Action(param) {
     std::string metadata;
-    ASSERT(parametrisation.get("metadata", metadata));
+    ASSERT(parametrisation().get("metadata", metadata));
 
     // TODO: create a parser
     eckit::Tokenizer parse1(",");
     eckit::Tokenizer parse2("=");
-    eckit::Translator<std::string, long> s2l;
 
     std::vector<std::string> v;
     parse1(metadata, v);
@@ -44,7 +43,7 @@ SetMetadata::SetMetadata(const param::MIRParametrisation& parametrisation) : Act
         parse2(j, w);
         ASSERT(w.size() == 2);
 
-        metadata_[w[0]] = s2l(w[1]);
+        metadata_[w[0]] = util::from_string<long>(w[1]);
     }
 }
 
