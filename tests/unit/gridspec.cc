@@ -42,7 +42,7 @@ CASE("GridSpec input/output") {
         test_t{"{grid: 10/10}", "{\"grid\":[10,10]}", 684},
         {"{grid: [20, 10]}", "{\"grid\":[20,10]}", 342},
         {"{grid: o8}", "{\"grid\":\"O8\"}", 544},
-        {"{grid: h2n}", "{\"grid\":\"H2\",\"ordering\":\"nested\"}", 48},
+        {"{grid: h2n}", "{\"grid\":\"H2\",\"order\":\"nested\"}", 48},
         {"{grid: h2_ring}", "{\"grid\":\"H2\"}", 48},
 
     };
