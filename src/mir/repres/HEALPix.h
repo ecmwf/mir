@@ -12,14 +12,15 @@
 
 #pragma once
 
+#include <memory>
 #include <string>
 #include <utility>
 
 #include "mir/repres/Gridded.h"
 
 
-namespace eckit::geo {
-class Grid;
+namespace eckit::geo::grid {
+class HEALPix;
 }
 
 
@@ -37,32 +38,21 @@ public:
     explicit HEALPix(size_t Nside, const std::string& order = "ring");
     explicit HEALPix(const param::MIRParametrisation&);
 
-    // -- Methods
-
-    size_t Nside() const { return Nside_; }
-
 private:
     // -- Members
 
-    size_t Nside_;
-    std::string order_;
+    std::unique_ptr<eckit::geo::grid::HEALPix> grid_;
 
-    mutable std::unique_ptr<eckit::geo::Grid> grid_;
     mutable points_type points_;
 
     // -- Methods
 
     std::string name() const;
-    eckit::geo::Grid& grid() const;
     points_type& to_latlons() const;
 
     // -- Overridden methods
 
-    bool sameAs(const Representation& other) const override {
-        const auto* o = dynamic_cast<const HEALPix*>(&other);
-        return (o != nullptr) && Nside_ == o->Nside_ && order_ == o->order_;
-    }
-
+    bool sameAs(const Representation& other) const override;
     void makeName(std::ostream&) const override;
 
     void fillGrib(grib_info&) const override;
