@@ -18,7 +18,6 @@
 
 
 #cmakedefine01 mir_HAVE_ATLAS
-#cmakedefine01 mir_HAVE_ECKIT_GEO
 #cmakedefine01 mir_HAVE_NETCDF
 #cmakedefine01 mir_HAVE_PNG
 #cmakedefine01 mir_HAVE_OMP
@@ -28,11 +27,9 @@ constexpr bool _to_bool(int x = 0) {
     return x != 0;
 }
 
-constexpr bool HAVE_ATLAS     = _to_bool(@mir_HAVE_ATLAS@);
-constexpr bool HAVE_ECKIT_GEO = _to_bool(@mir_HAVE_ECKIT_GEO@);
-constexpr bool HAVE_NETCDF    = _to_bool(@mir_HAVE_NETCDF@);
-constexpr bool HAVE_PNG       = _to_bool(@mir_HAVE_PNG@);
-constexpr bool HAVE_OMP       = _to_bool(@mir_HAVE_OMP@);
-
-constexpr bool HAVE_TESSELATION = _to_bool(@atlas_HAVE_TESSELATION@);
+constexpr bool HAVE_ATLAS       = _to_bool(@mir_HAVE_ATLAS@);
+constexpr bool HAVE_NETCDF      = _to_bool(@mir_HAVE_NETCDF@);
+constexpr bool HAVE_OMP         = _to_bool(@mir_HAVE_OMP@);
+constexpr bool HAVE_PNG         = _to_bool(@mir_HAVE_PNG@);
 constexpr bool HAVE_PROJ        = _to_bool(@atlas_HAVE_PROJ@);
+constexpr bool HAVE_TESSELATION = _to_bool(@atlas_HAVE_TESSELATION@);

@@ -96,11 +96,10 @@ struct MIRVersion : MIRTool {
             out << "features";
             out.startObject();
             out << "HAVE_ATLAS" << HAVE_ATLAS;
-            out << "HAVE_ECKIT_GEO" << HAVE_ECKIT_GEO;
             out << "HAVE_NETCDF" << HAVE_NETCDF;
+            out << "HAVE_OMP" << HAVE_OMP;
             out << "HAVE_PNG" << HAVE_PNG;
             out << "HAVE_PROJ" << HAVE_PROJ;
-            out << "HAVE_OMP" << HAVE_OMP;
             out << "HAVE_TESSELATION" << HAVE_TESSELATION;
             out.endObject();
 
@@ -138,11 +137,10 @@ struct MIRVersion : MIRTool {
 
         out << "\nFeatures:";
         out << "\n  HAVE_ATLAS       : " << on_off(HAVE_ATLAS);
-        out << "\n  HAVE_ECKIT_GEO   : " << on_off(HAVE_ECKIT_GEO);
         out << "\n  HAVE_NETCDF      : " << on_off(HAVE_NETCDF);
+        out << "\n  HAVE_OMP         : " << on_off(HAVE_OMP);
         out << "\n  HAVE_PNG         : " << on_off(HAVE_PNG);
         out << "\n  HAVE_PROJ        : " << on_off(HAVE_PROJ);
-        out << "\n  HAVE_OMP         : " << on_off(HAVE_OMP);
         out << "\n  HAVE_TESSELATION : " << on_off(HAVE_TESSELATION);
         out << '\n';
 
