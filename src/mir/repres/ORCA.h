@@ -12,61 +12,50 @@
 
 #pragma once
 
-#include "mir/param/MIRParametrisation.h"
-#include "mir/repres/proxy/ProxyGrid.h"
-#include "mir/util/Atlas.h"
-#include "mir/util/MeshGeneratorParameters.h"
+#include <memory>
+#include <string>
+#include <utility>
+
+#include "mir/repres/Gridded.h"
 
 
-struct grib_info;
+namespace eckit::geo::grid {
+class ORCA;
+}
 
 
-namespace mir::repres::proxy {
+namespace mir::repres {
 
 
-class ORCA final : public ProxyGrid {
+class ORCA final : public Gridded {
 public:
-    // -- Exceptions
-    // None
+    // -- Types
+
+    using points_type = std::pair<std::vector<double>, std::vector<double>>;
 
     // -- Constructors
 
     explicit ORCA(const std::string& uid);
     explicit ORCA(const param::MIRParametrisation&);
 
-    // -- Destructor
-    // None
-
-    // -- Convertors
-    // None
-
-    // -- Operators
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
     // -- Class methods
-    // None
+
+    static std::string match(const std::string& name, const param::MIRParametrisation&);
 
 private:
     // -- Members
 
-    const ::atlas::Grid::Spec spec_;
-    mutable ::atlas::Grid grid_;
+    std::unique_ptr<eckit::geo::grid::ORCA> grid_;
+
+    mutable points_type points_;
 
     // -- Methods
-    // None
+
+    std::string name() const;
+    points_type& to_latlons() const;
 
     // -- Overridden methods
 
-    // from Representation
     bool sameAs(const Representation&) const override;
     void makeName(std::ostream&) const override;
 
@@ -74,22 +63,20 @@ private:
     void fillMeshGen(util::MeshGeneratorParameters&) const override;
     void fillJob(api::MIRJob&) const override;
 
+    void print(std::ostream&) const override;
+    void json(eckit::JSON&) const override;
+
+    void validate(const MIRValuesVector&) const override;
     size_t numberOfPoints() const override;
 
-    void print(std::ostream&) const override;
+    Iterator* iterator() const override;
 
-    // from ProxyGrid
-    const ::atlas::Grid& atlasGridRef() const override;
+    bool includesNorthPole() const override { return true; }
+    bool includesSouthPole() const override { return true; }
+    bool isPeriodicWestEast() const override { return true; }
 
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-    // -- Friends
-    // None
+    ::atlas::Grid atlasGrid() const override;
 };
 
 
-}  // namespace mir::repres::proxy
+}  // namespace mir::repres
