@@ -42,9 +42,6 @@ namespace solver {
 class Solver;
 }
 }  // namespace method
-namespace reorder {
-class Reorder;
-}
 namespace repres {
 class Representation;
 }
@@ -91,8 +88,8 @@ protected:
     const solver::Solver& solver() const;
     void addNonLinearTreatment(const nonlinear::NonLinear*);
     void setSolver(const solver::Solver*);
-    void setReorderRows(reorder::Reorder*);
-    void setReorderCols(reorder::Reorder*);
+    void setReorderRows(const std::string& name) { reorderRows_ = name; }
+    void setReorderCols(const std::string& name) { reorderRows_ = name; }
     double poleDisplacement() const { return poleDisplacement_; }
 
     // -- Overridden methods
@@ -112,8 +109,8 @@ private:
 
     std::vector<std::unique_ptr<const nonlinear::NonLinear>> nonLinear_;
     std::unique_ptr<const solver::Solver> solver_;
-    std::unique_ptr<const reorder::Reorder> reorderRows_;
-    std::unique_ptr<const reorder::Reorder> reorderCols_;
+    std::string reorderRows_;
+    std::string reorderCols_;
 
     bool matrixAssemble_;
 

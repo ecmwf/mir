@@ -13,12 +13,14 @@ set(TESTS
     action_graph
     area
     bounding_box
+    earthkit-regrid
     formula
     gaussian_grid
     grib_basic_angle
     grib_encoding
     grib_input
     grid_box_method
+    gridspec
     increments
     input_MultiDimensionalInput
     interpolations
@@ -39,12 +41,6 @@ endif()
 
 if(mir_HAVE_NETCDF)
     list(APPEND TESTS interpolation_netcdf)
-endif()
-
-if(mir_HAVE_ECKIT_GEO)
-    list(APPEND TESTS
-        earthkit-regrid
-        gridspec)
 endif()
 
 foreach(_t ${TESTS})

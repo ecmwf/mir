@@ -193,8 +193,8 @@ void Bitmap::prodgenBitmap(const std::string& path, const std::string& destinati
     while (in.getline(line, sizeof(line))) {
 
         std::string dest(line, line + 5);
-        auto num   = from_string<size_t>(std::string(line + 6, line + 9));
-        bool ok    = (num == no && destination == dest);
+        auto num = from_string<size_t>(std::string(line + 6, line + 9));
+        bool ok  = (num == no && destination == dest);
 
         size_t size = 0;
         for (const char* c = line + 10; c != line + 20; ++c) {

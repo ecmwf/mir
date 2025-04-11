@@ -28,7 +28,6 @@
 
 #include "mir/caching/InMemoryMeshCache.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/reorder/Reorder.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
@@ -36,6 +35,7 @@
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
 #include "mir/util/Point2ToPoint3.h"
+#include "mir/util/Reorder.h"
 #include "mir/util/Trace.h"
 
 
@@ -170,11 +170,11 @@ FiniteElement::FiniteElement(const param::MIRParametrisation& param, const std::
                                                              : NOTIMP;
 
     if (std::string name; parametrisation_.get("finite-element-matrix-reorder-rows", name)) {
-        setReorderRows(reorder::ReorderFactory::build(name));
+        setReorderRows(name);
     }
 
     if (std::string name; parametrisation_.get("finite-element-matrix-reorder-cols", name)) {
-        setReorderCols(reorder::ReorderFactory::build(name));
+        setReorderCols(name);
     }
 }
 

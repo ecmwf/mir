@@ -67,6 +67,8 @@ list(APPEND mir_srcs
     action/filter/UnstructuredFilter.h
     action/interpolate/Gridded2GridDef.cc
     action/interpolate/Gridded2GridDef.h
+    action/interpolate/Gridded2GridSpec.cc
+    action/interpolate/Gridded2GridSpec.h
     action/interpolate/Gridded2GriddedInterpolation.cc
     action/interpolate/Gridded2GriddedInterpolation.h
     action/interpolate/Gridded2NamedGrid.cc
@@ -248,6 +250,8 @@ list(APPEND mir_srcs
     input/GribMemoryInput.h
     input/GribStreamInput.cc
     input/GribStreamInput.h
+    input/GridSpecInput.cc
+    input/GridSpecInput.h
     input/GriddefInput.cc
     input/GriddefInput.h
     input/MIRInput.cc
@@ -276,6 +280,10 @@ list(APPEND mir_srcs
     key/grid/Grid.h
     key/grid/GridPattern.cc
     key/grid/GridPattern.h
+    key/grid/GridSpec.cc
+    key/grid/GridSpec.h
+    key/grid/GridSpecPattern.cc
+    key/grid/GridSpecPattern.h
     key/grid/NamedClassic.cc
     key/grid/NamedClassic.h
     key/grid/NamedFromFile.cc
@@ -486,6 +494,8 @@ list(APPEND mir_srcs
     param/DefaultParametrisation.h
     param/FieldParametrisation.cc
     param/FieldParametrisation.h
+    param/GridSpecParametrisation.cc
+    param/GridSpecParametrisation.h
     param/MIRParametrisation.cc
     param/MIRParametrisation.h
     param/Rules.cc
@@ -496,12 +506,10 @@ list(APPEND mir_srcs
     param/SameParametrisation.h
     param/SimpleParametrisation.cc
     param/SimpleParametrisation.h
-    reorder/Identity.cc
-    reorder/Identity.h
-    reorder/Reorder.cc
-    reorder/Reorder.h
     repres/Gridded.cc
     repres/Gridded.h
+    repres/HEALPix.cc
+    repres/HEALPix.h
     repres/Iterator.cc
     repres/Iterator.h
     repres/Representation.cc
@@ -709,6 +717,8 @@ list(APPEND mir_srcs
     util/PointLatLonT.h
     util/Regex.cc
     util/Regex.h
+    util/Reorder.cc
+    util/Reorder.h
     util/Rotation.cc
     util/Rotation.h
     util/Shape.cc
@@ -726,25 +736,6 @@ list(APPEND mir_srcs
     util/Wind.cc
     util/Wind.h)
 
-if(mir_HAVE_ECKIT_GEO)
-    list(APPEND mir_srcs
-        action/interpolate/Gridded2GridSpec.cc
-        action/interpolate/Gridded2GridSpec.h
-        input/GridSpecInput.cc
-        input/GridSpecInput.h
-        key/grid/GridSpec.cc
-        key/grid/GridSpec.h
-        key/grid/GridSpecPattern.cc
-        key/grid/GridSpecPattern.h
-        param/GridSpecParametrisation.cc
-        param/GridSpecParametrisation.h)
-    if(mir_HAVE_ATLAS)
-        list(APPEND mir_srcs
-            action/transform/ShToGridSpec.cc
-            action/transform/ShToGridSpec.h)
-    endif()
-endif()
-
 if(mir_HAVE_ATLAS)
     list(APPEND mir_srcs
         action/filter/NablaFilterFVMT.cc
@@ -755,6 +746,8 @@ if(mir_HAVE_ATLAS)
         action/transform/InvtransVodTouv.h
         action/transform/ShToGridDef.cc
         action/transform/ShToGridDef.h
+        action/transform/ShToGridSpec.cc
+        action/transform/ShToGridSpec.h
         action/transform/ShToGridded.cc
         action/transform/ShToGridded.h
         action/transform/ShToNamedGrid.cc
@@ -801,10 +794,6 @@ if(mir_HAVE_ATLAS)
         caching/legendre/NoLoader.h
         caching/legendre/SharedMemoryLoader.cc
         caching/legendre/SharedMemoryLoader.h
-        key/grid/HEALPixPattern.cc
-        key/grid/HEALPixPattern.h
-        key/grid/NamedHEALPix.cc
-        key/grid/NamedHEALPix.h
         key/grid/NamedORCA.cc
         key/grid/NamedORCA.h
         key/grid/ORCAPattern.cc
@@ -833,16 +822,10 @@ if(mir_HAVE_ATLAS)
         method/structured/StructuredMethod.h
         output/GmshOutput.cc
         output/GmshOutput.h
-        reorder/HEALPix.cc
-        reorder/HEALPix.h
-        repres/proxy/HEALPix.cc
-        repres/proxy/HEALPix.h
         repres/proxy/ORCA.cc
         repres/proxy/ORCA.h
         repres/proxy/ProxyGrid.cc
         repres/proxy/ProxyGrid.h
-        repres/unsupported/HEALPixNested.cc
-        repres/unsupported/HEALPixNested.h
         stats/statistics/Integral.cc
         stats/statistics/Integral.h)
 else()
@@ -993,13 +976,9 @@ ecbuild_add_library(
     INSTALL_HEADERS    LISTED
     HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/mir
     TEMPLATES          caching/InMemoryCache.cc
-    PUBLIC_LIBS        eckit_linalg eckit_geometry eckit_option eckit eccodes
+    PUBLIC_LIBS        eckit_linalg eckit_geometry eckit_option eckit eckit_geo eccodes
     PUBLIC_INCLUDES    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/src>
     SOURCES            ${mir_srcs})
-
-if(mir_HAVE_ECKIT_GEO)
-    target_link_libraries(mir PUBLIC eckit_geo)
-endif()
 
 if(mir_HAVE_ATLAS)
     target_link_libraries(mir PUBLIC atlas)
