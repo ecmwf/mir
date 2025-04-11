@@ -14,7 +14,10 @@
 #include <string>
 #include <vector>
 
-#include "eckit/log/JSON.h"
+
+namespace eckit {
+class JSON;
+}
 
 
 namespace mir::util {
@@ -22,9 +25,26 @@ namespace mir::util {
 
 class Reorder {
 public:
+    // -- Types
+
+    struct Builder {
+        virtual Reorder* build(const std::string& name, size_t size) const = 0;
+
+    protected:
+        static void register_builder(const std::string& name, Builder*);
+    };
+
+
+    template <typename T>
+    struct BuilderT : Builder {
+        explicit BuilderT(const std::string& name) { register_builder(name, this); }
+
+        Reorder* build(const std::string& name, size_t size) const override { return new T(name, size); }
+    };
+
     // -- Constructors
 
-    explicit Reorder(size_t _size) : size(_size) {}
+    explicit Reorder(const std::string _name, size_t _size) : name(_name), size(_size) {}
 
     Reorder(const Reorder&) = delete;
     Reorder(Reorder&&)      = delete;
@@ -44,6 +64,7 @@ public:
 
     // -- Members
 
+    const std::string name;
     const size_t size;
 
     // -- Class methods
@@ -55,7 +76,8 @@ private:
     // -- Methods
 
     virtual void print(std::ostream&) const = 0;
-    virtual void json(eckit::JSON&) const   = 0;
+
+    void json(eckit::JSON&) const;
 
     // Friends
 
