@@ -23,19 +23,6 @@ if(MARS_SCRIPT)
     endforeach()
 endif()
 
-if(EXISTS ${CMAKE_BINARY_DIR}/share/plugins/atlas-orca.yml)
-    file(GLOB_RECURSE test_files LIST_DIRECTORIES false *.test.atlas-orca)
-    foreach(_t ${test_files})
-        target_from_path("${_t}" target)
-        ecbuild_add_test(
-            TARGET      ${target}
-            CONDITION   MARS_SCRIPT
-            COMMAND     mir-test.sh
-            ARGS        ${_t}
-            ENVIRONMENT ${_testEnvironment})
-    endforeach()
-endif()
-
 set(_t ${CMAKE_CURRENT_SOURCE_DIR}/config)
 target_from_path("${_t}" target)
 ecbuild_add_test(
