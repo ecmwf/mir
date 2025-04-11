@@ -35,7 +35,7 @@ public:
 
     // -- Constructors
 
-    explicit ORCA(const std::string& uid);
+    explicit ORCA(const std::string&);
     explicit ORCA(const param::MIRParametrisation&);
 
     // -- Class methods

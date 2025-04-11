@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "eckit/geo/grid/ORCA.h"
+#include "eckit/geo/spec/Custom.h"
 
 #include "mir/api/MIRJob.h"
 #include "mir/iterator/UnstructuredIterator.h"
@@ -104,7 +105,13 @@ const ORCAPattern __ORCA(PATTERN);
 }  // namespace
 
 
-ORCA::ORCA(const std::string& uid) : grid_(new eckit::geo::grid::ORCA(uid)) {}
+ORCA::ORCA(const std::string& grid) :
+    grid_([&grid]() {
+        eckit::geo::spec::Custom custom{{"grid", grid}};
+        std::unique_ptr<eckit::geo::Spec> spec(eckit::geo::GridFactory::make_spec(custom));
+
+        return new eckit::geo::grid::ORCA(*spec);
+    }()) {}
 
 
 ORCA::ORCA(const param::MIRParametrisation& param) :
