@@ -12,33 +12,45 @@
 
 #include "mir/util/Reorder.h"
 
+#include <map>
 #include <numeric>
 #include <ostream>
 
 #include "eckit/geo/order/HEALPix.h"
+#include "eckit/log/JSON.h"
 
 #include "mir/util/Exceptions.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir::util {
 
 
-using HEALPix = eckit::geo::order::HEALPix;
+static std::map<std::string, Reorder::Builder*> BUILDERS;
+static recursive_mutex MUTEX;
+
+
+class lock_type {
+    lock_guard<recursive_mutex> lock_guard_{MUTEX};
+};
+
+
+void Reorder::Builder::register_builder(const std::string& name, Reorder::Builder* builder) {
+    lock_type lock;
+    ASSERT(BUILDERS.insert({name, builder}).second);
+}
 
 
 class HEALPixRingToNested final : public Reorder {
 public:
     using Reorder::Reorder;
 
-    static const std::string& name() {
-        static const std::string NAME("healpix-ring-to-nested");
-        return NAME;
-    }
-
     void print(std::ostream& s) const override { s << "HEALPixRingToNested[]"; }
-    void json(eckit::JSON& j) const override { j << name(); }
 
-    std::vector<size_t> reorder() override { return HEALPix(HEALPix::ring, size).reorder(HEALPix::nested); }
+    std::vector<size_t> reorder() override {
+        using H = eckit::geo::order::HEALPix;
+        return H(H::ring, size).reorder(H::nested);
+    }
 };
 
 
@@ -46,15 +58,12 @@ class HEALPixNestedToRing final : public Reorder {
 public:
     using Reorder::Reorder;
 
-    static const std::string& name() {
-        static const std::string NAME("healpix-ring-to-nested");
-        return NAME;
-    }
-
     void print(std::ostream& s) const override { s << "HEALPixNestedToRing[]"; }
-    void json(eckit::JSON& j) const override { j << name(); }
 
-    std::vector<size_t> reorder() override { return HEALPix(HEALPix::nested, size).reorder(HEALPix::ring); }
+    std::vector<size_t> reorder() override {
+        using H = eckit::geo::order::HEALPix;
+        return H(H::nested, size).reorder(H::ring);
+    }
 };
 
 
@@ -62,13 +71,7 @@ class Identity final : public Reorder {
 public:
     using Reorder::Reorder;
 
-    static const std::string& name() {
-        static const std::string NAME("identity");
-        return NAME;
-    }
-
     void print(std::ostream& s) const override { s << "Identity[]"; }
-    void json(eckit::JSON& j) const override { j << name(); }
 
     std::vector<size_t> reorder() override {
         std::vector<size_t> v(size);
@@ -78,17 +81,17 @@ public:
 };
 
 
+static const Reorder::BuilderT<HEALPixRingToNested> REORDER1("healpix-ring-to-nested");
+static const Reorder::BuilderT<HEALPixNestedToRing> REORDER2("healpix-nested-to-ring");
+static const Reorder::BuilderT<Identity> REORDER3("identity");
+
+
 Reorder* Reorder::build(const std::string& name, size_t size) {
-    if (name == HEALPixRingToNested::name()) {
-        return new HEALPixRingToNested(size);
-    }
+    lock_type lock;
 
-    if (name == HEALPixNestedToRing::name()) {
-        return new HEALPixNestedToRing(size);
-    }
-
-    if (name == Identity::name()) {
-        return new Identity(size);
+    if (auto builder = BUILDERS.find(name); builder != BUILDERS.end()) {
+        ASSERT(builder->second != nullptr);
+        return builder->second->build(name, size);
     }
 
     throw exception::BadValue("Reorder: invalid method: '" + name + "'");
@@ -96,7 +99,18 @@ Reorder* Reorder::build(const std::string& name, size_t size) {
 
 
 void Reorder::list(std::ostream& s) {
-    s << HEALPixRingToNested::name() << ", " << HEALPixNestedToRing::name() << ", " << Identity::name();
+    lock_type lock;
+
+    const auto* sep = "";
+    for (const auto& [key, value] : BUILDERS) {
+        s << sep << key;
+        sep = ", ";
+    }
+}
+
+
+void Reorder::json(eckit::JSON& j) const {
+    j << name;
 }
 
 
