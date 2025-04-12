@@ -110,7 +110,7 @@ CASE("ECMWFStyle") {
 
 
         std::vector<bool> inputs_gridded{true};
-        if constexpr (HAVE_ATLAS) {
+        if constexpr (MIR_HAVE_ATLAS) {
             inputs_gridded.push_back(false);
         }
 

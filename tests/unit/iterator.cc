@@ -242,7 +242,7 @@ CASE("GaussianIterator") {
              {-25.061510912726, 135.0969827586207}},
         };
 
-        if constexpr (HAVE_ATLAS) {
+        if constexpr (MIR_HAVE_ATLAS) {
             tests.emplace_back(test_t{"N128",
                                       88838,
                                       88838,

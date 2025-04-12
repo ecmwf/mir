@@ -302,7 +302,7 @@ CASE("Representation::extendBoundingBox") {
     SECTION("Gaussian") {
 
         std::vector<std::string> _name{"F16", "O16", "F21", "O21"};
-        if constexpr (HAVE_ATLAS) {
+        if constexpr (MIR_HAVE_ATLAS) {
             _name.emplace_back("N16");
         }
 

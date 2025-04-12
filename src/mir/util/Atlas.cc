@@ -109,7 +109,7 @@ StructuredGrid::StructuredGrid(const Grid&) {
 }
 
 
-idx_t StructuredGrid::nx() const {
+idx_t RegularGrid::nx() const {
     ASSERT(!pl_.empty());
     auto mm = std::minmax_element(pl_.begin(), pl_.end());
     ASSERT(*mm.first == *mm.second);
@@ -157,6 +157,11 @@ UnstructuredGrid::UnstructuredGrid(std::vector<PointXY>&& points) : points_(poin
 
 trans::LegendreCache::LegendreCache(const void*, size_t) {
     NOTIMP;
+}
+
+
+std::string Grid::uid() const {
+    return {};
 }
 
 

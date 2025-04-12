@@ -95,12 +95,12 @@ struct MIRVersion : MIRTool {
 
             out << "features";
             out.startObject();
-            out << "HAVE_ATLAS" << HAVE_ATLAS;
-            out << "HAVE_NETCDF" << HAVE_NETCDF;
-            out << "HAVE_OMP" << HAVE_OMP;
-            out << "HAVE_PNG" << HAVE_PNG;
-            out << "HAVE_PROJ" << HAVE_PROJ;
-            out << "HAVE_TESSELATION" << HAVE_TESSELATION;
+            out << "HAVE_ATLAS" << MIR_HAVE_ATLAS;
+            out << "HAVE_NETCDF" << MIR_HAVE_NETCDF;
+            out << "HAVE_OMP" << MIR_HAVE_OMP;
+            out << "HAVE_PNG" << MIR_HAVE_PNG;
+            out << "HAVE_PROJ" << MIR_HAVE_PROJ;
+            out << "HAVE_TESSELATION" << MIR_HAVE_TESSELATION;
             out.endObject();
 
             out << "libraries";
@@ -136,12 +136,12 @@ struct MIRVersion : MIRTool {
         out << '\n';
 
         out << "\nFeatures:";
-        out << "\n  HAVE_ATLAS       : " << on_off(HAVE_ATLAS);
-        out << "\n  HAVE_NETCDF      : " << on_off(HAVE_NETCDF);
-        out << "\n  HAVE_OMP         : " << on_off(HAVE_OMP);
-        out << "\n  HAVE_PNG         : " << on_off(HAVE_PNG);
-        out << "\n  HAVE_PROJ        : " << on_off(HAVE_PROJ);
-        out << "\n  HAVE_TESSELATION : " << on_off(HAVE_TESSELATION);
+        out << "\n  HAVE_ATLAS       : " << on_off(MIR_HAVE_ATLAS);
+        out << "\n  HAVE_NETCDF      : " << on_off(MIR_HAVE_NETCDF);
+        out << "\n  HAVE_OMP         : " << on_off(MIR_HAVE_OMP);
+        out << "\n  HAVE_PNG         : " << on_off(MIR_HAVE_PNG);
+        out << "\n  HAVE_PROJ        : " << on_off(MIR_HAVE_PROJ);
+        out << "\n  HAVE_TESSELATION : " << on_off(MIR_HAVE_TESSELATION);
         out << '\n';
 
         out << "\nLibraries:";

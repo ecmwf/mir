@@ -35,7 +35,7 @@ CASE("interpolations") {
     jobs[1].set("area", "40/20/20/40");
     jobs[1].set("frame", 2);
 
-    if constexpr (HAVE_TESSELATION) {
+    if constexpr (MIR_HAVE_TESSELATION) {
         SECTION("interpolation gridded to gridded (netCDF)") {
             param::SimpleParametrisation args;
             args.set("input", "checkDuplicatePoints: False");
