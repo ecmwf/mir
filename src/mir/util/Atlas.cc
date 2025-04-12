@@ -123,7 +123,7 @@ GaussianGrid::GaussianGrid(const std::string& name, const Domain& domain) {
     spec_.set("name", name);
 
     auto c = name.front();
-    auto n = util::from_string<idx_t>(name.substr(1));
+    auto n = mir::util::from_string<idx_t>(name.substr(1));
     ASSERT(n > 0);
 
     if (c == 'F' || c == 'f') {
