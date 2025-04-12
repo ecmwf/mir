@@ -16,6 +16,7 @@ foreach(tool IN ITEMS
     mir-grid-info
     mir-inspect
     mir-list
+    mir-lsm
     mir-load-matrix
     mir-make-lsm
     mir-matrix-reorder

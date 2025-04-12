@@ -184,7 +184,13 @@ CASE("GridSpec") {
     SECTION("Gaussian grids") {
         for (const auto& tests : []() {
                  std::vector<std::string> tests;
-                 for (const std::string& type : {"F", "O", "N"}) {
+
+                 std::vector<std::string> types{"F", "O"};
+                 if constexpr (MIR_HAVE_ATLAS) {
+                     tests.emplace_back("N");
+                 }
+
+                 for (const auto& type : types) {
                      for (size_t N : {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024}) {
                          tests.emplace_back("{grid: " + type + std::to_string(N) + "}");
                      }

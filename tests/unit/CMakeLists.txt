@@ -20,9 +20,10 @@ set(TESTS
     grib_encoding
     grib_input
     grid_box_method
+    grids
     gridspec
     increments
-    input_MultiDimensionalInput
+    input
     interpolations
     iterator
     knn_weighting
