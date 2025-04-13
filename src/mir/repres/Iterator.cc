@@ -14,7 +14,8 @@
 
 #include <ostream>
 
-#include "mir/util/Atlas.h"
+#include "eckit/geo/projection/LonLatToXYZ.h"
+
 #include "mir/util/Exceptions.h"
 
 
@@ -23,9 +24,7 @@ namespace repres {
 
 
 Iterator::Iterator(const util::Rotation& rotation) :
-    rotation_(atlas::PointLonLat(rotation.south_pole_longitude().normalise(Longitude::GREENWICH).value(),
-                                 rotation.south_pole_latitude().value())),
-    valid_(true) {}
+    rotation_({rotation.south_pole_longitude().value(), rotation.south_pole_latitude().value()}), valid_(true) {}
 
 
 Iterator::~Iterator() = default;
@@ -48,13 +47,11 @@ Iterator& Iterator::next() {
     valid_ = next(lat_, lon_);
 
     if (valid_) {
-
-        atlas::PointLonLat p(lon_.value(), lat_.value());
-        rotation_.rotate(p.data());
+        auto p = rotation_.fwd(eckit::geo::PointLonLat{lon_.value(), lat_.value()});
 
         // notice the order
-        point_[0] = p.lat();
-        point_[1] = p.lon();
+        point_[0] = p.lat;
+        point_[1] = p.lon;
     }
 
     return *this;
@@ -62,13 +59,12 @@ Iterator& Iterator::next() {
 
 
 Point3 Iterator::point_3D(const Point2& point) {
+    static const eckit::geo::projection::LonLatToXYZ to_xyz;
+
     // notice the order
-    const atlas::PointLonLat pll(point[1], point[0]);
+    auto p = to_xyz.fwd(eckit::geo::PointLonLat{point[1], point[0]});
 
-    atlas::PointXYZ pxyz;
-    util::Earth::convertSphericalToCartesian(pll, pxyz);
-
-    return pxyz;
+    return {p.X, p.Y, p.Z};
 }
 
 
@@ -83,7 +79,7 @@ void Iterator::print(std::ostream& out) const {
            "valid?"
         << valid_ << ",PointLatLon=";
     PointLatLon::print(out);
-    out << ",point=" << point_ << ",rotated?" << rotation_.rotated() << ",rotation=" << rotation_ << "]";
+    out << ",point=" << point_ << ",rotated?" << rotation_.rotated() << ",rotation=" << rotation_.spec_str() << "]";
 }
 
 

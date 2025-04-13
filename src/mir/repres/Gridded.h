@@ -16,11 +16,20 @@
 #include "mir/util/BoundingBox.h"
 
 
+namespace eckit::geo::projection {
+class Rotation;
+}
+
+
 namespace mir::repres {
 
 
 class Gridded : public Representation {
 public:
+    // -- Types
+
+    using Rotation = eckit::geo::projection::Rotation;
+
     // -- Exceptions
     // None
 
@@ -75,7 +84,8 @@ protected:
     // None
 
     // -- Class methods
-    // None
+
+    static atlas::Grid rotate_atlas_grid(const Rotation& rotation, const atlas::Grid& grid);
 
 private:
     // -- Members
