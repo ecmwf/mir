@@ -12,11 +12,10 @@
 
 #include <memory>
 
+#include "eckit/geo/util.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/types/Fraction.h"
-
-#include "mir/util/Atlas.h"
 
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/stats/detail/PNormsT.h"
@@ -55,14 +54,15 @@ struct MIRGaussianFractions : MIRTool {
 
 
 statistics_t* evaluateGaussianN(const size_t N, const param::MIRParametrisation& /*unused*/) {
+    // This returns the statistics of the North hemisphere
+    std::vector<double> latitudes = eckit::geo::util::gaussian_latitudes(N, false);
+    ASSERT(latitudes.size() == 2 * N);
 
-    // This returns the Gaussian latitudes of the North hemisphere
-    std::vector<double> latitudes(N);
-    atlas::util::gaussian_latitudes_npole_equator(N, latitudes.data());
+    latitudes.resize(N);
 
     auto* stats = new statistics_t;
-    for (const double& l : latitudes) {
-        const double f = double(eckit::Fraction(l));
+    for (const auto& l : latitudes) {
+        const auto f = static_cast<double>(eckit::Fraction(l));
         stats->operator()(f - l);
     }
 
