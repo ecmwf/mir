@@ -16,6 +16,7 @@
 #include <cmath>
 #include <map>
 
+#include "eckit/geo/util.h"
 #include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 
@@ -229,13 +230,8 @@ const std::vector<double>& Gaussian::latitudes(size_t N) {
     auto j = ml->find(N);
     if (j == ml->end()) {
         trace::Timer timer("Gaussian latitudes " + std::to_string(N));
-
-        // calculate latitudes and insert in known-N-latitudes map
-        std::vector<double> latitudes(N * 2);
-        atlas::util::gaussian_latitudes_npole_spole(N, latitudes.data());
-
-        ml->operator[](N) = latitudes;
-        j                 = ml->find(N);
+        (*ml)[N] = eckit::geo::util::gaussian_latitudes(N, false);
+        j        = ml->find(N);
     }
     ASSERT(j != ml->end());
 
@@ -257,16 +253,8 @@ const std::vector<double>& Gaussian::weights(size_t N) {
     auto j = mw->find(N);
     if (j == mw->end()) {
         trace::Timer timer("Gaussian quadrature weights " + std::to_string(N));
-
-        // calculate quadrature weights and insert in known-N-weights map
-        // FIXME: innefficient interface, latitudes are discarded
-        std::vector<double> latitudes(N * 2);
-        std::vector<double>& weights = (*mw)[N];
-        weights.resize(N * 2);
-
-        atlas::util::gaussian_quadrature_npole_spole(N, latitudes.data(), weights.data());
-
-        j = mw->find(N);
+        (*mw)[N] = eckit::geo::util::gaussian_quadrature_weights(N);
+        j        = mw->find(N);
     }
     ASSERT(j != mw->end());
     ASSERT(j->second.size() == 2 * N);

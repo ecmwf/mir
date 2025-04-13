@@ -10,7 +10,6 @@ foreach(tool IN ITEMS
     mir-config-param
     mir-count
     mir-formula
-    mir-gaussian-fractions
     mir-get-data
     mir-grid-box-area
     mir-grid-info
