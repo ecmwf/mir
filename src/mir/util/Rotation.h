@@ -14,15 +14,13 @@
 
 #include <iosfwd>
 
+#include "eckit/geo/projection/Rotation.h"
+
 #include "mir/util/Types.h"
 
 
 struct grib_info;
 
-namespace atlas {
-class Grid;
-class Projection;
-}  // namespace atlas
 namespace mir {
 namespace api {
 class MIRJob;
@@ -54,21 +52,9 @@ namespace mir::util {
  *         obtained by first rotating the sphere through λp degrees about the geographic polar axis, and then
  *         rotating through (90 + θp) degrees so that the southern pole moved along the (previously rotated)
  *         Greenwich meridian.
- * === end WMO specification ===
- *
- * gribs use the following convention: (from Shahram)
- *
- * Horizontally:  Points scan in the +i (+x) direction
- * Vertically:    Points scan in the -j (-y) direction
- *
- * The way I verified this was to look at our SAMPLE files (which IFS uses). I also verified that IFS does
- * not modify the scanning modes so whatever the samples say, is the convention
  */
 class Rotation {
 public:
-    // -- Exceptions
-    // None
-
     // -- Constructors
     explicit Rotation(const param::MIRParametrisation&);
     explicit Rotation(const Latitude& south_pole_latitude   = Latitude::SOUTH_POLE,
@@ -79,8 +65,6 @@ public:
 
     ~Rotation() = default;
 
-    // -- Convertors
-    // None
 
     // -- Operators
 
@@ -88,65 +72,25 @@ public:
 
     // -- Methods
 
-    atlas::Grid rotate(const atlas::Grid&) const;
+    const eckit::geo::projection::Rotation& rotation() const { return rotation_; }
     BoundingBox boundingBox(const BoundingBox&) const;
 
-    const Latitude& south_pole_latitude() const { return south_pole_latitude_; }
-
-    const Longitude& south_pole_longitude() const { return south_pole_longitude_; }
-
-    double south_pole_rotation_angle() const { return south_pole_rotation_angle_; }
+    Latitude south_pole_latitude() const { return rotation_.south_pole().lat; }
+    Longitude south_pole_longitude() const { return rotation_.south_pole().lon; }
+    double south_pole_rotation_angle() const { return rotation_.angle(); }
 
     void fillGrib(grib_info&) const;
     void fillJob(api::MIRJob&) const;
     void makeName(std::ostream&) const;
 
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
+private:
     // -- Members
-    // None
+
+    eckit::geo::projection::Rotation rotation_;
 
     // -- Methods
 
     void print(std::ostream&) const;
-    atlas::Projection atlasProjection() const;
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-private:
-    // -- Members
-
-    Latitude south_pole_latitude_;
-    Longitude south_pole_longitude_;
-    double south_pole_rotation_angle_;
-
-    // -- Methods
-
-    void normalize();
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
 
     // -- Friends
 

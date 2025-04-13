@@ -12,9 +12,11 @@
 
 #include "mir/repres/Gridded.h"
 
+#include "eckit/geo/projection/Rotation.h"
+
 #include "mir/api/MIREstimation.h"
 #include "mir/util/Domain.h"
-#include "mir/util/Grib.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir::repres {
@@ -60,6 +62,19 @@ void Gridded::estimate(api::MIREstimation& estimation) const {
 
 bool Gridded::crop(util::BoundingBox& /*unused*/, util::IndexMapping& /*unused*/) const {
     return false;
+}
+
+
+atlas::Grid Gridded::rotate_atlas_grid(const Rotation& rotation, const atlas::Grid& grid) {
+    // ensure grid is not rotated already
+    ASSERT(!grid.projection());
+
+    atlas::Projection projection(
+        atlas::Projection::Spec{"type", "rotated_lonlat"}
+            .set("south_pole", std::vector<double>({rotation.south_pole().lon, rotation.south_pole().lat}))
+            .set("rotation_angle", rotation.angle()));
+
+    return {atlas::Grid::Spec(grid.spec()).set("projection", projection.spec())};
 }
 
 

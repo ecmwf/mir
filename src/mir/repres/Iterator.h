@@ -14,22 +14,19 @@
 
 #include <iosfwd>
 
-#include "mir/util/Atlas.h"
+#include "eckit/geo/projection/Rotation.h"
+
 #include "mir/util/Rotation.h"
 
 
-namespace mir {
-namespace repres {
+namespace mir::repres {
 
 
 class Iterator : protected PointLatLon {
 public:
-    // -- Exceptions
-    // None
-
     // -- Constructors
 
-    Iterator(const util::Rotation& = util::Rotation());
+    explicit Iterator(const util::Rotation& = util::Rotation());
 
     Iterator(const Iterator&) = delete;
     Iterator(Iterator&&)      = delete;
@@ -60,20 +57,11 @@ public:
     Iterator& next();
     virtual size_t index() const = 0;
 
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
 protected:
     // -- Members
 
     Point2 point_;
-    atlas::util::Rotation rotation_;
+    eckit::geo::projection::Rotation rotation_;
     bool valid_;
 
     // -- Methods
@@ -81,31 +69,7 @@ protected:
     void print(std::ostream&) const override = 0;
     virtual bool next(Latitude&, Longitude&) = 0;
 
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
 private:
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
     // -- Friends
 
     friend std::ostream& operator<<(std::ostream& s, const Iterator& p) {
@@ -115,5 +79,4 @@ private:
 };
 
 
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres
