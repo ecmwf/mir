@@ -12,6 +12,7 @@
 
 #include "mir/config/LibMir.h"
 
+#include <algorithm>
 #include <set>
 
 #include "eckit/config/Resource.h"
