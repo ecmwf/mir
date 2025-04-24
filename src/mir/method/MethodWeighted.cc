@@ -19,6 +19,7 @@
 #include <sstream>
 #include <string>
 
+#include "eckit/config/Resource.h"
 #include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"

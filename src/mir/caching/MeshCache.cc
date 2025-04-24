@@ -12,6 +12,8 @@
 
 #include "mir/caching/MeshCache.h"
 
+#include "eckit/config/Resource.h"
+
 #include "mir/config/LibMir.h"
 
 

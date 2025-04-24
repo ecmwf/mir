@@ -14,6 +14,8 @@
 
 #include <sstream>
 
+#include "eckit/config/Resource.h"
+
 #include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/config/LibMir.h"
 #include "mir/method/WeightMatrix.h"
