@@ -800,8 +800,6 @@ if(mir_HAVE_ATLAS)
         key/grid/SourcePattern.h
         method/ProxyMethod.cc
         method/ProxyMethod.h
-        method/fe/BuildNodeLumpedMassMatrix.cc
-        method/fe/BuildNodeLumpedMassMatrix.h
         method/fe/CalculateCellLongestDiagonal.cc
         method/fe/CalculateCellLongestDiagonal.h
         method/fe/FEBilinear.cc

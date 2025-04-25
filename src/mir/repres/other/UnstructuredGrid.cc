@@ -161,7 +161,7 @@ util::Domain UnstructuredGrid::domain() const {
 
 
 atlas::Grid UnstructuredGrid::atlasGrid() const {
-#if MIR_HAVE_ATLAS
+#if mir_HAVE_ATLAS
     ASSERT(numberOfPoints());
 
     std::vector<atlas::PointXY> pts;

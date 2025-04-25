@@ -202,7 +202,7 @@ bool Regular::isPeriodicWestEast() const {
 }
 
 atlas::Grid Regular::atlasGrid() const {
-#if MIR_HAVE_ATLAS
+#if mir_HAVE_ATLAS
     return atlas::RegularGaussianGrid("F" + std::to_string(N_), domain());
 #else
     NOTIMP;

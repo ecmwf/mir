@@ -242,7 +242,7 @@ bool IrregularLatlon::includesSouthPole() const {
 
 
 atlas::Grid IrregularLatlon::atlasGrid() const {
-#if MIR_HAVE_ATLAS
+#if mir_HAVE_ATLAS
     ASSERT(numberOfPoints());
 
     std::vector<atlas::PointXY> pts;

@@ -16,7 +16,6 @@
 
 #include "eckit/utils/MD5.h"
 
-#include "mir/method/fe/BuildNodeLumpedMassMatrix.h"
 #include "mir/method/fe/CalculateCellLongestDiagonal.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -87,12 +86,6 @@ atlas::Mesh InMemoryMeshCache::atlasMesh(util::MIRStatistics& statistics, const 
         if (meshGeneratorParams.meshCellLongestDiagonal_) {
             trace::ResourceUsage usage("CalculateCellLongestDiagonal");
             method::fe::CalculateCellLongestDiagonal()(mesh, grid.domain().global());
-        }
-
-        // Calculate node-lumped mass matrix
-        if (meshGeneratorParams.meshNodeLumpedMassMatrix_) {
-            trace::ResourceUsage timer("Mesh: BuildNodeLumpedMassMatrix");
-            method::fe::BuildNodeLumpedMassMatrix()(mesh);
         }
 
         // Calculate node-to-cell ("inverse") connectivity

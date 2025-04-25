@@ -200,8 +200,6 @@ struct MIR : MIRTool {
                                                           "Calculate cell centres for " + which + " mesh"));
                 options_.push_back(new SimpleOption<bool>(which + "-mesh-cell-longest-diagonal",
                                                           "Calculate cells longest diagonal for " + which + " mesh"));
-                options_.push_back(new SimpleOption<bool>(which + "-mesh-node-lumped-mass-matrix",
-                                                          "Calculate node-lumped mass matrix for " + which + " mesh"));
                 options_.push_back(
                     new SimpleOption<bool>(which + "-mesh-node-to-cell-connectivity",
                                            "Calculate node-to-cell connectivity for " + which + " mesh"));

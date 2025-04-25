@@ -63,7 +63,7 @@ void RotatedLL::print(std::ostream& out) const {
 }
 
 atlas::Grid RotatedLL::atlasGrid() const {
-#if MIR_HAVE_ATLAS
+#if mir_HAVE_ATLAS
     // NOTE: yspace uses bounding box and not the domain
     // (this works together with the Atlas RectangularDomain cropping)
     const util::Domain dom = domain();

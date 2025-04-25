@@ -25,7 +25,6 @@ namespace mir::util {
 MeshGeneratorParameters::MeshGeneratorParameters() {
     meshCellCentres_            = false;
     meshCellLongestDiagonal_    = false;
-    meshNodeLumpedMassMatrix_   = false;
     meshNodeToCellConnectivity_ = false;
 
     set("3d", true);
@@ -43,7 +42,6 @@ MeshGeneratorParameters::MeshGeneratorParameters(const param::MIRParametrisation
     user.get(label + "mesh-generator", meshGenerator_);
     user.get(label + "mesh-cell-centres", meshCellCentres_);
     user.get(label + "mesh-cell-longest-diagonal", meshCellLongestDiagonal_);
-    user.get(label + "mesh-node-lumped-mass-matrix", meshNodeLumpedMassMatrix_);
     user.get(label + "mesh-node-to-cell-connectivity", meshNodeToCellConnectivity_);
     user.get(label + "mesh-file-ll", fileLonLat_);
     user.get(label + "mesh-file-xy", fileXY_);
@@ -81,7 +79,6 @@ void MeshGeneratorParameters::hash(eckit::Hash& hash) const {
     hash << meshGenerator_;
     hash << meshCellCentres_;
     hash << meshCellLongestDiagonal_;
-    hash << meshNodeLumpedMassMatrix_;
     hash << meshNodeToCellConnectivity_;
     atlas::MeshGenerator::Parameters::hash(hash);
 }
@@ -90,7 +87,6 @@ void MeshGeneratorParameters::print(std::ostream& s) const {
     s << "MeshGeneratorParameters["
       << "meshGenerator=" << meshGenerator_ << ",meshCellCentres=" << meshCellCentres_
       << ",meshCellLongestDiagonal=" << meshCellLongestDiagonal_
-      << ",meshNodeLumpedMassMatrix=" << meshNodeLumpedMassMatrix_
       << ",meshNodeToCellConnectivity=" << meshNodeToCellConnectivity_ << ",";
     atlas::MeshGenerator::Parameters::print(s);
     s << "]";

@@ -69,7 +69,7 @@ bool Octahedral::sameAs(const Representation& other) const {
 
 
 atlas::Grid Octahedral::atlasGrid() const {
-#if MIR_HAVE_ATLAS
+#if mir_HAVE_ATLAS
     return atlas::ReducedGaussianGrid("O" + std::to_string(N_), domain());
 #else
     NOTIMP;
