@@ -810,8 +810,6 @@ if(mir_HAVE_ATLAS)
         method/fe/FELinear.h
         method/fe/FiniteElement.cc
         method/fe/FiniteElement.h
-        method/fe/L2Projection.cc
-        method/fe/L2Projection.h
         output/GmshOutput.cc
         output/GmshOutput.h
         stats/statistics/Integral.cc
