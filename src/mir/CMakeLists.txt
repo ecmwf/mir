@@ -800,8 +800,6 @@ if(mir_HAVE_ATLAS)
         key/grid/SourcePattern.h
         method/ProxyMethod.cc
         method/ProxyMethod.h
-        method/fe/BuildNodeLumpedMassMatrix.cc
-        method/fe/BuildNodeLumpedMassMatrix.h
         method/fe/CalculateCellLongestDiagonal.cc
         method/fe/CalculateCellLongestDiagonal.h
         method/fe/FEBilinear.cc
@@ -810,14 +808,6 @@ if(mir_HAVE_ATLAS)
         method/fe/FELinear.h
         method/fe/FiniteElement.cc
         method/fe/FiniteElement.h
-        method/fe/L2Projection.cc
-        method/fe/L2Projection.h
-        method/structured/StructuredBilinearLatLon.cc
-        method/structured/StructuredBilinearLatLon.h
-        method/structured/StructuredLinear3D.cc
-        method/structured/StructuredLinear3D.h
-        method/structured/StructuredMethod.cc
-        method/structured/StructuredMethod.h
         output/GmshOutput.cc
         output/GmshOutput.h
         stats/statistics/Integral.cc
