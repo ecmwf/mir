@@ -33,8 +33,8 @@ CASE("distance-weighting") {
 
 
     size_t ip = 0;
-    const Point3 point1{0., 0., 0.};
-    const Point3 point2{1., 0., 0.};
+    const PointXYZ point1{0., 0., 0.};
+    const PointXYZ point2{1., 0., 0.};
     const std::vector<search::PointSearch::PointValueType> neighbours{
         {{1., 0., 0.}, 1},
         {{0., 2., 0.}, 2},

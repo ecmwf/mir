@@ -59,7 +59,7 @@ namespace {
 
 
 using element_tree_t      = atlas::interpolation::method::ElemIndex3;
-using failed_projection_t = std::pair<size_t, PointLatLon>;
+using failed_projection_t = std::pair<size_t, PointLonLat>;
 
 
 struct element_t : std::vector<size_t> {
@@ -117,9 +117,9 @@ struct element_t : std::vector<size_t> {
 struct triag_t : element_t, atlas::interpolation::element::Triag3D {
     triag_t(const atlas::array::ArrayView<double, 2>& coords, size_t i1, size_t i2, size_t i3) :
         element_t{i1, i2, i3},
-        Triag3D(atlas::PointXYZ{coords(i1, XYZCOORDS::XX), coords(i1, XYZCOORDS::YY), coords(i1, XYZCOORDS::ZZ)},
-                atlas::PointXYZ{coords(i2, XYZCOORDS::XX), coords(i2, XYZCOORDS::YY), coords(i2, XYZCOORDS::ZZ)},
-                atlas::PointXYZ{coords(i3, XYZCOORDS::XX), coords(i3, XYZCOORDS::YY), coords(i3, XYZCOORDS::ZZ)}) {}
+        Triag3D(atlas::PointXYZ{coords(i1, 0), coords(i1, 1), coords(i1, 2)},
+                atlas::PointXYZ{coords(i2, 0), coords(i2, 1), coords(i2, 2)},
+                atlas::PointXYZ{coords(i3, 0), coords(i3, 1), coords(i3, 2)}) {}
 
     bool intersects(const atlas::interpolation::method::Ray& r, double eps) override {
         auto is = Triag3D::intersects(r, eps * std::sqrt(area()));
@@ -135,10 +135,10 @@ struct triag_t : element_t, atlas::interpolation::element::Triag3D {
 struct quad_t : element_t, atlas::interpolation::element::Quad3D {
     quad_t(const atlas::array::ArrayView<double, 2>& coords, size_t i1, size_t i2, size_t i3, size_t i4) :
         element_t{i1, i2, i3, i4},
-        Quad3D(atlas::PointXYZ{coords(i1, XYZCOORDS::XX), coords(i1, XYZCOORDS::YY), coords(i1, XYZCOORDS::ZZ)},
-               atlas::PointXYZ{coords(i2, XYZCOORDS::XX), coords(i2, XYZCOORDS::YY), coords(i2, XYZCOORDS::ZZ)},
-               atlas::PointXYZ{coords(i3, XYZCOORDS::XX), coords(i3, XYZCOORDS::YY), coords(i3, XYZCOORDS::ZZ)},
-               atlas::PointXYZ{coords(i4, XYZCOORDS::XX), coords(i4, XYZCOORDS::YY), coords(i4, XYZCOORDS::ZZ)}) {}
+        Quad3D(atlas::PointXYZ{coords(i1, 0), coords(i1, 1), coords(i1, 2)},
+               atlas::PointXYZ{coords(i2, 0), coords(i2, 1), coords(i2, 2)},
+               atlas::PointXYZ{coords(i3, 0), coords(i3, 1), coords(i3, 2)},
+               atlas::PointXYZ{coords(i4, 0), coords(i4, 1), coords(i4, 2)}) {}
 
     bool intersects(const atlas::interpolation::method::Ray& r, double eps) override {
         auto is = Quad3D::intersects(r, eps * std::sqrt(area()));
@@ -343,7 +343,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
                 ASSERT(ip < nbOutputPoints);
 
                 // 3D projection, trying elements closest to p
-                const auto p = point3(*(*it));
+                const auto p = [](const auto& q) { return atlas::PointXYZ{q.X, q.Y, q.Z}; }(point3(*(*it)));
                 auto closest = eTree->findInSphere(p, R);
 
                 atlas::interpolation::method::Ray ray(p.data());

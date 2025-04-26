@@ -21,6 +21,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Angles.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/IndexMapping.h"
 
@@ -62,14 +63,13 @@ void Area::apply(const repres::Representation& repres, util::BoundingBox& bbox, 
 
     // Point can be     interpreted "projected" or "non-projected"/"unrotated"
     for (const std::unique_ptr<repres::Iterator> it(repres.iterator()); it->next();) {
-        const auto point(projection ? PointLatLon(it->pointRotated().x(), it->pointRotated().y())
-                                    : it->pointUnrotated());
+        const PointLonLat point(projection ? it->pointRotated() : it->pointUnrotated());
 
         // Log::debug() << point << " ====> " << bbox.contains(point) << std::endl;
 
         if (bbox.contains(point)) {
-            const Latitude& lat = point.lat();
-            const Longitude lon = point.lon().normalise(bbox.west());
+            const auto lat = point.lat;
+            const auto lon = util::normalise_longitude(point.lon, bbox.west().value());
 
             if (first) {
                 n = s = lat;

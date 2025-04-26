@@ -100,7 +100,7 @@ private:
 
     // -- Methods
 
-    void count(const PointLatLon&);
+    void count(const PointLonLat&);
 
     // -- Overridden methods
     // None

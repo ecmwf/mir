@@ -47,7 +47,7 @@ private:
 
 protected:
     void print(std::ostream&) const override;
-    bool next(Latitude&, Longitude&) override;
+    bool next(Iterator::value_type&, Iterator::value_type&) override;
     size_t index() const override;
     size_t resetToRow(size_t j);
 };

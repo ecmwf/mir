@@ -170,7 +170,7 @@ class IrregularLatlonIterator : public Iterator {
         out << "]";
     }
 
-    bool next(Latitude& lat, Longitude& lon) override {
+    bool next(value_type& lat, value_type& lon) override {
         if (j_ < nj_) {
             if (i_ < ni_) {
                 lat = latitudes_[j_];

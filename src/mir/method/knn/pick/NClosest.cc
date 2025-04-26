@@ -29,7 +29,7 @@ NClosest::NClosest(const param::MIRParametrisation& param) {
 }
 
 
-void NClosest::pick(const search::PointSearch& tree, const Point3& p, Pick::neighbours_t& closest) const {
+void NClosest::pick(const search::PointSearch& tree, const PointXYZ& p, Pick::neighbours_t& closest) const {
     tree.closestNPoints(p, nClosest_, closest);
     ASSERT(closest.size() == nClosest_);
 }

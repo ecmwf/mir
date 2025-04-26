@@ -55,11 +55,11 @@ void AdjustWindsAtPoles::execute(context::Context& ctx) const {
     std::vector<size_t> south;
 
     for (const std::unique_ptr<repres::Iterator> it(representation->iterator()); it->next();) {
-        const auto lat = it->pointUnrotated().lat();
-        if (lat == Latitude::NORTH_POLE) {
+        const auto lat = it->pointUnrotated().lat;
+        if (lat == Latitude::NORTH_POLE.value()) {
             north.push_back(it->index());
         }
-        else if (lat == Latitude::SOUTH_POLE) {
+        else if (lat == Latitude::SOUTH_POLE.value()) {
             south.push_back(it->index());
         }
     }

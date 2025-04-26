@@ -207,7 +207,7 @@ class ReducedLLIterator : public Iterator {
             << ",count=" << count_ << "]";
     }
 
-    bool next(Latitude& lat, Longitude& lon) override {
+    bool next(value_type& lat, value_type& lon) override {
         while (j_ < nj_ && i_ < ni_) {
             lat = latitude_;
             lon = longitude_;
@@ -227,7 +227,7 @@ class ReducedLLIterator : public Iterator {
 
                 if (j_ < nj_) {
                     ASSERT(p_ < pl_.size());
-                    ni_ = size_t(pl_[p_++]);
+                    ni_ = static_cast<size_t>(pl_[p_++]);
                     ASSERT(ni_ > 1);
                     inc_west_east_ = ew_ / (ni_ - (periodic_ ? 0 : 1));
                 }

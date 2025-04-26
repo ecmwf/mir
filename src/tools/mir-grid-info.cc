@@ -120,18 +120,20 @@ void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
     Sorter<Longitude> e(bbox.east());
 
     for (const std::unique_ptr<repres::Iterator> it(rep->iterator()); it->next();) {
+        static constexpr auto GLOBE = eckit::geo::PointLonLat::FULL_ANGLE;
+
         const auto& p = it->pointUnrotated();
 
-        n.push(p.lat());
-        s.push(p.lat());
+        n.push(p.lat);
+        s.push(p.lat);
 
-        w.push(p.lon());
-        w.push(p.lon() + Longitude::GLOBE);
-        w.push(p.lon() - Longitude::GLOBE);
+        w.push(p.lon);
+        w.push(p.lon + GLOBE);
+        w.push(p.lon - GLOBE);
 
-        e.push(p.lon());
-        e.push(p.lon() + Longitude::GLOBE);
-        e.push(p.lon() - Longitude::GLOBE);
+        e.push(p.lon);
+        e.push(p.lon + GLOBE);
+        e.push(p.lon - GLOBE);
     }
 
     log << "north " << n.above_ << ' ' << n.ref_ << ' ' << n.below_ << ' ' << n.dabove_ << ' ' << n.dbelow_

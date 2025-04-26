@@ -30,7 +30,7 @@ DistanceAndNClosest::DistanceAndNClosest(const param::MIRParametrisation& param)
 }
 
 
-void DistanceAndNClosest::pick(const search::PointSearch& tree, const Point3& p, Pick::neighbours_t& closest) const {
+void DistanceAndNClosest::pick(const search::PointSearch& tree, const PointXYZ& p, Pick::neighbours_t& closest) const {
     // TODO: improve k-d tree interface; this is slow because distance might be excessive
     tree.closestWithinRadius(p, distance_, closest);
     if (closest.size() > nClosest_.n()) {

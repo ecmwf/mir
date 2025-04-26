@@ -54,10 +54,10 @@ void AdjustWindsScaleCosLatitude::execute(context::Context& ctx) const {
 
     std::vector<double> scale(N);
     for (const std::unique_ptr<repres::Iterator> it(representation->iterator()); it->next();) {
-        const auto lat     = it->pointUnrotated().lat();
-        scale[it->index()] = (lat == Latitude::SOUTH_POLE || lat == Latitude::NORTH_POLE)
+        const auto lat     = it->pointUnrotated().lat;
+        scale[it->index()] = (lat == Latitude::SOUTH_POLE.value() || lat == Latitude::NORTH_POLE.value())
                                  ? 0.
-                                 : 1. / std::cos(util::degree_to_radian(lat.value()));
+                                 : 1. / std::cos(util::degree_to_radian(lat));
     }
 
     // apply scaling to each field component directly

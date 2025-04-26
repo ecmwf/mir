@@ -80,14 +80,14 @@ void GaussianIterator::print(std::ostream& out) const {
 }
 
 
-bool GaussianIterator::next(Latitude& lat, Longitude& lon) {
+bool GaussianIterator::next(Iterator::value_type& _lat, Iterator::value_type& _lon) {
     while (Ni_ == 0 && j_ < Nj_) {
         Ni_ = resetToRow(k_ + j_++);
     }
 
     if (0 < Nj_ && i_ < Ni_) {
-        lat = lat_;
-        lon = lon_;
+        _lat = pointUnrotated().lat;
+        _lon = pointUnrotated().lon;
 
         lon_ += inc_;
 

@@ -26,7 +26,7 @@ public:
     // -- Constructors
 
     RegularLL(const param::MIRParametrisation&);
-    RegularLL(const util::Increments&, const util::BoundingBox& = {}, const PointLatLon& reference = {0, 0});
+    RegularLL(const util::Increments&, const util::BoundingBox& = {}, const PointLonLat& reference = {0, 0});
 
     // -- Destructor
 

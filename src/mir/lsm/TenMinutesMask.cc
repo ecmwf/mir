@@ -20,6 +20,7 @@
 
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Angles.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
@@ -83,8 +84,8 @@ TenMinutesMask::TenMinutesMask(const std::string& name, const eckit::PathName& p
 
     for (const std::unique_ptr<repres::Iterator> it(representation.iterator()); it->next();) {
         const auto& p = it->pointUnrotated();
-        Latitude lat  = p.lat();
-        Longitude lon = p.lon().normalise(Longitude::GREENWICH);
+        Latitude lat  = p.lat;
+        Longitude lon = util::normalise_longitude(p.lon, Longitude::GREENWICH.value());
 
         ASSERT(lat >= Latitude::SOUTH_POLE);
         ASSERT(lat <= Latitude::NORTH_POLE);

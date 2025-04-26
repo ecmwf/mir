@@ -75,9 +75,9 @@ public:
     bool isLatitudeShifted(const BoundingBox&) const;
     bool isLongitudeShifted(const BoundingBox&) const;
 
-    bool isShifted(const PointLatLon&) const;
-    bool isLatitudeShifted(const PointLatLon&) const;
-    bool isLongitudeShifted(const PointLatLon&) const;
+    bool isShifted(const PointLonLat&) const;
+    bool isLatitudeShifted(const PointLonLat&) const;
+    bool isLongitudeShifted(const PointLonLat&) const;
 
     const LongitudeIncrement& west_east() const { return west_east_; }
 

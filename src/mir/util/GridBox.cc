@@ -17,6 +17,7 @@
 
 #include "eckit/types/FloatCompare.h"
 
+#include "mir/util/Angles.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Latitude.h"
@@ -43,15 +44,15 @@ double GridBox::diagonal() const {
 }
 
 
-Point2 GridBox::centre() const {
+PointLonLat GridBox::centre() const {
     return {0.5 * (north_ + south_), 0.5 * (west_ + east_)};
 }
 
 
-bool GridBox::contains(const Point2& p) const {
-    return eckit::types::is_approximately_lesser_or_equal(south_, p[0]) &&
-           eckit::types::is_approximately_lesser_or_equal(p[0], north_) &&
-           eckit::types::is_approximately_lesser_or_equal(LongitudeDouble(p[1]).normalise(west_).value(), east_);
+bool GridBox::contains(const PointLonLat& p) const {
+    return eckit::types::is_approximately_lesser_or_equal(south_, p.lat) &&
+           eckit::types::is_approximately_lesser_or_equal(p.lat, north_) &&
+           eckit::types::is_approximately_lesser_or_equal(util::normalise_longitude(p.lon, west_), east_);
 }
 
 

@@ -12,10 +12,12 @@
 
 #pragma once
 
-#include <utility>  // for pair
+#include <memory>
+
+#include "eckit/geo/Projection.h"
+#include "eckit/geo/grid/RegularXY.h"
 
 #include "mir/repres/Gridded.h"
-#include "mir/util/Atlas.h"
 #include "mir/util/Shape.h"
 #include "mir/util/Types.h"
 
@@ -27,18 +29,13 @@ class RegularGrid : public Gridded {
 public:
     // -- Types
 
-    using LinearSpacing = ::atlas::grid::LinearSpacing;
-    using PointLonLat   = ::atlas::PointLonLat;
-    using Projection    = ::atlas::Projection;
-
-    // -- Exceptions
-    // None
+    using Grid       = ::eckit::geo::grid::RegularXY;
+    using Projection = const ::eckit::geo::Projection;
 
     // -- Constructors
 
-    RegularGrid(const param::MIRParametrisation&, const Projection&);
-    RegularGrid(const Projection&, const util::BoundingBox&, const LinearSpacing& x, const LinearSpacing& y,
-                const util::Shape&);
+    RegularGrid(const param::MIRParametrisation&, Projection*);
+    RegularGrid(Grid*, const util::BoundingBox&, const util::Shape&);
 
     RegularGrid(const RegularGrid&) = delete;
     RegularGrid(RegularGrid&&)      = delete;
@@ -47,43 +44,33 @@ public:
 
     ~RegularGrid() override;
 
-    // -- Convertors
-    // None
-
     // -- Operators
 
     RegularGrid& operator=(const RegularGrid&) = delete;
     RegularGrid& operator=(RegularGrid&&)      = delete;
 
     // -- Methods
-    // None
+
+    static Projection* make_projection(const param::MIRParametrisation&);
 
     // -- Overridden methods
 
     Iterator* iterator() const override;
 
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
 protected:
-    // -- Members
-    // None
-
     // -- Methods
 
-    const ::atlas::RegularGrid& grid() const { return grid_; }
-    const LinearSpacing& x() const { return x_; }
-    const LinearSpacing& y() const { return y_; }
-    const util::Shape& shape() const { return shape_; }
-    bool xPlus() const { return xPlus_; }
-    bool yPlus() const { return yPlus_; }
-    bool firstPointBottomLeft() const { return firstPointBottomLeft_; }
+    const std::vector<double>& x() const { return grid_->x().values(); }
+    const std::vector<double>& y() const { return grid_->y().values(); }
+    bool xPlus() const { return grid_->x().a() < grid_->x().b(); }
+    bool yPlus() const { return grid_->y().a() < grid_->y().b(); }
 
-    static Projection::Spec make_proj_spec(const param::MIRParametrisation&);
-    static LinearSpacing linspace(double start, double step, long num, bool plus);
+    const Grid& grid() const { return *grid_; }
+    const util::Shape& shape() const { return shape_; }
+
+    PointXY firstPointXY() const;
+    PointLonLat firstPointLonLat() const;
+    PointLonLat referencePointLonLat() const;
 
     // -- Overridden methods
 
@@ -108,25 +95,12 @@ protected:
     ::atlas::Grid atlasGrid() const override;
     size_t numberOfPoints() const override;
 
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
 private:
     // -- Members
 
-    ::atlas::RegularGrid grid_;
-    LinearSpacing x_;
-    LinearSpacing y_;
+    std::unique_ptr<Grid> grid_;
     util::Shape shape_;
-    bool xPlus_;
-    bool yPlus_;
     bool firstPointBottomLeft_;
-
-    // -- Friends
-    // None
 };
 
 

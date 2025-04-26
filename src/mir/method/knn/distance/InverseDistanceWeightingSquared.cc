@@ -26,7 +26,7 @@ namespace mir::method::knn::distance {
 InverseDistanceWeightingSquared::InverseDistanceWeightingSquared(const param::MIRParametrisation& /*unused*/) {}
 
 
-void InverseDistanceWeightingSquared::operator()(size_t ip, const Point3& point,
+void InverseDistanceWeightingSquared::operator()(size_t ip, const PointXYZ& point,
                                                  const std::vector<search::PointSearch::PointValueType>& neighbours,
                                                  std::vector<WeightMatrix::Triplet>& triplets) const {
 
@@ -40,7 +40,7 @@ void InverseDistanceWeightingSquared::operator()(size_t ip, const Point3& point,
     std::vector<double> weights(nbPoints);
     double sum = 0.;
     for (size_t j = 0; j < nbPoints; ++j) {
-        const double d2 = Point3::distance2(point, neighbours[j].point());
+        const double d2 = PointXYZ::distance2(point, neighbours[j].point());
 
         weights[j] = 1. / (1. + d2);
         sum += weights[j];

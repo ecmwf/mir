@@ -93,8 +93,8 @@ void ReferencePattern::execute(context::Context& ctx) const {
             auto& v = values[it->index()];
             if (!hasMissing || v != missingValue) {
                 const auto& p = it->pointUnrotated();
-                v             = range * std::sin(f1 * util::degree_to_radian(p.lon().value())) *
-                        std::cos(f2 * util::degree_to_radian(p.lat().value())) * 0.5 +
+                v             = range * std::sin(f1 * util::degree_to_radian(p.lon)) *
+                        std::cos(f2 * util::degree_to_radian(p.lat)) * 0.5 +
                     median;
             }
         }

@@ -30,7 +30,7 @@ namespace mir::repres::latlon {
 
 RegularLL::RegularLL(const param::MIRParametrisation& parametrisation) : LatLon(parametrisation) {}
 
-RegularLL::RegularLL(const util::Increments& increments, const util::BoundingBox& bbox, const PointLatLon& reference) :
+RegularLL::RegularLL(const util::Increments& increments, const util::BoundingBox& bbox, const PointLonLat& reference) :
     LatLon(increments, bbox, reference) {}
 
 RegularLL::~RegularLL() = default;
@@ -45,7 +45,9 @@ Iterator* RegularLL::iterator() const {
             LatLonIterator::print(out);
             out << "]";
         }
-        bool next(Latitude& lat, Longitude& lon) override { return LatLonIterator::next(lat, lon); }
+        bool next(Iterator::value_type& lat, Iterator::value_type& lon) override {
+            return LatLonIterator::next(lat, lon);
+        }
 
         size_t index() const override { return count_; }
 
@@ -122,8 +124,8 @@ util::BoundingBox RegularLL::extendBoundingBox(const util::BoundingBox& bbox) co
     ASSERT(sn > 0);
     ASSERT(we > 0);
 
-    auto shift_sn = (reference_.lat().fraction() / sn).decimalPart() * sn;
-    auto shift_we = (reference_.lon().fraction() / we).decimalPart() * we;
+    auto shift_sn = (eckit::Fraction{reference_.lat} / sn).decimalPart() * sn;
+    auto shift_we = (eckit::Fraction{reference_.lon} / we).decimalPart() * we;
 
     // adjust West/East to include bbox's West/East ('outwards')
     Longitude w = bbox.west();

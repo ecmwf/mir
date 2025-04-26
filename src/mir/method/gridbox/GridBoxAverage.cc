@@ -94,7 +94,7 @@ void GridBoxAverage::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, 
     util::Point2ToPoint3 point3(in, poleDisplacement());
 
     size_t nbFailures = 0;
-    std::forward_list<std::pair<size_t, PointLatLon>> failures;
+    std::forward_list<std::pair<size_t, PointLonLat>> failures;
 
 
     // set input k-d tree for grid boxes indices

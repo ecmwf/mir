@@ -74,9 +74,9 @@ void CartesianVector2DField::rotate(const util::Rotation& rotation, MIRValuesVec
             continue;
         }
 
-        const LongitudeDouble lonRotated = rotation.south_pole_longitude().value() - (*(*it))[1];
+        const LongitudeDouble lonRotated = rotation.south_pole_longitude().value() - (*(*it)).lon;
         const double lon_rotated         = lonRotated.normalise(LongitudeDouble::MINUS_DATE_LINE).value();
-        const double lon_unrotated       = it->pointUnrotated().lon().value();
+        const double lon_unrotated       = it->pointUnrotated().lon;
 
         const double a = util::degree_to_radian(lon_rotated);
         const double b = util::degree_to_radian(lon_unrotated);

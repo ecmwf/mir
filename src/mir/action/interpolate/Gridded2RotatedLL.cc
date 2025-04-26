@@ -35,7 +35,7 @@ Gridded2RotatedLL::Gridded2RotatedLL(const param::MIRParametrisation& param) :
     increments_ = util::Increments(value[0], value[1]);
 
     if (key::Area::get(parametrisation().userParametrisation(), bbox_)) {
-        reference_ = {bbox_.south(), bbox_.west()};
+        reference_ = {bbox_.south().fraction(), bbox_.west().fraction()};
     }
 
     repres::latlon::LatLon::globaliseBoundingBox(bbox_, increments_, reference_);
