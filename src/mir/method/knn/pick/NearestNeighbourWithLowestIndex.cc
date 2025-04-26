@@ -32,7 +32,7 @@ NearestNeighbourWithLowestIndex::NearestNeighbourWithLowestIndex(const param::MI
 }
 
 
-void NearestNeighbourWithLowestIndex::pick(const search::PointSearch& tree, const Point3& point,
+void NearestNeighbourWithLowestIndex::pick(const search::PointSearch& tree, const PointXYZ& point,
                                            neighbours_t& closest) const {
     if (nClosest_ == 1) {
         closest = {tree.closestPoint(point)};
@@ -48,10 +48,10 @@ void NearestNeighbourWithLowestIndex::pick(const search::PointSearch& tree, cons
 
     // choose closest neighbour point with the lowest index (payload)
     size_t c        = 0;
-    const double d2 = Point3::distance2(point, neighbours.front().point());
+    const double d2 = PointXYZ::distance2(point, neighbours.front().point());
 
     for (size_t j = 1; j < neighbours.size(); ++j) {
-        if (eckit::types::is_strictly_greater(Point3::distance2(point, neighbours[j].point()), d2)) {
+        if (eckit::types::is_strictly_greater(PointXYZ::distance2(point, neighbours[j].point()), d2)) {
             break;
         }
         if (neighbours[c].payload() > neighbours[j].payload()) {

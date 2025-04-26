@@ -36,7 +36,7 @@ Sample::Sample(const param::MIRParametrisation& param) {
 }
 
 
-void Sample::pick(const search::PointSearch& tree, const Point3& p, Pick::neighbours_t& closest) const {
+void Sample::pick(const search::PointSearch& tree, const PointXYZ& p, Pick::neighbours_t& closest) const {
     tree.closestWithinRadius(p, distance_, closest);
     if (closest.size() <= nClosest_) {
         return;

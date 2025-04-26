@@ -59,7 +59,7 @@ RegularGrid::RegularGrid(const param::MIRParametrisation& param, const RegularGr
     ASSERT(param.get("grid", grid));
     ASSERT_KEYWORD_GRID_SIZE(grid.size());
 
-    Point2 firstLL;
+    PointXY firstLL;
     ASSERT(param.get("latitudeOfFirstGridPointInDegrees", firstLL[LLCOORDS::LAT]));
     ASSERT(param.get("longitudeOfFirstGridPointInDegrees", firstLL[LLCOORDS::LON]));
     auto first = projection.xy(firstLL);

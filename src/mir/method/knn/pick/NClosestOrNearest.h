@@ -22,7 +22,7 @@ struct NClosestOrNearest : Pick {
     explicit NClosestOrNearest(size_t nClosest, double distanceTolerance = 1.);
     explicit NClosestOrNearest(const param::MIRParametrisation&);
 
-    void pick(const search::PointSearch&, const Point3&, neighbours_t&) const override;
+    void pick(const search::PointSearch&, const PointXYZ&, neighbours_t&) const override;
     size_t n() const override;
     bool sameAs(const Pick&) const override;
     void hash(eckit::MD5&) const override;

@@ -30,8 +30,8 @@ namespace mir {
 using Longitude   = LongitudeFraction;
 using PointLatLon = util::PointLatLonT<Latitude, Longitude>;
 
-using eckit::geometry::Point2;
-using eckit::geometry::Point3;
+using PointXY  = eckit::geometry::Point2;
+using PointXYZ = eckit::geometry::Point3;
 
 using LLCOORDS  = eckit::geometry::LLCOORDS;
 using XYZCOORDS = eckit::geometry::XYZCOORDS;

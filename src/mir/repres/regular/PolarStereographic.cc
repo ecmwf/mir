@@ -62,8 +62,8 @@ PolarStereographic::PolarStereographic(const param::MIRParametrisation& param) :
 void PolarStereographic::fillGrib(grib_info& info) const {
     info.grid.grid_type = CODES_UTIL_GRID_SPEC_POLAR_STEREOGRAPHIC;
 
-    Point2 first   = {x().front(), y().front()};
-    Point2 firstLL = grid().projection().lonlat(first);
+    PointXY first   = {x().front(), y().front()};
+    PointXY firstLL = grid().projection().lonlat(first);
 
     info.grid.latitudeOfFirstGridPointInDegrees = firstLL[LLCOORDS::LAT];
     info.grid.longitudeOfFirstGridPointInDegrees =
@@ -88,8 +88,8 @@ void PolarStereographic::fillGrib(grib_info& info) const {
 
 
 void PolarStereographic::fillJob(api::MIRJob& job) const {
-    Point2 first   = {x().front(), y().front()};
-    Point2 firstLL = grid().projection().lonlat(first);
+    PointXY first   = {x().front(), y().front()};
+    PointXY firstLL = grid().projection().lonlat(first);
 
     std::ostringstream grid;
     grid << "gridType=polar_stereographic;"

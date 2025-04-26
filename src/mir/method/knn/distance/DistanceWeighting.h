@@ -39,7 +39,7 @@ public:
 
     virtual ~DistanceWeighting();
 
-    virtual void operator()(size_t ip, const Point3& point,
+    virtual void operator()(size_t ip, const PointXYZ& point,
                             const std::vector<search::PointSearch::PointValueType>& neighbours,
                             std::vector<WeightMatrix::Triplet>& triplets) const = 0;
 

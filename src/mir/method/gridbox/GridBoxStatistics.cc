@@ -107,7 +107,7 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
 
         const auto R = outBoxes.getLongestGridBoxDiagonal();
 
-        auto point_2D = [](const Point3& point) -> Point2 {
+        auto point_2D = [](const PointXYZ& point) -> PointXY {
             atlas::PointLonLat pll;
             util::Earth::convertCartesianToSpherical(point, pll);
 

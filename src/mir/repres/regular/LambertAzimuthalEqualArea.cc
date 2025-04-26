@@ -60,8 +60,8 @@ void LambertAzimuthalEqualArea::fillGrib(grib_info& info) const {
     info.grid.grid_type        = CODES_UTIL_GRID_SPEC_LAMBERT_AZIMUTHAL_EQUAL_AREA;
     info.packing.editionNumber = 2;
 
-    Point2 reference = grid().projection().lonlat({0., 0.});
-    Point2 firstLL   = grid().projection().lonlat({x().front(), y().front()});
+    PointXY reference = grid().projection().lonlat({0., 0.});
+    PointXY firstLL   = grid().projection().lonlat({x().front(), y().front()});
 
     info.grid.Ni = static_cast<long>(x().size());
     info.grid.Nj = static_cast<long>(y().size());

@@ -80,7 +80,7 @@ public:
 
     bool contains(const PointLatLon&) const;
 
-    bool contains(const Point2&) const;
+    bool contains(const PointXY&) const;
 
     bool contains(const Latitude&, const Longitude&) const;
 

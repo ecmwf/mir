@@ -73,9 +73,10 @@ RegularGrid::Projection Lambert::make_projection(const param::MIRParametrisation
 void Lambert::fillGrib(grib_info& info) const {
     info.grid.grid_type = CODES_UTIL_GRID_SPEC_LAMBERT_CONFORMAL;
 
-    Point2 first = {firstPointBottomLeft() ? x().min() : x().front(), firstPointBottomLeft() ? y().min() : y().front()};
-    Point2 firstLL   = grid().projection().lonlat(first);
-    Point2 reference = grid().projection().lonlat({0., 0.});
+    PointXY first = {firstPointBottomLeft() ? x().min() : x().front(),
+                     firstPointBottomLeft() ? y().min() : y().front()};
+    PointXY firstLL   = grid().projection().lonlat(first);
+    PointXY reference = grid().projection().lonlat({0., 0.});
 
     info.grid.latitudeOfFirstGridPointInDegrees = firstLL[LLCOORDS::LAT];
     info.grid.longitudeOfFirstGridPointInDegrees =

@@ -36,13 +36,13 @@ double power_from_key(const param::MIRParametrisation& param, const std::string&
 
 InverseDistanceWeighting::InverseDistanceWeighting(const param::MIRParametrisation& /*param*/, double power) :
     power_(power) {
-    // half power is used to avoid the Point3::distance extra srqt
+    // half power is used to avoid the PointXYZ::distance extra srqt
     halfPower_ = power_ * 0.5;
     ASSERT(halfPower_ >= 0.);
 }
 
 
-void InverseDistanceWeighting::operator()(size_t ip, const Point3& point,
+void InverseDistanceWeighting::operator()(size_t ip, const PointXYZ& point,
                                           const std::vector<search::PointSearch::PointValueType>& neighbours,
                                           std::vector<WeightMatrix::Triplet>& triplets) const {
     const size_t nbPoints = neighbours.size();
@@ -55,7 +55,7 @@ void InverseDistanceWeighting::operator()(size_t ip, const Point3& point,
     std::vector<double> weights(nbPoints);
     double sum = 0.;
     for (size_t j = 0; j < nbPoints; ++j) {
-        const double d2 = Point3::distance2(point, neighbours[j].point());
+        const double d2 = PointXYZ::distance2(point, neighbours[j].point());
         if (eckit::types::is_approximately_equal(d2, 0.)) {
             // exact match found, use this neighbour only (inverse distance tends to infinity)
             triplets.assign(1, {ip, neighbours[j].payload(), 1.});
