@@ -22,7 +22,6 @@
 
 #include "mir/api/mir_config.h"
 #include "mir/tools/MIRTool.h"
-#include "mir/util/Grib.h"
 #include "mir/util/Log.h"
 
 
@@ -41,9 +40,6 @@ struct Libraries : std::map<std::string, std::string> {
             emplace(lib_name + " git-sha1", lib.gitsha1(sha1len));
             emplace(lib_name + " home", lib.libraryHome());
         }
-
-        emplace("eccodes version", ECCODES_VERSION_STR);
-        emplace("eccodes git-sha1", std::string(codes_get_git_sha1()).substr(0, sha1len));
     }
 };
 
@@ -151,7 +147,7 @@ struct MIRVersion : MIRTool {
 
         for (const auto& [key, val] : libs) {
             auto key_str = key;
-            key_str.resize(key_max);
+            key_str.resize(key_max, ' ');
 
             out << "\n  " << key_str << " : " << val;
         }
