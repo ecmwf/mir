@@ -151,7 +151,7 @@ struct MIRVersion : MIRTool {
 
         for (const auto& [key, val] : libs) {
             auto key_str = key;
-            key_str.resize(key_max);
+            key_str.resize(key_max, ' ');
 
             out << "\n  " << key_str << " : " << val;
         }
