@@ -234,11 +234,13 @@ Iterator* RegularGrid::iterator() const {
             out << ",i=" << i_ << ",j=" << j_ << ",count=" << count_ << "]";
         }
 
-        bool next(Latitude& _lat, Longitude& _lon) override {
+        bool next(value_type& _lat, value_type& _lon) override {
             if (j_ < nj_ && i_ < ni_) {
-                pLonLat_ = projection_.lonlat({x_[i_], y_[j_]});
-                _lat     = lat(pLonLat_.lat());
-                _lon     = lon(pLonLat_.lon());
+                auto p = projection_.lonlat({x_[i_], y_[j_]});
+                PointLonLat::operator=({p.lon(), p.lat()});
+
+                _lat = lat;
+                _lon = lon;
 
                 if (i_ > 0 || j_ > 0) {
                     count_++;

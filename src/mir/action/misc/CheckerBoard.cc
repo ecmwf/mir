@@ -21,6 +21,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Angles.h"
 #include "mir/util/Exceptions.h"
 
 
@@ -30,6 +31,7 @@ namespace mir::action {
 bool CheckerBoard::sameAs(const Action& /*unused*/) const {
     return false;
 }
+
 
 void CheckerBoard::print(std::ostream& out) const {
     out << "CheckerBoard[]";
@@ -76,8 +78,8 @@ void CheckerBoard::execute(context::Context& ctx) const {
             }
         }
 
-        auto we = Longitude::GLOBE.value() / double(frequencies[0]);
-        auto ns = Latitude::GLOBE.value() / double(frequencies[1]);
+        auto we = Longitude::GLOBE.value() / static_cast<double>(frequencies[0]);
+        auto ns = Latitude::GLOBE.value() / static_cast<double>(frequencies[1]);
 
         if (normalize) {
             maxvalue = 1;
@@ -106,13 +108,13 @@ void CheckerBoard::execute(context::Context& ctx) const {
             if (!hasMissing || v != missingValue) {
                 const auto& p = it->pointUnrotated();
 
-                Latitude lat  = Latitude::NORTH_POLE - p.lat();
-                Longitude lon = p.lon().normalise(Longitude::GREENWICH);
+                const auto lat = (Latitude::NORTH_POLE - p.lat).value();
+                const auto lon = util::normalise_longitude(p.lon, Longitude::GREENWICH.value());
 
-                auto c = size_t(lat.value() / ns);
-                auto r = size_t(lon.value() / we);
+                auto c = static_cast<size_t>(lat / ns);
+                auto r = static_cast<size_t>(lon / we);
 
-                v = double(boxes[std::make_pair(r, c)]);
+                v = static_cast<double>(boxes[std::make_pair(r, c)]);
             }
         }
     }

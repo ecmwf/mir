@@ -98,11 +98,11 @@ size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param, 
             auto v        = values.at(it->index());
 
             if (v != mv) {
-                out << "\n" << p.lon().value() << ' ' << p.lat().value() << ' ' << v;
+                out << "\n" << p.lon << ' ' << p.lat << ' ' << v;
             }
 
-            latitudes.push_back(p.lat().value());
-            longitudes.push_back(p.lon().value());
+            latitudes.push_back(p.lat);
+            longitudes.push_back(p.lon);
         }
 
         out << std::endl;
@@ -169,10 +169,10 @@ size_t GeoPointsFileOutputXYV::saveBinary(const param::MIRParametrisation& param
             auto v        = values.at(it->index());
 
             // NOTE: no check for missing value, consider changing
-            out << p.lon().value() << p.lat().value() << v;
+            out << p.lon << p.lat << v;
 
-            latitudes.push_back(p.lat().value());
-            longitudes.push_back(p.lon().value());
+            latitudes.push_back(p.lat);
+            longitudes.push_back(p.lon);
         }
     }
 

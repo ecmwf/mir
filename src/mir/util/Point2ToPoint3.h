@@ -27,14 +27,14 @@ namespace mir::util {
 
 struct Point2ToPoint3 final {
     Point2ToPoint3(const repres::Representation&, double poleDisplacement);
-    PointXYZ operator()(const PointXY&) const;
+    PointXYZ operator()(const PointLonLat&) const;
 
 private:
     struct Calculate {
         Calculate()          = default;
         virtual ~Calculate() = default;
 
-        virtual PointXYZ make_point3(const PointXY&) const = 0;
+        virtual PointXYZ make_point3(const PointLonLat&) const = 0;
 
         Calculate(const Calculate&) = delete;
         Calculate(Calculate&&)      = delete;
@@ -44,12 +44,12 @@ private:
     };
 
     struct Point3Simple final : Calculate {
-        PointXYZ make_point3(const PointXY&) const override;
+        PointXYZ make_point3(const PointLonLat&) const override;
     };
 
     struct Point3Displaced final : Calculate {
         explicit Point3Displaced(double poleDisplacement);
-        PointXYZ make_point3(const PointXY&) const override;
+        PointXYZ make_point3(const PointLonLat&) const override;
         const double eps_;
     };
 

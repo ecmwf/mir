@@ -52,8 +52,8 @@ void UnstructuredFilter::execute(context::Context& ctx) const {
 
     for (const std::unique_ptr<repres::Iterator> it(repres->iterator()); it->next();) {
         const auto& p              = **it;
-        latitudes.at(it->index())  = p[0];
-        longitudes.at(it->index()) = p[1];
+        latitudes.at(it->index())  = p.lat;
+        longitudes.at(it->index()) = p.lon;
     }
 
     field.representation(new repres::other::UnstructuredGrid(latitudes, longitudes));

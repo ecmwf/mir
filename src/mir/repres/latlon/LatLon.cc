@@ -35,7 +35,11 @@ namespace mir::repres::latlon {
 
 
 LatLon::LatLon(const param::MIRParametrisation& parametrisation) :
-    Gridded(parametrisation), increments_(parametrisation), reference_(bbox_.south(), bbox_.west()), ni_(0), nj_(0) {
+    Gridded(parametrisation),
+    increments_(parametrisation),
+    reference_(bbox_.south().value(), bbox_.west().value()),
+    ni_(0),
+    nj_(0) {
     correctBoundingBox(bbox_, ni_, nj_, increments_, reference_);
     ASSERT(ni_ != 0);
     ASSERT(nj_ != 0);
@@ -60,7 +64,7 @@ LatLon::LatLon(const param::MIRParametrisation& parametrisation) :
 }
 
 
-LatLon::LatLon(const util::Increments& increments, const util::BoundingBox& bbox, const PointLatLon& reference) :
+LatLon::LatLon(const util::Increments& increments, const util::BoundingBox& bbox, const PointLonLat& reference) :
     Gridded(bbox), increments_(increments), reference_(reference), ni_(0), nj_(0) {
     correctBoundingBox(bbox_, ni_, nj_, increments_, reference_);
     ASSERT(ni_ != 0);
@@ -177,7 +181,7 @@ Representation* LatLon::globalise(data::MIRField& field) const {
     ASSERT(domain().isPeriodicWestEast());
 
     util::BoundingBox newbbox(bbox_);
-    globaliseBoundingBox(newbbox, increments_, {bbox_.south(), bbox_.west()});
+    globaliseBoundingBox(newbbox, increments_, {bbox_.south().value(), bbox_.west().value()});
 
     std::unique_ptr<LatLon> newll(const_cast<LatLon*>(croppedRepresentation(newbbox)));
 
@@ -313,7 +317,7 @@ void LatLon::LatLonIterator::print(std::ostream& out) const {
 }
 
 
-bool LatLon::LatLonIterator::next(Latitude& lat, Longitude& lon) {
+bool LatLon::LatLonIterator::next(Iterator::value_type& lat, Iterator::value_type& lon) {
     if (j_ < nj_) {
         if (i_ < ni_) {
             lat = latValue_;
@@ -345,7 +349,7 @@ bool LatLon::LatLonIterator::next(Latitude& lat, Longitude& lon) {
 }
 
 
-void LatLon::globaliseBoundingBox(util::BoundingBox& bbox, const util::Increments& inc, const PointLatLon& reference) {
+void LatLon::globaliseBoundingBox(util::BoundingBox& bbox, const util::Increments& inc, const PointLonLat& reference) {
     using eckit::Fraction;
     using iterator::detail::RegularIterator;
 
@@ -354,8 +358,8 @@ void LatLon::globaliseBoundingBox(util::BoundingBox& bbox, const util::Increment
     ASSERT(sn > 0);
     ASSERT(we > 0);
 
-    Fraction shift_sn = (reference.lat().fraction() / sn).decimalPart() * sn;
-    Fraction shift_we = (reference.lon().fraction() / we).decimalPart() * we;
+    Fraction shift_sn = (eckit::Fraction{reference.lat} / sn).decimalPart() * sn;
+    Fraction shift_we = (eckit::Fraction{reference.lon} / we).decimalPart() * we;
 
 
     // Latitude limits
@@ -385,12 +389,12 @@ void LatLon::globaliseBoundingBox(util::BoundingBox& bbox, const util::Increment
 
 
 void LatLon::correctBoundingBox(util::BoundingBox& bbox, size_t& ni, size_t& nj, const util::Increments& inc,
-                                const PointLatLon& reference) {
+                                const PointLonLat& reference) {
     using iterator::detail::RegularIterator;
 
     // Latitude/longitude ranges
     RegularIterator lat{bbox.south().fraction(), bbox.north().fraction(), inc.south_north().latitude().fraction(),
-                        reference.lat().fraction()};
+                        eckit::Fraction{reference.lat}};
     auto n = lat.b();
     auto s = lat.a();
 
@@ -398,7 +402,7 @@ void LatLon::correctBoundingBox(util::BoundingBox& bbox, size_t& ni, size_t& nj,
     ASSERT(nj > 0);
 
     RegularIterator lon{bbox.west().fraction(), bbox.east().fraction(), inc.west_east().longitude().fraction(),
-                        reference.lon().fraction(), Longitude::GLOBE.fraction()};
+                        eckit::Fraction{reference.lon}, Longitude::GLOBE.fraction()};
     auto w = lon.a();
     auto e = lon.b();
 

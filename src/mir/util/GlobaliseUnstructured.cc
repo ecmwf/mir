@@ -66,9 +66,9 @@ size_t GlobaliseUnstructured::appendGlobalPoints(std::vector<double>& latitudes,
         const PointXYZ p(it->point3D());
         if (PointXYZ::distance(p, tree.closestPoint(p).point()) > globaliseMissingRadius_) {
 
-            const auto& unrotated = it->pointUnrotated();
-            latitudes.push_back(unrotated.lat().value());
-            longitudes.push_back(unrotated.lon().value());
+            const auto& p = it->pointUnrotated();
+            latitudes.push_back(p.lat);
+            longitudes.push_back(p.lon);
             ++nbExtraPoints;
         }
     }

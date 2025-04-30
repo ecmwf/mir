@@ -71,7 +71,7 @@ template <class Invtrans>
 const repres::Representation* ShToRegularLL<Invtrans>::outputRepresentation() const {
 
     util::BoundingBox bbox(bbox_);
-    const PointLatLon ref(bbox_.south(), bbox_.west());
+    const PointLonLat ref{eckit::Fraction{bbox_.south().value()}, eckit::Fraction{bbox_.west().value()}};
 
     repres::latlon::LatLon::globaliseBoundingBox(bbox, increments_, ref);
 

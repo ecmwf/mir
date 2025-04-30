@@ -59,7 +59,7 @@ namespace {
 
 
 using element_tree_t      = atlas::interpolation::method::ElemIndex3;
-using failed_projection_t = std::pair<size_t, PointLatLon>;
+using failed_projection_t = std::pair<size_t, PointLonLat>;
 
 
 struct element_t : std::vector<size_t> {

@@ -19,69 +19,67 @@
 #include "mir/util/Exceptions.h"
 
 
-namespace mir {
-namespace repres {
+namespace mir::repres {
+
+
+static const eckit::geo::projection::LonLatToXYZ TO_XYZ;
 
 
 Iterator::Iterator(const util::Rotation& rotation) :
     rotation_({rotation.south_pole_longitude().value(), rotation.south_pole_latitude().value()}), valid_(true) {}
 
 
-Iterator::~Iterator() = default;
-
-
-const PointXY& Iterator::pointRotated() const {
+const PointLonLat& Iterator::pointRotated() const {
     ASSERT(valid_);
-    return point_;
+    return pointRotated_;
 }
 
 
-const PointLatLon& Iterator::pointUnrotated() const {
+const PointLonLat& Iterator::pointUnrotated() const {
     ASSERT(valid_);
-    return *this;
+    return pointUnrotated_;
 }
 
 
 Iterator& Iterator::next() {
     ASSERT(valid_);
-    valid_ = next(lat_, lon_);
+
+    PointLonLat::value_type lon;
+    PointLonLat::value_type lat;
+    valid_ = next(lat, lon);
 
     if (valid_) {
-        auto p = rotation_.fwd(eckit::geo::PointLonLat{lon_.value(), lat_.value()});
-
-        // notice the order
-        point_[0] = p.lat;
-        point_[1] = p.lon;
+        pointRotated_ = rotation_.fwd(pointUnrotated_ = {lon, lat});
     }
 
     return *this;
 }
 
 
-PointXYZ Iterator::point_3D(const PointXY& point) {
-    static const eckit::geo::projection::LonLatToXYZ to_xyz;
-
-    // notice the order
-    auto p = to_xyz.fwd(eckit::geo::PointLonLat{point[1], point[0]});
+PointXYZ Iterator::point_3d(const PointLonLat& point) {
+    auto p = TO_XYZ.fwd(point);
 
     return {p.X, p.Y, p.Z};
 }
 
 
+PointLonLat Iterator::point_ll(const PointXYZ& point) {
+    return TO_XYZ.inv(eckit::geo::PointXYZ{point.x(0), point.x(1), point.x(2)});
+}
+
+
 PointXYZ Iterator::point3D() const {
     ASSERT(valid_);
-    return point_3D(point_);
+    return point_3d(pointRotated_);
 }
 
 
 void Iterator::print(std::ostream& out) const {
     out << "Iterator["
            "valid?"
-        << valid_ << ",PointLatLon=";
-    PointLatLon::print(out);
-    out << ",point=" << point_ << ",rotated?" << rotation_.rotated() << ",rotation=" << rotation_.spec_str() << "]";
+        << valid_ << ",PointLonLat=" << pointUnrotated_ << ",point=" << pointRotated_ << ",rotated?"
+        << rotation_.rotated() << ",rotation=" << rotation_.spec_str() << "]";
 }
 
 
-}  // namespace repres
-}  // namespace mir
+}  // namespace mir::repres

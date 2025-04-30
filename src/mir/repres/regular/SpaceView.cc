@@ -158,7 +158,7 @@ SpaceViewInternal::SpaceViewInternal(const param::MIRParametrisation& param) {
 }
 
 
-const std::vector<RegularGrid::PointLonLat>& SpaceViewInternal::lonlat() const {
+const std::vector<PointLonLat>& SpaceViewInternal::lonlat() const {
     if (lonlat_.empty()) {
         trace::Timer timer("SpaceView: pre-calculate (lon, lat) coordinates");
 
@@ -168,16 +168,16 @@ const std::vector<RegularGrid::PointLonLat>& SpaceViewInternal::lonlat() const {
         size_t index = 0;
         for (const auto& _y : y()) {
             for (const auto& _x : x()) {
-                auto& ll = lonlat_[index++];
-                ll       = projectionGreenwich_.lonlat({_x, _y});
+                auto ll = projectionGreenwich_.lonlat({_x, _y});
                 if (std::isfinite(ll.lon()) && std::isfinite(ll.lat())) {
                     ASSERT(-90. < ll.lon() && ll.lon() < 90.);
                     ASSERT(-90. < ll.lat() && ll.lat() < 90.);
 
-                    ll.lon() += Lop_;
+                    lonlat_[index++] = {ll.lon() + Lop_, ll.lat()};
                 }
                 else {
-                    ll = {std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN()};
+                    lonlat_[index++] = {std::numeric_limits<double>::quiet_NaN(),
+                                        std::numeric_limits<double>::quiet_NaN()};
                 }
             }
         }
@@ -213,13 +213,14 @@ Iterator* SpaceView::iterator() const {
             out << ",count=" << count_ << "]";
         }
 
-        bool next(Latitude& _lat, Longitude& _lon) override {
+        bool next(value_type& _lat, value_type& _lon) override {
             while (count_ < lonlat_.size()) {
                 // only one of (lon, lat) needs to be checked
-                const auto& ll = lonlat_[count_++];
-                if (std::isfinite(ll.lon())) {
-                    _lat = lat(ll.lat());
-                    _lon = lon(ll.lon());
+                const auto& p = lonlat_[count_++];
+                if (std::isfinite(p.lon)) {
+                    PointLonLat::operator=({p.lon, p.lat});
+                    _lat = lat;
+                    _lon = lon;
                     return true;
                 }
             }

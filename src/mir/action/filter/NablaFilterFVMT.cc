@@ -234,7 +234,7 @@ void NablaFilterFVMT<T>::execute(context::Context& ctx) const {
             ASSERT(values.size() == N);
 
             for (const std::unique_ptr<repres::Iterator> it(field.representation()->iterator()); it->next();) {
-                auto lat = it->pointUnrotated().lat().value();
+                auto lat = it->pointUnrotated().lat;
                 if (eckit::types::is_approximately_equal(lat, Latitude::NORTH_POLE.value()) ||
                     eckit::types::is_approximately_equal(lat, Latitude::SOUTH_POLE.value())) {
                     values.at(it->index()) = missingValue;

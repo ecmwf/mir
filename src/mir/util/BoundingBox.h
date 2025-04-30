@@ -78,9 +78,9 @@ public:
 
     bool isPeriodicWestEast() const;
 
-    bool contains(const PointLatLon&) const;
+    bool contains(const PointLonLat&) const;
 
-    bool contains(const PointXY&) const;
+    // bool contains(const PointXY&) const;
 
     bool contains(const Latitude&, const Longitude&) const;
 

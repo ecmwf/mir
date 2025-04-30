@@ -55,7 +55,7 @@ std::string ComparatorT<STATS>::execute(const data::MIRField& field1, const data
             auto v1       = values1.at(it->index());
             auto v2       = values2.at(it->index());
 
-            bool bad  = ignoreAboveLatitude_ < p.lat() || p.lat() < ignoreBelowLatitude_;
+            bool bad  = ignoreAboveLatitude_ < p.lat || p.lat < ignoreBelowLatitude_;
             auto diff = bad ? 0. : STATS::difference(v1, v2);
 
             if (CounterBinary::count(v1, v2, diff)) {

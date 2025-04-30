@@ -83,41 +83,41 @@ bool Increments::isPeriodic() const {
 
 
 bool Increments::isShifted(const BoundingBox& bbox) const {
-    const PointLatLon p{bbox.south(), bbox.west()};
+    const PointLonLat p{bbox.south().value(), bbox.west().value()};
     return isLatitudeShifted(p) || isLongitudeShifted(p);
 }
 
 
 bool Increments::isLatitudeShifted(const BoundingBox& bbox) const {
-    return isLatitudeShifted(PointLatLon{bbox.south(), bbox.west()});
+    return isLatitudeShifted({bbox.south().value(), bbox.west().value()});
 }
 
 
 bool Increments::isLongitudeShifted(const BoundingBox& bbox) const {
-    return isLongitudeShifted(PointLatLon{bbox.south(), bbox.west()});
+    return isLongitudeShifted({bbox.south().value(), bbox.west().value()});
 }
 
 
-bool Increments::isShifted(const PointLatLon& p) const {
+bool Increments::isShifted(const PointLonLat& p) const {
     return isLatitudeShifted(p) || isLongitudeShifted(p);
 }
 
 
-bool Increments::isLatitudeShifted(const PointLatLon& p) const {
-    const auto& inc = south_north_.latitude();
+bool Increments::isLatitudeShifted(const PointLonLat& p) const {
+    const auto& inc = south_north_.latitude().fraction();
     if (inc == 0) {
         return false;
     }
-    return !(p.lat().fraction() / inc.fraction()).integer();
+    return !(eckit::Fraction{p.lat} / inc).integer();
 }
 
 
-bool Increments::isLongitudeShifted(const PointLatLon& p) const {
-    const auto& inc = west_east_.longitude();
+bool Increments::isLongitudeShifted(const PointLonLat& p) const {
+    const auto& inc = west_east_.longitude().fraction();
     if (inc == 0) {
         return false;
     }
-    return !(p.lon().fraction() / inc.fraction()).integer();
+    return !(eckit::Fraction{p.lon} / inc).integer();
 }
 
 

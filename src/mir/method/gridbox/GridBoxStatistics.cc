@@ -21,6 +21,7 @@
 #include "mir/method/gridbox/GridBoxMethod.h"
 #include "mir/method/solver/Statistics.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/search/PointSearch.h"
 #include "mir/stats/Field.h"
@@ -92,7 +93,7 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
     util::Point2ToPoint3 point3(in, poleDisplacement());
 
     size_t nbFailures = 0;
-    std::forward_list<std::pair<size_t, PointLatLon>> failures;
+    std::forward_list<std::pair<size_t, PointLonLat>> failures;
 
 
     // set input k-d tree for grid boxes indices
@@ -106,14 +107,6 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
         trace::ProgressTimer progress("Containing", outBoxes.size(), boxes);
 
         const auto R = outBoxes.getLongestGridBoxDiagonal();
-
-        auto point_2D = [](const PointXYZ& point) -> PointXY {
-            atlas::PointLonLat pll;
-            util::Earth::convertCartesianToSpherical(point, pll);
-
-            // notice the order
-            return {pll[1], pll[0]};
-        };
 
         for (size_t i = 0; i < outBoxes.size(); ++i) {
             if (++progress) {
@@ -132,7 +125,7 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
             // calculate grid box contains
             std::vector<size_t> js;
             for (auto& c : closest) {
-                if (box.contains(point_2D(c.point()))) {
+                if (box.contains(repres::Iterator::point_ll(c.point()))) {
                     js.emplace_back(c.payload());
                 }
             }

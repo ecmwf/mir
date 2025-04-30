@@ -23,6 +23,7 @@
 
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Angles.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Trace.h"
@@ -119,9 +120,9 @@ MappedMask::MappedMask(const std::string& name, const eckit::PathName& path,
     const unsigned char* mask = reinterpret_cast<unsigned char*>(address);
 
     for (const std::unique_ptr<repres::Iterator> it(representation.iterator()); it->next();) {
-        const auto& p = it->pointUnrotated();
-        Latitude lat  = p.lat();
-        Longitude lon = p.lon().normalise(Longitude::GREENWICH);
+        const auto& p       = it->pointUnrotated();
+        const Latitude lat  = p.lat;
+        const Longitude lon = util::normalise_longitude(p.lon, Longitude::GREENWICH.value());
 
         if (lat < Latitude::SOUTH_POLE) {
             auto msg = "GRID  returns a latitude of " + std::to_string(lat.value()) +

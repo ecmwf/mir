@@ -17,18 +17,20 @@
 #include "eckit/geometry/Point2.h"
 #include "eckit/geometry/Point3.h"
 
+#include "eckit/geo/PointLonLat.h"
+
 #include "mir/util/Latitude.h"
 #include "mir/util/LongitudeDouble.h"
 #include "mir/util/LongitudeFraction.h"
-#include "mir/util/PointLatLonT.h"
 
 
 namespace mir {
 
 
 // using Longitude = LongitudeDouble;
-using Longitude   = LongitudeFraction;
-using PointLatLon = util::PointLatLonT<Latitude, Longitude>;
+using Longitude = LongitudeFraction;
+
+using PointLonLat = eckit::geo::PointLonLat;
 
 using PointXY  = eckit::geometry::Point2;
 using PointXYZ = eckit::geometry::Point3;

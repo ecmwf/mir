@@ -28,7 +28,7 @@ RotatedLL::RotatedLL(const param::MIRParametrisation& parametrisation) :
     LatLon(parametrisation), rotation_(parametrisation) {}
 
 RotatedLL::RotatedLL(const util::Increments& increments, const util::Rotation& rotation, const util::BoundingBox& bbox,
-                     const PointLatLon& reference) :
+                     const PointLonLat& reference) :
     LatLon(increments, bbox, reference), rotation_(rotation) {}
 
 RotatedLL::~RotatedLL() = default;
@@ -43,7 +43,9 @@ Iterator* RotatedLL::iterator() const {
             LatLonIterator::print(out);
             out << "]";
         }
-        bool next(Latitude& lat, Longitude& lon) override { return LatLonIterator::next(lat, lon); }
+        bool next(Iterator::value_type& lat, Iterator::value_type& lon) override {
+            return LatLonIterator::next(lat, lon);
+        }
 
         size_t index() const override { return count_; }
 

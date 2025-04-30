@@ -71,7 +71,7 @@ size_t GeoPointsFileOutputXYVector::save(const param::MIRParametrisation& param,
             auto v        = values_v.at(it->index());
 
             if (u != mv && v != mv) {
-                out << "\n" << p.lat().value() << ' ' << p.lon().value() << extra << ' ' << u << ' ' << v;
+                out << "\n" << p.lat << ' ' << p.lon << extra << ' ' << u << ' ' << v;
             }
         }
 

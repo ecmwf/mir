@@ -20,6 +20,7 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
+#include "mir/util/Angles.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Increments.h"
 #include "mir/util/Log.h"
@@ -71,21 +72,21 @@ void Count::reset() {
 }
 
 
-void Count::count(const PointLatLon& point) {
+void Count::count(const PointLonLat& point) {
     countTotal_++;
 
-    nn_.insert(DistanceLat(bbox_.north().distance(point.lat()), point.lat()));
-    ss_.insert(DistanceLat(bbox_.south().distance(point.lat()), point.lat()));
+    nn_.insert(DistanceLat(bbox_.north().distance(point.lat), point.lat));
+    ss_.insert(DistanceLat(bbox_.south().distance(point.lat), point.lat));
 
-    ee_.insert(DistanceLon(bbox_.east().distance(point.lon()), point.lon()));
-    ww_.insert(DistanceLon(bbox_.west().distance(point.lon()), point.lon()));
+    ee_.insert(DistanceLon(bbox_.east().distance(point.lon), point.lon));
+    ww_.insert(DistanceLon(bbox_.west().distance(point.lon), point.lon));
 
     // Log::info() << point.lat << " " << point.lon << " => " << bbox.contains(point.lat, point.lon) << std::endl;
 
     if (bbox_.contains(point)) {
 
-        const Latitude& lat = point.lat();
-        const Longitude lon = point.lon().normalise(bbox_.west());
+        const Latitude& lat = point.lat;
+        const Longitude lon = util::normalise_longitude(point.lon, bbox_.west().value());
 
         if (first_) {
             n_ = s_ = lat;

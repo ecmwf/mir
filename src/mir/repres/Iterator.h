@@ -17,23 +17,28 @@
 #include "eckit/geo/projection/Rotation.h"
 
 #include "mir/util/Rotation.h"
+#include "mir/util/Types.h"
 
 
 namespace mir::repres {
 
 
-class Iterator : protected PointLatLon {
+class Iterator {
 public:
+    // -- Types
+
+    using value_type = PointLonLat::value_type;
+
     // -- Constructors
 
-    explicit Iterator(const util::Rotation& = util::Rotation());
+    explicit Iterator(const util::Rotation& = util::Rotation{});
 
     Iterator(const Iterator&) = delete;
     Iterator(Iterator&&)      = delete;
 
     // -- Destructor
 
-    ~Iterator() override;
+    virtual ~Iterator() = default;
 
     // -- Convertors
 
@@ -44,14 +49,15 @@ public:
     void operator=(const Iterator&) = delete;
     void operator=(Iterator&&)      = delete;
 
-    inline const PointXY& operator*() const { return pointRotated(); }
+    inline const PointLonLat& operator*() const { return pointRotated(); }
 
     // -- Methods
 
-    static PointXYZ point_3D(const PointXY&);
+    static PointXYZ point_3d(const PointLonLat&);
+    static PointLonLat point_ll(const PointXYZ&);
 
-    const PointXY& pointRotated() const;
-    const PointLatLon& pointUnrotated() const;
+    const PointLonLat& pointRotated() const;
+    const PointLonLat& pointUnrotated() const;
     PointXYZ point3D() const;
 
     Iterator& next();
@@ -60,14 +66,15 @@ public:
 protected:
     // -- Members
 
-    PointXY point_;
+    PointLonLat pointUnrotated_;
+    PointLonLat pointRotated_;
     eckit::geo::projection::Rotation rotation_;
     bool valid_;
 
     // -- Methods
 
-    void print(std::ostream&) const override = 0;
-    virtual bool next(Latitude&, Longitude&) = 0;
+    virtual void print(std::ostream&) const     = 0;
+    virtual bool next(value_type&, value_type&) = 0;
 
 private:
     // -- Friends
