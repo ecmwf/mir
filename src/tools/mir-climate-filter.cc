@@ -14,6 +14,7 @@
 #include <limits>
 #include <memory>
 
+#include "eckit/geo/projection/LonLatToXYZ.h"
 #include "eckit/linalg/LinearAlgebraDense.h"
 #include "eckit/linalg/Matrix.h"
 #include "eckit/linalg/Vector.h"
@@ -196,6 +197,9 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
         log << "coordinates: " << timer.elapsedSeconds(t) << std::endl;
 
 
+        // projection
+        ::eckit::geo::projection::LonLatToXYZ to_xyz;
+
         {
             trace::ProgressTimer progress("Locating", Nj, {"row"});
             double farthest = 0;
@@ -218,8 +222,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
                 // search neighbour points to P (start of j-th row)
                 t = timer.elapsed();
 
-                PointXYZ P;
-                util::Earth::convertSphericalToCartesian({lon[0], lat[j]}, P);
+                auto P = to_xyz.fwd(PointLonLat{lon[0], lat[j]});
 
                 std::vector<search::PointSearch::PointValueType> closest;
                 tree.closestWithinRadius(P, distance, closest);

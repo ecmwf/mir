@@ -12,7 +12,7 @@
 
 #pragma once
 
-#include "mir/util/Atlas.h"
+#include "eckit/geo/Projection.h"
 
 
 struct grib_info;
@@ -31,10 +31,10 @@ namespace mir::util {
 
 
 struct Shape {
-    using Projection = ::atlas::Projection;
+    using Projection = ::eckit::geo::Projection;
 
-    Shape(const param::MIRParametrisation&);
-    Shape(const Projection::Spec&);
+    explicit Shape(const Projection::Spec&);
+
     Shape() : code(6L), a(0.), b(0.), provided(false) {}
 
     Shape(const Shape&) = default;

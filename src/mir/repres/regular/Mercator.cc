@@ -21,7 +21,7 @@ namespace mir::repres::regular {
 static const RepresentationBuilder<Mercator> __builder("mercator");
 
 
-Mercator::Mercator(const param::MIRParametrisation& param) : RegularGrid(param, make_proj_spec(param)) {}
+Mercator::Mercator(const param::MIRParametrisation& param) : RegularGrid(param, make_projection(param)) {}
 
 
 void Mercator::fillGrib(grib_info& /*info*/) const {

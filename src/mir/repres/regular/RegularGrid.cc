@@ -20,10 +20,15 @@
 #include <vector>
 
 #include "eckit/config/Resource.h"
+#include "eckit/geo/area/BoundingBox.h"
+#include "eckit/geo/grid/RegularXY.h"
+#include "eckit/geo/range/RegularCartesian.h"
+#include "eckit/geo/spec/Custom.h"
 #include "eckit/utils/MD5.h"
 #include "eckit/utils/StringTools.h"
 
 #include "mir/api/MIRJob.h"
+#include "mir/iterator/UnstructuredIterator.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Domain.h"
@@ -36,22 +41,28 @@
 namespace mir::repres::regular {
 
 
-RegularGrid::RegularGrid(const param::MIRParametrisation& param, const RegularGrid::Projection& projection) :
-    shape_(param), xPlus_(true), yPlus_(false), firstPointBottomLeft_(false) {
-    ASSERT(projection);
+RegularGrid::RegularGrid(const param::MIRParametrisation& param, Projection* projection) :
+    firstPointBottomLeft_(false) {
+    ASSERT(projection != nullptr);
 
-    auto get_long_first_key = [](const param::MIRParametrisation& param, const std::vector<std::string>& keys) -> long {
-        long value = 0;
+    auto get_long_first_key = [&param](const std::vector<std::string>& keys) -> long {
         for (const auto& key : keys) {
-            if (param.get(key, value)) {
+            if (long value = 0; param.get(key, value)) {
                 return value;
             }
         }
         throw exception::SeriousBug("RegularGrid: couldn't find any key: " + eckit::StringTools::join(", ", keys));
     };
 
-    long nx = get_long_first_key(param, {"numberOfPointsAlongXAxis", "Ni"});
-    long ny = get_long_first_key(param, {"numberOfPointsAlongYAxis", "Nj"});
+    auto get_double = [&param](const std::string& key) -> double {
+        if (double value = 0; param.get(key, value)) {
+            return value;
+        }
+        throw exception::SeriousBug("RegularGrid: couldn't find key: " + key);
+    };
+
+    long nx = get_long_first_key({"numberOfPointsAlongXAxis", "Nx", "Ni"});
+    long ny = get_long_first_key({"numberOfPointsAlongYAxis", "Ny", "Nj"});
     ASSERT(nx > 0);
     ASSERT(ny > 0);
 
@@ -59,44 +70,49 @@ RegularGrid::RegularGrid(const param::MIRParametrisation& param, const RegularGr
     ASSERT(param.get("grid", grid));
     ASSERT_KEYWORD_GRID_SIZE(grid.size());
 
-    PointXY firstLL;
-    ASSERT(param.get("latitudeOfFirstGridPointInDegrees", firstLL[LLCOORDS::LAT]));
-    ASSERT(param.get("longitudeOfFirstGridPointInDegrees", firstLL[LLCOORDS::LON]));
-    auto first = projection.xy(firstLL);
+    PointLonLat firstLL{get_double("longitudeOfFirstGridPointInDegrees"),
+                        get_double("latitudeOfFirstGridPointInDegrees")};
+    auto first = std::get<PointXY>(projection->fwd(firstLL));
 
+    bool xPlus_ = true;
+    bool yPlus_ = false;
     param.get("iScansPositively", xPlus_);  // iScansPositively != 0
     param.get("jScansPositively", yPlus_);  // jScansPositively == 0
     param.get("first_point_bottom_left", firstPointBottomLeft_);
 
-    x_    = linspace(first.x(), grid[0], nx, firstPointBottomLeft_ || xPlus_);
-    y_    = linspace(first.y(), grid[1], ny, firstPointBottomLeft_ || yPlus_);
-    grid_ = {x_, y_, projection};
 
-    atlas::RectangularDomain range({x_.min(), x_.max()}, {y_.min(), y_.max()}, "meters");
-    auto bbox = projection.lonlatBoundingBox(range);
-    ASSERT(bbox);
+    auto linspace = [](double start, double step, long num, bool plus) -> ::eckit::geo::Range* {
+        ASSERT(step >= 0.);
+        ASSERT(num > 1);
+
+        return new ::eckit::geo::range::RegularCartesian{static_cast<size_t>(num), start,
+                                                         start + step * static_cast<double>(plus ? num - 1 : 1 - num)};
+    };
+
+    grid_ = std::make_unique<eckit::geo::grid::RegularXY>(
+        linspace(first.X, grid[0], nx, firstPointBottomLeft_ || xPlus_),
+        linspace(first.Y, grid[1], ny, firstPointBottomLeft_ || yPlus_), projection);
+
+    PointXY min{grid_->x().min(), grid_->y().min()};
+    PointXY max{grid_->x().max(), grid_->y().max()};
+
+    std::unique_ptr<::eckit::geo::area::BoundingBox> bbox(
+        ::eckit::geo::area::BoundingBox::make_from_projection(min, max, *projection));
+
 
     // MIR-661 Grid projection handling covering the poles: account for "excessive" bounds
-    Longitude west(bbox.west());
-    auto east = bbox.east() - bbox.west() >= Longitude::GLOBE.value() ? west + Longitude::GLOBE : bbox.east();
+    auto west(bbox->west);
+    auto east = bbox->east - bbox->west >= PointLonLat::FULL_ANGLE ? west + PointLonLat::FULL_ANGLE : bbox->east;
 
-    bbox_ = {bbox.north(), west, bbox.south(), east};
+    bbox_ = {bbox->north, west, bbox->south, east};
 }
 
 
-RegularGrid::RegularGrid(const Projection& projection, const util::BoundingBox& bbox, const LinearSpacing& x,
-                         const LinearSpacing& y, const util::Shape& shape) :
-    Gridded(bbox),
-    x_(x),
-    y_(y),
-    shape_(shape),
-    xPlus_(x.front() <= x.back()),
-    yPlus_(y.front() < y.back()),
-    firstPointBottomLeft_(false) {
-    grid_ = {x_, y_, projection};
-
+RegularGrid::RegularGrid(Grid* grid, const util::BoundingBox& bbox, const util::Shape& shape) :
+    Gridded(bbox), grid_(grid), shape_(shape), firstPointBottomLeft_(false) {
+    ASSERT(grid != nullptr);
     if (!shape_.provided) {
-        shape_ = {grid_.projection().spec()};
+        shape_ = util::Shape{grid_->projection().spec()};
     }
 }
 
@@ -104,42 +120,33 @@ RegularGrid::RegularGrid(const Projection& projection, const util::BoundingBox& 
 RegularGrid::~RegularGrid() = default;
 
 
-RegularGrid::Projection::Spec RegularGrid::make_proj_spec(const param::MIRParametrisation& param) {
+RegularGrid::Projection* RegularGrid::make_projection(const param::MIRParametrisation& param) {
     static bool useProjIfAvailable = eckit::Resource<bool>("$MIR_USE_PROJ_IF_AVAILABLE", true);
 
     std::string proj;
     param.get("proj", proj);
 
-    if (proj.empty() || !useProjIfAvailable || !::atlas::projection::ProjectionFactory::has("proj")) {
+    if (proj.empty()) {
         return {};
     }
 
-    Projection::Spec spec("type", "proj");
-    spec.set("proj", proj);
+    ::eckit::geo::spec::Custom spec{{"type", "proj"}, {"proj", proj}};
 
-    std::string projSource;
-    if (param.get("projSource", projSource) && !projSource.empty()) {
-        spec.set("proj_source", projSource);
+    if (std::string proj; param.get("projSource", proj) && !proj.empty()) {
+        spec.set("proj_source", proj);
     }
 
-    std::string projGeocentric;
-    if (param.get("projGeocentric", projGeocentric) && !projGeocentric.empty()) {
-        spec.set("proj_geocentric", projGeocentric);
+    if (std::string proj; param.get("projGeocentric", proj) && !proj.empty()) {
+        spec.set("proj_geocentric", proj);
     }
 
-    return spec;
-}
-
-
-RegularGrid::LinearSpacing RegularGrid::linspace(double start, double step, long num, bool plus) {
-    ASSERT(step >= 0.);
-    return {start, start + step * static_cast<double>(plus ? num - 1 : 1 - num), num};
+    return eckit::geo::ProjectionFactory::build(spec);
 }
 
 
 void RegularGrid::print(std::ostream& out) const {
-    out << "RegularGrid[x=" << x_.spec() << ",y=" << y_.spec() << ",projection=" << grid_.projection().spec()
-        << ",firstPointBottomLeft=" << firstPointBottomLeft_ << ",bbox=" << bbox_ << "]";
+    out << "RegularGrid[grid=" << grid_->spec_str() << ",firstPointBottomLeft=" << firstPointBottomLeft_
+        << ",bbox=" << bbox_ << "]";
 }
 
 
@@ -149,28 +156,28 @@ bool RegularGrid::extendBoundingBoxOnIntersect() const {
 
 
 size_t RegularGrid::numberOfPoints() const {
-    return x_.size() * y_.size();
+    return x().size() * y().size();
 }
 
 
 ::atlas::Grid RegularGrid::atlasGrid() const {
-    return grid_;
+    NOTIMP;
 }
 
 
 void RegularGrid::fillGrib(grib_info& info) const {
     // shape of the reference system
-    shape_.fillGrib(info, grid_.projection().spec());
+    shape_.fillGrib(info, grid_->projection().spec());
 
     // scanningMode
-    info.grid.iScansNegatively = x_.front() < x_.back() ? 0L : 1L;
-    info.grid.jScansPositively = y_.front() < y_.back() ? 1L : 0L;
+    info.grid.iScansNegatively = xPlus() ? 0L : 1L;
+    info.grid.jScansPositively = yPlus() ? 1L : 0L;
 }
 
 
 void RegularGrid::fillJob(api::MIRJob& job) const {
     // shape of the reference system
-    shape_.fillJob(job, grid_.projection().spec());
+    shape_.fillJob(job, grid_->projection().spec());
 
     // scanningMode
     std::string grid;
@@ -216,70 +223,41 @@ void RegularGrid::validate(const MIRValuesVector& values) const {
 
 
 Iterator* RegularGrid::iterator() const {
-    class RegularGridIterator final : public Iterator {
-        Projection projection_;
-        const LinearSpacing& x_;
-        const LinearSpacing& y_;
-        PointLonLat pLonLat_;
-
-        size_t ni_;
-        size_t nj_;
-        size_t i_     = 0;
-        size_t j_     = 0;
-        size_t count_ = 0;
-
-        void print(std::ostream& out) const override {
-            out << "RegularGridIterator[";
-            Iterator::print(out);
-            out << ",i=" << i_ << ",j=" << j_ << ",count=" << count_ << "]";
-        }
-
-        bool next(value_type& _lat, value_type& _lon) override {
-            if (j_ < nj_ && i_ < ni_) {
-                auto p = projection_.lonlat({x_[i_], y_[j_]});
-                PointLonLat::operator=({p.lon(), p.lat()});
-
-                _lat = lat;
-                _lon = lon;
-
-                if (i_ > 0 || j_ > 0) {
-                    count_++;
-                }
-
-                if (++i_ == ni_) {
-                    i_ = 0;
-                    j_++;
-                }
-
-                return true;
-            }
-            return false;
-        }
-
-        size_t index() const override { return count_; }
-
-    public:
-        RegularGridIterator(Projection projection, const LinearSpacing& x, const LinearSpacing& y) :
-            projection_(std::move(projection)), x_(x), y_(y), ni_(x.size()), nj_(y.size()) {}
-    };
-
-    return new RegularGridIterator(grid_.projection(), x_, y_);
+    const auto& [lats, lons] = grid_->to_latlons();
+    return new iterator::UnstructuredIterator(lats, lons);
 }
 
 
 void RegularGrid::makeName(std::ostream& out) const {
     eckit::MD5 h;
-    h << grid_.projection().spec();
-    h << x_.spec();
-    h << y_.spec();
+    h << grid_->uid();
     h << firstPointBottomLeft_;
+
     if (shape_.provided) {
         h << shape_.code;
         h << shape_.a;
         h << shape_.b;
     }
-    auto type = grid_.projection().spec().getString("type");
-    out << "RegularGrid-" << (type.empty() ? "" : type + "-") << h.digest();
+
+    out << "RegularGrid-" << grid_->type() << "-" << h.digest();
+}
+
+
+PointXY RegularGrid::firstPointXY() const {
+    return {
+        firstPointBottomLeft_ ? grid_->x().min() : grid_->x().values().front(),
+        firstPointBottomLeft_ ? grid_->y().min() : grid_->y().values().front(),
+    };
+}
+
+
+PointLonLat RegularGrid::firstPointLonLat() const {
+    return std::get<PointLonLat>(grid_->projection().inv(firstPointXY()));
+}
+
+
+PointLonLat RegularGrid::referencePointLonLat() const {
+    return std::get<PointLonLat>(grid_->projection().inv(PointXY{0., 0.}));
 }
 
 

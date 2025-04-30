@@ -18,6 +18,8 @@
 #include "eckit/geometry/Point3.h"
 
 #include "eckit/geo/PointLonLat.h"
+#include "eckit/geo/PointXY.h"
+#include "eckit/geo/PointXYZ.h"
 
 #include "mir/util/Latitude.h"
 #include "mir/util/LongitudeDouble.h"
@@ -30,13 +32,9 @@ namespace mir {
 // using Longitude = LongitudeDouble;
 using Longitude = LongitudeFraction;
 
-using PointLonLat = eckit::geo::PointLonLat;
-
-using PointXY  = eckit::geometry::Point2;
-using PointXYZ = eckit::geometry::Point3;
-
-using LLCOORDS  = eckit::geometry::LLCOORDS;
-using XYZCOORDS = eckit::geometry::XYZCOORDS;
+using eckit::geo::PointLonLat;
+using eckit::geo::PointXY;
+using eckit::geo::PointXYZ;
 
 using MIRValuesVector = std::vector<double>;
 

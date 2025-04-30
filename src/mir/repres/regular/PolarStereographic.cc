@@ -29,7 +29,7 @@ static const RepresentationBuilder<PolarStereographic> __builder("polar_stereogr
 
 
 PolarStereographic::PolarStereographic(const param::MIRParametrisation& param) :
-    RegularGrid(param, make_proj_spec(param)),
+    RegularGrid(param, make_projection(param)),
     LaDInDegrees_(0),
     orientationOfTheGridInDegrees_(0),
     southPoleOnProjectionPlane_(false) {
@@ -62,20 +62,19 @@ PolarStereographic::PolarStereographic(const param::MIRParametrisation& param) :
 void PolarStereographic::fillGrib(grib_info& info) const {
     info.grid.grid_type = CODES_UTIL_GRID_SPEC_POLAR_STEREOGRAPHIC;
 
-    PointXY first   = {x().front(), y().front()};
-    PointXY firstLL = grid().projection().lonlat(first);
+    auto firstLL = firstPointLonLat();
 
-    info.grid.latitudeOfFirstGridPointInDegrees = firstLL[LLCOORDS::LAT];
+    info.grid.latitudeOfFirstGridPointInDegrees = firstLL.lat;
     info.grid.longitudeOfFirstGridPointInDegrees =
-        writeLonPositive_ ? util::normalise_longitude(firstLL[LLCOORDS::LON], 0) : firstLL[LLCOORDS::LON];
+        writeLonPositive_ ? util::normalise_longitude(firstLL.lon, 0) : firstLL.lon;
 
     info.grid.Ni = static_cast<long>(x().size());
     info.grid.Nj = static_cast<long>(y().size());
 
     info.grid.uvRelativeToGrid = uvRelativeToGrid_ ? 1 : 0;
 
-    info.extra_set("DxInMetres", std::abs(x().step()));
-    info.extra_set("DyInMetres", std::abs(y().step()));
+    info.extra_set("DxInMetres", std::abs(static_cast<double>(grid().x().increment())));
+    info.extra_set("DyInMetres", std::abs(static_cast<double>(grid().y().increment())));
     info.extra_set("orientationOfTheGridInDegrees", util::normalise_longitude(orientationOfTheGridInDegrees_, 0));
 
     if (writeLaDInDegrees_) {
@@ -88,22 +87,22 @@ void PolarStereographic::fillGrib(grib_info& info) const {
 
 
 void PolarStereographic::fillJob(api::MIRJob& job) const {
-    PointXY first   = {x().front(), y().front()};
-    PointXY firstLL = grid().projection().lonlat(first);
+    auto firstLL = firstPointLonLat();
 
-    std::ostringstream grid;
-    grid << "gridType=polar_stereographic;"
-         << "proj=" << proj_ << ";"
-         << "LaDInDegrees=" << LaDInDegrees_ << ";"
-         << "orientationOfTheGridInDegrees=" << orientationOfTheGridInDegrees_ << ";"
-         << "southPoleOnProjectionPlane=" << (southPoleOnProjectionPlane_ ? "1" : "0") << ";"
-         << "Ni=" << x().size() << ";"
-         << "Nj=" << y().size() << ";"
-         << "grid=" << std::abs(x().step()) << "/" << std::abs(y().step()) << ";"
-         << "latitudeOfFirstGridPointInDegrees=" << firstLL[LLCOORDS::LAT] << ";"
-         << "longitudeOfFirstGridPointInDegrees=" << firstLL[LLCOORDS::LON];
+    std::ostringstream str;
+    str << "gridType=polar_stereographic;"
+        << "proj=" << proj_ << ";"
+        << "LaDInDegrees=" << LaDInDegrees_ << ";"
+        << "orientationOfTheGridInDegrees=" << orientationOfTheGridInDegrees_ << ";"
+        << "southPoleOnProjectionPlane=" << (southPoleOnProjectionPlane_ ? "1" : "0") << ";"
+        << "Ni=" << x().size() << ";"
+        << "Nj=" << y().size() << ";"
+        << "grid=" << std::abs(static_cast<double>(grid().x().increment())) << "/"
+        << std::abs(static_cast<double>(grid().y().increment())) << ";"
+        << "latitudeOfFirstGridPointInDegrees=" << firstLL.lat << ";"
+        << "longitudeOfFirstGridPointInDegrees=" << firstLL.lon;
 
-    job.set("grid", grid.str());
+    job.set("grid", str.str());
 
     // some extra keys are edition-specific, so parent call is here
     RegularGrid::fillJob(job);

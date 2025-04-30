@@ -14,8 +14,11 @@
 
 #include <cmath>
 
+#include "eckit/geo/Projection.h"
+#include "eckit/geo/figure/Earth.h"
+#include "eckit/geo/spec/Custom.h"
+
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 
@@ -26,20 +29,9 @@ namespace mir::repres::regular {
 static const RepresentationBuilder<LambertAzimuthalEqualArea> __builder("lambert_azimuthal_equal_area");
 
 
-LambertAzimuthalEqualArea::LambertAzimuthalEqualArea(const param::MIRParametrisation& param) :
-    RegularGrid(param, make_projection(param)) {}
-
-
-LambertAzimuthalEqualArea::LambertAzimuthalEqualArea(const Projection& projection, const util::BoundingBox& bbox,
-                                                     const LinearSpacing& x, const LinearSpacing& y,
-                                                     const util::Shape& shape) :
-    RegularGrid(projection, bbox, x, y, shape) {}
-
-
-RegularGrid::Projection LambertAzimuthalEqualArea::make_projection(const param::MIRParametrisation& param) {
-    auto spec = make_proj_spec(param);
-    if (!spec.empty()) {
-        return spec;
+RegularGrid::Projection* make_projection_laea(const param::MIRParametrisation& param) {
+    if (const auto* proj = RegularGrid::make_projection(param); proj != nullptr) {
+        return proj;
     }
 
     double standardParallel = 0.;
@@ -47,32 +39,38 @@ RegularGrid::Projection LambertAzimuthalEqualArea::make_projection(const param::
     double radius           = 0.;
     ASSERT(param.get("standardParallelInDegrees", standardParallel));
     ASSERT(param.get("centralLongitudeInDegrees", centralLongitude));
-    param.get("radius", radius = util::Earth::radius());
+    param.get("radius", radius = ::eckit::geo::figure::EARTH.R());
 
-    return Projection::Spec("type", "lambert_azimuthal_equal_area")
-        .set("standard_parallel", standardParallel)
-        .set("central_longitude", centralLongitude)
-        .set("radius", radius);
+    using spec_type = ::eckit::geo::spec::Custom;
+    return ::eckit::geo::ProjectionFactory::build(
+        *std::unique_ptr<spec_type>(new spec_type{{"type", "lambert_azimuthal_equal_area"},
+                                                  {"standard_parallel", standardParallel},
+                                                  {"central_longitude", centralLongitude},
+                                                  {"radius", radius}}));
 }
+
+
+LambertAzimuthalEqualArea::LambertAzimuthalEqualArea(const param::MIRParametrisation& param) :
+    RegularGrid(param, make_projection_laea(param)) {}
 
 
 void LambertAzimuthalEqualArea::fillGrib(grib_info& info) const {
     info.grid.grid_type        = CODES_UTIL_GRID_SPEC_LAMBERT_AZIMUTHAL_EQUAL_AREA;
     info.packing.editionNumber = 2;
 
-    PointXY reference = grid().projection().lonlat({0., 0.});
-    PointXY firstLL   = grid().projection().lonlat({x().front(), y().front()});
+    auto firstLL   = firstPointLonLat();
+    auto reference = referencePointLonLat();
 
     info.grid.Ni = static_cast<long>(x().size());
     info.grid.Nj = static_cast<long>(y().size());
 
-    info.grid.latitudeOfFirstGridPointInDegrees  = firstLL[LLCOORDS::LAT];
-    info.grid.longitudeOfFirstGridPointInDegrees = firstLL[LLCOORDS::LON];
+    info.grid.latitudeOfFirstGridPointInDegrees  = firstLL.lat;
+    info.grid.longitudeOfFirstGridPointInDegrees = firstLL.lon;
 
-    info.extra_set("DxInMetres", std::abs(x().step()));
-    info.extra_set("DyInMetres", std::abs(y().step()));
-    info.extra_set("standardParallelInDegrees", reference[LLCOORDS::LAT]);
-    info.extra_set("centralLongitudeInDegrees", reference[LLCOORDS::LON]);
+    info.extra_set("DxInMetres", std::abs(static_cast<double>(grid().x().increment())));
+    info.extra_set("DyInMetres", std::abs(static_cast<double>(grid().y().increment())));
+    info.extra_set("standardParallelInDegrees", reference.lat);
+    info.extra_set("centralLongitudeInDegrees", reference.lon);
 
     // some extra keys are edition-specific, so parent call is here
     RegularGrid::fillGrib(info);
