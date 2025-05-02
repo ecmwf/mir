@@ -126,6 +126,7 @@ private:
                                                 const lsm::LandSeaMasks&) const;
 
     virtual void applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const;
+    virtual void applyIMM(WeightMatrix&, const std::vector<bool>&) const;
     virtual lsm::LandSeaMasks getMasks(const repres::Representation& in, const repres::Representation& out) const;
     virtual WeightMatrix::Check validateMatrixWeights() const;
 
