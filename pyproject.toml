@@ -9,12 +9,12 @@
 
 
 [build-system]
-requires = ["setuptools>=65", "Cython>=3.0", "wheel"]
+requires = ["setuptools>=65", "Cython>=3.0", "wheel", "numpy"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mir"
-version = "0.3.0"
+name = "mir-python"
+version = "0.3.1"
 description = "Don't use this"
 requires-python=">=3.9"
 authors = [
@@ -32,7 +32,7 @@ classifiers=[
 	"Operating System :: MacOS",
 	"Topic :: Scientific/Engineering",
 ]
-dependencies = ["findlibs", "mirlib"]
+dependencies = ["findlibs", "mirlib", "numpy"]
 
 
 [tool.setuptools]
