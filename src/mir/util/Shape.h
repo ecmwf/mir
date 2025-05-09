@@ -32,8 +32,9 @@ namespace mir::util {
 
 struct Shape {
     using Projection = ::eckit::geo::Projection;
+    using Spec       = ::eckit::geo::Spec;
 
-    explicit Shape(const Projection::Spec&);
+    explicit Shape(const Spec&);
 
     Shape() : code(6L), a(0.), b(0.), provided(false) {}
 
@@ -45,8 +46,8 @@ struct Shape {
     Shape& operator=(const Shape&) = default;
     Shape& operator=(Shape&&)      = default;
 
-    void fillGrib(grib_info&, const Projection::Spec&) const;
-    void fillJob(api::MIRJob&, const Projection::Spec&) const;
+    void fillGrib(grib_info&, const Spec&) const;
+    void fillJob(api::MIRJob&, const Spec&) const;
 
     long code;
     double a;

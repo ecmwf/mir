@@ -33,7 +33,7 @@ namespace mir::util {
 // }
 
 
-Shape::Shape(const Projection::Spec& spec) {
+Shape::Shape(const Spec& spec) {
     if (spec.has("radius")) {
         code = 1L;
         a = b = spec.get_double("radius");
@@ -53,7 +53,7 @@ Shape::Shape(const Projection::Spec& spec) {
 }
 
 
-void Shape::fillGrib(grib_info& info, const Projection::Spec& spec) const {
+void Shape::fillGrib(grib_info& info, const Spec& spec) const {
     const static std::string EDITION{"edition"};
 
     // GRIB2 encoding of user-provided shape
@@ -102,7 +102,7 @@ void Shape::fillGrib(grib_info& info, const Projection::Spec& spec) const {
 }
 
 
-void Shape::fillJob(api::MIRJob& job, const Projection::Spec& spec) const {
+void Shape::fillJob(api::MIRJob& job, const Spec& spec) const {
     // MIRJob encoding of user-provided shape
     std::ostringstream shape;
 
