@@ -79,6 +79,7 @@ else:
         for base in [source, build]
         for pkg in ["mir", "eccodes", "eckit"]
     )
+    include_dirs_default += ":" + str(Path(build, "eccodes", "src", "eccodes"))
     include_dirs = os.getenv("MIR_INCLUDE_DIRS", include_dirs_default).split(":")
 
     extra_link_args = []
