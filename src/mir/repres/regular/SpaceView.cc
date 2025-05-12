@@ -33,7 +33,6 @@ namespace mir::repres::regular {
 static const RepresentationBuilder<SpaceView> __builder("space_view");
 
 
-
 template <typename EXTERNAL_T, typename INTERNAL_T = EXTERNAL_T>
 EXTERNAL_T get(const param::MIRParametrisation& param, const std::string& key) {
     INTERNAL_T value;

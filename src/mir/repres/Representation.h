@@ -57,10 +57,6 @@ namespace data {
 class MIRField;
 }
 
-namespace api {
-class MIREstimation;
-}
-
 }  // namespace mir
 
 
@@ -94,7 +90,6 @@ public:
     virtual void fillGrib(grib_info&) const;
     virtual void fillJob(api::MIRJob&) const;
     virtual void fillMeshGen(util::MeshGeneratorParameters&) const;
-    virtual void estimate(api::MIREstimation&) const;
 
     // Return a cropped version
     virtual const Representation* croppedRepresentation(const util::BoundingBox&) const;
@@ -102,7 +97,7 @@ public:
     virtual bool extendBoundingBoxOnIntersect() const;
     virtual bool crop(util::BoundingBox&, util::IndexMapping&) const;
 
-    virtual size_t frame(MIRValuesVector&, size_t size, double missingValue, bool estimate = false) const;
+    virtual size_t frame(MIRValuesVector&, size_t size, double missingValue) const;
 
     virtual const Representation* globalise(data::MIRField&) const;
 

@@ -86,11 +86,6 @@ const char* ResetMissingValues::name() const {
 }
 
 
-void ResetMissingValues::estimate(context::Context& /*unused*/, api::MIREstimation& /*unused*/) const {
-    // do nothing
-}
-
-
 static const ActionBuilder<ResetMissingValues> __action("misc.reset-missing-values");
 
 

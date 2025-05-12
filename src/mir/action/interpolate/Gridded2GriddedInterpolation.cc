@@ -145,18 +145,5 @@ void Gridded2GriddedInterpolation::print(std::ostream& out) const {
     out << "interpolation=" << interpolation_ << ",method=" << *method_;
 }
 
-void Gridded2GriddedInterpolation::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
-
-    method::Cropping crop = cropping(ctx);
-
-    repres::RepresentationHandle output(outputRepresentation());
-    repres::RepresentationHandle out(crop ? output->croppedRepresentation(crop.boundingBox()) : output.operator->());
-
-    estimateNumberOfGridPoints(ctx, estimation, *out);
-    estimateMissingValues(ctx, estimation, *out);
-
-    ctx.field().representation(out);
-}
-
 
 }  // namespace mir::action::interpolate

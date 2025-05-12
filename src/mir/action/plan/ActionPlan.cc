@@ -176,15 +176,6 @@ void ActionPlan::execute(context::Context& ctx) const {
 }
 
 
-void ActionPlan::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
-    ASSERT(ended());
-
-    for (const auto& p : *this) {
-        Log::debug() << "Estimate " << (*p) << std::endl;
-        p->estimate(ctx, estimation);
-    }
-}
-
 void ActionPlan::compress() {
     const char* sep = "#########";
 

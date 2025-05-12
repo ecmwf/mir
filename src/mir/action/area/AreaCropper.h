@@ -69,7 +69,6 @@ private:
     bool isCropAction() const override;
     bool canCrop() const override;
     util::BoundingBox outputBoundingBox() const override;
-    void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Class members
     // None

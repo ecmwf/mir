@@ -163,11 +163,6 @@ void AreaMasker::execute(context::Context& ctx) const {
 }
 
 
-void AreaMasker::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
-    NOTIMP;
-}
-
-
 const char* AreaMasker::name() const {
     return "AreaMasker";
 }

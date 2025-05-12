@@ -70,7 +70,6 @@ protected:
 
     const method::Method& method() const;
     virtual const repres::Representation* outputRepresentation() const = 0;
-    void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Overridden methods
 

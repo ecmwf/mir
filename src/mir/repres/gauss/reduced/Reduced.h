@@ -86,7 +86,6 @@ protected:
 
     // from Representation
     bool isPeriodicWestEast() const override;
-    void estimate(api::MIREstimation&) const override;
     std::vector<util::GridBox> gridBoxes() const override;
 
     // -- Class members
@@ -107,7 +106,7 @@ private:
     // -- Overridden methods
 
     // from Representation
-    size_t frame(MIRValuesVector& values, size_t size, double missingValue, bool estimate = false) const override;
+    size_t frame(MIRValuesVector& values, size_t size, double missingValue) const override;
     size_t numberOfPoints() const override;
     bool getLongestElementDiagonal(double&) const override;
     std::string factory() const override;

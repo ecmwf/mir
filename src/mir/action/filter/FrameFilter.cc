@@ -15,7 +15,6 @@
 #include <ostream>
 
 #include "mir/action/context/Context.h"
-#include "mir/api/MIREstimation.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
@@ -66,18 +65,6 @@ void FrameFilter::execute(context::Context& ctx) const {
 
 const char* FrameFilter::name() const {
     return "FrameFilter";
-}
-
-
-void FrameFilter::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
-    const data::MIRField& field = ctx.field();
-    ASSERT(field.dimensions() == 1);
-
-    MIRValuesVector dummy;
-
-    size_t count = field.representation()->frame(dummy, size_, 0, true);
-
-    estimation.missingValues(count);
 }
 
 

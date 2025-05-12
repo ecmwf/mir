@@ -17,7 +17,6 @@
 #include <vector>
 
 #include "mir/action/context/Context.h"
-#include "mir/api/MIREstimation.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
@@ -57,11 +56,6 @@ void UnstructuredFilter::execute(context::Context& ctx) const {
     }
 
     field.representation(new repres::other::UnstructuredGrid(latitudes, longitudes));
-}
-
-
-void UnstructuredFilter::estimate(context::Context& /*unused*/, api::MIREstimation& estimation) const {
-    estimation.sameAsInput();
 }
 
 

@@ -16,7 +16,6 @@
 #include <sstream>
 
 #include "mir/action/context/Context.h"
-#include "mir/api/MIREstimation.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
@@ -106,28 +105,6 @@ void BitmapFilter::execute(context::Context& ctx) const {
 
         field.hasMissing(true);
     }
-}
-
-
-void BitmapFilter::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
-    const data::MIRField& field = ctx.field();
-    ASSERT(field.dimensions() == 1);
-
-    const util::Bitmap b(path_);
-
-    ASSERT(b.height() * b.width() == field.representation()->numberOfPoints());
-
-    size_t count = 0;
-
-    for (size_t j = 0; j < b.height(); j++) {
-        for (size_t i = 0; i < b.width(); i++) {
-            if (!b.on(j, i)) {
-                count++;
-            }
-        }
-    }
-
-    estimation.missingValues(count);
 }
 
 

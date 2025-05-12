@@ -145,7 +145,6 @@ list(APPEND mir_srcs
     action/plan/ThreadExecutor.h
     api/MIRComplexJob.cc
     api/MIRComplexJob.h
-    api/MIREstimation.h
     api/MIRJob.cc
     api/MIRJob.h
     api/MIRWatcher.cc
