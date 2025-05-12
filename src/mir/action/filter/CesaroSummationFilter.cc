@@ -17,7 +17,6 @@
 #include <vector>
 
 #include "mir/action/context/Context.h"
-#include "mir/api/MIREstimation.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
@@ -82,11 +81,6 @@ void CesaroSummationFilter::execute(context::Context& ctx) const {
 
 const char* CesaroSummationFilter::name() const {
     return "CesaroSummationFilter";
-}
-
-
-void CesaroSummationFilter::estimate(context::Context& /*unused*/, api::MIREstimation& estimation) const {
-    estimation.sameAsInput();
 }
 
 

@@ -176,17 +176,6 @@ void AreaCropper::execute(context::Context& ctx) const {
 }
 
 
-void AreaCropper::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
-    repres::RepresentationHandle in(ctx.field().representation());
-    repres::RepresentationHandle out(in->croppedRepresentation(boundingBox()));
-
-    estimateNumberOfGridPoints(ctx, estimation, *out);
-    estimateMissingValues(ctx, estimation, *out);
-
-    ctx.field().representation(out);
-}
-
-
 const char* AreaCropper::name() const {
     return "AreaCropper";
 }

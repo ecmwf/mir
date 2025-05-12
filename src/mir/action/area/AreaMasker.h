@@ -67,7 +67,6 @@ private:
     bool sameAs(const Action&) const override;
     const char* name() const override;
     util::BoundingBox outputBoundingBox() const override;
-    void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Class members
     // None

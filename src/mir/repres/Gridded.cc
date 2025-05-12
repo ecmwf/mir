@@ -14,7 +14,6 @@
 
 #include "eckit/geo/projection/Rotation.h"
 
-#include "mir/api/MIREstimation.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 
@@ -51,12 +50,6 @@ const util::BoundingBox& Gridded::boundingBox() const {
 
 bool Gridded::getLongestElementDiagonal(double& /*unused*/) const {
     return false;
-}
-
-
-void Gridded::estimate(api::MIREstimation& estimation) const {
-    estimation.packing("grid_simple");  // Will be overriden
-    estimation.representation(factory());
 }
 
 

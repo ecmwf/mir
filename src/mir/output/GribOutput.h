@@ -89,7 +89,6 @@ private:
     bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const override;
     bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const override;
     void prepare(const param::MIRParametrisation&, action::ActionPlan&, MIROutput&) override;
-    void estimate(const param::MIRParametrisation&, api::MIREstimation&, context::Context&) const override;
 
     // -- Class members
     // None
