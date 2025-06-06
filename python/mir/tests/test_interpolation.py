@@ -10,9 +10,8 @@
 
 from itertools import product
 
-import pytest
-
 import mir
+import pytest
 
 GRIDSPECS = [
     (dict(grid="1/1"), dict(grid=[1, 1]), (181, 360)),
