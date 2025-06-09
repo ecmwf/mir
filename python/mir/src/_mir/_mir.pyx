@@ -15,6 +15,7 @@ cimport std_defs as std
 from cython.operator cimport dereference
 from libc.stdlib cimport free
 from libc.stdlib cimport malloc
+from libc.string cimport strdup
 from libcpp.string cimport string
 from libcpp.utility cimport pair
 from libcpp.vector cimport vector
@@ -48,8 +49,12 @@ cdef class Args:
 
         self.argc = len(sys.argv)
         self.argv = <char**> malloc(self.argc * sizeof(char*))
+        if not self.argv:
+            raise MemoryError("Args: failed to allocate argv")
+
         for i, arg in enumerate(sys.argv):
-            self.argv[i] = arg
+            arg_str = arg.encode()
+            self.argv[i] = strdup(arg_str)
 
     def __dealloc__(self):
         free(self.argv)
@@ -236,37 +241,27 @@ cdef class Job:
         for key, value in kwargs.items():
             self.set(key, value)
 
-    def set(self, string key, value):
-        cdef string value_str
+    def set(self, key: str, value):
+        cdef string key_str, value_str
+
+        assert isinstance(key, str)
+        key_str = key.encode()
+
         if isinstance(value, dict):
             from yaml import dump
             value_str = dump(value, default_flow_style=True).strip().encode()
-            self.j.set(key, value_str)
+            self.j.set(key_str, value_str)
         elif isinstance(value, str):
             value_str = value.encode()
-            self.j.set(key, value_str)
+            self.j.set(key_str, value_str)
         elif isinstance(value, int):
-            self.j.set(key, <int>value)
+            self.j.set(key_str, <int>value)
         elif isinstance(value, float):
-            self.j.set(key, <double>value)
+            self.j.set(key_str, <double>value)
         else:
             raise TypeError(f"Job: unsupported value type for set(): {type(value)}")
 
         return self
-
-    # def set(self, string key, object value):
-    #     cdef string v
-    #     cdef double v1, v2
-    #     try:
-    #         v = value
-    #         self.j.set(key, v)
-    #     except TypeError:
-    #         try:
-    #             v1, v2 = value
-    #             self.j.set(key, v1, v2)
-    #         except (TypeError, ValueError):
-    #             raise ValueError('Invalid value: %s' % value)
-    #     return self
 
     def execute(self, input, output):
         cdef MIRInput in_
