@@ -29,18 +29,18 @@ namespace mir::method {
 
 
 struct StructuredBicubic final : public ProxyMethod {
-    explicit StructuredBicubic(const param::MIRParametrisation& param) : ProxyMethod(param, "structured-bicubic") {}
+    explicit StructuredBicubic(const param::MIRParametrisation& param) : ProxyMethod(param, "structured-cubic") {}
 };
 
 
 struct StructuredBilinear final : public ProxyMethod {
-    explicit StructuredBilinear(const param::MIRParametrisation& param) : ProxyMethod(param, "structured-bilinear") {}
+    explicit StructuredBilinear(const param::MIRParametrisation& param) : ProxyMethod(param, "structured-linear") {}
 };
 
 
 struct StructuredBiquasicubic final : public ProxyMethod {
     explicit StructuredBiquasicubic(const param::MIRParametrisation& param) :
-        ProxyMethod(param, "structured-biquasicubic") {}
+        ProxyMethod(param, "structured-quasicubic") {}
 };
 
 
