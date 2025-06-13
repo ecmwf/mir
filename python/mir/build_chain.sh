@@ -12,14 +12,15 @@
 # - have access to the setup_utils python package
 # - uv installed
 # - manylinux-compatible compilation stack
+# - env var PYVERSION, eg 3.11
 
 set -euo pipefail
 
 # prepare python
 rm -rf .venv
-uv venv --python python3.11 .venv
+uv venv --python python$PYVERSION .venv
 source .venv/bin/activate
-uv pip install --upgrade setuptools build cython twine wheel
+uv pip install --upgrade -r ./requirements-devel.txt
 
 TEST_PYPI=${TEST_PYPI:-no}
 if [ "$TEST_PYPI" = "yes" ] ; then
@@ -32,8 +33,8 @@ fi
 
 # mir-python prereqs
 # TODO get these from pyproject...
-uv pip install --prerelease=allow $EXTRA_PIP eccodeslib eckitlib mirlib numpy
-PRF=".venv/lib/python3.11/site-packages"
+uv pip install --prerelease=allow $EXTRA_PIP eccodeslib eckitlib mirlib
+PRF=".venv/lib/python$PYVERSION/site-packages"
 if [ "$(uname)" == "Darwin" ] ; then L="lib" ; else L="lib64" ; fi
 export MIR_LIB_DIR="$PRF/eckitlib/$L:$PRF/eccodeslib/$L:$PRF/mirlib/$L"
 export MIR_INCLUDE_DIRS="$PRF/eckitlib/include:$PRF/eccodeslib/include:$PRF/mirlib/include"
@@ -42,6 +43,11 @@ export MIR_INCLUDE_DIRS="$PRF/eckitlib/include:$PRF/eccodeslib/include:$PRF/mirl
 rm -rf build dist
 PYTHONPATH=/buildscripts python -m build --no-isolation --wheel .
 
-# upload
+# test
+uv pip install ./dist/*
+# pytest tests/ # TODO re-enable after fixed
 twine check dist/*whl
-twine upload --verbose dist/*whl
+
+# upload
+# NOTE we don't upload because of execution via ci-utils/wheelmaker/buildscripts/multirelease.sh, which uploads on its own
+# twine upload --verbose --skip-existing dist/*whl

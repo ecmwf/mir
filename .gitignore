@@ -12,3 +12,10 @@ suite/combinations.pyc
 suite/requests
 .nfs*
 .vscode/
+
+python/**/*.egg-info/
+python/**/build
+python/**/dist
+python/**/*.cpp
+python/**/*.c
+python/**/__pycache__

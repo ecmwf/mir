@@ -1,0 +1,70 @@
+# (C) Copyright 1996- ECMWF.
+#
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+#
+# In applying this licence, ECMWF does not waive the privileges and immunities
+# granted to it by virtue of its status as an intergovernmental organisation nor
+# does it submit to any jurisdiction.
+
+
+name: Build Python Wheel for MacOS
+
+on:
+  # Trigger the workflow manually
+  workflow_dispatch:
+    inputs:
+      use_test_pypi:
+        description: Use test pypi instead of the regular one
+        required: false
+        type: boolean
+        default: false
+
+  # Allow to be called from another workflow
+  workflow_call:
+    inputs:
+      use_test_pypi:
+        description: Use test pypi instead of the regular one
+        required: false
+        type: boolean
+        default: false
+
+  # TODO automation trigger
+
+jobs:
+  build:
+    name: Build macos wheel
+    strategy:
+      matrix:
+        arch_type: [ARM64, X64]
+        python_version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+    runs-on: [self-hosted, macOS, "${{ matrix.arch_type }}"]
+    steps:
+        # NOTE we dont use action checkout because it doesnt cleanup after itself correctly
+      - run: |
+          if [ -z "$(which uv)" ] ; then curl -LsSf https://astral.sh/uv/install.sh | sh ; fi
+          # git clone --depth=1 --branch="wheelmaker" https://github.com/ecmwf/ci-utils wheelmaker # TODO use token here to get rid of the checkout action below
+      - uses: actions/checkout@v4
+        with:
+          repository: ecmwf/ci-utils
+          ref: 1.latest
+          path: ci-utils
+          token: ${{ secrets.GH_REPO_READ_TOKEN }}
+      - uses: actions/checkout@v4
+        with:
+          path: proj
+      - run: |
+          cd proj/python/mir
+          PYVERSION=${{ matrix.python_version }} PYTHONPATH=$GITHUB_WORKSPACE/ci-utils/wheelmaker/buildscripts ./build_chain.sh
+          if [ "${{ inputs.use_test_pypi }}" = "true" ] ; then
+            TARGET="--repository testpypi"
+            export TWINE_PASSWORD="$TWINE_PASSWORD_TEST"
+          else
+            TARGET=""
+            export TWINE_PASSWORD="$TWINE_PASSWORD_PROD"
+          fi
+          twine upload $TARGET --verbose --skip-existing dist/*whl
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD_PROD: ${{ secrets.PYPI_API_TOKEN }}
+          TWINE_PASSWORD_TEST: ${{ secrets.PYPI_TEST_API_TOKEN }}
