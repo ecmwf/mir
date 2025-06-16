@@ -12,11 +12,31 @@
 
 #pragma once
 
-#include <omp.h>
+#include "mir/api/mir_config.h"
+
+
+#if mir_HAVE_OMP
+
+
 #include <algorithm>
 #include <vector>
+
+#include <omp.h>
+
 
 #pragma omp declare reduction(                                                                                    \
         vec_merge_sorted : std::vector<size_t> : omp_out.insert(omp_out.end(), omp_in.begin(), omp_in.end());     \
             std::inplace_merge(omp_out.begin(), omp_out.begin() + omp_out.size() - omp_in.size(), omp_out.end())) \
     initializer(omp_priv = std::vector<size_t>())
+
+
+#define mir_parallel_for(x)
+
+
+#else
+
+
+#define mir_parallel_for(x)
+
+
+#endif
