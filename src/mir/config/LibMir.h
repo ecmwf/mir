@@ -48,7 +48,7 @@ public:
 
     enum cache_loader
     {
-        LEGENDRE,
+        LEGENDRE = 0,
         MATRIX,
         POINT_SEARCH,
         ALL_CACHE_LOADERS,

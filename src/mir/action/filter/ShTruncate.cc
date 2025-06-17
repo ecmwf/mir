@@ -15,7 +15,6 @@
 #include <ostream>
 
 #include "mir/action/context/Context.h"
-#include "mir/api/MIREstimation.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
@@ -63,13 +62,6 @@ void ShTruncate::execute(context::Context& ctx) const {
             field.update(result, i);
         }
     }
-}
-
-
-void ShTruncate::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
-    data::MIRField& field = ctx.field();
-    estimation.truncation(truncation_);
-    field.representation(new repres::sh::SphericalHarmonics(truncation_));
 }
 
 

@@ -37,12 +37,12 @@
 #include "mir/method/nonlinear/NonLinear.h"
 #include "mir/method/solver/Multiply.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/reorder/Reorder.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Mutex.h"
+#include "mir/util/Reorder.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
@@ -115,6 +115,14 @@ void MethodWeighted::json(eckit::JSON& j) const {
     }
     j.endList();
 
+    if (!reorderRows_.empty()) {
+        j << "reorderRows" << reorderRows_;
+    }
+
+    if (!reorderCols_.empty()) {
+        j << "reorderCols" << reorderCols_;
+    }
+
     j << "solver" << *solver_;
     j << "cropping" << cropping_;
     j << "lsmWeightAdjustment" << lsmWeightAdjustment_;
@@ -132,12 +140,12 @@ void MethodWeighted::print(std::ostream& out) const {
     }
     out << "]";
 
-    if (reorderRows_) {
-        out << ",reorderRows=" << *reorderRows_;
+    if (!reorderRows_.empty()) {
+        out << ",reorderRows=" << reorderRows_;
     }
 
-    if (reorderCols_) {
-        out << ",reorderCols=" << *reorderCols_;
+    if (!reorderCols_.empty()) {
+        out << ",reorderCols=" << reorderCols_;
     }
 
     out << ",solver=" << *solver_;
@@ -363,18 +371,6 @@ void MethodWeighted::setSolver(const solver::Solver* s) {
 }
 
 
-void MethodWeighted::setReorderRows(reorder::Reorder* r) {
-    ASSERT(r != nullptr);
-    reorderRows_.reset(r);
-}
-
-
-void MethodWeighted::setReorderCols(reorder::Reorder* r) {
-    ASSERT(r != nullptr);
-    reorderCols_.reset(r);
-}
-
-
 void MethodWeighted::setOperandMatricesFromVectors(DenseMatrix& A, DenseMatrix& B, const MIRValuesVector& Avector,
                                                    const MIRValuesVector& Bvector, const double& missingValue,
                                                    const data::Space& space) const {
@@ -553,15 +549,18 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::R
         assemble(ctx.statistics(), W, in, out);
         W.cleanup(pruneEpsilon_);
 
-        if (reorderRows_ || reorderCols_) {
-            std::unique_ptr<const reorder::Reorder> identity(
-                reorderRows_ && reorderCols_ ? nullptr : reorder::ReorderFactory::build("identity"));
+        if (!reorderRows_.empty() || !reorderCols_.empty()) {
+            using util::Reorder;
 
-            auto rows = (reorderRows_ ? reorderRows_ : identity)->reorder(out.numberOfPoints());
-            ASSERT(rows.size() == W.rows());
+            auto rows =
+                std::unique_ptr<Reorder>(Reorder::build(reorderRows_.empty() ? "identity" : reorderRows_, W.rows()))
+                    ->reorder();
+            ASSERT(rows.size() == out.numberOfPoints());
 
-            auto cols = (reorderCols_ ? reorderCols_ : identity)->reorder(in.numberOfPoints());
-            ASSERT(cols.size() == W.cols());
+            auto cols =
+                std::unique_ptr<Reorder>(Reorder::build(reorderCols_.empty() ? "identity" : reorderCols_, W.cols()))
+                    ->reorder();
+            ASSERT(cols.size() == in.numberOfPoints());
 
             // expand triplets, renumbering directly
             std::vector<eckit::linalg::Triplet> trips;

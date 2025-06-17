@@ -20,7 +20,6 @@ static_assert(!mir_HAVE_ATLAS, "mir/util/Atlas.cc cannot be included with Atlas 
 #include "eckit/types/Fraction.h"
 
 #include "mir/util/Exceptions.h"
-#include "mir/util/Grib.h"
 #include "mir/util/Translator.h"
 
 
@@ -60,24 +59,6 @@ bool projection::ProjectionFactory::has(const std::string&) {
 }
 
 
-void util::gaussian_latitudes_npole_equator(size_t N, double* latitudes) {
-    std::vector<double> tmp(2 * N);
-    codes_get_gaussian_latitudes(static_cast<long>(N), tmp.data());
-    std::copy_n(tmp.begin(), N, latitudes);
-}
-
-
-void util::gaussian_latitudes_npole_spole(size_t N, double* latitudes) {
-    codes_get_gaussian_latitudes(static_cast<long>(N), latitudes);
-}
-
-
-void util::gaussian_quadrature_npole_spole(size_t /*N*/, double* /*latitudes*/, double* /*weights*/) {
-    // used in interpolation=grid-box-average/maximum
-    NOTIMP;
-}
-
-
 util::Rotation::Rotation(const PointLonLat& southPole) :
     PointLonLat(mir::Longitude::GREENWICH.value(), mir::Latitude::SOUTH_POLE.value()) {
     ASSERT(southPole == *this);
@@ -109,7 +90,7 @@ StructuredGrid::StructuredGrid(const Grid&) {
 }
 
 
-idx_t StructuredGrid::nx() const {
+idx_t RegularGrid::nx() const {
     ASSERT(!pl_.empty());
     auto mm = std::minmax_element(pl_.begin(), pl_.end());
     ASSERT(*mm.first == *mm.second);
@@ -123,7 +104,7 @@ GaussianGrid::GaussianGrid(const std::string& name, const Domain& domain) {
     spec_.set("name", name);
 
     auto c = name.front();
-    auto n = util::from_string<idx_t>(name.substr(1));
+    auto n = mir::util::from_string<idx_t>(name.substr(1));
     ASSERT(n > 0);
 
     if (c == 'F' || c == 'f') {
@@ -157,6 +138,11 @@ UnstructuredGrid::UnstructuredGrid(std::vector<PointXY>&& points) : points_(poin
 
 trans::LegendreCache::LegendreCache(const void*, size_t) {
     NOTIMP;
+}
+
+
+std::string Grid::uid() const {
+    return {};
 }
 
 

@@ -48,10 +48,6 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
     execute(input, output, statistics);
 }
 
-void MIRJob::estimate(input::MIRInput& input, output::MIROutput& output, MIREstimation& estimation) const {
-    action::Job(*this, input, output, true).estimate(estimation);
-}
-
 
 void MIRJob::print(std::ostream& out) const {
     if (eckit::format(out) == Log::applicationFormat) {

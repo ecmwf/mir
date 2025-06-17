@@ -19,7 +19,6 @@
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/api/MIREstimation.h"
 #include "mir/caching/InMemoryMeshCache.h"
 #include "mir/data/MIRField.h"
 #include "mir/repres/Iterator.h"
@@ -251,12 +250,6 @@ void NablaFilterFVMT<T>::execute(context::Context& ctx) const {
 template <typename T>
 const char* NablaFilterFVMT<T>::name() const {
     return T::name();
-}
-
-
-template <typename T>
-void NablaFilterFVMT<T>::estimate(context::Context& /*unused*/, api::MIREstimation& estimation) const {
-    estimation.sameAsInput();
 }
 
 

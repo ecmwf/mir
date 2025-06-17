@@ -21,6 +21,7 @@
 
 #include "mir/api/MIRJob.h"
 #include "mir/api/mir_config.h"
+#include "mir/caching/WeightCache.h"
 #include "mir/input/RawInput.h"
 #include "mir/output/EmptyOutput.h"
 #include "mir/param/SimpleParametrisation.h"
@@ -66,9 +67,13 @@ CASE("InterpolationSpec") {
     };
 
 
-    static const std::string EXPECTED_INTERPOLATION_LINEAR{"{engine => mir , version => 16 , method => linear}"};
-    static const std::string EXPECTED_INTERPOLATION_NN{"{engine => mir , version => 16 , method => nearest-neighbour}"};
-    static const std::string EXPECTED_INTERPOLATION_GBA{"{engine => mir , version => 16 , method => grid-box-average}"};
+    static const auto version = std::to_string(mir::caching::WeightCacheTraits::version());
+
+    static const auto EXPECTED_INTERPOLATION_LINEAR{"{engine => mir , version => " + version + " , method => linear}"};
+    static const auto EXPECTED_INTERPOLATION_NN{"{engine => mir , version => " + version +
+                                                " , method => nearest-neighbour}"};
+    static const auto EXPECTED_INTERPOLATION_GBA{"{engine => mir , version => " + version +
+                                                 " , method => grid-box-average}"};
 
 
     SECTION("interpolation=linear (default)") {
@@ -184,7 +189,13 @@ CASE("GridSpec") {
     SECTION("Gaussian grids") {
         for (const auto& tests : []() {
                  std::vector<std::string> tests;
-                 for (const std::string& type : {"F", "O", "N"}) {
+
+                 std::vector<std::string> types{"F", "O"};
+                 if constexpr (MIR_HAVE_ATLAS) {
+                     tests.emplace_back("N");
+                 }
+
+                 for (const auto& type : types) {
                      for (size_t N : {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024}) {
                          tests.emplace_back("{grid: " + type + std::to_string(N) + "}");
                      }

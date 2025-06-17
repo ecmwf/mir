@@ -63,7 +63,6 @@ private:
     bool sameAs(const Action&) const override;
     void execute(context::Context&) const override;
     const char* name() const override;
-    void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Class members
     // None

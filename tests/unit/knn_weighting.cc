@@ -44,6 +44,7 @@ CASE("distance-weighting") {
     param.set("distance", 2.);
     param.set("nclosest", 4);
     param.set("climate-filter-delta", 1.);
+    param.set("distance-weighting-gaussian-stddev", 1.e6);
 
 
     auto methods = {"climate-filter",

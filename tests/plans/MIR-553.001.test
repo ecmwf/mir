@@ -3,4 +3,4 @@ MIR-553.grib2
 # mir
 --area=66.6/-24.4/63.4/-13.6
 # plan
-AreaCropper[bbox=BoundingBox[north=66.6,west=-24.4,south=63.4,east=-13.6]]|Save[output=...]
+AreaMasker[bbox=BoundingBox[north=66.6,west=-24.4,south=63.4,east=-13.6]]|Save[output=...]

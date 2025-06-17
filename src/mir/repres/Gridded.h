@@ -16,11 +16,20 @@
 #include "mir/util/BoundingBox.h"
 
 
+namespace eckit::geo::projection {
+class Rotation;
+}
+
+
 namespace mir::repres {
 
 
 class Gridded : public Representation {
 public:
+    // -- Types
+
+    using Rotation = eckit::geo::projection::Rotation;
+
     // -- Exceptions
     // None
 
@@ -68,14 +77,14 @@ protected:
     util::Domain domain() const override;
     const util::BoundingBox& boundingBox() const override;
     bool getLongestElementDiagonal(double&) const override;
-    void estimate(api::MIREstimation&) const override;
     bool crop(util::BoundingBox&, util::IndexMapping&) const override;
 
     // -- Class members
     // None
 
     // -- Class methods
-    // None
+
+    static atlas::Grid rotate_atlas_grid(const Rotation& rotation, const atlas::Grid& grid);
 
 private:
     // -- Members

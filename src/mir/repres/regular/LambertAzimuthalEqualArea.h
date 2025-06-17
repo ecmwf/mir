@@ -62,7 +62,6 @@ private:
     // -- Overridden methods
 
     void fillGrib(grib_info&) const override;
-    const Representation* croppedRepresentation(const util::BoundingBox&) const override;
 
     // -- Class members
     // None

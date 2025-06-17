@@ -10,39 +10,31 @@
  */
 
 
-#include "eckit/runtime/Tool.h"
+#include "eckit/testing/Test.h"
 #include "eckit/utils/RLE.h"
 
+#include "mir/api/mir_config.h"
 #include "mir/util/Atlas.h"
-#include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
-#include "mir/util/Types.h"
 
 
-namespace mir::tools {
+namespace mir::tests::unit {
 
 
-struct Grids : eckit::Tool {
-    using Tool::Tool;
-    void run() override;
-    void grid(const atlas::StructuredGrid& /*grid*/);
-};
-
-
-void Grids::grid(const atlas::StructuredGrid& grid) {
+void grid(const atlas::GaussianGrid& grid) {
 
     const auto& pl = grid.nx();
-    ASSERT(!pl.empty());
+    EXPECT(!pl.empty());
 
     std::vector<int> points_per_latitudes(pl.size());
-    ASSERT(pl.size() == points_per_latitudes.size());
+    EXPECT(pl.size() == points_per_latitudes.size());
 
     size_t half = points_per_latitudes.size() / 2;
-    ASSERT(half > 0);
+    EXPECT(half > 0);
 
     std::vector<int> diff;
     diff.reserve(half);
-    eckit::DIFFencode(points_per_latitudes.begin(), points_per_latitudes.begin() + long(half),
+    eckit::DIFFencode(points_per_latitudes.begin(), points_per_latitudes.begin() + static_cast<long>(half),
                       std::back_inserter(diff));
 
     std::vector<int> rle;
@@ -56,11 +48,13 @@ void Grids::grid(const atlas::StructuredGrid& grid) {
 }
 
 
-void Grids::run() {
-    for (const std::string& name :
-         {"N16",  "N24",  "N32",  "N48",  "N64",  "N80",   "N96",   "N128",  "N160",  "N200",  "N256", "N320",
-          "N400", "N512", "N576", "N640", "N800", "N1024", "N1280", "N1600", "N2000", "N4000", "N8000"}) {
-        grid(atlas::ReducedGaussianGrid(name));
+CASE("atlas::ReducedGaussianGrid") {
+    if constexpr (MIR_HAVE_ATLAS) {
+        for (const std::string& name :
+             {"N16",  "N24",  "N32",  "N48",  "N64",  "N80",   "N96",   "N128",  "N160",  "N200",  "N256", "N320",
+              "N400", "N512", "N576", "N640", "N800", "N1024", "N1280", "N1600", "N2000", "N4000", "N8000"}) {
+            grid(atlas::ReducedGaussianGrid(name));
+        }
     }
 
     for (const std::string& name :
@@ -71,10 +65,9 @@ void Grids::run() {
 }
 
 
-}  // namespace mir::tools
+}  // namespace mir::tests::unit
 
 
 int main(int argc, char** argv) {
-    mir::tools::Grids tool(argc, argv);
-    return tool.start();
+    return eckit::testing::run_tests(argc, argv);
 }

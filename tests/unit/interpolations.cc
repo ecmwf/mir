@@ -37,7 +37,7 @@ CASE("interpolations") {
     jobs[1].set("area", "40/20/20/40");
     jobs[1].set("frame", 2);
 
-    if constexpr (HAVE_ATLAS) {
+    if constexpr (MIR_HAVE_ATLAS) {
         jobs[2].set("caching", false);
         jobs[2].set("rotation", "-89/10");
     }
@@ -62,7 +62,7 @@ CASE("interpolations") {
     }
 
 
-    if constexpr (HAVE_ATLAS) {
+    if constexpr (MIR_HAVE_ATLAS) {
         SECTION("spectral to gridded (scalar)") {
             param::SimpleParametrisation args;
 

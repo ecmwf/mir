@@ -59,7 +59,6 @@ public:
     std::string fileXYZ_;
     bool meshCellCentres_;
     bool meshCellLongestDiagonal_;
-    bool meshNodeLumpedMassMatrix_;
     bool meshNodeToCellConnectivity_;
 
     // -- Methods

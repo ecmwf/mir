@@ -13,14 +13,17 @@ set(TESTS
     action_graph
     area
     bounding_box
+    earthkit-regrid
     formula
     gaussian_grid
     grib_basic_angle
     grib_encoding
     grib_input
     grid_box_method
+    grids
+    gridspec
     increments
-    input_MultiDimensionalInput
+    input
     interpolations
     iterator
     knn_weighting
@@ -41,12 +44,6 @@ if(mir_HAVE_NETCDF)
     list(APPEND TESTS interpolation_netcdf)
 endif()
 
-if(mir_HAVE_ECKIT_GEO)
-    list(APPEND TESTS
-        earthkit-regrid
-        gridspec)
-endif()
-
 foreach(_t ${TESTS})
     ecbuild_add_test(
         TARGET            mir_tests_unit_${_t}
@@ -64,7 +61,7 @@ if(ENABLE_BUILD_TOOLS)
             TARGET            mir_tests_unit_grib_fail_decode_${_t}
             COMMAND           mir-get-data
             ARGS              --dryrun ${_t}
-            ENVIRONMENT       ${_testEnvironment} "MIR_GRIB_CHECK_IS_MESSAGE_VALID=1"
+            ENVIRONMENT       ${_testEnvironment} MIR_GRIB_CHECK_IS_MESSAGE_VALID=1
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
         set_tests_properties(mir_tests_unit_grib_fail_decode_${_t} PROPERTIES WILL_FAIL TRUE)
     endforeach()

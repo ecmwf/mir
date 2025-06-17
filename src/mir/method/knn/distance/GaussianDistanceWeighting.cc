@@ -20,7 +20,6 @@
 #include "eckit/utils/MD5.h"
 
 #include "mir/param/MIRParametrisation.h"
-#include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Types.h"
 
@@ -28,9 +27,7 @@
 namespace mir::method::knn::distance {
 
 
-GaussianDistanceWeighting::GaussianDistanceWeighting(const param::MIRParametrisation& parametrisation) {
-
-    stddev_ = util::Earth::radius();
+GaussianDistanceWeighting::GaussianDistanceWeighting(const param::MIRParametrisation& parametrisation) : stddev_(0.) {
     parametrisation.get("distance-weighting-gaussian-stddev", stddev_);
     ASSERT(stddev_ > 0.);
 
