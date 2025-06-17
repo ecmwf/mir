@@ -14,6 +14,8 @@
 # - manylinux-compatible compilation stack
 # - env var PYVERSION, eg 3.11
 
+# TODO unify with eckit/python/eckit/build_chain.sh, by moving to ci-utils/wheelmaker
+
 set -euo pipefail
 
 # prepare python
@@ -33,7 +35,12 @@ fi
 
 # mir-python prereqs
 # TODO get these from pyproject...
-uv pip install --prerelease=allow $EXTRA_PIP eccodeslib eckitlib mirlib
+if [ -n "$INSTALL_LOCALLY" ] ; then
+    # TODO reuse the dep resolver from setup utils
+    uv pip install --no-cache $INSTALL_LOCALLY/eckitlib* $INSTALL_LOCALLY/fckitlib* $INSTALL_LOCALLY/eccodeslib* $INSTALL_LOCALLY/atlaslib* $INSTALL_LOCALLY/mirlib*
+else
+    uv pip install --prerelease=allow $EXTRA_PIP mirlib
+fi
 PRF=".venv/lib/python$PYVERSION/site-packages"
 if [ "$(uname)" == "Darwin" ] ; then L="lib" ; else L="lib64" ; fi
 export MIR_LIB_DIR="$PRF/eckitlib/$L:$PRF/eccodeslib/$L:$PRF/mirlib/$L"

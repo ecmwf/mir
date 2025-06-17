@@ -99,9 +99,25 @@ try:
 except ImportError:
     warnings.warn("failed to import setup_utils, won't mark the wheel as manylinux")
 
+version: str
+try:
+    with open("../../VERSION", 'r') as f:
+        version = f.readlines()[0].strip()
+except Exception:
+    warnings.warn("failed to read VERSION, falling back to 0.0.0")
+    version = "0.0.0"
+
+install_requires = ["findlibs", "numpy", "pyyaml"]
+try:
+    import mirlib
+    install_requires.append(f"mirlib=={mirlib.__version__}")
+except ImportError:
+    warnings.warn("failed to import prereq libs, not listing as a dependency")
+
 setup(
     name="mir-python",
-    version="0.3.0",
+    version=version,
+    install_requires=install_requires,
     ext_modules=cythonize(
         Extension(
             "_mir",
