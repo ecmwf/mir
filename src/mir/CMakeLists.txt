@@ -163,8 +163,6 @@ list(APPEND mir_srcs
     caching/InMemoryCacheStatistics.h
     caching/InMemoryCacheUsage.cc
     caching/InMemoryCacheUsage.h
-    caching/MeshCache.cc
-    caching/MeshCache.h
     caching/SharedMemoryKey.cc
     caching/SharedMemoryKey.h
     caching/WeightCache.cc
