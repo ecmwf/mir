@@ -732,8 +732,7 @@ list(APPEND mir_srcs
     util/Wind.h)
 
 if(eckit_HAVE_GEO_GRID_ORCA)
-    repres/ORCA.cc
-    repres/ORCA.h
+    list(APPEND mir_srcs repres/ORCA.cc repres/ORCA.h)
 endif()
 
 if(mir_HAVE_ATLAS)
