@@ -507,8 +507,6 @@ list(APPEND mir_srcs
     repres/HEALPix.h
     repres/Iterator.cc
     repres/Iterator.h
-    repres/ORCA.cc
-    repres/ORCA.h
     repres/Representation.cc
     repres/Representation.h
     repres/gauss/Gaussian.cc
@@ -732,6 +730,11 @@ list(APPEND mir_srcs
     util/ValueMap.h
     util/Wind.cc
     util/Wind.h)
+
+if(eckit_HAVE_GEO_GRID_ORCA)
+    repres/ORCA.cc
+    repres/ORCA.h
+endif()
 
 if(mir_HAVE_ATLAS)
     list(APPEND mir_srcs
