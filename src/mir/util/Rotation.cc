@@ -91,7 +91,7 @@ BoundingBox Rotation::boundingBox(const BoundingBox& bbox) const {
         {bbox.west().value(), bbox.south().value()}, {bbox.east().value(), bbox.north().value()}, projection));
     ASSERT(after);
 
-    return {after->west, after->west, after->south, after->east};
+    return {after->north, after->west, after->south, after->east};
 }
 
 
