@@ -731,7 +731,14 @@ list(APPEND mir_srcs
     util/Wind.cc
     util/Wind.h)
 
-if(eckit_HAVE_GEO_GRID_ORCA)
+get_cmake_property(_variableNames VARIABLES)
+list (SORT _variableNames)
+foreach (_variableName ${_variableNames})
+    message(STATUS "${_variableName}=${${_variableName}}")
+endforeach()
+
+
+if(HAVE_GEO_GRID_ORCA)
     list(APPEND mir_srcs repres/ORCA.cc repres/ORCA.h)
 endif()
 

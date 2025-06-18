@@ -16,11 +16,11 @@
 #include <vector>
 
 #include "eckit/filesystem/PathName.h"
-#include "eckit/geo/eckit_geo_config.h"
 #include "eckit/system/Library.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/api/MIRJob.h"
+#include "mir/api/mir_config.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/RawInput.h"
 #include "mir/method/WeightMatrix.h"
@@ -115,7 +115,7 @@ CASE("RawInput") {
     }
 
 
-#if eckit_HAVE_GEO_GRID_ORCA
+#if mir_HAVE_GEO_GRID_ORCA
     SECTION("grid=ORCA2_T") {
         // metadata
         param::SimpleParametrisation meta;
