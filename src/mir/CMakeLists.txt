@@ -15,9 +15,9 @@ HAS_SYS_STAT_ST_CTIMESPEC)
 
 ecbuild_generate_config_headers(DESTINATION ${INSTALL_INCLUDE_DIR}/mir)
 
-configure_file(api/mir_config.h.in api/mir_config.h)
-configure_file(api/mir_version.h.in api/mir_version.h)
-configure_file(api/mir_version.cc.in api/mir_version.cc)
+configure_file(api/mir_config.h.in api/mir_config.h @ONLY)
+configure_file(api/mir_version.h.in api/mir_version.h @ONLY)
+configure_file(api/mir_version.cc.in api/mir_version.cc @ONLY)
 
 install(
     FILES ${CMAKE_CURRENT_BINARY_DIR}/api/mir_config.h ${CMAKE_CURRENT_BINARY_DIR}/api/mir_version.h
@@ -731,14 +731,15 @@ list(APPEND mir_srcs
     util/Wind.cc
     util/Wind.h)
 
-get_cmake_property(_variableNames VARIABLES)
-list (SORT _variableNames)
-foreach (_variableName ${_variableNames})
-    message(STATUS "${_variableName}=${${_variableName}}")
-endforeach()
+if(mir_HAVE_GRID_FESOM)
+    list(APPEND mir_srcs repres/FESOM.cc repres/FESOM.h)
+endif()
 
+if(mir_HAVE_GRID_ICON)
+    list(APPEND mir_srcs repres/ICON.cc repres/ICON.h)
+endif()
 
-if(HAVE_GEO_GRID_ORCA)
+if(mir_HAVE_GRID_ORCA)
     list(APPEND mir_srcs repres/ORCA.cc repres/ORCA.h)
 endif()
 

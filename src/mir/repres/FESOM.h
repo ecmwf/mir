@@ -19,25 +19,25 @@
 #include "mir/repres/Gridded.h"
 
 
-namespace eckit::geo::grid {
-class ORCA;
+namespace eckit::geo::grid::unstructured {
+class FESOM;
 }
 
 
 namespace mir::repres {
 
 
-class ORCA final : public Gridded {
+class FESOM final : public Gridded {
 public:
     // -- Types
 
     using points_type = std::pair<std::vector<double>, std::vector<double>>;
-    using grid_type   = eckit::geo::grid::ORCA;
+    using grid_type   = eckit::geo::grid::unstructured::FESOM;
 
     // -- Constructors
 
-    explicit ORCA(const std::string&);
-    explicit ORCA(const param::MIRParametrisation&);
+    explicit FESOM(const std::string&);
+    explicit FESOM(const param::MIRParametrisation&);
 
     // -- Class methods
 

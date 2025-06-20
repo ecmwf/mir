@@ -38,6 +38,12 @@ if(NOT TARGET eckit_geo)
     MESSAGE(FATAL_ERROR "eckit::geo (feature ECKIT_GEO) is required but not found")
 endif()
 
+# shortcut upstream features into mir features (avoid additional optional behaviour)
+set(mir_HAVE_ECKIT_CODEC eckit_HAVE_ECKIT_CODEC)
+set(mir_HAVE_GRID_FESOM eckit_HAVE_GEO_GRID_FESOM)
+set(mir_HAVE_GRID_ICON eckit_HAVE_GEO_GRID_ICON)
+set(mir_HAVE_GRID_ORCA eckit_HAVE_GEO_GRID_ORCA)
+
 set(MIR_LIBRARIES mir)
 
 if(HAVE_BUILD_TOOLS)

@@ -18,6 +18,9 @@
 
 
 #cmakedefine01 mir_HAVE_ATLAS
+#cmakedefine01 mir_HAVE_GRID_FESOM
+#cmakedefine01 mir_HAVE_GRID_ICON
+#cmakedefine01 mir_HAVE_GRID_ORCA
 #cmakedefine01 mir_HAVE_PNG
 
 
