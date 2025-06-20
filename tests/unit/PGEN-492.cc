@@ -26,7 +26,7 @@ namespace mir::tests::unit {
 
 
 CASE("PGEN-492") {
-    for (const std::string& file : {"stream=wave,param=swh", "stream=wave,param=swh,domain=m"}) {
+    for (const auto* file : {"stream=wave,param=swh", "stream=wave,param=swh,domain=m"}) {
         std::unique_ptr<input::MIRInput> input(new input::GribFileInput(file));
         ASSERT(input->next());
 

@@ -46,7 +46,7 @@ CASE("interpolations") {
     SECTION("gridded to gridded (GRIB)") {
         param::SimpleParametrisation args;
 
-        for (const std::string& in : {
+        for (const auto* in : {
                  "../data/param=2t,levtype=sfc,grid=O640",
                  "../data/regular_ll.2-4.grib1",
              }) {

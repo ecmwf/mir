@@ -25,7 +25,7 @@ namespace mir::tests::unit {
 
 CASE("GribFileInput") {
     SECTION("gridded") {
-        for (const std::string& path : {
+        for (const auto* path : {
                  "../data/ICON.shortName=lsm.grib2",
                  "../data/MIR-375.grib1",
                  "../data/MIR-553.grib2",
@@ -76,7 +76,7 @@ CASE("GribFileInput") {
 
 
     SECTION("spectral") {
-        for (const std::string& path : {
+        for (const auto* path : {
                  "../data/date=19930202",
                  "../data/gridType=sh,shortName=t,J=20.grib1",
                  "../data/packingType=spectral_complex,param=vo_d.grib1",

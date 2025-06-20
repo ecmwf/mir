@@ -42,10 +42,8 @@ struct uuid_t {
     explicit uuid_t(const std::string& str) : str_(str) {}
     explicit uuid_t(std::string&& str) : str_(str) {}
 
-    //    uuid_t(const uuid_t& uuid) : uuid_t(uuid.str_) {}
-
     explicit operator std::string() const { return str_; }
-    const std::string str_;
+    std::string str_;
 };
 
 
@@ -158,8 +156,7 @@ struct MIRNcToCodec : public MIRTool {
                         att.second.getValues(&value);
                         data.attributes[att.first] = value;
                     }
-                    else if (std::holds_alternative<std::string>(a->second) ||
-                             std::holds_alternative<uuid_t>(a->second)) {
+                    else if (std::holds_alternative<std::string>(a->second)) {
                         std::string value;
                         att.second.getValues(value);
                         data.attributes[att.first] = value;
@@ -167,7 +164,7 @@ struct MIRNcToCodec : public MIRTool {
                     else if (std::holds_alternative<uuid_t>(a->second)) {
                         std::string value;
                         att.second.getValues(&value);
-                        data.attributes[att.first] = value;
+                        data.attributes[att.first] = uuid_t{value};
                     }
                 }
             }
