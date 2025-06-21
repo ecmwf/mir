@@ -78,121 +78,122 @@ struct TestingOutput : InputOutput {
 };
 
 
-CASE("ECMWFStyle") {
-
+CASE("FormulaAction") {
     Log::info() << std::boolalpha;
     static const param::DefaultParametrisation defaults;
 
     std::vector<std::string> _when{"prologue", "gridded", "spectral", "raw", "epilogue"};
 
 
-    SECTION("mir::action::FormulaAction") {
+    const std::string CORRECT_FORMULA("1");
+    const std::string WRONG_FORMULA("0");
+    const std::string CORRECT_METADATA("param=1");
+    const std::string WRONG_METADATA("param=0");
 
-        const std::string CORRECT_FORMULA("1");
-        const std::string WRONG_FORMULA("0");
-        const std::string CORRECT_METADATA("param=1");
-        const std::string WRONG_METADATA("param=0");
+    param::SimpleParametrisation p1;
+    param::SimpleParametrisation p2;
+    param::SimpleParametrisation p3;
+    param::SimpleParametrisation p4;
 
-        param::SimpleParametrisation p1;
-        param::SimpleParametrisation p2;
-        param::SimpleParametrisation p3;
-        param::SimpleParametrisation p4;
+    p1.set("formula", CORRECT_FORMULA).set("formula.metadata", WRONG_METADATA);
+    p2.set("formula", WRONG_FORMULA).set("formula.metadata", CORRECT_METADATA);
+    p3.set("formula", WRONG_FORMULA).set("formula.metadata", WRONG_METADATA);
+    p4.set("formula", CORRECT_FORMULA).set("formula.metadata", CORRECT_METADATA);
 
-        p1.set("formula", CORRECT_FORMULA).set("formula.metadata", WRONG_METADATA);
-        p2.set("formula", WRONG_FORMULA).set("formula.metadata", CORRECT_METADATA);
-        p3.set("formula", WRONG_FORMULA).set("formula.metadata", WRONG_METADATA);
-        p4.set("formula", CORRECT_FORMULA).set("formula.metadata", CORRECT_METADATA);
-
-        const action::FormulaAction WRONG_ACTION_1(p1);
-        const action::FormulaAction WRONG_ACTION_2(p2);
-        const action::FormulaAction WRONG_ACTION_3(p3);
-        const action::FormulaAction CORRECT_ACTION(p4);
+    const action::FormulaAction WRONG_ACTION_1(p1);
+    const action::FormulaAction WRONG_ACTION_2(p2);
+    const action::FormulaAction WRONG_ACTION_3(p3);
+    const action::FormulaAction CORRECT_ACTION(p4);
 
 
-        std::vector<bool> inputs_gridded{true};
-        if constexpr (MIR_HAVE_ATLAS) {
-            inputs_gridded.push_back(false);
-        }
+    std::vector<bool> inputs_gridded{true};
+    if constexpr (MIR_HAVE_ATLAS) {
+        inputs_gridded.push_back(false);
+    }
 
-        for (bool input_gridded : inputs_gridded) {
-            TestingInput in(input_gridded);
+    for (bool input_gridded : inputs_gridded) {
+        TestingInput in(input_gridded);
 
-            for (bool output_gridded : {true, false}) {
-                if (input_gridded && !output_gridded) {
-                    // this combination isn't supported
-                    continue;
-                }
+        for (bool output_gridded : {true, false}) {
+            if (input_gridded && !output_gridded) {
+                // this combination isn't supported
+                continue;
+            }
 
-                for (const std::string& when : _when) {
+            for (const std::string& when : _when) {
 
-                    TestingOutput user(output_gridded);
-                    user.set("formula." + when, CORRECT_FORMULA);
-                    user.set("formula." + when + ".metadata", CORRECT_METADATA);
+                TestingOutput user(output_gridded);
+                user.set("formula." + when, CORRECT_FORMULA);
+                user.set("formula." + when + ".metadata", CORRECT_METADATA);
 
-                    // test correct user formula.<when> and formula.<when>.metadata, then
-                    // test extra, inconsistent formula.<when>.metadata options
-                    bool plan_should_have_formula = when == "gridded"    ? (input_gridded || output_gridded)
-                                                    : when == "spectral" ? (!input_gridded || !output_gridded)
-                                                                         : true;
+                // test correct user formula.<when> and formula.<when>.metadata, then
+                // test extra, inconsistent formula.<when>.metadata options
+                bool plan_should_have_formula = when == "gridded"    ? (input_gridded || output_gridded)
+                                                : when == "spectral" ? (!input_gridded || !output_gridded)
+                                                                     : true;
 
-                    for (bool addWrongArguments : {false, true}) {
-                        if (addWrongArguments) {
-                            for (const std::string& wrongWhen : _when) {
-                                if (wrongWhen != when) {
-                                    user.set("formula." + wrongWhen + ".metadata", WRONG_METADATA);
-                                }
-                            }
-                            if (input_gridded && output_gridded) {
-                                user.set("formula.spectral", WRONG_FORMULA);
-                            }
-                            if (!input_gridded && !output_gridded) {
-                                user.set("formula.gridded", WRONG_FORMULA);
+                for (bool addWrongArguments : {false, true}) {
+                    if (addWrongArguments) {
+                        for (const std::string& wrongWhen : _when) {
+                            if (wrongWhen != when) {
+                                user.set("formula." + wrongWhen + ".metadata", WRONG_METADATA);
                             }
                         }
-
-                        output::EmptyOutput out;
-
-                        const param::CombinedParametrisation param(user, in, defaults);
-                        std::unique_ptr<key::style::MIRStyle> style(key::style::MIRStyleFactory::build(param));
-
-                        action::ActionPlan plan(param);
-                        style->prepare(plan, out);
-
-                        bool plan_has_this_formula   = plan_has_action(plan, CORRECT_ACTION);
-                        bool plan_has_wrong_formulae = plan_has_action(plan, WRONG_ACTION_1) ||
-                                                       plan_has_action(plan, WRONG_ACTION_2) ||
-                                                       plan_has_action(plan, WRONG_ACTION_3);
-
-                        static size_t c = 1;
-                        Log::info() << "Test " << c++ << ":"
-                                    << "\n\t"
-                                       "formula."
-                                    << when << ", formula." << when << ".metadata"
-                                    << "\n\t"
-                                       "in:   "
-                                    << in
-                                    << "\n\t"
-                                       "user: "
-                                    << user
-                                    << "\n\t"
-                                       "plan: "
-                                    << plan
-                                    << "\n\t"
-                                       "has "
-                                    << when << " formula: " << plan_has_this_formula << " (should be "
-                                    << plan_should_have_formula << ")" << std::endl;
-
-                        EXPECT(plan_has_this_formula == plan_should_have_formula);
-                        EXPECT(!plan_has_wrong_formulae);
+                        if (input_gridded && output_gridded) {
+                            user.set("formula.spectral", WRONG_FORMULA);
+                        }
+                        if (!input_gridded && !output_gridded) {
+                            user.set("formula.gridded", WRONG_FORMULA);
+                        }
                     }
+
+                    output::EmptyOutput out;
+
+                    const param::CombinedParametrisation param(user, in, defaults);
+                    std::unique_ptr<key::style::MIRStyle> style(key::style::MIRStyleFactory::build(param));
+
+                    action::ActionPlan plan(param);
+                    style->prepare(plan, out);
+
+                    bool plan_has_this_formula   = plan_has_action(plan, CORRECT_ACTION);
+                    bool plan_has_wrong_formulae = plan_has_action(plan, WRONG_ACTION_1) ||
+                                                   plan_has_action(plan, WRONG_ACTION_2) ||
+                                                   plan_has_action(plan, WRONG_ACTION_3);
+
+                    static size_t c = 1;
+                    Log::info() << "Test " << c++ << ":"
+                                << "\n\t"
+                                   "formula."
+                                << when << ", formula." << when << ".metadata"
+                                << "\n\t"
+                                   "in:   "
+                                << in
+                                << "\n\t"
+                                   "user: "
+                                << user
+                                << "\n\t"
+                                   "plan: "
+                                << plan
+                                << "\n\t"
+                                   "has "
+                                << when << " formula: " << plan_has_this_formula << " (should be "
+                                << plan_should_have_formula << ")" << std::endl;
+
+                    EXPECT(plan_has_this_formula == plan_should_have_formula);
+                    EXPECT(!plan_has_wrong_formulae);
                 }
             }
         }
     }
+};
 
 
-    SECTION("mir::action::Area") {
-        auto plan_contains = [](const action::ActionPlan& plan, const std::string& action) {
+CASE("mir::action::Area") {
+    Log::info() << std::boolalpha;
+    static const param::DefaultParametrisation defaults;
+
+    auto plan_contains =
+        [](const action::ActionPlan& plan, const std::string& action) {
             return std::any_of(plan.begin(), plan.end(), [&action](const action::Action* act_ptr) -> bool {
                 std::ostringstream str;
                 str << *act_ptr;
@@ -200,59 +201,54 @@ CASE("ECMWFStyle") {
             });
         };
 
-        // trigger post-processing, but avoid the same points
-        param::SimpleParametrisation user;
-        user.set("grid", std::vector<double>{2, 2});
-        user.set("area", std::vector<double>{90, 0.1, -90, 360});
+    // trigger post-processing, but avoid the same points
+    param::SimpleParametrisation user;
+    user.set("grid", std::vector<double>{2, 2});
+    user.set("area", std::vector<double>{90, 0.1, -90, 360});
 
-        TestingInput in(true);
-        output::EmptyOutput out;
+    TestingInput in(true);
+    output::EmptyOutput out;
 
-        const param::CombinedParametrisation param(user, in, defaults);
-        std::unique_ptr<key::style::MIRStyle> style(key::style::MIRStyleFactory::build(param));
-
-
-        Log::info() << "area-mode=crop for regular lat/lon" << std::endl;
-        {
-            user.set("area-mode", "crop");
-            user.clear("rotation");
-
-            action::ActionPlan plan(param);
-            style->prepare(plan, out);
-            EXPECT(plan_contains(plan, "AreaCropper"));
-        }
+    const param::CombinedParametrisation param(user, in, defaults);
+    std::unique_ptr<key::style::MIRStyle> style(key::style::MIRStyleFactory::build(param));
 
 
-        Log::info() << "area-mode=mask for regular lat/lon" << std::endl;
-        {
-            user.set("area-mode", "mask");
-            user.clear("rotation");
+    SECTION("area-mode=crop for regular lat/lon") {
+        user.set("area-mode", "crop");
+        user.clear("rotation");
 
-            action::ActionPlan plan(param);
-            style->prepare(plan, out);
-            EXPECT(plan_contains(plan, "AreaMasker"));
-        }
-
-
-        Log::info() << "area-mode=crop for rotated regular lat/lon" << std::endl;
-        {
-            user.set("area-mode", "crop");
-            user.set("rotation", std::vector<double>{-90, 0});
-
-            action::ActionPlan plan(param);
-            style->prepare(plan, out);
-            EXPECT(plan_contains(plan, "AreaCropper"));
-        }
+        action::ActionPlan plan(param);
+        style->prepare(plan, out);
+        EXPECT(plan_contains(plan, "AreaCropper"));
+    }
 
 
-        Log::info() << "area-mode=mask for rotated regular lat/lon" << std::endl;
-        {
-            user.set("area-mode", "mask");
-            user.set("rotation", std::vector<double>{-90, 0});
+    SECTION("area-mode=mask for regular lat/lon") {
+        user.set("area-mode", "mask");
+        user.clear("rotation");
 
-            action::ActionPlan plan(param);
-            EXPECT_THROWS_AS(style->prepare(plan, out), exception::UserError);
-        }
+        action::ActionPlan plan(param);
+        style->prepare(plan, out);
+        EXPECT(plan_contains(plan, "AreaMasker"));
+    }
+
+
+    SECTION("area-mode=crop for rotated regular lat/lon") {
+        user.set("area-mode", "crop");
+        user.set("rotation", std::vector<double>{-90, 0});
+
+        action::ActionPlan plan(param);
+        style->prepare(plan, out);
+        EXPECT(plan_contains(plan, "AreaCropper"));
+    }
+
+
+    SECTION("area-mode=mask for rotated regular lat/lon") {
+        user.set("area-mode", "mask");
+        user.set("rotation", std::vector<double>{-90, 0});
+
+        action::ActionPlan plan(param);
+        EXPECT_THROWS_AS(style->prepare(plan, out), exception::UserError);
     }
 }
 
