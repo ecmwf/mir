@@ -41,6 +41,7 @@ public:
         NETCDF,
         PARAMETER_CLASS,
         PARAMETERS,
+        STYLE,
         ALL_CONFIG_FILES
     };
 
