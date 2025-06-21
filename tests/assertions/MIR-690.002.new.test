@@ -1,0 +1,18 @@
+# input
+param=u_v,level=1000,resol=20
+# mir
+$MIR_ABORT_IF_CONFIGURATION_NOT_FOUND=false
+$MIR_CONFIG_STYLE=/bad
+--grid=3/3 --interpolation=linear --uv2uv=true
+# grib_get
+numberOfPoints=7320
+values[0]=8.1329
+values[1]=7.73153
+values[2]=7.32626
+values[3]=6.91806
+values[4]=6.51181
+values[5]=6.11434
+values[6]=5.72567
+values[7]=5.35263
+values[8]=5.00399
+values[9]=4.67587

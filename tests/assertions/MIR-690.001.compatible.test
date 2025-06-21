@@ -1,0 +1,16 @@
+# input
+param=u_v,level=1000,resol=20
+# mir
+--grid=3/3 --interpolation=linear --uv2uv=false
+# grib_get
+numberOfPoints=7320
+values[0]=0.000213623
+values[1]=0.000213623
+values[2]=0.000213623
+values[3]=0.000213623
+values[4]=0.000213623
+values[5]=0.000213623
+values[6]=0.000213623
+values[7]=0.000213623
+values[8]=0.000213623
+values[9]=0.000213623

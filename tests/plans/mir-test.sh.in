@@ -58,13 +58,19 @@ do
                     cp data.in.$t "${tmp_plans_dir}/$m"
                 fi
             fi
+            env=
             state=mir
             ;;
 
             mir)
+            if [[ $n =~ ^\$.* ]]
+            then
+                env="$env ${n/?}"
+                continue
+            fi
             eval n=\"$n\"
             rm -f plan.${t}{,.reference}
-            $mir --dryrun --dump-plan-file=plan.$t $n data.in.$t data.out.$t
+            env $env $mir --dryrun --dump-plan-file=plan.$t $n data.in.$t data.out.$t
             # For some reason set -e does not trigger
             [[ $? -eq 0 ]] || exit 1
             state=plan
