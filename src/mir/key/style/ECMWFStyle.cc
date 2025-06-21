@@ -17,9 +17,12 @@
 #include <string>
 #include <vector>
 
+#include "eckit/filesystem/PathName.h"
+#include "eckit/parser/YAMLParser.h"
 #include "eckit/utils/StringTools.h"
 
 #include "mir/action/plan/ActionPlan.h"
+#include "mir/config/LibMir.h"
 #include "mir/key/Area.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/key/resol/Resol.h"
@@ -29,11 +32,13 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/param/SameParametrisation.h"
+#include "mir/param/SimpleParametrisation.h"
 #include "mir/repres/latlon/LatLon.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/DeprecatedFunctionality.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Types.h"
+#include "mir/util/ValueMap.h"
 
 
 namespace mir::key::style {
@@ -226,10 +231,20 @@ static void add_formula(action::ActionPlan& plan, const param::MIRParametrisatio
 }
 
 
-ECMWFStyle::ECMWFStyle(const param::MIRParametrisation& parametrisation) : MIRStyle(parametrisation) {}
+ECMWFStyle::ECMWFStyle(const param::MIRParametrisation& parametrisation) : MIRStyle(parametrisation) {
+    struct StyleParametrisation : public param::SimpleParametrisation {
+        explicit StyleParametrisation(const eckit::PathName& path) {
+            if (path.exists()) {
+                util::ValueMap(eckit::YAMLParser::decodeFile(path)).set(*this);
+            }
+        }
+    } static const style(LibMir::configFile(LibMir::config_file::STYLE));
 
+    std::string sh2grid;
+    style.get("sh2grid", sh2grid);
 
-ECMWFStyle::~ECMWFStyle() = default;
+    sh2gridCompatible_ = (sh2grid == "compatible");
+}
 
 
 void ECMWFStyle::prologue(action::ActionPlan& plan) const {
@@ -329,6 +344,63 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 }
 
 
+void ECMWFStyle::sh2grid_compatible(action::ActionPlan& plan) const {
+    const auto& user = parametrisation_.userParametrisation();
+
+    add_formula(plan, user, {"spectral", "raw"});
+
+    resol::Resol resol(parametrisation_, false);
+
+    long uv       = 0;
+    bool uv_input = parametrisation_.fieldParametrisation().get("is_wind_component_uv", uv) && (uv != 0);
+
+    bool rotation = user.has("rotation");
+    bool vod2uv   = option(user, "vod2uv", false);
+    bool uv2uv    = option(user, "uv2uv", false) || uv_input;  // where "MIR knowledge of winds" is hardcoded
+
+    if (vod2uv && uv_input) {
+        throw exception::UserError("ECMWFStyle: option 'vod2uv' is incompatible with input U/V");
+    }
+
+    if (resol.resultIsSpectral()) {
+        resol.prepare(plan);
+    }
+
+    auto target = target_gridded_from_parametrisation(parametrisation_, false);
+    if (!target.empty()) {
+        if (resol.resultIsSpectral()) {
+
+            plan.add("transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-") + target);
+        }
+        else {
+
+            resol.prepare(plan);
+
+            // if the intermediate grid is the same as the target grid, the interpolation to the
+            // intermediate grid is not followed by an additional interpolation
+            std::string grid;
+            if (rotation || !user.get("grid", grid) || grid != resol.gridname()) {
+                plan.add("interpolate.grid2" + target);
+            }
+        }
+
+        if (vod2uv || uv2uv) {
+            ASSERT(vod2uv != uv2uv);
+
+            if (uv2uv) {
+                plan.add("filter.adjust-winds-scale-cos-latitude");
+            }
+
+            if (rotation) {
+                plan.add("filter.adjust-winds-directions");
+            }
+        }
+    }
+
+    add_formula(plan, user, {"gridded"});
+}
+
+
 void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
     const auto& user = parametrisation_.userParametrisation();
 
@@ -365,7 +437,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
     if (std::string intint; user.get("intermediate-interpolation", intint) && !intint.empty()) {
         if (std::string intgrid; user.get("intgrid", intgrid) && !intgrid.empty()) {
-            auto runtime = new param::RuntimeParametrisation{parametrisation_};
+            auto* runtime = new param::RuntimeParametrisation{parametrisation_};
             runtime->set("interpolation", intint);
             runtime->set("grid", intgrid);
             runtime->unset("rotation");
@@ -500,7 +572,7 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, output::MIROutput& output) co
 
     if (field_spectral) {
         if (user_wants_gridded > 0) {
-            sh2grid(plan);
+            sh2gridCompatible_ ? sh2grid_compatible(plan) : sh2grid(plan);
         }
         else {
             // "user wants spectral"
