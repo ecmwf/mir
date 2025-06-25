@@ -56,6 +56,7 @@ struct MIRGetData : MIRTool {
         options_.push_back(
             new SimpleOption<size_t>("nclosest", "Number of points close to given latitude/longitude, default 1"));
         options_.push_back(new SimpleOption<prec_t>("precision", "Output precision"));
+        options_.push_back(new SimpleOption<std::string>("input", "Input options YAML (lat, lon, etc.)"));
         options_.push_back(new SimpleOption<bool>("dryrun", "decode the field, no listing coordinates or values"));
     }
 

@@ -1,0 +1,63 @@
+# (C) Copyright 1996- ECMWF.
+#
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+#
+# In applying this licence, ECMWF does not waive the privileges and immunities
+# granted to it by virtue of its status as an intergovernmental organisation nor
+# does it submit to any jurisdiction.
+
+
+name: Build Python Wheel for Linux
+
+on:
+  # Trigger the workflow manually
+  workflow_dispatch:
+    inputs:
+      use_test_pypi:
+        description: Use test pypi instead of the regular one
+        required: false
+        type: boolean
+        default: false
+
+  # Allow to be called from another workflow
+  workflow_call:
+    inputs:
+      use_test_pypi:
+        description: Use test pypi instead of the regular one
+        required: false
+        type: boolean
+        default: false
+
+  # TODO automation trigger
+
+jobs:
+  build:
+    name: Build manylinux_2_28
+    strategy:
+      fail-fast: true
+      matrix:
+        python_version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+    runs-on: [self-hosted, Linux, platform-builder-Rocky-8.6]
+    container:
+      image: eccr.ecmwf.int/wheelmaker/2_28:1.latest
+      credentials:
+        username: ${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME }}
+        password: ${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          cd python/mir
+          PYVERSION=${{ matrix.python_version }} ./build_chain.sh
+          if [ "${{ inputs.use_test_pypi }}" = "true" ] ; then
+            TARGET="--repository testpypi"
+            export TWINE_PASSWORD="$TWINE_PASSWORD_TEST"
+          else
+            TARGET=""
+            export TWINE_PASSWORD="$TWINE_PASSWORD_PROD"
+          fi
+          twine upload $TARGET --verbose --skip-existing dist/*whl
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD_PROD: ${{ secrets.PYPI_API_TOKEN }}
+          TWINE_PASSWORD_TEST: ${{ secrets.PYPI_TEST_API_TOKEN }}

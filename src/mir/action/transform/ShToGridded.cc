@@ -21,7 +21,6 @@
 
 #include "mir/action/context/Context.h"
 #include "mir/action/transform/TransCache.h"
-#include "mir/api/MIREstimation.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/caching/LegendreCache.h"
 #include "mir/caching/legendre/LegendreLoader.h"
@@ -280,17 +279,6 @@ void ShToGridded::execute(context::Context& ctx) const {
         ctx.field().representation(out);
     }
 }
-
-void ShToGridded::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
-
-
-    repres::RepresentationHandle out(cropping_ ? outputRepresentation()->croppedRepresentation(cropping_.boundingBox())
-                                               : outputRepresentation());
-
-    estimation.numberOfGridPoints(out->numberOfPoints());
-    ctx.field().representation(out);
-}
-
 
 bool ShToGridded::mergeWithNext(const Action& next) {
     // merge only if the target is the same

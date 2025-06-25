@@ -22,7 +22,6 @@
 
 #include "mir/api/mir_config.h"
 #include "mir/tools/MIRTool.h"
-#include "mir/util/Grib.h"
 #include "mir/util/Log.h"
 
 
@@ -41,9 +40,6 @@ struct Libraries : std::map<std::string, std::string> {
             emplace(lib_name + " git-sha1", lib.gitsha1(sha1len));
             emplace(lib_name + " home", lib.libraryHome());
         }
-
-        emplace("eccodes version", ECCODES_VERSION_STR);
-        emplace("eccodes git-sha1", std::string(codes_get_git_sha1()).substr(0, sha1len));
     }
 };
 
@@ -95,13 +91,12 @@ struct MIRVersion : MIRTool {
 
             out << "features";
             out.startObject();
-            out << "HAVE_ATLAS" << HAVE_ATLAS;
-            out << "HAVE_ECKIT_GEO" << HAVE_ECKIT_GEO;
-            out << "HAVE_NETCDF" << HAVE_NETCDF;
-            out << "HAVE_PNG" << HAVE_PNG;
-            out << "HAVE_PROJ" << HAVE_PROJ;
-            out << "HAVE_OMP" << HAVE_OMP;
-            out << "HAVE_TESSELATION" << HAVE_TESSELATION;
+            out << "HAVE_ATLAS" << MIR_HAVE_ATLAS;
+            out << "HAVE_NETCDF" << MIR_HAVE_NETCDF;
+            out << "HAVE_OMP" << MIR_HAVE_OMP;
+            out << "HAVE_PNG" << MIR_HAVE_PNG;
+            out << "HAVE_PROJ" << MIR_HAVE_PROJ;
+            out << "HAVE_TESSELATION" << MIR_HAVE_TESSELATION;
             out.endObject();
 
             out << "libraries";
@@ -137,13 +132,12 @@ struct MIRVersion : MIRTool {
         out << '\n';
 
         out << "\nFeatures:";
-        out << "\n  HAVE_ATLAS       : " << on_off(HAVE_ATLAS);
-        out << "\n  HAVE_ECKIT_GEO   : " << on_off(HAVE_ECKIT_GEO);
-        out << "\n  HAVE_NETCDF      : " << on_off(HAVE_NETCDF);
-        out << "\n  HAVE_PNG         : " << on_off(HAVE_PNG);
-        out << "\n  HAVE_PROJ        : " << on_off(HAVE_PROJ);
-        out << "\n  HAVE_OMP         : " << on_off(HAVE_OMP);
-        out << "\n  HAVE_TESSELATION : " << on_off(HAVE_TESSELATION);
+        out << "\n  HAVE_ATLAS       : " << on_off(MIR_HAVE_ATLAS);
+        out << "\n  HAVE_NETCDF      : " << on_off(MIR_HAVE_NETCDF);
+        out << "\n  HAVE_OMP         : " << on_off(MIR_HAVE_OMP);
+        out << "\n  HAVE_PNG         : " << on_off(MIR_HAVE_PNG);
+        out << "\n  HAVE_PROJ        : " << on_off(MIR_HAVE_PROJ);
+        out << "\n  HAVE_TESSELATION : " << on_off(MIR_HAVE_TESSELATION);
         out << '\n';
 
         out << "\nLibraries:";
@@ -153,7 +147,7 @@ struct MIRVersion : MIRTool {
 
         for (const auto& [key, val] : libs) {
             auto key_str = key;
-            key_str.resize(key_max);
+            key_str.resize(key_max, ' ');
 
             out << "\n  " << key_str << " : " << val;
         }

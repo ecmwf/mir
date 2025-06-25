@@ -12,9 +12,11 @@
 
 #include "mir/util/Rotation.h"
 
+#include <memory>
 #include <ostream>
 #include <vector>
 
+#include "eckit/geo/area/BoundingBox.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/api/MIRJob.h"
@@ -28,42 +30,31 @@
 namespace mir::util {
 
 
+namespace {
+
+
+double get_double(const param::MIRParametrisation& param, const std::string& key) {
+    double value{};
+    ASSERT(param.get(key, value));
+    return value;
+}
+
+
+}  // namespace
+
+
 Rotation::Rotation(const Latitude& south_pole_latitude, const Longitude& south_pole_longitude,
                    double south_pole_rotation_angle) :
-    south_pole_latitude_(south_pole_latitude),
-    south_pole_longitude_(south_pole_longitude),
-    south_pole_rotation_angle_(south_pole_rotation_angle) {
-
-    normalize();
-}
+    rotation_({south_pole_longitude.value(), south_pole_latitude.value()}, south_pole_rotation_angle) {}
 
 
-Rotation::Rotation(const param::MIRParametrisation& parametrisation) {
-
-    double south_pole_latitude;
-    ASSERT(parametrisation.get("south_pole_latitude", south_pole_latitude));
-    south_pole_latitude_ = south_pole_latitude;
-
-    double south_pole_longitude;
-    ASSERT(parametrisation.get("south_pole_longitude", south_pole_longitude));
-    south_pole_longitude_ = south_pole_longitude;
-
-    south_pole_rotation_angle_ = 0.;
-    ASSERT(parametrisation.get("south_pole_rotation_angle", south_pole_rotation_angle_));
-
-    normalize();
-}
-
-
-void Rotation::normalize() {
-    // south_pole_longitude_ = south_pole_longitude_.normalise(Longitude::GREENWICH);
-}
+Rotation::Rotation(const param::MIRParametrisation& parametrisation) :
+    rotation_({get_double(parametrisation, "south_pole_longitude"), get_double(parametrisation, "south_pole_latitude")},
+              get_double(parametrisation, "south_pole_rotation_angle")) {}
 
 
 void Rotation::print(std::ostream& out) const {
-    out << "Rotation["
-        << "south_pole_latitude=" << south_pole_latitude_ << ",south_pole_longitude=" << south_pole_longitude_
-        << ",south_pole_rotation_angle=" << south_pole_rotation_angle_ << "]";
+    out << "Rotation[spec=" << rotation_.spec_str() << "]";
 }
 
 
@@ -72,71 +63,40 @@ void Rotation::fillGrib(grib_info& info) const {
 
     info.grid.grid_type = CODES_UTIL_GRID_SPEC_ROTATED_LL;
 
-    info.grid.latitudeOfSouthernPoleInDegrees  = south_pole_latitude_.value();
-    info.grid.longitudeOfSouthernPoleInDegrees = south_pole_longitude_.value();
+    info.grid.latitudeOfSouthernPoleInDegrees  = rotation_.south_pole().lat;
+    info.grid.longitudeOfSouthernPoleInDegrees = rotation_.south_pole().lon;
 
     // This is missing from the grib_spec
     // Remove that when supported
-    if (!eckit::types::is_approximately_equal<double>(south_pole_rotation_angle_, 0.)) {
-        info.extra_set("angleOfRotationInDegrees", south_pole_rotation_angle_);
+    if (!eckit::types::is_approximately_equal<double>(rotation_.angle(), 0.)) {
+        info.extra_set("angleOfRotationInDegrees", rotation_.angle());
     }
 }
 
 
 void Rotation::fillJob(api::MIRJob& job) const {
-    job.set("rotation", south_pole_latitude_.value(), south_pole_longitude_.value());
+    job.set("rotation", rotation_.south_pole().lat, rotation_.south_pole().lon);
 }
 
 
 bool Rotation::operator==(const Rotation& other) const {
-    return south_pole_latitude_ == other.south_pole_latitude_ && south_pole_longitude_ == other.south_pole_longitude_ &&
-           south_pole_rotation_angle_ == other.south_pole_rotation_angle_;
-}
-
-
-atlas::Grid Rotation::rotate(const atlas::Grid& grid) const {
-
-    // ensure grid is not rotated already
-    ASSERT(!grid.projection());
-
-    atlas::Grid::Spec spec(grid.spec());
-    spec.set("projection", atlasProjection().spec());
-
-    return {spec};
-}
-
-
-atlas::Projection Rotation::atlasProjection() const {
-    atlas::Projection::Spec spec;
-
-    spec.set("type", "rotated_lonlat");
-    spec.set("south_pole", std::vector<double>({south_pole_longitude_.value(), south_pole_latitude_.value()}));
-    spec.set("rotation_angle", south_pole_rotation_angle_);
-
-    return {spec};
+    return rotation_ == other.rotation_;
 }
 
 
 BoundingBox Rotation::boundingBox(const BoundingBox& bbox) const {
+    eckit::geo::projection::Rotation projection({south_pole_longitude().value(), south_pole_latitude().value()});
 
-    atlas::RectangularDomain before({bbox.west().value(), bbox.east().value()},
-                                    {bbox.south().value(), bbox.north().value()});
-    ASSERT(before);
-
-    auto after = atlasProjection().lonlatBoundingBox(before);
+    std::unique_ptr<eckit::geo::area::BoundingBox> after(eckit::geo::area::BoundingBox::make_from_projection(
+        {bbox.west().value(), bbox.south().value()}, {bbox.east().value(), bbox.north().value()}, projection));
     ASSERT(after);
 
-    // use [0, 360[ longitude range if periodic
-    bool periodic = after.zonal_band();
-    BoundingBox box(after.north(), periodic ? Longitude::GREENWICH : after.west(), after.south(),
-                    periodic ? Longitude::GLOBE : after.east());
-
-    return box;
+    return {after->north, after->west, after->south, after->east};
 }
 
 
 void Rotation::makeName(std::ostream& out) const {
-    out << "-rot:" << south_pole_latitude_ << ":" << south_pole_longitude_ << ":" << south_pole_rotation_angle_;
+    out << "-rot:" << rotation_.south_pole().lat << ":" << rotation_.south_pole().lon << ":" << rotation_.angle();
 }
 
 

@@ -33,7 +33,7 @@ const char* AreaMaskerCacheTraits::name() {
 
 
 int AreaMaskerCacheTraits::version() {
-    return 1;
+    return 2;
 }
 
 

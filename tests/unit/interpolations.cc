@@ -37,7 +37,7 @@ CASE("interpolations") {
     jobs[1].set("area", "40/20/20/40");
     jobs[1].set("frame", 2);
 
-    if constexpr (HAVE_ATLAS) {
+    if constexpr (MIR_HAVE_ATLAS) {
         jobs[2].set("caching", false);
         jobs[2].set("rotation", "-89/10");
     }
@@ -46,7 +46,7 @@ CASE("interpolations") {
     SECTION("gridded to gridded (GRIB)") {
         param::SimpleParametrisation args;
 
-        for (const std::string& in : {
+        for (const auto* in : {
                  "../data/param=2t,levtype=sfc,grid=O640",
                  "../data/regular_ll.2-4.grib1",
              }) {
@@ -62,7 +62,7 @@ CASE("interpolations") {
     }
 
 
-    if constexpr (HAVE_ATLAS) {
+    if constexpr (MIR_HAVE_ATLAS) {
         SECTION("spectral to gridded (scalar)") {
             param::SimpleParametrisation args;
 

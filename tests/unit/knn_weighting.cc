@@ -12,6 +12,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "eckit/testing/Test.h"
 
@@ -44,23 +45,23 @@ CASE("distance-weighting") {
     param.set("distance", 2.);
     param.set("nclosest", 4);
     param.set("climate-filter-delta", 1.);
-
-
-    auto methods = {"climate-filter",
-                    "cressman",
-                    "gaussian",
-                    "inverse-distance-weighting",
-                    "inverse-distance-weighting-squared",
-                    "nearest-neighbour",
-                    "no",
-                    "no-distance-weighting",
-                    "pseudo-laplace",
-                    "reciprocal",
-                    "shepard"};
+    param.set("distance-weighting-gaussian-stddev", 1.e6);
 
 
     SECTION("methods") {
-        for (const std::string& name : methods) {
+        for (const auto* name : {
+                 "climate-filter",
+                 "cressman",
+                 "gaussian",
+                 "inverse-distance-weighting",
+                 "inverse-distance-weighting-squared",
+                 "nearest-neighbour",
+                 "no",
+                 "no-distance-weighting",
+                 "pseudo-laplace",
+                 "reciprocal",
+                 "shepard",
+             }) {
             log << "Test " << name << std::endl;
             std::vector<method::WeightMatrix::Triplet> triplets;
             std::unique_ptr<const DistanceWeighting> d(DistanceWeightingFactory::build(name, param));

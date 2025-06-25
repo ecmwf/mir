@@ -13,15 +13,13 @@ on:
   # Trigger the workflow manually
   workflow_dispatch: ~
 
-  # Allow to be called from another workflow
+  # Allow to be called from another workflow -- eg `cd.yml`
   workflow_call: ~
-
-  # TODO automation trigger
 
 jobs:
   python-wrapper-wheel:
     name: Python Wrapper Wheel
     uses: ecmwf/reusable-workflows/.github/workflows/python-wrapper-wheel.yml@main
     with: 
-      wheel_directory: python_wrapper
+      wheel_directory: python/mirlib
     secrets: inherit

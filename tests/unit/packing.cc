@@ -183,7 +183,7 @@ CASE("Packing") {
         api::MIRJob job;
         job.set("truncation", "none");  // (from RESOL=AV)
 
-        for (const std::string& grid : {"N80", "N160"}) {
+        for (const auto* grid : {"N80", "N160"}) {
             job.set("grid", grid);
 
             for (const auto& field : fields) {

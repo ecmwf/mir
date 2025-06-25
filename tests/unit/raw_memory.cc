@@ -20,6 +20,7 @@
 #include "eckit/testing/Test.h"
 
 #include "mir/api/MIRJob.h"
+#include "mir/api/mir_config.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/RawInput.h"
 #include "mir/method/WeightMatrix.h"
@@ -114,29 +115,28 @@ CASE("RawInput") {
     }
 
 
-    // (plugins are optional)
-    if (eckit::system::Library::exists("atlas-orca")) {
-        SECTION("grid=ORCA2_T") {
-            // metadata
-            param::SimpleParametrisation meta;
+#if mir_HAVE_GEO_GRID_ORCA
+    SECTION("grid=ORCA2_T") {
+        // metadata
+        param::SimpleParametrisation meta;
 
-            meta.set("gridded", true);
-            meta.set("gridType", "orca");
-            meta.set("uid", "d5bde4f52ff3a9bea5629cd9ac514410");
-
-
-            // data
-            std::vector<double> values(27118, 0.);  // 182 * 149
-            std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
+        meta.set("gridded", true);
+        meta.set("gridType", "orca");
+        meta.set("uid", "d5bde4f52ff3a9bea5629cd9ac514410");
 
 
-            // access a field (in the post-processing context)
-            log << *input << std::endl;
+        // data
+        std::vector<double> values(27118, 0.);  // 182 * 149
+        std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
 
-            auto field = input->field();
-            log << field << std::endl;
-        }
+
+        // access a field (in the post-processing context)
+        log << *input << std::endl;
+
+        auto field = input->field();
+        log << field << std::endl;
     }
+#endif
 }
 
 

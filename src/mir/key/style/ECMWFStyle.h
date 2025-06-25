@@ -25,11 +25,10 @@ public:
 
     // -- Constructors
 
-    ECMWFStyle(const param::MIRParametrisation&);
+    explicit ECMWFStyle(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    ~ECMWFStyle() override;
+    // None
 
     // -- Convertors
     // None
@@ -55,11 +54,14 @@ protected:
 
     // -- Methods
 
-    virtual void prologue(action::ActionPlan&) const;
-    virtual void sh2grid(action::ActionPlan&) const;
-    virtual void sh2sh(action::ActionPlan&) const;
-    virtual void grid2grid(action::ActionPlan&) const;
-    virtual void epilogue(action::ActionPlan&) const;
+    void prologue(action::ActionPlan&) const;
+
+    void sh2grid(action::ActionPlan&) const;
+    void sh2grid_compatible(action::ActionPlan& plan) const;
+    void sh2sh(action::ActionPlan&) const;
+    void grid2grid(action::ActionPlan&) const;
+
+    void epilogue(action::ActionPlan&) const;
 
     // -- Overridden methods
 
@@ -73,7 +75,8 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    bool sh2gridCompatible_;
 
     // -- Methods
     // None

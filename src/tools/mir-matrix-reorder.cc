@@ -21,24 +21,24 @@
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/SimpleOption.h"
 
-#include "mir/reorder/Reorder.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Reorder.h"
 
 
 namespace mir::tools {
 
 
-using Reorder = reorder::Reorder;
+using Reorder = util::Reorder;
 
 
 struct MIRMatrixReorder : MIRTool {
     MIRMatrixReorder(int argc, char** argv) : MIRTool(argc, argv) {
-        options_.push_back(new eckit::option::FactoryOption<reorder::ReorderFactory>(
-            "reorder-rows", "Reordering rows method", "identity"));
-        options_.push_back(new eckit::option::FactoryOption<reorder::ReorderFactory>(
-            "reorder-cols", "Reordering columns method", "identity"));
+        options_.push_back(
+            new eckit::option::FactoryOption<Reorder>("reorder-rows", "Reordering rows method", "identity"));
+        options_.push_back(
+            new eckit::option::FactoryOption<Reorder>("reorder-cols", "Reordering columns method", "identity"));
         options_.push_back(new eckit::option::SimpleOption<bool>("transpose", "Transpose matrix", false));
     }
 
@@ -68,12 +68,10 @@ void MIRMatrixReorder::execute(const eckit::option::CmdArgs& args) {
 
 
     // renumbering maps
-    auto rows =
-        std::unique_ptr<Reorder>(reorder::ReorderFactory::build(args.getString("reorder-rows")))->reorder(M.rows());
+    auto rows = std::unique_ptr<Reorder>(Reorder::build(args.getString("reorder-rows"), M.rows()))->reorder();
     ASSERT(rows.size() == M.rows());
 
-    auto cols =
-        std::unique_ptr<Reorder>(reorder::ReorderFactory::build(args.getString("reorder-cols")))->reorder(M.cols());
+    auto cols = std::unique_ptr<Reorder>(Reorder::build(args.getString("reorder-cols"), M.cols()))->reorder();
     ASSERT(cols.size() == M.cols());
 
 

@@ -12,6 +12,7 @@
 
 #include "mir/config/LibMir.h"
 
+#include <algorithm>
 #include <set>
 
 #include "eckit/config/Resource.h"
@@ -64,6 +65,7 @@ eckit::PathName LibMir::configFile(config_file c) {
         {r("mir-config-netcdf;$MIR_CONFIG_NETCDF", "~mir/etc/mir/netcdf.yaml")},
         {r("mir-config-parameter-class;$MIR_CONFIG_PARAMETER_CLASS", "~mir/etc/mir/parameter-class.yaml")},
         {r("mir-config-parameters;$MIR_CONFIG_PARAMETERS", "~mir/etc/mir/parameters.yaml")},
+        {r("mir-config-style;$MIR_CONFIG_STYLE", "~mir/etc/mir/style.yaml")},
     };
 
     ASSERT(0 <= c && c < config_file::ALL_CONFIG_FILES);

@@ -31,11 +31,6 @@ public:
     using PointLonLat   = ::atlas::PointLonLat;
     using Projection    = ::atlas::Projection;
 
-    struct ij_t {
-        size_t i;
-        size_t j;
-    };
-
     // -- Exceptions
     // None
 
@@ -90,8 +85,6 @@ protected:
     static Projection::Spec make_proj_spec(const param::MIRParametrisation&);
     static LinearSpacing linspace(double start, double step, long num, bool plus);
 
-    std::pair<ij_t, ij_t> minmax_ij(const util::BoundingBox&) const;
-
     // -- Overridden methods
 
     // from Representation
@@ -111,7 +104,6 @@ protected:
     void print(std::ostream&) const override;
 
     bool extendBoundingBoxOnIntersect() const override;
-    bool crop(util::BoundingBox&, util::IndexMapping&) const override;
 
     ::atlas::Grid atlasGrid() const override;
     size_t numberOfPoints() const override;

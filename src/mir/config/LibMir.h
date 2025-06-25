@@ -41,6 +41,7 @@ public:
         NETCDF,
         PARAMETER_CLASS,
         PARAMETERS,
+        STYLE,
         ALL_CONFIG_FILES
     };
 
@@ -48,7 +49,7 @@ public:
 
     enum cache_loader
     {
-        LEGENDRE,
+        LEGENDRE = 0,
         MATRIX,
         POINT_SEARCH,
         ALL_CACHE_LOADERS,

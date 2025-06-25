@@ -60,10 +60,9 @@
 #if mir_HAVE_ATLAS
 #include "mir/caching/legendre/LegendreLoader.h"
 #include "mir/method/fe/FiniteElement.h"
-#endif
-
 #if mir_HAVE_PNG
 #include "mir/output/PNGOutput.h"
+#endif
 #endif
 
 
@@ -193,7 +192,7 @@ struct MIR : MIRTool {
             "Linear algebra sparse backend (default '" + eckit::linalg::LinearAlgebraSparse::backend().name() + "')"));
         options_.push_back(new FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
 
-        if constexpr (HAVE_ATLAS) {
+        if constexpr (MIR_HAVE_ATLAS) {
             for (const auto& which : std::vector<std::string>{"input", "output"}) {
                 options_.push_back(
                     new SimpleOption<std::string>(which + "-mesh-generator", "Mesh generator for " + which + " grid"));
@@ -201,8 +200,6 @@ struct MIR : MIRTool {
                                                           "Calculate cell centres for " + which + " mesh"));
                 options_.push_back(new SimpleOption<bool>(which + "-mesh-cell-longest-diagonal",
                                                           "Calculate cells longest diagonal for " + which + " mesh"));
-                options_.push_back(new SimpleOption<bool>(which + "-mesh-node-lumped-mass-matrix",
-                                                          "Calculate node-lumped mass matrix for " + which + " mesh"));
                 options_.push_back(
                     new SimpleOption<bool>(which + "-mesh-node-to-cell-connectivity",
                                            "Calculate node-to-cell connectivity for " + which + " mesh"));
@@ -368,7 +365,7 @@ struct MIR : MIRTool {
             "legendre-loader", "Select how to load Legendre coefficients in memory"));
 #endif
 
-        if constexpr (HAVE_OMP) {
+        if constexpr (MIR_HAVE_OMP) {
             options_.push_back(
                 new SimpleOption<size_t>("parallel-omp-num-threads", "Set number of threads for OMP parallel regions"));
         }
@@ -392,10 +389,12 @@ struct MIR : MIRTool {
             options_.push_back(new FactoryOption<output::MIROutputFactory>("format", "Output format"));
             options_.push_back(
                 new SimpleOption<bool>("reset-missing-values", "Use first encoded value to set missing value"));
+#if mir_HAVE_ATLAS
 #if mir_HAVE_PNG
             options_.push_back(
                 new FactoryOption<output::PNGEncoderFactory>("png-output-encoder", "PNG output encoder"));
             options_.push_back(new VectorOption<double>("png-output-minmax", "PNG output minimum/maximum", 2));
+#endif
 #endif
         }
     }

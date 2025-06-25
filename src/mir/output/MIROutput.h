@@ -27,9 +27,6 @@ class Context;
 namespace param {
 class MIRParametrisation;
 }
-namespace api {
-class MIREstimation;
-}
 }  // namespace mir
 
 
@@ -66,7 +63,6 @@ public:
     virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const = 0;
     virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const                   = 0;
     virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, MIROutput&);
-    virtual void estimate(const param::MIRParametrisation&, api::MIREstimation&, context::Context&) const;
 
     // -- Overridden methods
     // None

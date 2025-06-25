@@ -59,7 +59,6 @@ private:
 
     // From Action
     void execute(context::Context&) const override;
-    void estimate(context::Context&, api::MIREstimation&) const override;
     const char* name() const override;
 
     // From EndAction

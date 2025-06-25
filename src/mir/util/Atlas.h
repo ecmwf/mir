@@ -115,11 +115,6 @@ struct Library {
 namespace util {
 
 
-void gaussian_latitudes_npole_equator(size_t N, double* latitudes);
-void gaussian_latitudes_npole_spole(size_t N, double* latitudes);
-void gaussian_quadrature_npole_spole(size_t N, double* latitudes, double* weights);
-
-
 struct DatumIFS {
     static constexpr double radius() { return 6371229.; }
 };
@@ -229,8 +224,10 @@ public:
 
     Grid() = default;
     Grid(const Spec& spec) : spec_(spec) {}
+
     explicit operator bool() const { return true; }
     Projection projection() const;
+    std::string uid() const;
 };
 
 
@@ -241,31 +238,34 @@ struct StructuredGrid : Grid {
     StructuredGrid(const Grid&);
     StructuredGrid(const XSpace& lon, const YSpace& lat, const Projection& = Projection(), const Domain& = Domain()) :
         lon_(lon), lat_(lat) {}
-    idx_t nx(idx_t j) const { return pl_.at(static_cast<size_t>(j)); }
-    idx_t nx() const;
     idx_t ny() const { return static_cast<idx_t>(pl_.size()); }
 
 protected:
-    std::vector<long> pl_;
+    std::vector<idx_t> pl_;
     XSpace lon_;
     YSpace lat_;
 };
 
 
 struct GaussianGrid : StructuredGrid {
-    GaussianGrid(const std::string& name, const Domain& = Domain());
-    GaussianGrid(const std::vector<long>& pl, const Domain& = Domain());
-    const std::vector<long>& nx() const { return pl_; }
+    explicit GaussianGrid(const std::string& name, const Domain& = Domain());
+    explicit GaussianGrid(const std::vector<idx_t>& pl, const Domain& = Domain());
+    const std::vector<idx_t>& nx() const { return pl_; }
+    idx_t nx(idx_t j) const { return pl_.at(static_cast<size_t>(j)); }
 };
 
 
 struct UnstructuredGrid : Grid {
     std::vector<PointXY> points_;
-    UnstructuredGrid(std::vector<PointXY>&&);
+    explicit UnstructuredGrid(std::vector<PointXY>&&);
 };
 
 
-using RegularGrid         = StructuredGrid;
+struct RegularGrid : StructuredGrid {
+    using StructuredGrid::StructuredGrid;
+    idx_t nx() const;
+};
+
 using RegularGaussianGrid = GaussianGrid;
 using ReducedGaussianGrid = GaussianGrid;
 

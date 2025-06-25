@@ -17,18 +17,16 @@ md5GridSection=f5dc74ec36353f4c83f7de3bf46e1aef, centre:i=98, gridName=O640, edi
 
 # Lambert conformal conic projection, non-standard interpretation (Toulouse, RSMC, centre=lfpw)
 md5GridSection=6ae0076681a2541abe053ab52fa60f30, centre:i=84/85, gridType=lambert, edition=1:
+  - area-mode: mask
   - first_point_bottom_left: true
 
 # gridType=polar_stereographic does not support the default area method
-gridType=polar_stereographic:
+gridType=lambert/lambert_azimuthal_equal_area/mercator/polar_stereographic/polar_stereographic:
   - area-mode: mask
 
 # gridType=space_view does not support the default interpolation method
 gridType=space_view:
+  - area-mode: mask
   - interpolation: k-nearest
   - nearest-method: longest-element-diagonal-and-nclosest
   - reset-missing-values: true
-
-# gridType=healpix,orderingConvention=nested isn't fully supported, this is a patch
-gridType=healpix, orderingConvention=nested:
-  - finite-element-matrix-reorder-cols: healpix-ring-to-nested

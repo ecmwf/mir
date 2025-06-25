@@ -17,23 +17,9 @@ if(MARS_SCRIPT)
         if((_t MATCHES "[.]fail[.]") OR
            (_t MATCHES "[.]lsm[.]" AND NOT HAVE_MIR_DOWNLOAD_MASKS) OR
            (NOT mir_HAVE_ATLAS AND NOT (_t MATCHES "[.]core[.]")) OR
-           (NOT mir_HAVE_ECKIT_GEO AND (_t MATCHES "[.]geo[.]")) OR
            (NOT atlas_HAVE_PROJ AND (_t MATCHES "[.]proj[.]")))
             set_tests_properties(${target} PROPERTIES WILL_FAIL TRUE)
         endif()
-    endforeach()
-endif()
-
-if(EXISTS ${CMAKE_BINARY_DIR}/share/plugins/atlas-orca.yml)
-    file(GLOB_RECURSE test_files LIST_DIRECTORIES false *.test.atlas-orca)
-    foreach(_t ${test_files})
-        target_from_path("${_t}" target)
-        ecbuild_add_test(
-            TARGET      ${target}
-            CONDITION   MARS_SCRIPT
-            COMMAND     mir-test.sh
-            ARGS        ${_t}
-            ENVIRONMENT ${_testEnvironment})
     endforeach()
 endif()
 

@@ -42,7 +42,9 @@ Regex::Regex(const std::string& pattern) : pattern_(pattern) {
         regex_.assign(regex_t(pattern_, std::regex_constants::extended));
     }
     catch (const std::regex_error& e) {
-        Log::error() << "regex_error caught: " << e.what() << ", code: " << regex_code.at(e.code()) << std::endl;
+        auto c = regex_code.find(e.code());
+        Log::error() << "regex_error caught: " << e.what() << ", code: " << e.code()
+                     << (c != regex_code.end() ? ", " + c->second : "") << std::endl;
         throw;
     }
 }

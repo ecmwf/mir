@@ -31,7 +31,7 @@ namespace mir::method {
 
 
 Method::Method(const param::MIRParametrisation& params) : parametrisation_(params) {
-    if constexpr (HAVE_OMP) {
+    if constexpr (MIR_HAVE_OMP) {
         int num_threads = 1;
         if (params.get("parallel-omp-num-threads", num_threads)) {
             omp_set_num_threads(num_threads);

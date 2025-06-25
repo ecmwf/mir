@@ -21,8 +21,7 @@ class ActionPlan;
 }
 namespace api {
 class MIRJob;
-class MIREstimation;
-}  // namespace api
+}
 namespace input {
 class MIRInput;
 }
@@ -63,7 +62,6 @@ public:
     // -- Methods
 
     void execute(util::MIRStatistics&) const;
-    void estimate(api::MIREstimation&) const;
 
     const ActionPlan& plan() const;
 
