@@ -25,6 +25,7 @@ if(MARS_SCRIPT)
         if((_t MATCHES "[.]fail[.]") OR
            (_t MATCHES "[.]lsm[.]" AND NOT HAVE_MIR_DOWNLOAD_MASKS) OR
            (NOT mir_HAVE_ATLAS AND NOT (_t MATCHES "[.]core[.]")) OR
+           (NOT atlas_HAVE_TESSELATION AND (_t MATCHES "[.]tesselation[.]")) OR
            (NOT atlas_HAVE_PROJ AND (_t MATCHES "[.]proj[.]")))
             set_tests_properties(${target} PROPERTIES WILL_FAIL TRUE)
         endif()
