@@ -39,26 +39,23 @@ namespace mir::util {
 
 class BoundingBox {
 public:
-    // -- Exceptions
-    // None
-
     // -- Constructors
 
     BoundingBox();
-    BoundingBox(const Latitude& north, const Longitude& west, const Latitude& south, const Longitude& east);
+    BoundingBox(double north, double west, double south, double east);
     BoundingBox(const param::MIRParametrisation&);
-    BoundingBox(const BoundingBox&);
+
+    BoundingBox(const BoundingBox&) = default;
+    BoundingBox(BoundingBox&&)      = default;
 
     // -- Destructor
 
-    virtual ~BoundingBox();
-
-    // -- Convertors
-    // None
+    virtual ~BoundingBox() = default;
 
     // -- Operators
 
-    BoundingBox& operator=(const BoundingBox&);
+    BoundingBox& operator=(const BoundingBox&) = default;
+    BoundingBox& operator=(BoundingBox&&)      = default;
 
     bool operator==(const BoundingBox&) const;
 
@@ -68,22 +65,15 @@ public:
 
     // DON'T IMPLEMENT SETTERS
 
-    const Latitude& north() const { return north_; }
-
-    const Longitude& west() const { return west_; }
-
-    const Latitude& south() const { return south_; }
-
-    const Longitude& east() const { return east_; }
+    double north() const { return north_; }
+    double west() const { return west_; }
+    double south() const { return south_; }
+    double east() const { return east_; }
 
     bool isPeriodicWestEast() const;
 
-    bool contains(const PointLatLon&) const;
-
-    bool contains(const Point2&) const;
-
-    bool contains(const Latitude&, const Longitude&) const;
-
+    bool contains(const PointLonLat&) const;
+    bool contains(double lat, double lon) const;
     bool contains(const BoundingBox&) const;
 
     bool intersects(BoundingBox&) const;
@@ -98,55 +88,19 @@ public:
 
     void makeName(std::ostream&) const;
 
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
 protected:
-    // -- Members
-    // None
-
     // -- Methods
 
     virtual void print(std::ostream&) const;
     virtual void json(eckit::JSON&) const;
 
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-    // -- Friends
-    // None
-
 private:
     // -- Members
 
-    Latitude north_;
-    Longitude west_;
-    Latitude south_;
-    Longitude east_;
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
+    double north_;
+    double west_;
+    double south_;
+    double east_;
 
     // -- Friends
 

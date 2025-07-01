@@ -21,6 +21,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Earth.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/MeshGeneratorParameters.h"
@@ -88,8 +89,8 @@ bool IrregularLatlon::getLongestElementDiagonal(double& d) const {
         const auto& latAwayFromEquator(latitudes_[away ? j - 1 : j]);
         const auto& latCloserToEquator(latitudes_[away ? j : j - 1]);
 
-        d = std::max(d, util::Earth::distance(atlas::PointLonLat(0., latCloserToEquator),
-                                              atlas::PointLonLat(we, latAwayFromEquator)));
+        d = std::max(d,
+                     util::Earth::distance(PointLonLat(0., latCloserToEquator), PointLonLat(we, latAwayFromEquator)));
     }
 
     ASSERT(d > 0.);
@@ -144,10 +145,10 @@ void IrregularLatlon::fillMeshGen(util::MeshGeneratorParameters& params) const {
 
 
 util::Domain IrregularLatlon::domain() const {
-    const Latitude n  = includesNorthPole() ? Latitude::NORTH_POLE.value() : north_;
-    const Latitude s  = includesSouthPole() ? Latitude::SOUTH_POLE.value() : south_;
-    const Longitude w = west_;
-    const Longitude e = isPeriodicWestEast() ? west_ + Longitude::GLOBE.value() : east_;
+    const auto n = includesNorthPole() ? PointLonLat::RIGHT_ANGLE : north_;
+    const auto s = includesSouthPole() ? -PointLonLat::RIGHT_ANGLE : south_;
+    const auto w = west_;
+    const auto e = isPeriodicWestEast() ? west_ + PointLonLat::FULL_ANGLE : east_;
 
     return util::Domain(n, w, s, e);
 }
@@ -170,11 +171,10 @@ class IrregularLatlonIterator : public Iterator {
         out << "]";
     }
 
-    bool next(Latitude& lat, Longitude& lon) override {
+    PointLonLat next(bool& valid) override {
         if (j_ < nj_) {
             if (i_ < ni_) {
-                lat = latitudes_[j_];
-                lon = longitudes_[i_];
+                PointLonLat p(longitudes_[i_], latitudes_[j_]);
 
                 if (first_) {
                     first_ = false;
@@ -188,10 +188,13 @@ class IrregularLatlonIterator : public Iterator {
                     i_ = 0;
                 }
 
-                return true;
+                valid = true;
+                return p;
             }
         }
-        return false;
+
+        valid = false;
+        return {};
     }
 
     size_t index() const override { return count_; }
@@ -227,17 +230,17 @@ Iterator* IrregularLatlon::iterator() const {
 
 
 bool IrregularLatlon::isPeriodicWestEast() const {
-    return (east_ - west_) + west_east_ >= Longitude::GLOBE.value();
+    return bbox_.east() - bbox_.west() + west_east_ >= PointLonLat::FULL_ANGLE;
 }
 
 
 bool IrregularLatlon::includesNorthPole() const {
-    return north_ + south_north_ >= Latitude::NORTH_POLE.value();
+    return PointLonLat(0, bbox_.north()).north_pole();
 }
 
 
 bool IrregularLatlon::includesSouthPole() const {
-    return south_ - south_north_ <= Latitude::SOUTH_POLE.value();
+    return PointLonLat(0, bbox_.south()).south_pole();
 }
 
 

@@ -62,7 +62,7 @@ protected:
 
     // -- Methods
 
-    void correctWestEast(Longitude& w, Longitude& e) const;
+    void correctWestEast(double& w, double& e) const;
     void setNiNj();
 
     // -- Overridden methods

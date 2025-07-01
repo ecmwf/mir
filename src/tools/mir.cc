@@ -45,7 +45,7 @@
 #include "mir/method/nonlinear/NonLinear.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/ConfigurationWrapper.h"
-#include "mir/search/Tree.h"
+#include "mir/search/PointSearch.h"
 #include "mir/stats/Distribution.h"
 #include "mir/stats/Field.h"
 #include "mir/stats/Statistics.h"
@@ -190,7 +190,7 @@ struct MIR : MIRTool {
         options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebraDense>(
             "sparse-backend",
             "Linear algebra sparse backend (default '" + eckit::linalg::LinearAlgebraSparse::backend().name() + "')"));
-        options_.push_back(new FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
+        options_.push_back(new FactoryOption<search::PointSearchFactory>("point-search-trees", "k-d tree control"));
 
         if constexpr (MIR_HAVE_ATLAS) {
             for (const auto& which : std::vector<std::string>{"input", "output"}) {

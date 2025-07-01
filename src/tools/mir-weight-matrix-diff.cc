@@ -111,7 +111,7 @@ void MIRWeightMatrixDiff::execute(const eckit::option::CmdArgs& args) {
     auto aShape = std::vector<WeightMatrix::Size>{a.nonZeros(), a.rows(), a.cols()};
     auto bShape = std::vector<WeightMatrix::Size>{b.nonZeros(), b.rows(), b.cols()};
     if (aShape != bShape) {
-        log << "!= geometry: " << aShape << " != " << bShape << std::endl;
+        log << "!= shape: " << aShape << " != " << bShape << std::endl;
     }
     else if (counter) {
         stats::detail::CounterBinary counter(param, param);

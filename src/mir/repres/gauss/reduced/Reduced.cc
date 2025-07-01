@@ -29,6 +29,7 @@
 #include "mir/util/Atlas.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Earth.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/GridBox.h"
@@ -56,8 +57,8 @@ std::vector<long> pl_convert(const std::vector<long>& nx) {
 Reduced::Reduced(const param::MIRParametrisation& parametrisation) : Gaussian(parametrisation), k_(0), Nj_(N_ * 2) {
 
     // adjust latitudes, longitudes and re-set bounding box
-    Latitude n = bbox_.north();
-    Latitude s = bbox_.south();
+    auto n = bbox_.north();
+    auto s = bbox_.south();
     correctSouthNorth(s, n);
 
     std::vector<long> pl;
@@ -68,7 +69,7 @@ Reduced::Reduced(const param::MIRParametrisation& parametrisation) : Gaussian(pa
     if (n < lats.front() || s > lats.back()) {
         size_t k  = 0;
         size_t nj = 0;
-        for (Latitude lat : lats) {
+        for (auto lat : lats) {
             if (n < lat) {
                 ++k;
             }
@@ -91,8 +92,8 @@ Reduced::Reduced(const param::MIRParametrisation& parametrisation) : Gaussian(pa
 
     setNj(pl, s, n);
 
-    Longitude w = bbox_.west();
-    Longitude e = bbox_.east();
+    auto w = bbox_.west();
+    auto e = bbox_.east();
     correctWestEast(w, e);
 
     bbox_ = util::BoundingBox(n, w, s, e);
@@ -114,24 +115,26 @@ Reduced::Reduced(size_t N, const util::BoundingBox& bbox, double angularPrecisio
 Reduced::~Reduced() = default;
 
 
-void Reduced::correctWestEast(Longitude& w, Longitude& e) const {
+void Reduced::correctWestEast(double& w, double& e) const {
     using eckit::Fraction;
     ASSERT(w <= e);
 
     const Fraction smallestIncrement = getSmallestIncrement();
+    const Fraction globe(360, 1);
+
     ASSERT(smallestIncrement > 0);
 
-    if (angleApproximatelyEqual(Longitude::GREENWICH, w) &&
-        (angleApproximatelyEqual(Longitude::GLOBE - smallestIncrement, e - w) ||
-         Longitude::GLOBE - smallestIncrement < e - w || (e != w && e.normalise(w) == w))) {
+    if (angleApproximatelyEqual(0, w) &&
+        (angleApproximatelyEqual(globe - smallestIncrement, e - w) || globe - smallestIncrement < e - w ||
+         (e != w && PointLonLat::normalise_angle_to_minimum(e, w) == w))) {
 
-        w = Longitude::GREENWICH;
-        e = Longitude::GLOBE - smallestIncrement;
+        w = 0;
+        e = globe - smallestIncrement;
     }
     else {
 
-        const Fraction west = w.fraction();
-        const Fraction east = e.fraction();
+        const Fraction west(w);
+        const Fraction east(e);
         Fraction W          = west;
         Fraction E          = east;
 
@@ -146,7 +149,7 @@ void Reduced::correctWestEast(Longitude& w, Longitude& e) const {
             ASSERT(Ni >= 2);
             if (NiTried.insert(Ni).second) {
 
-                Fraction inc = Longitude::GLOBE.fraction() / Ni;
+                Fraction inc = globe / Ni;
 
                 Fraction::value_type Nw = (west / inc).integralPart();
                 if (Nw * inc < west) {
@@ -159,8 +162,8 @@ void Reduced::correctWestEast(Longitude& w, Longitude& e) const {
                 }
 
                 if (Nw <= Ne) {
-                    ASSERT(w <= Longitude(Nw * inc));
-                    ASSERT(Longitude(Ne * inc) <= e);
+                    ASSERT(w <= Fraction(Nw * inc));
+                    ASSERT(Fraction(Ne * inc) <= e);
 
                     if (W > double(Nw * inc) || first) {
                         W = Nw * inc;
@@ -195,7 +198,7 @@ eckit::Fraction Reduced::getSmallestIncrement() const {
     auto maxpl     = *std::max_element(pl.begin() + distance_t(k_), pl.begin() + distance_t(k_ + Nj_));
     ASSERT(maxpl >= 2);
 
-    return Longitude::GLOBE.fraction() / maxpl;
+    return {360, maxpl};
 }
 
 
@@ -227,7 +230,7 @@ std::vector<long> Reduced::pls(const std::string& name) {
 }
 
 
-void Reduced::setNj(std::vector<long> pl, const Latitude& s, const Latitude& n) {
+void Reduced::setNj(std::vector<long> pl, double s, double n) {
     ASSERT(0 < N_ && N_ * 2 == pl.size());
 
     // position to first latitude and first/last longitude
@@ -241,11 +244,10 @@ void Reduced::setNj(std::vector<long> pl, const Latitude& s, const Latitude& n) 
     if (n < lats.front() || s > lats.back()) {
         Nj_ = 0;
         for (const auto& lat : lats) {
-            Latitude ll(lat);
-            if (n < ll && !angleApproximatelyEqual(n, ll)) {
+            if (n < lat && !angleApproximatelyEqual(n, lat)) {
                 ++k_;
             }
-            else if (s < ll || angleApproximatelyEqual(s, ll)) {
+            else if (s < lat || angleApproximatelyEqual(s, lat)) {
                 ASSERT(pl[k_ + Nj_] >= 2);
                 ++Nj_;
             }
@@ -281,6 +283,8 @@ void Reduced::fillGrib(grib_info& info) const {
 
 
 std::vector<util::GridBox> Reduced::gridBoxes() const {
+    using eckit::Fraction;
+
     ASSERT(1 <= Nj_);
 
 
@@ -288,9 +292,9 @@ std::vector<util::GridBox> Reduced::gridBoxes() const {
     std::vector<double> latEdges = calculateUnrotatedGridBoxLatitudeEdges();
 
     const auto dom   = domain();
-    const auto north = dom.north().value();
+    const auto north = dom.north();
     const auto west  = dom.west();
-    const auto south = dom.south().value();
+    const auto south = dom.south();
     const auto east  = dom.east();
 
     const auto periodic = isPeriodicWestEast();
@@ -304,7 +308,7 @@ std::vector<util::GridBox> Reduced::gridBoxes() const {
 
     for (size_t j = k_; j < k_ + Nj_; ++j) {
         ASSERT(pl[j] > 0);
-        const auto inc = eckit::Fraction(360, pl[j]);
+        const Fraction inc(360, pl[j]);
 
         // latitude edges
         const auto n = includesNorthPole() ? latEdges[j] : std::min(north, latEdges[j]);
@@ -312,13 +316,13 @@ std::vector<util::GridBox> Reduced::gridBoxes() const {
         ASSERT(n >= s);
 
         // longitude edges
-        const auto w = west.fraction();
+        const Fraction w(west);
         auto Nw      = (w / inc).integralPart();
         if (Nw * inc < w) {
             Nw += 1;
         }
 
-        const auto e = east.fraction();
+        const Fraction e(east);
         auto Ne      = (e / inc).integralPart();
         if (Ne * inc > e) {
             Ne -= 1;
@@ -326,26 +330,26 @@ std::vector<util::GridBox> Reduced::gridBoxes() const {
 
         const auto N = std::min(static_cast<size_t>(pl[j]), static_cast<size_t>(Ne - Nw + 1));
 
-        Longitude lon0 = (Nw * inc) - (inc / 2);
-        Longitude lon1 = lon0;
+        auto lon0 = (Nw * inc) - (inc / 2);
+        auto lon1 = lon0;
 
         if (periodic) {
             for (size_t i = 0; i < N; ++i) {
-                auto w = lon1.value();
+                auto w = static_cast<double>(lon1);
                 lon1 += inc;
-                r.emplace_back(n, w, s, lon1.value());
+                r.emplace_back(n, w, s, static_cast<double>(lon1));
             }
 
-            ASSERT(lon0 == lon1.normalise(lon0));
+            ASSERT(lon0 == PointLonLat::normalise_angle_to_minimum(lon1, lon0));
         }
         else {
             for (size_t i = 0; i < N; ++i) {
-                auto w = std::max(west.value(), lon1.value());
+                auto w = std::max(west, static_cast<double>(lon1));
                 lon1 += inc;
-                r.emplace_back(n, w, s, std::min(east.value(), lon1.value()));
+                r.emplace_back(n, w, s, std::min(east, static_cast<double>(lon1)));
             }
 
-            ASSERT(lon0 <= lon1.normalise(lon0));
+            ASSERT(lon0 <= PointLonLat::normalise_angle_to_minimum(lon1, lon0));
         }
     }
 
@@ -369,8 +373,8 @@ size_t Reduced::frame(MIRValuesVector& values, size_t size, double missingValue)
 
     std::map<size_t, size_t> shape;
 
-    Latitude prev_lat  = std::numeric_limits<double>::max();
-    Longitude prev_lon = -std::numeric_limits<double>::max();
+    auto prev_lat = std::numeric_limits<double>::max();
+    auto prev_lon = -std::numeric_limits<double>::max();
 
     size_t rows  = 0;
     size_t dummy = 0;  // Used to keep static analyser quiet
@@ -385,17 +389,17 @@ size_t Reduced::frame(MIRValuesVector& values, size_t size, double missingValue)
     for (const std::unique_ptr<Iterator> it(iterator()); it->next();) {
         const auto& p = it->pointUnrotated();
 
-        if (p.lat() != prev_lat) {
-            ASSERT(p.lat() < prev_lat);  // Assumes scanning mode
-            prev_lat = p.lat();
+        if (p.lat != prev_lat) {
+            ASSERT(p.lat < prev_lat);  // Assumes scanning mode
+            prev_lat = p.lat;
             prev_lon = std::numeric_limits<double>::lowest();
 
             col    = &shape[rows++];
             (*col) = 0;
         }
 
-        ASSERT(p.lon() > prev_lon);  // Assumes scanning mode
-        prev_lon = p.lon();
+        ASSERT(p.lon > prev_lon);  // Assumes scanning mode
+        prev_lon = p.lon;
         (*col)++;
     }
 
@@ -431,7 +435,6 @@ size_t Reduced::numberOfPoints() const {
 
 
 bool Reduced::getLongestElementDiagonal(double& d) const {
-
     // Look for a majorant of all element diagonals, using the difference of
     // latitudes closest/furthest from equator and longitude furthest from
     // Greenwich
@@ -441,16 +444,16 @@ bool Reduced::getLongestElementDiagonal(double& d) const {
 
     d = 0.;
     for (size_t j = k_ + 1; j < k_ + Nj_; ++j) {
+        auto l1(lats[j - 1]);
+        auto l2(lats[j]);
 
-        Latitude l1(lats[j - 1]);
-        Latitude l2(lats[j]);
+        const eckit::Fraction we(360, std::min(pl[j - 1], pl[j]));
 
-        const eckit::Fraction we = Longitude::GLOBE.fraction() / (std::min(pl[j - 1], pl[j]));
-        auto& latAwayFromEquator(std::abs(l1.value()) > std::abs(l2.value()) ? l1 : l2);
-        auto& latCloserToEquator(std::abs(l1.value()) > std::abs(l2.value()) ? l2 : l1);
+        auto& latAwayFromEquator(std::abs(l1) > std::abs(l2) ? l1 : l2);
+        auto& latCloserToEquator(std::abs(l1) > std::abs(l2) ? l2 : l1);
 
-        d = std::max(d, util::Earth::distance(atlas::PointLonLat(0., latCloserToEquator.value()),
-                                              atlas::PointLonLat(we, latAwayFromEquator.value())));
+        d = std::max(d,
+                     util::Earth::distance(PointLonLat(0., latCloserToEquator), PointLonLat(we, latAwayFromEquator)));
     }
 
     ASSERT(d > 0.);
@@ -459,13 +462,15 @@ bool Reduced::getLongestElementDiagonal(double& d) const {
 
 
 util::BoundingBox Reduced::extendBoundingBox(const util::BoundingBox& bbox) const {
+    using eckit::Fraction;
 
     // adjust West/East to include bbox's West/East
-    Longitude w = bbox.west();
-    Longitude e = bbox.east();
+    auto w = bbox.west();
+    auto e = bbox.east();
     {
-        const auto west = bbox.west().fraction();
-        const auto east = bbox.east().fraction();
+        Fraction globe(360, 1);
+        Fraction west(w);
+        Fraction east(e);
 
         bool first = true;
         std::set<long> NiTried;
@@ -478,15 +483,15 @@ util::BoundingBox Reduced::extendBoundingBox(const util::BoundingBox& bbox) cons
             if (NiTried.insert(Ni).second) {
 
                 ASSERT(Ni >= 2);
-                auto inc = Longitude::GLOBE.fraction() / Ni;
+                auto inc = Fraction(360, Ni);
 
                 auto Nw = (west / inc).integralPart() - 1;
                 auto Ne = (east / inc).integralPart() + 1;
 
-                if (w > Longitude(Nw * inc) || first) {
+                if (w > Fraction(Nw * inc) || first) {
                     w = Nw * inc;
                 }
-                if (e < Longitude(Ne * inc) || first) {
+                if (e < Fraction(Ne * inc) || first) {
                     e = Ne * inc;
                 }
                 first = false;
@@ -497,11 +502,11 @@ util::BoundingBox Reduced::extendBoundingBox(const util::BoundingBox& bbox) cons
 
         long NiMax = *std::max_element(NiTried.begin(), NiTried.end());
         ASSERT(NiMax > 0);
-        auto inc = Longitude::GLOBE.fraction() / NiMax;
+        auto inc = Fraction(360, NiMax);
 
-        if (e - w + inc >= Longitude::GLOBE) {
+        if (e - w + inc >= globe) {
             w = 0;
-            e = Longitude::GLOBE;
+            e = globe;
         }
 
         ASSERT(w < e);
@@ -509,8 +514,8 @@ util::BoundingBox Reduced::extendBoundingBox(const util::BoundingBox& bbox) cons
 
 
     // adjust South/North to include bbox's South/North ('outwards')
-    Latitude s = bbox.south();
-    Latitude n = bbox.north();
+    auto s = bbox.south();
+    auto n = bbox.north();
     correctSouthNorth(s, n, false);
 
 
@@ -523,8 +528,8 @@ util::BoundingBox Reduced::extendBoundingBox(const util::BoundingBox& bbox) cons
 
 
 bool Reduced::isPeriodicWestEast() const {
-    eckit::Fraction inc = getSmallestIncrement();
-    return bbox_.east() - bbox_.west() + inc >= Longitude::GLOBE;
+    auto inc = getSmallestIncrement();
+    return bbox_.east() - bbox_.west() + inc >= PointLonLat::FULL_ANGLE;
 }
 
 

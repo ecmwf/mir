@@ -171,7 +171,7 @@ bool MethodWeighted::sameAs(const Method& other) const {
 
     const auto* o = dynamic_cast<const MethodWeighted*>(&other);
     return (o != nullptr) && (lsmWeightAdjustment_ == o->lsmWeightAdjustment_) && (pruneEpsilon_ == o->pruneEpsilon_) &&
-           Latitude(poleDisplacement_) == Latitude(o->poleDisplacement_) &&
+           eckit::types::is_approximately_equal(poleDisplacement_, o->poleDisplacement_) &&
            (sameNonLinearities(nonLinear_, o->nonLinear_)) && solver().sameAs(o->solver()) &&
            lsm::LandSeaMasks::sameLandSeaMasks(parametrisation_, o->parametrisation_) && cropping_.sameAs(o->cropping_);
 }

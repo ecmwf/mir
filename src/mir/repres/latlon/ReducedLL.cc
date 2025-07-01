@@ -26,6 +26,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Earth.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/GridBox.h"
 #include "mir/util/MeshGeneratorParameters.h"
@@ -86,26 +87,26 @@ bool ReducedLL::getLongestElementDiagonal(double& d) const {
     ASSERT(pl_.size() >= 2);
     const size_t Dj(pl_.size() - 1);
     ASSERT(Dj > 0);
-    const eckit::Fraction sn(((dom.north() - dom.south()).fraction()) / Dj);
+    const double sn(eckit::Fraction(dom.north() - dom.south()) / Dj);
 
     d = 0.;
-    Latitude lat1(dom.north());
-    Latitude lat2(dom.north() - sn);
+    double lat1(dom.north());
+    double lat2(dom.north() - sn);
 
     for (size_t j = 1; j < pl_.size(); ++j) {
 
         const long Di(std::min(pl_[j - 1], pl_[j]) - (periodic ? 0 : 1));
         ASSERT(Di > 0);
-        const eckit::Fraction we((dom.east() - dom.west()).fraction() / Di);
+        const eckit::Fraction we(eckit::Fraction(dom.east() - dom.west()) / Di);
 
-        auto& latAwayFromEquator(std::abs(lat1.value()) > std::abs(lat2.value()) ? lat1 : lat2);
-        auto& latCloserToEquator(std::abs(lat1.value()) > std::abs(lat2.value()) ? lat2 : lat1);
+        auto& latAwayFromEquator(std::abs(lat1) > std::abs(lat2) ? lat1 : lat2);
+        auto& latCloserToEquator(std::abs(lat1) > std::abs(lat2) ? lat2 : lat1);
 
-        d = std::max(d, util::Earth::distance(atlas::PointLonLat(0., latCloserToEquator.value()),
-                                              atlas::PointLonLat(we, latAwayFromEquator.value())));
+        d = std::max(d,
+                     util::Earth::distance(PointLonLat(0., latCloserToEquator), PointLonLat(we, latAwayFromEquator)));
 
         lat1 = lat2;
-        lat2 -= sn;
+        lat2 -= sn;  // (note: accumulates error)
     }
 
     ASSERT(d > 0.);
@@ -133,8 +134,8 @@ atlas::Grid ReducedLL::atlasGrid() const {
     const util::Domain dom = domain();
     auto N                 = long(pl_.size());
 
-    atlas::StructuredGrid::XSpace xspace({{dom.west().value(), dom.east().value()}}, pl_, !dom.isPeriodicWestEast());
-    atlas::StructuredGrid::YSpace yspace(atlas::grid::LinearSpacing({{dom.north().value(), dom.south().value()}}, N));
+    atlas::StructuredGrid::XSpace xspace({{dom.west(), dom.east()}}, pl_, !dom.isPeriodicWestEast());
+    atlas::StructuredGrid::YSpace yspace(atlas::grid::LinearSpacing({{dom.north(), dom.south()}}, N));
 
     return atlas::StructuredGrid(xspace, yspace);
 #else
@@ -146,10 +147,10 @@ void ReducedLL::fillMeshGen(util::MeshGeneratorParameters& params) const {
     if (params.meshGenerator_.empty()) {
         params.meshGenerator_ = "structured";
     }
-    if (boundingBox().south() > Latitude::EQUATOR) {
+    if (boundingBox().south() > 0) {
         params.set("force_include_south_pole", true);
     }
-    if (boundingBox().north() < Latitude::EQUATOR) {
+    if (boundingBox().north() < 0) {
         params.set("force_include_north_pole", true);
     }
 }
@@ -162,15 +163,15 @@ bool ReducedLL::isPeriodicWestEast() const {
 
     // if range West-East is within one increment (or greater than) 360 degree
     const eckit::Fraction inc(360, maxpl);
-    return bbox_.east() - bbox_.west() + inc >= Longitude::GLOBE;
+    return bbox_.east() - bbox_.west() + inc >= PointLonLat::FULL_ANGLE;
 }
 
 bool ReducedLL::includesNorthPole() const {
-    return bbox_.north() == Latitude::NORTH_POLE;
+    return PointLonLat(0, bbox_.north()).north_pole();
 }
 
 bool ReducedLL::includesSouthPole() const {
-    return bbox_.south() == Latitude::SOUTH_POLE;
+    return PointLonLat(0, bbox_.south()).south_pole();
 }
 
 void ReducedLL::validate(const MIRValuesVector& values) const {
@@ -207,12 +208,14 @@ class ReducedLLIterator : public Iterator {
             << ",count=" << count_ << "]";
     }
 
-    bool next(Latitude& lat, Longitude& lon) override {
+    PointLonLat next(bool& valid) override {
         while (j_ < nj_ && i_ < ni_) {
-            lat = latitude_;
-            lon = longitude_;
+            first_ = false;
 
-            bool contains = domain_.contains(lat, lon);
+            PointLonLat p(latitude_, longitude_);
+
+            bool contains = domain_.contains(p);
+
             if (contains && !first_) {
                 count_++;
             }
@@ -234,11 +237,13 @@ class ReducedLLIterator : public Iterator {
             }
 
             if (contains) {
-                first_ = false;
-                return true;
+                valid = true;
+                return p;
             }
         }
-        return false;
+
+        valid = false;
+        return {};
     }
 
     size_t index() const override { return count_; }
@@ -248,10 +253,10 @@ public:
         pl_(pl),
         nj_(pl.size()),
         domain_(dom),
-        west_(domain_.west().fraction()),
-        ew_((domain_.east() - domain_.west()).fraction()),
-        inc_north_south_((domain_.north() - domain_.south()).fraction() / eckit::Fraction(nj_ - 1)),
-        latitude_(domain_.north().fraction()),
+        west_(domain_.west()),
+        ew_(domain_.east() - domain_.west()),
+        inc_north_south_(eckit::Fraction(domain_.north() - domain_.south()) / eckit::Fraction(nj_ - 1)),
+        latitude_(domain_.north()),
         longitude_(west_),
         i_(0),
         j_(0),
@@ -282,7 +287,7 @@ std::vector<util::GridBox> ReducedLL::gridBoxes() const {
     const auto periodic = isPeriodicWestEast();
 
     auto Nj                  = pl_.size();
-    const eckit::Fraction sn = (north - south).fraction() / eckit::Fraction(Nj - 1);
+    const auto sn            = eckit::Fraction(north - south) / eckit::Fraction(Nj - 1);
     eckit::Fraction half(1, 2);
 
 
@@ -295,19 +300,19 @@ std::vector<util::GridBox> ReducedLL::gridBoxes() const {
     std::vector<double> latEdges(Nj + 1);
 
     auto lat0   = bbox_.north();
-    latEdges[0] = (lat0 + sn / 2).value();
+    latEdges[0] = (lat0 + sn / 2);
     for (size_t j = 0; j < Nj; ++j) {
-        latEdges[j + 1] = (lat0 - (j + half) * sn).value();
+        latEdges[j + 1] = (lat0 - (j + half) * sn);
     }
 
-    latEdges.front() = std::min(north.value(), std::max(south.value(), latEdges.front()));
+    latEdges.front() = std::min(north, std::max(south, latEdges.front()));
     if (dom.includesPoleNorth()) {
-        latEdges.front() = Latitude::NORTH_POLE.value();
+        latEdges.front() = PointLonLat::RIGHT_ANGLE;
     }
 
-    latEdges.back() = std::min(north.value(), std::max(south.value(), latEdges.back()));
+    latEdges.back() = std::min(north, std::max(south, latEdges.back()));
     if (dom.includesPoleSouth()) {
-        latEdges.back() = Latitude::SOUTH_POLE.value();
+        latEdges.back() = -PointLonLat::RIGHT_ANGLE;
     }
 
 
@@ -316,29 +321,29 @@ std::vector<util::GridBox> ReducedLL::gridBoxes() const {
         // longitude edges
         auto Ni = pl_[j];
         ASSERT(Ni > 1);
-        const eckit::Fraction we = (east - west).fraction() / (periodic ? Ni : Ni - 1);
+        const auto we = eckit::Fraction(east - west) / (periodic ? Ni : Ni - 1);
 
         auto lon0 = west - we / 2;
         auto lon1 = lon0;
 
         if (periodic) {
             for (long i = 0; i < Ni; ++i) {
-                auto w = lon1.value();
+                auto w = static_cast<double>(lon1);
                 lon1 += we;
-                r.emplace_back(latEdges[j], w, latEdges[j + 1], lon1.value());
+                r.emplace_back(latEdges[j], w, latEdges[j + 1], static_cast<double>(lon1));
             }
 
-            ASSERT(lon0 == lon1.normalise(lon0));
+            ASSERT(lon0 == PointLonLat::normalise_angle_to_minimum(lon1, lon0));
         }
         else {
             for (long i = 0; i < Ni; ++i) {
-                auto w = std::max(west.value(), lon1.value());
+                auto w = std::max(west, static_cast<double>(lon1));
                 lon1 += we;
-                auto e = std::min(east.value(), lon1.value());
+                auto e = std::min(east, static_cast<double>(lon1));
                 r.emplace_back(latEdges[j], w, latEdges[j + 1], e);
             }
 
-            ASSERT(lon0 <= lon1.normalise(lon0));
+            ASSERT(lon0 <= PointLonLat::normalise_angle_to_minimum(lon1, lon0));
         }
     }
 

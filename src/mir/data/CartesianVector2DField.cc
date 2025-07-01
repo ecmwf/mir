@@ -61,7 +61,7 @@ void CartesianVector2DField::rotate(const util::Rotation& rotation, MIRValuesVec
     // https://en.wikipedia.org/wiki/Spherical_law_of_cosines
     // NOTE: uses spherical (not geodetic) coordinates: C = θ = π / 2 - latitude
     ASSERT(rotation.south_pole_rotation_angle() == 0.);  // For now
-    const double C     = util::degree_to_radian(90. - rotation.south_pole_latitude().value());
+    const double C     = util::degree_to_radian(90. - rotation.south_pole_latitude());
     const double cos_C = std::cos(C);
     const double sin_C = std::sin(C);
 
@@ -74,9 +74,9 @@ void CartesianVector2DField::rotate(const util::Rotation& rotation, MIRValuesVec
             continue;
         }
 
-        const LongitudeDouble lonRotated = rotation.south_pole_longitude().value() - (*(*it))[1];
-        const double lon_rotated         = lonRotated.normalise(LongitudeDouble::MINUS_DATE_LINE).value();
-        const double lon_unrotated       = it->pointUnrotated().lon().value();
+        const double lonRotated    = rotation.south_pole_longitude() - (*(*it)).lon;
+        const double lon_rotated   = PointLonLat::normalise_angle_to_minimum(lonRotated, -PointLonLat::FLAT_ANGLE);
+        const double lon_unrotated = it->pointUnrotated().lon;
 
         const double a = util::degree_to_radian(lon_rotated);
         const double b = util::degree_to_radian(lon_unrotated);

@@ -29,14 +29,14 @@ Octahedral::Octahedral(size_t N, const util::BoundingBox& bbox, double angularPr
     Reduced(N, bbox, angularPrecision) {
 
     // adjust latitudes, longitudes and re-set bounding box
-    Latitude n = bbox.north();
-    Latitude s = bbox.south();
+    auto n = bbox.north();
+    auto s = bbox.south();
     correctSouthNorth(s, n);
 
     setNj(pls("O" + std::to_string(N_)), s, n);
 
-    Longitude w = bbox.west();
-    Longitude e = bbox.east();
+    auto w = bbox.west();
+    auto e = bbox.east();
     correctWestEast(w, e);
 
     auto old(bbox_);

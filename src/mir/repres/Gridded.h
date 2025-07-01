@@ -12,6 +12,10 @@
 
 #pragma once
 
+#include <memory>
+
+#include "eckit/geo/Grid.h"
+
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
 
@@ -70,10 +74,12 @@ protected:
     util::BoundingBox bbox_;
 
     // -- Methods
-    // None
+
+    void setGrid(const eckit::geo::Grid*);
 
     // -- Overridden methods
 
+    const eckit::geo::Grid& grid() const override;
     util::Domain domain() const override;
     const util::BoundingBox& boundingBox() const override;
     bool getLongestElementDiagonal(double&) const override;
@@ -88,7 +94,8 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    std::unique_ptr<const eckit::geo::Grid> grid_;
 
     // -- Methods
     // None

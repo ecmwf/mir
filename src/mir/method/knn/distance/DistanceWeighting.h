@@ -16,12 +16,18 @@
 
 #include "mir/method/WeightMatrix.h"
 #include "mir/search/PointSearch.h"
+#include "mir/util/Types.h"
 
 
 namespace eckit {
 class JSON;
 class MD5;
 }  // namespace eckit
+
+
+namespace mir::param {
+class MIRParametrisation;
+}  // namespace mir::param
 
 
 namespace mir::method::knn::distance {
@@ -39,7 +45,7 @@ public:
 
     virtual ~DistanceWeighting();
 
-    virtual void operator()(size_t ip, const Point3& point,
+    virtual void operator()(size_t ip, const PointXYZ& point,
                             const std::vector<search::PointSearch::PointValueType>& neighbours,
                             std::vector<WeightMatrix::Triplet>& triplets) const = 0;
 

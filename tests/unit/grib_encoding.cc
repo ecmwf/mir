@@ -10,6 +10,7 @@
  */
 
 
+#include <cmath>
 #include <memory>
 #include <string>
 #include <vector>
@@ -186,8 +187,8 @@ public:
         for (double lat, lon, value; grib_iterator_next(iter_g, &lat, &lon, &value) != 0; ++n) {
             ASSERT(iter_m->next());
 
-            double dlat = mir::Latitude(iter_m->pointRotated()[0]).distance(lat).value();
-            double dlon = mir::LongitudeDouble(iter_m->pointRotated()[1]).distance(lon).value();
+            auto dlat = std::abs(iter_m->pointRotated().lat - lat);
+            auto dlon = std::abs(iter_m->pointRotated().lon - lon);
 
             if (dlat > toleranceLat || dlon > toleranceLon) {
                 return false;
@@ -285,7 +286,7 @@ public:
         grib_get_long(gribHandle(edition), "Ni", &n);
 
         ASSERT(n > 0);
-        return size_t(n);
+        return static_cast<size_t>(n);
     }
 
     size_t NjEncodedInGrib(long edition) {
@@ -295,7 +296,7 @@ public:
         grib_get_long(gribHandle(edition), "Nj", &n);
 
         ASSERT(n > 0);
-        return size_t(n);
+        return static_cast<size_t>(n);
     }
 };
 

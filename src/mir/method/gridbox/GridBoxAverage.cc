@@ -28,7 +28,6 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/GridBox.h"
 #include "mir/util/Log.h"
-#include "mir/util/Point2ToPoint3.h"
 #include "mir/util/Trace.h"
 
 
@@ -91,30 +90,24 @@ void GridBoxAverage::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, 
     const GridBoxes outBoxes(out);
     const auto R = inBoxes.getLongestGridBoxDiagonal() + outBoxes.getLongestGridBoxDiagonal();
 
-    util::Point2ToPoint3 point3(in, poleDisplacement());
-
     size_t nbFailures = 0;
-    std::forward_list<std::pair<size_t, PointLatLon>> failures;
+    std::forward_list<std::pair<size_t, PointLonLat>> failures;
 
 
     // set input k-d tree for grid boxes indices
-    std::unique_ptr<search::PointSearch> tree;
-    {
-        trace::ResourceUsage usage("GridBoxMethod::assemble create k-d tree");
-        tree = std::make_unique<search::PointSearch>(parametrisation_, in);
-    }
+    search::PointSearch tree(in, parametrisation_);
 
     {
         trace::ProgressTimer progress("Intersecting", outBoxes.size(), gridBoxes);
 
         for (const std::unique_ptr<repres::Iterator> it(out.iterator()); it->next();) {
             if (++progress) {
-                log << *tree << std::endl;
+                log << tree << std::endl;
             }
 
 
             // lookup
-            tree->closestWithinRadius(point3(*(*it)), R, closest);
+            tree.closestWithinRadius(*(*it), R, closest);
             ASSERT(!closest.empty());
 
 

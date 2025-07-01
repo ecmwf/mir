@@ -72,8 +72,7 @@ size_t GriddefOutput::save(const param::MIRParametrisation& param, context::Cont
 
         for (std::unique_ptr<repres::Iterator> it{repres->iterator()}; it->next();) {
             const auto& p = **it;
-            s << p[0];  // latitude
-            s << p[1];  // longitude
+            s << p.lat << p.lon;
         }
 
         s.close();
@@ -84,7 +83,7 @@ size_t GriddefOutput::save(const param::MIRParametrisation& param, context::Cont
 
         for (std::unique_ptr<repres::Iterator> it{repres->iterator()}; it->next();) {
             const auto& p = **it;
-            out << p[0] << ' ' << p[1] << '\n';
+            out << p.lon << ' ' << p.lat << '\n';
         }
     }
 

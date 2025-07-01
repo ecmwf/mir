@@ -12,6 +12,8 @@
 
 #pragma once
 
+#include "eckit/types/Fraction.h"
+
 #include "mir/repres/gauss/Gaussian.h"
 
 
@@ -60,7 +62,7 @@ public:
 protected:
     // -- Constructors
 
-    Reduced(size_t N, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
+    explicit Reduced(size_t N, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
 
     // -- Members
 
@@ -74,8 +76,8 @@ protected:
 
     const std::vector<long>& pls() const;
 
-    void setNj(std::vector<long>, const Latitude& s, const Latitude& n);
-    void correctWestEast(Longitude& w, Longitude& e) const;
+    void setNj(std::vector<long>, double s, double n);
+    void correctWestEast(double& w, double& e) const;
 
     // -- Overridden methods
 

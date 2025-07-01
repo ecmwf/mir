@@ -74,7 +74,6 @@ protected:
 
     // -- Methods
 
-    const ::atlas::RegularGrid& grid() const { return grid_; }
     const LinearSpacing& x() const { return x_; }
     const LinearSpacing& y() const { return y_; }
     const util::Shape& shape() const { return shape_; }

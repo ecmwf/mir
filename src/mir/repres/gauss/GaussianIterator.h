@@ -37,7 +37,7 @@ private:
     size_t Ni_;
     size_t Nj_;
     eckit::Fraction lon_;
-    Latitude lat_;
+    double lat_;
     eckit::Fraction inc_;
     size_t i_;
     size_t j_;
@@ -47,7 +47,7 @@ private:
 
 protected:
     void print(std::ostream&) const override;
-    bool next(Latitude&, Longitude&) override;
+    PointLonLat next(bool&) override;
     size_t index() const override;
     size_t resetToRow(size_t j);
 };

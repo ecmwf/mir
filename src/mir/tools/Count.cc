@@ -12,6 +12,7 @@
 
 #include "mir/tools/Count.h"
 
+#include <cmath>
 #include <memory>
 
 #include "eckit/log/JSON.h"
@@ -71,21 +72,23 @@ void Count::reset() {
 }
 
 
-void Count::count(const PointLatLon& point) {
+void Count::count(const PointLonLat& point) {
     countTotal_++;
 
-    nn_.insert(DistanceLat(bbox_.north().distance(point.lat()), point.lat()));
-    ss_.insert(DistanceLat(bbox_.south().distance(point.lat()), point.lat()));
+    auto distance = [](double a, double b) {
+        return std::abs(PointLonLat::normalise_angle_to_minimum(a - b, -PointLonLat::FLAT_ANGLE));
+    };
 
-    ee_.insert(DistanceLon(bbox_.east().distance(point.lon()), point.lon()));
-    ww_.insert(DistanceLon(bbox_.west().distance(point.lon()), point.lon()));
+    nn_.emplace(distance(bbox_.north(), point.lat), point.lat);
+    ss_.emplace(distance(bbox_.south(), point.lat), point.lat);
+    ee_.emplace(distance(bbox_.east(), point.lon), point.lon);
+    ww_.emplace(distance(bbox_.west(), point.lon), point.lon);
 
     // Log::info() << point.lat << " " << point.lon << " => " << bbox.contains(point.lat, point.lon) << std::endl;
 
     if (bbox_.contains(point)) {
-
-        const Latitude& lat = point.lat();
-        const Longitude lon = point.lon().normalise(bbox_.west());
+        double lat = point.lat;
+        double lon = PointLonLat::normalise_angle_to_minimum(point.lon, bbox_.west());
 
         if (first_) {
             n_ = s_ = lat;
@@ -143,35 +146,35 @@ void Count::json(eckit::JSON& j, bool enclose) const {
 
     j << "point";
     j.startObject();
-    j << "n" << n_.value();
-    j << "w" << w_.value();
-    j << "s" << s_.value();
-    j << "e" << e_.value();
+    j << "n" << n_;
+    j << "w" << w_;
+    j << "s" << s_;
+    j << "e" << e_;
     j.endObject();
 
     j << "bbox";
     j.startObject();
-    j << "n" << bbox_.north().value();
-    j << "w" << bbox_.west().value();
-    j << "s" << bbox_.south().value();
-    j << "e" << bbox_.east().value();
+    j << "n" << bbox_.north();
+    j << "w" << bbox_.west();
+    j << "s" << bbox_.south();
+    j << "e" << bbox_.east();
     j.endObject();
 
     j << "distance_to_bbox";
     j.startObject();
-    j << "n" << (bbox_.north() - n_).value();
-    j << "w" << (w_ - bbox_.west()).value();
-    j << "s" << (s_ - bbox_.south()).value();
-    j << "e" << (bbox_.east() - e_).value();
+    j << "n" << (bbox_.north() - n_);
+    j << "w" << (w_ - bbox_.west());
+    j << "s" << (s_ - bbox_.south());
+    j << "e" << (bbox_.east() - e_);
     j.endObject();
 
     if (!nn_.empty() && !ww_.empty() && !ss_.empty() && !ee_.empty()) {
         j << "distance_to_closest";
         j.startObject();
-        j << "n" << (nn_.begin()->first).value();
-        j << "w" << (ww_.begin()->first).value();
-        j << "s" << (ss_.begin()->first).value();
-        j << "e" << (ee_.begin()->first).value();
+        j << "n" << (nn_.begin()->first);
+        j << "w" << (ww_.begin()->first);
+        j << "s" << (ss_.begin()->first);
+        j << "e" << (ee_.begin()->first);
         j.endObject();
     }
 

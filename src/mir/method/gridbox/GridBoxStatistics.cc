@@ -28,7 +28,6 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/GridBox.h"
 #include "mir/util/Log.h"
-#include "mir/util/Point2ToPoint3.h"
 #include "mir/util/Trace.h"
 
 
@@ -89,41 +88,27 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
 
     const GridBoxes outBoxes(out);
 
-    util::Point2ToPoint3 point3(in, poleDisplacement());
-
     size_t nbFailures = 0;
-    std::forward_list<std::pair<size_t, PointLatLon>> failures;
+    std::forward_list<std::pair<size_t, PointLonLat>> failures;
 
 
     // set input k-d tree for grid boxes indices
-    std::unique_ptr<search::PointSearch> tree;
-    {
-        trace::ResourceUsage usage("GridBoxStatistics::assemble create k-d tree");
-        tree = std::make_unique<search::PointSearch>(parametrisation_, in);
-    }
+    search::PointSearch tree(in, parametrisation_);
 
     {
         trace::ProgressTimer progress("Containing", outBoxes.size(), boxes);
 
         const auto R = outBoxes.getLongestGridBoxDiagonal();
 
-        auto point_2D = [](const Point3& point) -> Point2 {
-            atlas::PointLonLat pll;
-            util::Earth::convertCartesianToSpherical(point, pll);
-
-            // notice the order
-            return {pll[1], pll[0]};
-        };
-
         for (size_t i = 0; i < outBoxes.size(); ++i) {
             if (++progress) {
-                log << *tree << std::endl;
+                log << tree << std::endl;
             }
 
 
             // lookup
             const auto& box = outBoxes[i];
-            tree->closestWithinRadius(point3(box.centre()), R, closest);
+            tree.closestWithinRadius(box.centre(), R, closest);
             if (closest.empty()) {
                 continue;
             }
@@ -132,7 +117,7 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
             // calculate grid box contains
             std::vector<size_t> js;
             for (auto& c : closest) {
-                if (box.contains(point_2D(c.point()))) {
+                if (box.contains(tree.to_lonlat(c.point().to_xyz()))) {
                     js.emplace_back(c.payload());
                 }
             }

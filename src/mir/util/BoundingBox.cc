@@ -36,21 +36,21 @@ static double get(const param::MIRParametrisation& param, const char* key) {
 
 
 BoundingBox::BoundingBox() :
-    north_(Latitude::NORTH_POLE), west_(Longitude::GREENWICH), south_(Latitude::SOUTH_POLE), east_(Longitude::GLOBE) {}
+    north_(eckit::geo::NORTH_POLE.lat), west_(0), south_(eckit::geo::SOUTH_POLE.lat), east_(PointLonLat::FULL_ANGLE) {}
 
 
-BoundingBox::BoundingBox(const Latitude& north, const Longitude& west, const Latitude& south, const Longitude& east) :
+BoundingBox::BoundingBox(double north, double west, double south, double east) :
     north_(north), west_(west), south_(south), east_(east) {
     if (west_ != east_) {
-        auto eastNormalised = east_.normalise(west_);
-        if (eastNormalised == west_) {
-            eastNormalised += Longitude::GLOBE;
+        auto eastNormalised = PointLonLat::normalise_angle_to_minimum(east_, west_);
+        if (eckit::types::is_approximately_equal(eastNormalised, west_)) {
+            eastNormalised += PointLonLat::FULL_ANGLE;
         }
         east_ = eastNormalised;
     }
 
-    ASSERT(west_ <= east_ && east_ <= west_ + Longitude::GLOBE);
-    ASSERT(Latitude::SOUTH_POLE <= south_ && south_ <= north_ && north_ <= Latitude::NORTH_POLE);
+    ASSERT(west_ <= east_ && east_ <= west_ + PointLonLat::FULL_ANGLE);
+    ASSERT(eckit::geo::SOUTH_POLE.lat <= south_ && south_ <= north_ && north_ <= eckit::geo::NORTH_POLE.lat);
 }
 
 
@@ -58,18 +58,9 @@ BoundingBox::BoundingBox(const param::MIRParametrisation& param) :
     BoundingBox(get(param, "north"), get(param, "west"), get(param, "south"), get(param, "east")) {}
 
 
-BoundingBox::BoundingBox(const BoundingBox&) = default;
-
-
 bool BoundingBox::operator==(const BoundingBox& other) const {
     return (north_ == other.north_) && (south_ == other.south_) && (west_ == other.west_) && (east_ == other.east_);
 }
-
-
-BoundingBox& BoundingBox::operator=(const BoundingBox& other) = default;
-
-
-BoundingBox::~BoundingBox() = default;
 
 
 void BoundingBox::print(std::ostream& out) const {
@@ -80,10 +71,10 @@ void BoundingBox::print(std::ostream& out) const {
 
 void BoundingBox::fillGrib(grib_info& info) const {
     // Warning: scanning mode not considered
-    info.grid.latitudeOfFirstGridPointInDegrees  = north_.value();
-    info.grid.longitudeOfFirstGridPointInDegrees = west_.value();
-    info.grid.latitudeOfLastGridPointInDegrees   = south_.value();
-    info.grid.longitudeOfLastGridPointInDegrees  = east_.value();
+    info.grid.latitudeOfFirstGridPointInDegrees  = north_;
+    info.grid.longitudeOfFirstGridPointInDegrees = west_;
+    info.grid.latitudeOfLastGridPointInDegrees   = south_;
+    info.grid.longitudeOfLastGridPointInDegrees  = east_;
 
     info.extra_set("expandBoundingBox", 1L);
 }
@@ -98,28 +89,23 @@ void BoundingBox::hash(eckit::MD5& md5) const {
 
 
 void BoundingBox::fillJob(api::MIRJob& job) const {
-    job.set("area", north_.value(), west_.value(), south_.value(), east_.value());
+    job.set("area", north_, west_, south_, east_);
 }
 
 
 bool BoundingBox::isPeriodicWestEast() const {
-    return (west_ != east_) && (west_ == east_.normalise(west_));
+    return (west_ != east_) && (west_ == PointLonLat::normalise_angle_to_minimum(east_, west_));
 }
 
 
-bool BoundingBox::contains(const PointLatLon& p) const {
-    return contains(p.lat(), p.lon());
-}
-
-
-bool BoundingBox::contains(const Point2& p) const {
+bool BoundingBox::contains(const PointLonLat& p) const {
     // notice the order
-    return contains(p[0], p[1]);
+    return contains(p.lat, p.lon);
 }
 
 
-bool BoundingBox::contains(const Latitude& lat, const Longitude& lon) const {
-    return (lat <= north_) && (lat >= south_) && (lon.normalise(west_) <= east_);
+bool BoundingBox::contains(double lat, double lon) const {
+    return (lat <= north_) && (lat >= south_) && (PointLonLat::normalise_angle_to_minimum(lon, west_) <= east_);
 }
 
 
@@ -130,7 +116,8 @@ bool BoundingBox::contains(const BoundingBox& other) const {
     }
 
     // check for West/East range (if non-periodic), then other's corners
-    if (east_ - west_ < other.east() - other.west() || east_ < other.east().normalise(west_)) {
+    if (east_ - west_ < other.east() - other.west() ||
+        east_ < PointLonLat::normalise_angle_to_minimum(other.east_, west_)) {
         return false;
     }
 
@@ -140,9 +127,8 @@ bool BoundingBox::contains(const BoundingBox& other) const {
 
 
 bool BoundingBox::intersects(BoundingBox& other) const {
-
-    Latitude n = std::min(north_, other.north_);
-    Latitude s = std::max(south_, other.south_);
+    auto n = std::min(north_, other.north_);
+    auto s = std::max(south_, other.south_);
 
     bool intersectsSN = s <= n;
     if (!intersectsSN) {
@@ -154,10 +140,10 @@ bool BoundingBox::intersects(BoundingBox& other) const {
         return intersectsSN;
     }
 
-    Longitude w = std::min(west_, other.west_);
-    Longitude e = w;
+    auto w = std::min(west_, other.west_);
+    auto e = w;
 
-    auto intersect = [](const BoundingBox& a, const BoundingBox& b, Longitude& w, Longitude& e) {
+    auto intersect = [](const BoundingBox& a, const BoundingBox& b, double& w, double& e) {
         bool p = a.isPeriodicWestEast();
         if (p || b.isPeriodicWestEast()) {
             w = (p ? b : a).west_;
@@ -165,9 +151,9 @@ bool BoundingBox::intersects(BoundingBox& other) const {
             return true;
         }
 
-        Longitude ref = b.west_.normalise(a.west_);
-        Longitude w_  = std::max(a.west_, ref);
-        Longitude e_  = std::min(a.east_, b.east_.normalise(ref));
+        auto ref = PointLonLat::normalise_angle_to_minimum(b.west_, a.west_);
+        auto w_  = std::max(a.west_, ref);
+        auto e_  = std::min(a.east_, PointLonLat::normalise_angle_to_minimum(b.east_, ref));
 
         if (w_ <= e_) {
             w = w_;
@@ -188,8 +174,7 @@ bool BoundingBox::intersects(BoundingBox& other) const {
 
 
 bool BoundingBox::empty() const {
-    return !eckit::types::is_strictly_greater(north_.value(), south_.value()) ||
-           !eckit::types::is_strictly_greater(east_.value(), west_.value());
+    return !eckit::types::is_strictly_greater(north_, south_) || !eckit::types::is_strictly_greater(east_, west_);
 }
 
 
@@ -197,13 +182,13 @@ void BoundingBox::makeName(std::ostream& out) const {
     out << "-" << north_ << ":" << west_ << ":" << south_ << ":" << east_;
 }
 
-void BoundingBox::json(eckit::JSON& json) const {
-    json.startObject();
-    json << "north" << north_.value();
-    json << "west" << west_.value();
-    json << "south" << south_.value();
-    json << "east" << east_.value();
-    json.endObject();
+void BoundingBox::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "north" << north_;
+    j << "west" << west_;
+    j << "south" << south_;
+    j << "east" << east_;
+    j.endObject();
 }
 
 }  // namespace mir::util

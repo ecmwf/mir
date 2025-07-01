@@ -34,7 +34,6 @@
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/search/PointSearch.h"
 #include "mir/tools/MIRTool.h"
-#include "mir/util/Atlas.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -65,7 +64,8 @@ struct MIRClimateFilter : MIRTool {
             new SimpleOption<bool>("no-backend", "No linear algebra dense backend (minimum memory requirements)"));
         options_.push_back(new FactoryOption<LinearAlgebraDense>(
             "dense-backend", "Linear algebra dense backend (default '" + LinearAlgebraDense::backend().name() + "')"));
-        options_.push_back(new FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
+        options_.push_back(
+            new FactoryOption<eckit::geo::search::TreeFactory>("point-search-trees", "k-d tree control"));
     }
 
     int numberOfPositionalArguments() const override { return 2; }
@@ -164,7 +164,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
 
         // k-d tree
         t = timer.elapsed();
-        search::PointSearch tree(*param, *rep);
+        search::PointSearch tree(*rep, *param);
         log << "k-d tree: " << timer.elapsedSeconds(t) << std::endl;
 
 
@@ -218,8 +218,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
                 // search neighbour points to P (start of j-th row)
                 t = timer.elapsed();
 
-                Point3 P;
-                util::Earth::convertSphericalToCartesian({lon[0], lat[j]}, P);
+                auto P = tree.to_xyz({lon[0], lat[j]});
 
                 std::vector<search::PointSearch::PointValueType> closest;
                 tree.closestWithinRadius(P, distance, closest);
@@ -240,7 +239,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
 
                     double sum = 0.;
                     for (size_t w = 0; w < Nw; ++w) {
-                        auto r = Point3::distance(P, closest[w].point());
+                        auto r = PointXYZ::distance(P, closest[w].point().to_xyz());
                         auto h = r < halfDelta - delta ? 1.
                                  : halfDelta + delta < r
                                      ? 0.

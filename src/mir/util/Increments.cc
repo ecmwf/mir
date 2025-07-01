@@ -15,6 +15,7 @@
 #include <ostream>
 
 #include "eckit/log/JSON.h"
+#include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
 
 #include "mir/api/MIRJob.h"
@@ -28,12 +29,9 @@ namespace mir::util {
 
 
 static void check(const Increments& inc) {
-    ASSERT(inc.west_east().longitude() >= 0);
-    ASSERT(inc.south_north().latitude() >= 0);
+    ASSERT(inc.west_east() >= 0);
+    ASSERT(inc.south_north() >= 0);
 }
-
-
-Increments::Increments() = default;
 
 
 Increments::Increments(const param::MIRParametrisation& parametrisation) {
@@ -49,105 +47,93 @@ Increments::Increments(const param::MIRParametrisation& parametrisation) {
 }
 
 
-Increments::Increments(const Increments& other) : Increments(other.west_east_, other.south_north_) {}
-
-
-Increments::Increments(double westEastIncrement, double southNorthIncrement) :
-    Increments(LongitudeIncrement(westEastIncrement), LatitudeIncrement(southNorthIncrement)) {}
-
-
-Increments::Increments(const LongitudeIncrement& west_east, const LatitudeIncrement& south_north) :
-    west_east_(west_east), south_north_(south_north) {
+Increments::Increments(double west_east, double south_north) : west_east_(west_east), south_north_(south_north) {
     check(*this);
 }
 
 
 bool Increments::operator==(const Increments& other) const {
-    return (west_east_.longitude() == other.west_east_.longitude()) &&
-           (south_north_.latitude() == other.south_north_.latitude());
+    return eckit::types::is_approximately_equal(west_east_, other.west_east_) &&
+           eckit::types::is_approximately_equal(south_north_, other.south_north_);
 }
 
 
 bool Increments::operator!=(const Increments& other) const {
-    return (west_east_.longitude() != other.west_east_.longitude()) ||
-           (south_north_.latitude() != other.south_north_.latitude());
+    return !operator==(other);
 }
 
 
-Increments& Increments::operator=(const Increments&) = default;
-
-
 bool Increments::isPeriodic() const {
-    return (Longitude::GLOBE.fraction() / west_east_.longitude().fraction()).integer();
+    return (eckit::Fraction(360, 1) / eckit::Fraction(west_east_)).integer();
 }
 
 
 bool Increments::isShifted(const BoundingBox& bbox) const {
-    const PointLatLon p{bbox.south(), bbox.west()};
+    const PointLonLat p{bbox.south(), bbox.west()};
     return isLatitudeShifted(p) || isLongitudeShifted(p);
 }
 
 
 bool Increments::isLatitudeShifted(const BoundingBox& bbox) const {
-    return isLatitudeShifted(PointLatLon{bbox.south(), bbox.west()});
+    return isLatitudeShifted(PointLonLat{bbox.south(), bbox.west()});
 }
 
 
 bool Increments::isLongitudeShifted(const BoundingBox& bbox) const {
-    return isLongitudeShifted(PointLatLon{bbox.south(), bbox.west()});
+    return isLongitudeShifted(PointLonLat{bbox.south(), bbox.west()});
 }
 
 
-bool Increments::isShifted(const PointLatLon& p) const {
+bool Increments::isShifted(const PointLonLat& p) const {
     return isLatitudeShifted(p) || isLongitudeShifted(p);
 }
 
 
-bool Increments::isLatitudeShifted(const PointLatLon& p) const {
-    const auto& inc = south_north_.latitude();
+bool Increments::isLatitudeShifted(const PointLonLat& p) const {
+    const eckit::Fraction inc(south_north_);
     if (inc == 0) {
         return false;
     }
-    return !(p.lat().fraction() / inc.fraction()).integer();
+    return !(eckit::Fraction(p.lat) / inc).integer();
 }
 
 
-bool Increments::isLongitudeShifted(const PointLatLon& p) const {
-    const auto& inc = west_east_.longitude();
+bool Increments::isLongitudeShifted(const PointLonLat& p) const {
+    const eckit::Fraction inc(west_east_);
     if (inc == 0) {
         return false;
     }
-    return !(p.lon().fraction() / inc.fraction()).integer();
+    return !(eckit::Fraction(p.lon) / inc).integer();
 }
 
 
 void Increments::print(std::ostream& out) const {
     out << "Increments["
-        << "west_east=" << west_east_.longitude() << ",south_north=" << south_north_.latitude() << "]";
+        << "west_east=" << west_east_ << ",south_north=" << south_north_ << "]";
 }
 
-void Increments::json(eckit::JSON& json) const {
-    json.startObject();
-    json << "west_east" << west_east_.longitude().value();
-    json << "south_north" << south_north_.latitude().value();
-    json.endObject();
+void Increments::json(eckit::JSON& j) const {
+    j.startObject();
+    j << "west_east" << west_east_;
+    j << "south_north" << south_north_;
+    j.endObject();
 }
 
 
 void Increments::fillGrib(grib_info& info) const {
     // Warning: scanning mode not considered
-    info.grid.iDirectionIncrementInDegrees = west_east_.longitude().value();
-    info.grid.jDirectionIncrementInDegrees = south_north_.latitude().value();
+    info.grid.iDirectionIncrementInDegrees = west_east_;
+    info.grid.jDirectionIncrementInDegrees = south_north_;
 }
 
 
 void Increments::fillJob(api::MIRJob& job) const {
-    job.set("grid", west_east_.longitude().value(), south_north_.latitude().value());
+    job.set("grid", west_east_, south_north_);
 }
 
 
 void Increments::makeName(std::ostream& out) const {
-    out << "-" << west_east_.longitude().value() << "x" << south_north_.latitude().value();
+    out << "-" << west_east_ << "x" << south_north_;
 }
 
 

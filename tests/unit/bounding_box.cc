@@ -15,6 +15,8 @@
 #include <vector>
 
 #include "eckit/testing/Test.h"
+#include "eckit/types/FloatCompare.h"
+#include "eckit/types/Fraction.h"
 
 #include "mir/api/mir_config.h"
 #include "mir/input/GribFileInput.h"
@@ -97,8 +99,7 @@ CASE("BoundingBox") {
     };
 
     SECTION("operator==") {
-        std::vector<Longitude> _delta{Longitude::GLOBE * -2, Longitude::GLOBE * -1, Longitude::GREENWICH,
-                                      Longitude::GLOBE, Longitude::GLOBE * 2};
+        std::vector<double> _delta{360. * -2, 360. * -1, 0., 360., 360. * 2};
 
         for (const auto& A : boxes) {
             for (auto delta : _delta) {
@@ -117,7 +118,7 @@ CASE("BoundingBox") {
                     << B << " (empty? " << B.empty() << ")" << std::endl;
 
                 EXPECT(A == A);
-                if (delta == Longitude::GREENWICH) {
+                if (eckit::types::is_approximately_equal(delta, 0.)) {
                     EXPECT(A == B);
                 }
                 else {
@@ -197,13 +198,13 @@ CASE("BoundingBox") {
                         EXPECT(AiB == Awe || AiB == Bwe);
                     }
 
-                    const std::vector<Longitude> lims{
-                        {A.west()},
-                        {A.east()},
-                        {B.west()},
-                        {B.east()},
+                    const std::vector<double> lims{
+                        A.west(),
+                        A.east(),
+                        B.west(),
+                        B.east(),
                     };
-                    auto n = std::count_if(lims.begin(), lims.end(), [&AiB](const Longitude& lon) {
+                    auto n = std::count_if(lims.begin(), lims.end(), [&AiB](const double& lon) {
                         return AiB.contains(AiB.north(), lon) || AiB.contains(AiB.south(), lon);
                     });
                     EXPECT(2 <= n && n <= 4);
@@ -213,14 +214,14 @@ CASE("BoundingBox") {
     }
 
     SECTION("intersects (point)") {
-        std::vector<Latitude> _lat{-90, -89, -88, 2, 1, 0, 1, 2, 88, 89, 90};
-        std::vector<Longitude> _lon{
+        std::vector<double> _lat{-90, -89, -88, 2, 1, 0, 1, 2, 88, 89, 90};
+        std::vector<double> _lon{
             -360, -358, -182, -180, -178, -2, 0, 2, 178, 180, 182, 358, 360, 362, 718, 720, 722,
         };
 
         for (const auto& A : boxes) {
-            for (Latitude lat : _lat) {
-                for (Longitude lon : _lon) {
+            for (auto lat : _lat) {
+                for (auto lon : _lon) {
 
                     const BoundingBox P{lat, lon, lat, lon};
                     ASSERT(P.empty());
@@ -329,16 +330,19 @@ CASE("Representation::extendBoundingBox") {
 
 
 CASE("IFS climate files") {
+    using eckit::Fraction;
+
     std::unique_ptr<input::MIRInput> in(new input::GribFileInput("orog_1km.grib2"));
     ASSERT(in->next());
 
     util::BoundingBox bbox(in->parametrisation());
 
+
     for (const auto& test : {
-             std::make_pair(bbox.north().fraction(), eckit::Fraction(21599, 240)),
-             std::make_pair(bbox.west().fraction(), eckit::Fraction(1, 240)),
-             std::make_pair(bbox.south().fraction(), eckit::Fraction(-21599, 240)),
-             std::make_pair(bbox.east().fraction(), eckit::Fraction(86399, 240)),
+             std::make_pair(Fraction{bbox.north()}, Fraction{21599, 240}),
+             std::make_pair(Fraction{bbox.west()}, Fraction{1, 240}),
+             std::make_pair(Fraction{bbox.south()}, Fraction{-21599, 240}),
+             std::make_pair(Fraction{bbox.east()}, Fraction{86399, 240}),
          }) {
         Log::info() << test.first << " == " << test.second << std::endl;
         EXPECT_EQUAL(test.first, test.second);

@@ -34,7 +34,7 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
-#include "mir/util/Point2ToPoint3.h"
+#include "mir/util/PointLonLatToPointXYZ.h"
 #include "mir/util/Reorder.h"
 #include "mir/util/Trace.h"
 
@@ -59,7 +59,7 @@ namespace {
 
 
 using element_tree_t      = atlas::interpolation::method::ElemIndex3;
-using failed_projection_t = std::pair<size_t, PointLatLon>;
+using failed_projection_t = std::pair<size_t, PointLonLat>;
 
 
 struct element_t : std::vector<size_t> {
@@ -117,9 +117,9 @@ struct element_t : std::vector<size_t> {
 struct triag_t : element_t, atlas::interpolation::element::Triag3D {
     triag_t(const atlas::array::ArrayView<double, 2>& coords, size_t i1, size_t i2, size_t i3) :
         element_t{i1, i2, i3},
-        Triag3D(atlas::PointXYZ{coords(i1, XYZCOORDS::XX), coords(i1, XYZCOORDS::YY), coords(i1, XYZCOORDS::ZZ)},
-                atlas::PointXYZ{coords(i2, XYZCOORDS::XX), coords(i2, XYZCOORDS::YY), coords(i2, XYZCOORDS::ZZ)},
-                atlas::PointXYZ{coords(i3, XYZCOORDS::XX), coords(i3, XYZCOORDS::YY), coords(i3, XYZCOORDS::ZZ)}) {}
+        Triag3D(atlas::PointXYZ{coords(i1, ::atlas::XX), coords(i1, ::atlas::YY), coords(i1, ::atlas::ZZ)},
+                atlas::PointXYZ{coords(i2, ::atlas::XX), coords(i2, ::atlas::YY), coords(i2, ::atlas::ZZ)},
+                atlas::PointXYZ{coords(i3, ::atlas::XX), coords(i3, ::atlas::YY), coords(i3, ::atlas::ZZ)}) {}
 
     bool intersects(const atlas::interpolation::method::Ray& r, double eps) override {
         auto is = Triag3D::intersects(r, eps * std::sqrt(area()));
@@ -135,10 +135,10 @@ struct triag_t : element_t, atlas::interpolation::element::Triag3D {
 struct quad_t : element_t, atlas::interpolation::element::Quad3D {
     quad_t(const atlas::array::ArrayView<double, 2>& coords, size_t i1, size_t i2, size_t i3, size_t i4) :
         element_t{i1, i2, i3, i4},
-        Quad3D(atlas::PointXYZ{coords(i1, XYZCOORDS::XX), coords(i1, XYZCOORDS::YY), coords(i1, XYZCOORDS::ZZ)},
-               atlas::PointXYZ{coords(i2, XYZCOORDS::XX), coords(i2, XYZCOORDS::YY), coords(i2, XYZCOORDS::ZZ)},
-               atlas::PointXYZ{coords(i3, XYZCOORDS::XX), coords(i3, XYZCOORDS::YY), coords(i3, XYZCOORDS::ZZ)},
-               atlas::PointXYZ{coords(i4, XYZCOORDS::XX), coords(i4, XYZCOORDS::YY), coords(i4, XYZCOORDS::ZZ)}) {}
+        Quad3D(atlas::PointXYZ{coords(i1, ::atlas::XX), coords(i1, ::atlas::YY), coords(i1, ::atlas::ZZ)},
+               atlas::PointXYZ{coords(i2, ::atlas::XX), coords(i2, ::atlas::YY), coords(i2, ::atlas::ZZ)},
+               atlas::PointXYZ{coords(i3, ::atlas::XX), coords(i3, ::atlas::YY), coords(i3, ::atlas::ZZ)},
+               atlas::PointXYZ{coords(i4, ::atlas::XX), coords(i4, ::atlas::YY), coords(i4, ::atlas::ZZ)}) {}
 
     bool intersects(const atlas::interpolation::method::Ray& r, double eps) override {
         auto is = Quad3D::intersects(r, eps * std::sqrt(area()));
@@ -317,7 +317,16 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
     const auto nbRealPts =
         inNodes.metadata().has("NbRealPts") ? inNodes.metadata().get<size_t>("NbRealPts") : nbInputPoints;
 
-    util::Point2ToPoint3 point3(out, poleDisplacement());
+    auto point3 = [&](const PointLonLat& p) -> atlas::Point3 {
+        static util::PointLonLatToPointXYZ to_xyz(in, [](const auto& param) {
+            double displacement = 0;
+            param.get("pole-displacement-in-degree", displacement);
+            return displacement;
+        }(parametrisation_));
+
+        const auto q = to_xyz.fwd(p);
+        return {q.X, q.Y, q.Z};
+    };
 
     // some statistics
     size_t nbMaxElementsSearched   = 0;

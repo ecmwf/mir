@@ -24,12 +24,19 @@
 
 struct grib_info;
 
-namespace atlas {
+namespace eckit {
+
+class JSON;
+
+namespace geo {
 class Grid;
 }
 
-namespace eckit {
-class JSON;
+}  // namespace eckit
+
+
+namespace atlas {
+class Grid;
 }
 
 namespace mir {
@@ -107,6 +114,7 @@ public:
 
     virtual const Representation* truncate(size_t truncation, const MIRValuesVector&, MIRValuesVector&) const;
 
+    virtual const eckit::geo::Grid& grid() const;
     virtual atlas::Grid atlasGrid() const;
 
     // Domain operations

@@ -26,7 +26,6 @@
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
-#include "mir/util/Point2ToPoint3.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
@@ -70,11 +69,9 @@ void KNearestNeighbours::assemble(util::MIRStatistics& /*unused*/, WeightMatrix&
 
     const size_t nbOutputPoints = out.numberOfPoints();
 
-    const search::PointSearch sptree(parametrisation_, in);
+    const search::PointSearch sptree(in, parametrisation_);
     const auto& inDomain = in.domain();
     pick.distance(in);
-
-    util::Point2ToPoint3 point3(in, poleDisplacement());
 
     // init structure used to fill in sparse matrix
     std::vector<WeightMatrix::Triplet> weights_triplets;
@@ -107,7 +104,7 @@ void KNearestNeighbours::assemble(util::MIRStatistics& /*unused*/, WeightMatrix&
             if (inDomain.contains(it->pointRotated())) {
 
                 // 3D point to lookup
-                const auto p = point3(*(*it));
+                const auto p = sptree.to_xyz(*(*it));
 
                 // search
                 {

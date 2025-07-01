@@ -85,11 +85,11 @@ bool same_points(const param::MIRParametrisation& user, const param::MIRParametr
         util::BoundingBox bboxField(field);
         repres::latlon::LatLon::correctBoundingBox(bboxField, ni, nj, inc, {bboxField.south(), bboxField.west()});
 
-        PointLatLon ref{bboxField.south(), bboxField.west()};
+        PointLonLat ref{bboxField.south(), bboxField.west()};
 
         for (const auto& lat : {bboxUser.south(), bboxUser.north()}) {
             for (const auto& lon : {bboxUser.east(), bboxUser.west()}) {
-                if (inc.isShifted({ref.lat() - lat, ref.lon() - lon})) {
+                if (inc.isShifted({ref.lat - lat, ref.lon - lon})) {
                     return false;
                 }
             }

@@ -83,19 +83,17 @@ TenMinutesMask::TenMinutesMask(const std::string& name, const eckit::PathName& p
 
     for (const std::unique_ptr<repres::Iterator> it(representation.iterator()); it->next();) {
         const auto& p = it->pointUnrotated();
-        Latitude lat  = p.lat();
-        Longitude lon = p.lon().normalise(Longitude::GREENWICH);
 
-        ASSERT(lat >= Latitude::SOUTH_POLE);
-        ASSERT(lat <= Latitude::NORTH_POLE);
+        auto q = PointLonLat::make(p.lon, p.lat);
+        ASSERT(-90. <= q.lat && q.lat <= 90.);
 
-        auto row = int((Latitude::NORTH_POLE - lat).value() * (ROWS - 1) / Latitude::GLOBE.value());
-        ASSERT(0 <= row && row < int(ROWS));
+        auto row = static_cast<int>((90. - q.lat) * static_cast<double>(ROWS - 1) / 180.);
+        ASSERT(0 <= row && row < static_cast<int>(ROWS));
 
-        auto col = int(lon.value() * COLS / Longitude::GLOBE.value());
-        ASSERT(0 <= col && col < int(COLS));
+        auto col = static_cast<int>(q.lon * static_cast<double>(COLS) / 360.);
+        ASSERT(0 <= col && col < static_cast<int>(COLS));
 
-        mask_.push_back(ten_minutes_[size_t(row)][size_t(col)]);
+        mask_.push_back(ten_minutes_[row][col]);
     }
 }
 

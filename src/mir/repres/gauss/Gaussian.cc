@@ -97,19 +97,12 @@ bool Gaussian::extendBoundingBoxOnIntersect() const {
 }
 
 
-bool Gaussian::angleApproximatelyEqual(const Latitude& A, const Latitude& B) const {
-    return angularPrecision_ > 0 ? eckit::types::is_approximately_equal(A.value(), B.value(), angularPrecision_)
-                                 : A == B;
+bool Gaussian::angleApproximatelyEqual(double a, double b) const {
+    return angularPrecision_ > 0 ? eckit::types::is_approximately_equal(a, b, angularPrecision_) : a == b;
 }
 
 
-bool Gaussian::angleApproximatelyEqual(const Longitude& A, const Longitude& B) const {
-    return angularPrecision_ > 0 ? eckit::types::is_approximately_equal(A.value(), B.value(), angularPrecision_)
-                                 : A == B;
-}
-
-
-void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool in) const {
+void Gaussian::correctSouthNorth(double& s, double& n, bool in) const {
     ASSERT(s <= n);
 
     const std::vector<double>& lats = latitudes();
@@ -120,7 +113,7 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool in) const {
         n = lats.back();
     }
     else if (in) {
-        auto best = std::lower_bound(lats.begin(), lats.end(), n, [this](Latitude l1, Latitude l2) {
+        auto best = std::lower_bound(lats.begin(), lats.end(), n, [this](double l1, double l2) {
             if (angleApproximatelyEqual(l1, l2)) {
                 return false;
             }
@@ -144,7 +137,7 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool in) const {
         s = lats.front();
     }
     else if (in) {
-        auto best = std::lower_bound(lats.rbegin(), lats.rend(), s, [this](Latitude l1, Latitude l2) {
+        auto best = std::lower_bound(lats.rbegin(), lats.rend(), s, [this](double l1, double l2) {
             if (angleApproximatelyEqual(l1, l2)) {
                 return false;
             }
@@ -157,7 +150,7 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool in) const {
         // extend 'outwards': don't change, it's already below the Gaussian latitudes
     }
     else {
-        auto best = std::lower_bound(lats.begin(), lats.end(), s, [](Latitude l1, Latitude l2) { return l1 > l2; });
+        auto best = std::lower_bound(lats.begin(), lats.end(), s, [](double l1, double l2) { return l1 > l2; });
         s         = *best;
     }
 
@@ -178,14 +171,14 @@ std::vector<double> Gaussian::calculateUnrotatedGridBoxLatitudeEdges() const {
     auto f = edges.begin();
     auto b = edges.rbegin();
 
-    *(f++) = Latitude::NORTH_POLE.value();
-    *(b++) = Latitude::SOUTH_POLE.value();
+    *(f++) = PointLonLat::RIGHT_ANGLE;
+    *(b++) = -PointLonLat::RIGHT_ANGLE;
 
     double wacc = -1.;
     for (size_t j = 0; j < N_; ++j, ++b, ++f) {
         wacc += 2. * w[j];
         double deg = util::radian_to_degree(std::asin(wacc));
-        ASSERT(Latitude::SOUTH_POLE.value() <= deg && deg <= Latitude::NORTH_POLE.value());
+        ASSERT(-PointLonLat::RIGHT_ANGLE <= deg && deg <= PointLonLat::RIGHT_ANGLE);
 
         *b = deg;
         *f = -(*b);
@@ -202,13 +195,11 @@ void Gaussian::fillMeshGen(util::MeshGeneratorParameters& params) const {
         params.meshGenerator_ = "structured";
     }
 
-    const Latitude& s = bbox_.south();
-    if (s <= latitudes().back() || s > Latitude::EQUATOR) {
+    if (auto s = bbox_.south(); s <= latitudes().back() || s > 0) {
         params.set("force_include_south_pole", true);
     }
 
-    const Latitude& n = bbox_.north();
-    if (n >= latitudes().front() || n < Latitude::EQUATOR) {
+    if (auto n = bbox_.north(); n >= latitudes().front() || n < 0) {
         params.set("force_include_north_pole", true);
     }
 }
@@ -216,7 +207,7 @@ void Gaussian::fillMeshGen(util::MeshGeneratorParameters& params) const {
 
 void Gaussian::fillJob(api::MIRJob& job) const {
     auto d = domain();
-    if (!d.isGlobal() || d.west() != Longitude::GREENWICH) {
+    if (!d.isGlobal() || d.west() != 0.) {
         bbox_.fillJob(job);
     }
 }

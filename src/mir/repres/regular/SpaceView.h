@@ -33,8 +33,12 @@ struct SpaceViewInternal {
     RegularGrid::Projection projection_;
     RegularGrid::Projection projectionGreenwich_;
     util::BoundingBox bbox_;
+    c
 
-    RegularGrid::LinearSpacing x() const { return {xa_, xb_, Nx_, true}; }
+        RegularGrid::LinearSpacing
+        x() const {
+        return {xa_, xb_, Nx_, true};
+    }
     RegularGrid::LinearSpacing y() const { return {ya_, yb_, Ny_, true}; }
 
     const std::vector<RegularGrid::PointLonLat>& lonlat() const;

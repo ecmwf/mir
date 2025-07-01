@@ -43,6 +43,11 @@ enum
 using complex_t = std::complex<double>;
 
 
+constexpr auto GREENWICH       = 0;
+constexpr auto MINUS_DATE_LINE = -PointLonLat::FLAT_ANGLE;
+constexpr auto GLOBE           = PointLonLat::FULL_ANGLE;
+
+
 // Generic types
 
 template <int SCALE, int SYMMETRY>
@@ -78,11 +83,9 @@ complex_t convert_to_complex(double /*unused*/) {
 // Specialised types
 
 template <>
-NormaliseAngle<DEGREE, ASYMMETRIC>::NormaliseAngle() :
-    GLOBE(LongitudeDouble::GLOBE.value()), MIN(LongitudeDouble::GREENWICH.value()) {}
+NormaliseAngle<DEGREE, ASYMMETRIC>::NormaliseAngle() : GLOBE(PointLonLat::FULL_ANGLE), MIN(0) {}
 template <>
-NormaliseAngle<DEGREE, SYMMETRIC>::NormaliseAngle() :
-    GLOBE(LongitudeDouble::GLOBE.value()), MIN(LongitudeDouble::MINUS_DATE_LINE.value()) {}
+NormaliseAngle<DEGREE, SYMMETRIC>::NormaliseAngle() : GLOBE(PointLonLat::FULL_ANGLE), MIN(-PointLonLat::FLAT_ANGLE) {}
 template <>
 NormaliseAngle<RADIAN, ASYMMETRIC>::NormaliseAngle() : GLOBE(M_PI * 2.), MIN(0.) {}
 template <>
@@ -165,7 +168,7 @@ void Space1DAngleT<SCALE, SYMMETRY>::unlinearise(const Space::Matrix& matrixIn, 
             xy           = complex_t(matrixIn(i, 0), matrixIn(i, 1));
             th           = convert_to_angle<SCALE>(xy);
             matrixOut[i] = norm.normalise(th);
-            if (matrixOut[i] > LongitudeDouble::GLOBE.value()) {
+            if (matrixOut[i] > PointLonLat::FULL_ANGLE) {
                 th = 2.;
             }
         }

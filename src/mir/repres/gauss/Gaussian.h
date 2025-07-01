@@ -12,6 +12,8 @@
 
 #pragma once
 
+#include "eckit/types/Fraction.h"
+
 #include "mir/repres/Gridded.h"
 #include "mir/util/BoundingBox.h"
 
@@ -70,10 +72,9 @@ protected:
     ///@return global Gaussian quadrature weigths
     const std::vector<double>& weights() const;
 
-    bool angleApproximatelyEqual(const Latitude&, const Latitude&) const;
-    bool angleApproximatelyEqual(const Longitude&, const Longitude&) const;
+    bool angleApproximatelyEqual(double, double) const;
 
-    void correctSouthNorth(Latitude& s, Latitude& n, bool in = true) const;
+    void correctSouthNorth(double& s, double& n, bool in = true) const;
 
     std::vector<double> calculateUnrotatedGridBoxLatitudeEdges() const;
 

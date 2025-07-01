@@ -12,22 +12,13 @@
 
 #pragma once
 
-#include "mir/util/Types.h"
-
-namespace mir {
+#include "eckit/geo/figure/Earth.h"
 
 
-struct LatitudeIncrement {
-    explicit LatitudeIncrement(const Latitude& increment = Latitude(0)) : increment_(increment) {}
-    const LatitudeIncrement& operator=(const Latitude& l) {
-        increment_ = l;
-        return *this;
-    }
-    const Latitude& latitude() const { return increment_; }
-
-private:
-    Latitude increment_;
-};
+namespace mir::util {
 
 
-}  // namespace mir
+using Earth = eckit::geo::figure::Earth;
+
+
+}  // namespace mir::util

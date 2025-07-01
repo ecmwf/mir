@@ -56,10 +56,10 @@ namespace mir::util {
 class Rotation {
 public:
     // -- Constructors
+
     explicit Rotation(const param::MIRParametrisation&);
-    explicit Rotation(const Latitude& south_pole_latitude   = Latitude::SOUTH_POLE,
-                      const Longitude& south_pole_longitude = Longitude::GREENWICH,
-                      double south_pole_rotation_angle      = 0.);
+    explicit Rotation(double south_pole_latitude  = eckit::geo::SOUTH_POLE.lat,
+                      double south_pole_longitude = eckit::geo::SOUTH_POLE.lon, double south_pole_rotation_angle = 0.);
 
     // -- Destructor
 
@@ -75,8 +75,8 @@ public:
     const eckit::geo::projection::Rotation& rotation() const { return rotation_; }
     BoundingBox boundingBox(const BoundingBox&) const;
 
-    Latitude south_pole_latitude() const { return rotation_.south_pole().lat; }
-    Longitude south_pole_longitude() const { return rotation_.south_pole().lon; }
+    double south_pole_latitude() const { return rotation_.south_pole().lat; }
+    double south_pole_longitude() const { return rotation_.south_pole().lon; }
     double south_pole_rotation_angle() const { return rotation_.angle(); }
 
     void fillGrib(grib_info&) const;

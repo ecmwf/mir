@@ -28,7 +28,7 @@ RotatedLL::RotatedLL(const param::MIRParametrisation& parametrisation) :
     LatLon(parametrisation), rotation_(parametrisation) {}
 
 RotatedLL::RotatedLL(const util::Increments& increments, const util::Rotation& rotation, const util::BoundingBox& bbox,
-                     const PointLatLon& reference) :
+                     const PointLonLat& reference) :
     LatLon(increments, bbox, reference), rotation_(rotation) {}
 
 RotatedLL::~RotatedLL() = default;
@@ -43,12 +43,13 @@ Iterator* RotatedLL::iterator() const {
             LatLonIterator::print(out);
             out << "]";
         }
-        bool next(Latitude& lat, Longitude& lon) override { return LatLonIterator::next(lat, lon); }
+
+        PointLonLat next(bool& valid) override { return LatLonIterator::next(valid); }
 
         size_t index() const override { return count_; }
 
     public:
-        RotatedLLIterator(size_t ni, size_t nj, Latitude north, Longitude west, const util::Increments& increments,
+        RotatedLLIterator(size_t ni, size_t nj, double north, double west, const util::Increments& increments,
                           const util::Rotation& rotation) :
             LatLonIterator(ni, nj, north, west, increments), Iterator(rotation) {}
     };
@@ -69,10 +70,9 @@ atlas::Grid RotatedLL::atlasGrid() const {
     const util::Domain dom = domain();
 
     atlas::StructuredGrid::XSpace xspace(
-        atlas::grid::LinearSpacing(dom.west().value(), dom.east().value(), long(ni_), !dom.isPeriodicWestEast()));
+        atlas::grid::LinearSpacing(dom.west(), dom.east(), long(ni_), !dom.isPeriodicWestEast()));
 
-    atlas::StructuredGrid::YSpace yspace(
-        atlas::grid::LinearSpacing(bbox_.north().value(), bbox_.south().value(), long(nj_)));
+    atlas::StructuredGrid::YSpace yspace(atlas::grid::LinearSpacing(bbox_.north(), bbox_.south(), long(nj_)));
 
     atlas::StructuredGrid grid(xspace, yspace, {}, dom);
     return rotate_atlas_grid(rotation_.rotation(), grid);

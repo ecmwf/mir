@@ -12,23 +12,13 @@
 
 #pragma once
 
-#include "mir/search/tree/TreeMapped.h"
+#include "eckit/geo/Projection.h"
 
 
-namespace mir::search::tree {
+namespace mir::utli {
 
 
-class TreeMappedAnonymousMemory : public TreeMapped {
-
-    bool ready() const override { return false; }
-
-    void commit() override {}
-
-    void print(std::ostream& out) const override { out << "TreeMappedAnonymousMemory[]"; }
-
-public:
-    TreeMappedAnonymousMemory(const repres::Representation&);
-};
+using Projection = eckit::geo::Projection;
 
 
-}  // namespace mir::search::tree
+}  // namespace mir::utli

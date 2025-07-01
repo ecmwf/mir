@@ -26,7 +26,7 @@ namespace mir::method::knn::distance {
 NoDistanceWeighting::NoDistanceWeighting(const param::MIRParametrisation& /*unused*/) {}
 
 
-void NoDistanceWeighting::operator()(size_t ip, const Point3& /*point*/,
+void NoDistanceWeighting::operator()(size_t ip, const PointXYZ& /*point*/,
                                      const std::vector<search::PointSearch::PointValueType>& neighbours,
                                      std::vector<WeightMatrix::Triplet>& triplets) const {
     ASSERT(!neighbours.empty());

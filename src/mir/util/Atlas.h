@@ -16,8 +16,9 @@
 #include <vector>
 
 #include "eckit/config/LocalConfiguration.h"
-#include "eckit/geometry/Point2.h"
-#include "eckit/geometry/Point3.h"
+#include "eckit/geo/PointLonLat.h"
+#include "eckit/geo/PointXY.h"
+#include "eckit/geo/PointXYZ.h"
 #include "eckit/geometry/SphereT.h"
 #include "eckit/utils/Hash.h"
 
@@ -50,7 +51,6 @@
 #include "atlas/util/Earth.h"
 #include "atlas/util/GaussianLatitudes.h"
 #include "atlas/util/Point.h"
-#include "atlas/util/Rotation.h"
 #else
 
 
@@ -64,18 +64,9 @@ class CmdArgs;
 namespace atlas {
 
 
-using PointXY  = eckit::geometry::Point2;
-using PointXYZ = eckit::geometry::Point3;
-
-
-struct PointLonLat : public eckit::geometry::Point2 {
-    using Point2::Point2;
-    double lon() const { return x_[0]; }
-    double lat() const { return x_[1]; }
-    double& lon() { return x_[0]; }
-    double& lat() { return x_[1]; }
-    //    operator mir::PointLatLon() const { return {lat(), lon()}; }
-};
+using eckit::geo::PointLonLat;
+using eckit::geo::PointXY;
+using eckit::geo::PointXYZ;
 
 
 struct Domain {
@@ -117,19 +108,6 @@ namespace util {
 
 struct DatumIFS {
     static constexpr double radius() { return 6371229.; }
-};
-
-
-using Earth = eckit::geometry::SphereT<DatumIFS>;
-
-
-struct Rotation : PointLonLat {
-    // no rotation supported
-    Rotation(const PointLonLat& southPole = {mir::Longitude::GREENWICH.value(), mir::Latitude::SOUTH_POLE.value()});
-    bool rotated() const { return false; }
-    inline void rotate(const double*) const {}
-    inline mir::Longitude south_pole_longitude() const { return lon(); }
-    inline mir::Latitude south_pole_latitude() const { return lat(); }
 };
 
 
@@ -181,32 +159,8 @@ struct LinearSpacing : public Spacing {
 }  // namespace grid
 
 
-namespace projection {
-struct ProjectionFactory {
-    static bool has(const std::string&);
-};
-}  // namespace projection
-
-
 struct MeshGenerator {
     using Parameters = util::Config;
-};
-
-
-class Projection {
-public:
-    using Spec = util::Config;
-    Spec spec_;
-    Spec spec() const { return spec_; }
-    void hash(eckit::Hash& h) const { spec_.hash(h); }
-
-    // no projection supported
-    Projection() = default;
-    Projection(const Spec& spec) : spec_(spec) {}
-    explicit operator bool() const { return true; }
-    mir::Point2 xy(const mir::Point2& p) const { return p; }
-    mir::Point2 lonlat(const mir::Point2& p) const { return p; }
-    Domain lonlatBoundingBox(const Domain& r) const { return r; }
 };
 
 
@@ -282,12 +236,3 @@ public:
 
 
 #endif
-
-
-namespace mir::util {
-
-
-using atlas::util::Earth;
-
-
-}  // namespace mir::util

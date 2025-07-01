@@ -103,8 +103,8 @@ list(APPEND mir_srcs
     action/interpolate/Gridded2RotatedReducedGGPLGiven.h
     action/interpolate/Gridded2RotatedRegularGG.cc
     action/interpolate/Gridded2RotatedRegularGG.h
-    action/interpolate/Gridded2TypedGrid.cc
-    action/interpolate/Gridded2TypedGrid.h
+    # action/interpolate/Gridded2TypedGrid.cc
+    # action/interpolate/Gridded2TypedGrid.h
     action/interpolate/Gridded2UnrotatedGrid.cc
     action/interpolate/Gridded2UnrotatedGrid.h
     action/io/Copy.cc
@@ -296,8 +296,8 @@ list(APPEND mir_srcs
     key/grid/RegularLLPattern.h
     key/grid/RegularPattern.cc
     key/grid/RegularPattern.h
-    key/grid/TypedGrid.cc
-    key/grid/TypedGrid.h
+    # key/grid/TypedGrid.cc
+    # key/grid/TypedGrid.h
     key/intgrid/Automatic.cc
     key/intgrid/Automatic.h
     key/intgrid/Intgrid.cc
@@ -551,18 +551,18 @@ list(APPEND mir_srcs
     repres/other/None.h
     repres/other/UnstructuredGrid.cc
     repres/other/UnstructuredGrid.h
-    repres/regular/Lambert.cc
-    repres/regular/Lambert.h
-    repres/regular/LambertAzimuthalEqualArea.cc
-    repres/regular/LambertAzimuthalEqualArea.h
-    repres/regular/Mercator.cc
-    repres/regular/Mercator.h
-    repres/regular/PolarStereographic.cc
-    repres/regular/PolarStereographic.h
-    repres/regular/RegularGrid.cc
-    repres/regular/RegularGrid.h
-    repres/regular/SpaceView.cc
-    repres/regular/SpaceView.h
+    # repres/regular/Lambert.cc
+    # repres/regular/Lambert.h
+    # repres/regular/LambertAzimuthalEqualArea.cc
+    # repres/regular/LambertAzimuthalEqualArea.h
+    # repres/regular/Mercator.cc
+    # repres/regular/Mercator.h
+    # repres/regular/PolarStereographic.cc
+    # repres/regular/PolarStereographic.h
+    # repres/regular/RegularGrid.cc
+    # repres/regular/RegularGrid.h
+    # repres/regular/SpaceView.cc
+    # repres/regular/SpaceView.h
     repres/sh/SphericalHarmonics.cc
     repres/sh/SphericalHarmonics.h
     repres/unsupported/Albers.cc
@@ -591,16 +591,6 @@ list(APPEND mir_srcs
     repres/unsupported/TransverseMercator.h
     search/PointSearch.cc
     search/PointSearch.h
-    search/Tree.cc
-    search/Tree.h
-    search/tree/TreeMapped.cc
-    search/tree/TreeMapped.h
-    search/tree/TreeMappedAnonymousMemory.cc
-    search/tree/TreeMappedAnonymousMemory.h
-    search/tree/TreeMappedFile.cc
-    search/tree/TreeMappedFile.h
-    search/tree/TreeMemory.cc
-    search/tree/TreeMemory.h
     stats/Comparator.cc
     stats/Comparator.h
     stats/Distribution.cc
@@ -663,6 +653,7 @@ list(APPEND mir_srcs
     util/DeprecatedFunctionality.h
     util/Domain.cc
     util/Domain.h
+    util/Earth.h
     util/Error.cc
     util/Error.h
     util/Exceptions.h
@@ -690,16 +681,8 @@ list(APPEND mir_srcs
     util/Increments.cc
     util/Increments.h
     util/IndexMapping.h
-    util/Latitude.cc
-    util/Latitude.h
-    util/LatitudeIncrement.h
     util/Log.cc
     util/Log.h
-    util/LongitudeDouble.cc
-    util/LongitudeDouble.h
-    util/LongitudeFraction.cc
-    util/LongitudeFraction.h
-    util/LongitudeIncrement.h
     util/MIRStatistics.cc
     util/MIRStatistics.h
     util/MeshGeneratorParameters.cc
@@ -707,9 +690,10 @@ list(APPEND mir_srcs
     util/Mutex.h
     util/PlanParser.cc
     util/PlanParser.h
-    util/Point2ToPoint3.cc
-    util/Point2ToPoint3.h
-    util/PointLatLonT.h
+    # util/PointLatLonT.h
+    util/PointLonLatToPointXYZ.cc
+    util/PointLonLatToPointXYZ.h
+    util/Projection.h
     util/Regex.cc
     util/Regex.h
     util/Reorder.cc
@@ -783,8 +767,8 @@ if(mir_HAVE_ATLAS)
         action/transform/ShToRotatedRegularGG.h
         action/transform/ShToRotatedRegularLL.cc
         action/transform/ShToRotatedRegularLL.h
-        action/transform/ShToTypedGrid.cc
-        action/transform/ShToTypedGrid.h
+        # action/transform/ShToTypedGrid.cc
+        # action/transform/ShToTypedGrid.h
         action/transform/ShVodToUV.cc
         action/transform/ShVodToUV.h
         action/transform/TransCache.cc
@@ -966,7 +950,7 @@ ecbuild_add_library(
     INSTALL_HEADERS    LISTED
     HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/mir
     TEMPLATES          caching/InMemoryCache.cc
-    PUBLIC_LIBS        eckit_linalg eckit_geometry eckit_option eckit eckit_geo eccodes
+    PUBLIC_LIBS        eccodes eckit_linalg eckit_option eckit_geo eckit
     PUBLIC_INCLUDES    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/src>
     SOURCES            ${mir_srcs})
 

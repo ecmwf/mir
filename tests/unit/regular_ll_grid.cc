@@ -130,7 +130,7 @@ CASE("Increments::correctBoundingBox") {
         auto test = [](bool shiftLon, bool shiftLat, size_t Ni, size_t Nj) {
             Increments inc { 1, 1 };
             BoundingBox box;
-            PointLatLon ref { shiftLat ? 0.5 : 0., shiftLon ? 0.5 : 0. };
+            PointLonLat ref { shiftLat ? 0.5 : 0., shiftLon ? 0.5 : 0. };
 
             repres::RepresentationHandle repres(new repres::latlon::RegularLL(inc, box, ref));
             auto& ll = dynamic_cast<const repres::latlon::RegularLL&>(*repres);
@@ -167,7 +167,7 @@ CASE("Increments::correctBoundingBox") {
             {12, -1, -1, 12},
         }) {
 
-            for (auto& reference : std::vector<PointLatLon>{
+            for (auto& reference : std::vector<PointLonLat>{
                     { 0,  0 },
                     { 0, -1 },
                     {-1,  0 },
@@ -230,7 +230,7 @@ CASE("Increments::correctBoundingBox") {
                 Increments{ 7, 0 },
             }) {
 
-            for (auto& reference : std::vector<PointLatLon>{
+            for (auto& reference : std::vector<PointLonLat>{
                     { 0,  0 },
                     { 0, -1 },
                     {-1,  0 },
@@ -536,7 +536,7 @@ CASE("x") {
             using eckit::types::is_approximately_equal;
             bool ok = true;
 
-            PointLatLon ref(kase.boundingBox_.south(), kase.boundingBox_.west());
+            PointLonLat ref(kase.boundingBox_.south(), kase.boundingBox_.west());
 
             static size_t c = 1;
             log << "Test " << c++ << ":"
@@ -648,7 +648,7 @@ CASE("x") {
             using repres::latlon::RegularLL;
 
             // check if Ni/Nj are well calculated, for the user-provided area
-            PointLatLon ref(kase.first.boundingBox_.south(), kase.first.boundingBox_.west());
+            PointLonLat ref(kase.first.boundingBox_.south(), kase.first.boundingBox_.west());
             repres::RepresentationHandle user =
                 new RegularLL(kase.first.increments_, kase.first.boundingBox_, ref);
 

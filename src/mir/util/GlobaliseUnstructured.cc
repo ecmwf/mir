@@ -53,7 +53,7 @@ size_t GlobaliseUnstructured::appendGlobalPoints(std::vector<double>& latitudes,
 
     // setup k-d tree on temporary unstructured grid
     repres::other::UnstructuredGrid unstructuredGrid(latitudes, longitudes);
-    const search::PointSearch tree(parametrisation_, unstructuredGrid);
+    const search::PointSearch tree(unstructuredGrid, parametrisation_);
 
 
     // setup global grid
@@ -63,12 +63,11 @@ size_t GlobaliseUnstructured::appendGlobalPoints(std::vector<double>& latitudes,
 
     // insert global grid points when distant enough from provided grid points
     for (const std::unique_ptr<repres::Iterator> it(globe->iterator()); it->next();) {
-        const Point3 p(it->point3D());
-        if (Point3::distance(p, tree.closestPoint(p).point()) > globaliseMissingRadius_) {
-
+        const PointXYZ p(tree.to_xyz(**it));
+        if (PointXYZ::distance(p, tree.closestPoint(p).point().to_xyz()) > globaliseMissingRadius_) {
             const auto& unrotated = it->pointUnrotated();
-            latitudes.push_back(unrotated.lat().value());
-            longitudes.push_back(unrotated.lon().value());
+            latitudes.push_back(unrotated.lat);
+            longitudes.push_back(unrotated.lon);
             ++nbExtraPoints;
         }
     }

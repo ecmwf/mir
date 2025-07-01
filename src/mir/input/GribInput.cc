@@ -39,7 +39,7 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
-#include "mir/util/LongitudeDouble.h"
+#include "mir/util/Types.h"
 #include "mir/util/Mutex.h"
 #include "mir/util/ValueMap.h"
 #include "mir/util/Wind.h"
@@ -514,7 +514,7 @@ static ProcessingT<double>* iDirectionIncrementInDegrees_fix_for_periodic_regula
         GRIB_CALL(codes_get_long(h, "Ni", &Ni));
         ASSERT(Ni > 0);
 
-        Lon2 = LongitudeDouble(Lon2).normalise(Lon1).value();
+        Lon2 = PointLonLat::normalise_angle_to_minimum(Lon2, Lon1);
         ASSERT(Lon2 >= Lon1);
 
         // angles are within +-1/2 precision, so (Lon2 - Lon1 + we) uses factor 3*1/2
@@ -524,7 +524,7 @@ static ProcessingT<double>* iDirectionIncrementInDegrees_fix_for_periodic_regula
         eps *= 1.5;
 
         auto Nid     = double(Ni);
-        double globe = LongitudeDouble::GLOBE.value();
+        double globe = PointLonLat::FULL_ANGLE;
         if (eckit::types::is_approximately_equal(Lon2 - Lon1 + we, globe, eps)) {
             we = globe / Nid;
         }

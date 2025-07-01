@@ -22,7 +22,7 @@
 namespace mir::repres {
 
 
-class Iterator : protected PointLatLon {
+class Iterator {
 public:
     // -- Constructors
 
@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    ~Iterator() override;
+    virtual ~Iterator();
 
     // -- Convertors
 
@@ -44,15 +44,12 @@ public:
     void operator=(const Iterator&) = delete;
     void operator=(Iterator&&)      = delete;
 
-    inline const Point2& operator*() const { return pointRotated(); }
+    inline const PointLonLat& operator*() const { return pointRotated(); }
 
     // -- Methods
 
-    static Point3 point_3D(const Point2&);
-
-    const Point2& pointRotated() const;
-    const PointLatLon& pointUnrotated() const;
-    Point3 point3D() const;
+    const PointLonLat& pointRotated() const;
+    const PointLonLat& pointUnrotated() const;
 
     Iterator& next();
     virtual size_t index() const = 0;
@@ -60,14 +57,15 @@ public:
 protected:
     // -- Members
 
-    Point2 point_;
+    PointLonLat point_;
+    PointLonLat pointRotated_;
     eckit::geo::projection::Rotation rotation_;
     bool valid_;
 
     // -- Methods
 
-    void print(std::ostream&) const override = 0;
-    virtual bool next(Latitude&, Longitude&) = 0;
+    virtual void print(std::ostream&) const = 0;
+    virtual PointLonLat next(bool& valid)   = 0;
 
 private:
     // -- Friends

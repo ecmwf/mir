@@ -147,7 +147,7 @@ CASE("MIR-374") {
 
             std::unique_ptr<repres::Iterator> it(crop->iterator());
             ASSERT(it->next());
-            PointLatLon p = it->pointUnrotated();
+            PointLonLat p = it->pointUnrotated();
             log << p << std::endl;
 
             auto grid            = crop->atlasGrid();

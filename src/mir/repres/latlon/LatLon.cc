@@ -24,6 +24,7 @@
 #include "mir/iterator/detail/RegularIterator.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Earth.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
@@ -60,7 +61,7 @@ LatLon::LatLon(const param::MIRParametrisation& parametrisation) :
 }
 
 
-LatLon::LatLon(const util::Increments& increments, const util::BoundingBox& bbox, const PointLatLon& reference) :
+LatLon::LatLon(const util::Increments& increments, const util::BoundingBox& bbox, const PointLonLat& reference) :
     Gridded(bbox), increments_(increments), reference_(reference), ni_(0), nj_(0) {
     correctBoundingBox(bbox_, ni_, nj_, increments_, reference_);
     ASSERT(ni_ != 0);
@@ -122,26 +123,20 @@ bool LatLon::sameAs(const Representation& other) const {
 
 
 bool LatLon::isPeriodicWestEast() const {
-
     // if range West-East is within one increment (or greater than) 360 degree
-    const Longitude& inc = increments_.west_east().longitude();
-    return bbox_.east() - bbox_.west() + inc >= Longitude::GLOBE;
+    return bbox_.east() - bbox_.west() + increments_.west_east() >= PointLonLat::FULL_ANGLE;
 }
 
 
 bool LatLon::includesNorthPole() const {
-
     // if North latitude is within one increment from North Pole
-    const Latitude& inc = increments_.south_north().latitude();
-    return bbox_.north() + inc > Latitude::NORTH_POLE;
+    return bbox_.north() + increments_.south_north() > PointLonLat::RIGHT_ANGLE;
 }
 
 
 bool LatLon::includesSouthPole() const {
-
     // if South latitude is within one increment from South Pole
-    const Latitude& inc = increments_.south_north().latitude();
-    return bbox_.south() - inc < Latitude::SOUTH_POLE;
+    return bbox_.south() - increments_.south_north() < -PointLonLat::RIGHT_ANGLE;
 }
 
 
@@ -153,15 +148,7 @@ size_t LatLon::numberOfPoints() const {
 
 
 bool LatLon::getLongestElementDiagonal(double& d) const {
-    constexpr double TWO = 2.;
-
-    auto snHalf = increments_.south_north().latitude().value() / TWO;
-    ASSERT(!eckit::types::is_approximately_equal(snHalf, 0.));
-
-    auto weHalf = increments_.west_east().longitude().value() / TWO;
-    ASSERT(!eckit::types::is_approximately_equal(weHalf, 0.));
-
-    d = TWO * util::Earth::distance({0., 0.}, {weHalf, snHalf});
+    d = 2. * util::Earth::distance({0., 0.}, {increments_.west_east() / 2., increments_.south_north() / 2.});
     return true;
 }
 
@@ -191,7 +178,7 @@ Representation* LatLon::globalise(data::MIRField& field) const {
     auto lon       = newbbox.west();
     size_t nBefore = 0;
     while (!bbox_.contains(lat, lon)) {
-        lat -= increments_.south_north().latitude();
+        lat -= increments_.south_north();
         nBefore += ni_;
         ASSERT(n + nBefore <= newn);
     }
@@ -230,10 +217,10 @@ void LatLon::fillMeshGen(util::MeshGeneratorParameters& params) const {
     if (params.meshGenerator_.empty()) {
         params.meshGenerator_ = "structured";
     }
-    if (boundingBox().south() > Latitude::EQUATOR) {
+    if (boundingBox().south() > 0.) {
         params.set("force_include_south_pole", true);
     }
-    if (boundingBox().north() < Latitude::EQUATOR) {
+    if (boundingBox().north() < 0.) {
         params.set("force_include_north_pole", true);
     }
 }
@@ -275,14 +262,14 @@ void LatLon::validate(const MIRValuesVector& values) const {
 }
 
 
-LatLon::LatLonIterator::LatLonIterator(size_t ni, size_t nj, Latitude north, Longitude west,
+LatLon::LatLonIterator::LatLonIterator(size_t ni, size_t nj, double north, double west,
                                        const util::Increments& increments) :
     ni_(ni),
     nj_(nj),
-    north_(north.fraction()),
-    west_(west.fraction()),
-    we_(increments.west_east().longitude().fraction()),
-    ns_(increments.south_north().latitude().fraction()),
+    north_(north),
+    west_(west),
+    we_(increments.west_east()),
+    ns_(increments.south_north()),
     i_(0),
     j_(0),
     count_(0),
@@ -307,11 +294,11 @@ void LatLon::LatLonIterator::print(std::ostream& out) const {
 }
 
 
-bool LatLon::LatLonIterator::next(Latitude& lat, Longitude& lon) {
+PointLonLat LatLon::LatLonIterator::next(bool& valid) {
     if (j_ < nj_) {
         if (i_ < ni_) {
-            lat = latValue_;
-            lon = lonValue_;
+            auto lat = latValue_;
+            auto lon = lonValue_;
 
             lon_ += we_;
 
@@ -332,43 +319,47 @@ bool LatLon::LatLonIterator::next(Latitude& lat, Longitude& lon) {
 
             lonValue_ = lon_;
 
-            return true;
+            valid = true;
+            return {lon, lat};
         }
     }
-    return false;
+
+    valid = false;
+    return {};
 }
 
 
-void LatLon::globaliseBoundingBox(util::BoundingBox& bbox, const util::Increments& inc, const PointLatLon& reference) {
+void LatLon::globaliseBoundingBox(util::BoundingBox& bbox, const util::Increments& inc, const PointLonLat& reference) {
     using eckit::Fraction;
     using iterator::detail::RegularIterator;
 
-    Fraction sn = inc.south_north().latitude().fraction();
-    Fraction we = inc.west_east().longitude().fraction();
+    Fraction sn(inc.south_north());
+    Fraction we(inc.west_east());
     ASSERT(sn > 0);
     ASSERT(we > 0);
 
-    Fraction shift_sn = (reference.lat().fraction() / sn).decimalPart() * sn;
-    Fraction shift_we = (reference.lon().fraction() / we).decimalPart() * we;
+    Fraction shift_sn = (Fraction(reference.lat) / sn).decimalPart() * sn;
+    Fraction shift_we = (Fraction(reference.lon) / we).decimalPart() * we;
 
 
     // Latitude limits
 
-    Latitude n = shift_sn + RegularIterator::adjust(Latitude::NORTH_POLE.fraction() - shift_sn, sn, false);
-    Latitude s = shift_sn + RegularIterator::adjust(Latitude::SOUTH_POLE.fraction() - shift_sn, sn, true);
+    auto n = shift_sn + RegularIterator::adjust(Fraction(PointLonLat::RIGHT_ANGLE) - shift_sn, sn, false);
+    auto s = shift_sn + RegularIterator::adjust(Fraction(-PointLonLat::RIGHT_ANGLE) - shift_sn, sn, true);
 
 
     // Longitude limits
     // - West for non-periodic grids is not corrected!
     // - East for periodic grids is W + 360 - increment
+    Fraction globe(360, 1);
 
-    Longitude w = bbox.west();
+    Fraction w(bbox.west());
     if (inc.isPeriodic()) {
-        w = shift_we + RegularIterator::adjust(Longitude::GREENWICH.fraction() - shift_we, we, true);
+        w = shift_we + RegularIterator::adjust(-shift_we, we, true);
     }
 
-    Longitude e = shift_we + RegularIterator::adjust(w.fraction() + Longitude::GLOBE.fraction() - shift_we, we, false);
-    if (e - w == Longitude::GLOBE) {
+    auto e = shift_we + RegularIterator::adjust(w + globe - shift_we, we, false);
+    if (e - w == globe) {
         e -= we;
     }
 
@@ -379,20 +370,22 @@ void LatLon::globaliseBoundingBox(util::BoundingBox& bbox, const util::Increment
 
 
 void LatLon::correctBoundingBox(util::BoundingBox& bbox, size_t& ni, size_t& nj, const util::Increments& inc,
-                                const PointLatLon& reference) {
+                                const PointLonLat& reference) {
+    using eckit::Fraction;
     using iterator::detail::RegularIterator;
 
     // Latitude/longitude ranges
-    RegularIterator lat{bbox.south().fraction(), bbox.north().fraction(), inc.south_north().latitude().fraction(),
-                        reference.lat().fraction()};
+    RegularIterator lat{Fraction(bbox.south()), Fraction(bbox.north()), Fraction(inc.south_north()),
+                        Fraction(reference.lat)};
     auto n = lat.b();
     auto s = lat.a();
 
     nj = lat.n();
     ASSERT(nj > 0);
 
-    RegularIterator lon{bbox.west().fraction(), bbox.east().fraction(), inc.west_east().longitude().fraction(),
-                        reference.lon().fraction(), Longitude::GLOBE.fraction()};
+    Fraction globe(360, 1);
+    RegularIterator lon{Fraction(bbox.west()), Fraction(bbox.east()), Fraction(inc.west_east()),
+                        Fraction(reference.lon), globe};
     auto w = lon.a();
     auto e = lon.b();
 
@@ -400,7 +393,7 @@ void LatLon::correctBoundingBox(util::BoundingBox& bbox, size_t& ni, size_t& nj,
     ASSERT(ni > 0);
 
     // checks
-    ASSERT(w + (ni - 1) * lon.inc() == e || ni * lon.inc() == Longitude::GLOBE.fraction());
+    ASSERT(w + (ni - 1) * lon.inc() == e || ni * lon.inc() == globe);
     ASSERT(s + (nj - 1) * lat.inc() == n);
 
     bbox = {n, w, s, e};

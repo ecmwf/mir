@@ -14,12 +14,13 @@
 
 #include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
+#include "eckit/types/Fraction.h"
 
-#include "mir/api/mir_config.h"
 #include "mir/api/MIRJob.h"
 #include "mir/api/mir_config.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Earth.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
@@ -29,12 +30,12 @@ namespace mir::repres::gauss::regular {
 
 Regular::Regular(const param::MIRParametrisation& parametrisation) : Gaussian(parametrisation), k_(0), Ni_(0), Nj_(0) {
     // adjust latitudes, longitudes and re-set bounding box
-    Latitude n = bbox_.north();
-    Latitude s = bbox_.south();
+    auto n = bbox_.north();
+    auto s = bbox_.south();
     correctSouthNorth(s, n);
 
-    Longitude e = bbox_.east();
-    Longitude w = bbox_.west();
+    auto e = bbox_.east();
+    auto w = bbox_.west();
     correctWestEast(w, e);
 
     auto old(bbox_);
@@ -49,12 +50,12 @@ Regular::Regular(size_t N, const util::BoundingBox& bbox, double angularPrecisio
     Gaussian(N, bbox, angularPrecision), k_(0), Ni_(0), Nj_(0) {
 
     // adjust latitudes, longitudes and re-set bounding box
-    Latitude n = bbox.north();
-    Latitude s = bbox.south();
+    auto n = bbox.north();
+    auto s = bbox.south();
     correctSouthNorth(s, n);
 
-    Longitude w = bbox.west();
-    Longitude e = bbox.east();
+    auto w = bbox.west();
+    auto e = bbox.east();
     correctWestEast(w, e);
 
     bbox_ = util::BoundingBox(n, w, s, e);
@@ -86,31 +87,31 @@ void Regular::makeName(std::ostream& out) const {
     bbox_.makeName(out);
 }
 
-void Regular::correctWestEast(Longitude& w, Longitude& e) const {
+void Regular::correctWestEast(double& w, double& e) const {
     using eckit::Fraction;
+
     ASSERT(w <= e);
 
     Fraction inc = getSmallestIncrement();
     ASSERT(inc > 0);
 
-    if (angleApproximatelyEqual(Longitude::GREENWICH, w) &&
-        (angleApproximatelyEqual(Longitude::GLOBE - inc, e - w) || Longitude::GLOBE - inc < e - w ||
-         (e != w && e.normalise(w) == w))) {
+    if (angleApproximatelyEqual(0, w) && (angleApproximatelyEqual(360 - inc, e - w) || 360 - inc < e - w ||
+                                          (e != w && PointLonLat::normalise_angle_to_minimum(e, w) == w))) {
 
-        w = Longitude::GREENWICH;
-        e = Longitude::GLOBE - inc;
+        w = 0;
+        e = 360 - inc;
     }
     else {
 
-        const Fraction west = w.fraction();
-        const Fraction east = e.fraction();
+        const Fraction west(w);
+        const Fraction east(e);
 
-        Fraction::value_type Nw = (west / inc).integralPart();
+        auto Nw = (west / inc).integralPart();
         if (Nw * inc < west) {
             Nw += 1;
         }
 
-        Fraction::value_type Ne = (east / inc).integralPart();
+        auto Ne = (east / inc).integralPart();
         if (Ne * inc > east) {
             Ne -= 1;
         }
@@ -164,16 +165,17 @@ void Regular::json(eckit::JSON& s) const {
 
 
 util::BoundingBox Regular::extendBoundingBox(const util::BoundingBox& bbox) const {
+    using eckit::Fraction;
 
     // adjust West/East to include bbox's West/East
-    Longitude w = bbox.west();
-    Longitude e = bbox.east();
+    auto w = bbox.west();
+    auto e = bbox.east();
     {
         auto inc = getSmallestIncrement();
 
-        auto Nmax = (Longitude::GLOBE.fraction() / inc).integralPart();
-        auto Nw   = (w.fraction() / inc).integralPart() - 1;
-        auto Ne   = (e.fraction() / inc).integralPart() + 1;
+        auto Nmax = (Fraction(360, 1) / inc).integralPart();
+        auto Nw   = (Fraction(w) / inc).integralPart() - 1;
+        auto Ne   = (Fraction(e) / inc).integralPart() + 1;
 
         if (Ne - Nw < Nmax) {
             w = Nw * inc;
@@ -181,13 +183,13 @@ util::BoundingBox Regular::extendBoundingBox(const util::BoundingBox& bbox) cons
         }
         else {
             w = 0;
-            e = Longitude::GLOBE;
+            e = 360;
         }
     }
 
     // adjust South/North to include bbox's South/North ('outwards')
-    Latitude s = bbox.south();
-    Latitude n = bbox.north();
+    auto s = bbox.south();
+    auto n = bbox.north();
     correctSouthNorth(s, n, false);
 
     // set bounding box
@@ -198,8 +200,8 @@ util::BoundingBox Regular::extendBoundingBox(const util::BoundingBox& bbox) cons
 }
 
 bool Regular::isPeriodicWestEast() const {
-    eckit::Fraction inc = getSmallestIncrement();
-    return bbox_.east() - bbox_.west() + inc >= Longitude::GLOBE;
+    using eckit::Fraction;
+    return Fraction(bbox_.east()) - Fraction(bbox_.west()) + getSmallestIncrement() >= 360;
 }
 
 atlas::Grid Regular::atlasGrid() const {
@@ -211,34 +213,37 @@ atlas::Grid Regular::atlasGrid() const {
 }
 
 void Regular::setNiNj() {
+    using eckit::Fraction;
+    Fraction globe(360, 1);
+
     ASSERT(N_);
 
     const auto inc   = getSmallestIncrement();
     const auto& lats = latitudes();
 
-    const Longitude& west = bbox_.west();
-    const Longitude& east = bbox_.east();
-    const Latitude& south = bbox_.south();
-    const Latitude& north = bbox_.north();
+    auto west  = bbox_.west();
+    auto east  = bbox_.east();
+    auto south = bbox_.south();
+    auto north = bbox_.north();
 
     Ni_ = N_ * 4;
 
-    if (east - west + inc < Longitude::GLOBE) {
+    if (east - west + inc < globe) {
 
-        auto w  = west.fraction();
+        Fraction w(west);
         auto Nw = (w / inc).integralPart();
         if (Nw * inc < w) {
             Nw += 1;
         }
 
-        auto e  = east.fraction();
+        Fraction e(east);
         auto Ne = (e / inc).integralPart();
         if (Ne * inc > e) {
             Ne -= 1;
         }
 
         ASSERT(Ne - Nw + 1 > 0);
-        Ni_ = size_t(Ne - Nw + 1);
+        Ni_ = static_cast<size_t>(Ne - Nw + 1);
 
         ASSERT(2 <= Ni_ && Ni_ <= N_ * 4);
     }
@@ -248,7 +253,7 @@ void Regular::setNiNj() {
 
     if (north < lats.front() || south > lats.back()) {
         Nj_ = 0;
-        for (Latitude lat : lats) {
+        for (const auto& lat : lats) {
             if (north < lat && !angleApproximatelyEqual(north, lat)) {
                 ++k_;
             }

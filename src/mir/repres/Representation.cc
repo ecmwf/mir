@@ -164,6 +164,13 @@ bool Representation::sameAs(const Representation& /*unused*/) const {
 }
 
 
+const eckit::geo::Grid& Representation::grid() const {
+    std::ostringstream os;
+    os << "Representation::grid() not implemented for " << *this;
+    throw exception::SeriousBug(os.str());
+}
+
+
 atlas::Grid Representation::atlasGrid() const {
     std::ostringstream os;
     os << "Representation::atlasGrid() not implemented for " << *this;
@@ -287,16 +294,16 @@ const Representation* Representation::globalise(data::MIRField& field) const {
     std::unique_ptr<Iterator> it(octahedral->iterator());
     while (it->next()) {
         const auto& p = it->pointUnrotated();
-        latitudes.push_back(p.lat().value());
-        longitudes.push_back(p.lon().value());
+        latitudes.push_back(p.lat);
+        longitudes.push_back(p.lon);
     }
 
     size_t extra = 0;
     while (it->next()) {
         const auto& p = it->pointUnrotated();
         if (!dom.contains(p)) {
-            latitudes.push_back(p.lat().value());
-            longitudes.push_back(p.lon().value());
+            latitudes.push_back(p.lat);
+            longitudes.push_back(p.lon);
             extra++;
         }
     }

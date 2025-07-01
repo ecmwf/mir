@@ -37,8 +37,7 @@ util::Increments RegularLL::increments() const {
 
 
 size_t RegularLL::gaussianNumber() const {
-    auto inc = increments();
-    auto r   = Latitude::GLOBE.fraction() / inc.south_north().latitude().fraction();
+    auto r   = eckit::Fraction(360, 1) / eckit::Fraction(increments().south_north());
     auto N   = long(r.integralPart() / 2);
 
     ASSERT(N >= 0);

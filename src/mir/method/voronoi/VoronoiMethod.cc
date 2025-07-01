@@ -26,7 +26,6 @@
 #include "mir/search/PointSearch.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
-#include "mir/util/Point2ToPoint3.h"
 #include "mir/util/Trace.h"
 
 
@@ -63,14 +62,7 @@ void VoronoiMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, c
     log << "VoronoiMethod::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
 
-    std::unique_ptr<search::PointSearch> tree;
-    {
-        trace::ResourceUsage usage("assemble: create output k-d tree");
-        tree = std::make_unique<search::PointSearch>(parametrisation_, out);
-    }
-
-
-    util::Point2ToPoint3 point3(in, poleDisplacement());
+    search::PointSearch tree(out, parametrisation_);
 
     auto Nin  = in.numberOfPoints();
     auto Nout = out.numberOfPoints();
@@ -87,11 +79,11 @@ void VoronoiMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, c
         std::vector<search::PointSearch::PointValueType> closest;
         for (const std::unique_ptr<repres::Iterator> it(in.iterator()); it->next();) {
             if (++progress) {
-                log << *tree << std::endl;
+                log << tree << std::endl;
             }
 
             // lookup
-            pick_.pick(*tree, point3(*(*it)), closest);
+            pick_.pick(tree, tree.to_xyz(*(*it)), closest);
             for (auto& c : closest) {
                 auto i = c.payload();
                 biplets.emplace(i, it->index());
@@ -107,10 +99,7 @@ void VoronoiMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, c
                      << Log::Pretty(Nout, {"output point"}) << " (completing with output-based assignment)"
                      << std::endl;
 
-        {
-            trace::ResourceUsage usage("assemble: create input k-d tree");
-            tree = std::make_unique<search::PointSearch>(parametrisation_, in);
-        }
+        search::PointSearch tree(in, parametrisation_);
 
         {
             trace::ProgressTimer progress("assemble: output-based assign", Nout - Nassigned, {"point"});
@@ -123,11 +112,11 @@ void VoronoiMethod::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, c
                 }
 
                 if (++progress) {
-                    log << *tree << std::endl;
+                    log << tree << std::endl;
                 }
 
                 // lookup
-                pick_.pick(*tree, point3(*(*it)), closest);
+                pick_.pick(tree, tree.to_xyz(*(*it)), closest);
                 for (auto& c : closest) {
                     auto j = c.payload();
                     biplets.emplace(i, j);  // won't insert biplet if existing

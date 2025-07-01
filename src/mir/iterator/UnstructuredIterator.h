@@ -71,7 +71,7 @@ private:
     // -- Overridden methods
 
     void print(std::ostream& out) const override;
-    bool next(Latitude& lat, Longitude& lon) override;
+    PointLonLat next(bool& valid) override;
     size_t index() const override { return count_; }
 
     // -- Class members

@@ -19,17 +19,17 @@ namespace mir::util {
 
 
 bool Domain::includesPoleNorth() const {
-    return north() == Latitude::NORTH_POLE;
+    return PointLonLat{0, north()}.north_pole();
 }
 
 
 bool Domain::includesPoleSouth() const {
-    return south() == Latitude::SOUTH_POLE;
+    return PointLonLat{0, south()}.south_pole();
 }
 
 
 Domain::operator atlas::RectangularDomain() const {
-    return atlas::RectangularDomain({west().value(), east().value()}, {south().value(), north().value()});
+    return atlas::RectangularDomain({west(), east()}, {south(), north()});
 }
 
 

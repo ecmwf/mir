@@ -24,6 +24,7 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Atlas.h"
+#include "mir/util/Earth.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Types.h"
@@ -233,9 +234,7 @@ void NablaFilterFVMT<T>::execute(context::Context& ctx) const {
             ASSERT(values.size() == N);
 
             for (const std::unique_ptr<repres::Iterator> it(field.representation()->iterator()); it->next();) {
-                auto lat = it->pointUnrotated().lat().value();
-                if (eckit::types::is_approximately_equal(lat, Latitude::NORTH_POLE.value()) ||
-                    eckit::types::is_approximately_equal(lat, Latitude::SOUTH_POLE.value())) {
+                if (it->pointUnrotated().pole()) {
                     values.at(it->index()) = missingValue;
                 }
             }

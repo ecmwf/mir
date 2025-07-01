@@ -13,6 +13,7 @@
 #include "eckit/testing/Test.h"
 
 #include "eckit/types/FloatCompare.h"
+#include "eckit/types/Fraction.h"
 
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/repres/gauss/reduced/ReducedFromPL.h"
@@ -30,6 +31,8 @@
 
 constexpr double EPS = 1e-6;
 
+using eckit::Fraction;
+
 #define EXPECT_APPROX(a, b)                                             \
     Log::info() << "EXPECT(" << #a << " ~= " << #b << ")" << std::endl; \
     EXPECT(eckit::types::is_approximately_equal(static_cast<double>(a), static_cast<double>(b), EPS))
@@ -45,9 +48,6 @@ namespace mir::tests::unit {
 
 
 CASE("grid boxes: West-East periodicity, reduced Gaussian grids") {
-    using Longitude = LongitudeDouble;
-
-
     SECTION("periodic") {
         const std::vector<long> pl{20, 20};
 
@@ -60,8 +60,8 @@ CASE("grid boxes: West-East periodicity, reduced Gaussian grids") {
 
         const auto inc = 360. / static_cast<double>(pl[0]);
 
-        EXPECT_EQUAL(Longitude(boxes.front().west()), Longitude(-inc / 2.));
-        EXPECT_EQUAL(Longitude(boxes.back().east()), Longitude(-inc / 2. + 360.));
+        EXPECT_EQUAL(Fraction(boxes.front().west()), Fraction(-inc / 2.));
+        EXPECT_EQUAL(Fraction(boxes.back().east()), Fraction(-inc / 2. + 360.));
 
         EXPECT_BOX(boxes[0], 90., -9., 0., 9.);
         EXPECT_BOX(boxes[1], 90., 9., 0., 27.);
@@ -96,7 +96,6 @@ CASE("grid boxes: West-East periodicity, reduced Gaussian grids") {
 
 
 CASE("grid boxes: West-East periodicity, regular Gaussian grids") {
-
     SECTION("periodic") {
         repres::RepresentationHandle r(new repres::gauss::regular::RegularGG(1));
         ASSERT(r->domain().isPeriodicWestEast());
@@ -107,8 +106,8 @@ CASE("grid boxes: West-East periodicity, regular Gaussian grids") {
 
         const auto inc = 360. / 4.;  // assumes Ni == 4 * N
 
-        EXPECT_EQUAL(Longitude(boxes.front().west()), Longitude(-inc / 2.));
-        EXPECT_EQUAL(Longitude(boxes.back().east()), Longitude(-inc / 2. + 360.));
+        EXPECT_EQUAL(Fraction(boxes.front().west()), Fraction(-inc / 2.));
+        EXPECT_EQUAL(Fraction(boxes.back().east()), Fraction(-inc / 2. + 360.));
 
         EXPECT_BOX(boxes[0], 90., -45., 0., 45.);
         EXPECT_BOX(boxes[1], 90., 45., 0., 135.);
@@ -150,8 +149,8 @@ CASE("grid boxes: West-East periodicity, regular lat/lon grids") {
         EXPECT(boxes.size() == r->numberOfPoints());
         EXPECT(boxes.size() == 60);
 
-        EXPECT_EQUAL(Longitude(boxes.front().west()), Longitude(-inc / 2.));
-        EXPECT_EQUAL(Longitude(boxes.back().east()), Longitude(-inc / 2. + 360.));
+        EXPECT_EQUAL(Fraction(boxes.front().west()), Fraction(-inc / 2.));
+        EXPECT_EQUAL(Fraction(boxes.back().east()), Fraction(-inc / 2. + 360.));
 
         EXPECT_BOX(boxes[0], 90., -9., 45., 9.);
         EXPECT_BOX(boxes[1], 90., 9., 45., 27.);
@@ -206,8 +205,8 @@ CASE("grid boxes: West-East periodicity, reduced lat/lon grids") {
 
         const auto inc = 360. / static_cast<double>(pl[0]);
 
-        EXPECT_EQUAL(Longitude(boxes.front().west()), Longitude(-inc / 2.));
-        EXPECT_EQUAL(Longitude(boxes.back().east()), Longitude(-inc / 2. + 360.));
+        EXPECT_EQUAL(Fraction(boxes.front().west()), Fraction(-inc / 2.));
+        EXPECT_EQUAL(Fraction(boxes.back().east()), Fraction(-inc / 2. + 360.));
 
         EXPECT_BOX(boxes[0], 90., -9., 45., 9.);
         EXPECT_BOX(boxes[1], 90., 9., 45., 27.);
@@ -224,10 +223,10 @@ CASE("grid boxes: West-East periodicity, reduced lat/lon grids") {
         param::SimpleParametrisation param;
         param.set("pl", pl);
         param.set("Nj", pl.size());
-        param.set("north", bbox.north().value());
-        param.set("west", bbox.west().value());
-        param.set("south", bbox.south().value());
-        param.set("east", bbox.east().value());
+        param.set("north", bbox.north());
+        param.set("west", bbox.west());
+        param.set("south", bbox.south());
+        param.set("east", bbox.east());
 
         repres::RepresentationHandle r(new repres::latlon::ReducedLL(param));
         ASSERT(!r->domain().isPeriodicWestEast());

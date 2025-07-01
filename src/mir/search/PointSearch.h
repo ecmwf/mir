@@ -12,113 +12,46 @@
 
 #pragma once
 
-#include <memory>
+#include "eckit/geo/Search.h"
 
-#include "mir/search/Tree.h"
+#include "mir/util/PointLonLatToPointXYZ.h"
+#include "mir/util/Types.h"
 
 
-namespace mir::param {
+namespace mir {
+namespace param {
 class MIRParametrisation;
-}  // namespace mir::param
+}
+namespace repres {
+class Representation;
+}
+}  // namespace mir
 
 
 namespace mir::search {
 
 
-/// Class for fast searches in point clouds following k-d tree algorithms
-/// @todo test k-d tree stored in shared memory?
-class PointSearch {
+class PointSearch : public eckit::geo::Search {
 public:
-    // -- Types
+    PointSearch(const repres::Representation&, const param::MIRParametrisation&);
 
-    using ValueType      = Tree::Payload;
-    using PointType      = Tree::Point;
-    using PointValueType = Tree::PointValueType;
+    PointValueType closestPoint(const PointXYZ&) const;
+    void closestNPoints(const PointXYZ&, size_t n, std::vector<PointValueType>& closest) const;
+    void closestWithinRadius(const PointXYZ&, double radius, std::vector<PointValueType>& closest) const;
 
-    // -- Exceptions
-    // None
+    PointValueType closestPoint(const PointLonLat&) const;
+    void closestNPoints(const PointLonLat&, size_t n, std::vector<PointValueType>& closest) const;
+    void closestWithinRadius(const PointLonLat&, double radius, std::vector<PointValueType>& closest) const;
 
-    // -- Constructors
-
-    PointSearch(const param::MIRParametrisation&, const repres::Representation&);
-
-    PointSearch(const PointSearch&) = delete;
-    PointSearch(PointSearch&&)      = delete;
-
-    // -- Destructor
-    // None
-
-    // -- Convertors
-    // None
-
-    // -- Operators
-
-    void operator=(const PointSearch&) = delete;
-    void operator=(PointSearch&&)      = delete;
-
-    // -- Methods
-
-    /// Finds closest point to an input point
-    PointValueType closestPoint(const PointType&) const;
-
-    /// Finds closest N points to an input point
-    void closestNPoints(const PointType&, size_t n, std::vector<PointValueType>& closest) const;
-
-    /// Finds closest points within a radius
-    void closestWithinRadius(const PointType&, double radius, std::vector<PointValueType>& closest) const;
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
+    PointXYZ to_xyz(const PointLonLat& p) const { return to_xyz_.fwd(p); }
+    PointLonLat to_lonlat(const PointXYZ& p) const { return to_xyz_.inv(p); }
 
 private:
-    // -- Members
-
-    std::unique_ptr<Tree> tree_;
-
-    // -- Methods
-
-    void build(const repres::Representation&);
-
-    void print(std::ostream&) const;
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-    // -- Friends
-
-    friend std::ostream& operator<<(std::ostream& out, const PointSearch& p) {
-        p.print(out);
-        return out;
-    }
+    util::PointLonLatToPointXYZ to_xyz_;
 };
+
+
+using PointSearchFactory = eckit::geo::search::TreeFactory;
 
 
 }  // namespace mir::search

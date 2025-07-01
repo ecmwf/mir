@@ -32,16 +32,16 @@ void UnstructuredIterator::print(std::ostream& out) const {
 }
 
 
-bool UnstructuredIterator::next(Latitude& lat, Longitude& lon) {
+PointLonLat UnstructuredIterator::next(bool& valid) {
     if ((first_ ? count_ : ++count_) < size_) {
         first_ = false;
-        lat    = latitudes_[count_];
-        lon    = longitudes_[count_];
 
-        return true;
+        valid = true;
+        return {latitudes_[count_], longitudes_[count_]};
     }
 
-    return false;
+    valid = false;
+    return {};
 }
 
 

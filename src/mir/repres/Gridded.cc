@@ -34,10 +34,10 @@ Gridded::Gridded() = default;
 
 
 util::Domain Gridded::domain() const {
-    const Latitude& n  = includesNorthPole() ? Latitude::NORTH_POLE : bbox_.north();
-    const Latitude& s  = includesSouthPole() ? Latitude::SOUTH_POLE : bbox_.south();
-    const Longitude& w = bbox_.west();
-    const Longitude& e = isPeriodicWestEast() ? bbox_.west() + Longitude::GLOBE : bbox_.east();
+    auto n = includesNorthPole() ? PointLonLat::RIGHT_ANGLE : bbox_.north();
+    auto s = includesSouthPole() ? -PointLonLat::RIGHT_ANGLE : bbox_.south();
+    auto w = bbox_.west();
+    auto e = isPeriodicWestEast() ? bbox_.west() + PointLonLat::FULL_ANGLE : bbox_.east();
 
     return util::Domain(n, w, s, e);
 }
@@ -68,6 +68,12 @@ atlas::Grid Gridded::rotate_atlas_grid(const Rotation& rotation, const atlas::Gr
             .set("rotation_angle", rotation.angle()));
 
     return {atlas::Grid::Spec(grid.spec()).set("projection", projection.spec())};
+}
+
+
+const eckit::geo::Grid& Gridded::grid() const {
+    ASSERT(grid_);
+    return *grid_;
 }
 
 

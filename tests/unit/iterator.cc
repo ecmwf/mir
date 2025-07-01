@@ -24,6 +24,7 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/Increments.h"
 #include "mir/util/Log.h"
+#include "mir/util/Types.h"
 
 
 namespace mir::tests::unit {
@@ -47,13 +48,13 @@ CASE("MIR-390") {
 
     // 89.9958333333, 0.004166666667, -89.9958333333, 359.995833333
     BoundingBox bbox{Fraction(21599, 240), Fraction(1, 240), Fraction(-21599, 240), Fraction(86355, 240)};
-    PointLatLon reference{bbox.south(), bbox.west()};
+    PointLonLat reference{bbox.west(), bbox.south()};
 
     size_t Ni = 43200;
     size_t Nj = 21600;
 
-    Increments inc((bbox.east().fraction() - bbox.west().fraction()) / Ni,
-                   (bbox.north().fraction() - bbox.south().fraction()) / Nj);
+    Increments inc((Fraction(bbox.east()) - Fraction(bbox.west())) / Ni,
+                   (Fraction(bbox.north()) - Fraction(bbox.south())) / Nj);
 
 
     SECTION("LatLon::correctBoundingBox") {
@@ -61,28 +62,28 @@ CASE("MIR-390") {
         using iterator::detail::RegularIterator;
 
         // Latitude/longitude ranges
-        RegularIterator lat{bbox.south().fraction(), bbox.north().fraction(), inc.south_north().latitude().fraction(),
-                            reference.lat().fraction()};
+        RegularIterator lat{Fraction(bbox.south()), Fraction(bbox.north()), Fraction(inc.south_north()),
+                            eckit::Fraction(reference.lat)};
 
         auto n = lat.b();
         auto s = lat.a();
 
-        EXPECTV(bbox.south().fraction() == s);
-        EXPECTV(bbox.north().fraction() == n);
+        EXPECTV(Fraction(bbox.south()) == s);
+        EXPECTV(Fraction(bbox.north()) == n);
         EXPECTV(Nj = lat.n());
 
-        RegularIterator lon{bbox.west().fraction(), bbox.east().fraction(), inc.west_east().longitude().fraction(),
-                            reference.lon().fraction(), Longitude::GLOBE.fraction()};
+        RegularIterator lon{Fraction(bbox.west()), Fraction(bbox.east()), Fraction(inc.west_east()),
+                            eckit::Fraction(reference.lon), Fraction(360, 1)};
 
         auto w = lon.a();
         auto e = lon.b();
 
-        EXPECTV(bbox.west().fraction() == w);
-        EXPECTV(bbox.east().fraction() == e);
+        EXPECTV(Fraction(bbox.west()) == w);
+        EXPECTV(Fraction(bbox.east()) == e);
         EXPECTV(Ni = lon.n());
 
         // checks
-        ASSERT(w + (Ni - 1) * lon.inc() == e || Ni * lon.inc() == Longitude::GLOBE.fraction());
+        ASSERT(w + (Ni - 1) * lon.inc() == e || Ni * lon.inc() == Fraction(360, 1));
         ASSERT(s + (Nj - 1) * lat.inc() == n);
 
         EXPECTV(bbox == BoundingBox(n, w, s, e));
@@ -101,10 +102,10 @@ CASE("GaussianIterator") {
         size_t numberOfPoints;
         size_t numberOfCroppedPoints;
         BoundingBox bbox;
-        Point2 globalP1;
-        Point2 globalP2;
-        Point2 localP1;
-        Point2 localP2;
+        PointLonLat globalP1;
+        PointLonLat globalP2;
+        PointLonLat localP1;
+        PointLonLat localP2;
     };
 
     BoundingBox globe;
@@ -278,11 +279,11 @@ CASE("GaussianIterator") {
 
             ASSERT(git->next());
             EXPECT(globe.contains(*(*git)));
-            EXPECT(eckit::geometry::points_equal(*(*git), t.globalP1));
+            EXPECT(eckit::geo::points_equal(*(*git), t.globalP1));
 
             ASSERT(git->next());
             EXPECT(globe.contains(*(*git)));
-            EXPECT(eckit::geometry::points_equal(*(*git), t.globalP2));
+            EXPECT(eckit::geo::points_equal(*(*git), t.globalP2));
 
             log << "Test " + t.grid + " (cropped)" << std::endl;
             repres::RepresentationHandle cropped(global->croppedRepresentation(t.bbox));
@@ -292,11 +293,11 @@ CASE("GaussianIterator") {
 
             ASSERT(cit->next());
             EXPECT(t.bbox.contains(*(*cit)));
-            EXPECT(eckit::geometry::points_equal(*(*cit), t.localP1));
+            EXPECT(eckit::geo::points_equal(*(*cit), t.localP1));
 
             ASSERT(cit->next());
             EXPECT(t.bbox.contains(*(*cit)));
-            EXPECT(eckit::geometry::points_equal(*(*cit), t.localP2));
+            EXPECT(eckit::geo::points_equal(*(*cit), t.localP2));
         }
     }
 
@@ -319,11 +320,11 @@ CASE("GaussianIterator") {
 
         ASSERT(git->next());
         EXPECT(globe.contains(*(*git)));
-        EXPECT(eckit::geometry::points_equal(*(*git), t.globalP1));
+        EXPECT(eckit::geo::points_equal(*(*git), t.globalP1));
 
         ASSERT(git->next());
         EXPECT(globe.contains(*(*git)));
-        EXPECT(eckit::geometry::points_equal(*(*git), t.globalP2));
+        EXPECT(eckit::geo::points_equal(*(*git), t.globalP2));
 
         log << "Test " + t.grid + " (cropped)" << std::endl;
         repres::RepresentationHandle cropped(global->croppedRepresentation(t.bbox));
@@ -333,11 +334,11 @@ CASE("GaussianIterator") {
 
         ASSERT(cit->next());
         EXPECT(t.bbox.contains(*(*cit)));
-        EXPECT(eckit::geometry::points_equal(*(*cit), t.localP1));
+        EXPECT(eckit::geo::points_equal(*(*cit), t.localP1));
 
         ASSERT(cit->next());
         EXPECT(t.bbox.contains(*(*cit)));
-        EXPECT(eckit::geometry::points_equal(*(*cit), t.localP2));
+        EXPECT(eckit::geo::points_equal(*(*cit), t.localP2));
     }
 
 

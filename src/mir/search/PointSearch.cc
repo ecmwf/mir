@@ -12,104 +12,71 @@
 
 #include "mir/search/PointSearch.h"
 
-#include "eckit/config/Resource.h"
-#include "eckit/thread/AutoLock.h"
+#include "eckit/geo/spec/Custom.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/Exceptions.h"
-#include "mir/util/Log.h"
-#include "mir/util/Trace.h"
-#include "mir/util/Types.h"
 
 
 namespace mir::search {
 
 
-static std::string extract_loader(const param::MIRParametrisation& param) {
-    bool caching = LibMir::caching();
+namespace {
+
+
+double pole_displacement(const param::MIRParametrisation& param) {
+    double displacement = 0;
+    param.get("pole-displacement-in-degree", displacement);
+    return displacement;
+}
+
+
+eckit::geo::spec::Custom spec_from_parametrisation(const param::MIRParametrisation& param) {
+    auto loader = LibMir::cacheLoader(LibMir::cache_loader::POINT_SEARCH);
+    param.get("search-trees", loader);
+
+    auto caching = LibMir::caching();
     param.get("caching", caching);
 
-    std::string name = caching ? LibMir::cacheLoader(LibMir::cache_loader::POINT_SEARCH) : "memory";
-    param.get("point-search-trees", name);
-    return name;
+    return {{"eckit-geo-search-trees", loader}, {"caching", caching}};
 }
 
 
-PointSearch::PointSearch(const param::MIRParametrisation& param, const repres::Representation& r) {
-    tree_.reset(TreeFactory::build(extract_loader(param), r));
-    eckit::AutoLock<Tree> lock(*tree_);
+}  // namespace
 
-    Log::debug() << "Search using " << *tree_ << std::endl;
 
-    if (!tree_->ready()) {
-        build(r);
-        tree_->commit();
-    }
+PointSearch::PointSearch(const repres::Representation& r, const param::MIRParametrisation& param) :
+    eckit::geo::Search(r.grid(), spec_from_parametrisation(param)), to_xyz_(r, pole_displacement(param)) {}
+
+
+void PointSearch::closestNPoints(const PointXYZ& p, size_t n, std::vector<PointValueType>& closest) const {
+    Search::closestNPoints(PointType(p), n, closest);
 }
 
 
-PointSearch::PointValueType PointSearch::closestPoint(const PointSearch::PointType& pt) const {
-    return tree_->nearestNeighbour(pt);
+void PointSearch::closestWithinRadius(const PointXYZ& p, double radius, std::vector<PointValueType>& closest) const {
+    Search::closestWithinRadius(PointType(p), radius, closest);
 }
 
 
-void PointSearch::closestNPoints(const PointType& pt, size_t n, std::vector<PointValueType>& closest) const {
-
-    // Small optimisation
-    if (n == 1) {
-        closest.clear();
-        closest.push_back(closestPoint(pt));
-        return;
-    }
-
-    closest = tree_->kNearestNeighbours(pt, n);
+eckit::geo::Search::PointValueType PointSearch::closestPoint(const PointXYZ& p) const {
+    return Search::closestPoint(PointType(p));
 }
 
 
-void PointSearch::closestWithinRadius(const PointType& pt, double radius, std::vector<PointValueType>& closest) const {
-    closest = tree_->findInSphere(pt, radius);
+void PointSearch::closestNPoints(const PointLonLat& p, size_t n, std::vector<PointValueType>& closest) const {
+    Search::closestNPoints(PointType(to_xyz_.fwd(p)), n, closest);
 }
 
 
-void PointSearch::build(const repres::Representation& r) {
-    const size_t npts = tree_->itemCount();
-    ASSERT(npts > 0);
-
-    trace::Timer timer("PointSearch: building k-d tree");
-    Log::info() << "PointSearch: building " << *tree_ << " for " << r << " (" << Log::Pretty(npts, {"point"}) << ")"
-                << std::endl;
-
-    static bool fastBuildKDTrees =
-        eckit::Resource<bool>("$ATLAS_FAST_BUILD_KDTREES", true);  // We use the same Resource as ATLAS for now
-
-    if (fastBuildKDTrees) {
-        std::vector<PointValueType> points;
-        points.reserve(npts);
-
-        for (const std::unique_ptr<repres::Iterator> it(r.iterator()); it->next();) {
-            points.emplace_back(PointValueType(it->point3D(), it->index()));
-        }
-
-        tree_->build(points);
-
-        if (points.size() < npts) {
-            Log::info() << "PointSearch: built tree for " << Log::Pretty(points.size(), {"valid point"}) << std::endl;
-        }
-    }
-    else {
-        for (const std::unique_ptr<repres::Iterator> it(r.iterator()); it->next();) {
-            tree_->insert(PointValueType(it->point3D(), it->index()));
-        }
-    }
+void PointSearch::closestWithinRadius(const PointLonLat& p, double radius, std::vector<PointValueType>& closest) const {
+    Search::closestWithinRadius(PointType(to_xyz_.fwd(p)), radius, closest);
 }
 
 
-void PointSearch::print(std::ostream& out) const {
-    tree_->statsPrint(out, false);
-    tree_->statsReset();
+eckit::geo::Search::PointValueType PointSearch::closestPoint(const PointLonLat& p) const {
+    return Search::closestPoint(PointType(to_xyz_.fwd(p)));
 }
 
 

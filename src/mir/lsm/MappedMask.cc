@@ -90,7 +90,7 @@ MappedMask::MappedMask(const std::string& name, const eckit::PathName& path,
     eckit::Stat::Struct s;
     SYSCALL(eckit::Stat::stat(path_.localPath(), &s));
 
-    auto size = size_t(s.st_size);
+    auto size = static_cast<size_t>(s.st_size);
 
     void* address = MMap::mmap(nullptr, size, PROT_READ, MAP_SHARED, fd, 0);
     if (address == MAP_FAILED) {
@@ -101,7 +101,7 @@ MappedMask::MappedMask(const std::string& name, const eckit::PathName& path,
     Unmapper unmap(address, size);
 
     size_t bits = size * 8;
-    auto Nj     = size_t(std::sqrt(bits / 2));
+    auto Nj     = static_cast<size_t>(std::sqrt(bits / 2));
     auto Ni     = Nj * 2;
 
     ASSERT(Ni * Nj / 8 == size);
@@ -116,34 +116,21 @@ MappedMask::MappedMask(const std::string& name, const eckit::PathName& path,
     // NOTE: this is not using 3D coordinate systems
     // mask_.reserve(grid.size());
 
-    const unsigned char* mask = reinterpret_cast<unsigned char*>(address);
+    const auto* mask = reinterpret_cast<unsigned char*>(address);
 
     for (const std::unique_ptr<repres::Iterator> it(representation.iterator()); it->next();) {
         const auto& p = it->pointUnrotated();
-        Latitude lat  = p.lat();
-        Longitude lon = p.lon().normalise(Longitude::GREENWICH);
 
-        if (lat < Latitude::SOUTH_POLE) {
-            auto msg = "GRID  returns a latitude of " + std::to_string(lat.value()) +
-                       " (lat+90)=" + std::to_string((lat + Latitude::NORTH_POLE).value());
-            throw exception::SeriousBug(msg);
-        }
-        ASSERT(lat >= Latitude::SOUTH_POLE);
+        auto q = PointLonLat::make(p.lon, p.lat);
+        ASSERT(-90. <= q.lat && q.lat <= 90.);
 
-        if (lat > Latitude::NORTH_POLE) {
-            auto msg = "GRID  returns a latitude of " + std::to_string(lat.value()) +
-                       " (lat-90)=" + std::to_string((lat + Latitude::SOUTH_POLE).value());
-            throw exception::SeriousBug(msg);
-        }
-        ASSERT(lat <= Latitude::NORTH_POLE);
+        auto row = static_cast<int>((90. - q.lat) * static_cast<double>(ROWS - 1) / 180.);
+        ASSERT(0 <= row && row < static_cast<int>(ROWS));
 
-        int row = int((90.0 - lat.value()) * double(ROWS - 1) / Latitude::GLOBE.value());
-        ASSERT(row >= 0 && row < int(ROWS));
+        auto col = static_cast<int>(q.lon * static_cast<double>(COLS) / 360.);
+        ASSERT(0 <= col && col < static_cast<int>(COLS));
 
-        int col = int(lon.value() * double(COLS) / Longitude::GLOBE.value());
-        ASSERT(col >= 0 && col < int(COLS));
-
-        size_t pos  = COLS * size_t(row) + size_t(col);
+        size_t pos  = COLS * static_cast<size_t>(row) + static_cast<size_t>(col);
         size_t byte = pos / 8;
         size_t bit  = pos % 8;
 

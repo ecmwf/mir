@@ -53,15 +53,15 @@ size_t GaussianIterator::resetToRow(size_t j) {
     auto Ni_globe = pl_[j];
     ASSERT(Ni_globe > 1);
 
-    inc_ = Longitude::GLOBE.fraction() / Ni_globe;
+    inc_ = {360, Ni_globe};
 
-    const eckit::Fraction w = bbox_.west().fraction();
+    const eckit::Fraction w(bbox_.west());
     auto Nw                 = (w / inc_).integralPart();
     if (Nw * inc_ < w) {
         Nw += 1;
     }
 
-    const eckit::Fraction e = bbox_.east().fraction();
+    const eckit::Fraction e(bbox_.east());
     auto Ne                 = (e / inc_).integralPart();
     if (Ne * inc_ > e) {
         Ne -= 1;
@@ -80,14 +80,13 @@ void GaussianIterator::print(std::ostream& out) const {
 }
 
 
-bool GaussianIterator::next(Latitude& lat, Longitude& lon) {
+PointLonLat GaussianIterator::next(bool& valid) {
     while (Ni_ == 0 && j_ < Nj_) {
         Ni_ = resetToRow(k_ + j_++);
     }
 
     if (0 < Nj_ && i_ < Ni_) {
-        lat = lat_;
-        lon = lon_;
+        double lon = lon_;
 
         lon_ += inc_;
 
@@ -103,9 +102,12 @@ bool GaussianIterator::next(Latitude& lat, Longitude& lon) {
             Ni_ = 0;
         }
 
-        return true;
+        valid = true;
+        return {lon, lat_};
     }
-    return false;
+
+    valid = false;
+    return {};
 }
 
 

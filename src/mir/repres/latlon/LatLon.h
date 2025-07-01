@@ -12,6 +12,8 @@
 
 #pragma once
 
+#include "eckit/types/Fraction.h"
+
 #include "mir/repres/Gridded.h"
 #include "mir/util/Increments.h"
 
@@ -27,7 +29,7 @@ public:
     // -- Constructors
 
     LatLon(const param::MIRParametrisation&);
-    LatLon(const util::Increments&, const util::BoundingBox& = {}, const PointLatLon& reference = {0, 0});
+    LatLon(const util::Increments&, const util::BoundingBox& = {}, const PointLonLat& reference = {0, 0});
 
     // -- Destructor
 
@@ -46,10 +48,10 @@ public:
     size_t Nj() const { return nj_; }
 
     static void globaliseBoundingBox(util::BoundingBox&, const util::Increments&,
-                                     const PointLatLon& reference = {0, 0});
+                                     const PointLonLat& reference = {0, 0});
 
     static void correctBoundingBox(util::BoundingBox&, size_t& ni, size_t& nj, const util::Increments&,
-                                   const PointLatLon& reference = {0, 0});
+                                   const PointLonLat& reference = {0, 0});
 
     // -- Overridden methods
     // None
@@ -64,7 +66,7 @@ protected:
     // -- Members
 
     const util::Increments increments_;
-    const PointLatLon reference_;
+    const PointLonLat reference_;
     size_t ni_;
     size_t nj_;
 
@@ -104,8 +106,8 @@ protected:
         eckit::Fraction ns_;
         size_t i_;
         size_t j_;
-        Latitude latValue_;
-        Longitude lonValue_;
+        double latValue_;
+        double lonValue_;
         eckit::Fraction lat_;
         eckit::Fraction lon_;
 
@@ -115,10 +117,10 @@ protected:
 
         ~LatLonIterator();
         void print(std::ostream&) const;
-        bool next(Latitude&, Longitude&);
+        PointLonLat next(bool&);
 
     public:
-        LatLonIterator(size_t ni, size_t nj, Latitude north, Longitude west, const util::Increments& increments);
+        LatLonIterator(size_t ni, size_t nj, double north, double west, const util::Increments&);
     };
 
     // -- Class methods

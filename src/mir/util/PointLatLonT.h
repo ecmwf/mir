@@ -19,15 +19,15 @@ namespace mir::util {
 
 
 template <typename LAT, typename LON>
-class PointLatLonT {
+class PointLonLatT {
 public:
-    PointLatLonT(const LAT& lat, const LON& lon) : lat_(lat), lon_(lon) {}
-    PointLatLonT()                        = default;
-    PointLatLonT(const PointLatLonT&)     = default;
-    PointLatLonT(PointLatLonT&&) noexcept = default;
-    virtual ~PointLatLonT()               = default;
+    PointLonLatT(const LAT& lat, const LON& lon) : lat_(lat), lon_(lon) {}
+    PointLonLatT()                        = default;
+    PointLonLatT(const PointLonLatT&)     = default;
+    PointLonLatT(PointLonLatT&&) noexcept = default;
+    virtual ~PointLonLatT()               = default;
 
-    PointLatLonT& operator=(const PointLatLonT&) = default;
+    PointLonLatT& operator=(const PointLonLatT&) = default;
 
     const LAT& lat() const { return lat_; }
     const LON& lon() const { return lon_; }
@@ -39,10 +39,10 @@ protected:
     LAT lat_;
     LON lon_;
 
-    virtual void print(std::ostream& out) const { out << "PointLatLon[" << lat_ << "," << lon_ << "]"; }
+    virtual void print(std::ostream& out) const { out << "PointLonLat[" << lat_ << "," << lon_ << "]"; }
 
 private:
-    friend std::ostream& operator<<(std::ostream& out, const PointLatLonT& p) {
+    friend std::ostream& operator<<(std::ostream& out, const PointLonLatT& p) {
         p.print(out);
         return out;
     }

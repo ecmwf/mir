@@ -58,50 +58,47 @@ struct MIRTriangulate : MIRTool {
 
 
 class Segment {
-    std::deque<Point2> points_;
-    Point2 inside_;
+    std::deque<PointLonLat> points_;
+    PointLonLat inside_;
 
 public:
     // Segment() {}
 
-    explicit Segment(const Point2& start, const Point2& end, const Point2& inside) : inside_(inside) {
+    explicit Segment(const PointLonLat& start, const PointLonLat& end, const PointLonLat& inside) : inside_(inside) {
         points_.push_back(start);
         points_.push_back(end);
     }
 
-    const Point2& start() const { return points_.front(); }
-    const Point2& end() const { return points_.back(); }
+    const PointLonLat& start() const { return points_.front(); }
+    const PointLonLat& end() const { return points_.back(); }
 
-    bool inside(const Point2& pt) const {
+    bool inside(const PointLonLat& pt) const {
         bool in  = false;
-        double y = pt.y();
-        double x = pt.x();
+        auto y   = pt.lat;
+        auto x   = pt.lon;
 
-        auto i = points_.begin();
-        auto j = i + 1;
-
-        for (; j != points_.end(); ++i, ++j) {
+        for (auto i = points_.begin(), j = i + 1; j != points_.end(); ++i, ++j) {
             const auto& p1 = *i;
             const auto& p2 = *j;
 
-            if (y <= std::min(p1.y(), p2.y())) {
+            if (y <= std::min(p1.lat, p2.lat)) {
                 continue;
             }
 
-            if (y > std::max(p1.y(), p2.y())) {
+            if (y > std::max(p1.lat, p2.lat)) {
                 continue;
             }
 
-            if (x > std::max(p1.x(), p2.x())) {
+            if (x > std::max(p1.lon, p2.lon)) {
                 continue;
             }
 
-            if (p1.y() == p2.y()) {
+            if (p1.lat == p2.lat) {
                 continue;
             }
 
-            double xints = (y - p1.y()) * (p2.x() - p1.x()) / (p2.y() - p1.y()) + p1.x();
-            if ((p2.x() == p1.x()) || (x <= xints)) {
+            double xints = (y - p1.lat) * (p2.lon - p1.lon) / (p2.lat - p1.lat) + p1.lon;
+            if ((p2.lon == p1.lon) || (x <= xints)) {
                 in = !in;
             }
         }
@@ -112,14 +109,9 @@ public:
 
     bool ccw() const {
         // Assumes closest poly have first == last point
-        auto i = points_.begin();
-        auto j = i + 1;
-
         double order = 0;
-        for (; j != points_.end(); ++i, ++j) {
-            const auto& p1 = *i;
-            const auto& p2 = *j;
-            order += (p2.x() - p1.x()) * (p2.y() + p1.y());
+        for (auto i = points_.begin(), j = i + 1; j != points_.end(); ++i, ++j) {
+            order += (j->lon - i->lon) * (j->lat + i->lat);
         }
 
         bool swapped = inside(inside_);
@@ -129,27 +121,38 @@ public:
 
     bool operator<(const Segment& other) const { return points_ < other.points_; }
 
-    bool operator==(const Segment& other) const { return points_ == other.points_; }
+    bool operator==(const Segment& other) const {
+        if (points_.size() == other.points_.size()) {
+            for (auto a = points_.begin(), b = other.points_.begin(); a != points_.end() && b != other.points_.end();
+                 ++a, ++b) {
+                if (eckit::geo::points_equal(*a, *b)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 
     bool merge(const Segment& other) {
         ASSERT(other.points_.size() == 2);
 
-        if (other.end() == start()) {
+        if (points_equal(other.end(), start())) {
             points_.push_front(other.start());
             return true;
         }
 
-        if (other.start() == start()) {
+        if (points_equal(other.start(), start())) {
             points_.push_front(other.end());
             return true;
         }
 
-        if (other.end() == end()) {
+        if (points_equal(other.end(), end())) {
             points_.push_back(other.start());
             return true;
         }
 
-        if (other.start() == end()) {
+        if (points_equal(other.start(), end())) {
             points_.push_back(other.end());
             return true;
         }
@@ -169,8 +172,8 @@ public:
         json.startList();
         for (auto q : points_) {
             json.startList();
-            json << q.x();
-            json << q.y();
+            json << q.lon;
+            json << q.lat;
             json.endList();
         }
         json.endList();
@@ -179,27 +182,14 @@ public:
     }
 };
 
-static std::map<Segment, Point2> cache;
-
-static Point2 middle(const Point2& p1, const Point2& p2) {
-    return Point2::middle(p1, p2);
-    // Segment s(p1, p2);
-    // auto j = cache.find(s);
-    // if (j == cache.end()) {
-    //     auto q = Point2::middle(p1, p2);
-    //     cache[Segment(p1, p2)] = q;
-    //     cache[Segment(p2, p1)] = q;
-    //     j = cache.find(s);
-    // }
-    // return j->second;
+static PointLonLat middle(const PointLonLat& p, const PointLonLat& q) {
+    return {p.lon + q.lon / 2., p.lat + q.lat / 2.};
 }
 
-static bool connect(const Point2& q, Segment& line, const std::map<Point2, std::set<Segment> >& ends,
+static bool connect(const PointLonLat& q, Segment& line, const std::map<PointLonLat, std::set<Segment> >& ends,
                     std::set<Segment>& segments) {
-
-    auto j = ends.find(q);
-    if (j != ends.end()) {
-        const std::set<Segment>& q = j->second;
+    if (auto j = ends.find(q); j != ends.end()) {
+        const auto& q = j->second;
 
         std::set<Segment> i;
         std::set_intersection(q.begin(), q.end(), segments.begin(), segments.end(), std::inserter(i, i.begin()));
@@ -215,8 +205,8 @@ static bool connect(const Point2& q, Segment& line, const std::map<Point2, std::
 }
 
 #if 0
-static void p(int n, Point2 p0, double val0, Point2 p1, double val1,
-              Point2 p2, double val2) {
+static void p(int n, PointLonLat p0, double val0, PointLonLat p1, double val1,
+              PointLonLat p2, double val2) {
 
 
     Log::info() << n << " " << val0 << " " << val1 << " " << val2 << std::endl;
@@ -299,10 +289,10 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
             const auto coord         = atlas::array::make_view<double, 2>(mesh.nodes().lonlat());
 
 
-            Point2 pa;
-            Point2 pb;
+            PointLonLat pa;
+            PointLonLat pb;
 
-            std::map<Point2, std::set<Segment> > ends;
+            std::map<PointLonLat, std::set<Segment> > ends;
 
             std::set<Segment> segments;
 
@@ -328,19 +318,19 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
 
 
                 auto row0 = row(0);
-                Point2 p0(coord(row0, LLCOORDS::LON), coord(row0, LLCOORDS::LAT));
+                PointLonLat p0(coord(row0, 0), coord(row0, 1));
                 // double val0 = values[row0];
 
                 auto row1 = row(1);
-                Point2 p1(coord(row1, LLCOORDS::LON), coord(row1, LLCOORDS::LAT));
+                PointLonLat p1(coord(row1, 0), coord(row1, 1));
                 // double val1 = values[row1];
 
                 auto row2 = row(2);
-                Point2 p2(coord(row2, LLCOORDS::LON), coord(row2, LLCOORDS::LAT));
+                PointLonLat p2(coord(row2, 0), coord(row2, 1));
                 // double val2 = values[row2];
                 // p(n, p0, val0, p1, val1, p2, val2);
 
-                Point2 inside;
+                PointLonLat inside;
 
                 switch (n) {
 

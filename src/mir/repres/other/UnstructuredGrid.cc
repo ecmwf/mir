@@ -234,17 +234,17 @@ Iterator* UnstructuredGrid::iterator() const {
 
 
 bool UnstructuredGrid::isPeriodicWestEast() const {
-    return bbox_.east() - bbox_.west() == Longitude::GLOBE;
+    return bbox_.east() - bbox_.west() >= PointLonLat::FULL_ANGLE;
 }
 
 
 bool UnstructuredGrid::includesNorthPole() const {
-    return bbox_.north() == Latitude::NORTH_POLE;
+    return PointLonLat(0, bbox_.north()).north_pole();
 }
 
 
 bool UnstructuredGrid::includesSouthPole() const {
-    return bbox_.south() == Latitude::SOUTH_POLE;
+    return PointLonLat(0, bbox_.south()).south_pole();
 }
 
 

@@ -76,8 +76,8 @@ void CheckerBoard::execute(context::Context& ctx) const {
             }
         }
 
-        auto we = Longitude::GLOBE.value() / double(frequencies[0]);
-        auto ns = Latitude::GLOBE.value() / double(frequencies[1]);
+        auto we = 360. / static_cast<double>(frequencies[0]);
+        auto ns = 180. / static_cast<double>(frequencies[1]);
 
         if (normalize) {
             maxvalue = 1;
@@ -105,12 +105,10 @@ void CheckerBoard::execute(context::Context& ctx) const {
             auto& v = values.at(it->index());
             if (!hasMissing || v != missingValue) {
                 const auto& p = it->pointUnrotated();
+                const auto q  = PointLonLat::make(p.lon, PointLonLat::RIGHT_ANGLE - p.lat);
 
-                Latitude lat  = Latitude::NORTH_POLE - p.lat();
-                Longitude lon = p.lon().normalise(Longitude::GREENWICH);
-
-                auto c = size_t(lat.value() / ns);
-                auto r = size_t(lon.value() / we);
+                auto c = size_t(q.lat / ns);
+                auto r = size_t(q.lon / we);
 
                 v = double(boxes[std::make_pair(r, c)]);
             }
