@@ -1,4 +1,4 @@
-find_program(MARS_SCRIPT NAMES mars false)
+find_program(MARS_SCRIPT NAMES mars)
 
 ecbuild_configure_file(mir-test.sh.in mir-test.sh @ONLY)
 
@@ -51,6 +51,8 @@ if(NOT atlas_HAVE_TESSELATION)
             MIR-647.001.test)
         get_filename_component(_t "${_r}" ABSOLUTE)
         target_from_path("${_t}" target)
-        set_tests_properties(${target} PROPERTIES WILL_FAIL TRUE)
+        if(${target})
+            set_tests_properties(${target} PROPERTIES WILL_FAIL TRUE)
+        endif()
     endforeach()
 endif()
