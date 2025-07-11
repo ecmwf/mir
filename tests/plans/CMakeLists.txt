@@ -1,5 +1,5 @@
-find_program(DIFF_TOOL NAMES "diff" "cmp" "false")
-find_program(MARS_SCRIPT NAMES "mars" "false")
+find_program(DIFF_TOOL NAMES "diff" "cmp")
+find_program(MARS_SCRIPT NAMES "mars")
 
 ecbuild_configure_file(mir-test.sh.in mir-test.sh @ONLY)
 
