@@ -30,7 +30,7 @@ if(NOT TARGET OpenMP::OpenMP_CXX)
 endif()
 
 ecbuild_find_package(NAME eccodes VERSION 2.40 REQUIRED)
-ecbuild_find_package(NAME eckit   VERSION 1.29 REQUIRED)
+ecbuild_find_package(NAME eckit   VERSION 1.31 REQUIRED)
 
 ecbuild_add_option(FEATURE ATLAS DEFAULT ON DESCRIPTION "support for Atlas" REQUIRED_PACKAGES "atlas VERSION 0.36")
 
