@@ -55,7 +55,7 @@ jobs:
     uses: ecmwf/downstream-ci/.github/workflows/downstream-ci-hpc.yml@add-mir-python
     with:
       mir: ecmwf/mir@${{ github.event.pull_request.head.sha || github.sha }}
-      mir-python: mir-python:ecmwf/mir/python@${{ github.event.pull_request.head.sha || github.sha }}
+      mir-python: mir-python:ecmwf/mir/python/mir@${{ github.event.pull_request.head.sha || github.sha }}
       skip_matrix_jobs: |
         intel-2021.4.0
         nvidia-22.11
