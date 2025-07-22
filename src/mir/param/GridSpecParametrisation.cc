@@ -24,7 +24,7 @@
 #include "mir/api/mir_config.h"
 #include "mir/util/Exceptions.h"
 
-#if mir_HAVE_GEO_GRID_ORCA
+#if mir_HAVE_GRID_ORCA
 #include "eckit/geo/grid/ORCA.h"
 #endif
 
@@ -146,7 +146,7 @@ struct MappingProjectionNone : ProjectionMapping {
 GridMapping* build_grid_mapping(const eckit::geo::Grid& grid) {
     const auto& type = grid.type();
 
-#if mir_HAVE_GEO_GRID_ORCA
+#if mir_HAVE_GRID_ORCA
     if (type == "orca") {
         struct MappingGridORCA : GridMapping {
             explicit MappingGridORCA(const eckit::geo::Grid& _grid) :
