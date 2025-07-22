@@ -65,12 +65,7 @@ void Rotation::fillGrib(grib_info& info) const {
 
     info.grid.latitudeOfSouthernPoleInDegrees  = rotation_.south_pole().lat;
     info.grid.longitudeOfSouthernPoleInDegrees = rotation_.south_pole().lon;
-
-    // This is missing from the grib_spec
-    // Remove that when supported
-    if (!eckit::types::is_approximately_equal<double>(rotation_.angle(), 0.)) {
-        info.extra_set("angleOfRotationInDegrees", rotation_.angle());
-    }
+    info.grid.angleOfRotationInDegrees         = rotation_.angle();
 }
 
 
@@ -87,8 +82,8 @@ bool Rotation::operator==(const Rotation& other) const {
 BoundingBox Rotation::boundingBox(const BoundingBox& bbox) const {
     eckit::geo::projection::Rotation projection({south_pole_longitude().value(), south_pole_latitude().value()});
 
-    std::unique_ptr<eckit::geo::area::BoundingBox> after(eckit::geo::area::BoundingBox::make_from_projection(
-        {bbox.west().value(), bbox.south().value()}, {bbox.east().value(), bbox.north().value()}, projection));
+    auto after = eckit::geo::area::BoundingBox::make_from_projection(
+        {bbox.west().value(), bbox.south().value()}, {bbox.east().value(), bbox.north().value()}, projection);
     ASSERT(after);
 
     return {after->north, after->west, after->south, after->east};
