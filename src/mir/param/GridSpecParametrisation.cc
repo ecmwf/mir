@@ -21,12 +21,7 @@
 #include "eckit/geo/grid/RegularLL.h"
 #include "eckit/geo/projection/Rotation.h"
 
-#include "mir/api/mir_config.h"
 #include "mir/util/Exceptions.h"
-
-#if mir_HAVE_GRID_ORCA
-#include "eckit/geo/grid/ORCA.h"
-#endif
 
 
 namespace mir::param {
@@ -94,6 +89,20 @@ struct MappingGridHEALPix : GridMapping {
 };
 
 
+struct MappingGridByUID : GridMapping {
+    MappingGridByUID(const std::string& type, const eckit::geo::Grid::uid_t& uid) : type_(type), uid_(uid) {}
+
+    void fill(SimpleParametrisation& param) const override {
+        param.set("gridType", type_);
+        param.set("gridded", 1L);
+        param.set("uid", uid_);
+    }
+
+    const std::string type_;
+    const eckit::geo::Grid::uid_t uid_;
+};
+
+
 struct MappingGridReducedGG : GridMapping {
     explicit MappingGridReducedGG(const eckit::geo::Grid& _grid) :
         grid_(dynamic_cast<const eckit::geo::grid::ReducedGaussian&>(_grid)) {}
@@ -146,30 +155,12 @@ struct MappingProjectionNone : ProjectionMapping {
 GridMapping* build_grid_mapping(const eckit::geo::Grid& grid) {
     const auto& type = grid.type();
 
-#if mir_HAVE_GRID_ORCA
-    if (type == "orca") {
-        struct MappingGridORCA : GridMapping {
-            explicit MappingGridORCA(const eckit::geo::Grid& _grid) :
-                grid_(dynamic_cast<const eckit::geo::grid::ORCA&>(_grid)) {}
-
-            void fill(SimpleParametrisation& param) const override {
-                param.set("gridType", "orca");
-                param.set("gridded", 1L);
-                param.set("uid", grid_.uid());
-            }
-
-            const eckit::geo::grid::ORCA& grid_;
-        };
-
-        return new MappingGridORCA(grid);
-    }
-#endif
-
     return type == "regular-ll"   ? static_cast<GridMapping*>(new MappingGridRegularLL(grid))
            : type == "regular-gg" ? static_cast<GridMapping*>(new MappingGridRegularGG(grid))
            : type == "reduced-gg" ? static_cast<GridMapping*>(new MappingGridReducedGG(grid))
-           : type == "healpix"
-               ? static_cast<GridMapping*>(new MappingGridHEALPix(grid))
+           : type == "healpix"    ? static_cast<GridMapping*>(new MappingGridHEALPix(grid))
+           : type == "fesom" || type == "icon" || type == "orca"
+               ? static_cast<GridMapping*>(new MappingGridByUID(type, grid.uid()))
                : throw exception::UserError("GridSpecParametrisation: unsupported grid mapping type: '" + type + "'");
 }
 
@@ -187,6 +178,7 @@ ProjectionMapping* build_projection_mapping(const eckit::geo::Projection& projec
     const auto& type = projection.type();
     return type == "rotation" ? static_cast<ProjectionMapping*>(new MappingProjectionRotation(projection))
            : type == "none"   ? static_cast<ProjectionMapping*>(new MappingProjectionNone(projection))
+           : type == "eqc"   ? static_cast<ProjectionMapping*>(new MappingProjectionNone(projection))
                               : throw exception::UserError(
                                   "GridSpecParametrisation: unsupported projection mapping type: '" + type + "'");
 }
