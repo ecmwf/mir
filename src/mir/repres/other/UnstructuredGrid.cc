@@ -52,12 +52,22 @@ namespace mir::repres {
 
 template <>
 Representation* RepresentationBuilder<other::UnstructuredGrid>::make(const param::MIRParametrisation& param) {
-#if mir_HAVE_GRID_ORCA
     // specially-named unstructured grids
-    if (std::string grid; param.get("grid", grid)) {
-        if (!ORCA::match(grid, param).empty()) {
-            return new ORCA(param);
-        }
+#if mir_HAVE_GRID_FESOM
+    if (std::string grid; param.get("grid", grid) && !FESOM::match(grid, param).empty()) {
+        return new FESOM(param);
+    }
+#endif
+
+#if mir_HAVE_GRID_ICON
+    if (std::string grid; param.get("grid", grid) && !ICON::match(grid, param).empty()) {
+        return new ICON(param);
+    }
+#endif
+
+#if mir_HAVE_GRID_ORCA
+    if (std::string grid; param.get("grid", grid) && !ORCA::match(grid, param).empty()) {
+        return new ORCA(param);
     }
 #endif
 
