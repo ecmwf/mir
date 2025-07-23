@@ -84,8 +84,6 @@ void BoundingBox::fillGrib(grib_info& info) const {
     info.grid.longitudeOfFirstGridPointInDegrees = west_.value();
     info.grid.latitudeOfLastGridPointInDegrees   = south_.value();
     info.grid.longitudeOfLastGridPointInDegrees  = east_.value();
-
-    info.extra_set("expandBoundingBox", 1L);
 }
 
 
