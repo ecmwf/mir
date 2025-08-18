@@ -1,5 +1,11 @@
 
-ecbuild_add_executable(TARGET mir-tool OUTPUT_NAME mir SOURCES mir.cc LIBS mir ${mir_INSTALL_TOOLS})
+ecbuild_add_executable(
+    TARGET      mir-tool
+    OUTPUT_NAME mir
+    SOURCES     mir.cc
+    LIBS        mir CLI11::CLI11
+    ${mir_INSTALL_TOOLS}
+)
 
 foreach(tool IN ITEMS
     mir-bounding-box
@@ -24,21 +30,36 @@ foreach(tool IN ITEMS
     mir-statistics
     mir-version
     mir-weight-matrix-diff)
-    ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir ${mir_INSTALL_TOOLS})
+    ecbuild_add_executable(
+        TARGET  ${tool}
+        SOURCES ${tool}.cc
+        LIBS    mir CLI11::CLI11
+        ${mir_INSTALL_TOOLS}
+    )
 endforeach()
 
 if(mir_HAVE_ECKIT_CODEC)
     foreach(tool IN ITEMS
         mir-codec-to-weight-matrix
         mir-grib-to-codec)
-        ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir eckit_codec ${mir_INSTALL_TOOLS})
+        ecbuild_add_executable(
+            TARGET  ${tool}
+            SOURCES ${tool}.cc
+            LIBS    mir CLI11::CLI11 eckit_codec
+            ${mir_INSTALL_TOOLS}
+        )
     endforeach()
 
     if(mir_HAVE_NETCDF)
         foreach(tool IN ITEMS
             mir-nc-to-codec
             mir-scrip-to-weight-matrix)
-            ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir eckit_codec NetCDF::NetCDF_CXX ${mir_INSTALL_TOOLS})
+            ecbuild_add_executable(
+                TARGET  ${tool}
+                SOURCES ${tool}.cc
+                LIBS    mir CLI11::CLI11 eckit_codec NetCDF::NetCDF_CXX
+                ${mir_INSTALL_TOOLS}
+            )
         endforeach()
     endif()
 endif()
@@ -48,6 +69,11 @@ if(mir_HAVE_ATLAS)
         mir-load-legendre
         mir-spectral-transform-points
         mir-triangulate)
-        ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir ${mir_INSTALL_TOOLS})
+        ecbuild_add_executable(
+            TARGET  ${tool}
+            SOURCES ${tool}.cc
+            LIBS    mir CLI11::CLI11
+            ${mir_INSTALL_TOOLS}
+        )
     endforeach()
 endif()

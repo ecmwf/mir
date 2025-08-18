@@ -57,6 +57,7 @@ include(cmake/compiler_warnings.cmake) # optionally handle compiler specific war
 add_subdirectory(src)
 add_subdirectory(etc)
 add_subdirectory(share)
+add_subdirectory(third-party)
 
 if(HAVE_TESTS)
     add_subdirectory(tests)
