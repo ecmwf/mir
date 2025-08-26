@@ -163,10 +163,10 @@ void Reduced::correctWestEast(Longitude& w, Longitude& e) const {
                     ASSERT(w <= Longitude(Nw * inc));
                     ASSERT(Longitude(Ne * inc) <= e);
 
-                    if (W > double(Nw * inc) || first) {
+                    if (W > static_cast<double>(Nw * inc) || first) {
                         W = Nw * inc;
                     }
-                    if (E < double(Ne * inc) || first) {
+                    if (E < static_cast<double>(Ne * inc) || first) {
                         E = Ne * inc;
                     }
                     first = false;
@@ -193,7 +193,8 @@ eckit::Fraction Reduced::getSmallestIncrement() const {
     using distance_t = std::make_signed<size_t>::type;
 
     const auto& pl = pls();
-    auto maxpl     = *std::max_element(pl.begin() + distance_t(k_), pl.begin() + distance_t(k_ + Nj_));
+    auto maxpl =
+        *std::max_element(pl.begin() + static_cast<distance_t>(k_), pl.begin() + static_cast<distance_t>(k_ + Nj_));
     ASSERT(maxpl >= 2);
 
     return Longitude::GLOBE.fraction() / maxpl;
@@ -268,10 +269,10 @@ void Reduced::fillGrib(grib_info& info) const {
     const auto& pl = pls();
 
     info.grid.grid_type = CODES_UTIL_GRID_SPEC_REDUCED_GG;
-    info.grid.Nj        = long(Nj_);
-    info.grid.N         = long(N_);
+    info.grid.Nj        = static_cast<long>(Nj_);
+    info.grid.N         = static_cast<long>(N_);
     info.grid.pl        = &pl[k_];
-    info.grid.pl_size   = long(Nj_);
+    info.grid.pl_size   = static_cast<long>(Nj_);
 
     for (size_t i = k_; i < k_ + Nj_; i++) {
         ASSERT(pl[i] > 0);
@@ -332,18 +333,18 @@ std::vector<util::GridBox> Reduced::gridBoxes() const {
 
         if (periodic) {
             for (size_t i = 0; i < N; ++i) {
-                auto w = lon1.value();
+                auto w1 = lon1.value();
                 lon1 += inc;
-                r.emplace_back(n, w, s, lon1.value());
+                r.emplace_back(n, w1, s, lon1.value());
             }
 
             ASSERT(lon0 == lon1.normalise(lon0));
         }
         else {
             for (size_t i = 0; i < N; ++i) {
-                auto w = std::max(west.value(), lon1.value());
+                auto w1 = std::max(west.value(), lon1.value());
                 lon1 += inc;
-                r.emplace_back(n, w, s, std::min(east.value(), lon1.value()));
+                r.emplace_back(n, w1, s, std::min(east.value(), lon1.value()));
             }
 
             ASSERT(lon0 <= lon1.normalise(lon0));
@@ -422,7 +423,7 @@ size_t Reduced::frame(MIRValuesVector& values, size_t size, double missingValue)
 size_t Reduced::numberOfPoints() const {
     if (isGlobal()) {
         const auto& pl = pls();
-        return size_t(std::accumulate(pl.begin(), pl.end(), 0L));
+        return static_cast<size_t>(std::accumulate(pl.begin(), pl.end(), 0L));
     }
 
     size_t total = 0;
