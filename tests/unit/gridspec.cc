@@ -19,6 +19,7 @@
 #include "eckit/testing/Test.h"
 
 #include "mir/api/MIRJob.h"
+#include "mir/api/mir_config.h"
 #include "mir/input/MIRInput.h"
 #include "mir/input/RawInput.h"
 #include "mir/output/EmptyOutput.h"
@@ -38,15 +39,17 @@ CASE("GridSpec input/output") {
         size_t size;
     };
 
-    const std::vector<test_t> tests{
+    std::vector<test_t> tests{
         test_t{"{grid: 10/10}", "{\"grid\":[10,10]}", 684},
         {"{grid: [20, 10]}", "{\"grid\":[20,10]}", 342},
         {"{grid: o8}", "{\"grid\":\"O8\"}", 544},
-        {"{grid: h2n}", "{\"grid\":\"H2\",\"order\":\"nested\"}", 48},
         {"{grid: h2_ring}", "{\"grid\":\"H2\"}", 48},
 
     };
 
+    if (MIR_HAVE_TESSELATION) {
+        tests.push_back(test_t{"{grid: h2n}", "{\"grid\":\"H2\",\"order\":\"nested\"}", 48});
+    }
 
     SECTION("GridSpec canonical") {
         for (const auto& test : tests) {

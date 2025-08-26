@@ -45,3 +45,12 @@ if(NOT eccodes_HAVE_AEC)
         set_tests_properties(${target} PROPERTIES WILL_FAIL TRUE)
     endforeach()
 endif()
+
+if(NOT atlas_HAVE_TESSELATION)
+    foreach(_r
+            MIR-647.001.test)
+        get_filename_component(_t "${_r}" ABSOLUTE)
+        target_from_path("${_t}" target)
+        set_tests_properties(${target} PROPERTIES WILL_FAIL TRUE)
+    endforeach()
+endif()
