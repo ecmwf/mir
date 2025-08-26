@@ -27,6 +27,7 @@
 #include "mir/action/plan/Executor.h"
 #include "mir/api/MIRJob.h"
 #include "mir/caching/matrix/MatrixLoader.h"
+#include "mir/config/LibMir.h"
 #include "mir/data/Space.h"
 #include "mir/grib/BasicAngle.h"
 #include "mir/grib/Packing.h"
@@ -65,13 +66,46 @@
 #endif
 #endif
 
+#include "CLI11.hpp"
 
-namespace mir {
-namespace tools {
+
+namespace mir::tools {
+
+
+struct CommandLineArguments {
+    CommandLineArguments(int argc, char* argv[]) {
+        CLI::App app{"ECMWF post-processing and regridding library tool", "mir"};
+
+        // Allow extra args to stay compatible with eckit resource commandline args
+        app.allow_extras();
+
+        // app.add_flag("--help", help, "Print help and exit");
+        // app.add_flag("--version", version, "Print version and exit");
+        app.add_flag("--version-json", version_json, "Print version in JSON format");
+
+        app.add_option("files", files, "Input and output files")->type_name("PATH");
+
+        try {
+            app.parse(argc, argv);
+        }
+        catch (const CLI::ParseError& e) {
+            // Exit the application directly, --help/--version exit with the error code 0
+            std::exit(app.exit(e));
+        }
+
+        app.set_version_flag("--version", LibMir::version_str());
+    }
+
+    bool help         = false;
+    bool version      = false;
+    bool version_json = false;
+
+    std::vector<std::string> files;
+};
 
 
 struct MIR : MIRTool {
-    MIR(int argc, char** argv) : MIRTool(argc, argv) {
+    MIR(int argc, char** argv) : MIRTool(argc, argv), args_(argc, argv) {
         using namespace eckit::option;
 
         //==============================================
@@ -115,7 +149,7 @@ struct MIR : MIRTool {
             new FactoryOption<method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
 
         options_.push_back(new FactoryOption<method::MethodFactory>("intermediate-interpolation",
-                                                                    "Grid to grid intermediate interpolation method"));
+                                                                    "Grid to intermediate grid interpolation method"));
 
         options_.push_back(
             new FactoryOption<stats::FieldFactory>("interpolation-statistics", "Statistics interpolation method"));
@@ -432,6 +466,9 @@ struct MIR : MIRTool {
 
     void only(const api::MIRJob& /*job*/, input::MIRInput& /*input*/, output::MIROutput& /*output*/,
               const std::string& /*what*/, size_t /*paramId*/);
+
+private:
+    CommandLineArguments args_;
 };
 
 
@@ -527,8 +564,7 @@ void MIR::only(const api::MIRJob& job, input::MIRInput& input, output::MIROutput
 }
 
 
-}  // namespace tools
-}  // namespace mir
+}  // namespace mir::tools
 
 
 int main(int argc, char** argv) {

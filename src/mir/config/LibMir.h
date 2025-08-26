@@ -57,6 +57,9 @@ public:
 
     static std::string cacheLoader(cache_loader);
 
+    static std::string version_str(bool all = false);
+    static std::string version_json_str(bool all = false);
+
 private:
     LibMir();
 

@@ -14,9 +14,12 @@
 
 #include <algorithm>
 #include <set>
+#include <sstream>
 
 #include "eckit/config/Resource.h"
 #include "eckit/filesystem/PathName.h"
+#include "eckit/log/JSON.h"
+#include "eckit/system/LibraryManager.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/api/mir_version.h"
@@ -135,6 +138,71 @@ std::string LibMir::gitsha1(unsigned int count) const {
 
     constexpr unsigned int MAX_LENGTH = 40U;
     return sha1.substr(0, std::min(count, MAX_LENGTH));
+}
+
+
+std::string LibMir::version_str(bool all) {
+    auto print_library = [](const eckit::system::Library& lib) {
+        // semantic versioning >= 2.0
+        return lib.name() + " " + lib.version() + "+" + lib.gitsha1();
+    };
+
+    auto str = print_library(instance());  // this one first
+
+    if (all) {
+        for (const auto& lib : eckit::system::LibraryManager::list()) {
+            if (lib != instance().name()) {
+                str += ", " + print_library(eckit::system::LibraryManager::lookup(lib));
+            }
+        }
+    }
+
+    return str;
+}
+
+
+std::string LibMir::version_json_str(bool all) {
+    std::ostringstream str;
+    eckit::JSON json(str);
+
+    auto print_library = [&json](const eckit::system::Library& lib) {
+        json.startObject();
+        json << "name" << lib.name();
+        json << "version" << lib.version();
+        json << "sha1" << lib.gitsha1();
+        json << "path" << lib.libraryPath();
+        json.endObject();
+    };
+
+    if (all) {
+        json.startObject();
+
+        json << "libraries";
+        json.startList();
+
+        print_library(instance());  // this one first
+
+        for (const auto& lib : eckit::system::LibraryManager::list()) {
+            if (lib != instance().name()) {
+                print_library(eckit::system::LibraryManager::lookup(lib));
+            }
+        }
+        json.endList();
+
+        json << "loaded-plugins";
+        json.startList();
+        for (const auto& plugin : eckit::system::LibraryManager::loadedPlugins()) {
+            json << plugin;
+        }
+        json.endList();
+
+        json.endObject();
+    }
+    else {
+        print_library(instance());
+    }
+
+    return str.str();
 }
 
 
