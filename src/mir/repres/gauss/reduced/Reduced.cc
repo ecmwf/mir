@@ -21,6 +21,7 @@
 #include <utility>
 
 #include "eckit/log/JSON.h"
+#include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
 
 #include "mir/api/MIREstimation.h"
@@ -372,8 +373,8 @@ size_t Reduced::frame(MIRValuesVector& values, size_t size, double missingValue,
 
     std::map<size_t, size_t> shape;
 
-    Latitude prev_lat  = std::numeric_limits<double>::max();
-    Longitude prev_lon = -std::numeric_limits<double>::max();
+    auto prev_lat = std::numeric_limits<double>::max();
+    auto prev_lon = std::numeric_limits<double>::lowest();
 
     size_t rows  = 0;
     size_t dummy = 0;  // Used to keep static analyser quiet
@@ -383,22 +384,24 @@ size_t Reduced::frame(MIRValuesVector& values, size_t size, double missingValue,
     // This could be done with the latitudes() and pls(), maybe more efficeintly
     // but this code could also be used for all grids
     // and even be cached (md5 of iterators)
+    // NOTE: assumes scanning mode
 
     // Iterator is 'unrotated'
     for (const std::unique_ptr<Iterator> it(iterator()); it->next();) {
-        const auto& p = it->pointUnrotated();
+        auto lon = it->pointUnrotated().lon().value();
+        auto lat = it->pointUnrotated().lat().value();
 
-        if (p.lat() != prev_lat) {
-            ASSERT(p.lat() < prev_lat);  // Assumes scanning mode
-            prev_lat = p.lat();
+        if (!eckit::types::is_approximately_equal(lat, prev_lat)) {
+            ASSERT(lat < prev_lat);
+            prev_lat = lat;
             prev_lon = std::numeric_limits<double>::lowest();
 
             col    = &shape[rows++];
             (*col) = 0;
         }
 
-        ASSERT(p.lon() > prev_lon);  // Assumes scanning mode
-        prev_lon = p.lon();
+        ASSERT(lon > prev_lon);
+        prev_lon = lon;
         (*col)++;
     }
 
