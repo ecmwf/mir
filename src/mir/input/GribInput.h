@@ -46,6 +46,10 @@ private:
     std::vector<double> latitudes_;
     std::vector<double> longitudes_;
 
+    // -- Methods
+
+    void auxilaryValues(const std::string& path, std::vector<double>& values) const;
+
     // -- Overridden methods
 
     // From MIRInput
