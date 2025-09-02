@@ -1,0 +1,7 @@
+# input
+gridType=regular_ll,param=t,levtype=ml,level=1,grid=9-9.grib2
+# mir
+--packing=simple
+# grib_get
+numberOfCodedValues=840
+numberOfValues=840
