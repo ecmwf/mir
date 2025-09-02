@@ -1,0 +1,6 @@
+# input
+gridType=regular_ll,param=t,levtype=pl,level=1000,grid=9-9.grib1
+# mir
+--packing=simple
+# plan
+Copy[]
