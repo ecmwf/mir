@@ -77,8 +77,8 @@ public:
 
 template <>
 bool ConditionT<long>::eval(grib_handle* h) const {
-    long value;
-    ASSERT(h);
+    long value = 0;
+    ASSERT(h != nullptr);
     int err = codes_get_long(h, key_, &value);
 
     if (err == CODES_NOT_FOUND) {
@@ -86,8 +86,6 @@ bool ConditionT<long>::eval(grib_handle* h) const {
     }
 
     if (err != 0) {
-        // Log::debug() << "ConditionT<long>::eval(" << ",key=" << key_ << ") failed " << err <<
-        // std::endl;
         GRIB_ERROR(err, key_);
     }
 
@@ -97,8 +95,8 @@ bool ConditionT<long>::eval(grib_handle* h) const {
 
 template <>
 bool ConditionT<double>::eval(grib_handle* h) const {
-    double value;
-    ASSERT(h);
+    double value = 0;
+    ASSERT(h != nullptr);
     int err = codes_get_double(h, key_, &value);
 
     if (err == CODES_NOT_FOUND) {
@@ -106,8 +104,6 @@ bool ConditionT<double>::eval(grib_handle* h) const {
     }
 
     if (err != 0) {
-        // Log::debug() << "ConditionT<double>::eval(" << ",key=" << key_ << ") failed " << err <<
-        // std::endl;
         GRIB_ERROR(err, key_);
     }
 
@@ -119,7 +115,7 @@ template <>
 bool ConditionT<std::string>::eval(grib_handle* h) const {
     char buffer[10240];
     size_t size = sizeof(buffer);
-    ASSERT(h);
+    ASSERT(h != nullptr);
     int err = codes_get_string(h, key_, buffer, &size);
 
     if (err == CODES_NOT_FOUND) {
@@ -190,10 +186,10 @@ public:
 */
 
 
-void wrongly_encoded_grib(const std::string& msg) {
+void wrongly_encoded_grib(const std::string& msg, bool alwaysAbort = false) {
     static bool abortIfWronglyEncodedGRIB = eckit::Resource<bool>("$MIR_ABORT_IF_WRONGLY_ENCODED_GRIB", false);
 
-    if (abortIfWronglyEncodedGRIB) {
+    if (abortIfWronglyEncodedGRIB || alwaysAbort) {
         Log::error() << msg << std::endl;
         throw exception::UserError(msg);
     }
@@ -210,10 +206,9 @@ size_t fix_pl_array_zeros(std::vector<long>& pl) {
     // if a zero is found, copy the *following* non-zero value into the range "current entry -> non-zero entry"
     for (auto p = pl.begin(); p != pl.end(); ++p) {
         if (*p == 0) {
-
             auto nz = std::find_if(p, pl.end(), [](long x) { return x != 0; });
             if (nz != pl.end()) {
-                new_entries += size_t(*nz) * size_t(std::distance(p, nz));
+                new_entries += static_cast<size_t>(*nz) * static_cast<size_t>(std::distance(p, nz));
                 std::fill(p, nz, *nz);
             }
         }
@@ -222,17 +217,17 @@ size_t fix_pl_array_zeros(std::vector<long>& pl) {
     // if a zero is found, copy the *previous* non-zero value into the range "non-zero entry -> current entry"
     for (auto p = pl.rbegin(); p != pl.rend(); ++p) {
         if (*p == 0) {
-
             auto nz = std::find_if(p, pl.rend(), [](long x) { return x != 0; });
             if (nz != pl.rend()) {
-                new_entries += size_t(*nz) * size_t(std::distance(p, nz));
+                new_entries += static_cast<size_t>(*nz) * static_cast<size_t>(std::distance(p, nz));
                 std::fill(p, nz, *nz);
             }
         }
     }
 
     ASSERT(0 == std::count(pl.begin(), pl.end(), 0));
-    ASSERT(new_entries);
+    ASSERT(new_entries > 0);
+
     return new_entries;
 }
 
@@ -245,9 +240,12 @@ static Condition* is(const char* key, const T& value) {
     return new ConditionT<T>(key, value);
 }
 
+
 static Condition* is(const char* key, const char* value) {
+    ASSERT(value != nullptr);
     return new ConditionT<std::string>(key, value);
 }
+
 
 /*
 static Condition *_and(const Condition *left, const Condition *right) {
@@ -255,9 +253,11 @@ static Condition *_and(const Condition *left, const Condition *right) {
 }
 */
 
+
 static Condition* _or(const Condition* left, const Condition* right) {
     return new ConditionOR(left, right);
 }
+
 
 /*
 static Condition *_not(const Condition *c) {
@@ -271,7 +271,7 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         const std::string name;
         const char* key;
         const std::unique_ptr<const Condition> condition;
-        P(const std::string _name, const char* _key, const Condition* _condition = nullptr) :
+        P(const std::string& _name, const char* _key, const Condition* _condition = nullptr) :
             name(_name), key(_key), condition(_condition) {}
     };
 
@@ -417,7 +417,7 @@ static ProcessingT<double>* angular_precision() {
         long angleSubdivisions = 0;
         GRIB_CALL(codes_get_long(h, "angleSubdivisions", &angleSubdivisions));
 
-        value = angleSubdivisions > 0 ? 1. / double(angleSubdivisions) : 0.;
+        value = angleSubdivisions > 0 ? 1. / static_cast<double>(angleSubdivisions) : 0.;
         return true;
     });
 }
@@ -437,18 +437,23 @@ static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_red
 
                 // get pl array maximum and sum
                 // if sum equals values size the grid must be global
-                size_t plSize = 0;
-                GRIB_CALL(codes_get_size(h, "pl", &plSize));
-                ASSERT(plSize);
+                size_t pl_size = 0;
+                GRIB_CALL(codes_get_size(h, "pl", &pl_size));
+                ASSERT(pl_size > 0);
 
-                std::vector<long> pl(plSize, 0);
-                size_t plSizeAsRead = plSize;
-                GRIB_CALL(codes_get_long_array(h, "pl", pl.data(), &plSizeAsRead));
-                ASSERT(plSize == plSizeAsRead);
+                std::vector<long> pl(pl_size, 0);
+                size_t size = pl_size;
+                GRIB_CALL(codes_get_long_array(h, "pl", pl.data(), &size));
+
+                if (pl_size != size) {
+                    wrongly_encoded_grib("GribInput: inconsistent encoding of 'pl' size (" + std::to_string(pl_size) +
+                                             ") and array length (" + std::to_string(size) + ")",
+                                         true);
+                }
 
                 long plMax = 0;
                 long plSum = 0;
-                for (auto& p : pl) {
+                for (const auto& p : pl) {
                     plSum += p;
                     if (plMax < p) {
                         plMax = p;
@@ -456,10 +461,10 @@ static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_red
                 }
                 ASSERT(plMax > 0);
 
-                size_t valuesSize;
-                GRIB_CALL(codes_get_size(h, "values", &valuesSize));
+                size_t values_size = 0;
+                GRIB_CALL(codes_get_size(h, "values", &values_size));
 
-                if (size_t(plSum) == valuesSize) {
+                if (static_cast<size_t>(plSum) == values_size) {
 
                     double eps = 0.;
                     std::unique_ptr<ProcessingT<double>> precision_in_degrees(angular_precision());
@@ -477,7 +482,7 @@ static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_red
                              << Lon2
                              << "\n"
                                 "expected: "
-                             << double(Lon2_expected) << " (" << Lon2_expected << " +- " << eps << ")";
+                             << static_cast<double>(Lon2_expected) << " (" << Lon2_expected << " +- " << eps << ")";
 
                         wrongly_encoded_grib(msgs.str());
 
@@ -518,7 +523,7 @@ static ProcessingT<double>* iDirectionIncrementInDegrees_fix_for_periodic_regula
         ASSERT(precision_in_degrees->eval(h, eps));
         eps *= 1.5;
 
-        auto Nid     = double(Ni);
+        auto Nid     = static_cast<double>(Ni);
         double globe = LongitudeDouble::GLOBE.value();
         if (eckit::types::is_approximately_equal(Lon2 - Lon1 + we, globe, eps)) {
             we = globe / Nid;
@@ -553,7 +558,7 @@ static ProcessingT<double>* iDirectionIncrementInDegrees_fix_for_periodic_regula
 static ProcessingT<std::vector<double>>* vector_double(std::initializer_list<std::string> keys) {
     const std::vector<std::string> keys_(keys);
     return new ProcessingT<std::vector<double>>([=](grib_handle* h, std::vector<double>& values) {
-        ASSERT(keys.size());
+        ASSERT(keys.size() > 0);
 
         values.assign(keys_.size(), 0);
         size_t i = 0;
@@ -578,7 +583,7 @@ static ProcessingT<std::string>* packing() {
                 GRIB_CALL(codes_get_string(h, key, buffer, &size));
                 ASSERT(size < sizeof(buffer) - 1);
 
-                if (::strcmp(buffer, "MISSING") != 0) {
+                if (std::strcmp(buffer, "MISSING") != 0) {
                     return buffer;
                 }
             }
@@ -609,7 +614,7 @@ static ProcessingT<std::string>* gridName_fix_for_healpix_grids() {
         GRIB_CALL(codes_get_string(h, "gridName", buffer, &size));
         ASSERT(size < sizeof(buffer) - 1);
 
-        if (::strcmp(buffer, "MISSING") != 0) {
+        if (std::strcmp(buffer, "MISSING") != 0) {
             gridName += buffer;
         }
 
@@ -617,8 +622,8 @@ static ProcessingT<std::string>* gridName_fix_for_healpix_grids() {
         GRIB_CALL(codes_get_string(h, "orderingConvention", buffer, &size));
         ASSERT(size < sizeof(buffer) - 1);
 
-        if (::strcmp(buffer, "MISSING") != 0) {
-            if (::strcmp(buffer, "nested") == 0) {
+        if (std::strcmp(buffer, "MISSING") != 0) {
+            if (std::strcmp(buffer, "nested") == 0) {
                 gridName += "_nested";
             }
         }
@@ -652,7 +657,7 @@ static bool get_value(const std::string& name, grib_handle* h, T& value, const P
     for (auto& p : process) {
         if (name == p.name) {
             if (!p.condition || p.condition->eval(h)) {
-                ASSERT(p.processing);
+                ASSERT(p.processing != nullptr);
                 return p.processing->eval(h, value);
             }
         }
@@ -680,7 +685,7 @@ data::MIRField GribInput::field() const {
     // Protect the grib_handle, as eccodes may update its internals
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
-    ASSERT(grib_);
+    ASSERT(grib_ != nullptr);
 
     long localDefinitionNumber = 0;
     if (codes_get_long(grib_, "localDefinitionNumber", &localDefinitionNumber) == CODES_SUCCESS) {
@@ -696,18 +701,23 @@ data::MIRField GribInput::field() const {
         }
     }
 
-    size_t count;
-    GRIB_CALL(codes_get_size(grib_, "values", &count));
+    size_t values_size = 0;
+    GRIB_CALL(codes_get_size(grib_, "values", &values_size));
 
-    size_t size = count;
-    MIRValuesVector values(count);
+    size_t size = values_size;
+    MIRValuesVector values(values_size);
     GRIB_CALL(codes_get_double_array(grib_, "values", values.data(), &size));
-    ASSERT(count == size);
 
-    long missingValuesPresent;
+    if (values_size != size) {
+        wrongly_encoded_grib("GribInput: inconsistent encoding of 'values' size (" + std::to_string(values_size) +
+                                 ") and array length (" + std::to_string(size) + ")",
+                             true);
+    }
+
+    long missingValuesPresent = 0;
     GRIB_CALL(codes_get_long(grib_, "missingValuesPresent", &missingValuesPresent));
 
-    double missingValue;
+    double missingValue = 0;
     GRIB_CALL(codes_get_double(grib_, "missingValue", &missingValue));
 
     // Ensure missingValue is unique, so values are not wrongly "missing"
@@ -719,14 +729,19 @@ data::MIRField GribInput::field() const {
 
     // If grib has a 0-containing pl array, add missing values in their place
     if (has("pl")) {
-        size_t count_pl = 0;
-        GRIB_CALL(codes_get_size(grib_, "pl", &count_pl));
-        ASSERT(count_pl);
+        size_t pl_size = 0;
+        GRIB_CALL(codes_get_size(grib_, "pl", &pl_size));
+        ASSERT(pl_size > 0);
 
-        std::vector<long> pl(count_pl, 0);
-        size = count_pl;
+        std::vector<long> pl(pl_size, 0);
+        size = pl_size;
         GRIB_CALL(codes_get_long_array(grib_, "pl", pl.data(), &size));
-        ASSERT(count_pl == size);
+
+        if (pl_size != size) {
+            wrongly_encoded_grib("GribInput: inconsistent encoding of 'pl' size (" + std::to_string(pl_size) +
+                                     ") and array length (" + std::to_string(size) + ")",
+                                 true);
+        }
 
         // NOTE: this fix ties with the method get(const std::string &name, std::vector<long> &value)
         if (std::find(pl.rbegin(), pl.rend(), 0) != pl.rend()) {
@@ -748,19 +763,19 @@ data::MIRField GribInput::field() const {
                          << std::endl;
 
             MIRValuesVector values_extended;
-            values_extended.reserve(count + new_values);
+            values_extended.reserve(values_size + new_values);
 
             ASSERT(pl.size() == pl_fixed.size());
             size_t i = 0;
             for (auto p1 = pl.begin(), p2 = pl_fixed.begin(); p1 != pl.end(); ++p1, ++p2) {
                 if (*p1 == 0) {
                     ASSERT(*p2 > 0);
-                    auto Ni = size_t(*p2);
+                    auto Ni = static_cast<size_t>(*p2);
                     values_extended.insert(values_extended.end(), Ni, missingValue);
                 }
                 else {
-                    auto Ni = size_t(*p1);
-                    ASSERT(i + Ni <= count);
+                    auto Ni = static_cast<size_t>(*p1);
+                    ASSERT(i + Ni <= values_size);
 
                     values_extended.insert(values_extended.end(), &values[i], &values[i + Ni]);
                     i += Ni;
@@ -772,7 +787,7 @@ data::MIRField GribInput::field() const {
             values.swap(values_extended);
 
             ASSERT(get("pl", pl));
-            size_t pl_sum = size_t(std::accumulate(pl.begin(), pl.end(), 0L));
+            auto pl_sum = static_cast<size_t>(std::accumulate(pl.begin(), pl.end(), 0L));
             ASSERT(pl_sum == values.size());
         }
     }
@@ -803,7 +818,7 @@ grib_handle* GribInput::gribHandle(size_t which) const {
 bool GribInput::has(const std::string& name) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
-    ASSERT(grib_);
+    ASSERT(grib_ != nullptr);
     const auto* key = get_key(name, grib_);
 
     ASSERT(key != nullptr);
@@ -811,18 +826,14 @@ bool GribInput::has(const std::string& name) const {
         return false;
     }
 
-    bool ok = codes_is_defined(grib_, key) != 0;
-
-    // Log::debug() << "GribInput::has(" << name << ",key=" << key << ") " << (ok ? "yes" : "no") <<
-    // std::endl;
-    return ok;
+    return codes_is_defined(grib_, key) != 0;
 }
 
 
 bool GribInput::get(const std::string& name, bool& value) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
-    ASSERT(grib_);
+    ASSERT(grib_ != nullptr);
     const auto* key = get_key(name, grib_);
 
     ASSERT(key != nullptr);
@@ -839,23 +850,19 @@ bool GribInput::get(const std::string& name, bool& value) const {
     }
 
     if (err != 0) {
-        // Log::debug() << "codes_get_bool(" << name << ",key=" << key << ") failed " << err <<
-        // std::endl;
         GRIB_ERROR(err, key);
     }
 
     value = temp != 0;
 
-    // Log::debug() << "codes_get_bool(" << name << ",key=" << key << ") " << value << std::endl;
     return true;
 }
 
 
 bool GribInput::get(const std::string& name, int& value) const {
-    long v;
-    if (get(name, v)) {
-        ASSERT(long(int(v)) == v);
-        value = int(v);
+    if (long v = 0; get(name, v)) {
+        ASSERT(static_cast<long>(static_cast<int>(v)) == v);
+        value = static_cast<int>(v);
         return true;
     }
     return false;
@@ -865,7 +872,7 @@ bool GribInput::get(const std::string& name, int& value) const {
 bool GribInput::get(const std::string& name, long& value) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
-    ASSERT(grib_);
+    ASSERT(grib_ != nullptr);
     const std::string key = get_key(name, grib_);
     if (key.empty()) {
         return false;
@@ -887,15 +894,13 @@ bool GribInput::get(const std::string& name, long& value) const {
         GRIB_ERROR(err, key.c_str());
     }
 
-    // Log::debug() << "codes_get_long(" << name << ",key=" << key << ") " << value << std::endl;
     return true;
 }
 
 
 bool GribInput::get(const std::string& name, float& value) const {
-    double v;
-    if (get(name, v)) {
-        value = float(v);
+    if (double v = 0; get(name, v)) {
+        value = static_cast<float>(v);
         return true;
     }
     return false;
@@ -905,10 +910,9 @@ bool GribInput::get(const std::string& name, float& value) const {
 bool GribInput::get(const std::string& name, double& value) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
-    ASSERT(grib_);
-
     ASSERT(name != "grid");
 
+    ASSERT(grib_ != nullptr);
     const auto* key = get_key(name, grib_);
 
     ASSERT(key != nullptr);
@@ -931,12 +935,9 @@ bool GribInput::get(const std::string& name, double& value) const {
     }
 
     if (err != 0) {
-        // Log::debug() << "codes_get_double(" << name << ",key=" << key << ") failed " << err <<
-        // std::endl;
         GRIB_ERROR(err, key);
     }
 
-    // Log::debug() << "codes_get_double(" << name << ",key=" << key << ") " << value << std::endl;
     return true;
 }
 
@@ -949,7 +950,7 @@ bool GribInput::get(const std::string& /*name*/, std::vector<int>& /*value*/) co
 bool GribInput::get(const std::string& name, std::vector<long>& value) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
-    ASSERT(grib_);
+    ASSERT(grib_ != nullptr);
     const auto* key = get_key(name, grib_);
 
     ASSERT(key != nullptr);
@@ -975,12 +976,15 @@ bool GribInput::get(const std::string& name, std::vector<long>& value) const {
     value.resize(count);
 
     GRIB_CALL(codes_get_long_array(grib_, key, value.data(), &size));
-    ASSERT(count == size);
+
+    if (count != size) {
+        wrongly_encoded_grib("GribInput: inconsistent encoding of '" + name + "' size (" + std::to_string(count) +
+                                 ") and array length (" + std::to_string(size) + ")",
+                             true);
+    }
 
     ASSERT(!value.empty());
 
-    // Log::debug() << "codes_get_long_array(" << name << ",key=" << key << ") size=" << value.size() <<
-    // std::endl;
     if (name == "pl") {
 
         // try locating a zero in the pl array, in which case adjust it before continuing
@@ -999,9 +1003,8 @@ bool GribInput::get(const std::string& name, std::vector<float>& value) const {
     if (get(name, v)) {
         value.clear();
         value.reserve(v.size());
-        for (const double& l : v) {
-            ASSERT(l >= 0);
-            value.push_back(float(l));
+        for (const auto& l : v) {
+            value.push_back(static_cast<float>(l));
         }
         return true;
     }
@@ -1012,7 +1015,7 @@ bool GribInput::get(const std::string& name, std::vector<float>& value) const {
 bool GribInput::get(const std::string& name, std::string& value) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
-    ASSERT(grib_);
+    ASSERT(grib_ != nullptr);
     const auto* key = get_key(name, grib_);
 
     ASSERT(key != nullptr);
@@ -1032,22 +1035,16 @@ bool GribInput::get(const std::string& name, std::string& value) const {
     }
 
     if (err != 0) {
-        // Log::debug() << "codes_get_string(" << name << ",key=" << key << ") failed " << err <<
-        // std::endl;
         GRIB_ERROR(err, key);
     }
 
-    // Log::info() << err << "  " << size << " " << name << std::endl;
-
     ASSERT(size < sizeof(buffer) - 1);
 
-    if (::strcmp(buffer, "MISSING") == 0) {
+    if (std::strcmp(buffer, "MISSING") == 0) {
         return false;
     }
 
     value = buffer;
-
-    // Log::debug() << "codes_get_string(" << name << ",key=" << key << ") " << value << std::endl;
 
     return true;
 }
@@ -1056,7 +1053,7 @@ bool GribInput::get(const std::string& name, std::string& value) const {
 bool GribInput::get(const std::string& name, std::vector<double>& value) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
-    ASSERT(grib_);
+    ASSERT(grib_ != nullptr);
     const auto* key = get_key(name, grib_);
 
     // NOTE: MARS client sets 'grid=vector' (deprecated) which needs to be compared against GRIB gridName
@@ -1091,8 +1088,6 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
     }
 
     if (err != 0) {
-        // Log::debug() << "codes_get_double_array(" << name << ",key=" << key << ") failed " << err << "
-        // count=" << count << std::endl;
         GRIB_ERROR(err, key);
     }
 
@@ -1102,10 +1097,12 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
     value.resize(count);
 
     GRIB_CALL(codes_get_double_array(grib_, key, value.data(), &size));
-    ASSERT(count == size);
 
-    // Log::debug() << "codes_get_double_array(" << name << ",key=" << key << ") size=" << value.size()
-    // << std::endl;
+    if (count != size) {
+        wrongly_encoded_grib("GribInput: inconsistent encoding of '" + name + "' size (" + std::to_string(count) +
+                                 ") and array length (" + std::to_string(size) + ")",
+                             true);
+    }
 
     ASSERT(!value.empty());
     return true;
@@ -1146,24 +1143,30 @@ void GribInput::auxilaryValues(const std::string& path, std::vector<double>& val
 
     eckit::AutoStdFile f(path);
 
-    int e;
     grib_handle* h = nullptr;
 
     // We cannot use GribFileInput to read these files, because lat/lon files are also
     // has grid_type = triangular_grid, and we will create a loop
 
     try {
+        int e = 0;
         h = codes_grib_handle_new_from_file(nullptr, f, &e);
         grib_call(e, path.c_str());
-        size_t count;
-        GRIB_CALL(codes_get_size(h, "values", &count));
 
-        size_t size = count;
-        values.resize(count);
+        size_t values_size = 0;
+        GRIB_CALL(codes_get_size(h, "values", &values_size));
+
+        size_t size = values_size;
+        values.resize(values_size);
         GRIB_CALL(codes_get_double_array(h, "values", values.data(), &size));
-        ASSERT(count == size);
 
-        long missingValuesPresent;
+        if (values_size != size) {
+            wrongly_encoded_grib("GribInput: inconsistent encoding of 'values' size (" + std::to_string(values_size) +
+                                     ") and array length (" + std::to_string(size) + ")",
+                                 true);
+        }
+
+        long missingValuesPresent = 0;
         GRIB_CALL(codes_get_long(h, "missingValuesPresent", &missingValuesPresent));
         ASSERT(!missingValuesPresent);
 
@@ -1193,12 +1196,12 @@ void GribInput::setAuxiliaryInformation(const util::ValueMap& map) {
 
 
 bool GribInput::only(size_t paramId) {
-    auto paramIdOnly = long(paramId);
+    auto paramIdOnly = static_cast<long>(paramId);
 
     while (next()) {
         util::lock_guard<util::recursive_mutex> lock(mutex_);
 
-        ASSERT(grib_);
+        ASSERT(grib_ != nullptr);
 
         long paramIdAsLong;
         GRIB_CALL(codes_get_long(grib_, "paramId", &paramIdAsLong));
@@ -1240,12 +1243,12 @@ void GribInput::longitudes(std::vector<double>& values) const {
 void GribInput::marsRequest(std::ostream& out) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
-    ASSERT(grib_);
+    ASSERT(grib_ != nullptr);
 
     static std::string gribToRequestNamespace = eckit::Resource<std::string>("gribToRequestNamespace", "mars");
 
     auto* keys = codes_keys_iterator_new(grib_, CODES_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
-    ASSERT(keys);
+    ASSERT(keys != nullptr);
 
     try {
         const char* sep = "";
@@ -1269,11 +1272,17 @@ void GribInput::marsRequest(std::ostream& out) const {
             char* b = buffer;
 
             GRIB_CALL(codes_get_bytes(grib_, "freeFormData", (unsigned char*)b, &size));
-            ASSERT(size == buffer.size());
+
+            if (buffer.size() != size) {
+                wrongly_encoded_grib("GribInput: inconsistent encoding of 'freeFormData' size (" +
+                                         std::to_string(buffer.size()) + ") and array length (" + std::to_string(size) +
+                                         ")",
+                                     true);
+            }
 
             eckit::MemoryHandle h(buffer);
             eckit::HandleStream in(h);
-            int n;
+            int n = 0;
             in >> n;  // Number of requests
             ASSERT(n == 1);
             std::string verb;
@@ -1286,7 +1295,8 @@ void GribInput::marsRequest(std::ostream& out) const {
                 out << sep << param;
                 sep               = ",";
                 const char* slash = "=";
-                int m;
+
+                int m = 0;
                 in >> m;
                 for (int j = 0; j < m; j++) {
                     std::string value;
