@@ -247,11 +247,18 @@ struct IEEE : Packing {
 
 
 struct Simple : Packing {
-    using Packing::Packing;
+    Simple(const std::string& name, const param::MIRParametrisation& param) : Packing(name, param) {
+        if (!gridded()) {
+            std::string msg = "packing=simple: only supports gridded data";
+            Log::error() << msg << std::endl;
+            throw exception::UserError(msg);
+        }
+    }
 
     void fill(const repres::Representation*, grib_info& info) const override {
         Packing::fill(info, gridded() ? CODES_UTIL_PACKING_TYPE_GRID_SIMPLE : CODES_UTIL_PACKING_TYPE_SPECTRAL_SIMPLE);
     }
+
     void set(const repres::Representation*, grib_handle* handle) const override {
         Packing::set(handle, gridded() ? "grid_simple" : "spectral_simple");
     }
@@ -284,6 +291,7 @@ struct SecondOrder : Packing {
 
         Packing::fill(info, CODES_UTIL_PACKING_TYPE_GRID_SECOND_ORDER);
     }
+
     void set(const repres::Representation* repres, grib_handle* handle) const override {
         if (!check(repres)) {
             simple_.set(repres, handle);
