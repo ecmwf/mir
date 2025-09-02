@@ -1,0 +1,6 @@
+# input
+gridType=sh,param=t,levtype=pl,level=1000.grib1
+# mir
+--packing=simple
+# plan
+FAIL

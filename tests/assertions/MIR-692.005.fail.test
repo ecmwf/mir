@@ -1,0 +1,6 @@
+# input
+gridType=sh,param=t,levtype=ml,level=1,packing=simple.grib2.ERROR
+# mir
+--packing=simple
+# grib_get
+FAIL
