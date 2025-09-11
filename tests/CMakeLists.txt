@@ -31,8 +31,5 @@ else()
 endif()
 
 
-# defaults exercise non-core functionality
-if(mir_HAVE_ATLAS)
-    add_subdirectory(plans)
-endif()
+add_subdirectory(plans)
 add_subdirectory(unit)

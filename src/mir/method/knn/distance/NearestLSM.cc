@@ -68,10 +68,7 @@ bool NearestLSM::sameAs(const DistanceWeighting& other) const {
 
 
 void NearestLSM::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "type"
-      << "nearest-lsm";
-    j.endObject();
+    j << type() << "nearest-lsm";
 }
 
 

@@ -19,17 +19,19 @@ namespace mir::method::nonlinear {
 
 
 struct SimulatedMissingValue : NonLinear {
-    SimulatedMissingValue(const param::MIRParametrisation&);
+    explicit SimulatedMissingValue(const param::MIRParametrisation&);
 
 private:
     bool treatment(DenseMatrix& A, WeightMatrix& W, DenseMatrix& B, const MIRValuesVector&,
                    const double&) const override;
     bool sameAs(const NonLinear&) const override;
-    void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;
 
     bool modifiesMatrix(bool) const override { return true; }
+
+    const std::string& name() const override;
+    void json(eckit::JSON&) const override;
 
     double missingValue_;
     double epsilon_;

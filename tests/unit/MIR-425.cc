@@ -20,7 +20,6 @@
 #include "mir/input/GribFileInput.h"
 #include "mir/method/Method.h"
 #include "mir/param/CombinedParametrisation.h"
-#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -46,7 +45,6 @@ CASE("MIR-425") {
      *   i i    ooo
      */
 
-    param::DefaultParametrisation defaults;
     util::MIRStatistics statistics;
 
 
@@ -59,7 +57,7 @@ CASE("MIR-425") {
         param::SimpleParametrisation user;
         user.set("grid", std::vector<double>{1., 1.});
 
-        param::CombinedParametrisation param(user, input->parametrisation(), defaults);
+        param::CombinedParametrisation param(user, input->parametrisation());
         std::unique_ptr<action::Action> action(new action::interpolate::Gridded2RegularLL(param));
         context::Context ctx(*input, statistics);
         action->perform(ctx);
@@ -74,7 +72,7 @@ CASE("MIR-425") {
         user.set("grid", std::vector<double>{1., 1.});
         user.set("interpolation", "nn");
 
-        param::CombinedParametrisation param(user, input->parametrisation(), defaults);
+        param::CombinedParametrisation param(user, input->parametrisation());
         std::unique_ptr<action::Action> action(new action::interpolate::Gridded2RegularLL(param));
         context::Context ctx(*input, statistics);
         action->perform(ctx);
@@ -91,7 +89,7 @@ CASE("MIR-425") {
         user.set("nearest-method", "distance");
         user.set("distance", 1.);  // in [m], 5/9 (o) points do not have neighbours within distance
 
-        param::CombinedParametrisation param(user, input->parametrisation(), defaults);
+        param::CombinedParametrisation param(user, input->parametrisation());
         std::unique_ptr<action::Action> action(new action::interpolate::Gridded2RegularLL(param));
         context::Context ctx(*input, statistics);
         action->perform(ctx);

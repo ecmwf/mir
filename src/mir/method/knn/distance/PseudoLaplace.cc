@@ -108,10 +108,7 @@ bool PseudoLaplace::sameAs(const DistanceWeighting& other) const {
 
 
 void PseudoLaplace::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "type"
-      << "pseudo-laplace";
-    j.endObject();
+    j << type() << "pseudo-laplace";
 }
 
 

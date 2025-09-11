@@ -212,15 +212,11 @@ size_t ICON::numberOfPoints() const {
 
 
 atlas::Grid ICON::atlasGrid() const {
-#if mir_HAVE_ATLAS
     return {atlas::grid::SpecRegistry::get(grid_->uid())};
-#else
-    NOTIMP;
-#endif
 }
 
 
 static const RepresentationBuilder<ICON> __grid("icon");
 
 
-}  // namespace mir::repres::geo
+}  // namespace mir::repres

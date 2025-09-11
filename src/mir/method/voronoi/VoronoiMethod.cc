@@ -154,13 +154,6 @@ void VoronoiMethod::hash(eckit::MD5& md5) const {
 }
 
 
-void VoronoiMethod::json(eckit::JSON& j) const {
-    j.startObject();
-    MethodWeighted::json(j);
-    j.endObject();
-}
-
-
 void VoronoiMethod::print(std::ostream& out) const {
     out << "VoronoiMethod[name=" << name() << ",";
     MethodWeighted::print(out);

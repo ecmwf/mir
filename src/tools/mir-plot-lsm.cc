@@ -24,7 +24,6 @@
 #include "mir/lsm/NamedLSM.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/ConfigurationWrapper.h"
-#include "mir/param/DefaultParametrisation.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Exceptions.h"
@@ -77,9 +76,8 @@ void MIRPlotLSM::execute(const eckit::option::CmdArgs& args) {
 
 
     // Build mask
-    static const param::DefaultParametrisation defaults;
     static const param::ConfigurationWrapper args_wrap(args);
-    param::CombinedParametrisation parametrisation(args_wrap, defaults, defaults);
+    param::CombinedParametrisation parametrisation(args_wrap);
 
     const auto& mask = lsm::Mask::lookupOutput(parametrisation, *repres);
     Log::info() << "MASK IS => " << mask << std::endl;

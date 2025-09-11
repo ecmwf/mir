@@ -27,7 +27,6 @@
 #include "mir/output/MIROutput.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/ConfigurationWrapper.h"
-#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Exceptions.h"
@@ -134,9 +133,8 @@ void MIRCompute::execute(const eckit::option::CmdArgs& args) {
             user.set("formula", rename_formula_variables(formulas[i], variables));
             user.set("formula.metadata", paramids.empty() ? "" : "paramId=" + std::to_string(paramids[i]));
 
-            static const param::DefaultParametrisation defaults;
             std::unique_ptr<param::MIRParametrisation> param(
-                new param::CombinedParametrisation(user, input->parametrisation(), defaults));
+                new param::CombinedParametrisation(user, input->parametrisation()));
 
             std::unique_ptr<action::FormulaAction> formula(new action::FormulaAction(*param));
             formula->perform(ctx);

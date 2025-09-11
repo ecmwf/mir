@@ -63,6 +63,12 @@ const DistanceWeighting* DistanceWeightingWithLSM::distanceWeighting(const param
 }
 
 
+const std::string& DistanceWeightingWithLSM::type() const {
+    static const std::string TYPE{"distance-weighting-with-lsm"};
+    return TYPE;
+}
+
+
 bool DistanceWeightingWithLSM::sameAs(const DistanceWeighting& other) const {
     const auto* o = dynamic_cast<const DistanceWeightingWithLSM*>(&other);
 
@@ -72,11 +78,8 @@ bool DistanceWeightingWithLSM::sameAs(const DistanceWeighting& other) const {
 
 
 void DistanceWeightingWithLSM::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "type"
-      << "distance-weighting-with-lsm";
+    j << type() << "distance-weighting-with-lsm";
     j << "distance-weighting-with-lsm" << method_;
-    j.endObject();
 }
 
 

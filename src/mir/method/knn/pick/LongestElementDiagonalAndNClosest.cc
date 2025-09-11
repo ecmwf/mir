@@ -16,6 +16,7 @@
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
+#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
@@ -25,8 +26,10 @@ namespace mir::method::knn::pick {
 
 
 LongestElementDiagonalAndNClosest::LongestElementDiagonalAndNClosest(const param::MIRParametrisation& param) :
-    nClosest_(4), distance_(0.), distance2_(0.), nClosestFirst_(false) {
-    param.get("nclosest", nClosest_);
+    nClosest_(param::DefaultParametrisation::instance().get_value<size_t>("nclosest", param)),
+    distance_(0.),
+    distance2_(0.),
+    nClosestFirst_(false) {
     ASSERT(nClosest_ > 0);
 }
 
@@ -80,24 +83,19 @@ void LongestElementDiagonalAndNClosest::distance(const repres::Representation& i
 
 
 void LongestElementDiagonalAndNClosest::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "type"
-      << "longest-element-diagonal-and-nclosest";
-    j << "nclosest" << nClosest_;
-    j << "distance" << distance_;
-    j.endObject();
+    j << type() << "longest-element-diagonal-and-nclosest";
+    param::DefaultParametrisation::instance().json(j, "nclosest", nClosest_);
 }
 
 
 void LongestElementDiagonalAndNClosest::print(std::ostream& out) const {
-    out << "LongestElementDistanceAndNClosest[nclosest=" << nClosest_ << ",distance=" << distance_ << "]";
+    out << "LongestElementDistanceAndNClosest[nclosest=" << nClosest_ << "]";
 }
 
 
 void LongestElementDiagonalAndNClosest::hash(eckit::MD5& h) const {
     h.add("longest-element-diagonal-and-nclosest");
     h << nClosest_;
-    h << distance_;
 }
 
 

@@ -31,13 +31,6 @@ void GridBoxMethod::hash(eckit::MD5& md5) const {
 }
 
 
-void GridBoxMethod::json(eckit::JSON& j) const {
-    j.startObject();
-    MethodWeighted::json(j);
-    j.endObject();
-}
-
-
 void GridBoxMethod::print(std::ostream& out) const {
     out << "GridBoxMethod[name=" << name() << ",";
     MethodWeighted::print(out);

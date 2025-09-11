@@ -178,9 +178,9 @@ ProjectionMapping* build_projection_mapping(const eckit::geo::Projection& projec
     const auto& type = projection.type();
     return type == "rotation" ? static_cast<ProjectionMapping*>(new MappingProjectionRotation(projection))
            : type == "none"   ? static_cast<ProjectionMapping*>(new MappingProjectionNone(projection))
-           : type == "eqc"   ? static_cast<ProjectionMapping*>(new MappingProjectionNone(projection))
+           : type == "eqc"    ? static_cast<ProjectionMapping*>(new MappingProjectionNone(projection))
                               : throw exception::UserError(
-                                  "GridSpecParametrisation: unsupported projection mapping type: '" + type + "'");
+                                 "GridSpecParametrisation: unsupported projection mapping type: '" + type + "'");
 }
 
 

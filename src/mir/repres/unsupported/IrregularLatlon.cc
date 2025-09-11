@@ -242,7 +242,6 @@ bool IrregularLatlon::includesSouthPole() const {
 
 
 atlas::Grid IrregularLatlon::atlasGrid() const {
-#if mir_HAVE_ATLAS
     ASSERT(numberOfPoints());
 
     std::vector<atlas::PointXY> pts;
@@ -255,9 +254,6 @@ atlas::Grid IrregularLatlon::atlasGrid() const {
     }
 
     return atlas::UnstructuredGrid(std::move(pts));
-#else
-    NOTIMP;
-#endif
 }
 
 

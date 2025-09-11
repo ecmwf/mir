@@ -49,10 +49,7 @@ bool NoDistanceWeighting::sameAs(const DistanceWeighting& other) const {
 
 
 void NoDistanceWeighting::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "type"
-      << "no";
-    j.endObject();
+    j << type() << "no";
 }
 
 

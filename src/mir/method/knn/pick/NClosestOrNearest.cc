@@ -18,6 +18,7 @@
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
+#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
 
@@ -26,25 +27,17 @@ namespace mir::method::knn::pick {
 
 
 NClosestOrNearest::NClosestOrNearest(size_t nClosest, double distanceTolerance) :
-    nClosest_(nClosest), distanceTolerance_(distanceTolerance) {
+    nClosest_(nClosest),
+    distanceTolerance_(distanceTolerance),
+    distanceTolerance2_(distanceTolerance_ * distanceTolerance_) {
     ASSERT(nClosest_ > 0);
     ASSERT(distanceTolerance_ >= 0.);
-
-    distanceTolerance2_ = distanceTolerance_ * distanceTolerance_;
 }
 
 
-NClosestOrNearest::NClosestOrNearest(const param::MIRParametrisation& param) {
-    nClosest_ = 4;
-    param.get("nclosest", nClosest_);
-    ASSERT(nClosest_ > 0);
-
-    distanceTolerance_ = 1.;
-    param.get("distance-tolerance", distanceTolerance_);
-    ASSERT(distanceTolerance_ >= 0.);
-
-    distanceTolerance2_ = distanceTolerance_ * distanceTolerance_;
-}
+NClosestOrNearest::NClosestOrNearest(const param::MIRParametrisation& param) :
+    NClosestOrNearest(param::DefaultParametrisation::instance().get_value<size_t>("nclosest", param),
+                      param::DefaultParametrisation::instance().get_value<double>("distance-tolerance", param)) {}
 
 
 void NClosestOrNearest::pick(const search::PointSearch& tree, const Point3& p, Pick::neighbours_t& closest) const {
@@ -82,12 +75,9 @@ bool NClosestOrNearest::sameAs(const Pick& other) const {
 
 
 void NClosestOrNearest::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "type"
-      << "nclosest-or-nearest";
-    j << "nclosest" << nClosest_;
-    j << "distanceTolerance" << distanceTolerance_;
-    j.endObject();
+    j << type() << "nclosest-or-nearest";
+    param::DefaultParametrisation::instance().json(j, "nclosest", nClosest_);
+    param::DefaultParametrisation::instance().json(j, "distance-tolerance", distanceTolerance_);
 }
 
 

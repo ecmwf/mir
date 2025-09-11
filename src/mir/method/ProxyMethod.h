@@ -100,7 +100,9 @@ private:
     void setCropping(const util::BoundingBox&) override;
     bool hasCropping() const override;
     const util::BoundingBox& getCropping() const override;
+
     void print(std::ostream&) const override;
+    void json(eckit::JSON&) const override;
 
     // -- Class members
     // None

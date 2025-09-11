@@ -42,7 +42,7 @@ struct TestWatcher : api::MIRWatcher {
 CASE("ActionGraph") {
 
     std::unique_ptr<api::MIRWatcher> watcher(new TestWatcher());
-    param::DefaultParametrisation empty;
+    const auto& empty = param::DefaultParametrisation::instance();
 
 
     param::RuntimeParametrisation area1(empty);

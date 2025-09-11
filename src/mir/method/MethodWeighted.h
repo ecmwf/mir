@@ -23,10 +23,6 @@
 #include "mir/method/WeightMatrix.h"
 
 
-namespace eckit {
-class JSON;
-}
-
 namespace mir {
 namespace data {
 class Space;
@@ -67,9 +63,17 @@ public:
 
     explicit MethodWeighted(const param::MIRParametrisation&);
 
+    MethodWeighted(const MethodWeighted&) = delete;
+    MethodWeighted(MethodWeighted&&)      = delete;
+
     // -- Destructor
 
     ~MethodWeighted() override;
+
+    // -- Operators
+
+    void operator=(MethodWeighted&&)      = delete;
+    void operator=(const MethodWeighted&) = delete;
 
     // -- Methods
 
@@ -83,8 +87,7 @@ public:
 protected:
     // -- Methods
 
-    virtual void json(eckit::JSON&) const = 0;
-    virtual const char* name() const      = 0;
+    virtual const char* name() const = 0;
     const solver::Solver& solver() const;
     void addNonLinearTreatment(const nonlinear::NonLinear*);
     void setSolver(const solver::Solver*);
@@ -97,6 +100,7 @@ protected:
     // From Method
     bool sameAs(const Method&) const override = 0;
     void print(std::ostream&) const override  = 0;
+    void json(eckit::JSON&) const override;
 
 private:
     // -- Members
@@ -152,11 +156,6 @@ private:
     // -- Friends
 
     friend class MatrixCacheCreator;
-
-    friend eckit::JSON& operator<<(eckit::JSON& s, const MethodWeighted& o) {
-        o.json(s);
-        return s;
-    }
 };
 
 

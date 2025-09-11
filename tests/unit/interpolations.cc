@@ -37,10 +37,8 @@ CASE("interpolations") {
     jobs[1].set("area", "40/20/20/40");
     jobs[1].set("frame", 2);
 
-    if constexpr (MIR_HAVE_ATLAS) {
-        jobs[2].set("caching", false);
-        jobs[2].set("rotation", "-89/10");
-    }
+    jobs[2].set("caching", false);
+    jobs[2].set("rotation", "-89/10");
 
 
     SECTION("gridded to gridded (GRIB)") {
@@ -62,36 +60,34 @@ CASE("interpolations") {
     }
 
 
-    if constexpr (MIR_HAVE_ATLAS) {
-        SECTION("spectral to gridded (scalar)") {
-            param::SimpleParametrisation args;
+    SECTION("spectral to gridded (scalar)") {
+        param::SimpleParametrisation args;
 
-            for (const auto& job : jobs) {
-                std::unique_ptr<input::MIRInput> input(
-                    input::MIRInputFactory::build("../data/param=t,level=1000,resol=20", args));
-                output::EmptyOutput output;
+        for (const auto& job : jobs) {
+            std::unique_ptr<input::MIRInput> input(
+                input::MIRInputFactory::build("../data/param=t,level=1000,resol=20", args));
+            output::EmptyOutput output;
 
-                while (input->next()) {
-                    job.execute(*input, output);
-                }
+            while (input->next()) {
+                job.execute(*input, output);
             }
         }
+    }
 
 
-        SECTION("spectral to gridded (vod2uv)") {
-            param::SimpleParametrisation args;
-            args.set("vod2uv", true);
+    SECTION("spectral to gridded (vod2uv)") {
+        param::SimpleParametrisation args;
+        args.set("vod2uv", true);
 
-            for (auto& job : jobs) {
-                std::unique_ptr<input::MIRInput> input(
-                    input::MIRInputFactory::build("../data/param=vo_d,level=1000,resol=20", args));
-                output::EmptyOutput output;
+        for (auto& job : jobs) {
+            std::unique_ptr<input::MIRInput> input(
+                input::MIRInputFactory::build("../data/param=vo_d,level=1000,resol=20", args));
+            output::EmptyOutput output;
 
-                job.set("vod2uv", true);
+            job.set("vod2uv", true);
 
-                while (input->next()) {
-                    job.execute(*input, output);
-                }
+            while (input->next()) {
+                job.execute(*input, output);
             }
         }
     }

@@ -41,7 +41,7 @@ public:
 
     // -- Constructors
 
-    FiniteElement(const param::MIRParametrisation&, const std::string& label = "input");
+    explicit FiniteElement(const param::MIRParametrisation&, const std::string& label = "input");
 
     // -- Destructor
 
@@ -128,7 +128,7 @@ class FiniteElementFactory : public MethodFactory {
     FiniteElement* make(const param::MIRParametrisation&) override                          = 0;
 
 protected:
-    FiniteElementFactory(const std::string&);
+    explicit FiniteElementFactory(const std::string&);
     ~FiniteElementFactory() override;
 
 public:

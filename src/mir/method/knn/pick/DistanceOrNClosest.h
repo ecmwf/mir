@@ -31,8 +31,8 @@ private:
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;
 
-    NClosestOrNearest nClosest_;
-    double distance_;
+    const NClosestOrNearest nClosest_;
+    const double distance_;
 };
 
 

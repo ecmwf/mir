@@ -28,7 +28,6 @@
 #include "mir/key/resol/Resol.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/CombinedParametrisation.h"
-#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/param/SameParametrisation.h"
@@ -442,8 +441,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
             runtime->set("grid", intgrid);
             runtime->unset("rotation");
 
-            static param::DefaultParametrisation defaults;
-            auto recombined = std::make_unique<param::CombinedParametrisation>(*runtime, field, defaults);
+            auto recombined = std::make_unique<param::CombinedParametrisation>(*runtime, field);
             auto target     = target_gridded_from_parametrisation(*recombined, false);
 
             plan.add("interpolate.grid2" + target, runtime);

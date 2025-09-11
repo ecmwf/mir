@@ -12,77 +12,69 @@
 
 #pragma once
 
+#include <type_traits>
+
+#include "eckit/log/JSON.h"
+#include "eckit/types/FloatCompare.h"
+
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir::param {
 
 
 class DefaultParametrisation : public SimpleParametrisation {
-public:
-    // -- Exceptions
-    // None
-
+private:
     // -- Constructors
 
     DefaultParametrisation();
 
-    // -- Destructor
-
-    ~DefaultParametrisation() override;
-
-    // -- Convertors
-    // None
-
-    // -- Operators
-    // None
-
+public:
     // -- Methods
-    // None
 
-    // -- Class members
-    // None
+    static const DefaultParametrisation& instance() {
+        static const DefaultParametrisation instance;
+        return instance;
+    }
 
-    // -- Class methods
-    // None
+    template <typename T>
+    T get_value(const std::string& name, const MIRParametrisation& param) const {
+        T value{};
+        ASSERT(get(name, value));  // ensure there is a default value
+        param.get(name, value);    // override the default value if any
+        return value;
+    }
 
-protected:
-    // -- Members
-    // None
+    template <>
+    size_t get_value(const std::string& name, const MIRParametrisation& param) const {
+        size_t value{};
+        ASSERT(MIRParametrisation::get(name, value));  // ensure there is a default value
+        param.get(name, value);                        // override the default value if any
+        return value;
+    }
 
-    // -- Methods
-    // None
+    template <typename T>
+    void json(eckit::JSON& j, const std::string& name, const T& value) const {
+        if (std::remove_cv_t<T> default_value; !SimpleParametrisation::get(name, default_value)) {
+            j << name << value;
+        }
+        else if constexpr (std::is_floating_point_v<std::remove_cv_t<T>>) {
+            if (!eckit::types::is_approximately_equal(value, default_value)) {
+                j << name << value;
+            }
+        }
+        else if (value != default_value) {
+            j << name << value;
+        }
+    }
 
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-private:
-    // -- Types
-    // None
-
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-    // -- Friends
-    // None
+    template <>
+    void json(eckit::JSON& j, const std::string& name, const size_t& value) const {
+        if (size_t default_value = 0; !MIRParametrisation::get(name, default_value) || value != default_value) {
+            j << name << value;
+        }
+    }
 };
 
 

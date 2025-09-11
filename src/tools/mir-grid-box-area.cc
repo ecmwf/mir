@@ -20,7 +20,6 @@
 #include "mir/output/MIROutput.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/ConfigurationWrapper.h"
-#include "mir/param/DefaultParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/stats/Statistics.h"
 #include "mir/tools/MIRTool.h"
@@ -46,7 +45,6 @@ struct MIRGridBoxArea : MIRTool {
 
     void execute(const eckit::option::CmdArgs& args) override {
         const param::ConfigurationWrapper args_wrap(args);
-        const param::DefaultParametrisation defaults;
 
         for (const auto& arg : args) {
             // read in first field to calculate grid-box areas
@@ -54,7 +52,7 @@ struct MIRGridBoxArea : MIRTool {
             ASSERT(input->next());
 
             std::unique_ptr<param::MIRParametrisation> param(
-                new param::CombinedParametrisation(args_wrap, input->parametrisation(), defaults));
+                new param::CombinedParametrisation(args_wrap, input->parametrisation()));
 
             util::MIRStatistics statistics;
             context::Context ctx(*input, statistics);

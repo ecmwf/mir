@@ -21,7 +21,8 @@
 #include "mir/action/context/Context.h"
 #include "mir/method/MethodWeighted.h"
 #include "mir/namedgrids/NamedGrid.h"
-#include "mir/param/DefaultParametrisation.h"
+#include "mir/param/CombinedParametrisation.h"
+#include "mir/param/SimpleParametrisation.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Types.h"
@@ -35,10 +36,8 @@ CASE("MIR-333") {
     // run with '--new-reference' to generate new reference data
     static const bool newReference = eckit::Resource<bool>("--new-reference", false);
 
-    struct : param::DefaultParametrisation {
-        virtual const MIRParametrisation& userParametrisation() const { return *this; }
-        virtual const MIRParametrisation& fieldParametrisation() const { return *this; }
-    } static const defaults;
+    static const param::SimpleParametrisation empty;
+    const param::CombinedParametrisation defaults(empty);
 
     std::unique_ptr<method::Method> method(method::MethodFactory::build("nn", defaults));
     auto nn = dynamic_cast<method::MethodWeighted*>(method.get());

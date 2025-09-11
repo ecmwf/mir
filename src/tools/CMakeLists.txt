@@ -14,13 +14,17 @@ foreach(tool IN ITEMS
     mir-grid-box-area
     mir-grid-info
     mir-inspect
+    mir-interpolation
     mir-list
-    mir-lsm
     mir-load-matrix
+    mir-lsm
     mir-make-lsm
     mir-matrix-reorder
     mir-plot-lsm
     mir-points
+    mir-load-legendre
+    mir-spectral-transform-points
+    mir-triangulate
     mir-statistics
     mir-version
     mir-weight-matrix-diff)
@@ -41,13 +45,4 @@ if(mir_HAVE_ECKIT_CODEC)
             ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir eckit_codec NetCDF::NetCDF_CXX ${mir_INSTALL_TOOLS})
         endforeach()
     endif()
-endif()
-
-if(mir_HAVE_ATLAS)
-    foreach(tool IN ITEMS
-        mir-load-legendre
-        mir-spectral-transform-points
-        mir-triangulate)
-        ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir ${mir_INSTALL_TOOLS})
-    endforeach()
 endif()

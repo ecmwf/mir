@@ -49,8 +49,12 @@ public:
 
     virtual WeightMatrix::Check validateMatrixWeights() const;
 
+    virtual void json(eckit::JSON&) const = 0;
+
+protected:
+    virtual const std::string& type() const;
+
 private:
-    virtual void json(eckit::JSON&) const   = 0;
     virtual void print(std::ostream&) const = 0;
 
     friend std::ostream& operator<<(std::ostream& s, const DistanceWeighting& p) {

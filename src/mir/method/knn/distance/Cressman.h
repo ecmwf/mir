@@ -33,8 +33,8 @@ private:
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;
 
-    double r_;
-    double r2_;
+    const double r_;
+    const double r2_;
     double power_;
 };
 

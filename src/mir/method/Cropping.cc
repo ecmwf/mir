@@ -23,9 +23,6 @@ namespace mir::method {
 Cropping::Cropping() : active_(false) {}
 
 
-Cropping::Cropping(const Cropping&) = default;
-
-
 void Cropping::hash(eckit::MD5& md5) const {
     md5.add(bbox_);
     md5.add(active_);

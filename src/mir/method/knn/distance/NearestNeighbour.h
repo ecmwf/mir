@@ -19,7 +19,8 @@ namespace mir::method::knn::distance {
 
 
 struct NearestNeighbour : DistanceWeighting {
-    NearestNeighbour(const param::MIRParametrisation&);
+    explicit NearestNeighbour(const param::MIRParametrisation&);
+
     void operator()(size_t ip, const Point3& point, const std::vector<search::PointSearch::PointValueType>& neighbours,
                     std::vector<WeightMatrix::Triplet>& triplets) const override;
 

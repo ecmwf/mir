@@ -3,7 +3,4 @@ packingType=spectral_complex.grib1
 # mir
 --truncation=21 --packing=simple
 # grib_get
-packingType=spectral_simple
-edition=1
-numberOfDataPoints=506
-numberOfValues=506
+FAIL

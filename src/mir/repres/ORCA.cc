@@ -212,15 +212,11 @@ size_t ORCA::numberOfPoints() const {
 
 
 atlas::Grid ORCA::atlasGrid() const {
-#if mir_HAVE_ATLAS
     return {atlas::grid::SpecRegistry::get(grid_->uid())};
-#else
-    NOTIMP;
-#endif
 }
 
 
 static const RepresentationBuilder<ORCA> __grid("orca");
 
 
-}  // namespace mir::repres::geo
+}  // namespace mir::repres

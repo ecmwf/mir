@@ -19,17 +19,18 @@ namespace mir::method::nonlinear {
 
 
 struct NoNonLinear : NonLinear {
-    NoNonLinear(const param::MIRParametrisation&);
+    explicit NoNonLinear(const param::MIRParametrisation&);
 
 private:
     bool treatment(DenseMatrix& A, WeightMatrix& W, DenseMatrix& B, const MIRValuesVector&,
                    const double& missingValue) const override;
     bool sameAs(const NonLinear&) const override;
-    void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;
 
     bool modifiesMatrix(bool) const override { return false; }
+
+    const std::string& name() const override;
 };
 
 

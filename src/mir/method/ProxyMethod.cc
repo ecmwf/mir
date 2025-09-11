@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <vector>
 
+#include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/action/context/Context.h"
@@ -189,6 +190,12 @@ const util::BoundingBox& ProxyMethod::getCropping() const {
 
 void ProxyMethod::print(std::ostream& out) const {
     out << "ProxyMethod[options=" << options_ << ",cropping=" << cropping_ << "]";
+}
+
+
+void ProxyMethod::json(eckit::JSON& out) const {
+    out << type_;
+    out << "interpolation-matrix-free" << options_.getBool("matrix_free");
 }
 
 

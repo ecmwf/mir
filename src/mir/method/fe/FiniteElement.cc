@@ -260,15 +260,13 @@ bool FiniteElement::sameAs(const Method& other) const {
 
 
 void FiniteElement::json(eckit::JSON& j) const {
-    j.startObject();
     MethodWeighted::json(j);
-    j << "validateMesh" << validateMesh_;
-    j << "projectionFail"
+    j << "finite-element-validate-mesh" << validateMesh_;
+    j << "finite-element-projection-fail"
       << (projectionFail_ == ProjectionFail::failure           ? "fail"
           : projectionFail_ == ProjectionFail::increaseEpsilon ? "increase-epsilon"
           : projectionFail_ == ProjectionFail::missingValue    ? "missing-value"
                                                                : NOTIMP);
-    j.endObject();
 }
 
 

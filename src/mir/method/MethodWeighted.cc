@@ -15,7 +15,6 @@
 #include <algorithm>
 #include <fstream>
 #include <limits>
-#include <map>
 #include <sstream>
 #include <string>
 
@@ -28,6 +27,7 @@
 
 #include "mir/action/context/Context.h"
 #include "mir/caching/InMemoryCache.h"
+#include "mir/caching/WeightCache.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRFieldStats.h"
@@ -36,6 +36,7 @@
 #include "mir/method/MatrixCacheCreator.h"
 #include "mir/method/nonlinear/NonLinear.h"
 #include "mir/method/solver/Multiply.h"
+#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
@@ -70,23 +71,15 @@ static void matrix_write(const WeightMatrix& mat, const eckit::PathName& path) {
 }
 
 
-const static std::map<eckit::Hash::digest_t, std::string> KNOWN_METHOD{
-    {"73e1dd539879ffbbbb22d6bc789c2262", "linear"},
-    {"7738675c7e2c64d463718049ebef6563", "nearest-neighbour"},
-    {"0346db910681bffd0d518b49923879dc", "grid-box-average"},
-};
-
-
-MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation) :
-    Method(parametrisation), solver_(new solver::Multiply(parametrisation)) {
-    ASSERT(parametrisation_.get("lsm-weight-adjustment", lsmWeightAdjustment_));
-
-    pruneEpsilon_ = 0;
-    ASSERT(parametrisation_.get("prune-epsilon", pruneEpsilon_));
+MethodWeighted::MethodWeighted(const param::MIRParametrisation& param) :
+    Method(param),
+    lsmWeightAdjustment_(param::DefaultParametrisation::instance().get_value<double>("lsm-weight-adjustment", param)),
+    pruneEpsilon_(param::DefaultParametrisation::instance().get_value<double>("prune-epsilon", param)),
+    poleDisplacement_(
+        param::DefaultParametrisation::instance().get_value<double>("pole-displacement-in-degree", param)),
+    solver_(new solver::Multiply(param)) {
+    ASSERT(lsmWeightAdjustment_ >= 0);
     ASSERT(pruneEpsilon_ >= 0);
-
-    poleDisplacement_ = 0;
-    parametrisation_.get("pole-displacement-in-degree", poleDisplacement_);
     ASSERT(poleDisplacement_ >= 0);
 
     matrixAssemble_ = parametrisation_.userParametrisation().has("filter");
@@ -106,28 +99,25 @@ MethodWeighted::~MethodWeighted() = default;
 
 
 void MethodWeighted::json(eckit::JSON& j) const {
+    // NOTE: only output non-default (uncluttered) and configurable (hence, usable) options
     j << "type" << name();
 
-    j << "nonLinear";
-    j.startList();
-    for (const auto& n : nonLinear_) {
-        j << *n;
-    }
-    j.endList();
+    if (!nonLinear_.empty()) {
+        j << "non-linear";
+        j.startList();
+        for (const auto& n : nonLinear_) {
+            j << n->name();
+        }
+        j.endList();
 
-    if (!reorderRows_.empty()) {
-        j << "reorderRows" << reorderRows_;
-    }
-
-    if (!reorderCols_.empty()) {
-        j << "reorderCols" << reorderCols_;
+        for (const auto& n : nonLinear_) {
+            n->json(j);
+        }
     }
 
-    j << "solver" << *solver_;
-    j << "cropping" << cropping_;
-    j << "lsmWeightAdjustment" << lsmWeightAdjustment_;
-    j << "pruneEpsilon" << pruneEpsilon_;
-    j << "poleDisplacement" << poleDisplacement_;
+    param::DefaultParametrisation::instance().json(j, "pole-displacement-in-degree", poleDisplacement_);
+    param::DefaultParametrisation::instance().json(j, "prune-epsilon", pruneEpsilon_);
+    param::DefaultParametrisation::instance().json(j, "lsm-weight-adjustment", lsmWeightAdjustment_);
 }
 
 
@@ -313,29 +303,13 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
         j.startObject();
         j << "input" << in;
         j << "output" << out;
-
         j << "interpolation";
-        j.startObject();
-        j << "engine"
-          << "mir";
-        j << "version" << caching::WeightCache::version();
-
-        if (auto it = KNOWN_METHOD.find([](const MethodWeighted& method) {
-                std::ostringstream ss;
-                eckit::JSON k(ss);
-                k << method;
-                return (eckit::MD5() << ss.str()).digest();
-            }(*this));
-            it != KNOWN_METHOD.end()) {
-            j << "method" << it->second;
-        }
-        else {
-            j << "method" << *this;
-        }
-        j.endObject();
+        Method::json(j, true);
 
         j << "matrix";
         j.startObject();
+        j << "engine" << LibMir::instance().name();
+        j << "version" << caching::WeightCache::version();
         j << "shape";
         j.startList();
         j << w.rows();

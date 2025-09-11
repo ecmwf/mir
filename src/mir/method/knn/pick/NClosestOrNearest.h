@@ -31,9 +31,9 @@ private:
     void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
 
-    size_t nClosest_;
-    double distanceTolerance_;
-    double distanceTolerance2_;
+    const size_t nClosest_;
+    const double distanceTolerance_;
+    const double distanceTolerance2_;
 };
 
 

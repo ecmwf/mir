@@ -212,15 +212,11 @@ size_t FESOM::numberOfPoints() const {
 
 
 atlas::Grid FESOM::atlasGrid() const {
-#if mir_HAVE_ATLAS
     return {atlas::grid::SpecRegistry::get(grid_->uid())};
-#else
-    NOTIMP;
-#endif
 }
 
 
 static const RepresentationBuilder<FESOM> __grid("fesom");
 
 
-}  // namespace mir::repres::geo
+}  // namespace mir::repres

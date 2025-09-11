@@ -59,11 +59,7 @@ void FromPL::fillJob(api::MIRJob& job) const {
 
 
 atlas::Grid FromPL::atlasGrid() const {
-#if mir_HAVE_ATLAS
     return atlas::ReducedGaussianGrid(pls(), domain());
-#else
-    NOTIMP;
-#endif
 }
 
 

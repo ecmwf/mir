@@ -20,7 +20,6 @@
 #include "mir/key/Key.h"
 #include "mir/key/style/MIRStyle.h"
 #include "mir/param/CombinedParametrisation.h"
-#include "mir/param/DefaultParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
@@ -33,10 +32,9 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     input_(input), output_(output) {
 
     // get input and parameter-specific parametrisations
-    static param::DefaultParametrisation defaults;
     const param::MIRParametrisation& metadata = input.parametrisation();
 
-    combined_ = std::make_unique<param::CombinedParametrisation>(job, metadata, defaults);
+    combined_ = std::make_unique<param::CombinedParametrisation>(job, metadata);
     plan_     = std::make_unique<ActionPlan>(*combined_);
 
 

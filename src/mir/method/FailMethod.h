@@ -68,8 +68,10 @@ private:
     void execute(context::Context&, const repres::Representation& in, const repres::Representation& out) const override;
     void hash(eckit::MD5&) const override;
     int version() const override;
-    void print(std::ostream&) const override;
     void setCropping(const util::BoundingBox&) override;
+
+    void print(std::ostream&) const override;
+    void json(eckit::JSON&) const override;
 
     // -- Class members
     // None

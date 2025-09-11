@@ -20,7 +20,6 @@
 #include "mir/grib/Packing.h"
 #include "mir/input/MIRInput.h"
 #include "mir/param/CombinedParametrisation.h"
-#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -41,12 +40,10 @@ CASE("Packing") {
     fields["grid_ccsds, edition=2"].set("input", "{" COMMON ",edition:2,packing:ccsds,gridded:true}");
 #undef COMMON
 
-    static const param::DefaultParametrisation defaults;
-
     struct Combine {
         Combine(const api::MIRJob& job, const param::MIRParametrisation& field) :
             input(input::MIRInputFactory::build("constant", field)),
-            param(new param::CombinedParametrisation(job, input->parametrisation(), defaults)) {}
+            param(new param::CombinedParametrisation(job, input->parametrisation())) {}
         std::unique_ptr<input::MIRInput> input;
         std::unique_ptr<param::MIRParametrisation> param;
     };

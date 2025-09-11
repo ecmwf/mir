@@ -28,7 +28,6 @@
 #include "mir/key/style/MIRStyle.h"
 #include "mir/output/EmptyOutput.h"
 #include "mir/param/CombinedParametrisation.h"
-#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Formula.h"
@@ -80,7 +79,6 @@ struct TestingOutput : InputOutput {
 
 CASE("FormulaAction") {
     Log::info() << std::boolalpha;
-    static const param::DefaultParametrisation defaults;
 
     std::vector<std::string> _when{"prologue", "gridded", "spectral", "raw", "epilogue"};
 
@@ -106,10 +104,7 @@ CASE("FormulaAction") {
     const action::FormulaAction CORRECT_ACTION(p4);
 
 
-    std::vector<bool> inputs_gridded{true};
-    if constexpr (MIR_HAVE_ATLAS) {
-        inputs_gridded.push_back(false);
-    }
+    std::vector<bool> inputs_gridded{true, false};
 
     for (bool input_gridded : inputs_gridded) {
         TestingInput in(input_gridded);
@@ -149,7 +144,7 @@ CASE("FormulaAction") {
 
                     output::EmptyOutput out;
 
-                    const param::CombinedParametrisation param(user, in, defaults);
+                    const param::CombinedParametrisation param(user, in);
                     std::unique_ptr<key::style::MIRStyle> style(key::style::MIRStyleFactory::build(param));
 
                     action::ActionPlan plan(param);
@@ -190,16 +185,14 @@ CASE("FormulaAction") {
 
 CASE("mir::action::Area") {
     Log::info() << std::boolalpha;
-    static const param::DefaultParametrisation defaults;
 
-    auto plan_contains =
-        [](const action::ActionPlan& plan, const std::string& action) {
-            return std::any_of(plan.begin(), plan.end(), [&action](const action::Action* act_ptr) -> bool {
-                std::ostringstream str;
-                str << *act_ptr;
-                return eckit::StringTools::startsWith(str.str(), action);
-            });
-        };
+    auto plan_contains = [](const action::ActionPlan& plan, const std::string& action) {
+        return std::any_of(plan.begin(), plan.end(), [&action](const action::Action* act_ptr) -> bool {
+            std::ostringstream str;
+            str << *act_ptr;
+            return eckit::StringTools::startsWith(str.str(), action);
+        });
+    };
 
     // trigger post-processing, but avoid the same points
     param::SimpleParametrisation user;
@@ -209,7 +202,7 @@ CASE("mir::action::Area") {
     TestingInput in(true);
     output::EmptyOutput out;
 
-    const param::CombinedParametrisation param(user, in, defaults);
+    const param::CombinedParametrisation param(user, in);
     std::unique_ptr<key::style::MIRStyle> style(key::style::MIRStyleFactory::build(param));
 
 

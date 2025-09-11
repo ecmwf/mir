@@ -25,7 +25,6 @@ public:
 private:
     void hash(eckit::MD5&) const override;
     bool sameAs(const Method&) const override;
-    void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
     WeightMatrix::Check validateMatrixWeights() const override;
 };

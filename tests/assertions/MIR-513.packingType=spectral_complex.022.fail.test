@@ -1,0 +1,6 @@
+# input
+packingType=spectral_complex,param=vo_d.grib1
+# mir
+--vod2uv --packing=simple
+# grib_get
+FAIL

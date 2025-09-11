@@ -12,6 +12,7 @@ set(TESTS
     PGEN-492
     action_graph
     area
+    atlas
     bounding_box
     earthkit-regrid
     formula
@@ -35,10 +36,6 @@ set(TESTS
     vector-space
     weight_matrix
     wind)
-
-if(mir_HAVE_ATLAS)
-    list(APPEND TESTS atlas)
-endif()
 
 if(mir_HAVE_NETCDF)
     list(APPEND TESTS interpolation_netcdf)

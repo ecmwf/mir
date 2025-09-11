@@ -13,7 +13,10 @@
 #include "mir/method/Method.h"
 
 #include <map>
+#include <sstream>
 
+#include "eckit/log/JSON.h"
+#include "eckit/utils/MD5.h"
 #include "eckit/utils/StringTools.h"
 
 #include "mir/api/mir_config.h"
@@ -21,6 +24,7 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
+
 
 extern "C" {
 void omp_set_num_threads(int);
@@ -37,6 +41,38 @@ Method::Method(const param::MIRParametrisation& params) : parametrisation_(param
             omp_set_num_threads(num_threads);
         }
     }
+}
+
+
+void Method::json(eckit::JSON& j, bool lookupKnownMethods) const {
+    if (lookupKnownMethods) {
+        const static std::map<eckit::Hash::digest_t, std::string> KNOWN_METHODS{
+            {"052f0588fc55cdccb2b07212eba810c5", "linear"},
+            {"c942366c09cd3b86530029d7c714bebf", "nearest-neighbour"},
+            {"ef991e74a612a0ccca7bab42e88487b4", "grid-box-average"},
+        };
+
+        const auto method_str = [](const Method& m) {
+            std::ostringstream s;
+            eckit::JSON j(s);
+
+            j.startObject();
+            m.json(j);
+            j.endObject();
+
+            return s.str();
+        }(*this);
+
+        const auto d = (eckit::MD5() << method_str).digest();
+        if (const auto i = KNOWN_METHODS.find(d); i != KNOWN_METHODS.end()) {
+            j << i->second;
+            return;
+        }
+    }
+
+    j.startObject();
+    json(j);
+    j.endObject();
 }
 
 
@@ -84,15 +120,13 @@ void MethodFactory::list(std::ostream& out) {
 }
 
 
-Method* MethodFactory::build(std::string& names, const param::MIRParametrisation& param) {
+Method* MethodFactory::build(const std::string& names, const param::MIRParametrisation& param) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     for (const auto& name : eckit::StringTools::split("/", names)) {
         Log::debug() << "MethodFactory: looking for '" << name << "'" << std::endl;
-        auto j = m->find(name);
-        if (j != m->end()) {
-            names = name;
+        if (auto j = m->find(name); j != m->end()) {
             return j->second->make(param);
         }
     }

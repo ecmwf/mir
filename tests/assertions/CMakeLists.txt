@@ -24,8 +24,7 @@ if(MARS_SCRIPT)
             ENVIRONMENT ${_testEnvironment})
         if((_t MATCHES "[.]fail[.]") OR
            (_t MATCHES "[.]lsm[.]" AND NOT HAVE_MIR_DOWNLOAD_MASKS) OR
-           (NOT mir_HAVE_ATLAS AND NOT (_t MATCHES "[.]core[.]")) OR
-           (NOT atlas_HAVE_PROJ AND (_t MATCHES "[.]proj[.]")))
+           (_t MATCHES "[.]proj[.]" AND NOT atlas_HAVE_PROJ))
             set_tests_properties(${target} PROPERTIES WILL_FAIL TRUE)
         endif()
     endforeach()
@@ -33,13 +32,13 @@ endif()
 
 if(NOT eccodes_HAVE_AEC)
     foreach(_r
-        MIR-513.packingType=grid_ccsds.001.core.test
-        MIR-513.packingType=grid_ccsds.002.core.test
-        MIR-513.packingType=grid_ccsds.004.core.test
-        MIR-513.packingType=grid_ccsds.005.core.test
-        MIR-513.packingType=grid_ieee.003.core.test
-        MIR-513.packingType=grid_second_order.003.core.test
-        MIR-513.packingType=grid_simple.003.core.test)
+        MIR-513.packingType=grid_ccsds.001.test
+        MIR-513.packingType=grid_ccsds.002.test
+        MIR-513.packingType=grid_ccsds.004.test
+        MIR-513.packingType=grid_ccsds.005.test
+        MIR-513.packingType=grid_ieee.003.test
+        MIR-513.packingType=grid_second_order.003.test
+        MIR-513.packingType=grid_simple.003.test)
         get_filename_component(_t "${_r}" ABSOLUTE)
         target_from_path("${_t}" target)
         set_tests_properties(${target} PROPERTIES WILL_FAIL TRUE)

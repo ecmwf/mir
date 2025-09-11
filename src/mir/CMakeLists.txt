@@ -729,7 +729,82 @@ list(APPEND mir_srcs
     util/ValueMap.cc
     util/ValueMap.h
     util/Wind.cc
-    util/Wind.h)
+    util/Wind.h
+
+    action/filter/NablaFilterFVMT.cc
+    action/filter/NablaFilterFVMT.h
+    action/transform/InvtransScalar.cc
+    action/transform/InvtransScalar.h
+    action/transform/InvtransVodTouv.cc
+    action/transform/InvtransVodTouv.h
+    action/transform/ShToGridDef.cc
+    action/transform/ShToGridDef.h
+    action/transform/ShToGridSpec.cc
+    action/transform/ShToGridSpec.h
+    action/transform/ShToGridded.cc
+    action/transform/ShToGridded.h
+    action/transform/ShToNamedGrid.cc
+    action/transform/ShToNamedGrid.h
+    action/transform/ShToOctahedralGG.cc
+    action/transform/ShToOctahedralGG.h
+    action/transform/ShToPoints.cc
+    action/transform/ShToPoints.h
+    action/transform/ShToReducedGG.cc
+    action/transform/ShToReducedGG.h
+    action/transform/ShToReducedGGPLGiven.cc
+    action/transform/ShToReducedGGPLGiven.h
+    action/transform/ShToRegularGG.cc
+    action/transform/ShToRegularGG.h
+    action/transform/ShToRegularLL.cc
+    action/transform/ShToRegularLL.h
+    action/transform/ShToRotatedNamedGrid.cc
+    action/transform/ShToRotatedNamedGrid.h
+    action/transform/ShToRotatedOctahedralGG.cc
+    action/transform/ShToRotatedOctahedralGG.h
+    action/transform/ShToRotatedReducedGG.cc
+    action/transform/ShToRotatedReducedGG.h
+    action/transform/ShToRotatedReducedGGPLGiven.cc
+    action/transform/ShToRotatedReducedGGPLGiven.h
+    action/transform/ShToRotatedRegularGG.cc
+    action/transform/ShToRotatedRegularGG.h
+    action/transform/ShToRotatedRegularLL.cc
+    action/transform/ShToRotatedRegularLL.h
+    action/transform/ShToTypedGrid.cc
+    action/transform/ShToTypedGrid.h
+    action/transform/ShVodToUV.cc
+    action/transform/ShVodToUV.h
+    action/transform/TransCache.cc
+    action/transform/TransCache.h
+    caching/InMemoryMeshCache.cc
+    caching/InMemoryMeshCache.h
+    caching/LegendreCache.cc
+    caching/LegendreCache.h
+    caching/legendre/FileLoader.cc
+    caching/legendre/FileLoader.h
+    caching/legendre/LegendreLoader.cc
+    caching/legendre/LegendreLoader.h
+    caching/legendre/MappedMemoryLoader.cc
+    caching/legendre/MappedMemoryLoader.h
+    caching/legendre/NoLoader.cc
+    caching/legendre/NoLoader.h
+    caching/legendre/SharedMemoryLoader.cc
+    caching/legendre/SharedMemoryLoader.h
+    key/grid/SourcePattern.cc
+    key/grid/SourcePattern.h
+    method/ProxyMethod.cc
+    method/ProxyMethod.h
+    method/fe/CalculateCellLongestDiagonal.cc
+    method/fe/CalculateCellLongestDiagonal.h
+    method/fe/FEBilinear.cc
+    method/fe/FEBilinear.h
+    method/fe/FELinear.cc
+    method/fe/FELinear.h
+    method/fe/FiniteElement.cc
+    method/fe/FiniteElement.h
+    output/GmshOutput.cc
+    output/GmshOutput.h
+    stats/statistics/Integral.cc
+    stats/statistics/Integral.h)
 
 if(mir_HAVE_GRID_FESOM)
     list(APPEND mir_srcs repres/FESOM.cc repres/FESOM.h)
@@ -743,89 +818,9 @@ if(mir_HAVE_GRID_ORCA)
     list(APPEND mir_srcs repres/ORCA.cc repres/ORCA.h)
 endif()
 
-if(mir_HAVE_ATLAS)
-    list(APPEND mir_srcs
-        action/filter/NablaFilterFVMT.cc
-        action/filter/NablaFilterFVMT.h
-        action/transform/InvtransScalar.cc
-        action/transform/InvtransScalar.h
-        action/transform/InvtransVodTouv.cc
-        action/transform/InvtransVodTouv.h
-        action/transform/ShToGridDef.cc
-        action/transform/ShToGridDef.h
-        action/transform/ShToGridSpec.cc
-        action/transform/ShToGridSpec.h
-        action/transform/ShToGridded.cc
-        action/transform/ShToGridded.h
-        action/transform/ShToNamedGrid.cc
-        action/transform/ShToNamedGrid.h
-        action/transform/ShToOctahedralGG.cc
-        action/transform/ShToOctahedralGG.h
-        action/transform/ShToPoints.cc
-        action/transform/ShToPoints.h
-        action/transform/ShToReducedGG.cc
-        action/transform/ShToReducedGG.h
-        action/transform/ShToReducedGGPLGiven.cc
-        action/transform/ShToReducedGGPLGiven.h
-        action/transform/ShToRegularGG.cc
-        action/transform/ShToRegularGG.h
-        action/transform/ShToRegularLL.cc
-        action/transform/ShToRegularLL.h
-        action/transform/ShToRotatedNamedGrid.cc
-        action/transform/ShToRotatedNamedGrid.h
-        action/transform/ShToRotatedOctahedralGG.cc
-        action/transform/ShToRotatedOctahedralGG.h
-        action/transform/ShToRotatedReducedGG.cc
-        action/transform/ShToRotatedReducedGG.h
-        action/transform/ShToRotatedReducedGGPLGiven.cc
-        action/transform/ShToRotatedReducedGGPLGiven.h
-        action/transform/ShToRotatedRegularGG.cc
-        action/transform/ShToRotatedRegularGG.h
-        action/transform/ShToRotatedRegularLL.cc
-        action/transform/ShToRotatedRegularLL.h
-        action/transform/ShToTypedGrid.cc
-        action/transform/ShToTypedGrid.h
-        action/transform/ShVodToUV.cc
-        action/transform/ShVodToUV.h
-        action/transform/TransCache.cc
-        action/transform/TransCache.h
-        caching/InMemoryMeshCache.cc
-        caching/InMemoryMeshCache.h
-        caching/LegendreCache.cc
-        caching/LegendreCache.h
-        caching/legendre/FileLoader.cc
-        caching/legendre/FileLoader.h
-        caching/legendre/LegendreLoader.cc
-        caching/legendre/LegendreLoader.h
-        caching/legendre/MappedMemoryLoader.cc
-        caching/legendre/MappedMemoryLoader.h
-        caching/legendre/NoLoader.cc
-        caching/legendre/NoLoader.h
-        caching/legendre/SharedMemoryLoader.cc
-        caching/legendre/SharedMemoryLoader.h
-        key/grid/SourcePattern.cc
-        key/grid/SourcePattern.h
-        method/ProxyMethod.cc
-        method/ProxyMethod.h
-        method/fe/CalculateCellLongestDiagonal.cc
-        method/fe/CalculateCellLongestDiagonal.h
-        method/fe/FEBilinear.cc
-        method/fe/FEBilinear.h
-        method/fe/FELinear.cc
-        method/fe/FELinear.h
-        method/fe/FiniteElement.cc
-        method/fe/FiniteElement.h
-        output/GmshOutput.cc
-        output/GmshOutput.h
-        stats/statistics/Integral.cc
-        stats/statistics/Integral.h)
-    if(mir_HAVE_PNG)
-        list(APPEND mir_srcs output/PNGOutput.h output/PNGOutput.cc)
-    endif()
-else()
-    list(APPEND mir_srcs util/Atlas.cc)
+if(mir_HAVE_PNG)
+    list(APPEND mir_srcs output/PNGOutput.h output/PNGOutput.cc)
 endif()
-
 
 if(mir_HAVE_NETCDF)
     list(APPEND mir_srcs
@@ -966,13 +961,9 @@ ecbuild_add_library(
     INSTALL_HEADERS    LISTED
     HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/mir
     TEMPLATES          caching/InMemoryCache.cc
-    PUBLIC_LIBS        eckit_linalg eckit_geometry eckit_option eckit eckit_geo eccodes
+    PUBLIC_LIBS        atlas eckit_linalg eckit_geometry eckit_option eckit eckit_geo eccodes
     PUBLIC_INCLUDES    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/src>
     SOURCES            ${mir_srcs})
-
-if(mir_HAVE_ATLAS)
-    target_link_libraries(mir PUBLIC atlas)
-endif()
 
 if(mir_HAVE_NETCDF)
     target_link_libraries(mir PRIVATE NetCDF::NetCDF_C)

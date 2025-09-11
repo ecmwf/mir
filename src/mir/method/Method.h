@@ -17,8 +17,9 @@
 
 
 namespace eckit {
+class JSON;
 class MD5;
-}
+}  // namespace eckit
 
 namespace mir {
 namespace context {
@@ -41,7 +42,7 @@ namespace mir::method {
 
 class Method {
 public:
-    Method(const param::MIRParametrisation&);
+    explicit Method(const param::MIRParametrisation&);
 
     Method(const Method&) = delete;
     Method(Method&&)      = delete;
@@ -66,14 +67,22 @@ public:
     virtual bool hasCropping() const                     = 0;
     virtual const util::BoundingBox& getCropping() const = 0;
 
+    void json(eckit::JSON&, bool lookupKnownMethods) const;
+
 protected:
     const param::MIRParametrisation& parametrisation_;
 
     virtual void print(std::ostream&) const = 0;
+    virtual void json(eckit::JSON&) const   = 0;
 
 private:
-    friend std::ostream& operator<<(std::ostream& s, const Method& p) {
-        p.print(s);
+    friend std::ostream& operator<<(std::ostream& s, const Method& m) {
+        m.print(s);
+        return s;
+    }
+
+    friend eckit::JSON& operator<<(eckit::JSON& s, const Method& m) {
+        m.json(s);
         return s;
     }
 };
@@ -83,16 +92,19 @@ class MethodFactory {
     std::string name_;
     virtual Method* make(const param::MIRParametrisation&) = 0;
 
-    MethodFactory(const MethodFactory&)            = delete;
-    MethodFactory& operator=(const MethodFactory&) = delete;
-
 protected:
-    MethodFactory(const std::string&);
+    explicit MethodFactory(const std::string&);
     virtual ~MethodFactory();
 
 public:
+    MethodFactory(const MethodFactory&) = delete;
+    MethodFactory(MethodFactory&&)      = delete;
+
+    MethodFactory& operator=(const MethodFactory&) = delete;
+    MethodFactory& operator=(MethodFactory&&)      = delete;
+
     static void list(std::ostream&);
-    static Method* build(std::string& names, const param::MIRParametrisation&);
+    static Method* build(const std::string& names, const param::MIRParametrisation&);
 };
 
 
@@ -101,7 +113,7 @@ class MethodBuilder : public MethodFactory {
     Method* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
-    MethodBuilder(const std::string& name) : MethodFactory(name) {}
+    explicit MethodBuilder(const std::string& name) : MethodFactory(name) {}
 };
 
 

@@ -43,10 +43,8 @@ Matrix::Matrix(const param::MIRParametrisation& param) : MethodWeighted(param) {
 
 
 void Matrix::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "interpolation-matrix" << diskKey_;
     MethodWeighted::json(j);
-    j.endObject();
+    j << "interpolation-matrix" << diskKey_;
 }
 
 

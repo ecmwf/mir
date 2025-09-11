@@ -16,6 +16,7 @@
 
 #include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
+#include "mir/param/DefaultParametrisation.h"
 
 
 namespace mir::method::knn::pick {
@@ -51,11 +52,9 @@ void SortedSample::hash(eckit::MD5& h) const {
 
 
 void SortedSample::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "type"
-      << "sorted-sample";
-    j << "sample" << sample_;
-    j.endObject();
+    j << type() << "sorted-sample";
+    param::DefaultParametrisation::instance().json(j, "nclosest", sample_.n());
+    param::DefaultParametrisation::instance().json(j, "distance", sample_.d());
 }
 
 

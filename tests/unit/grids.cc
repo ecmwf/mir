@@ -13,7 +13,6 @@
 #include "eckit/testing/Test.h"
 #include "eckit/utils/RLE.h"
 
-#include "mir/api/mir_config.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Log.h"
 
@@ -49,17 +48,11 @@ void grid(const atlas::GaussianGrid& grid) {
 
 
 CASE("atlas::ReducedGaussianGrid") {
-    if constexpr (MIR_HAVE_ATLAS) {
-        for (const auto* name :
-             {"N16",  "N24",  "N32",  "N48",  "N64",  "N80",   "N96",   "N128",  "N160",  "N200",  "N256", "N320",
-              "N400", "N512", "N576", "N640", "N800", "N1024", "N1280", "N1600", "N2000", "N4000", "N8000"}) {
-            grid(atlas::ReducedGaussianGrid(name));
-        }
-    }
-
     for (const auto* name :
-         {"O16",  "O24",  "O32",  "O48",  "O64",  "O80",   "O96",   "O128",  "O160",  "O200",  "O256", "O320",
-          "O400", "O512", "O576", "O640", "O800", "O1024", "O1280", "O1600", "O2000", "O4000", "O8000"}) {
+         {"N16",  "N24",  "N32",  "N48",  "N64",   "N80",   "N96",   "N128",  "N160",  "N200",  "N256",  "N320",
+          "N400", "N512", "N576", "N640", "N800",  "N1024", "N1280", "N1600", "N2000", "N4000", "N8000", "O16",
+          "O24",  "O32",  "O48",  "O64",  "O80",   "O96",   "O128",  "O160",  "O200",  "O256",  "O320",  "O400",
+          "O512", "O576", "O640", "O800", "O1024", "O1280", "O1600", "O2000", "O4000", "O8000"}) {
         grid(atlas::ReducedGaussianGrid(name));
     }
 }
