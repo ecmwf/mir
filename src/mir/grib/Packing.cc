@@ -249,9 +249,7 @@ struct IEEE : Packing {
 struct Simple : Packing {
     Simple(const std::string& name, const param::MIRParametrisation& param) : Packing(name, param) {
         if (!gridded()) {
-            std::string msg = "packing=simple: only supports gridded data";
-            Log::error() << msg << std::endl;
-            throw exception::UserError(msg);
+            Log::warning() << "packing=simple: only supports gridded data" << std::endl;
         }
     }
 
