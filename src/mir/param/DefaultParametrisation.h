@@ -41,37 +41,34 @@ public:
     template <typename T>
     T get_value(const std::string& name, const MIRParametrisation& param) const {
         T value{};
-        ASSERT(get(name, value));  // ensure there is a default value
-        param.get(name, value);    // override the default value if any
-        return value;
-    }
 
-    template <>
-    size_t get_value(const std::string& name, const MIRParametrisation& param) const {
-        size_t value{};
-        ASSERT(MIRParametrisation::get(name, value));  // ensure there is a default value
-        param.get(name, value);                        // override the default value if any
+        if constexpr (std::is_same_v<std::remove_cv_t<T>, size_t>) {
+            ASSERT(MIRParametrisation::get(name, value));
+        }
+        else {
+            ASSERT(get(name, value));
+        }
+        param.get(name, value);
+
         return value;
     }
 
     template <typename T>
     void json(eckit::JSON& j, const std::string& name, const T& value) const {
-        if (std::remove_cv_t<T> default_value; !SimpleParametrisation::get(name, default_value)) {
-            j << name << value;
-        }
-        else if constexpr (std::is_floating_point_v<std::remove_cv_t<T>>) {
-            if (!eckit::types::is_approximately_equal(value, default_value)) {
+        T default_value{};
+
+        if constexpr (std::is_floating_point_v<std::remove_cv_t<T>>) {
+            if (!SimpleParametrisation::get(name, default_value) ||
+                !eckit::types::is_approximately_equal(value, default_value)) {
                 j << name << value;
             }
         }
-        else if (value != default_value) {
-            j << name << value;
+        else if constexpr (std::is_same_v<std::remove_cv_t<T>, size_t>) {
+            if (!MIRParametrisation::get(name, default_value) || value != default_value) {
+                j << name << value;
+            }
         }
-    }
-
-    template <>
-    void json(eckit::JSON& j, const std::string& name, const size_t& value) const {
-        if (size_t default_value = 0; !MIRParametrisation::get(name, default_value) || value != default_value) {
+        else if (!SimpleParametrisation::get(name, default_value) || value != default_value) {
             j << name << value;
         }
     }
