@@ -1,0 +1,14 @@
+# input
+gridType=regular_ll,param=t,levtype=ml,level=1,grid=9-9.grib2
+# mir
+--bitmap=$tests_assertions_dir/ECM_CG.BITMAP --grid=.5/.5 --area=72/-50/20/65
+# grib_get
+Ni = 231
+Nj = 105
+iDirectionIncrementInDegrees = 0.5
+jDirectionIncrementInDegrees = 0.5
+longitudeOfFirstGridPointInDegrees = 310
+longitudeOfLastGridPointInDegrees = 65
+latitudeOfFirstGridPointInDegrees = 72
+latitudeOfLastGridPointInDegrees = 20
+numberOfMissingValues = 23005

@@ -44,6 +44,11 @@ bool BitmapFilter::sameAs(const Action& other) const {
 }
 
 
+void BitmapFilter::custom(std::ostream& out) const {
+    out << "BitmapFilter[path=...]";
+}
+
+
 void BitmapFilter::print(std::ostream& out) const {
     out << "BitmapFilter[path=" << path_ << "]";
 }

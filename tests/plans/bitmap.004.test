@@ -1,0 +1,6 @@
+# input
+gridType=regular_ll,param=t,levtype=ml,level=1,grid=9-9.grib2
+# mir
+--bitmap=$tests_plans_dir/GL05 --grid=.5/.5 --area=85/-75/59/-5
+# plan
+Gridded2RegularLL[increments=Increments[west_east=0.5,south_north=0.5],bbox=BoundingBox[north=90,west=0,south=-90,east=359.5],interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=BoundingBox[north=85,west=-75,south=59,east=-5],lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|BitmapFilter[path=...]|Save[output=...]

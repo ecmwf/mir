@@ -1,5 +1,5 @@
 # input
-param=2t,levtype=sfc
+gridType=regular_ll,param=t,levtype=ml,level=1,grid=9-9.grib2
 # mir
 --bitmap=$tests_assertions_dir/GAUSS400_EU_GL --area=90/-60/25/60 --grid=0.1/0.1
 # grib_get
@@ -7,7 +7,8 @@ Ni = 1201
 Nj = 651
 iDirectionIncrementInDegrees = 0.1
 jDirectionIncrementInDegrees = 0.1
-longitudeOfFirstGridPointInDegrees = -60
+longitudeOfFirstGridPointInDegrees = 300
 longitudeOfLastGridPointInDegrees = 60
 latitudeOfFirstGridPointInDegrees = 90
 latitudeOfLastGridPointInDegrees = 25
+numberOfMissingValues = 700444
