@@ -58,8 +58,7 @@ public:
         T default_value{};
 
         if constexpr (std::is_floating_point_v<std::remove_cv_t<T>>) {
-            if (!SimpleParametrisation::get(name, default_value) ||
-                !eckit::types::is_approximately_equal(value, default_value)) {
+            if (!get(name, default_value) || !eckit::types::is_approximately_equal(value, default_value)) {
                 j << name << value;
             }
         }
@@ -68,7 +67,7 @@ public:
                 j << name << value;
             }
         }
-        else if (!SimpleParametrisation::get(name, default_value) || value != default_value) {
+        else if (!get(name, default_value) || value != default_value) {
             j << name << value;
         }
     }
