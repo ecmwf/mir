@@ -378,6 +378,10 @@ cdef class Interpolation:
     cdef const mir.Method* _method
 
     def __cinit__(self, spec = None, **kwargs):
+        if not bool(spec) and not bool(kwargs):
+            self._method = mir.MethodFactory.make_from_string("")
+            return
+
         assert bool(spec) != bool(kwargs)
 
         if kwargs or isinstance(spec, dict):

@@ -155,7 +155,7 @@ const Method* MethodFactory::make_from_string(const std::string& str) {
     if (auto trimmed = eckit::StringTools::trim(str); !trimmed.empty() && trimmed[0] == '{') {
         util::ValueMap(eckit::YAMLParser::decodeString(str)).set(user);
     }
-    else {
+    else if (!trimmed.empty()) {
         user.set(NAME, str);
     }
 
