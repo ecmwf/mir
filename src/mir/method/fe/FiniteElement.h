@@ -17,9 +17,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir {
-namespace method {
-namespace fe {
+namespace mir::method::fe {
 
 
 class FiniteElement : public MethodWeighted {
@@ -41,7 +39,7 @@ public:
 
     // -- Constructors
 
-    explicit FiniteElement(const param::MIRParametrisation&, const std::string& label = "input");
+    explicit FiniteElement(const param::MIRParametrisation&);
 
     // -- Destructor
 
@@ -122,40 +120,4 @@ private:
 };
 
 
-class FiniteElementFactory : public MethodFactory {
-    std::string name_;
-    virtual FiniteElement* make(const param::MIRParametrisation&, const std::string& label) = 0;
-    FiniteElement* make(const param::MIRParametrisation&) override                          = 0;
-
-protected:
-    explicit FiniteElementFactory(const std::string&);
-    ~FiniteElementFactory() override;
-
-public:
-    FiniteElementFactory(const FiniteElementFactory&) = delete;
-    FiniteElementFactory(FiniteElementFactory&&)      = delete;
-
-    void operator=(const FiniteElementFactory&) = delete;
-    void operator=(FiniteElementFactory&&)      = delete;
-
-    static void list(std::ostream&);
-    static FiniteElement* build(std::string& names, const std::string& label, const param::MIRParametrisation&);
-};
-
-
-template <class T>
-class FiniteElementBuilder : public FiniteElementFactory {
-    FiniteElement* make(const param::MIRParametrisation& param, const std::string& label) override {
-        return new T(param, label);
-    }
-
-    FiniteElement* make(const param::MIRParametrisation& param) override { return new T(param); }
-
-public:
-    FiniteElementBuilder(const std::string& name) : FiniteElementFactory(name) {}
-};
-
-
-}  // namespace fe
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::fe

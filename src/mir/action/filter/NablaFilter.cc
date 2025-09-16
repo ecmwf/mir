@@ -22,8 +22,9 @@
 namespace mir::action {
 
 
-NablaFilter::NablaFilter(const param::MIRParametrisation& param) : Action(param), meshGeneratorParams_(param, "input") {
-    param.get("nabla-poles-missing-values", polesMissingValues_ = false);
+NablaFilter::NablaFilter(const param::MIRParametrisation& param) :
+    Action(param), meshGeneratorParams_(param), polesMissingValues_(false) {
+    param.get("nabla-poles-missing-values", polesMissingValues_);
 }
 
 

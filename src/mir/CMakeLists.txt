@@ -795,10 +795,6 @@ list(APPEND mir_srcs
     method/ProxyMethod.h
     method/fe/CalculateCellLongestDiagonal.cc
     method/fe/CalculateCellLongestDiagonal.h
-    method/fe/FEBilinear.cc
-    method/fe/FEBilinear.h
-    method/fe/FELinear.cc
-    method/fe/FELinear.h
     method/fe/FiniteElement.cc
     method/fe/FiniteElement.h
     output/GmshOutput.cc

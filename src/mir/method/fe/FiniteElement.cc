@@ -16,15 +16,14 @@
 #include <cmath>
 #include <forward_list>
 #include <limits>
-#include <map>
 #include <memory>
 #include <ostream>
 #include <sstream>
 #include <utility>
+#include <vector>
 
 #include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
-#include "eckit/utils/StringTools.h"
 
 #include "mir/caching/InMemoryMeshCache.h"
 #include "mir/param/MIRParametrisation.h"
@@ -33,29 +32,45 @@
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
-#include "mir/util/Mutex.h"
 #include "mir/util/Point2ToPoint3.h"
 #include "mir/util/Reorder.h"
 #include "mir/util/Trace.h"
 
 
-namespace mir {
-namespace method {
-namespace fe {
-
-
-static constexpr size_t nbMaxFailures = 10;
-
-static util::once_flag once;
-static util::recursive_mutex* mtx                      = nullptr;
-static std::map<std::string, FiniteElementFactory*>* m = nullptr;
-static void init() {
-    mtx = new util::recursive_mutex();
-    m   = new std::map<std::string, FiniteElementFactory*>();
-}
+namespace mir::method::fe {
 
 
 namespace {
+
+
+struct FELinear final : FiniteElement {
+    explicit FELinear(const param::MIRParametrisation& param) : FiniteElement(param) {
+        // generate meshes only with triangles
+        meshGeneratorParams().set("triangulate", true);
+    }
+
+private:
+    const char* name() const override { return "linear"; }
+};
+
+
+struct FEBilinear final : FiniteElement {
+    explicit FEBilinear(const param::MIRParametrisation& param) : FiniteElement(param) {
+        // generate meshes with triangles and perfect quadrilaterals
+        // (adequate for the octahedral reduced Gaussian grid)
+        meshGeneratorParams().set("triangulate", false).set("angle", 0.);
+    }
+
+private:
+    const char* name() const override { return "bilinear"; }
+};
+
+
+const MethodBuilder<FELinear> FE_LINEAR("linear");
+const MethodBuilder<FEBilinear> FE_BILINEAR("bilinear");
+
+
+constexpr size_t nbMaxFailures = 10;
 
 
 using element_tree_t      = atlas::interpolation::method::ElemIndex3;
@@ -92,7 +107,7 @@ struct element_t : std::vector<size_t> {
             // normalise all weights according to the total (if no reasonable sum is found, distribute equitably)
             if (n > 0) {
                 bool equitable = sum <= std::numeric_limits<double>::epsilon();
-                auto invSum    = 1. / (equitable ? double(n) : sum);
+                auto invSum    = 1. / (equitable ? static_cast<double>(n) : sum);
 
                 for (size_t j = 0; j < size() && 0 < n; ++j) {
                     if (operator[](j) < nbRealPoints) {
@@ -154,8 +169,8 @@ struct quad_t : element_t, atlas::interpolation::element::Quad3D {
 }  // namespace
 
 
-FiniteElement::FiniteElement(const param::MIRParametrisation& param, const std::string& label) :
-    MethodWeighted(param), meshGeneratorParams_(param, label) {
+FiniteElement::FiniteElement(const param::MIRParametrisation& param) :
+    MethodWeighted(param), meshGeneratorParams_(param) {
     param.get("finite-element-validate-mesh", validateMesh_ = false);
 
     // mesh requirements
@@ -185,7 +200,7 @@ atlas::Mesh FiniteElement::atlasMesh(util::MIRStatistics& statistics, const repr
     auto params = meshGeneratorParams_;
     repres.fillMeshGen(params);
 
-    double d;
+    double d = 0;
     if (!repres.getLongestElementDiagonal(d)) {
         params.meshCellLongestDiagonal_ = true;
     }
@@ -199,7 +214,7 @@ atlas::Mesh FiniteElement::atlasMesh(util::MIRStatistics& statistics, const repr
     if (validateMesh_) {
         auto& connectivity = msh.cells().node_connectivity();
         auto& nodes        = msh.nodes();
-        auto nb_nodes      = size_t(nodes.size());
+        auto nb_nodes      = static_cast<size_t>(nodes.size());
         auto coords        = atlas::array::make_view<double, 2>(nodes.field("xyz"));
 
         size_t idx[4];
@@ -214,7 +229,7 @@ atlas::Mesh FiniteElement::atlasMesh(util::MIRStatistics& statistics, const repr
             ASSERT(nb_cols == 3 || nb_cols == 4);
 
             for (atlas::idx_t j = 0; j < nb_cols; ++j) {
-                idx[j] = size_t(connectivity(i, j));
+                idx[j] = static_cast<size_t>(connectivity(i, j));
                 ASSERT(idx[j] < nb_nodes);
             }
 
@@ -311,7 +326,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
     const auto inCoords      = atlas::array::make_view<double, 2>(inNodes.field("xyz"));
 
     const auto nbOutputPoints = out.numberOfPoints();
-    const auto nbInputPoints  = size_t(inNodes.size());
+    const auto nbInputPoints  = static_cast<size_t>(inNodes.size());
     const auto nbRealPts =
         inNodes.metadata().has("NbRealPts") ? inNodes.metadata().get<size_t>("NbRealPts") : nbInputPoints;
 
@@ -363,11 +378,11 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
                          * - nb_cols == 4 implies quadrilateral
                          * - no other element is supported at the time
                          */
-                        const auto e = atlas::idx_t(close.value().payload());
+                        const auto e = static_cast<atlas::idx_t>(close.value().payload());
                         ASSERT(e < connectivity.rows());
 
                         auto idx = [e, nbInputPoints, &connectivity](atlas::idx_t j) {
-                            auto x = size_t(connectivity(e, j));
+                            auto x = static_cast<size_t>(connectivity(e, j));
                             ASSERT(x < nbInputPoints);
                             return x;
                         };
@@ -430,63 +445,9 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
 }
 
 
-FiniteElementFactory::FiniteElementFactory(const std::string& name) : MethodFactory(name), name_(name) {
-    util::call_once(once, init);
-    util::lock_guard<util::recursive_mutex> guard(*mtx);
-
-    if (m->find(name) != m->end()) {
-        throw exception::SeriousBug("FiniteElementFactory: duplicate '" + name + "'");
-    }
-
-    ASSERT(m->find(name) == m->end());
-    (*m)[name] = this;
-}
-
-
-FiniteElementFactory::~FiniteElementFactory() {
-    util::call_once(once, init);
-    util::lock_guard<util::recursive_mutex> guard(*mtx);
-
-    m->erase(name_);
-}
-
-
-void FiniteElementFactory::list(std::ostream& out) {
-    util::call_once(once, init);
-    util::lock_guard<util::recursive_mutex> guard(*mtx);
-
-    const char* sep = "";
-    for (const auto& j : *m) {
-        out << sep << j.first;
-        sep = ", ";
-    }
-}
-
-
-FiniteElement* FiniteElementFactory::build(std::string& names, const std::string& label,
-                                           const param::MIRParametrisation& param) {
-    util::call_once(once, init);
-    util::lock_guard<util::recursive_mutex> guard(*mtx);
-
-    for (const auto& name : eckit::StringTools::split("/", names)) {
-        Log::debug() << "FiniteElementFactory: looking for '" << name << "'" << std::endl;
-        auto j = m->find(name);
-        if (j != m->end()) {
-            names = name;
-            return j->second->make(param, label);
-        }
-    }
-
-    list(Log::error() << "FiniteElementFactory: unknown '" << names << "', choices are: ");
-    throw exception::SeriousBug("FiniteElementFactory: unknown '" + names + "'");
-}
-
-
 void FiniteElement::ProjectionFail::list(std::ostream& out) {
     out << "failure, increase-epsilon, missing-value";
 }
 
 
-}  // namespace fe
-}  // namespace method
-}  // namespace mir
+}  // namespace mir::method::fe

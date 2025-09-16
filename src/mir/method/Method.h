@@ -104,7 +104,7 @@ public:
     MethodFactory& operator=(MethodFactory&&)      = delete;
 
     static void list(std::ostream&);
-    static Method* build(const std::string& names, const param::MIRParametrisation&);
+    static Method* build(const std::string&, const param::MIRParametrisation&);
 };
 
 

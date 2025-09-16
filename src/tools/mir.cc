@@ -185,34 +185,26 @@ struct MIR : MIRTool {
             "Linear algebra sparse backend (default '" + eckit::linalg::LinearAlgebraSparse::backend().name() + "')"));
         options_.push_back(new FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
 
-        for (const auto& which : std::vector<std::string>{"input", "output"}) {
-            options_.push_back(
-                new SimpleOption<std::string>(which + "-mesh-generator", "Mesh generator for " + which + " grid"));
-            options_.push_back(
-                new SimpleOption<bool>(which + "-mesh-cell-centres", "Calculate cell centres for " + which + " mesh"));
-            options_.push_back(new SimpleOption<bool>(which + "-mesh-cell-longest-diagonal",
-                                                      "Calculate cells longest diagonal for " + which + " mesh"));
-            options_.push_back(new SimpleOption<bool>(which + "-mesh-node-to-cell-connectivity",
-                                                      "Calculate node-to-cell connectivity for " + which + " mesh"));
-            options_.push_back(new SimpleOption<std::string>(
-                which + "-mesh-file-ll",
-                "Output file for " + which + " grid, in lon/lat coordinates (default <empty>)"));
-            options_.push_back(new SimpleOption<std::string>(
-                which + "-mesh-file-xy", "Output file for " + which + " grid, in X/Y coordinates (default <empty>)"));
-            options_.push_back(new SimpleOption<std::string>(
-                which + "-mesh-file-xyz",
-                "Output file for " + which + " grid, in X/Y/Z coordinates (default <empty>)"));
-            options_.push_back(new SimpleOption<bool>(which + "-mesh-generator-three-dimensional",
-                                                      "Generate 3-dimensional " + which + " mesh"));
-            options_.push_back(new SimpleOption<bool>(which + "-mesh-generator-triangulate",
-                                                      "Generate triangulated " + which + " mesh"));
-            options_.push_back(new SimpleOption<double>(
-                which + "-mesh-generator-angle", "Generate with quadrilateral tolerance angle on " + which + " mesh"));
-            options_.push_back(new SimpleOption<bool>(which + "-mesh-generator-force-include-north-pole",
-                                                      "Generate including North pole on " + which + " mesh"));
-            options_.push_back(new SimpleOption<bool>(which + "-mesh-generator-force-include-south-pole",
-                                                      "Generate including South pole on " + which + " mesh"));
-        }
+        options_.push_back(new SimpleOption<std::string>("mesh-generator", "Mesh generator"));
+        options_.push_back(new SimpleOption<bool>("mesh-cell-centres", "Calculate mesh cell centres"));
+        options_.push_back(
+            new SimpleOption<bool>("mesh-cell-longest-diagonal", "Calculate mesh cells longest diagonal"));
+        options_.push_back(
+            new SimpleOption<bool>("mesh-node-to-cell-connectivity", "Calculate mesh node-to-cell connectivity"));
+        options_.push_back(new SimpleOption<std::string>("mesh-file-ll",
+                                                         "Output mesh file, in lon/lat coordinates (default <empty>)"));
+        options_.push_back(
+            new SimpleOption<std::string>("mesh-file-xy", "Output mesh file, in X/Y coordinates (default <empty>)"));
+        options_.push_back(
+            new SimpleOption<std::string>("mesh-file-xyz", "Output mesh file, in X/Y/Z coordinates (default <empty>)"));
+        options_.push_back(new SimpleOption<bool>("mesh-generator-three-dimensional", "Generate 3-dimensional mesh"));
+        options_.push_back(new SimpleOption<bool>("mesh-generator-triangulate", "Generate triangulated mesh"));
+        options_.push_back(
+            new SimpleOption<double>("mesh-generator-angle", "Generate mesh with quadrilateral tolerance angle"));
+        options_.push_back(
+            new SimpleOption<bool>("mesh-generator-force-include-north-pole", "Generate mesh including North pole"));
+        options_.push_back(
+            new SimpleOption<bool>("mesh-generator-force-include-south-pole", "Generate mesh including South pole"));
 
         options_.push_back(
             new SimpleOption<double>("counter-upper-limit", "Statistics count values below lower limit"));

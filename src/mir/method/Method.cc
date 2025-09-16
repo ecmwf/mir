@@ -17,7 +17,6 @@
 
 #include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
-#include "eckit/utils/StringTools.h"
 
 #include "mir/api/mir_config.h"
 #include "mir/param/MIRParametrisation.h"
@@ -120,19 +119,17 @@ void MethodFactory::list(std::ostream& out) {
 }
 
 
-Method* MethodFactory::build(const std::string& names, const param::MIRParametrisation& param) {
+Method* MethodFactory::build(const std::string& name, const param::MIRParametrisation& param) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-    for (const auto& name : eckit::StringTools::split("/", names)) {
-        Log::debug() << "MethodFactory: looking for '" << name << "'" << std::endl;
-        if (auto j = m->find(name); j != m->end()) {
-            return j->second->make(param);
-        }
+    Log::debug() << "MethodFactory: looking for '" << name << "'" << std::endl;
+    if (auto j = m->find(name); j != m->end()) {
+        return j->second->make(param);
     }
 
-    list(Log::error() << "MethodFactory: unknown '" << names << "', choices are: ");
-    throw exception::SeriousBug("MethodFactory: unknown '" + names + "'");
+    list(Log::error() << "MethodFactory: unknown '" << name << "', choices are: ");
+    throw exception::SeriousBug("MethodFactory: unknown '" + name + "'");
 }
 
 
