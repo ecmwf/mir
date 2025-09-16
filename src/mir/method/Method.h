@@ -52,15 +52,13 @@ public:
     void operator=(const Method&) = delete;
     void operator=(Method&&)      = delete;
 
-    virtual const char* type() const     = 0;
-    virtual void hash(eckit::MD5&) const = 0;
-
-    virtual int version() const = 0;
+    virtual const char* type() const         = 0;
+    virtual void hash(eckit::MD5&) const     = 0;
+    virtual bool sameAs(const Method&) const = 0;
+    virtual int version() const              = 0;
 
     virtual void execute(context::Context&, const repres::Representation& in,
                          const repres::Representation& out) const = 0;
-
-    virtual bool sameAs(const Method&) const = 0;
 
     // For optimising plan
     virtual bool canCrop() const                         = 0;
@@ -69,6 +67,8 @@ public:
     virtual const util::BoundingBox& getCropping() const = 0;
 
     void json(eckit::JSON&, bool lookupKnownMethods) const;
+
+    std::string spec_str() const;
 
 protected:
     const param::MIRParametrisation& parametrisation_;
@@ -106,6 +106,8 @@ public:
 
     static void list(std::ostream&);
     static Method* build(const std::string&, const param::MIRParametrisation&);
+
+    [[nodiscard]] static const Method* make_from_string(const std::string&);
 };
 
 

@@ -111,3 +111,13 @@ cdef extern from "mir/output/ArrayOutput.h" namespace "mir::output":
         vector[double]& values()
         vector[size_t] shape() const
         string gridspec() const
+
+
+cdef extern from "mir/method/Method.h" namespace "mir::method":
+    cdef cppclass Method:
+        string spec_str() const
+        string type() const
+
+    cdef cppclass MethodFactory:
+        @staticmethod
+        const Method* make_from_string(const string&) except +

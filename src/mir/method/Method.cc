@@ -16,13 +16,18 @@
 #include <sstream>
 
 #include "eckit/log/JSON.h"
+#include "eckit/parser/YAMLParser.h"
 #include "eckit/utils/MD5.h"
+#include "eckit/utils/StringTools.h"
 
 #include "mir/api/mir_config.h"
+#include "mir/param/CombinedParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
+#include "mir/util/ValueMap.h"
 
 
 extern "C" {
@@ -72,6 +77,16 @@ void Method::json(eckit::JSON& j, bool lookupKnownMethods) const {
     j.startObject();
     json(j);
     j.endObject();
+}
+
+
+std::string Method::spec_str() const {
+    std::ostringstream s;
+    eckit::JSON j(s);
+
+    json(j, true);
+
+    return s.str();
 }
 
 
@@ -130,6 +145,25 @@ Method* MethodFactory::build(const std::string& name, const param::MIRParametris
 
     list(Log::error() << "MethodFactory: unknown '" << name << "', choices are: ");
     throw exception::SeriousBug("MethodFactory: unknown '" + name + "'");
+}
+
+
+const Method* MethodFactory::make_from_string(const std::string& str) {
+    const std::string NAME("interpolation");
+
+    param::SimpleParametrisation user;
+    if (auto trimmed = eckit::StringTools::trim(str); !trimmed.empty() && trimmed[0] == '{') {
+        util::ValueMap(eckit::YAMLParser::decodeString(str)).set(user);
+    }
+    else {
+        user.set(NAME, str);
+    }
+
+    std::string name;
+    param::CombinedParametrisation param(user);
+    ASSERT(static_cast<const param::MIRParametrisation&>(param).get(NAME, name));
+
+    return build(name, param);
 }
 
 

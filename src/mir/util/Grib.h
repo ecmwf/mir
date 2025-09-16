@@ -12,9 +12,8 @@
 
 #pragma once
 
-#include <eccodes.h>
+#include <eccodes/eccodes.h>
 
-#include <sstream>
 #include <string>
 #include <vector>
 

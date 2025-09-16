@@ -372,3 +372,43 @@ cdef class Grid:
 
     def __dealloc__(self):
         del self._grid
+
+
+cdef class Interpolation:
+    cdef const mir.Method* _method
+
+    def __cinit__(self, spec = None, **kwargs):
+        assert bool(spec) != bool(kwargs)
+
+        if kwargs or isinstance(spec, dict):
+            from yaml import dump
+            spec = dump(kwargs if kwargs else spec, default_flow_style=True).strip()
+
+        try:
+            assert isinstance(spec, str)
+            self._method = mir.MethodFactory.make_from_string(spec.encode())
+
+        except RuntimeError as e:
+            # opportunity to do something interesting
+            raise
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Interpolation):
+            return NotImplemented
+        return self.spec_str == other.spec_str
+
+    @property
+    def spec_str(self) -> str:
+        return self._method.spec_str().decode()
+
+    @property
+    def spec(self) -> dict:
+        from yaml import safe_load
+        return safe_load(self.spec_str)
+
+    @property
+    def type(self) -> str:
+        return self._method.type().decode()
+
+    def __dealloc__(self):
+        del self._method

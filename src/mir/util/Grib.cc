@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <cstring>
 #include <ios>
+#include <sstream>
 #include <utility>
 
 #include "eckit/config/Resource.h"
