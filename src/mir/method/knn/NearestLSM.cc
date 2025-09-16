@@ -94,7 +94,7 @@ const distance::DistanceWeighting& NearestLSM::distanceWeighting() const {
 }
 
 
-const char* NearestLSM::name() const {
+const char* NearestLSM::type() const {
     return "nearest-lsm";
 }
 

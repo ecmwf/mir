@@ -3,4 +3,4 @@ param=2t,levtype=sfc
 # mir
 --dont-compress-plan --area=80/-10/10/100 --grid=1/1 --accuracy=8 --packing=so
 # plan
-Gridded2RegularLL[increments=Increments[west_east=1,south_north=1],bbox=BoundingBox[north=90,west=0,south=-90,east=359],interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|AreaCropper[bbox=BoundingBox[north=80,west=-10,south=10,east=100]]|Save[packing=second-order,accuracy=8,output=...]
+Gridded2RegularLL[increments=Increments[west_east=1,south_north=1],bbox=BoundingBox[north=90,west=0,south=-90,east=359],interpolation=linear,method=FiniteElement[type=linear,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|AreaCropper[bbox=BoundingBox[north=80,west=-10,south=10,east=100]]|Save[packing=second-order,accuracy=8,output=...]

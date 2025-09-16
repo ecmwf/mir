@@ -25,7 +25,7 @@ struct KNearestStatistics final : KNearestNeighbours {
     explicit KNearestStatistics(const param::MIRParametrisation&);
 
 private:
-    const char* name() const override;
+    const char* type() const override;
     bool sameAs(const Method&) const override;
     const pick::Pick& pick() const override;
     const distance::DistanceWeighting& distanceWeighting() const override;

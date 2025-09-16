@@ -29,37 +29,62 @@
 namespace mir::method {
 
 
+const std::string STRUCTURED_BICUBIC{"structured-bicubic"};
+const std::string STRUCTURED_BILINEAR{"structured-bilinear"};
+const std::string STRUCTURED_BIQUASICUBIC{"structured-biquasicubic"};
+const std::string GRID_BOX_AVERAGE{"grid-box-average-matrix-free"};
+const std::string GRID_BOX_MAXIMUM{"grid-box-maximum-matrix-free"};
+
+
+auto remove_matrix_free = [](const std::string& s) {
+    const std::string suffix{"-matrix-free"};
+    if (s.size() >= suffix.size() && s.compare(s.size() - suffix.size(), suffix.size(), suffix) == 0) {
+        std::string t{s};
+        t.erase(s.size() - suffix.size());
+        return t;
+    }
+    return s;
+};
+
+
 struct StructuredBicubic final : public ProxyMethod {
-    explicit StructuredBicubic(const param::MIRParametrisation& param) : ProxyMethod(param, "structured-bicubic") {}
+    explicit StructuredBicubic(const param::MIRParametrisation& param) : ProxyMethod(param, STRUCTURED_BICUBIC) {}
+    const char* type() const override { return STRUCTURED_BICUBIC.c_str(); }
 };
 
 
 struct StructuredBilinear final : public ProxyMethod {
-    explicit StructuredBilinear(const param::MIRParametrisation& param) : ProxyMethod(param, "structured-bilinear") {}
+    explicit StructuredBilinear(const param::MIRParametrisation& param) : ProxyMethod(param, STRUCTURED_BILINEAR) {}
+    const char* type() const override { return STRUCTURED_BILINEAR.c_str(); }
 };
 
 
 struct StructuredBiquasicubic final : public ProxyMethod {
     explicit StructuredBiquasicubic(const param::MIRParametrisation& param) :
-        ProxyMethod(param, "structured-biquasicubic") {}
+        ProxyMethod(param, STRUCTURED_BIQUASICUBIC) {}
+    const char* type() const override { return STRUCTURED_BIQUASICUBIC.c_str(); }
 };
 
 
 struct GridBoxAverage final : public ProxyMethod {
-    explicit GridBoxAverage(const param::MIRParametrisation& param) : ProxyMethod(param, "grid-box-average") {}
+    explicit GridBoxAverage(const param::MIRParametrisation& param) :
+        ProxyMethod(param, remove_matrix_free(GRID_BOX_AVERAGE)) {}
+    const char* type() const override { return GRID_BOX_AVERAGE.c_str(); }
 };
 
 
 struct GridBoxMaximum final : public ProxyMethod {
-    explicit GridBoxMaximum(const param::MIRParametrisation& param) : ProxyMethod(param, "grid-box-maximum") {}
+    explicit GridBoxMaximum(const param::MIRParametrisation& param) :
+        ProxyMethod(param, remove_matrix_free(GRID_BOX_MAXIMUM)) {}
+    const char* type() const override { return GRID_BOX_MAXIMUM.c_str(); }
 };
 
 
-static const MethodBuilder<StructuredBicubic> __method1("structured-bicubic");
-static const MethodBuilder<StructuredBilinear> __method2("structured-bilinear");
-static const MethodBuilder<StructuredBiquasicubic> __method3("structured-biquasicubic");
-static const MethodBuilder<GridBoxAverage> __method4("grid-box-average-matrix-free");
-static const MethodBuilder<GridBoxMaximum> __method5("grid-box-maximum-matrix-free");
+static const MethodBuilder<StructuredBicubic> __method1(STRUCTURED_BICUBIC);
+static const MethodBuilder<StructuredBilinear> __method2(STRUCTURED_BILINEAR);
+static const MethodBuilder<StructuredBiquasicubic> __method3(STRUCTURED_BIQUASICUBIC);
+static const MethodBuilder<GridBoxAverage> __method4(GRID_BOX_AVERAGE);
+static const MethodBuilder<GridBoxMaximum> __method5(GRID_BOX_MAXIMUM);
 
 
 static eckit::Hash::digest_t atlasOptionsDigest(const ProxyMethod::atlas_config_t& options) {

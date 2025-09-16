@@ -3,4 +3,4 @@ gridType=regular_ll,param=t,levtype=ml,level=1,grid=9-9.grib2
 # mir
 --bitmap=$tests_plans_dir/GAUSS400_EU_GL --area=90/-60/25/60 --grid=0.1/0.1
 # plan
-Gridded2RegularLL[increments=Increments[west_east=0.1,south_north=0.1],bbox=BoundingBox[north=90,west=0,south=-90,east=359.9],interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=BoundingBox[north=90,west=-60,south=25,east=60],lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|BitmapFilter[path=...]|Save[output=...]
+Gridded2RegularLL[increments=Increments[west_east=0.1,south_north=0.1],bbox=BoundingBox[north=90,west=0,south=-90,east=359.9],interpolation=linear,method=FiniteElement[type=linear,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=BoundingBox[north=90,west=-60,south=25,east=60],lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|BitmapFilter[path=...]|Save[output=...]

@@ -52,6 +52,7 @@ public:
     void operator=(const Method&) = delete;
     void operator=(Method&&)      = delete;
 
+    virtual const char* type() const     = 0;
     virtual void hash(eckit::MD5&) const = 0;
 
     virtual int version() const = 0;

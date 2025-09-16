@@ -175,7 +175,7 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
 }
 
 
-const char* GridBoxStatistics::name() const {
+const char* GridBoxStatistics::type() const {
     return "grid-box-statistics";
 }
 

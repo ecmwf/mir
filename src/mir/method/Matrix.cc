@@ -48,7 +48,7 @@ void Matrix::json(eckit::JSON& j) const {
 }
 
 
-const char* Matrix::name() const {
+const char* Matrix::type() const {
     return "matrix";
 }
 

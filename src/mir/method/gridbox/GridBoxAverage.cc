@@ -180,7 +180,7 @@ void GridBoxAverage::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, 
 }
 
 
-const char* GridBoxAverage::name() const {
+const char* GridBoxAverage::type() const {
     return "grid-box-average";
 }
 

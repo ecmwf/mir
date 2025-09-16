@@ -3,4 +3,4 @@ gridType=regular_ll,param=t,levtype=ml,level=1,grid=9-9.grib2
 # mir
 --bitmap=$tests_plans_dir/ECM_CG.BITMAP --grid=.5/.5 --area=72/-50/20/65
 # plan
-Gridded2RegularLL[increments=Increments[west_east=0.5,south_north=0.5],bbox=BoundingBox[north=90,west=0,south=-90,east=359.5],interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=BoundingBox[north=72,west=-50,south=20,east=65],lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|BitmapFilter[path=...]|Save[output=...]
+Gridded2RegularLL[increments=Increments[west_east=0.5,south_north=0.5],bbox=BoundingBox[north=90,west=0,south=-90,east=359.5],interpolation=linear,method=FiniteElement[type=linear,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=BoundingBox[north=72,west=-50,south=20,east=65],lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|BitmapFilter[path=...]|Save[output=...]

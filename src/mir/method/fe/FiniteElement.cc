@@ -43,14 +43,16 @@ namespace mir::method::fe {
 namespace {
 
 
+const std::string LINEAR{"linear"};
+const std::string BILINEAR{"bilinear"};
+
+
 struct FELinear final : FiniteElement {
     explicit FELinear(const param::MIRParametrisation& param) : FiniteElement(param) {
         // generate meshes only with triangles
         meshGeneratorParams().set("triangulate", true);
     }
-
-private:
-    const char* name() const override { return "linear"; }
+    const char* type() const override { return LINEAR.c_str(); }
 };
 
 
@@ -60,14 +62,12 @@ struct FEBilinear final : FiniteElement {
         // (adequate for the octahedral reduced Gaussian grid)
         meshGeneratorParams().set("triangulate", false).set("angle", 0.);
     }
-
-private:
-    const char* name() const override { return "bilinear"; }
+    const char* type() const override { return BILINEAR.c_str(); }
 };
 
 
-const MethodBuilder<FELinear> FE_LINEAR("linear");
-const MethodBuilder<FEBilinear> FE_BILINEAR("bilinear");
+const MethodBuilder<FELinear> FE_LINEAR(LINEAR);
+const MethodBuilder<FEBilinear> FE_BILINEAR(BILINEAR);
 
 
 constexpr size_t nbMaxFailures = 10;
@@ -251,7 +251,7 @@ FiniteElement::~FiniteElement() = default;
 
 
 void FiniteElement::print(std::ostream& out) const {
-    out << "FiniteElement[name=" << name() << ",";
+    out << "FiniteElement[type=" << type() << ",";
     MethodWeighted::print(out);
     out << ",validateMesh=" << validateMesh_ << ",projectionFail="
         << (projectionFail_ == ProjectionFail::failure           ? "fail"

@@ -56,6 +56,11 @@ void FailMethod::execute(context::Context& /*unused*/, const repres::Representat
 }
 
 
+const char* FailMethod::type() const {
+    return "fail";
+}
+
+
 void FailMethod::hash(eckit::MD5& /*unused*/) const {}
 
 
@@ -68,8 +73,9 @@ void FailMethod::print(std::ostream& out) const {
     out << "FailMethod[]";
 }
 
+
 void FailMethod::json(eckit::JSON& out) const {
-    out << "fail";
+    out << type();
 }
 
 

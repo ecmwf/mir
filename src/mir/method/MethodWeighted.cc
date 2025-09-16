@@ -100,7 +100,7 @@ MethodWeighted::~MethodWeighted() = default;
 
 void MethodWeighted::json(eckit::JSON& j) const {
     // NOTE: only output non-default (uncluttered) and configurable (hence, usable) options
-    j << "type" << name();
+    j << "type" << type();
 
     if (!nonLinear_.empty()) {
         j << "non-linear";
@@ -171,7 +171,7 @@ bool MethodWeighted::sameAs(const Method& other) const {
 void MethodWeighted::createMatrix(context::Context& ctx, const repres::Representation& in,
                                   const repres::Representation& out, WeightMatrix& W, const lsm::LandSeaMasks& masks,
                                   const Cropping& /*cropping*/) const {
-    trace::ResourceUsage usage(std::string("MethodWeighted::createMatrix [") + name() + "]");
+    trace::ResourceUsage usage(std::string("MethodWeighted::createMatrix [") + type() + "]");
     const auto checks = validateMatrixWeights();
 
     // matrix validation always happens after creation, because the matrix can/will be cached
@@ -203,7 +203,7 @@ MethodWeighted::CacheKeys MethodWeighted::getDiskAndMemoryCacheKeys(const repres
         version_str = std::to_string(v) + "/";
     }
 
-    auto disk_key = std::string{name()} + "/" + version_str + shortName_in + "/" + shortName_out + "-" + hash.digest();
+    auto disk_key = std::string{type()} + "/" + version_str + shortName_in + "/" + shortName_out + "-" + hash.digest();
     auto memory_key = disk_key;
 
     // Add masks if any
@@ -613,7 +613,7 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
 
 
 void MethodWeighted::hash(eckit::MD5& md5) const {
-    md5.add(name());
+    md5.add(type());
     md5 << pruneEpsilon_;
     md5 << poleDisplacement_;
     md5 << lsmWeightAdjustment_;
