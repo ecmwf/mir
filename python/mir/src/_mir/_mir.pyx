@@ -39,6 +39,7 @@ import findlibs
 m = findlibs.find("mir")
 CDLL(m)
 
+
 # definitions
 cdef class Args:
     cdef int argc
@@ -73,6 +74,14 @@ def home():
 
 def cache():
     return mir.LibMir.cacheDir().decode()
+
+
+def version():
+    return mir.LibMir.instance().version().decode()
+
+
+def git_sha1():
+    return mir.LibMir.instance().gitsha1(40).decode()
 
 
 cdef class MIRInput:

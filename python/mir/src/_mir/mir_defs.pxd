@@ -14,6 +14,11 @@ from libcpp.string cimport string
 from libcpp.vector cimport vector
 
 
+cdef extern from "mir/api/mir_version.h":
+    const char * mir_version_str()
+    const char * mir_git_sha1()
+
+
 cdef extern from "mir/api/MIRJob.h" namespace "mir::api":
     cdef cppclass MIRJob:
         MIRJob& set(string, string)
@@ -37,6 +42,12 @@ cdef extern from "mir/config/LibMir.h" namespace "mir":
 
         @staticmethod
         string homeDir()
+
+        @staticmethod
+        LibMir& instance()
+
+        string version()
+        string gitsha1(unsigned int n)  # n=40 for full sha1
 
 
 cdef extern from "mir/input/MIRInput.h" namespace "mir::input":

@@ -31,6 +31,9 @@ public:
     static bool caching();
     static const std::string& lsmNamed();
 
+    std::string version() const override;
+    std::string gitsha1(unsigned int count) const override;
+
     enum config_file
     {
         AREA = 0,
@@ -61,8 +64,6 @@ private:
     LibMir();
 
     const void* addr() const override;
-    std::string version() const override;
-    std::string gitsha1(unsigned int count) const override;
 };
 
 
