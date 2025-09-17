@@ -75,11 +75,15 @@ else:
     library_dirs = os.getenv("MIR_LIB_DIR", str(Path(build, "lib"))).split(":")
 
     include_dirs_default = ":".join(
-        str(Path(base, pkg, "src"))
-        for base in [source, build]
-        for pkg in ["mir", "eccodes", "eckit"]
+        str(Path(base, *path))
+        for base in (source, build)
+        for path in (
+            ("mir", "src"),
+            ("eccodes", "src"),
+            ("eccodes", "src", "eccodes"),
+            ("eckit", "src"),
+        )
     )
-    include_dirs_default += ":" + str(Path(build, "eccodes", "src", "eccodes"))
     include_dirs = os.getenv("MIR_INCLUDE_DIRS", include_dirs_default).split(":")
 
     extra_link_args = []
@@ -101,7 +105,7 @@ except ImportError:
 
 version: str
 try:
-    with open("../../VERSION", 'r') as f:
+    with open("../../VERSION", "r") as f:
         version = f.readlines()[0].strip()
 except Exception:
     warnings.warn("failed to read VERSION, falling back to 0.0.0")
@@ -110,6 +114,7 @@ except Exception:
 install_requires = ["findlibs", "numpy", "pyyaml"]
 try:
     import mirlib
+
     install_requires.append(f"mirlib=={mirlib.__version__}")
 except ImportError:
     warnings.warn("failed to import prereq libs, not listing as a dependency")

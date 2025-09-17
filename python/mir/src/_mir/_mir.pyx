@@ -386,7 +386,8 @@ cdef class Interpolation:
 
         if kwargs or isinstance(spec, dict):
             from yaml import dump
-            spec = dump(kwargs if kwargs else spec, default_flow_style=True).strip()
+            clean = {k: v for k, v in (kwargs if kwargs else spec).items() if bool(v)}
+            spec = dump(clean, default_flow_style=True).strip()
 
         try:
             assert isinstance(spec, str)

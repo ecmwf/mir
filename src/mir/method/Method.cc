@@ -52,6 +52,7 @@ void Method::json(eckit::JSON& j, bool lookupKnownMethods) const {
     if (lookupKnownMethods) {
         const static std::map<eckit::Hash::digest_t, std::string> KNOWN_METHODS{
             {"052f0588fc55cdccb2b07212eba810c5", "linear"},
+            {"321490e25ba1e17d44118b3d167834bc", "bilinear"},
             {"c942366c09cd3b86530029d7c714bebf", "nearest-neighbour"},
             {"ef991e74a612a0ccca7bab42e88487b4", "grid-box-average"},
         };
