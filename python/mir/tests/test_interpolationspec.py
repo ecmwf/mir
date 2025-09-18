@@ -32,7 +32,7 @@ def test_interpolationspec_linear():
     interpol = mir.Interpolation(nclosest=4)
     assert interpol.type == interpol.spec == type
 
-    for alias in [type, ""]:
+    for alias in [type, "", False, None]:
         interpol = mir.Interpolation(alias)
         assert interpol.type == interpol.spec == type
 
