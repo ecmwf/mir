@@ -246,7 +246,7 @@ cdef class Job:
     cdef mir.MIRJob j
 
     def __init__(self, **kwargs):
-        cdef str key, value
+        cdef str key
         for key, value in kwargs.items():
             self.set(key, value)
 
