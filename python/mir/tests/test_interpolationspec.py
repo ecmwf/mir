@@ -32,7 +32,7 @@ def test_interpolationspec_linear():
     interpol = mir.Interpolation(nclosest=4)
     assert interpol.type == interpol.spec == type
 
-    for alias in [type, "", False, None]:
+    for alias in [type, "", None]:
         interpol = mir.Interpolation(alias)
         assert interpol.type == interpol.spec == type
 
@@ -72,6 +72,24 @@ def test_interpolationspec_grid_box_average():
 
     interpol = mir.Interpolation(dict(interpolation=type))
     assert interpol.type == interpol.spec == type
+
+
+@pytest.mark.parametrize(
+    "type, stat",
+    [
+        ("grid-box-statistics", "maximum"),
+        ("grid-box-statistics", "minimum"),
+        ("voronoi-statistics", "maximum"),
+        ("voronoi-statistics", "minimum"),
+    ],
+)
+def test_interpolationspec_statistics(type, stat):
+    interpol = mir.Interpolation(interpolation=type, interpolation_statistics=stat)
+    assert interpol.type == type
+    assert (
+        interpol.spec_str
+        == f'{{"type":"{type}","non-linear":["missing-if-heaviest-missing"],"interpolation-statistics":"{stat}"}}'
+    )
 
 
 GRIDSPECS = [

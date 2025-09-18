@@ -166,11 +166,6 @@ WeightMatrix::Check VoronoiMethod::validateMatrixWeights() const {
 }
 
 
-const char* VoronoiMethod::type() const {
-    return "voronoi";
-}
-
-
 int VoronoiMethod::version() const {
     return 1;
 }

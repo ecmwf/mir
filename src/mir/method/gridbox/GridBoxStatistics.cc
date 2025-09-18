@@ -18,6 +18,8 @@
 #include <sstream>
 #include <utility>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/method/gridbox/GridBoxMethod.h"
 #include "mir/method/solver/Statistics.h"
 #include "mir/param/MIRParametrisation.h"
@@ -38,11 +40,11 @@ namespace mir::method::gridbox {
 static const MethodBuilder<GridBoxStatistics> __builder("grid-box-statistics");
 
 
-GridBoxStatistics::GridBoxStatistics(const param::MIRParametrisation& param) : GridBoxMethod(param) {
-    std::string stats = "maximum";
-    param.get("interpolation-statistics", stats);
+GridBoxStatistics::GridBoxStatistics(const param::MIRParametrisation& param) :
+    GridBoxMethod(param), interpolationStatistics_("maximum") {
+    param.get("interpolation-statistics", interpolationStatistics_);
 
-    setSolver(new solver::Statistics(param, stats::FieldFactory::build(stats, param)));
+    setSolver(new solver::Statistics(param, stats::FieldFactory::build(interpolationStatistics_, param)));
 }
 
 
@@ -182,6 +184,12 @@ const char* GridBoxStatistics::type() const {
 
 int GridBoxStatistics::version() const {
     return 5;
+}
+
+
+void GridBoxStatistics::json(eckit::JSON& j) const {
+    GridBoxMethod::json(j);
+    j << "interpolation-statistics" << interpolationStatistics_;
 }
 
 

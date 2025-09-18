@@ -30,7 +30,6 @@ private:
     bool sameAs(const Method&) const override;
     void print(std::ostream&) const override;
     WeightMatrix::Check validateMatrixWeights() const override;
-    const char* type() const override;
     int version() const override;
 
     knn::pick::NClosestOrNearest pick_;

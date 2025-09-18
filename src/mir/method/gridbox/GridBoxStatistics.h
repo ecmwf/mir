@@ -25,6 +25,10 @@ struct GridBoxStatistics final : GridBoxMethod {
                   const repres::Representation& out) const override;
     const char* type() const override;
     int version() const override;
+    void json(eckit::JSON&) const override;
+
+private:
+    std::string interpolationStatistics_;
 };
 
 

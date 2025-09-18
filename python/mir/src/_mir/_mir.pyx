@@ -390,17 +390,16 @@ cdef class Interpolation:
         if kwargs:
             assert not spec
             spec = kwargs
-        elif isinstance(spec, str):
-            spec = dict(interpolation= spec)
-        elif isinstance(spec, dict):
-            pass
-        elif not spec:
+
+        if spec is None:
             spec = dict()
-        else:
+        elif isinstance(spec, str):
+            spec = dict(interpolation=spec.strip()) if spec.strip() else dict()
+        elif not isinstance(spec, dict):
             raise TypeError(f"Interpolation: unsupported spec type: {type(spec)}")
 
-        spec = {k: v
-                for k, v  in spec.items()
+        spec = {k.replace("_", "-"): v
+                for k, v in spec.items()
                 if v is not None and not (isinstance(v, str) and not v.strip())}
 
         try:
