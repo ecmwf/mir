@@ -92,7 +92,7 @@ def test_interpolationspec_statistics(type, stat):
     )
 
 
-GRIDSPECS = [
+SPECS = [
     (dict(), "linear"),
     (dict(interpolation="linear"), "linear"),
     (dict(interpolation="nn"), "nearest-neighbour"),
@@ -101,7 +101,7 @@ GRIDSPECS = [
 ]
 
 
-@pytest.mark.parametrize("interpolation, spec", GRIDSPECS)
+@pytest.mark.parametrize("interpolation, spec", SPECS)
 def test_simple_specs(interpolation, spec):
     interpolation = mir.Interpolation(interpolation)
     assert interpolation.spec == spec
