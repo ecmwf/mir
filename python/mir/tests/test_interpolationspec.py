@@ -40,19 +40,17 @@ def test_interpolationspec_linear():
         assert interpol.type == interpol.spec == type
 
 
-
 def test_interpolationspec_bilinear():
     type = "bilinear"
 
     interpol = mir.Interpolation(type)
     assert interpol.type == interpol.spec == type
 
-    interpol = mir.Interpolation(interpolation =type, nclosest=4)
+    interpol = mir.Interpolation(interpolation=type, nclosest=4)
     assert interpol.type == interpol.spec == type
 
     interpol = mir.Interpolation(dict(interpolation=type))
     assert interpol.type == interpol.spec == type
-
 
 
 def test_interpolationspec_nearest_neighbour():
@@ -91,7 +89,9 @@ def test_simple_specs(interpolation, spec):
     assert interpolation.spec == spec
 
 
-@pytest.mark.parametrize("type", ["", "linear", "nearest-neighbour", "grid-box-average"])
+@pytest.mark.parametrize(
+    "type", ["", "linear", "nearest-neighbour", "grid-box-average"]
+)
 def test_spec_as_str(type):
     interpolation = mir.Interpolation(type)
     assert not type or interpolation.type == type

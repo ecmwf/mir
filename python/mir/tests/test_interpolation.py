@@ -10,8 +10,9 @@
 
 from itertools import product
 
-import mir
 import pytest
+
+import mir
 
 GRIDSPECS = [
     (dict(grid="1/1"), dict(grid=[1, 1]), (181, 360)),
@@ -32,15 +33,9 @@ def test_shapes_and_specs(grid, spec, shape):
 
 @pytest.mark.parametrize(
     "input_grid, output_grid, output_spec, output_shape",
-    [
-        (a[0], b[0], b[1], b[2])
-        for a, b in product(GRIDSPECS, GRIDSPECS)
-        if a != b
-    ],
+    [(a[0], b[0], b[1], b[2]) for a, b in product(GRIDSPECS, GRIDSPECS) if a != b],
 )
-def test_interpolation_on_array(
-    input_grid, output_grid, output_spec, output_shape
-):
+def test_interpolation_on_array(input_grid, output_grid, output_spec, output_shape):
     from array import array
 
     grid = mir.Grid(input_grid)
@@ -76,15 +71,9 @@ def test_interpolation_on_array(
 
 @pytest.mark.parametrize(
     "input_grid, output_grid, output_spec, output_shape",
-    [
-        (a[0], b[0], b[1], b[2])
-        for a, b in product(GRIDSPECS, GRIDSPECS)
-        if a != b
-    ],
+    [(a[0], b[0], b[1], b[2]) for a, b in product(GRIDSPECS, GRIDSPECS) if a != b],
 )
-def test_interpolation_on_nparray(
-    input_grid, output_grid, output_spec, output_shape
-):
+def test_interpolation_on_nparray(input_grid, output_grid, output_spec, output_shape):
     import numpy as np
 
     grid = mir.Grid(input_grid)
