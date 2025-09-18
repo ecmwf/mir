@@ -304,12 +304,12 @@ cdef class Job:
     #     return self
 
     @property
-    def json(self):
+    def json(self) -> str:
         cdef std.ostringstream oss
         cdef eckit.JSON* j = new eckit.JSON(oss)
         self.j.json(dereference(j))
         del j
-        return oss.to_string()
+        return oss.to_string().decode()
 
     def __str__(self):
         cdef mir.ostringstream oss
