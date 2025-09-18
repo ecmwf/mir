@@ -42,7 +42,6 @@ def test_interpolationspec_linear():
 
 
 def test_interpolationspec_bilinear():
-    # None: assumes the interpolation default is linear
     type = "bilinear"
 
     interpol = mir.Interpolation(type)

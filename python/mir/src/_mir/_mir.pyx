@@ -387,20 +387,28 @@ cdef class Interpolation:
     cdef const mir.Method* _method
 
     def __cinit__(self, spec = None, **kwargs):
-        if not bool(spec) and not bool(kwargs):
-            self._method = mir.MethodFactory.make_from_string("")
-            return
+        # convert arguments to spec: dict without None/blank string values
+        if kwargs:
+            assert not spec
+            spec = kwargs
+        elif isinstance(spec, str):
+            spec = dict(interpolation= spec)
+        elif isinstance(spec, dict):
+            pass
+        elif not spec:
+            spec = dict()
+        else:
+            raise TypeError(f"Interpolation: unsupported spec type: {type(spec)}")
 
-        assert bool(spec) != bool(kwargs)
-
-        if kwargs or isinstance(spec, dict):
-            from yaml import dump
-            clean = {k: v for k, v in (kwargs if kwargs else spec).items() if bool(v)}
-            spec = dump(clean, default_flow_style=True).strip()
+        spec = {k: v
+                for k, v  in spec.items()
+                if v is not None and not (isinstance(v, str) and not v.strip())}
 
         try:
-            assert isinstance(spec, str)
-            self._method = mir.MethodFactory.make_from_string(spec.encode())
+            from yaml import dump
+
+            spec_str = dump(spec, default_flow_style=True).strip() if spec else ""
+            self._method = mir.MethodFactory.make_from_string(spec_str.encode())
 
         except RuntimeError as e:
             # opportunity to do something interesting
