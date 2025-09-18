@@ -246,15 +246,14 @@ cdef class Job:
     cdef mir.MIRJob j
 
     def __init__(self, **kwargs):
-        cdef str key
         for key, value in kwargs.items():
-            self.set(key, value)
+            self.set(key.replace("_", "-"), value)
 
     def set(self, key: str, value):
         cdef string key_str, value_str
 
         assert isinstance(key, str)
-        key_str = key.encode()
+        key_str = key.replace("_", "-").encode()
 
         if isinstance(value, dict):
             from yaml import dump

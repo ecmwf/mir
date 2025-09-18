@@ -13,55 +13,75 @@ import pytest
 from mir import Job
 
 
-def test_bool():
+def test_key():
+    v = "value"
+    j = Job(key=v)
+    assert j.json == Job(key=v).json
+    assert j.json == f'{{"key":"{v}"}}'
+
+    v = "a_very-long_value"
     j = Job()
-    j.set("key", True)
-    assert Job(key=True).json == j.json == '{"key":1}'
+    j.set("a_very-long_key", v)
+    assert j.json == Job(a_very_long_key=v).json
+    assert j.json == f'{{"a-very-long-key":"{v}"}}'
+
+
+def test_value_bool():
+    j = Job(key=True)
+    assert j.json == Job(key=True).json
+    assert j.json == '{"key":1}'
 
     j.set("key", False)
-    assert Job(key=False).json == j.json == '{"key":0}'
+    assert j.json == Job(key=False).json
+    assert j.json == '{"key":0}'
 
 
-def test_dict():
-    j = Job()
-    j.set("key", {})
-    assert Job(key={}).json == j.json == '{"key":"{}"}'
+def test_value_dict():
+    j = Job(key={})
+    assert j.json == Job(key={}).json
+    assert j.json == '{"key":"{}"}'
 
     j.set("key", dict())
-    assert Job(key=dict()).json == j.json == '{"key":"{}"}'
+    assert j.json == Job(key=dict()).json
+    assert j.json == '{"key":"{}"}'
 
     j.set("key", dict(nested={}))
-    assert Job(key=dict(nested={})).json == j.json == '{"key":"{nested: {}}"}'
+    assert j.json == Job(key=dict(nested={})).json
+    assert j.json == '{"key":"{nested: {}}"}'
 
 
-def test_str():
-    j = Job()
-    j.set("key", "")
-    assert Job(key="").json == j.json == '{"key":""}'
+def test_value_str():
+    j = Job(key="")
+    assert j.json == Job(key="").json
+    assert j.json == '{"key":""}'
 
     j.set("key", "value")
-    assert Job(key="value").json == j.json == '{"key":"value"}'
+    assert j.json == Job(key="value").json
+    assert j.json == '{"key":"value"}'
 
 
-def test_int():
-    j = Job()
-    j.set("key", 1)
-    assert Job(key=1).json == j.json == '{"key":1}'
+def test_value_int():
+    j = Job(key=1)
+    assert j.json == Job(key=1).json
+    assert j.json == '{"key":1}'
 
     j.set("key", -1)
-    assert Job(key=-1).json == j.json == '{"key":-1}'
+    assert j.json == Job(key=-1).json
+    assert j.json == '{"key":-1}'
 
 
-def test_float():
-    j = Job()
-    j.set("key", 1.1)
-    assert Job(key=1.1).json == j.json == '{"key":1.1}'
+def test_value_float():
+    j = Job(key=1.1)
+    assert j.json == Job(key=1.1).json
+    assert j.json == '{"key":1.1}'
 
     j.set("key", 01.1000)
-    assert Job(key=01.1000).json == j.json == '{"key":1.1}'
+    assert j.json == Job(key=01.1000).json
+    assert j.json == '{"key":1.1}'
 
     j.set("key", -1e9)
-    assert Job(key=-1e9).json == j.json == '{"key":-1e+09}'
+    assert j.json == Job(key=-1e9).json
+    assert j.json == '{"key":-1e+09}'
 
 
 if __name__ == "__main__":
