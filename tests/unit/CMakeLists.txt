@@ -26,6 +26,7 @@ set(TESTS
     increments
     input
     interpolations
+    interpolationspec
     iterator
     knn_weighting
     packing
