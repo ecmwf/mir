@@ -39,15 +39,16 @@ def test_value_bool():
 def test_value_dict():
     j = Job(key={})
     assert j.json == Job(key={}).json
-    assert j.json == '{"key":"{}"}'
+    assert j.json == "{}"
 
     j.set("key", dict())
     assert j.json == Job(key=dict()).json
-    assert j.json == '{"key":"{}"}'
+    assert j.json == "{}"
 
-    j.set("key", dict(nested={}))
-    assert j.json == Job(key=dict(nested={})).json
-    assert j.json == '{"key":"{nested: {}}"}'
+    k = Job()
+    k.set("ab", "cd").set("ef", dict(type="gh"))
+    assert k.json == Job(ab=dict(type="cd", nested=dict(again=dict(ef="gh")))).json
+    assert k.json == '{"ab":"cd","ef":"gh"}'
 
 
 def test_value_str():

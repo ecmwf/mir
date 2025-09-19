@@ -246,7 +246,7 @@ cdef class Job:
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
-            self.set(key.replace("_", "-"), value)
+            self.set(key, value)
 
     def set(self, key: str, value):
         cdef string key_str, value_str
@@ -255,9 +255,11 @@ cdef class Job:
         key_str = key.replace("_", "-").encode()
 
         if isinstance(value, dict):
-            from yaml import dump
-            value_str = dump(value, default_flow_style=True).strip().encode()
-            self.j.set(key_str, value_str)
+            for k, v in value.items():
+                assert isinstance(k, str)
+                self.set(key if k == "type" else k, v)
+        elif isinstance(value, list):
+            self.set(key, "/".join(str(v) for v in value))
         elif isinstance(value, str):
             value_str = value.encode()
             self.j.set(key_str, value_str)
@@ -387,7 +389,7 @@ cdef class Interpolation:
         if spec is None:
             spec = dict()
         elif isinstance(spec, str):
-            spec = dict(interpolation=spec.strip()) if spec.strip() else dict()
+            spec = dict(interpolation=spec) if spec.strip() else dict()
         elif not isinstance(spec, dict):
             raise TypeError(f"Interpolation: unsupported spec type: {type(spec)}")
 

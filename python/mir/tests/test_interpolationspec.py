@@ -12,17 +12,8 @@ import pytest
 
 import mir
 
-# def dict_to_str(d) -> str:
-#     from json import dumps
-#     return dumps(d)
 
-
-# def str_to_dict(s) -> dict:
-#     from yaml import safe_load
-#     return safe_load(s)
-
-
-def test_interpolationspec_linear():
+def test_linear():
     # None: assumes the interpolation default is linear
     type = "linear"
 
@@ -40,7 +31,7 @@ def test_interpolationspec_linear():
         assert interpol.type == interpol.spec == type
 
 
-def test_interpolationspec_bilinear():
+def test_bilinear():
     type = "bilinear"
 
     interpol = mir.Interpolation(type)
@@ -53,7 +44,7 @@ def test_interpolationspec_bilinear():
     assert interpol.type == interpol.spec == type
 
 
-def test_interpolationspec_nearest_neighbour():
+def test_nearest_neighbour():
     type = "nearest-neighbour"
 
     for alias in [type, "nearest-neighbor", "nn"]:
@@ -64,7 +55,7 @@ def test_interpolationspec_nearest_neighbour():
         assert interpol.type == interpol.spec == type
 
 
-def test_interpolationspec_grid_box_average():
+def test_grid_box_average():
     type = "grid-box-average"
 
     interpol = mir.Interpolation(type)
@@ -83,11 +74,11 @@ def test_interpolationspec_grid_box_average():
         ("voronoi-statistics", "minimum"),
     ],
 )
-def test_interpolationspec_statistics(type, stat):
-    interpol = mir.Interpolation(interpolation=type, interpolation_statistics=stat)
-    assert interpol.type == type
+def test_statistics(type, stat):
+    i = mir.Interpolation(interpolation=type, interpolation_statistics=stat)
+    assert i.type == type
     assert (
-        interpol.spec_str
+        i.json
         == f'{{"type":"{type}","non-linear":["missing-if-heaviest-missing"],"interpolation-statistics":"{stat}"}}'
     )
 
@@ -116,6 +107,35 @@ def test_spec_as_str(type):
 
 
 @pytest.mark.parametrize(
+    "type",
+    (
+        # "linear",
+        "nearest-neighbour",
+        # "grid-box-average"
+    ),
+)
+def test_job_set_interpolationspec(type):
+    interpolation = mir.Interpolation(interpolation=type)
+    j = mir.Job(interpolation=interpolation.spec).json
+    assert j == f'{{"interpolation":"{type}"}}'
+
+    # nclosest (default 4) is only relevant for nearest-neighbour
+    interpolation = mir.Interpolation(interpolation=type, nclosest=4)
+    j = mir.Job(interpolation=interpolation.spec).json
+    assert j == f'{{"interpolation":"{type}"}}'
+
+    interpolation = mir.Interpolation(interpolation=type, nclosest=5)
+    j = mir.Job(interpolation=interpolation.spec).json
+    if type == "nearest-neighbour":
+        assert (
+            j
+            == '{"distance-weighting":"inverse-distance-weighting-squared","interpolation":"nearest-neighbour","nclosest":5,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":"missing-if-heaviest-missing"}'
+        )
+    else:
+        assert j == f'{{"interpolation":"{type}"}}'
+
+
+@pytest.mark.parametrize(
     "type, stat",
     [
         ("grid-box-statistics", "maximum"),
@@ -127,7 +147,10 @@ def test_spec_as_str(type):
 def test_job_set_interpolationspec_statistics(type, stat):
     interpolation = mir.Interpolation(interpolation=type, interpolation_statistics=stat)
     j = mir.Job(interpolation=interpolation.spec)
-    assert j.json == f'{{"interpolation":"{{interpolation-statistics: {stat}, non-linear: [missing-if-heaviest-missing], type: {type}}}"}}'
+    assert (
+        j.json
+        == f'{{"interpolation":"{type}","interpolation-statistics":"{stat}","non-linear":"missing-if-heaviest-missing"}}'
+    )
 
 
 if __name__ == "__main__":
