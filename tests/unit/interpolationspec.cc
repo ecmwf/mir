@@ -64,12 +64,12 @@ CASE("interpolationSpec") {
              }) {
             std::unique_ptr<const method::Method> a(method::MethodFactory::build(test.spec, param));
 
-            EXPECT(a->spec_str() == test.spec_reference);
+            EXPECT(a->json_str() == test.spec_reference);
 
             std::unique_ptr<const method::Method> b(method::MethodFactory::make_from_string(test.spec));
 
-            EXPECT(b->spec_str() == test.spec_reference);
-            EXPECT(b->spec_str(false) == test.spec_extended);
+            EXPECT(b->json_str() == test.spec_reference);
+            EXPECT(b->json_str(false) == test.spec_extended);
         }
     }
 
@@ -104,8 +104,8 @@ CASE("interpolationSpec") {
              }) {
             std::unique_ptr<const method::Method> m(method::MethodFactory::make_from_string(test.spec));
 
-            EXPECT(m->spec_str() == test.spec_reference);
-            EXPECT(m->spec_str(false) == test.spec_extended);
+            EXPECT(m->json_str() == test.spec_reference);
+            EXPECT(m->json_str(false) == test.spec_extended);
         }
     }
 }

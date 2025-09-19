@@ -92,7 +92,7 @@ void Method::json(eckit::JSON& j, bool lookupKnownMethods) const {
 }
 
 
-std::string Method::spec_str(bool lookupKnownMethods) const {
+std::string Method::json_str(bool lookupKnownMethods) const {
     if (std::string name; lookupKnownMethods && getKnownName(name)) {
         return name;
     }

@@ -11,7 +11,6 @@
 cimport eckit_defs as eckit
 cimport eckit_geo_defs as eckit_geo
 cimport mir_defs as mir
-cimport std_defs as std
 from cython.operator cimport dereference
 from libc.stdlib cimport free
 from libc.stdlib cimport malloc
@@ -304,17 +303,11 @@ cdef class Job:
 
     @property
     def json(self) -> str:
-        cdef std.ostringstream oss
-        cdef eckit.JSON* j = new eckit.JSON(oss)
-        self.j.json(dereference(j))
-        del j
-        return oss.to_string().decode()
+        cdef string s = self.j.json_str()
+        return s.decode()
 
     def __str__(self):
-        cdef mir.ostringstream oss
-        oss << self.j
-        cdef str jstr = oss.to_string()
-        return jstr
+        return self.json
 
     __repr__ = __str__
 
@@ -405,8 +398,8 @@ cdef class Interpolation:
         try:
             from yaml import dump
 
-            spec_str = dump(spec, default_flow_style=True).strip() if spec else ""
-            self._method = mir.MethodFactory.make_from_string(spec_str.encode())
+            s = dump(spec, default_flow_style=True).strip() if spec else ""
+            self._method = mir.MethodFactory.make_from_string(s.encode())
 
         except RuntimeError as e:
             # opportunity to do something interesting
@@ -415,20 +408,21 @@ cdef class Interpolation:
     def __eq__(self, other) -> bool:
         if not isinstance(other, Interpolation):
             return NotImplemented
-        return self.spec_str == other.spec_str
-
-    @property
-    def spec_str(self) -> str:
-        return self._method.spec_str().decode()
+        return self.json == other.json
 
     @property
     def spec(self) -> dict:
         from yaml import safe_load
-        return safe_load(self.spec_str)
+        return safe_load(self.json)
 
     @property
     def type(self) -> str:
         return self._method.type().decode()
+
+    @property
+    def json(self) -> str:
+        cdef string s = self._method.json_str()
+        return s.decode()
 
     def __dealloc__(self):
         del self._method

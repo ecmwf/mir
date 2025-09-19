@@ -14,11 +14,6 @@ from libcpp.string cimport string
 from libcpp.vector cimport vector
 
 
-cdef extern from "mir/api/mir_version.h":
-    const char * mir_version_str()
-    const char * mir_git_sha1()
-
-
 cdef extern from "mir/api/MIRJob.h" namespace "mir::api":
     cdef cppclass MIRJob:
         MIRJob& set(string, string)
@@ -26,13 +21,7 @@ cdef extern from "mir/api/MIRJob.h" namespace "mir::api":
         MIRJob& set(string, double)
         MIRJob& set(string, double, double)
         void execute(MIRInput, MIROutput) except +
-        void json(eckit.JSON&)
-
-
-cdef extern from "<sstream>" namespace "std" nogil:
-    cdef cppclass ostringstream:
-        ostringstream& operator<<(MIRJob)
-        string to_string "str" () const
+        string json_str() const
 
 
 cdef extern from "mir/config/LibMir.h" namespace "mir":
@@ -126,7 +115,7 @@ cdef extern from "mir/output/ArrayOutput.h" namespace "mir::output":
 
 cdef extern from "mir/method/Method.h" namespace "mir::method":
     cdef cppclass Method:
-        string spec_str() const
+        string json_str() const
         string type() const
 
     cdef cppclass MethodFactory:

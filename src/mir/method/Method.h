@@ -68,7 +68,7 @@ public:
 
     void json(eckit::JSON&, bool lookupKnownMethods) const;
 
-    std::string spec_str(bool lookupKnownMethods = true) const;
+    std::string json_str(bool lookupKnownMethods = true) const;
 
 protected:
     const param::MIRParametrisation& parametrisation_;
