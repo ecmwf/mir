@@ -115,5 +115,20 @@ def test_spec_as_str(type):
     assert not type or interpolation.type == type
 
 
+@pytest.mark.parametrize(
+    "type, stat",
+    [
+        ("grid-box-statistics", "maximum"),
+        ("grid-box-statistics", "minimum"),
+        ("voronoi-statistics", "maximum"),
+        ("voronoi-statistics", "minimum"),
+    ],
+)
+def test_job_set_interpolationspec_statistics(type, stat):
+    interpolation = mir.Interpolation(interpolation=type, interpolation_statistics=stat)
+    j = mir.Job(interpolation=interpolation.spec)
+    assert j.json == f'{{"interpolation":"{{interpolation-statistics: {stat}, non-linear: [missing-if-heaviest-missing], type: {type}}}"}}'
+
+
 if __name__ == "__main__":
     pytest.main([__file__])
