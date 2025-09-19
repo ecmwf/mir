@@ -68,7 +68,7 @@ public:
 
     void json(eckit::JSON&, bool lookupKnownMethods) const;
 
-    std::string spec_str() const;
+    std::string spec_str(bool lookupKnownMethods = true) const;
 
 protected:
     const param::MIRParametrisation& parametrisation_;
@@ -77,6 +77,8 @@ protected:
     virtual void json(eckit::JSON&) const   = 0;
 
 private:
+    bool getKnownName(std::string&) const;
+
     friend std::ostream& operator<<(std::ostream& s, const Method& m) {
         m.print(s);
         return s;
@@ -107,7 +109,7 @@ public:
     static void list(std::ostream&);
     static Method* build(const std::string&, const param::MIRParametrisation&);
 
-    [[nodiscard]] static const Method* make_from_string(const std::string&);
+    [[nodiscard]] static Method* make_from_string(const std::string&);
 };
 
 
