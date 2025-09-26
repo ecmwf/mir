@@ -20,7 +20,7 @@ if(HAVE_MIR_DOWNLOAD_MASKS)
       # get mask into the build dir
       ecbuild_download_resource(
         "${CMAKE_BINARY_DIR}/${_dir}/${_f}"
-        "https://get.ecmwf.int/repository/mir/${_dir}/${_f}")
+        "https://sites.ecmwf.int/repository/mir/${_dir}/${_f}")
 
       # install mask
       install(
