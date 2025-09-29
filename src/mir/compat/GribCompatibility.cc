@@ -133,6 +133,7 @@ const GribCompatibility& GribCompatibility::lookup(const std::string& name) {
         }
 
         list(Log::error() << "GribCompatibility: unknown '" << name << "', choices are: ");
+        Log::error() << std::endl;
         throw exception::SeriousBug("GribCompatibility: unknown '" + name + "'");
     }
 
