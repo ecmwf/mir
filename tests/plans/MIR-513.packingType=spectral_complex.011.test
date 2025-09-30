@@ -1,6 +1,0 @@
-# input
-packingType=spectral_complex.grib2
-# mir
---packing=simple
-# plan
-Set[packing=simple,output=...]
