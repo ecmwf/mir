@@ -106,12 +106,12 @@ void Regular::correctWestEast(Longitude& w, Longitude& e) const {
         const Fraction east = e.fraction();
 
         Fraction::value_type Nw = (west / inc).integralPart();
-        if (Nw * inc < west) {
+        if (Nw * inc < west && !angleApproximatelyEqual(Nw * inc, w)) {
             Nw += 1;
         }
 
         Fraction::value_type Ne = (east / inc).integralPart();
-        if (Ne * inc > east) {
+        if (Ne * inc > east && !angleApproximatelyEqual(Ne * inc, e)) {
             Ne -= 1;
         }
 
