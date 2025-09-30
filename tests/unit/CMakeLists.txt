@@ -49,7 +49,8 @@ if(mir_HAVE_ATLAS)
 endif()
 
 if(ENABLE_BUILD_TOOLS)
-    foreach(_t MIR-637.grib2)
+    foreach(_t
+            MIR-637.grib2)
         ecbuild_add_test(
             TARGET            mir_tests_unit_grib_fail_decode_${_t}
             COMMAND           mir-get-data
@@ -57,6 +58,17 @@ if(ENABLE_BUILD_TOOLS)
             ENVIRONMENT       ${_testEnvironment}
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
         set_tests_properties(mir_tests_unit_grib_fail_decode_${_t} PROPERTIES WILL_FAIL TRUE)
+    endforeach()
+
+    foreach(_t
+            gridName=F1280.area=55_65_0_145.grib1
+            gridName=F1280.area=55_65_0_145.grib2)
+        ecbuild_add_test(
+            TARGET            mir_tests_unit_grib_decode_${_t}
+            COMMAND           mir-get-data
+            ARGS              ${_t}
+            ENVIRONMENT       ${_testEnvironment}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
     endforeach()
 endif()
 
