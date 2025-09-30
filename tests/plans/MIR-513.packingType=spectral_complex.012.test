@@ -1,6 +1,0 @@
-# input
-packingType=spectral_complex.grib2
-# mir
---truncation=21 --packing=simple
-# plan
-ShTruncate[truncation=21]|Save[packing=simple,output=...]

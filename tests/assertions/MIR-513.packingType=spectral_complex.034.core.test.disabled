@@ -1,9 +1,0 @@
-# input
-packingType=spectral_complex,param=vo_d.grib2
-# mir
---vod2uv --truncation=21 --packing=simple
-# grib_get
-packingType=spectral_simple
-edition=2
-numberOfDataPoints=506
-numberOfValues=506
