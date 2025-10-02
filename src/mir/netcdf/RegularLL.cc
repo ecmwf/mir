@@ -14,11 +14,11 @@
 
 #include <ostream>
 
-#include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
 
 #include "mir/iterator/detail/RegularIterator.h"
 #include "mir/netcdf/Variable.h"
+#include "mir/stats/detail/ScalarT.h"
 #include "mir/util/Exceptions.h"
 
 
@@ -42,8 +42,8 @@ RegularLL::RegularLL(const Variable& variable, double north, double south, doubl
     }
 
     using F = eckit::Fraction;
-    nj_     = iterator::detail::RegularIterator(F(south), F(north), F(south_north_increment), F(south)).n();
-    ni_     = iterator::detail::RegularIterator(F(west), F(east), F(west_east_increment), F(west)).n();
+    nj_     = iterator::detail::RegularIterator(F(south_), F(north_), F(south_north_increments_), F(south_)).n();
+    ni_     = iterator::detail::RegularIterator(F(west_), F(east_), F(west_east_increment_), F(west_)).n();
 }
 
 
@@ -153,19 +153,23 @@ static bool check_axis(const Variable& axis, double& first, double& last, double
         return false;
     }
 
-    double d = v[1] - v[0];
-
+    stats::detail::ScalarT<double> stats;
     for (size_t i = 1; i < v.size(); ++i) {
-        if (!eckit::types::is_approximately_equal(v[i] - v[i - 1], d, 1e-12)) {  // magic number
-            return false;
-        }
+        stats(v[i] - v[i - 1]);
     }
 
-    first     = v.front();
-    last      = v.back();
-    increment = d > 0 ? d : -d;
+    // a high coefficient of variation indicated regular difference
+    ASSERT(stats.standardDeviation() > 0);
 
-    return true;
+    if (auto cv = stats.mean() / stats.standardDeviation(); cv >= 1e4) {  // magic number
+        first     = v.front();
+        last      = v.back();
+        increment = stats.mean();
+
+        return true;
+    }
+
+    return false;
 }
 
 
