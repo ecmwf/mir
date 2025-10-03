@@ -1,6 +1,7 @@
 # input
 param=2t,levtype=sfc
 # mir
+$MIR_CACHE_PATH=cache
 --area=90/90/18/-90 --grid=0.2/0.2 --interpolation=nearest-lsm --rotation=-30.0/-10.0
 # grib_get
 Ni=901

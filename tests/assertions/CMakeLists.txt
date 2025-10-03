@@ -2,6 +2,8 @@ find_program(MARS_SCRIPT NAMES mars false)
 
 ecbuild_configure_file(mir-test.sh.in mir-test.sh @ONLY)
 
+file(COPY cache DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+
 file(CREATE_LINK
     "${CMAKE_BINARY_DIR}/etc/mir/grib-output-ii.yaml"
     "${CMAKE_CURRENT_BINARY_DIR}/grib-output-ii.yaml"
@@ -23,7 +25,6 @@ if(MARS_SCRIPT)
             ARGS        ${_t}
             ENVIRONMENT ${_testEnvironment})
         if((_t MATCHES "[.]fail[.]") OR
-           (_t MATCHES "[.]lsm[.]" AND NOT HAVE_MIR_DOWNLOAD_MASKS) OR
            (_t MATCHES "[.]proj[.]" AND NOT atlas_HAVE_PROJ))
             set_tests_properties(${target} PROPERTIES WILL_FAIL TRUE)
         endif()
