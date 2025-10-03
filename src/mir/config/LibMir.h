@@ -26,6 +26,7 @@ public:
     static const LibMir& instance();
 
     static std::string homeDir();
+    static std::string homeUrl();
     static std::string cacheDir();
 
     static bool caching();

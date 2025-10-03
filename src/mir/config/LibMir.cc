@@ -40,6 +40,13 @@ std::string LibMir::cacheDir() {
 }
 
 
+std::string LibMir::homeUrl() {
+    static std::string mirHomeUrl =
+        eckit::LibResource<std::string, LibMir>("mir-home-url;$MIR_HOME_URL", "https://sites.ecmwf.int/repository/mir");
+    return mirHomeUrl;
+}
+
+
 bool LibMir::caching() {
     static bool mirCaching = eckit::LibResource<bool, LibMir>("mir-caching;$MIR_CACHING", true);
     return mirCaching;

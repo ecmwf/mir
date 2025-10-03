@@ -17,8 +17,12 @@
 #include <map>
 #include <ostream>
 
+#include "eckit/filesystem/PathName.h"
+#include "eckit/geo/cache/Download.h"
 #include "eckit/utils/MD5.h"
+#include "eckit/utils/StringTools.h"
 
+#include "mir/config/LibMir.h"
 #include "mir/lsm/GribFileMaskFromMIR.h"
 #include "mir/lsm/MappedMask.h"
 #include "mir/lsm/TenMinutesMask.h"
@@ -70,6 +74,23 @@ static std::string sane(const std::string& insane) {
 
 
 NamedLSM::NamedLSM(const std::string& name) : LSMSelection(name) {}
+
+
+eckit::PathName NamedMaskFactory::resolve_path(const std::string& path) {
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
+
+    if (!eckit::PathName(path).exists()) {
+        if (const auto lib = LibMir::instance().name(); eckit::StringTools::beginsWith(path, "~" + lib + "/")) {
+            using eckit::geo::cache::Download;
+
+            static Download download(eckit::PathName{LibMir::cacheDir()} / lib / "masks");
+            return download.to_cached_path(LibMir::homeUrl() + path.substr(lib.length() + 1));
+        }
+    }
+
+    return path;
+}
 
 
 void NamedLSM::print(std::ostream& out) const {
