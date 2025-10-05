@@ -11,6 +11,7 @@
 cimport eckit_defs as eckit
 cimport eckit_geo_defs as eckit_geo
 cimport mir_defs as mir
+cimport numpy as cnp
 from cython.operator cimport dereference
 from libc.stdlib cimport free
 from libc.stdlib cimport malloc
@@ -18,16 +19,6 @@ from libc.string cimport strdup
 from libcpp.string cimport string
 from libcpp.utility cimport pair
 from libcpp.vector cimport vector
-
-
-cdef extern from *:
-    cdef int MIR_PYTHON_HAVE_NUMPY
-
-try:
-    cimport numpy as cnp
-except ImportError:
-    pass
-
 
 # init section -- ensure libmir.so is loaded
 
@@ -179,8 +170,6 @@ cdef class ArrayInput(MIRInput):
 
 
 cdef class ArrayOutput(MIROutput):
-    cdef public str _typecode
-
     def __cinit__(self):
         self._output = new mir.ArrayOutput()
 
@@ -205,32 +194,23 @@ cdef class ArrayOutput(MIROutput):
     def size(self) -> int:
         return (<mir.ArrayOutput*> self._output).values().size()
 
-    def values(self, typecode = None, dtype = None):
+    def values(self, dtype = None):
+        import numpy as np
+
         cdef double* data_ptr = (<mir.ArrayOutput*> self._output).values().data()
         cdef Py_ssize_t size = (<mir.ArrayOutput*> self._output).values().size()
         cdef vector[size_t] shape_vec = (<mir.ArrayOutput*> self._output).shape()
         cdef tuple shape = tuple(shape_vec)
 
-        if MIR_PYTHON_HAVE_NUMPY and not typecode:
-            import numpy as np
-
-            assert dtype in (None, np.float32, np.float64)
-            if dtype == np.float32:
-                arr = np.array(<cnp.float64_t[:size]>data_ptr, dtype=np.float32)  # copy
-            else:
-                arr = np.asarray(<cnp.float64_t[:size]>data_ptr)  # no-copy
-
-            if len(shape) > 1:
-                return arr.reshape(shape)
-            return arr
-
+        assert dtype in (None, np.float32, np.float64)
+        if dtype == np.float32:
+            arr = np.array(<cnp.float64_t[:size]>data_ptr, dtype=np.float32)  # copy
         else:
-            from array import array
+            arr = np.asarray(<cnp.float64_t[:size]>data_ptr)  # no-copy
 
-            assert typecode in (None, "d", "f")
-            if typecode == "f":
-                return array("f", [<float> data_ptr[i] for i in range(size)])  # copy
-            return array("d", <double[:size]>data_ptr)  # no-copy
+        if len(shape) > 1:
+            return arr.reshape(shape)
+        return arr
 
 
 cdef class MultiDimensionalGribFileInput(MIRInput):

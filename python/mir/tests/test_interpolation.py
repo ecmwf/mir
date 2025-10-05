@@ -35,45 +35,7 @@ def test_shapes_and_specs(grid, spec, shape):
     "input_grid, output_grid, output_spec, output_shape",
     [(a[0], b[0], b[1], b[2]) for a, b in product(GRIDSPECS, GRIDSPECS) if a != b],
 )
-def test_interpolation_on_array(input_grid, output_grid, output_spec, output_shape):
-    from array import array
-
-    grid = mir.Grid(input_grid)
-    data = array("d", list(range(len(grid))))
-    input = mir.ArrayInput(data, grid.spec_str)
-
-    job = mir.Job()
-    job.set("grid", output_grid)
-
-    output = mir.ArrayOutput()
-    job.execute(input, output)
-
-    result = mir.Grid(output.spec)
-    assert result.shape == output_shape
-    assert result.spec == output_spec
-
-    assert output.shape == output_shape
-    assert output.values(typecode="d").typecode == "d"
-    assert output.values(typecode="f").typecode == "f"
-    assert len(output.values(typecode="d")) == len(result)
-    assert len(output.values(typecode="d")) == output.size == len(result)
-
-    data = array("f", list(range(len(grid))))
-    input = mir.ArrayInput(data, grid.spec_str)
-
-    job.execute(input, output)
-
-    result = mir.Grid(output.spec)
-    assert result.shape == output_shape
-    assert output.shape == output_shape
-    assert len(output.values(typecode="d")) == output.size == len(result)
-
-
-@pytest.mark.parametrize(
-    "input_grid, output_grid, output_spec, output_shape",
-    [(a[0], b[0], b[1], b[2]) for a, b in product(GRIDSPECS, GRIDSPECS) if a != b],
-)
-def test_interpolation_on_nparray(input_grid, output_grid, output_spec, output_shape):
+def test_interpolation(input_grid, output_grid, output_spec, output_shape):
     import numpy as np
 
     grid = mir.Grid(input_grid)
