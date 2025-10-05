@@ -94,7 +94,7 @@ protected:
     NamedMaskFactory(const std::string& name, const std::string& path);
     virtual ~NamedMaskFactory();
 
-    static eckit::PathName resolve_path(const std::string& path);
+    static eckit::PathName resolve_path(const param::MIRParametrisation& param, const std::string& path);
 
 public:
     NamedMaskFactory(const NamedMaskFactory&) = delete;
@@ -114,7 +114,7 @@ template <class T>
 class NamedMaskBuilder : public NamedMaskFactory {
     Mask* make(const param::MIRParametrisation& param, const repres::Representation& representation,
                const std::string& which) override {
-        return new T(name_, resolve_path(path_), param, representation, which);
+        return new T(name_, resolve_path(param, path_), param, representation, which);
     }
     void hashCacheKey(eckit::MD5& md5, const param::MIRParametrisation& parametrisation,
                       const repres::Representation& representation, const std::string& which) override {

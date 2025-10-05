@@ -76,12 +76,18 @@ static std::string sane(const std::string& insane) {
 NamedLSM::NamedLSM(const std::string& name) : LSMSelection(name) {}
 
 
-eckit::PathName NamedMaskFactory::resolve_path(const std::string& path) {
+eckit::PathName NamedMaskFactory::resolve_path(const param::MIRParametrisation& param, const std::string& path) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (!eckit::PathName(path).exists()) {
-        if (const auto lib = LibMir::instance().name(); eckit::StringTools::beginsWith(path, "~" + lib + "/")) {
+        bool caching = LibMir::caching();
+        param.get("caching", caching);
+
+        if (!caching) {
+            Log::warning() << "NamedMaskFactory: caching disabled, cannot resolve '" << path << "'" << std::endl;
+        }
+        else if (const auto lib = LibMir::instance().name(); eckit::StringTools::beginsWith(path, "~" + lib + "/")) {
             using eckit::geo::cache::Download;
 
             static Download download(eckit::PathName{LibMir::cacheDir()} / lib / "masks");
