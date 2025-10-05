@@ -182,6 +182,18 @@ void MethodWeighted::createMatrix(context::Context& ctx, const repres::Represent
         applyMasks(W, masks);
         W.validate("applyMasks", checks);
     }
+
+    bool bitmask;
+    parametrisation_.get("imm", bitmask);
+    if (bitmask){
+        std::vector<bool> vec_bitmask;
+        parametrisation_.get("imm-mask", vec_bitmask);
+        applyIMM(W,vec_bitmask);
+        if (matrixValidate_) {
+            W.validate("applyMasks");
+        }
+    }
+
 }
 
 
@@ -215,6 +227,14 @@ MethodWeighted::CacheKeys MethodWeighted::getDiskAndMemoryCacheKeys(const repres
         }
     }
 
+    bool bitmask;
+    parametrisation_.get("imm", bitmask);
+    if (bitmask){
+        std::string missing_mask_key;
+        parametrisation_.get("imm-name", missing_mask_key);
+        memory_key += "_" + missing_mask_key;
+        disk_key += "_" + missing_mask_key;
+     }
     return {disk_key, memory_key};
 }
 
@@ -437,12 +457,16 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
     const double missingValue = field.missingValue();
 
     // matrix copy: run-time modifiable matrix is not cacheable
-    const bool matrixCopy = std::any_of(nonLinear_.begin(), nonLinear_.end(),
+    bool imm_active;
+    parametrisation_.get("imm", imm_active);
+    bool matrixCopy = false;
+    if (!imm_active) {
+    matrixCopy = std::any_of(nonLinear_.begin(), nonLinear_.end(),
                                         [&field](const std::unique_ptr<const nonlinear::NonLinear>& n) {
                                             return n->modifiesMatrix(field.hasMissing());
                                         });
-
-
+    }
+    
     for (size_t i = 0; i < field.dimensions(); i++) {
 
         std::ostringstream os;
@@ -611,6 +635,73 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
         << Log::Pretty(W.rows(), {"output point"}) << std::endl;
 }
 
+void MethodWeighted::applyIMM(WeightMatrix& W, const std::vector<bool>& imask) const {
+   trace::Timer timer("MethodWeighted::applyIMM");
+auto& log = Log::debug();
+
+log << "MethodWeighted::applyIMM" << std::endl;
+log << "mask size=" << imask.size() << " == #cols=" << W.cols() << std::endl;
+
+// Ensure that the mask size matches the number of columns in W
+ASSERT(imask.size() == W.cols());
+
+auto* data = const_cast<WeightMatrix::Scalar*>(W.data());
+auto* outer = W.outer();
+auto* inner = W.inner();
+size_t fix = 0;
+
+// Iterate over each row
+for (WeightMatrix::Size r = 0; r < W.rows(); ++r) {
+    WeightMatrix::Size row_start = outer[r];
+    WeightMatrix::Size row_end = outer[r + 1];
+
+    size_t i_missing = row_start;
+    size_t N_missing = 0;
+    size_t N_entries = row_end - row_start;
+    double sum = 0.0;
+    double heaviest = -1.0;
+    bool heaviest_is_missing = false;
+
+    // Iterate over the entries in the current row
+    for (WeightMatrix::Size i = row_start; i < row_end; ++i) {
+        const bool miss = !imask[inner[i]];
+
+        if (miss) {
+            ++N_missing;
+            i_missing = i;
+        } else {
+            sum += data[i];
+        }
+
+        if (heaviest < data[i]) {
+            heaviest = data[i];
+            heaviest_is_missing = miss;
+        }
+    }
+
+    // Weights redistribution: zero-weight all missing values, linear re-weighting for the others
+    if (N_missing > 0) {
+        ++fix;
+        if (N_missing == N_entries || heaviest_is_missing || eckit::types::is_approximately_equal(sum, 0.0)) {
+            // All values are missing or the heaviest is missing; set only i_missing to 1
+            for (WeightMatrix::Size i = row_start; i < row_end; ++i) {
+                data[i] = (i == i_missing) ? 1.0 : 0.0;
+            }
+        } else {
+            // Scale non-missing entries so they sum to 1
+            const double factor = 1.0 / sum;
+            for (WeightMatrix::Size i = row_start; i < row_end; ++i) {
+                const bool miss = !imask[inner[i]];
+                data[i] = miss ? 0.0 : (factor * data[i]);
+            }
+        }
+    }
+}
+
+// Log the number of corrections made
+log << "MethodWeighted: applyIMM corrected " << Log::Pretty(fix) << " out of "
+    << Log::Pretty(W.rows(), {"Weight matrix rows"}) << std::endl;
+}     
 
 void MethodWeighted::hash(eckit::MD5& md5) const {
     md5.add(type());
