@@ -2,8 +2,6 @@ find_program(MARS_SCRIPT NAMES mars false)
 
 ecbuild_configure_file(mir-test.sh.in mir-test.sh @ONLY)
 
-file(COPY cache DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
-
 file(CREATE_LINK
     "${CMAKE_BINARY_DIR}/etc/mir/grib-output-ii.yaml"
     "${CMAKE_CURRENT_BINARY_DIR}/grib-output-ii.yaml"

@@ -1,8 +1,4 @@
 
-# Setup cache directory
-set(TEST_ECKIT_CACHE_DIR ${CMAKE_CURRENT_BINARY_DIR}/cache/)
-file(REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR})
-
 set(TESTS
 #    MIR-333
 #    MIR-356

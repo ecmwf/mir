@@ -1,9 +1,9 @@
 # input
 levtype=ml,levelist=1,param=q
 # mir
---area=19.3/-6.3/-2.3/18.3 --grid=.3/.3 --dont-compress-plan
+--area=19.3/-6.3/-2.3/18.3 --grid=1/1 --dont-compress-plan
 # grib_get
-latitudeOfFirstGridPointInDegrees = 19.3
+latitudeOfFirstGridPointInDegrees = 18.7
 longitudeOfFirstGridPointInDegrees = 353.7  # GRIB2 encoding
 latitudeOfLastGridPointInDegrees = -2.3
-longitudeOfLastGridPointInDegrees = 18.3
+longitudeOfLastGridPointInDegrees = 17.7

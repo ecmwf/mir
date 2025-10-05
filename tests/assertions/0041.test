@@ -1,11 +1,11 @@
 # input
 param=2t,levtype=sfc
 # mir
---area=12.4/-25.6/-13.3/23.8 --grid=.1/.1 --dont-compress-plan
+--area=12.4/-25.6/-13.3/23.8 --grid=1/1 --dont-compress-plan
 # grib_get
-latitudeOfFirstGridPointInDegrees=12.4
+latitudeOfFirstGridPointInDegrees=11.7
 latitudeOfLastGridPointInDegrees=-13.3
 longitudeOfFirstGridPointInDegrees=-25.6
-longitudeOfLastGridPointInDegrees=23.8
-jDirectionIncrementInDegrees=0.1
-iDirectionIncrementInDegrees=0.1
+longitudeOfLastGridPointInDegrees=23.4
+jDirectionIncrementInDegrees=1
+iDirectionIncrementInDegrees=1
