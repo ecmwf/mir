@@ -1,7 +1,7 @@
 # input
 regular_ll.2-2.grib1
 # mir
-$MIR_ABORT_IF_CONFIGURATION_NOT_FOUND=0
+$MIR_ABORT_IF_CONFIGURATION_NOT_FOUND=false
 $MIR_HOME=/bad
 --grid=9/9
 # grib_get
