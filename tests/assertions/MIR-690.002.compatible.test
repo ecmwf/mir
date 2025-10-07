@@ -1,6 +1,7 @@
 # input
 param=u_v,level=1000,resol=20
 # mir
+$MIR_CONFIG_STYLE=~mir/etc/mir/style-compatible.yaml
 --grid=3/3 --interpolation=linear --uv2uv=true
 # grib_get
 numberOfPoints=7320

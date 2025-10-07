@@ -234,7 +234,9 @@ ECMWFStyle::ECMWFStyle(const param::MIRParametrisation& parametrisation) : MIRSt
     struct StyleParametrisation : public param::SimpleParametrisation {
         explicit StyleParametrisation(const eckit::PathName& path) {
             if (path.exists()) {
-                util::ValueMap(eckit::YAMLParser::decodeFile(path)).set(*this);
+                if (auto value = eckit::YAMLParser::decodeFile(path); value.isMap()) {
+                    util::ValueMap(value).set(*this);
+                }
             }
         }
     } static const style(LibMir::configFile(LibMir::config_file::STYLE));
