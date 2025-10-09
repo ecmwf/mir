@@ -29,12 +29,16 @@ if(NOT TARGET OpenMP::OpenMP_CXX)
     set(mir_HAVE_OMP 0)
 endif()
 
-ecbuild_find_package(NAME eccodes VERSION 2.44 REQUIRED)
 ecbuild_find_package(NAME eckit   VERSION 1.31 REQUIRED)
+ecbuild_find_package(NAME eccodes VERSION 2.44 REQUIRED)
 ecbuild_find_package(NAME atlas   VERSION 0.43 REQUIRED)
 
 if(NOT TARGET eckit_geo)
-    MESSAGE(FATAL_ERROR "eckit::geo (feature ECKIT_GEO) is required but not found")
+    MESSAGE(FATAL_ERROR "mir: eckit feature ECKIT_GEO is required")
+endif()
+
+if(NOT eccodes_HAVE_AEC)
+    MESSAGE(FATAL_ERROR "mir: eccodes feature AEC is required")
 endif()
 
 # shortcut upstream features into mir features (avoid additional optional behaviour)
