@@ -33,15 +33,9 @@
 #include "mir/util/Log.h"
 #include "mir/util/MeshGeneratorParameters.h"
 
-#if mir_HAVE_GRID_FESOM
+#if mir_HAVE_ECKIT_CODEC
 #include "mir/repres/FESOM.h"
-#endif
-
-#if mir_HAVE_GRID_ICON
 #include "mir/repres/ICON.h"
-#endif
-
-#if mir_HAVE_GRID_ORCA
 #include "mir/repres/ORCA.h"
 #endif
 
@@ -52,19 +46,15 @@ namespace mir::repres {
 template <>
 Representation* RepresentationBuilder<other::UnstructuredGrid>::make(const param::MIRParametrisation& param) {
     // specially-named unstructured grids
-#if mir_HAVE_GRID_FESOM
+#if mir_HAVE_ECKIT_CODEC
     if (std::string grid; param.get("grid", grid) && !FESOM::match(grid, param).empty()) {
         return new FESOM(param);
     }
-#endif
 
-#if mir_HAVE_GRID_ICON
     if (std::string grid; param.get("grid", grid) && !ICON::match(grid, param).empty()) {
         return new ICON(param);
     }
-#endif
 
-#if mir_HAVE_GRID_ORCA
     if (std::string grid; param.get("grid", grid) && !ORCA::match(grid, param).empty()) {
         return new ORCA(param);
     }

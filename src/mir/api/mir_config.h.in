@@ -17,9 +17,7 @@
 #include "mir/api/mir_version.h"
 
 
-#cmakedefine01 mir_HAVE_GRID_FESOM
-#cmakedefine01 mir_HAVE_GRID_ICON
-#cmakedefine01 mir_HAVE_GRID_ORCA
+#cmakedefine01 mir_HAVE_ECKIT_CODEC
 #cmakedefine01 mir_HAVE_PNG
 
 
