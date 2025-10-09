@@ -35,18 +35,16 @@ CASE("interpolations") {
     jobs[1].set("area", "40/20/20/40");
     jobs[1].set("frame", 2);
 
-    if constexpr (MIR_HAVE_TESSELATION) {
-        SECTION("interpolation gridded to gridded (netCDF)") {
-            param::SimpleParametrisation args;
-            args.set("input", "checkDuplicatePoints: False");
+    SECTION("interpolation gridded to gridded (netCDF)") {
+        param::SimpleParametrisation args;
+        args.set("input", "checkDuplicatePoints: False");
 
-            for (const auto& job : jobs) {
-                std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build("../data/nemo.nc", args));
-                output::EmptyOutput output;
+        for (const auto& job : jobs) {
+            std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build("../data/nemo.nc", args));
+            output::EmptyOutput output;
 
-                while (input->next()) {
-                    job.execute(*input, output);
-                }
+            while (input->next()) {
+                job.execute(*input, output);
             }
         }
     }

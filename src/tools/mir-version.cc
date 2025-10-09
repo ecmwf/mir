@@ -95,7 +95,6 @@ struct MIRVersion : MIRTool {
             out << "HAVE_OMP" << MIR_HAVE_OMP;
             out << "HAVE_PNG" << MIR_HAVE_PNG;
             out << "HAVE_PROJ" << MIR_HAVE_PROJ;
-            out << "HAVE_TESSELATION" << MIR_HAVE_TESSELATION;
             out.endObject();
 
             out << "libraries";
@@ -135,7 +134,6 @@ struct MIRVersion : MIRTool {
         out << "\n  HAVE_OMP         : " << on_off(MIR_HAVE_OMP);
         out << "\n  HAVE_PNG         : " << on_off(MIR_HAVE_PNG);
         out << "\n  HAVE_PROJ        : " << on_off(MIR_HAVE_PROJ);
-        out << "\n  HAVE_TESSELATION : " << on_off(MIR_HAVE_TESSELATION);
         out << '\n';
 
         out << "\nLibraries:";

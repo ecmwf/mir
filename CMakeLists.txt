@@ -41,6 +41,10 @@ if(NOT eccodes_HAVE_AEC)
     MESSAGE(FATAL_ERROR "mir: eccodes feature AEC is required")
 endif()
 
+if(NOT atlas_HAVE_TESSELATION)
+    MESSAGE(FATAL_ERROR "mir: atlas feature TESSELATION is required")
+endif()
+
 # shortcut upstream features into mir features (avoid additional optional behaviour)
 set(mir_HAVE_ECKIT_CODEC eckit_HAVE_ECKIT_CODEC)
 set(mir_HAVE_GRID_FESOM eckit_HAVE_GEO_GRID_FESOM)
