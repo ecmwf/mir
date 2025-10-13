@@ -41,8 +41,6 @@ list(APPEND mir_srcs
     action/context/Context.h
     action/filter/AddRandomFilter.cc
     action/filter/AddRandomFilter.h
-    action/filter/AdjustWindsAtPoles.cc
-    action/filter/AdjustWindsAtPoles.h
     action/filter/AdjustWindsDirections.cc
     action/filter/AdjustWindsDirections.h
     action/filter/AdjustWindsScaleCosLatitude.cc
