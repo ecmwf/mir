@@ -33,6 +33,7 @@ parser.add_argument("-e", "--europe", help="Europe", action="store_true")
 parser.add_argument("--land", help="Map coastline land shade colour", default="cream")
 parser.add_argument("--sea", help="Map coastline sea shade colour", default="")
 parser.add_argument("--width", help="Plot width", type=int, default=0)
+parser.add_argument("--area", help="Geographical area", type=float, nargs=4, metavar=("N", "W", "S", "E"))
 
 g = parser.add_mutually_exclusive_group()
 g.add_argument(
@@ -234,6 +235,14 @@ projection = macro.mmap(
     subpage_map_projection="cylindrical",
 )
 
+if args.area:
+    projection = macro.mmap(
+        subpage_upper_right_longitude=args.area[3],
+         subpage_upper_right_latitude=args.area[0],
+          subpage_lower_left_latitude=args.area[2],
+         subpage_lower_left_longitude=args.area[1],
+        subpage_map_projection="cylindrical",
+    )
 
 if args.polar_north:
     projection = macro.mmap(subpage_map_projection="polar_stereographic")
