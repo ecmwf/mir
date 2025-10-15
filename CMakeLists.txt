@@ -37,13 +37,15 @@ if(NOT TARGET eckit_geo)
     MESSAGE(FATAL_ERROR "mir: eckit feature ECKIT_GEO is required")
 endif()
 
-if(NOT eccodes_HAVE_AEC)
-    MESSAGE(FATAL_ERROR "mir: eccodes feature AEC is required")
-endif()
+#TODO ensure eccodes has required features
+#if(NOT eccodes_HAVE_AEC)
+#    MESSAGE(FATAL_ERROR "mir: eccodes feature AEC is required")
+#endif()
 
-if(NOT atlas_HAVE_TESSELATION)
-    MESSAGE(FATAL_ERROR "mir: atlas feature TESSELATION is required")
-endif()
+#TODO ensure atlas has required features
+#if(NOT atlas_HAVE_TESSELATION)
+#    MESSAGE(FATAL_ERROR "mir: atlas feature TESSELATION is required")
+#endif()
 
 # shortcut upstream features into mir features (avoid additional optional behaviour)
 set(mir_HAVE_ECKIT_CODEC eckit_HAVE_ECKIT_CODEC)
