@@ -48,6 +48,12 @@ foreach(_t ${TESTS})
     )
 endforeach()
 
+if(NOT atlas_HAVE_TESSELATION)
+    set_tests_properties(
+        mir_tests_unit_gridspec
+        PROPERTIES WILL_FAIL TRUE)
+endif()
+
 if(ENABLE_BUILD_TOOLS)
     ecbuild_configure_file(grib_fail_decode.sh.in grib_fail_decode.sh)
 
