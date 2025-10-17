@@ -90,7 +90,7 @@ struct MappingGridHEALPix : GridMapping {
 
 
 struct MappingGridByUID : GridMapping {
-    MappingGridByUID(const std::string& type, const eckit::geo::Grid::uid_t& uid) : type_(type), uid_(uid) {}
+    MappingGridByUID(const std::string& type, const eckit::geo::Grid::uid_type& uid) : type_(type), uid_(uid) {}
 
     void fill(SimpleParametrisation& param) const override {
         param.set("gridType", type_);
@@ -99,7 +99,7 @@ struct MappingGridByUID : GridMapping {
     }
 
     const std::string type_;
-    const eckit::geo::Grid::uid_t uid_;
+    const eckit::geo::Grid::uid_type uid_;
 };
 
 
