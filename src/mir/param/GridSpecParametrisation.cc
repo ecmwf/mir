@@ -12,6 +12,7 @@
 
 #include "mir/param/GridSpecParametrisation.h"
 
+#include <cmath>
 #include <ostream>
 
 #include "eckit/geo/area/BoundingBox.h"
@@ -19,6 +20,7 @@
 #include "eckit/geo/grid/ReducedGaussian.h"
 #include "eckit/geo/grid/RegularGaussian.h"
 #include "eckit/geo/grid/RegularLL.h"
+#include "eckit/geo/order/Scan.h"
 #include "eckit/geo/projection/Rotation.h"
 
 #include "mir/util/Exceptions.h"
@@ -47,9 +49,14 @@ struct MappingGridRegularLL : GridMapping {
         param.set("gridType", "regular_ll");
         param.set("gridded", 1L);
 
-        param.set("west_east_increment", grid_.dlon());
-        param.set("south_north_increment", grid_.dlat());
-        param.set("grid", std::vector<double>{grid_.dlon(), grid_.dlat()});
+        // FIXME improve handling of scan modes
+        eckit::geo::order::Scan scan(grid_.order());
+        auto dlon = scan.is_scan_i_positive() ? grid_.dlon() : -grid_.dlon();
+        auto dlat = scan.is_scan_j_positive() ? grid_.dlat() : -grid_.dlat();
+
+        param.set("west_east_increment", dlon);
+        param.set("south_north_increment", dlat);
+        param.set("grid", std::vector<double>{dlon, dlat});
 
         param.set("Ni", grid_.nlon());
         param.set("Nj", grid_.nlat());
