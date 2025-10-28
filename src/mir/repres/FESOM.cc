@@ -85,15 +85,15 @@ private:
         }
 
         if (a.empty()) {
-            a = "T";  // arbitrary choice (to review)
-            param.get("orca-arrangement", a);
+            a = "C";  // arbitrary choice (to review)
+            param.get("fesom-arrangement", a);
         }
         else if (a.size() == 2) {
             a = static_cast<char>(std::toupper(a.back()));
         }
         ASSERT(a.size() == 1);
 
-        return e + "FESOM" + n + "_" + a;
+        return e + "FESOM" + n + "-" + a;
     }
 };
 
@@ -126,17 +126,6 @@ std::string FESOM::match(const std::string& name, const param::MIRParametrisatio
 }
 
 
-std::string FESOM::name() const {
-    auto n = grid_->name() + "_" + grid_->arrangement();
-
-    if (const auto& spec = static_cast<const eckit::geo::Grid&>(*grid_).spec(); spec.has("uid")) {
-        n += "_" + spec.get_string("uid");
-    }
-
-    return n;
-}
-
-
 FESOM::points_type& FESOM::to_latlons() const {
     if (points_.first.empty() || points_.second.empty()) {
         ASSERT(points_.first.empty() && points_.second.empty());
@@ -157,7 +146,7 @@ bool FESOM::sameAs(const Representation& other) const {
 
 
 void FESOM::makeName(std::ostream& out) const {
-    out << name();
+    out << grid_->name() << "-" << grid_->arrangement() << "-" << grid_->uid();
 }
 
 
@@ -197,7 +186,7 @@ Iterator* FESOM::iterator() const {
 
 
 void FESOM::print(std::ostream& out) const {
-    out << "FESOM[grid=" << name() << "]";
+    out << "FESOM[name=" << grid_->name() << ",arrangement=" << grid_->arrangement() << ",uid=" << grid_->uid() << "]";
 }
 
 
