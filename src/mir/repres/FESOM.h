@@ -52,7 +52,6 @@ private:
 
     // -- Methods
 
-    std::string name() const;
     points_type& to_latlons() const;
 
     // -- Overridden methods

@@ -52,7 +52,7 @@ protected:
 };
 
 
-const std::string PATTERN("^[iI][cC][oO][nN]_.+$");
+const std::string PATTERN("^[iI][cC][oO][nN][-_].+$");
 
 
 class ICONPattern : public key::grid::GridPattern {
@@ -70,6 +70,7 @@ private:
 
     std::string canonical(const std::string& name, const param::MIRParametrisation& param) const override {
         ASSERT(!name.empty());
+        exit(10);
 
         static const std::regex rex(PATTERN);
 
@@ -85,15 +86,15 @@ private:
         }
 
         if (a.empty()) {
-            a = "T";  // arbitrary choice (to review)
-            param.get("orca-arrangement", a);
+            a = "C";  // arbitrary choice (to review)
+            param.get("icon-arrangement", a);
         }
         else if (a.size() == 2) {
             a = static_cast<char>(std::toupper(a.back()));
         }
         ASSERT(a.size() == 1);
 
-        return e + "ICON" + n + "_" + a;
+        return e + "ICON" + n + "-" + a;
     }
 };
 
@@ -126,17 +127,6 @@ std::string ICON::match(const std::string& name, const param::MIRParametrisation
 }
 
 
-std::string ICON::name() const {
-    auto n = grid_->name() + "_" + grid_->arrangement();
-
-    if (const auto& spec = static_cast<const eckit::geo::Grid&>(*grid_).spec(); spec.has("uid")) {
-        n += "_" + spec.get_string("uid");
-    }
-
-    return n;
-}
-
-
 ICON::points_type& ICON::to_latlons() const {
     if (points_.first.empty() || points_.second.empty()) {
         ASSERT(points_.first.empty() && points_.second.empty());
@@ -157,7 +147,7 @@ bool ICON::sameAs(const Representation& other) const {
 
 
 void ICON::makeName(std::ostream& out) const {
-    out << name();
+    out << grid_->name() << "-" << grid_->arrangement() << "-" << grid_->uid();
 }
 
 
@@ -197,7 +187,7 @@ Iterator* ICON::iterator() const {
 
 
 void ICON::print(std::ostream& out) const {
-    out << "ICON[grid=" << name() << "]";
+    out << "ICON[name=" << grid_->name() << ",arrangement=" << grid_->arrangement() << ",uid=" << grid_->uid() << "]";
 }
 
 

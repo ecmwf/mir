@@ -126,17 +126,6 @@ std::string ORCA::match(const std::string& name, const param::MIRParametrisation
 }
 
 
-std::string ORCA::name() const {
-    auto n = grid_->name() + "_" + grid_->arrangement();
-
-    if (const auto& spec = static_cast<const eckit::geo::Grid&>(*grid_).spec(); spec.has("uid")) {
-        n += "_" + spec.get_string("uid");
-    }
-
-    return n;
-}
-
-
 ORCA::points_type& ORCA::to_latlons() const {
     if (points_.first.empty() || points_.second.empty()) {
         ASSERT(points_.first.empty() && points_.second.empty());
@@ -157,7 +146,7 @@ bool ORCA::sameAs(const Representation& other) const {
 
 
 void ORCA::makeName(std::ostream& out) const {
-    out << name();
+    out << grid_->name() << "-" << grid_->arrangement() << "-" << grid_->uid();
 }
 
 
@@ -197,7 +186,7 @@ Iterator* ORCA::iterator() const {
 
 
 void ORCA::print(std::ostream& out) const {
-    out << "ORCA[grid=" << name() << "]";
+    out << "ORCA[name=" << grid_->name() << ",arrangement=" << grid_->arrangement() << ",uid=" << grid_->uid() << "]";
 }
 
 
