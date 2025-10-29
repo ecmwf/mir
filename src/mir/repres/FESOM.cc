@@ -126,7 +126,7 @@ std::string FESOM::match(const std::string& name, const param::MIRParametrisatio
 }
 
 
-FESOM::points_type& FESOM::to_latlons() const {
+const FESOM::points_type& FESOM::to_latlons() const {
     if (points_.first.empty() || points_.second.empty()) {
         ASSERT(points_.first.empty() && points_.second.empty());
 

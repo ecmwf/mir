@@ -127,7 +127,7 @@ std::string ICON::match(const std::string& name, const param::MIRParametrisation
 }
 
 
-ICON::points_type& ICON::to_latlons() const {
+const ICON::points_type& ICON::to_latlons() const {
     if (points_.first.empty() || points_.second.empty()) {
         ASSERT(points_.first.empty() && points_.second.empty());
 

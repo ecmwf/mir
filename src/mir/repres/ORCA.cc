@@ -126,7 +126,7 @@ std::string ORCA::match(const std::string& name, const param::MIRParametrisation
 }
 
 
-ORCA::points_type& ORCA::to_latlons() const {
+const ORCA::points_type& ORCA::to_latlons() const {
     if (points_.first.empty() || points_.second.empty()) {
         ASSERT(points_.first.empty() && points_.second.empty());
 
