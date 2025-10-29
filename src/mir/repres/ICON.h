@@ -52,7 +52,7 @@ private:
 
     // -- Methods
 
-    points_type& to_latlons() const;
+    const points_type& to_latlons() const;
 
     // -- Overridden methods
 
