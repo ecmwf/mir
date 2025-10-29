@@ -34,6 +34,9 @@
 #include "mir/util/MeshGeneratorParameters.h"
 
 #if mir_HAVE_ECKIT_CODEC
+#include "eckit/geo/Grid.h"
+#include "eckit/geo/Spec.h"
+
 #include "mir/repres/FESOM.h"
 #include "mir/repres/ICON.h"
 #include "mir/repres/ORCA.h"
@@ -45,18 +48,38 @@ namespace mir::repres {
 
 template <>
 Representation* RepresentationBuilder<other::UnstructuredGrid>::make(const param::MIRParametrisation& param) {
-    // specially-named unstructured grids
+    // specially-named grids
 #if mir_HAVE_ECKIT_CODEC
-    if (std::string grid; param.get("grid", grid) && !FESOM::match(grid, param).empty()) {
-        return new FESOM(param);
+    if (std::string uid; param.get("uid", uid) && eckit::geo::GridSpecByUID::instance().exists(uid)) {
+        std::unique_ptr<eckit::geo::Spec> spec(eckit::geo::GridSpecByUID::instance().get(uid).spec());
+        ASSERT(spec);
+
+        auto type = spec->get_string("type");
+        if (type == "FESOM") {
+            return new FESOM(param);
+        }
+
+        if (type == "ICON") {
+            return new ICON(param);
+        }
+
+        if (type == "ORCA") {
+            return new ORCA(param);
+        }
     }
 
-    if (std::string grid; param.get("grid", grid) && !ICON::match(grid, param).empty()) {
-        return new ICON(param);
-    }
+    if (std::string grid; param.get("grid", grid)) {
+        if (!FESOM::match(grid, param).empty()) {
+            return new FESOM(param);
+        }
 
-    if (std::string grid; param.get("grid", grid) && !ORCA::match(grid, param).empty()) {
-        return new ORCA(param);
+        if (!ICON::match(grid, param).empty()) {
+            return new ICON(param);
+        }
+
+        if (!ORCA::match(grid, param).empty()) {
+            return new ORCA(param);
+        }
     }
 #endif
 
