@@ -201,7 +201,18 @@ size_t FESOM::numberOfPoints() const {
 
 
 atlas::Grid FESOM::atlasGrid() const {
-    return {atlas::grid::SpecRegistry::get(grid_->uid())};
+    const auto N = grid_->size();
+
+    const auto& [lats, lons] = to_latlons();
+    ASSERT(lats.size() == N);
+    ASSERT(lons.size() == N);
+
+    std::vector<atlas::PointXY> points(N);
+    for (size_t i = 0; i < N; ++i) {
+        points[i].assign(lons[i], lats[i]);
+    }
+
+    return atlas::UnstructuredGrid(std::move(points));
 }
 
 

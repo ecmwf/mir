@@ -156,7 +156,6 @@ void ICON::fillGrib(grib_info& info) const {
     info.packing.editionNumber = 2;
 
     // NOTE confirm this is sufficient
-    info.extra_set("unstructuredGridType", "undefined");
     info.extra_set("uuidOfHGrid", grid_->uid().c_str());
 }
 
@@ -202,7 +201,18 @@ size_t ICON::numberOfPoints() const {
 
 
 atlas::Grid ICON::atlasGrid() const {
-    return {atlas::grid::SpecRegistry::get(grid_->uid())};
+    const auto N = grid_->size();
+
+    const auto& [lats, lons] = to_latlons();
+    ASSERT(lats.size() == N);
+    ASSERT(lons.size() == N);
+
+    std::vector<atlas::PointXY> points(N);
+    for (size_t i = 0; i < N; ++i) {
+        points[i].assign(lons[i], lats[i]);
+    }
+
+    return atlas::UnstructuredGrid(std::move(points));
 }
 
 
