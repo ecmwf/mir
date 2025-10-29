@@ -155,8 +155,8 @@ void ICON::fillGrib(grib_info& info) const {
     info.grid.grid_type        = GRIB_UTIL_GRID_SPEC_UNSTRUCTURED;
     info.packing.editionNumber = 2;
 
-    info.extra_set("unstructuredGridType", grid_->name().c_str());
-    info.extra_set("unstructuredGridSubtype", grid_->arrangement().c_str());
+    // NOTE confirm this is sufficient
+    info.extra_set("unstructuredGridType", "undefined");
     info.extra_set("uuidOfHGrid", grid_->uid().c_str());
 }
 
