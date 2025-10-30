@@ -12,6 +12,7 @@
 
 #include "mir/repres/FESOM.h"
 
+#include <algorithm>
 #include <cctype>
 #include <ostream>
 #include <vector>
@@ -69,31 +70,22 @@ private:
     const key::grid::Grid* make(const std::string& name) const override { return new NamedFESOM(name); }
 
     std::string canonical(const std::string& name, const param::MIRParametrisation& param) const override {
-        ASSERT(!name.empty());
+        ASSERT(name.size() >= 2);
 
-        static const std::regex rex(PATTERN);
+        auto can(name);
+        std::transform(can.begin(), can.end(), can.begin(),
+                       [](unsigned char c) { return c == '_' ? '-' : std::toupper(c); });
 
-        std::smatch match;
-        ASSERT(std::regex_search(name, match, rex) && match.size() == 4);
-
-        auto e(match[1].str());
-        auto n(match[2].str());
-        auto a(match[3].str());
-
-        if (e.size() == 1) {
-            e = static_cast<char>(std::tolower(e.back()));
+        if (can[0] == 'P' && can[1] == 'I') {
+            can[0] = 'p';
+            can[1] = 'i';
         }
 
-        if (a.empty()) {
-            a = "C";  // arbitrary choice (to review)
-            param.get("fesom-arrangement", a);
+        if (can.find('_') == std::string::npos) {
+            can += "_C";  // arbitrary choice (to review)
         }
-        else if (a.size() == 2) {
-            a = static_cast<char>(std::toupper(a.back()));
-        }
-        ASSERT(a.size() == 1);
 
-        return e + "FESOM" + n + "-" + a;
+        return can;
     }
 };
 

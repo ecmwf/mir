@@ -12,6 +12,7 @@
 
 #include "mir/repres/ICON.h"
 
+#include <algorithm>
 #include <cctype>
 #include <ostream>
 #include <vector>
@@ -52,7 +53,7 @@ protected:
 };
 
 
-const std::string PATTERN("^[iI][cC][oO][nN][-_].+$");
+const std::string PATTERN("^[iI][cC][oO][nN]-([gG][rR][iI][dD]-(....)-(......)(-(.*))?|[cC][hH].(-[vV][1-9][0-9]*)?)$");
 
 
 class ICONPattern : public key::grid::GridPattern {
@@ -70,31 +71,17 @@ private:
 
     std::string canonical(const std::string& name, const param::MIRParametrisation& param) const override {
         ASSERT(!name.empty());
-        exit(10);
 
-        static const std::regex rex(PATTERN);
+        auto can(name);
+        std::transform(can.begin(), can.end(), can.begin(),
+                       [](unsigned char c) { return c == '_' ? '-' : std::tolower(c); });
 
-        std::smatch match;
-        ASSERT(std::regex_search(name, match, rex) && match.size() == 4);
-
-        auto e(match[1].str());
-        auto n(match[2].str());
-        auto a(match[3].str());
-
-        if (e.size() == 1) {
-            e = static_cast<char>(std::tolower(e.back()));
+        if (can.find("-ch") != std::string::npos &&  //
+            can.find("-v") == std::string::npos) {
+            can += "-v1";
         }
 
-        if (a.empty()) {
-            a = "C";  // arbitrary choice (to review)
-            param.get("icon-arrangement", a);
-        }
-        else if (a.size() == 2) {
-            a = static_cast<char>(std::toupper(a.back()));
-        }
-        ASSERT(a.size() == 1);
-
-        return e + "ICON" + n + "-" + a;
+        return can;
     }
 };
 
