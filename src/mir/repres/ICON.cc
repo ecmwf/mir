@@ -146,7 +146,6 @@ void ICON::fillGrib(grib_info& info) const {
     auto number_of_grid_used = static_cast<long>(grid_->catalog().get_unsigned("icon_number_of_grid_used"));
     info.extra_set("uuidOfHGrid", grid_->uid().c_str());
     info.extra_set("numberOfGridUsed", number_of_grid_used);
-    info.extra_set("numberOfGridInReference", number_of_grid_used);
 }
 
 
