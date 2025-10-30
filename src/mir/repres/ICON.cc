@@ -142,10 +142,16 @@ void ICON::fillGrib(grib_info& info) const {
     info.grid.grid_type        = GRIB_UTIL_GRID_SPEC_UNSTRUCTURED;
     info.packing.editionNumber = 2;
 
-    // NOTE confirm this is sufficient
-    auto number_of_grid_used = static_cast<long>(grid_->catalog().get_unsigned("icon_number_of_grid_used"));
     info.extra_set("uuidOfHGrid", grid_->uid().c_str());
-    info.extra_set("numberOfGridUsed", number_of_grid_used);
+
+    const auto& catalog = grid_->catalog();
+    if (const std::string key{"icon_number_of_grid_used"}; catalog.has(key)) {
+        info.extra_set("numberOfGridUsed", static_cast<long>(catalog.get_unsigned(key)));
+    }
+
+    if (const std::string key{"icon_number_of_grid_in_reference"}; catalog.has(key)) {
+        info.extra_set("numberOfGridInReference", static_cast<long>(catalog.get_unsigned(key)));
+    }
 }
 
 
