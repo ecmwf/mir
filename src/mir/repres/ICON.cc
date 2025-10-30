@@ -145,11 +145,11 @@ void ICON::fillGrib(grib_info& info) const {
     info.extra_set("uuidOfHGrid", grid_->uid().c_str());
 
     const auto& catalog = grid_->catalog();
-    if (const std::string key{"icon_number_of_grid_used"}; catalog.has(key)) {
+    if (static const std::string key{"icon_number_of_grid_used"}; catalog.has(key)) {
         info.extra_set("numberOfGridUsed", static_cast<long>(catalog.get_unsigned(key)));
     }
 
-    if (const std::string key{"icon_number_of_grid_in_reference"}; catalog.has(key)) {
+    if (static const std::string key{"icon_number_of_grid_in_reference"}; catalog.has(key)) {
         info.extra_set("numberOfGridInReference", static_cast<long>(catalog.get_unsigned(key)));
     }
 }
