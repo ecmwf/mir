@@ -114,24 +114,19 @@ ICON::ICON(const param::MIRParametrisation& param) :
 
 
 ICON::ICON(grid_type* grid_ptr) :
-    Gridded([](const auto& bbox) {
-        auto [n, w, s, e] = bbox.deconstruct();
+    Gridded([grid_ptr]() {
+        ASSERT(grid_ptr != nullptr);
+        auto [n, w, s, e] = grid_ptr->boundingBox().deconstruct();
         return util::BoundingBox{n, w, s, e};
-    }(grid_ptr->boundingBox())),
-    grid_(grid_ptr) {}
+    }()),
+    grid_(grid_ptr) {
+    ASSERT(grid_);
+}
 
 
 std::string ICON::match(const std::string& name, const param::MIRParametrisation& param) {
     return key::grid::GridPattern::match(name, param);
 }
-
-
-ICON::ICON(grid_type* grid) :
-    Gridded([](const auto& bbox) {
-        auto [n, w, s, e] = bbox.deconstruct();
-        return util::BoundingBox{n, w, s, e};
-    }(grid->boundingBox())),
-    grid_(grid) {}
 
 
 const ICON::points_type& ICON::to_latlons() const {
