@@ -44,6 +44,10 @@ public:
     static std::string match(const std::string& name, const param::MIRParametrisation&);
 
 private:
+    // -- Constructors
+
+    explicit ICON(grid_type*);
+
     // -- Members
 
     std::unique_ptr<grid_type> grid_;
@@ -71,9 +75,9 @@ private:
 
     Iterator* iterator() const override;
 
-    bool includesNorthPole() const override { return true; }
-    bool includesSouthPole() const override { return true; }
-    bool isPeriodicWestEast() const override { return true; }
+    bool includesNorthPole() const override;
+    bool includesSouthPole() const override;
+    bool isPeriodicWestEast() const override;
 
     ::atlas::Grid atlasGrid() const override;
 };

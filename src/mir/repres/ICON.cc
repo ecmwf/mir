@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "eckit/geo/grid/unstructured/ICON.h"
+#include "eckit/types/FloatCompare.h"
 
 #include "mir/api/MIRJob.h"
 #include "mir/api/mir_config.h"
@@ -93,9 +94,10 @@ const ICONPattern __ICON(PATTERN);
 
 
 ICON::ICON(const std::string& grid) :
-    grid_([&grid]() {
+    ICON([&grid]() {
         eckit::geo::spec::Custom custom{{"grid", grid}};
         std::unique_ptr<eckit::geo::Spec> spec(eckit::geo::GridFactory::make_spec(custom));
+        ASSERT(spec);
 
         return new grid_type(*spec);
     }()) {}
@@ -112,6 +114,14 @@ ICON::ICON(const param::MIRParametrisation& param) :
 std::string ICON::match(const std::string& name, const param::MIRParametrisation& param) {
     return key::grid::GridPattern::match(name, param);
 }
+
+
+ICON::ICON(grid_type* grid) :
+    Gridded([](const auto& bbox) {
+        auto [n, w, s, e] = bbox.deconstruct();
+        return util::BoundingBox{n, w, s, e};
+    }(grid->boundingBox())),
+    grid_(grid) {}
 
 
 const ICON::points_type& ICON::to_latlons() const {
@@ -177,6 +187,22 @@ void ICON::json(eckit::JSON& j) const {
 Iterator* ICON::iterator() const {
     const auto& [lats, lons] = to_latlons();
     return new iterator::UnstructuredIterator(lats, lons);
+}
+
+
+bool ICON::includesNorthPole() const {
+    return eckit::types::is_approximately_equal(bbox_.north().value(), Latitude::NORTH_POLE.value());
+}
+
+
+bool ICON::includesSouthPole() const {
+    return eckit::types::is_approximately_equal(bbox_.south().value(), Latitude::SOUTH_POLE.value());
+}
+
+
+bool ICON::isPeriodicWestEast() const {
+    return eckit::types::is_approximately_greater_or_equal(bbox_.east().value() - bbox_.west().value(),
+                                                           Longitude::GLOBE.value());
 }
 
 
