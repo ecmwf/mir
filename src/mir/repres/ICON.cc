@@ -17,6 +17,7 @@
 #include <ostream>
 #include <vector>
 
+#include "eckit/geo/area/BoundingBox.h"
 #include "eckit/geo/grid/unstructured/ICON.h"
 #include "eckit/types/FloatCompare.h"
 
@@ -27,6 +28,7 @@
 #include "mir/key/grid/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
+#include "mir/util/BoundingBox.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/MeshGeneratorParameters.h"
@@ -109,6 +111,14 @@ ICON::ICON(const param::MIRParametrisation& param) :
         ASSERT(param.get("uid", uid));
         return uid;
     }()) {}
+
+
+ICON::ICON(grid_type* grid_ptr) :
+    Gridded([](const auto& bbox) {
+        auto [n, w, s, e] = bbox.deconstruct();
+        return util::BoundingBox{n, w, s, e};
+    }(grid_ptr->boundingBox())),
+    grid_(grid_ptr) {}
 
 
 std::string ICON::match(const std::string& name, const param::MIRParametrisation& param) {
