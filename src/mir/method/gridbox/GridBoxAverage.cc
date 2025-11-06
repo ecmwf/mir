@@ -137,7 +137,8 @@ void GridBoxAverage::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, 
                     double smallArea = smallBox.area();
                     ASSERT(smallArea > 0.);
 
-                    triplets.emplace_back(i, j, smallArea / area);
+                    // weight clipped as numerical conditioning for intersection
+                    triplets.emplace_back(i, j, std::min(1., smallArea / area));
                     sumSmallAreas += smallArea;
 
                     if ((areaMatch = eckit::types::is_approximately_equal(area, sumSmallAreas, 1. /*m^2*/))) {
