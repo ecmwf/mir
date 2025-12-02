@@ -35,7 +35,7 @@
 
 #if mir_HAVE_ECKIT_CODEC
 #include "eckit/geo/Grid.h"
-#include "eckit/geo/Spec.h"
+#include "eckit/spec/Spec.h"
 
 #include "mir/repres/FESOM.h"
 #include "mir/repres/ICON.h"
@@ -51,7 +51,7 @@ Representation* RepresentationBuilder<other::UnstructuredGrid>::make(const param
     // specially-named grids
 #if mir_HAVE_ECKIT_CODEC
     if (std::string uid; param.get("uid", uid) && eckit::geo::GridSpecByUID::instance().exists(uid)) {
-        std::unique_ptr<eckit::geo::Spec> spec(eckit::geo::GridSpecByUID::instance().get(uid).spec());
+        std::unique_ptr<eckit::spec::Spec> spec(eckit::geo::GridSpecByUID::instance().get(uid).spec());
         ASSERT(spec);
 
         auto type = spec->get_string("type");

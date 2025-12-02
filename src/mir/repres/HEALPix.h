@@ -19,7 +19,7 @@
 #include "mir/repres/Gridded.h"
 
 
-namespace eckit::geo::grid {
+namespace eckit::geo::grid::reduced {
 class HEALPix;
 }
 
@@ -41,7 +41,7 @@ public:
 private:
     // -- Members
 
-    std::unique_ptr<eckit::geo::grid::HEALPix> grid_;
+    std::unique_ptr<eckit::geo::grid::reduced::HEALPix> grid_;
 
     mutable points_type points_;
 
