@@ -29,6 +29,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/BoundingBox.h"
+#include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/MeshGeneratorParameters.h"
@@ -238,7 +239,10 @@ atlas::Grid ICON::atlasGrid() const {
         points[i].assign(lons[i], lats[i]);
     }
 
-    return atlas::UnstructuredGrid(std::move(points));
+    const auto grid = atlas::UnstructuredGrid(std::move(points));
+    const auto dom  = domain();
+
+    return dom.isGlobal() ? grid : atlas::UnstructuredGrid(grid, dom);
 }
 
 
