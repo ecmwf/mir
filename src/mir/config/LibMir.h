@@ -31,6 +31,7 @@ public:
 
     static bool caching();
     static const std::string& lsmNamed();
+    static const std::string& gribSampleName();
 
     std::string version() const override;
     std::string gitsha1(unsigned int count) const override;

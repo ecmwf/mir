@@ -21,6 +21,8 @@ post-process:
 
 mir-cache-path: /tmp/cache
 
+grib-sample: GRIB1
+
 mir-config-area: ~mir/etc/mir/area.yaml
 mir-config-classes: ~mir/etc/mir/classes.yaml
 mir-config-grib-input: ~mir/etc/mir/grib-input.yaml

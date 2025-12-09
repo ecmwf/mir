@@ -60,6 +60,16 @@ const std::string& LibMir::lsmNamed() {
 }
 
 
+const std::string& LibMir::gribSampleName() {
+    // FIXME: make this edition-independent
+    static const std::string mirGribSample{[&](std::string value) {
+        instance().configuration().get("grib-sample", value);
+        return eckit::LibResource<std::string, LibMir>("mir-grib-sample;$MIR_GRIB_SAMPLE", value);
+    }("GRIB2")};
+    return mirGribSample;
+}
+
+
 eckit::PathName LibMir::configFile(config_file c) {
     using r = eckit::LibResource<std::string, LibMir>;
 
