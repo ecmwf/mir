@@ -205,6 +205,8 @@ struct MIR : MIRTool {
             new SimpleOption<bool>("mesh-generator-force-include-north-pole", "Generate mesh including North pole"));
         options_.push_back(
             new SimpleOption<bool>("mesh-generator-force-include-south-pole", "Generate mesh including South pole"));
+        options_.push_back(new SimpleOption<std::string>("mesh-generator-extension-grid",
+                                                         "Delaunay mesh generator global extension grid"));
 
         options_.push_back(
             new SimpleOption<double>("counter-upper-limit", "Statistics count values below lower limit"));
