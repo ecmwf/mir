@@ -48,6 +48,11 @@ namespace mir::repres {
 
 template <>
 Representation* RepresentationBuilder<other::UnstructuredGrid>::make(const param::MIRParametrisation& param) {
+    // NOTE: for grids defined by lat/lon auxiliary data
+    if (param.has("latitudes/longitudes")) {
+        return new other::UnstructuredGrid(param);
+    }
+
     // specially-named grids
 #if mir_HAVE_ECKIT_CODEC
     if (std::string uid; param.get("uid", uid) && eckit::geo::GridSpecByUID::instance().exists(uid)) {

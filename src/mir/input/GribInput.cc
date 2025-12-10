@@ -837,6 +837,11 @@ grib_handle* GribInput::gribHandle(size_t which) const {
 bool GribInput::has(const std::string& name) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
+    if (static const std::string LL{"latitudes/longitudes"}; name == LL) {
+        ASSERT(latitudes_.size() == longitudes_.size());
+        return !latitudes_.empty();
+    }
+
     ASSERT(grib_ != nullptr);
     const auto* key = get_key(name, grib_);
 
