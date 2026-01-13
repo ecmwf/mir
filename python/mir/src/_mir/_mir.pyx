@@ -205,6 +205,10 @@ cdef class ArrayOutput(MIROutput):
         assert dtype in (None, np.float32, np.float64)
         arr = np.array(<cnp.float64_t[:size]>data_ptr, dtype=dtype)  # copy
 
+        cdef double miss = (<mir.ArrayOutput*> self._output).missingValue()
+        if miss != np.nan:
+            arr[arr == miss] = np.nan
+
         if len(shape) > 1:
             return arr.reshape(shape)
         return arr
