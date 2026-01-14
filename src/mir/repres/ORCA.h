@@ -14,9 +14,8 @@
 
 #include <memory>
 #include <string>
-#include <utility>
 
-#include "mir/repres/Gridded.h"
+#include "mir/repres/other/UnstructuredGrid.h"
 
 
 namespace eckit::geo::grid {
@@ -31,7 +30,7 @@ class ORCA final : public Gridded {
 public:
     // -- Types
 
-    using points_type = std::pair<std::vector<double>, std::vector<double>>;
+    using points_type = other::UnstructuredGrid::points_type;
     using grid_type   = eckit::geo::grid::ORCA;
 
     // -- Constructors

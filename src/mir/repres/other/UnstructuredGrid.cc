@@ -26,6 +26,7 @@
 #include "mir/iterator/UnstructuredIterator.h"
 #include "mir/output/GriddefOutput.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Atlas.h"
 #include "mir/util/CheckDuplicatePoints.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
@@ -132,6 +133,24 @@ void UnstructuredGrid::save(const eckit::PathName& path, const std::vector<doubl
     util::check_duplicate_points("UnstructuredGrid::save to " + path.asString(), latitudes, longitudes);
     ASSERT(binary);
     output::GriddefOutput::save(path, latitudes, longitudes);
+}
+
+
+atlas::Grid UnstructuredGrid::atlas_unstructured_grid_from_points(const points_type& points_latlon,
+                                                                  const util::Domain& domain) {
+    const auto& [lats, lons] = points_latlon;
+    ASSERT(!lats.empty());
+    ASSERT(lats.size() == lons.size());
+
+    const auto N = lats.size();
+    std::vector<atlas::PointXY> points(N);
+    for (size_t i = 0; i < N; ++i) {
+        points[i].assign(lons[i], lats[i]);
+    }
+
+    const auto grid = atlas::UnstructuredGrid(std::move(points));
+
+    return domain.isGlobal() ? grid : atlas::UnstructuredGrid(grid, domain);
 }
 
 

@@ -26,6 +26,7 @@
 #include "mir/key/grid/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
+#include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/MeshGeneratorParameters.h"
@@ -193,18 +194,9 @@ size_t FESOM::numberOfPoints() const {
 
 
 atlas::Grid FESOM::atlasGrid() const {
-    const auto N = grid_->size();
-
-    const auto& [lats, lons] = to_latlons();
-    ASSERT(lats.size() == N);
-    ASSERT(lons.size() == N);
-
-    std::vector<atlas::PointXY> points(N);
-    for (size_t i = 0; i < N; ++i) {
-        points[i].assign(lons[i], lats[i]);
-    }
-
-    return atlas::UnstructuredGrid(std::move(points));
+    auto grid = other::UnstructuredGrid::atlas_unstructured_grid_from_points(to_latlons(), domain());
+    ASSERT(grid.size() == grid_->size());
+    return grid;
 }
 
 

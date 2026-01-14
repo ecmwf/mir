@@ -25,6 +25,7 @@
 #include "mir/key/grid/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
+#include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/MeshGeneratorParameters.h"
@@ -162,7 +163,7 @@ void ORCA::fillGrib(grib_info& info) const {
 
 void ORCA::fillMeshGen(util::MeshGeneratorParameters& params) const {
     if (params.meshGenerator_.empty()) {
-        params.meshGenerator_ = "orca";
+        params.meshGenerator_ = "delaunay";
     }
 }
 
@@ -201,7 +202,9 @@ size_t ORCA::numberOfPoints() const {
 
 
 atlas::Grid ORCA::atlasGrid() const {
-    return {atlas::grid::SpecRegistry::get(grid_->uid())};
+    auto grid = other::UnstructuredGrid::atlas_unstructured_grid_from_points(to_latlons(), domain());
+    ASSERT(grid.size() == grid_->size());
+    return grid;
 }
 
 

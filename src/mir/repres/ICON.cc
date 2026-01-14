@@ -228,21 +228,9 @@ size_t ICON::numberOfPoints() const {
 
 
 atlas::Grid ICON::atlasGrid() const {
-    const auto N = grid_->size();
-
-    const auto& [lats, lons] = to_latlons();
-    ASSERT(lats.size() == N);
-    ASSERT(lons.size() == N);
-
-    std::vector<atlas::PointXY> points(N);
-    for (size_t i = 0; i < N; ++i) {
-        points[i].assign(lons[i], lats[i]);
-    }
-
-    const auto grid = atlas::UnstructuredGrid(std::move(points));
-    const auto dom  = domain();
-
-    return dom.isGlobal() ? grid : atlas::UnstructuredGrid(grid, dom);
+    auto grid = other::UnstructuredGrid::atlas_unstructured_grid_from_points(to_latlons(), domain());
+    ASSERT(grid.size() == grid_->size());
+    return grid;
 }
 
 
