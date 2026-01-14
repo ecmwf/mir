@@ -206,7 +206,7 @@ cdef class ArrayOutput(MIROutput):
         arr = np.array(<cnp.float64_t[:size]>data_ptr, dtype=dtype)  # copy
 
         cdef double miss = (<mir.ArrayOutput*> self._output).missingValue()
-        if miss != np.nan:
+        if not np.isnan(miss):
             arr[arr == miss] = np.nan
 
         if len(shape) > 1:
