@@ -800,16 +800,6 @@ list(APPEND mir_srcs
     stats/statistics/Integral.cc
     stats/statistics/Integral.h)
 
-if(mir_HAVE_ECKIT_CODEC)
-    list(APPEND mir_srcs
-        repres/FESOM.cc
-        repres/FESOM.h
-        repres/ICON.cc
-        repres/ICON.h
-        repres/ORCA.cc
-        repres/ORCA.h)
-endif()
-
 if(mir_HAVE_PNG)
     list(APPEND mir_srcs output/PNGOutput.h output/PNGOutput.cc)
 endif()

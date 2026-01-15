@@ -12,7 +12,6 @@
 
 #pragma once
 
-#include <utility>
 #include <vector>
 
 #include "mir/repres/Gridded.h"
@@ -28,10 +27,6 @@ namespace mir::repres::other {
 
 class UnstructuredGrid : public Gridded {
 public:
-    // -- Types
-
-    using points_type = std::pair<std::vector<double>, std::vector<double>>;
-
     // -- Exceptions
     // None
 
@@ -69,8 +64,7 @@ public:
     // None
 
     // -- Class methods
-
-    static atlas::Grid atlas_unstructured_grid_from_points(const points_type& points_latlon, const util::Domain&);
+    // None
 
 protected:
     // -- Members
