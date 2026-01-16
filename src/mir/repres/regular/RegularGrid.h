@@ -12,7 +12,7 @@
 
 #pragma once
 
-#include <utility>  // for pair
+#include <iosfwd>
 
 #include "mir/repres/Gridded.h"
 #include "mir/util/Atlas.h"
