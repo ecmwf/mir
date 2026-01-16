@@ -116,6 +116,18 @@ protected:
 
     void fillMeshGen(util::MeshGeneratorParameters& params) const override {
         if (params.meshGenerator_.empty()) {
+            if (const auto uid = grid_ptr()->uid(); atlas::grid::SpecRegistry::has(uid)) {
+                auto type = atlas::grid::SpecRegistry::get(uid).getString("type", "");
+                std::transform(type.begin(), type.end(), type.begin(),
+                               [](auto c) { return c == '_' ? '-' : std::tolower(c); });
+
+                if (atlas::meshgenerator::MeshGeneratorFactory::has(type)) {
+                    Log::debug() << "UnstructuredGrid: atlas::MeshGenerator(\"" << type << "\")" << std::endl;
+                    params.meshGenerator_ = type;
+                    return;
+                }
+            }
+
             params.meshGenerator_ = "delaunay";
         }
     }
@@ -234,20 +246,6 @@ class ORCA final : public UnstructuredGridFromUID {
 public:
     using UnstructuredGridFromUID::UnstructuredGridFromUID;
 
-    void fillMeshGen(util::MeshGeneratorParameters& params) const override {
-        if (params.meshGenerator_.empty()) {
-            if (const auto uid = grid_ptr()->uid(); atlas::grid::SpecRegistry::has(uid)) {
-                if (const auto type = atlas::grid::SpecRegistry::get(uid).getString("type", ""); type == "ORCA") {
-                    Log::debug() << "UnstructuredGrid: atlas::MeshGenerator(\"orca\")" << std::endl;
-                    params.meshGenerator_ = "orca";
-                    return;
-                }
-            }
-
-            UnstructuredGridFromUID::fillMeshGen(params);
-        }
-    }
-
     void fillGrib(grib_info& info) const override {
         info.grid.grid_type        = GRIB_UTIL_GRID_SPEC_UNSTRUCTURED;
         info.packing.editionNumber = 2;
@@ -303,10 +301,9 @@ private:
         ASSERT(name.size() >= 2);
 
         auto can(name);
-        std::transform(can.begin(), can.end(), can.begin(),
-                       [](unsigned char c) { return c == '_' ? '-' : std::toupper(c); });
+        std::transform(can.begin(), can.end(), can.begin(), [](auto c) { return std::toupper(c); });
 
-        if (can[0] == 'P' && can[1] == 'I') {
+        if (can.find("PI") == 0) {
             can[0] = 'p';
             can[1] = 'i';
         }
@@ -353,8 +350,7 @@ private:
         ASSERT(!name.empty());
 
         auto can(name);
-        std::transform(can.begin(), can.end(), can.begin(),
-                       [](unsigned char c) { return c == '_' ? '-' : std::tolower(c); });
+        std::transform(can.begin(), can.end(), can.begin(), [](auto c) { return c == '_' ? '-' : std::tolower(c); });
 
         if (can.find("-ch") != std::string::npos &&  //
             can.find("-v") == std::string::npos) {
@@ -431,6 +427,10 @@ private:
 const FESOMPattern __FESOM("^([cC][oO][rR][eE]2|[dD][aA][rR][tT]|[nN][gG]5|[pP][iI])(_[cCnN])?$");
 const ICONPattern __ICON("^[iI][cC][oO][nN]-([gG][rR][iI][dD]-(....)-(......)(-(.*))?|[cC][hH].(-[vV][1-9][0-9]*)?)$");
 const ORCAPattern __ORCA(ORCA_PATTERN);
+
+const RepresentationBuilder<FESOM> __fesom("fesom");
+const RepresentationBuilder<ICON> __icon("icon");
+const RepresentationBuilder<ORCA> __orca("orca");
 
 
 }  // namespace
@@ -670,12 +670,6 @@ bool UnstructuredGrid::extendBoundingBoxOnIntersect() const {
 
 static const RepresentationBuilder<UnstructuredGrid> triangular_grid("triangular_grid");
 static const RepresentationBuilder<UnstructuredGrid> unstructured_grid("unstructured_grid");
-
-#if mir_HAVE_ECKIT_CODEC
-static const RepresentationBuilder<FESOM> __fesom("fesom");
-static const RepresentationBuilder<ICON> __icon("icon");
-static const RepresentationBuilder<ORCA> __orca("orca");
-#endif
 
 
 }  // namespace other

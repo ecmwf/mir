@@ -38,6 +38,7 @@
 #include "atlas/mesh/actions/BuildNode2CellConnectivity.h"
 #include "atlas/mesh/actions/BuildXYZField.h"
 #include "atlas/meshgenerator.h"
+#include "atlas/meshgenerator/detail/MeshGeneratorFactory.h"
 #include "atlas/numerics/Nabla.h"
 #include "atlas/numerics/fvm/Method.h"
 #include "atlas/option.h"
