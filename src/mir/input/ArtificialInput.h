@@ -64,6 +64,7 @@ protected:
     // -- Methods
 
     param::SimpleParametrisation& parametrisation(size_t which = 0);
+    void inputParametrisation(param::MIRParametrisation* param) { inputParametrisation_.reset(param); }
 
     // -- Overridden methods
 

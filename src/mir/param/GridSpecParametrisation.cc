@@ -16,6 +16,7 @@
 #include <ostream>
 
 #include "eckit/geo/area/BoundingBox.h"
+#include "eckit/geo/grid/SphericalHarmonics.h"
 #include "eckit/geo/grid/reduced/HEALPix.h"
 #include "eckit/geo/grid/reduced/ReducedGaussian.h"
 #include "eckit/geo/grid/regular/RegularGaussian.h"
@@ -47,7 +48,7 @@ struct MappingGridRegularLL : GridMapping {
 
     void fill(SimpleParametrisation& param) const override {
         param.set("gridType", "regular_ll");
-        param.set("gridded", 1L);
+        param.set("gridded", true);
 
         // FIXME improve handling of scan modes
         eckit::geo::order::Scan scan(grid_.order());
@@ -72,7 +73,7 @@ struct MappingGridRegularGG : GridMapping {
 
     void fill(SimpleParametrisation& param) const override {
         param.set("gridType", "regular_gg");
-        param.set("gridded", 1L);
+        param.set("gridded", true);
         param.set("N", grid_.N());
     }
 
@@ -86,7 +87,7 @@ struct MappingGridHEALPix : GridMapping {
 
     void fill(SimpleParametrisation& param) const override {
         param.set("gridType", "healpix");
-        param.set("gridded", 1L);
+        param.set("gridded", true);
         param.set("Nside", grid_.Nside());
         param.set("orderingConvention", grid_.order());
         param.set("longitudeOfFirstGridPointInDegrees", 45.);
@@ -96,12 +97,26 @@ struct MappingGridHEALPix : GridMapping {
 };
 
 
+struct MappingSphericalHarmonics : GridMapping {
+    explicit MappingSphericalHarmonics(const eckit::geo::Grid& _grid) :
+        grid_(dynamic_cast<const eckit::geo::grid::SphericalHarmonics&>(_grid)) {}
+
+    void fill(SimpleParametrisation& param) const override {
+        param.set("gridType", "sh");
+        param.set("spectral", true);
+        param.set("truncation", grid_.truncation());
+    }
+
+    const eckit::geo::grid::SphericalHarmonics& grid_;
+};
+
+
 struct MappingGridByUID : GridMapping {
     MappingGridByUID(const std::string& type, const eckit::geo::Grid::uid_type& uid) : type_(type), uid_(uid) {}
 
     void fill(SimpleParametrisation& param) const override {
         param.set("gridType", type_);
-        param.set("gridded", 1L);
+        param.set("gridded", true);
         param.set("uid", uid_);
     }
 
@@ -116,7 +131,7 @@ struct MappingGridReducedGG : GridMapping {
 
     void fill(SimpleParametrisation& param) const override {
         param.set("gridType", "reduced_gg");
-        param.set("gridded", 1L);
+        param.set("gridded", true);
         param.set("N", grid_.N());
     }
 
@@ -166,8 +181,11 @@ GridMapping* build_grid_mapping(const eckit::geo::Grid& grid) {
            : type == "regular-gg" ? static_cast<GridMapping*>(new MappingGridRegularGG(grid))
            : type == "reduced-gg" ? static_cast<GridMapping*>(new MappingGridReducedGG(grid))
            : type == "healpix"    ? static_cast<GridMapping*>(new MappingGridHEALPix(grid))
-           : type == "fesom" || type == "icon" || type == "orca"
-               ? static_cast<GridMapping*>(new MappingGridByUID(type, grid.uid()))
+           : type == "FESOM"      ? static_cast<GridMapping*>(new MappingGridByUID(type, grid.uid()))
+           : type == "ICON"       ? static_cast<GridMapping*>(new MappingGridByUID(type, grid.uid()))
+           : type == "ORCA"       ? static_cast<GridMapping*>(new MappingGridByUID(type, grid.uid()))
+           : type == "sh"
+               ? static_cast<GridMapping*>(new MappingSphericalHarmonics(grid))
                : throw exception::UserError("GridSpecParametrisation: unsupported grid mapping type: '" + type + "'");
 }
 
