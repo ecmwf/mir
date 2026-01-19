@@ -203,10 +203,11 @@ cdef class ArrayOutput(MIROutput):
         cdef tuple shape = tuple(shape_vec)
 
         assert dtype in (None, np.float32, np.float64)
-        if dtype == np.float32:
-            arr = np.array(<cnp.float64_t[:size]>data_ptr, dtype=np.float32)  # copy
-        else:
-            arr = np.asarray(<cnp.float64_t[:size]>data_ptr)  # no-copy
+        arr = np.array(<cnp.float64_t[:size]>data_ptr, dtype=dtype)  # copy
+
+        cdef double miss = (<mir.ArrayOutput*> self._output).missingValue()
+        if not np.isnan(miss):
+            arr[arr == miss] = np.nan
 
         if len(shape) > 1:
             return arr.reshape(shape)

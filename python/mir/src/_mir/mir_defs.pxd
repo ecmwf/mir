@@ -111,6 +111,7 @@ cdef extern from "mir/output/ArrayOutput.h" namespace "mir::output":
         vector[double]& values()
         vector[size_t] shape() const
         string gridspec() const
+        double missingValue() const
 
 
 cdef extern from "mir/method/Method.h" namespace "mir::method":

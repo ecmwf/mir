@@ -53,8 +53,11 @@ MeshGeneratorParameters::MeshGeneratorParameters(const param::MIRParametrisation
     user.get("mesh-generator-three-dimensional", three_dimensional);
     set("3d", three_dimensional);
 
-    double angle = getDouble("angle");
-    if (user.get("mesh-generator-angle", angle)) {
+    if (std::string extension_grid; user.get("mesh-generator-extension-grid", extension_grid)) {
+        set("extension_grid", extension_grid);
+    };
+
+    if (auto angle = getDouble("angle"); user.get("mesh-generator-angle", angle)) {
         set("angle", angle);
     }
 }

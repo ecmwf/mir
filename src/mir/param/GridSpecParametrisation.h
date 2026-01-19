@@ -15,7 +15,7 @@
 #include <memory>
 
 #include "eckit/geo/Grid.h"
-#include "eckit/geo/Spec.h"
+#include "eckit/spec/Spec.h"
 
 #include "mir/param/MIRParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
@@ -58,13 +58,13 @@ public:
     // -- Methods
 
     const eckit::geo::Grid& grid() const;
-    const eckit::geo::Spec& spec() const { return spec_; }
+    const eckit::spec::Spec& spec() const { return spec_; }
 
 private:
     // -- Members
 
     std::unique_ptr<const eckit::geo::Grid> grid_;
-    const eckit::geo::Spec& spec_;
+    const eckit::spec::Spec& spec_;
 
     mutable SimpleParametrisation cache_;
     mutable util::recursive_mutex mutex_;  // to protect the cache

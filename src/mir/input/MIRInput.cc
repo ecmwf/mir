@@ -21,6 +21,7 @@
 #include "eckit/parser/YAMLParser.h"
 #include "eckit/utils/StringTools.h"
 
+#include "mir/config/LibMir.h"
 #include "mir/input/ArtificialInput.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/input/MultiDimensionalGribFileInput.h"
@@ -44,11 +45,10 @@ grib_handle* MIRInput::gribHandle(size_t /*unused*/) const {
     // ASSERT(which == 0);
     static grib_handle* handle = nullptr;
     if (handle == nullptr) {
-        // NOTE: starts from GRIB1 to avoid supporting user-requested conversions of GRIB2 to 1
-        // FIXME: make this edition-independent
-        handle = codes_grib_handle_new_from_samples(nullptr, "GRIB1");
+        handle = codes_grib_handle_new_from_samples(nullptr, LibMir::gribSampleName().c_str());
         ASSERT(handle != nullptr);
     }
+
     return handle;
 }
 

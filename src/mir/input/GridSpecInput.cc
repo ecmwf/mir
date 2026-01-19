@@ -27,29 +27,25 @@ namespace mir::input {
 static const ArtificialInputBuilder<GridSpecInput> __artificial("gridspec");
 
 
-GridSpecInput::GridSpecInput(const std::string& gridspec) {
-    parametrisation().set("gridded", true);
+GridSpecInput::GridSpecInput(const std::string& gridspec, bool gridded) {
+    parametrisation().set(gridded ? "gridded" : "spectral", true);
 
-    if (!gridspec.empty()) {
-        parametrisation().set("gridspec", gridspec);
-    }
+    auto* ptr = new param::GridSpecParametrisation(gridspec);
+    ASSERT(ptr != nullptr);
+
+    size_ = ptr->grid().size();
+    ASSERT(size_ > 0);
+
+    inputParametrisation(ptr);
 }
 
 
 data::MIRField GridSpecInput::field() const {
     ASSERT(dimensions() > 0);
 
-    std::string gridspec;
-    parametrisation().get("gridspec", gridspec);
+    data::MIRField field(repres::RepresentationFactory::build(parametrisation()));
 
-    param::GridSpecParametrisation param(eckit::geo::GridFactory::make_from_string(gridspec));
-    data::MIRField field(repres::RepresentationFactory::build(param));
-
-    auto n = param.grid().size();
-    ASSERT(n > 0);
-
-    MIRValuesVector values(n, 0.);
-
+    MIRValuesVector values(size_, 0.);
     for (size_t which = 0; which < dimensions(); ++which) {
         field.update(values, which);
     }

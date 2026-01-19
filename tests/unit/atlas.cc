@@ -19,6 +19,7 @@
 #include "mir/key/grid/Grid.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/latlon/RegularLL.h"
+#include "mir/util/Atlas.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -29,26 +30,46 @@ namespace mir::tests::unit {
 
 
 using Handle = repres::RepresentationHandle;
+using key::grid::Grid;
+
+
+CASE("atlas::UnstructuredGrid") {
+    const auto grid = atlas::UnstructuredGrid({
+        {10.1, 50.2},
+        {10.5, 50.9},
+        {10.9, 50.1},
+        {-73.9, 40.7},
+        {139.7, 35.7},
+        {-0.1, 51.5},
+        {151.2, -33.9},
+        {-58.4, -34.6},
+        {37.6, 55.7},
+        {-3.7, 40.4},
+    });
+
+    EXPECT(grid.domain().global());
+    EXPECT(grid.size() == 10);
+
+    atlas::RectangularLonLatDomain domain(51., 10., 50., 11.);
+    const auto regional = atlas::UnstructuredGrid(grid, domain);
+
+    EXPECT(!regional.domain().global());
+    EXPECT(regional.size() == 3);
+}
 
 
 CASE("Test number of points representation HEALPix <=> grid") {
     auto& log = Log::info();
 
-    using key::grid::Grid;
-    using repres::latlon::RegularLL;
+    const std::string names[] = {"H2", "H32"};
+    for (const auto& name : names) {
+        Handle repres = Grid::lookup(name).representation();
 
-
-    Handle representations[] = {
-        Grid::lookup("H2").representation(),
-        Grid::lookup("H32").representation(),
-    };
-
-    for (const auto& repres : representations) {
         size_t n1 = repres->numberOfPoints();
         log << "#=" << n1 << "\tfrom " << *repres << std::endl;
 
         auto grid = repres->atlasGrid();
-        auto n2   = size_t(grid.size());
+        auto n2   = static_cast<size_t>(grid.size());
         log << "#=" << n2 << "\tfrom " << grid.spec() << std::endl;
 
         EXPECT(n1 == n2);
@@ -56,19 +77,14 @@ CASE("Test number of points representation HEALPix <=> grid") {
 }
 
 
-#if 0
 CASE("Test number of points representation <=> grid") {
     auto& log = Log::info();
 
-    using key::grid::Grid;
-    using repres::latlon::RegularLL;
-
-
     Handle representations[] = {
-//        new RegularLL(util::Increments(1., 1.)),
-//        new RegularLL(util::Increments(1., 1.), util::BoundingBox()),
-//        Grid::lookup("O16").representation(),
-//        Grid::lookup("O1280").representation(),
+        new repres::latlon::RegularLL(util::Increments(1., 1.)),                       //
+        new repres::latlon::RegularLL(util::Increments(1., 1.), util::BoundingBox()),  //
+        Grid::lookup("O16").representation(),                                          //
+        Grid::lookup("O1280").representation(),                                        //
         Grid::lookup("H2").representation(),
     };
 
@@ -77,7 +93,7 @@ CASE("Test number of points representation <=> grid") {
         log << "#=" << n1 << "\tfrom " << *repres << std::endl;
 
         auto grid = repres->atlasGrid();
-        auto n2   = size_t(grid.size());
+        auto n2   = static_cast<size_t>(grid.size());
         log << "#=" << n2 << "\tfrom " << grid.spec() << std::endl;
 
         EXPECT(n1 == n2);
@@ -87,8 +103,6 @@ CASE("Test number of points representation <=> grid") {
 
 CASE("Test number of points representation <=> cropped grid") {
     auto& log = Log::info();
-
-    using repres::latlon::RegularLL;
 
     const util::Domain domains[] = {
         {90, 0, 90, 360},       // North pole
@@ -107,11 +121,11 @@ CASE("Test number of points representation <=> cropped grid") {
     for (const auto& dom : domains) {
         ASSERT(!dom.isGlobal());
 
-        Handle repres(new RegularLL(util::Increments(1., 1.)));
-        Handle represCropped(repres->croppedRepresentation(dom));
+        Handle repres(new repres::latlon::RegularLL(util::Increments(1., 1.)));
+        Handle regional(repres->croppedRepresentation(dom));
 
-        size_t n1 = represCropped->numberOfPoints();
-        log << "#=" << n1 << "\tfrom " << *represCropped << std::endl;
+        size_t n1 = regional->numberOfPoints();
+        log << "#=" << n1 << "\tfrom " << *regional << std::endl;
 
         auto grid = repres->atlasGrid();
         ASSERT(grid.domain().global());
@@ -119,7 +133,7 @@ CASE("Test number of points representation <=> cropped grid") {
         auto gridCropped = atlas::Grid(grid, dom);
         ASSERT(!gridCropped.domain().global());
 
-        auto n2 = size_t(gridCropped.size());
+        auto n2 = static_cast<size_t>(gridCropped.size());
         log << "#=" << n2 << "\tfrom " << gridCropped.spec() << std::endl;
 
         EXPECT(n1 == n2);
@@ -142,7 +156,7 @@ CASE("MIR-374") {
 
     for (const auto& domain : domains) {
         for (const auto& name : names) {
-            Handle repr = key::grid::Grid::lookup(name).representation();
+            Handle repr = Grid::lookup(name).representation();
             Handle crop = repr->croppedRepresentation(domain);
 
             std::unique_ptr<repres::Iterator> it(crop->iterator());
@@ -161,7 +175,6 @@ CASE("MIR-374") {
 
     log.precision(old);
 }
-#endif
 
 
 }  // namespace mir::tests::unit
