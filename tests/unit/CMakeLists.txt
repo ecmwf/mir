@@ -6,6 +6,7 @@ set(TESTS
     MIR-536
     PGEN-412
     PGEN-492
+    PGEN-558
     action_graph
     area
     atlas
