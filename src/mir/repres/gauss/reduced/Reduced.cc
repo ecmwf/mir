@@ -155,7 +155,7 @@ void Reduced::correctWestEast(Longitude& w, Longitude& e) const {
                 }
 
                 Fraction::value_type Ne = (east / inc).integralPart();
-                if (Ne * inc > east || Nw + Ne == Ni) {
+                if (Ne * inc > east) {
                     Ne -= 1;
                 }
 
