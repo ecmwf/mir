@@ -19,6 +19,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Types.h"
+#include "mir/util/ValueMap.h"
 
 
 namespace mir::input {
@@ -27,8 +28,26 @@ namespace mir::input {
 static const ArtificialInputBuilder<GridSpecInput> __artificial("gridspec");
 
 
+GridSpecInput::GridSpecInput() : size_(0) {}
+
+
 GridSpecInput::GridSpecInput(const std::string& gridspec, bool gridded) {
-    parametrisation().set(gridded ? "gridded" : "spectral", true);
+    util::ValueMap map;
+    map["gridspec"]                       = gridspec;
+    map[gridded ? "gridded" : "spectral"] = true;
+
+    setAuxiliaryInformation(map);
+}
+
+
+void GridSpecInput::setAuxiliaryInformation(const util::ValueMap& map) {
+    ArtificialInput::setAuxiliaryInformation(map);
+
+    std::string gridspec;
+    ASSERT(parametrisation().get("gridspec", gridspec));
+
+    ASSERT(!parametrisation().has("spectral") || !parametrisation().has("gridded"));
+    parametrisation().set(parametrisation().has("spectral") ? "spectral" : "gridded", true);
 
     auto* ptr = new param::GridSpecParametrisation(gridspec);
     ASSERT(ptr != nullptr);
@@ -42,6 +61,7 @@ GridSpecInput::GridSpecInput(const std::string& gridspec, bool gridded) {
 
 data::MIRField GridSpecInput::field() const {
     ASSERT(dimensions() > 0);
+    ASSERT(size_ > 0);
 
     data::MIRField field(repres::RepresentationFactory::build(parametrisation()));
 

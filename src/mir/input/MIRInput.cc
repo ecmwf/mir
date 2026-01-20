@@ -150,7 +150,7 @@ MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParame
 
     // attach information after construction (pe. extra files), so virtual methods are specific to child class
     auto aux = [](MIRInput* in, const util::ValueMap& map) {
-        ASSERT(in);
+        ASSERT(in != nullptr);
         if (!map.empty()) {
             in->setAuxiliaryInformation(map);
         }
