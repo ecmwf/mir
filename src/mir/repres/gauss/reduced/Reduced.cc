@@ -116,10 +116,9 @@ Reduced::~Reduced() = default;
 
 
 void Reduced::correctWestEast(Longitude& w, Longitude& e) const {
-    using eckit::Fraction;
     ASSERT(w <= e);
 
-    const Fraction smallestIncrement = getSmallestIncrement();
+    const eckit::Fraction smallestIncrement = getSmallestIncrement();
     ASSERT(smallestIncrement > 0);
 
     if (angleApproximatelyEqual(Longitude::GREENWICH, w) &&
@@ -131,10 +130,10 @@ void Reduced::correctWestEast(Longitude& w, Longitude& e) const {
     }
     else {
 
-        const Fraction west = w.fraction();
-        const Fraction east = e.fraction();
-        Fraction W          = west;
-        Fraction E          = east;
+        const auto west = w.fraction();
+        const auto east = e.fraction();
+        auto W          = west;
+        auto E          = east;
 
         bool first = true;
         std::set<long> NiTried;
@@ -146,15 +145,14 @@ void Reduced::correctWestEast(Longitude& w, Longitude& e) const {
             const long Ni(pl[j]);
             ASSERT(Ni >= 2);
             if (NiTried.insert(Ni).second) {
+                auto inc = Longitude::GLOBE.fraction() / Ni;
 
-                Fraction inc = Longitude::GLOBE.fraction() / Ni;
-
-                Fraction::value_type Nw = (west / inc).integralPart();
+                auto Nw = (west / inc).integralPart();
                 if (Nw * inc < west) {
                     Nw += 1;
                 }
 
-                Fraction::value_type Ne = (east / inc).integralPart();
+                auto Ne = (east / inc).integralPart();
                 if (Ne * inc > east) {
                     Ne -= 1;
                 }
