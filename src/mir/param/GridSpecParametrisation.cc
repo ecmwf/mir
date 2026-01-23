@@ -144,10 +144,10 @@ struct MappingAreaBoundingBox : AreaMapping {
         area(dynamic_cast<const eckit::geo::area::BoundingBox&>(_area)) {}
 
     void fill(SimpleParametrisation& param) const override {
-        param.set("north", area.north);
-        param.set("west", area.west);
-        param.set("south", area.south);
-        param.set("east", area.east);
+        param.set("north", area.north());
+        param.set("west", area.west());
+        param.set("south", area.south());
+        param.set("east", area.east());
     }
 
     const eckit::geo::area::BoundingBox& area;
