@@ -111,14 +111,16 @@ class ComparatorFactory {
     std::string name_;
     virtual Comparator* make(const param::MIRParametrisation&, const param::MIRParametrisation&) = 0;
 
-    ComparatorFactory(const ComparatorFactory&)            = delete;
-    ComparatorFactory& operator=(const ComparatorFactory&) = delete;
-
 protected:
     ComparatorFactory(const std::string&);
     virtual ~ComparatorFactory();
 
 public:
+    ComparatorFactory(const ComparatorFactory&)            = delete;
+    ComparatorFactory(ComparatorFactory&&)                 = delete;
+    ComparatorFactory& operator=(const ComparatorFactory&) = delete;
+    ComparatorFactory& operator=(ComparatorFactory&&)      = delete;
+
     static void list(std::ostream&);
     static Comparator* build(const std::string&, const param::MIRParametrisation&, const param::MIRParametrisation&);
 };

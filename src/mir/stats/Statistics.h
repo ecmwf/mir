@@ -112,14 +112,16 @@ private:
     std::string name_;
     virtual Statistics* make(const param::MIRParametrisation&) = 0;
 
-    StatisticsFactory(const StatisticsFactory&)            = delete;
-    StatisticsFactory& operator=(const StatisticsFactory&) = delete;
-
 protected:
     StatisticsFactory(const std::string&);
     virtual ~StatisticsFactory();
 
 public:
+    StatisticsFactory(const StatisticsFactory&)            = delete;
+    StatisticsFactory(StatisticsFactory&&)                 = delete;
+    StatisticsFactory& operator=(const StatisticsFactory&) = delete;
+    StatisticsFactory& operator=(StatisticsFactory&&)      = delete;
+
     static void list(std::ostream&);
     static Statistics* build(const std::string&, const param::MIRParametrisation&);
 };

@@ -123,10 +123,6 @@ private:
 
 
 class MIRInputFactory {
-
-    void operator=(const MIRInputFactory&)  = delete;
-    MIRInputFactory(const MIRInputFactory&) = delete;
-
     unsigned long magic_;
 
     virtual MIRInput* make(const std::string& path) = 0;
@@ -138,6 +134,11 @@ protected:
 public:
     static MIRInput* build(const std::string&, const param::MIRParametrisation&);
     static void list(std::ostream&);
+
+    void operator=(const MIRInputFactory&)  = delete;
+    void operator=(MIRInputFactory&&)       = delete;
+    MIRInputFactory(const MIRInputFactory&) = delete;
+    MIRInputFactory(MIRInputFactory&&)      = delete;
 };
 
 

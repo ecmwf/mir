@@ -101,9 +101,6 @@ class IntgridFactory {
     std::string name_;
     virtual Intgrid* make(const param::MIRParametrisation&, long targetGaussianN) = 0;
 
-    IntgridFactory(const IntgridFactory&)            = delete;
-    IntgridFactory& operator=(const IntgridFactory&) = delete;
-
 protected:
     IntgridFactory(const std::string&);
     virtual ~IntgridFactory();
@@ -111,6 +108,11 @@ protected:
 public:
     static Intgrid* build(const std::string&, const param::MIRParametrisation&, long targetGaussianN);
     static void list(std::ostream&);
+
+    IntgridFactory(const IntgridFactory&)            = delete;
+    IntgridFactory(IntgridFactory&&)                 = delete;
+    IntgridFactory& operator=(const IntgridFactory&) = delete;
+    IntgridFactory& operator=(IntgridFactory&&)      = delete;
 };
 
 

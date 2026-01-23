@@ -75,17 +75,16 @@ private:
     std::string name_;
     virtual Pick* make(const param::MIRParametrisation&) = 0;
 
-    PickFactory(const PickFactory&) = default;
-    PickFactory(PickFactory&&)      = default;
-
-    PickFactory& operator=(PickFactory&&)      = default;
-    PickFactory& operator=(const PickFactory&) = default;
-
 protected:
     explicit PickFactory(const std::string& name);
     virtual ~PickFactory();
 
 public:
+    PickFactory(const PickFactory&)            = default;
+    PickFactory(PickFactory&&)                 = default;
+    PickFactory& operator=(const PickFactory&) = default;
+    PickFactory& operator=(PickFactory&&)      = default;
+
     static const Pick* build(const std::string& name, const param::MIRParametrisation&);
     static void list(std::ostream&);
 };

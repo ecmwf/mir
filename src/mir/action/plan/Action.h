@@ -139,17 +139,18 @@ class ActionFactory {
 
     virtual Action* make(const param::MIRParametrisation&) = 0;
 
-    ActionFactory(const ActionFactory&)            = delete;
-    ActionFactory& operator=(const ActionFactory&) = delete;
-
 protected:
     ActionFactory(const std::string&);
 
     virtual ~ActionFactory();
 
 public:
-    static Action* build(const std::string&, const param::MIRParametrisation&, bool exact = true);
+    ActionFactory(const ActionFactory&)            = delete;
+    ActionFactory(ActionFactory&&)                 = delete;
+    ActionFactory& operator=(const ActionFactory&) = delete;
+    ActionFactory& operator=(ActionFactory&&)      = delete;
 
+    static Action* build(const std::string&, const param::MIRParametrisation&, bool exact = true);
     static void list(std::ostream&);
 };
 

@@ -114,9 +114,8 @@ protected:
 public:
     PNGEncoderFactory(const PNGEncoderFactory&) = delete;
     PNGEncoderFactory(PNGEncoderFactory&&)      = delete;
-
-    void operator=(const PNGEncoderFactory&) = delete;
-    void operator=(PNGEncoderFactory&&)      = delete;
+    void operator=(const PNGEncoderFactory&)    = delete;
+    void operator=(PNGEncoderFactory&&)         = delete;
 
     // This is 'const' as the representation uses reference counting
     // Represention should always be immutable

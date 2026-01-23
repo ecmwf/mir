@@ -99,8 +99,6 @@ private:
 
 
 class DistributionFactory {
-    DistributionFactory(const DistributionFactory&)              = delete;
-    void operator=(const DistributionFactory&)                   = delete;
     virtual Distribution* make(const param::MIRParametrisation&) = 0;
     const std::string name_;
 
@@ -109,6 +107,11 @@ protected:
     virtual ~DistributionFactory();
 
 public:
+    DistributionFactory(const DistributionFactory&) = delete;
+    DistributionFactory(DistributionFactory&&)      = delete;
+    void operator=(const DistributionFactory&)      = delete;
+    void operator=(DistributionFactory&&)           = delete;
+
     static Distribution* build(const std::string&);
     static void list(std::ostream&);
 };

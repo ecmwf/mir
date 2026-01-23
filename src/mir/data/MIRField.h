@@ -157,15 +157,14 @@ class FieldFactory {
 protected:
     FieldFactory(const std::string&);
 
-    FieldFactory(const FieldFactory&) = delete;
-    FieldFactory(FieldFactory&&)      = delete;
-
     virtual ~FieldFactory();
 
+public:
+    FieldFactory(const FieldFactory&)   = delete;
+    FieldFactory(FieldFactory&&)        = delete;
     void operator=(const FieldFactory&) = delete;
     void operator=(FieldFactory&&)      = delete;
 
-public:
     static void list(std::ostream&);
     static MIRField* build(const std::string& name, const param::MIRParametrisation&, bool hasMissing,
                            double missingValue);

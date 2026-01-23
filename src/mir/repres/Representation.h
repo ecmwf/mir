@@ -210,14 +210,16 @@ class RepresentationFactory {
     std::string name_;
     virtual Representation* make(const param::MIRParametrisation&) = 0;
 
-    RepresentationFactory(const RepresentationFactory&)            = delete;
-    RepresentationFactory& operator=(const RepresentationFactory&) = delete;
-
 protected:
     explicit RepresentationFactory(const std::string&);
     virtual ~RepresentationFactory();
 
 public:
+    RepresentationFactory(const RepresentationFactory&)            = delete;
+    RepresentationFactory(RepresentationFactory&&)                 = delete;
+    RepresentationFactory& operator=(const RepresentationFactory&) = delete;
+    RepresentationFactory& operator=(RepresentationFactory&&)      = delete;
+
     // This is 'const' as the representation uses reference counting
     // Represention should always be immutable
     static const Representation* build(const param::MIRParametrisation&);

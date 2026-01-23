@@ -46,14 +46,16 @@ class MatrixLoaderFactory {
     std::string name_;
     virtual MatrixLoader* make(const std::string& name, const eckit::PathName&) = 0;
 
-    MatrixLoaderFactory(const MatrixLoaderFactory&)            = delete;
-    MatrixLoaderFactory& operator=(const MatrixLoaderFactory&) = delete;
-
 protected:
     MatrixLoaderFactory(const std::string&);
     virtual ~MatrixLoaderFactory();
 
 public:
+    MatrixLoaderFactory(const MatrixLoaderFactory&)            = delete;
+    MatrixLoaderFactory(MatrixLoaderFactory&&)                 = delete;
+    MatrixLoaderFactory& operator=(const MatrixLoaderFactory&) = delete;
+    MatrixLoaderFactory& operator=(MatrixLoaderFactory&&)      = delete;
+
     static MatrixLoader* build(const std::string&, const eckit::PathName&);
     static void list(std::ostream&);
 };

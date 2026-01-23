@@ -70,8 +70,8 @@ protected:
 public:
     NonLinearFactory(const NonLinearFactory&)            = delete;
     NonLinearFactory(NonLinearFactory&&)                 = delete;
-    NonLinearFactory& operator=(NonLinearFactory&&)      = delete;
     NonLinearFactory& operator=(const NonLinearFactory&) = delete;
+    NonLinearFactory& operator=(NonLinearFactory&&)      = delete;
 
     static const NonLinear* build(const std::string& name, const param::MIRParametrisation&);
     static void list(std::ostream&);
