@@ -671,6 +671,10 @@ bool UnstructuredGrid::extendBoundingBoxOnIntersect() const {
 static const RepresentationBuilder<UnstructuredGrid> triangular_grid("triangular_grid");
 static const RepresentationBuilder<UnstructuredGrid> unstructured_grid("unstructured_grid");
 
+static const RepresentationBuilder<UnstructuredGrid> unstructured_grid_1("ORCA");
+static const RepresentationBuilder<UnstructuredGrid> unstructured_grid_2("FESOM");
+static const RepresentationBuilder<UnstructuredGrid> unstructured_grid_3("ICON");
+
 
 }  // namespace other
 }  // namespace mir::repres

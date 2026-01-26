@@ -11,7 +11,6 @@
 
 
 #include <memory>
-#include <regex>
 #include <string>
 #include <vector>
 
@@ -38,15 +37,17 @@ CASE("GridSpec input/output") {
         std::string grid;
         std::string canonical;
         size_t size;
+        bool croppable;
     };
 
     std::vector<test_t> tests{
-        test_t{"{grid: 10/10}", R"({"grid":[10,10]})", 684},       //
-        {"{grid: [20, 10]}", R"({"grid":[20,10]})", 342},          //
-        {"{pl: [20, 24, 24, 20]}", R"({"grid":"O2"})", 88},        //
-        {"{grid: o8}", R"({"grid":"O8"})", 544},                   //
-        {"{grid: h2_ring}", R"({"grid":"H2"})", 48},               //
-        {"{grid: h2n}", R"({"grid":"H2","order":"nested"})", 48},  //
+        test_t{"{grid: eORCA1_T}", R"({"grid":"eORCA1_T"})", 120184, false},  // NOTE: ORCA is non-croppable
+        {"{grid: 10/10}", R"({"grid":[10,10]})", 684, true},                  //
+        {"{grid: [20, 10]}", R"({"grid":[20,10]})", 342, true},               //
+        {"{pl: [20, 24, 24, 20]}", R"({"grid":"O2"})", 88, true},             //
+        {"{grid: o8}", R"({"grid":"O8"})", 544, true},                        //
+        {"{grid: h2_ring}", R"({"grid":"H2"})", 48, false},                   // NOTE: HEALPix is non-croppable
+        {"{grid: h2n}", R"({"grid":"H2","order":"nested"})", 48, false},      // NOTE: HEALPix is non-croppable
     };
 
 
@@ -99,9 +100,7 @@ CASE("GridSpec input/output") {
         meta.set("Nj", 5);
 
         for (const auto& test_output : tests) {
-            // HEALPix is non-croppable
-            static const std::regex pattern(R"("grid":"H[1-9][0-9]*")");
-            if (std::regex_search(test_output.canonical, pattern)) {
+            if (!test_output.croppable) {
                 continue;
             }
 
