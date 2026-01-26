@@ -25,6 +25,7 @@ set(TESTS
     interpolations
     interpolationspec
     iterator
+    job
     knn_weighting
     packing
     raw_memory

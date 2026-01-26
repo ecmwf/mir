@@ -21,6 +21,7 @@
 #include <utility>
 
 #include "eckit/filesystem/PathName.h"
+#include "eckit/parser/YAMLParser.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -40,6 +41,7 @@
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
 #include "mir/util/MeshGeneratorParameters.h"
+#include "mir/util/ValueMap.h"
 
 #if mir_HAVE_ECKIT_CODEC
 #include <algorithm>
@@ -132,7 +134,11 @@ protected:
         }
     }
 
-    void fillJob(api::MIRJob& job) const override { job.set("grid", grid_->spec().str()); }
+    void fillJob(api::MIRJob& job) const override {
+        util::ValueMap map(eckit::YAMLParser::decodeString(grid_->spec().str()));
+        map.set(static_cast<param::SimpleParametrisation&>(job));
+    }
+
     void print(std::ostream& out) const override { out << grid_->spec().str(); }
     void json(eckit::JSON& j) const override { grid_->spec().json(j); }
 
@@ -428,9 +434,12 @@ const FESOMPattern __FESOM("^([cC][oO][rR][eE]2|[dD][aA][rR][tT]|[nN][gG]5|[pP][
 const ICONPattern __ICON("^[iI][cC][oO][nN]-([gG][rR][iI][dD]-(....)-(......)(-(.*))?|[cC][hH].(-[vV][1-9][0-9]*)?)$");
 const ORCAPattern __ORCA(ORCA_PATTERN);
 
-const RepresentationBuilder<FESOM> __fesom("fesom");
-const RepresentationBuilder<ICON> __icon("icon");
-const RepresentationBuilder<ORCA> __orca("orca");
+const RepresentationBuilder<FESOM> REPRESENTATION_1("fesom");
+const RepresentationBuilder<FESOM> REPRESENTATION_2("FESOM");
+const RepresentationBuilder<ICON> REPRESENTATION_3("icon");
+const RepresentationBuilder<ICON> REPRESENTATION_4("ICON");
+const RepresentationBuilder<ORCA> REPRESENTATION_5("orca");
+const RepresentationBuilder<ORCA> REPRESENTATION_6("ORCA");
 
 
 }  // namespace
@@ -670,10 +679,6 @@ bool UnstructuredGrid::extendBoundingBoxOnIntersect() const {
 
 static const RepresentationBuilder<UnstructuredGrid> triangular_grid("triangular_grid");
 static const RepresentationBuilder<UnstructuredGrid> unstructured_grid("unstructured_grid");
-
-static const RepresentationBuilder<UnstructuredGrid> unstructured_grid_1("ORCA");
-static const RepresentationBuilder<UnstructuredGrid> unstructured_grid_2("FESOM");
-static const RepresentationBuilder<UnstructuredGrid> unstructured_grid_3("ICON");
 
 
 }  // namespace other
