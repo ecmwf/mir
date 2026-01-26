@@ -26,33 +26,12 @@ namespace mir::tests::unit {
 
 
 CASE("Representation::fillJob(MIRJob&)") {
-    struct test_t {
-        std::string grid;
-        std::string spec;
-    };
-
-    std::vector<test_t> tests{
-        test_t{"F16",  //
-               R"({"grid":"F16"})"},
-
-        {"O16",  //
-         R"({"grid":"O16","pl":[20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,80,76,72,68,64,60,56,52,48,44,40,36,32,28,24,20]})"},
-
-        {"F21",  //
-         R"({"grid":"F21"})"},
-
-        {"O21",  //
-         R"({"grid":"O21","pl":[20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,100,96,92,88,84,80,76,72,68,64,60,56,52,48,44,40,36,32,28,24,20]})"},
-
-        {"N16",  //
-         R"({"grid":"N16","pl":[20,27,32,40,45,48,60,60,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,60,60,48,45,40,32,27,20]})"},
-
-        {"eORCA1_T",  //
-         R"({"grid":"eORCA1_T"})"},
+    std::vector<std::string> tests{
+        "F16", "O16", "F21", "O21", "N16", "eORCA1_T",
     };
 
     for (const auto& test : tests) {
-        repres::RepresentationHandle repres = key::grid::Grid::lookup(test.grid).representation();
+        repres::RepresentationHandle repres = key::grid::Grid::lookup(test).representation();
         ASSERT(repres);
 
         api::MIRJob job;
@@ -60,9 +39,8 @@ CASE("Representation::fillJob(MIRJob&)") {
 
         std::string grid;
         EXPECT(job.get("grid", grid));
-        EXPECT(grid == test.grid);
-
-        EXPECT(test.spec == job.json_str());
+        EXPECT(grid == test);
+        EXPECT(job.json_str() == R"({"grid":")" + test + R"("})");
     }
 }
 

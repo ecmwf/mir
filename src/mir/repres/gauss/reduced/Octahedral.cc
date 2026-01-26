@@ -12,8 +12,6 @@
 
 #include "mir/repres/gauss/reduced/Octahedral.h"
 
-#include "mir/api/MIRJob.h"
-#include "mir/api/mir_config.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -42,17 +40,6 @@ Octahedral::Octahedral(size_t N, const util::BoundingBox& bbox, double angularPr
     bbox_ = util::BoundingBox(n, w, s, e);
     Log::debug() << "Octahedral BoundingBox:"
                  << "\n\t   " << old << "\n\t > " << bbox_ << std::endl;
-}
-
-
-void Octahedral::fillGrib(grib_info& info) const {
-    Reduced::fillGrib(info);
-}
-
-
-void Octahedral::fillJob(api::MIRJob& job) const {
-    Reduced::fillJob(job);
-    job.set("grid", "O" + std::to_string(N_));
 }
 
 

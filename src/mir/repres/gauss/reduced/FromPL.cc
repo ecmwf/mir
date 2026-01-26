@@ -14,7 +14,6 @@
 
 #include "eckit/utils/MD5.h"
 
-#include "mir/api/mir_config.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 
@@ -45,16 +44,6 @@ void FromPL::makeName(std::ostream& out) const {
 bool FromPL::sameAs(const Representation& other) const {
     const auto* o = dynamic_cast<const FromPL*>(&other);
     return (o != nullptr) && (pls() == o->pls()) && Reduced::sameAs(other);
-}
-
-
-void FromPL::fillGrib(grib_info& info) const {
-    Reduced::fillGrib(info);
-}
-
-
-void FromPL::fillJob(api::MIRJob& job) const {
-    Reduced::fillJob(job);
 }
 
 

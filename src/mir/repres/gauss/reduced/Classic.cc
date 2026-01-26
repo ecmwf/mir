@@ -12,8 +12,6 @@
 
 #include "mir/repres/gauss/reduced/Classic.h"
 
-#include "mir/api/MIRJob.h"
-#include "mir/api/mir_config.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -41,17 +39,6 @@ Classic::Classic(size_t N, const util::BoundingBox& bbox, double angularPrecisio
     bbox_ = util::BoundingBox(n, w, s, e);
     Log::debug() << "Classic BoundingBox:"
                  << "\n\t   " << old << "\n\t > " << bbox_ << std::endl;
-}
-
-
-void Classic::fillGrib(grib_info& info) const {
-    Reduced::fillGrib(info);
-}
-
-
-void Classic::fillJob(api::MIRJob& job) const {
-    Reduced::fillJob(job);
-    job.set("grid", "N" + std::to_string(N_));
 }
 
 
