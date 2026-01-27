@@ -1,100 +1,168 @@
 #!/usr/bin/env python3
+"""
+Script to create parameter-class.yaml for MIR from parameter database.
 
-# script to create parameter-class.yaml for MIR from parameter database
-# execute in separate folder as it creates temporary files
-# robert.osinski@ecmwf.int 17/10/2023
+Database credentials should be set as environment variables:
+    PARAM_DB_HOST    - IP address of the MySQL database server
+    PARAM_DB_USER_RO - User name (read-only access)
+    PARAM_DB_PASS_RO - Password for the database user
 
-import pandas as pd
-import sys
-import yaml
-import os
+If not set, the script will prompt for them interactively.
 
-## Connection with database ## 
-################################################
-## IMPORTANT ##
-# define the database credentials as envvars !!!
-# !!! use the read-only access !!!
-####################
-# PARAM_DB_HOST    #
-# PARAM_DB_USER_RO #
-# PARAM_DB_PASS_RO #
-####################
-################################################
-OUTFILENAME="parameter-class.yaml"
+robert.osinski@ecmwf.int 2023-10-17
+"""
+
+import argparse
+import getpass
+from os import environ
+from sys import exit
 
 import mysql.connector
-## Create a connection object
-## IP address of the MySQL database server
-Host = os.environ['PARAM_DB_HOST']
-## User name of the database server
-User =os.environ['PARAM_DB_USER_RO']
-## Password for the database user
-Password = os.environ['PARAM_DB_PASS_RO']
-## opens directly the database param
-database = "param"
+import yaml
 
-# connect
-conn  = mysql.connector.connect(host=Host, user=User, password=Password, database=database)
 
-# Create a cursor object
-cur  = conn.cursor()
+def get_credentials():
+    """Get database credentials from environment or prompt user."""
+    host = environ.get("PARAM_DB_HOST")
+    user = environ.get("PARAM_DB_USER_RO")
+    password = environ.get("PARAM_DB_PASS_RO")
 
-#query=f"select mir_classification.param_id,mir_classifiers.classifier_name from mir_classification INNER JOIN mir_classifiers ON mir_classification.mir_classifier = mir_classifiers.classifier"
-# we sort parameters out which are marked as retired in table param
-query=f"select mir_classification.param_id,mir_classifiers.classifier_name from mir_classification INNER JOIN mir_classifiers ON mir_classification.mir_classifier = mir_classifiers.classifier join param on param.id=mir_classification.param_id where param.retired=0"
+    if not host:
+        host = input("Enter database host (e.g. webapps-db-prod): ").strip()
+        if not host:
+            exit("Error: database host is required")
+    if not user:
+        user = input("Enter database user: ").strip()
+        if not user:
+            exit("Error: database user is required")
+    if not password:
+        password = getpass.getpass("Enter database password: ")
 
-cur.execute(query)
+    return host, user, password
 
-mir_classification_dicts = cur.fetchall()
 
-conn.close()
+def create_mir_classification_from_paramdb(host, user, password, database="param") -> dict:
+    """Create MIR classification from the parameter database."""
+    conn = mysql.connector.connect(
+        host=host, user=user, password=password, database=database
+    )
+    cur = conn.cursor()
 
-paramids2 = [i[0] for i in mir_classification_dicts]
-classifiers = [i[1] for i in mir_classification_dicts]
+    # Sort out parameters marked as retired in table param
+    query = """
+        SELECT mir_classification.param_id, mir_classifiers.classifier_name
+        FROM mir_classification
+        INNER JOIN mir_classifiers
+            ON mir_classification.mir_classifier = mir_classifiers.classifier
+        JOIN param
+            ON param.id = mir_classification.param_id
+        WHERE param.retired = 0
+    """
+    cur.execute(query)
+    results = cur.fetchall()
+    conn.close()
 
-classifiers_uniq = list(set(classifiers))
-classifiers_uniq.sort()
+    # Build classification dictionary
+    paramids = [row[0] for row in results]
+    classifiers = [row[1] for row in results]
 
-output_dict = {}
+    classifiers_uniq = sorted(set(classifiers))
 
-for j in range(len(classifiers_uniq)):
-    indextmp = [i for i, e in enumerate(classifiers) if e == classifiers_uniq[j]]
-    pidtmp = [paramids2[index] for index in indextmp]
-    print(classifiers_uniq[j],pidtmp)
-    output_dict[classifiers_uniq[j]] = pidtmp
+    output_dict = {}
+    for classifier in classifiers_uniq:
+        indices = [i for i, c in enumerate(classifiers) if c == classifier]
+        pids = [paramids[i] for i in indices]
+        print(f"{classifier}: {pids}")
+        output_dict[classifier] = pids
 
-# now we write to the yaml
+    return output_dict
 
-import ruamel.yaml
-yaml = ruamel.yaml.YAML()
-yaml.indent(sequence=4, offset=2)
 
-file=open(OUTFILENAME,"w")
-yaml.dump(output_dict,file)
-file.close()
+def write_yaml(output_dict, filename):
+    """Write classification dictionary to YAML file."""
+    with open(filename, "w") as f:
+        f.write("---\n")
+        f.write("# yamllint disable rule:line-length\n")
+        yaml.dump(output_dict, f, default_flow_style=False, sort_keys=True)
 
-# Add --- in first line
-os.system('sed -i "1i\---" ' + OUTFILENAME)
 
-# add parameter names as comments after the paramId's
-import subprocess	
+def parameter_names(host, user, password, database="param"):
+    """Fetch parameter id to name mapping from the database."""
+    conn = mysql.connector.connect(
+        host=host, user=user, password=password, database=database
+    )
+    cur = conn.cursor()
+    cur.execute("SELECT id, name FROM param ORDER BY id")
+    results = {row[0]: row[1] for row in cur.fetchall()}
+    conn.close()
+    return results
 
-shellScript = '''
-echo "select id, name from param order by id ;" > request.sql
-mysql -h $PARAM_DB_HOST -u $PARAM_DB_USER_RO  -p${PARAM_DB_USER_RO} param < request.sql  > id_name.dat
-sed -i 's/\\t/,/' id_name.dat
-rm -f request.sql
 
-for i in $(grep -n '^  -' OUTFILENAME | awk -F: '{print $1}') ; do
- paramId=$(sed -n "${i}p" OUTFILENAME | awk '{print $2}')
- name=$(grep "^${paramId}," id_name.dat | awk -F',' '{print $2}')
- echo $i $paramId ${name}
-# echo "sed -i "${i}s/$/\ \# ${name/\//\\\\/}/" OUTFILENAME"
- sed -i "${i}s/$/\ \ \# ${name/\//\\\\/}/" OUTFILENAME
-done
+def parameter_comments(filename, param_names):
+    """Add parameter names as comments after paramId values."""
+    with open(filename, "r") as f:
+        lines = f.readlines()
 
-rm -f id_name.dat'''
+    with open(filename, "w") as f:
+        for line in lines:
+            # Match lines like "- 12345" (list items with param IDs)
+            if line.startswith("- "):
+                try:
+                    param_id = int(line.strip().split()[1])
+                    name = param_names.get(param_id, "")
+                    if name:
+                        line = line.rstrip() + f"  # {name}\n"
+                except (ValueError, IndexError):
+                    pass
+            f.write(line)
 
-subprocess.run(shellScript.replace('OUTFILENAME',OUTFILENAME),
-shell=True, check=True,
-executable='/bin/bash')
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Create parameter-class.yaml for MIR from parameter database.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Database credentials:
+  Set these environment variables (recommended for security):
+    PARAM_DB_HOST    - Database host
+    PARAM_DB_USER_RO - Database user (read-only)
+    PARAM_DB_PASS_RO - Database password
+
+  If not set, the script will prompt interactively.
+""",
+    )
+    parser.add_argument(
+        "-o", "--output",
+        default="parameter-class.yaml",
+        help="Output YAML filename (default: parameter-class.yaml)",
+    )
+    parser.add_argument(
+        "-d", "--database",
+        default="param",
+        help="Database name (default: param)",
+    )
+    parser.add_argument(
+        "--no-comments",
+        action="store_true",
+        help="Skip adding parameter name comments to output",
+    )
+
+    args = parser.parse_args()
+
+    host, user, password = get_credentials()
+
+    print(f"Connecting to {host}...")
+    output_dict = create_mir_classification_from_paramdb(host, user, password, args.database)
+
+    print(f"Write to '{args.output}'...")
+    write_yaml(output_dict, args.output)
+
+    if not args.no_comments:
+        print("Adding parameter comments...")
+        names = parameter_names(host, user, password, args.database)
+        parameter_comments(args.output, names)
+    print("Done.")
+
+
+if __name__ == "__main__":
+    main()
