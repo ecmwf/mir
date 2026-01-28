@@ -131,7 +131,11 @@ setup(
             define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")],
             **kwargs_ext,
         ),
-        compiler_directives={"language_level": 3, "c_string_encoding": "default"},
+        compiler_directives={
+            "language_level": 3,
+            "c_string_type": "unicode",  # accept Python str
+            "c_string_encoding": "utf8",
+        },
     ),
     **kwargs_set,
 )

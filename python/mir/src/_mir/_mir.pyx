@@ -58,20 +58,20 @@ _args = Args()
 init(_args)
 
 
-def home():
-    return mir.LibMir.homeDir().decode()
+def home() -> str:
+    return mir.LibMir.homeDir()
 
 
-def cache():
-    return mir.LibMir.cacheDir().decode()
+def cache() -> str:
+    return mir.LibMir.cacheDir()
 
 
-def version():
-    return mir.LibMir.instance().version().decode()
+def version() -> str:
+    return mir.LibMir.instance().version()
 
 
-def git_sha1():
-    return mir.LibMir.instance().gitsha1(40).decode()
+def git_sha1() -> str:
+    return mir.LibMir.instance().gitsha1(40)
 
 
 cdef class MIRInput:
@@ -178,7 +178,7 @@ cdef class ArrayOutput(MIROutput):
 
     @property
     def spec_str(self) -> str:
-        return (<mir.ArrayOutput*> self._output).gridspec().decode()
+        return (<mir.ArrayOutput*> self._output).gridspec()
 
     @property
     def spec(self) -> dict:
@@ -286,8 +286,7 @@ cdef class Job:
 
     @property
     def json(self) -> str:
-        cdef string s = self.j.json_str()
-        return s.decode()
+        return self.j.json_str()
 
     def __str__(self):
         return self.json
@@ -332,7 +331,7 @@ cdef class Grid:
 
     @property
     def spec_str(self) -> str:
-        return self._grid.spec_str().decode()
+        return self._grid.spec_str()
 
     @property
     def spec(self) -> dict:
@@ -341,7 +340,7 @@ cdef class Grid:
 
     @property
     def type(self) -> str:
-        return self._grid.type().decode()
+        return self._grid.type()
 
     @property
     def shape(self) -> tuple:
@@ -400,12 +399,11 @@ cdef class Interpolation:
 
     @property
     def type(self) -> str:
-        return self._method.type().decode()
+        return self._method.type()
 
     @property
     def json(self) -> str:
-        cdef string s = self._method.json_str()
-        return s.decode()
+        return self._method.json_str()
 
     def __dealloc__(self):
         del self._method
