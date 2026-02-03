@@ -65,6 +65,12 @@ namespace mir::repres {
 namespace {
 
 
+inline std::string to_lower(std::string str) {
+    std::transform(str.begin(), str.end(), str.begin(), [](auto c) { return c == '_' ? '-' : std::tolower(c); });
+    return str;
+}
+
+
 class UnstructuredGridFromUID : public Gridded {
 public:
     explicit UnstructuredGridFromUID(const std::string& grid) :
@@ -355,12 +361,13 @@ private:
     std::string canonical(const std::string& name, const param::MIRParametrisation& param) const override {
         ASSERT(!name.empty());
 
-        auto can(name);
-        std::transform(can.begin(), can.end(), can.begin(), [](auto c) { return c == '_' ? '-' : std::tolower(c); });
-
-        if (can.find("-ch") != std::string::npos &&  //
-            can.find("-v") == std::string::npos) {
-            can += "-v1";
+        // icon-ch grids have a -v<number> suffix
+        auto can = to_lower(name);
+        if (can.find("-ch") != std::string::npos) {
+            static const std::regex version("-v[1-9][0-9]*$");
+            if (!std::regex_search(can, version)) {
+                can += "-v1";
+            }
         }
 
         return can;
