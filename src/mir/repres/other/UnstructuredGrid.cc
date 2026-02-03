@@ -119,17 +119,24 @@ protected:
     }
 
     void makeName(std::ostream& out) const override {
-        out << grid_->type() << '-' << numberOfPoints() << '-' << grid_->uid();
+        const auto uid = grid_->uid();
+        out << grid_->type() << '-' << numberOfPoints() << '-' << uid;
+
+        if (atlas::grid::SpecRegistry::has(uid)) {
+            out << "-atlas";
+
+            if (auto type = to_lower(atlas::grid::SpecRegistry::get(uid).getString("type", ""));
+                atlas::meshgenerator::MeshGeneratorFactory::has(type)) {
+                out << '-' << type;
+            }
+        }
     }
 
     void fillMeshGen(util::MeshGeneratorParameters& params) const override {
         if (params.meshGenerator_.empty()) {
             if (const auto uid = grid_ptr()->uid(); atlas::grid::SpecRegistry::has(uid)) {
-                auto type = atlas::grid::SpecRegistry::get(uid).getString("type", "");
-                std::transform(type.begin(), type.end(), type.begin(),
-                               [](auto c) { return c == '_' ? '-' : std::tolower(c); });
-
-                if (atlas::meshgenerator::MeshGeneratorFactory::has(type)) {
+                if (auto type = to_lower(atlas::grid::SpecRegistry::get(uid).getString("type", ""));
+                    atlas::meshgenerator::MeshGeneratorFactory::has(type)) {
                     Log::debug() << "UnstructuredGrid: atlas::MeshGenerator(\"" << type << "\")" << std::endl;
                     params.meshGenerator_ = type;
                     return;
