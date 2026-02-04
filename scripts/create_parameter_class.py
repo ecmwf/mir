@@ -74,7 +74,7 @@ def create_parameter_class_from_db(host, user, password, database="param") -> di
     for classifier in classifiers_uniq:
         indices = [i for i, c in enumerate(classifiers) if c == classifier]
         pids = [paramids[i] for i in indices]
-        output_dict[classifier] = pids
+        output_dict[classifier] = sorted(pids)
 
     return output_dict
 
