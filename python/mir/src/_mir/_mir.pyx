@@ -44,8 +44,7 @@ cdef class Args:
             raise MemoryError("Args: failed to allocate argv")
 
         for i, arg in enumerate(sys.argv):
-            arg_str = arg.encode()
-            self.argv[i] = strdup(arg_str)
+            self.argv[i] = strdup(arg)
 
     def __dealloc__(self):
         free(self.argv)
@@ -233,7 +232,7 @@ cdef class Job:
         cdef string key_str, value_str
 
         assert isinstance(key, str)
-        key_str = key.replace("_", "-").encode()
+        key_str = key.replace("_", "-")
 
         if isinstance(value, dict):
             for k, v in value.items():
@@ -306,7 +305,7 @@ cdef class Grid:
 
         try:
             assert isinstance(spec, str)
-            self._grid = eckit_geo.GridFactory.make_from_string(spec.encode())
+            self._grid = eckit_geo.GridFactory.make_from_string(spec)
 
         except RuntimeError as e:
             # opportunity to do something interesting
@@ -381,7 +380,7 @@ cdef class Interpolation:
             from yaml import dump
 
             s = dump(spec, default_flow_style=True).strip() if spec else ""
-            self._method = mir.MethodFactory.make_from_string(s.encode())
+            self._method = mir.MethodFactory.make_from_string(s)
 
         except RuntimeError as e:
             # opportunity to do something interesting
