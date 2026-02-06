@@ -12,13 +12,13 @@
 
 #pragma once
 
-#include "mir/repres/Gridded.h"
+#include "mir/repres/Representation.h"
 
 
 namespace mir::repres::unsupported {
 
 
-class RotatedSH final : public Gridded {
+class RotatedSH final : public Representation {
 public:
     // -- Exceptions
     // None
