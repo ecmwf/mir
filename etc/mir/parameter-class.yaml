@@ -623,8 +623,6 @@ intensity:
 - 3045  # Vertical u-component shear
 - 3046  # Vertical v-component shear
 - 3048  # Speed of current
-- 3049  # U-component of current
-- 3050  # V-component of current
 - 3054  # Precipitable water
 - 3055  # Vapour pressure
 - 3056  # Saturation deficit
@@ -678,8 +676,6 @@ intensity:
 - 129063  # Start time for skin temperature difference
 - 129064  # Finish time for skin temperature difference
 - 129065  # Skin temperature difference
-- 129068
-- 129069
 - 129078  # Total column liquid water
 - 129079  # Total column ice water
 - 129121  # Maximum temperature at 2 metres gradient
@@ -774,7 +770,6 @@ intensity:
 - 140118  # Significant wave height of all waves with periods within the inclusive range from 21 to 25 seconds
 - 140119  # Significant wave height of all waves with periods within the inclusive range from 25 to 30 seconds
 - 140120  # Significant wave height of all waves with period larger than 10s
-- 140130
 - 140131  # Time domain maximum individual crest height
 - 140132  # Time domain maximum individual wave height
 - 140133  # Space time maximum individual crest height
@@ -908,28 +903,21 @@ intensity:
 - 160156  # Height
 - 160171  # Soil wetness level 2
 - 160184  # Soil wetness level 3
-- 160201
-- 160202
-- 160206
 - 160207  # Covariance of temperature and geopotential
-- 160208
 - 160209  # Covariance of specific humidity and geopotential
 - 160210  # Covariance of specific humidity and temperature
 - 160212  # Covariance of U component and geopotential
 - 160213  # Covariance of U component and temperature
 - 160214  # Covariance of U component and specific humidity
-- 160215
 - 160216  # Covariance of V component and geopotential
 - 160217  # Covariance of V component and temperature
 - 160218  # Covariance of V component and specific humidity
 - 160219  # Covariance of V component and U component
-- 160220
 - 160221  # Covariance of W component and geopotential
 - 160222  # Covariance of W component and temperature
 - 160223  # Covariance of W component and specific humidity
 - 160224  # Covariance of W component and U component
 - 160225  # Covariance of W component and V component
-- 160226
 - 160246  # 10 metre wind speed
 - 160247  # Momentum flux
 - 162051  # Surface geopotential
@@ -1171,8 +1159,6 @@ intensity:
 - 200063  # Start time for skin temperature difference
 - 200064  # Finish time for skin temperature difference
 - 200065  # Skin temperature difference
-- 200068
-- 200069
 - 200121  # Maximum temperature at 2 metres difference
 - 200122  # Minimum temperature at 2 metres difference
 - 200123  # 10 metre wind gust in the last 6 hours difference
@@ -1247,7 +1233,6 @@ intensity:
 - 201082  # top of dry convection (above msl)
 - 201084  # height of 0 degree Celsius isotherm above msl
 - 201085  # height of snow-fall limit
-- 201139
 - 201150  # coefficient of horizontal diffusion
 - 201187  # Maximum wind velocity
 - 201200  # water content of interception store
@@ -1449,8 +1434,6 @@ intensity:
 - 231028  # Distance downward from roof surface
 - 231029  # Distance inward from outer wall surface
 - 231030  # Distance downward from road surface
-- 231043  # Minimum visibility
-- 231044  # Geometric height of theta level above ground
 - 231045  # Pressure at cloud base
 - 231046  # Geometric height of adiabatic condensation level above ground
 - 231047  # Geometric height of free convection level above ground
@@ -2298,7 +2281,6 @@ numerics.mean:
 - 173009  # Mean sub-surface runoff rate anomaly
 - 228005  # Time-mean 10 metre wind speed
 - 229004  # Building height
-- 231020  # Time-mean top net radiation flux (SW and LW)
 - 235001  # Time-mean temperature tendency due to short-wave radiation
 - 235002  # Time-mean temperature tendency due to long-wave radiation
 - 235003  # Time-mean temperature tendency due to short wave radiation, clear sky
@@ -2334,9 +2316,6 @@ numerics.mean:
 - 235062  # Time-mean carbon dioxide net ecosystem exchange flux
 - 235063  # Time-mean carbon dioxide gross primary production flux
 - 235064  # Time-mean carbon dioxide ecosystem respiration flux
-- 235065  # Mean rain rate
-- 235066  # Mean convective rain rate
-- 235067  # Mean large-scale rain rate
 - 235070  # Time-mean potential evaporation rate
 - 235074  # Time-mean evapotranspiration rate
 - 235076  # Time-mean potential evapotranspiration rate
@@ -2942,7 +2921,6 @@ numerics.vertical-integral:
 - 228088  # Total column supercooled liquid water
 - 228089  # Total column rain water
 - 228090  # Total column snow water
-- 231042  # Maximum total column integrated graupel (snow pellets)
 - 233000  # Time-integrated total column vertically-integrated eastward geopotential flux
 - 233001  # Time-integrated total column vertically-integrated northward geopotential flux
 - 233002  # Time-integrated total column vertically-integrated divergence of water geopotential flux
@@ -3395,7 +3373,6 @@ rate.energy-flux:
 - 230212  # TOA incident solar radiation (variable resolution)
 - 231018  # Surface net radiation flux (SW and LW)
 - 231019  # Top net radiation flux (SW and LW)
-- 231020  # Time-mean top net radiation flux (SW and LW)
 - 231021  # Global irradiance on tilted surfaces
 - 233000  # Time-integrated total column vertically-integrated eastward geopotential flux
 - 233001  # Time-integrated total column vertically-integrated northward geopotential flux
@@ -4114,7 +4091,6 @@ rate.mass-flux:
 - 231011  # Sub-surface runoff rate
 - 231012  # Sub-surface runoff
 - 231040  # Graupel (snow pellets) precipitation
-- 231042  # Maximum total column integrated graupel (snow pellets)
 - 231053  # Snow depth water equivalent on roof
 - 231054  # Snow depth water equivalent on road
 - 231057  # Convective snowfall water equivalent
@@ -4157,9 +4133,6 @@ rate.mass-flux:
 - 235062  # Time-mean carbon dioxide net ecosystem exchange flux
 - 235063  # Time-mean carbon dioxide gross primary production flux
 - 235064  # Time-mean carbon dioxide ecosystem respiration flux
-- 235065  # Mean rain rate
-- 235066  # Mean convective rain rate
-- 235067  # Mean large-scale rain rate
 - 235070  # Time-mean potential evaporation rate
 - 235072  # Time integral of snow evaporation flux
 - 235073  # Time integral of evapotranspiration flux
@@ -4613,8 +4586,6 @@ ratio:
 - 228043  # Soil wetness index in layer 4
 - 231013  # Reflectance in 0.4 micron channel
 - 231060  # Surface bulk Richardson number
-- 231061  # Time-maximum 2 metre relative humidity
-- 231062  # Time-minimum 2 metre relative humidity
 - 235092  # Time-mean 2 metre relative humidity
 - 235157  # Time-mean relative humidity
 - 260023  # Maximum relative humidity
@@ -4743,7 +4714,7 @@ ratio.fraction:
 - 18  # Near IR albedo for diffuse radiation (climatological)
 - 32  # Snow albedo
 - 50  # Large-scale precipitation fraction
-- 124 # Surface emissivity  # Surface emissivity
+- 124  # Surface emissivity
 - 172  # Land-sea mask
 - 174  # Albedo (climatological)
 - 199  # Vegetation fraction
@@ -4866,7 +4837,6 @@ ratio.fraction:
 - 235275  # Time-mean floodplain flooded fraction
 - 235277  # Time-mean river fraction
 - 235279  # Time-mean fraction of river coverage plus river related flooding
-- 240016  # Water fraction
 - 240036  # Floodplain flooded fraction
 - 240038  # River fraction
 - 240040  # Fraction of river coverage plus river related flooding
@@ -4921,7 +4891,6 @@ ratio.mass:
 - 129247  # Specific cloud ice water content gradient
 - 129252  # Adiabatic tendency of humidity gradient
 - 130212  # Cloud liquid water
-- 160211
 - 160241  # Cloud liquid water content
 - 162111  # Time-integrated specific humidity tendency due to parametrisations
 - 162117  # q-tendency from dynamics
@@ -5707,7 +5676,6 @@ stress:
 - 171196  # Meridional component of gravity wave stress anomaly
 - 171229  # Instantaneous X surface stress anomaly
 - 171230  # Instantaneous Y surface stress anomaly
-- 172048
 - 172180  # Time-mean eastward turbulent surface stress
 - 172181  # Time-mean northward turbulent surface stress
 - 172195  # Longitudinal component of gravity wave stress
@@ -5805,7 +5773,6 @@ vector-space.2d-vector-u:
 - 222  # Convective tendency of zonal wind
 - 229  # Instantaneous eastward turbulent surface stress
 - 253  # Adiabatic tendency of zonal wind
-- 3049  # U-component of current
 - 3095  # U-component of ice drift
 - 3124  # Momentum flux, u-component
 - 129011  # U component of divergent wind gradient
@@ -5913,7 +5880,6 @@ vector-space.2d-vector-v:
 - 223  # Convective tendency of meridional wind
 - 230  # Instantaneous northward turbulent surface stress
 - 254  # Adiabatic tendency of meridional wind
-- 3050  # V-component of current
 - 3096  # V-component of ice drift
 - 3125  # Momentum flux, v-component
 - 129012  # V component of divergent wind gradient
