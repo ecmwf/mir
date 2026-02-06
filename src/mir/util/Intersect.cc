@@ -79,17 +79,11 @@ Intersect::Intersect(detail::Intersect* ptr) : unique_ptr(ptr) {
 }
 
 
-struct InputIntersectOutput : detail::Intersect {
-    void intersect(const Representation& in, const BoundingBox& ind, const Representation& out, const BoundingBox& outd,
-                   Cropping& crop) const override {
-        auto cropped = outd;
-
-        if (out.extendBoundingBoxOnIntersect()) {
-            out.extendBoundingBox(ind).intersects(cropped);
-        }
-        else {
-            ind.intersects(cropped);
-        }
+struct InputIntersectsOutput final : detail::Intersect {
+    void apply(const Representation& in, const BoundingBox& in_bbox, const Representation& out,
+               const BoundingBox& out_bbox, Cropping& crop) const final {
+        auto cropped = out_bbox;
+        in_bbox.intersects(cropped);
 
         if (crop) {
             crop.boundingBox().intersects(cropped);
@@ -100,35 +94,51 @@ struct InputIntersectOutput : detail::Intersect {
 };
 
 
-struct InputContainsOutput : detail::Intersect {
-    void intersect(const Representation& in, const BoundingBox& ind, const Representation& out, const BoundingBox& outd,
-                   Cropping&) const override {
-        if (!ind.contains(outd)) {
+struct InputExtendsOutput final : detail::Intersect {
+    void apply(const Representation& in, const BoundingBox& in_bbox, const Representation& out,
+               const BoundingBox& out_bbox, Cropping& crop) const final {
+        auto cropped = out_bbox;
+        out.extendBoundingBox(in_bbox).intersects(cropped);
+
+        if (crop) {
+            crop.boundingBox().intersects(cropped);
+        }
+
+        crop.boundingBox(cropped);
+    }
+};
+
+
+struct InputContainsOutputCheck final : detail::Intersect {
+    void apply(const Representation& in, const BoundingBox& in_bbox, const Representation& out,
+               const BoundingBox& out_bbox, Cropping&) const final {
+        if (!in_bbox.contains(out_bbox)) {
             std::ostringstream msg;
             msg << "Intersect: input does not contain output:"
                 << "\n\t"
                    "Input: "
-                << ind
+                << in_bbox
                 << "\n\t"
                    "Output: "
-                << outd;
+                << out_bbox;
             throw exception::UserError(msg.str());
         }
     }
 };
 
 
-struct None : detail::Intersect {
-    void intersect(const Representation& in, const BoundingBox& ind, const Representation& out, const BoundingBox& outd,
-                   Cropping&) const override {
+struct None final : detail::Intersect {
+    void apply(const Representation& in, const BoundingBox& in_bbox, const Representation& out,
+               const BoundingBox& out_bbox, Cropping&) const override {
         // do nothing
     }
 };
 
 
-static const IntersectBuilder<InputIntersectOutput> INTERSECTS1("input-intersects-output");
-static const IntersectBuilder<InputContainsOutput> INTERSECTS2("check-input-contains-output");
-static const IntersectBuilder<None> INTERSECTS3("none");
+static const IntersectBuilder<InputIntersectsOutput> INTERSECTS1("input-intersects-output");
+static const IntersectBuilder<InputExtendsOutput> INTERSECTS2("input-extends-output");
+static const IntersectBuilder<InputContainsOutputCheck> INTERSECTS3("input-contains-output-check");
+static const IntersectBuilder<None> INTERSECTS4("none");
 
 
 }  // namespace mir::util

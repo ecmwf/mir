@@ -83,7 +83,7 @@ private:
     atlas::Grid atlasGrid() const override;
     Iterator* iterator() const override;
 
-    std::string intersectionOnCrop() const override { return "check-input-contains-output"; }
+    std::string intersectionOnCrop() const override { return "input-contains-output-check"; }
     const Gridded* croppedRepresentation(const util::BoundingBox&) const override;
 
     void makeName(std::ostream&) const override;

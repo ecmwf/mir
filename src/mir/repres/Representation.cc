@@ -199,13 +199,6 @@ util::BoundingBox Representation::extendBoundingBox(const util::BoundingBox& /*u
 }
 
 
-bool Representation::extendBoundingBoxOnIntersect() const {
-    std::ostringstream os;
-    os << "Representation::extendBoundingBoxOnIntersect() not implemented for " << *this;
-    throw exception::SeriousBug(os.str());
-}
-
-
 bool Representation::crop(util::BoundingBox& /*unused*/, util::IndexMapping& /*unused*/) const {
     std::ostringstream os;
     os << "Representation::crop() not implemented for " << *this;

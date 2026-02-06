@@ -83,7 +83,8 @@ protected:
     void fillJob(api::MIRJob&) const override;
     bool sameAs(const Representation&) const override;
     void validate(const MIRValuesVector&) const override;
-    bool extendBoundingBoxOnIntersect() const override;
+
+    std::string intersectionOnCrop() const override { return "input-intersects-output"; }
 
     bool includesNorthPole() const override;
     bool includesSouthPole() const override;

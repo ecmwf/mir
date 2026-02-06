@@ -162,8 +162,6 @@ protected:
         return new iterator::UnstructuredIterator(lats, lons);
     }
 
-    bool extendBoundingBoxOnIntersect() const override { return false; }
-
     bool includesNorthPole() const override { return bbox_.north() == Latitude::NORTH_POLE; }
     bool includesSouthPole() const override { return bbox_.south() == Latitude::SOUTH_POLE; }
     bool isPeriodicWestEast() const override {
@@ -683,11 +681,6 @@ bool UnstructuredGrid::includesNorthPole() const {
 
 bool UnstructuredGrid::includesSouthPole() const {
     return bbox_.south() == Latitude::SOUTH_POLE;
-}
-
-
-bool UnstructuredGrid::extendBoundingBoxOnIntersect() const {
-    return false;
 }
 
 

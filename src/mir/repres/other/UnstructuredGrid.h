@@ -72,8 +72,6 @@ protected:
 
     // -- Methods
 
-    // From Representation
-    bool extendBoundingBoxOnIntersect() const override;
     void print(std::ostream&) const override;
 
     // -- Overridden methods

@@ -142,11 +142,6 @@ void RegularGrid::print(std::ostream& out) const {
 }
 
 
-bool RegularGrid::extendBoundingBoxOnIntersect() const {
-    return true;
-}
-
-
 size_t RegularGrid::numberOfPoints() const {
     return x_.size() * y_.size();
 }

@@ -103,7 +103,7 @@ protected:
     void makeName(std::ostream&) const override;
     void print(std::ostream&) const override;
 
-    bool extendBoundingBoxOnIntersect() const override;
+    std::string intersectionOnCrop() const override { return "input-extends-output"; }
 
     ::atlas::Grid atlasGrid() const override;
     size_t numberOfPoints() const override;

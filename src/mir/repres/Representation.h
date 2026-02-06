@@ -95,7 +95,6 @@ public:
     virtual std::string intersectionOnCrop() const;
     virtual const Representation* croppedRepresentation(const util::BoundingBox&) const;
     virtual util::BoundingBox extendBoundingBox(const util::BoundingBox&) const;
-    virtual bool extendBoundingBoxOnIntersect() const;
     virtual bool crop(util::BoundingBox&, util::IndexMapping&) const;
 
     virtual size_t frame(MIRValuesVector&, size_t size, double missingValue) const;

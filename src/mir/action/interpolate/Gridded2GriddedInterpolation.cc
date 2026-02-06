@@ -66,16 +66,16 @@ method::Cropping Gridded2GriddedInterpolation::cropping(context::Context& ctx) c
     const auto& field = ctx.field();
 
     repres::RepresentationHandle in(field.representation());
-    auto input = inputGlobal_ ? util::Domain{} : in->domain();
 
     method::Cropping crop;
     if (method_->hasCropping()) {
         crop.boundingBox(method_->getCropping());
     }
 
+    auto input = inputGlobal_ ? util::Domain{} : in->domain();
     if (!input.isGlobal()) {
         repres::RepresentationHandle out(outputRepresentation());
-        util::Intersect::build(out->intersectionOnCrop())->intersect(*in, input, *out, outputBoundingBox(), crop);
+        util::Intersect::build(out->intersectionOnCrop()).apply(*in, input, *out, outputBoundingBox(), crop);
     }
 
     if (crop) {

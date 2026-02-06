@@ -38,7 +38,6 @@ namespace detail {
 
 struct Intersect {
     using Representation = repres::Representation;
-    using BoundingBox    = util::BoundingBox;
     using Cropping       = method::Cropping;
 
     Intersect()          = default;
@@ -50,8 +49,8 @@ struct Intersect {
     Intersect& operator=(const Intersect&) = delete;
     Intersect& operator=(Intersect&&)      = delete;
 
-    virtual void intersect(const Representation& in, const BoundingBox& ind, const Representation& out,
-                           const BoundingBox& outd, Cropping&) const = 0;
+    virtual void apply(const Representation& in, const BoundingBox& in_bbox, const Representation& out,
+                       const BoundingBox& out_bbox, Cropping&) const = 0;
 };
 
 
@@ -86,9 +85,9 @@ public:
 
 
 struct Intersect final : detail::Intersect, std::unique_ptr<detail::Intersect> {
-    void intersect(const Representation& in, const BoundingBox& ind, const Representation& out, const BoundingBox& outd,
-                   Cropping& crop) const final {
-        get()->intersect(in, ind, out, outd, crop);
+    void apply(const Representation& in, const BoundingBox& in_bbox, const Representation& out,
+               const BoundingBox& out_bbox, Cropping& crop) const final {
+        get()->apply(in, in_bbox, out, out_bbox, crop);
     }
 
     static Intersect build(const std::string& name) { return Intersect{IntersectFactory::build(name)}; }
