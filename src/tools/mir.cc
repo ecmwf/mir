@@ -124,6 +124,8 @@ struct MIR : MIRTool {
             new SimpleOption<bool>("interpolation-matrix-free", "Matrix-free interpolation (proxy methods)"));
         options_.push_back(
             new SimpleOption<bool>("interpolation-global-input", "Interpolation input grid assumed global"));
+        options_.push_back(
+            new SimpleOption<bool>("interpolation-global-output", "Interpolation output grid assumed global"));
 
         options_.push_back(new SimpleOption<bool>("finite-element-validate-mesh",
                                                   "FE method check mesh quadrilaterals validity (default false)"));

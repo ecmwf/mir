@@ -36,6 +36,7 @@ Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParam
     ASSERT(method_);
 
     param.get("interpolation-global-input", inputGlobal_ = false);
+    param.get("interpolation-global-output", outputGlobal_ = false);
 }
 
 
@@ -72,17 +73,19 @@ method::Cropping Gridded2GriddedInterpolation::cropping(context::Context& ctx) c
         crop.boundingBox(method_->getCropping());
     }
 
-    auto input = inputGlobal_ ? util::Domain{} : in->domain();
-    if (!input.isGlobal()) {
+    auto in_bbox = inputGlobal_ ? util::Domain{} : in->domain();
+    if (!in_bbox.isGlobal()) {
         repres::RepresentationHandle out(outputRepresentation());
-        util::Intersect::build(out->intersectionOnCrop()).apply(*in, input, *out, outputBoundingBox(), crop);
+        auto out_bbox = outputGlobal_ ? util::Domain{} : outputBoundingBox();
+
+        util::Intersect::build(out->intersectionOnCrop()).apply(*in, in_bbox, *out, out_bbox, crop);
     }
 
     if (crop) {
         // disable cropping if global and West aligned with input (no "renumbering")
         const auto& bbox = crop.boundingBox();
         const util::Domain domain(bbox.north(), bbox.west(), bbox.south(), bbox.east());
-        if (domain.isGlobal() && bbox.west() == input.west()) {
+        if (domain.isGlobal() && bbox.west() == in_bbox.west()) {
             return {};
         }
     }
