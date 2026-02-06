@@ -92,6 +92,7 @@ public:
     virtual void fillMeshGen(util::MeshGeneratorParameters&) const;
 
     // Return a cropped version
+    virtual std::string intersectionOnCrop() const;
     virtual const Representation* croppedRepresentation(const util::BoundingBox&) const;
     virtual util::BoundingBox extendBoundingBox(const util::BoundingBox&) const;
     virtual bool extendBoundingBoxOnIntersect() const;

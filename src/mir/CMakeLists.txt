@@ -688,6 +688,8 @@ list(APPEND mir_srcs
     util/Increments.cc
     util/Increments.h
     util/IndexMapping.h
+    util/Intersect.cc
+    util/Intersect.h
     util/Latitude.cc
     util/Latitude.h
     util/LatitudeIncrement.h

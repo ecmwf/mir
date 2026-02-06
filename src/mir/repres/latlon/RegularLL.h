@@ -71,9 +71,10 @@ private:
     void makeName(std::ostream&) const override;
     bool sameAs(const Representation&) const override;
 
-    // From Representation
+    std::string intersectionOnCrop() const override { return "input-intersects-output"; }
     const RegularLL* croppedRepresentation(const util::BoundingBox&) const override;
     util::BoundingBox extendBoundingBox(const util::BoundingBox&) const override;
+
     std::vector<util::GridBox> gridBoxes() const override;
 
     std::string factory() const override;
