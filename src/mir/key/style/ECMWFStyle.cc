@@ -554,11 +554,15 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, output::MIROutput& output) co
         user_wants_gridded++;
     }
 
+    ASSERT(user_wants_gridded <= 1);
+
     if (option(user, "pre-globalise", false)) {
         plan.add("filter.globalise");
     }
 
-    ASSERT(user_wants_gridded <= 1);
+    if (user.has("mask-input-lsm-value")) {
+        plan.add("filter.mask-input-lsm");
+    }
 
     bool field_gridded  = parametrisation_.fieldParametrisation().has("gridded");
     bool field_spectral = parametrisation_.fieldParametrisation().has("spectral");
@@ -583,9 +587,7 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, output::MIROutput& output) co
 
 
     if (field_gridded || (user_wants_gridded > 0)) {
-
-        std::string nabla;
-        if (user.get("nabla", nabla)) {
+        if (std::string nabla; user.get("nabla", nabla)) {
             for (const auto& operation : eckit::StringTools::split("/", nabla)) {
                 plan.add("filter." + operation);
             }
@@ -601,6 +603,10 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, output::MIROutput& output) co
 
         if (user.has("bitmap")) {
             plan.add("filter.bitmap");
+        }
+
+        if (user.has("mask-output-lsm-value")) {
+            plan.add("filter.mask-output-lsm");
         }
 
         if (user.has("frame")) {

@@ -23,6 +23,7 @@
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
 
+#include "mir/action/filter/MaskLSM.h"
 #include "mir/action/filter/NablaFilter.h"
 #include "mir/action/plan/Executor.h"
 #include "mir/api/MIRJob.h"
@@ -229,7 +230,10 @@ struct MIR : MIRTool {
         options_.push_back(new FactoryOption<key::Area>("area", "area cropping/masking"));
         options_.push_back(new FactoryOption<key::Area::Mode>("area-mode", "area cropping/masking mode"));
         options_.push_back(new SimpleOption<eckit::PathName>("bitmap", "Bitmap file to apply"));
-        options_.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
+        options_.push_back(new FactoryOption<action::filter::MaskLSM::Value>(
+            "mask-input-lsm-value", "Mask input land-sea mask value (default 0)"));
+        options_.push_back(new FactoryOption<action::filter::MaskLSM::Value>(
+            "mask-output-lsm-value", "Mask output land-sea mask value (default 0)"));
         options_.push_back(new FactoryOption<stats::DistributionFactory>(
             "add-random", "Add random numbers to field values according to a probability density function"));
 
