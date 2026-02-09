@@ -91,12 +91,12 @@ protected:
     const std::string name_;
     const std::string path_;
 
-    NamedMaskFactory(const std::string& name, const std::string& path);
-    virtual ~NamedMaskFactory();
-
     static eckit::PathName resolve_path(const param::MIRParametrisation& param, const std::string& path);
 
 public:
+    NamedMaskFactory(const std::string& name, const std::string& path) : name_(name), path_(path) {}
+    virtual ~NamedMaskFactory() = default;
+
     NamedMaskFactory(const NamedMaskFactory&) = delete;
     NamedMaskFactory(NamedMaskFactory&&)      = delete;
 
