@@ -15,7 +15,6 @@
 #include <algorithm>
 #include <cctype>
 #include <map>
-#include <memory>
 #include <ostream>
 
 #include "eckit/filesystem/PathName.h"
@@ -47,7 +46,7 @@ static std::string sane(const std::string& insane) {
 }
 
 
-struct map_t : std::map<std::string, std::unique_ptr<NamedMaskFactory>> {
+struct map_t : std::map<std::string, NamedMaskFactory*> {
     map_t() {
         const auto path = LibMir::configFile(LibMir::config_file::LSM);
         if (!path.exists()) {
@@ -67,6 +66,12 @@ struct map_t : std::map<std::string, std::unique_ptr<NamedMaskFactory>> {
                      .second) {
                 throw exception::SeriousBug("NamedLSM: duplicate '" + name + "'");
             }
+        }
+    }
+
+    ~map_t() {
+        for (const auto& j : *this) {
+            delete j.second;
         }
     }
 } static* m = nullptr;
