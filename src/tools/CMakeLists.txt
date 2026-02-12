@@ -19,6 +19,7 @@ foreach(tool IN ITEMS
     mir-load-matrix
     mir-lsm
     mir-make-lsm
+    mir-matrix-multiply
     mir-matrix-reorder
     mir-plot-lsm
     mir-points
