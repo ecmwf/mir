@@ -6,13 +6,13 @@ $MIR_CONFIG_STYLE=/bad
 --grid=3/3 --interpolation=linear --uv2uv=false
 # grib_get
 numberOfPoints=7320
-values[0]=8.67844e-05
-values[1]=8.67844e-05
-values[2]=8.67844e-05
-values[3]=8.67844e-05
-values[4]=8.67844e-05
-values[5]=8.67844e-05
-values[6]=8.67844e-05
-values[7]=8.67844e-05
-values[8]=8.67844e-05
-values[9]=8.67844e-05
+values[0]=8.1329
+values[1]=7.73153
+values[2]=7.32626
+values[3]=6.91806
+values[4]=6.51181
+values[5]=6.11434
+values[6]=5.72567
+values[7]=5.35263
+values[8]=5.00399
+values[9]=4.67587
