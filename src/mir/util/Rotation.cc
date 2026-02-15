@@ -63,14 +63,14 @@ void Rotation::fillGrib(grib_info& info) const {
 
     info.grid.grid_type = CODES_UTIL_GRID_SPEC_ROTATED_LL;
 
-    info.grid.latitudeOfSouthernPoleInDegrees  = rotation_.south_pole().lat;
-    info.grid.longitudeOfSouthernPoleInDegrees = rotation_.south_pole().lon;
+    info.grid.latitudeOfSouthernPoleInDegrees  = rotation_.south_pole().lat();
+    info.grid.longitudeOfSouthernPoleInDegrees = rotation_.south_pole().lon();
     info.grid.angleOfRotationInDegrees         = rotation_.angle();
 }
 
 
 void Rotation::fillJob(api::MIRJob& job) const {
-    job.set("rotation", rotation_.south_pole().lat, rotation_.south_pole().lon);
+    job.set("rotation", rotation_.south_pole().lat(), rotation_.south_pole().lon());
 }
 
 
@@ -86,12 +86,12 @@ BoundingBox Rotation::boundingBox(const BoundingBox& bbox) const {
         {bbox.west().value(), bbox.south().value()}, {bbox.east().value(), bbox.north().value()}, projection);
     ASSERT(after);
 
-    return {after->north, after->west, after->south, after->east};
+    return {after->north(), after->west(), after->south(), after->east()};
 }
 
 
 void Rotation::makeName(std::ostream& out) const {
-    out << "-rot:" << rotation_.south_pole().lat << ":" << rotation_.south_pole().lon << ":" << rotation_.angle();
+    out << "-rot:" << rotation_.south_pole().lat() << ":" << rotation_.south_pole().lon() << ":" << rotation_.angle();
 }
 
 

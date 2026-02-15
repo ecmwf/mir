@@ -64,7 +64,7 @@ atlas::Grid Gridded::rotate_atlas_grid(const Rotation& rotation, const atlas::Gr
 
     atlas::Projection projection(
         atlas::Projection::Spec{"type", "rotated_lonlat"}
-            .set("south_pole", std::vector<double>({rotation.south_pole().lon, rotation.south_pole().lat}))
+            .set("south_pole", std::vector<double>({rotation.south_pole().lon(), rotation.south_pole().lat()}))
             .set("rotation_angle", rotation.angle()));
 
     return {atlas::Grid::Spec(grid.spec()).set("projection", projection.spec())};

@@ -50,8 +50,8 @@ Iterator& Iterator::next() {
         auto p = rotation_.fwd(eckit::geo::PointLonLat{lon_.value(), lat_.value()});
 
         // notice the order
-        point_[0] = p.lat;
-        point_[1] = p.lon;
+        point_[0] = p.lat();
+        point_[1] = p.lon();
     }
 
     return *this;
@@ -64,7 +64,7 @@ Point3 Iterator::point_3D(const Point2& point) {
     // notice the order
     auto p = to_xyz.fwd(eckit::geo::PointLonLat{point[1], point[0]});
 
-    return {p.X, p.Y, p.Z};
+    return {p.X(), p.Y(), p.Z()};
 }
 
 
