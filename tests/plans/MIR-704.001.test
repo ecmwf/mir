@@ -1,0 +1,7 @@
+# input
+param=q,grid=1_1,area=small.grib2
+# mir
+$MIR_ABORT_IF_CONFIGURATION_NOT_FOUND=0
+--limiter --limiter-minimum=0.0001 --limiter-maximum=0.001
+# plan
+Limiter[minimum=0.0001,maximum=0.001]|Save[output=...]

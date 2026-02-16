@@ -399,6 +399,10 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
         plan.add("filter.add-random");
     }
 
+    if (user.has("limiter")) {
+        plan.add("filter.limiter");
+    }
+
     std::string epilogue;
     if (parametrisation_.get("epilogue", epilogue)) {
         plan.add(epilogue);

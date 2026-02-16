@@ -1,0 +1,120 @@
+---
+# yamllint disable rule:line-length
+
+paramId=27/28/31/32:
+    maximum: 1.
+    minimum: 0.
+
+paramId=29/30:
+    maximum: 20.
+    minimum: 1.
+
+paramId=33:
+    maximum: 500.
+    minimum: 50.
+
+paramId=34:
+    maximum: 350.
+    minimum: 210.
+
+paramId=39/40/41/42/260199:
+    maximum: 0.472
+    minimum: 0.
+
+paramId=53:
+    minimum: 1.e-7
+
+paramId=129, levelType=ml, levelType:i=105:  # LTRZ
+    maximum: 60000.
+    minimum: -6500.
+
+paramId=133:  # LVAR
+    maximum: 1.e-1
+    minimum: 1.e-8
+
+paramId=138:  # LSTDEV, LVAR
+    minimum: 2.e-13
+
+paramId=139/170/183/235/236/260360:
+    maximum: 350.
+    minimum: 210.
+
+paramId=140/171/184/237:
+    maximum: 0.033
+    minimum: 2.e-6
+
+paramId=141:
+    maximum: 10.
+    minimum: 0.
+
+paramId=157:
+    maximum: 140.
+    minimum: 1.e-7
+
+paramId=160:
+    maximum: 1900.
+    minimum: 0.
+
+paramId=161/172/199:
+    maximum: 1.
+    minimum: 0.
+
+paramId=162:
+    maximum: 1.57
+    minimum: -1.57
+
+paramId=163:
+    maximum: 0.11
+    minimum: 0.
+
+paramId=173:
+    maximum: 100.
+    minimum: 0.001
+
+paramId=174:
+    maximum: 0.6
+    minimum: 0.07
+
+paramId=198:
+    maximum: 8.e-4
+    minimum: 0.
+
+paramId=200:
+    maximum: 4.e6
+    minimum: 0.
+
+paramId=203:
+    maximum: 1.e-4
+    minimum: 1.e-10
+
+paramId=233:
+    maximum: 0.033
+    minimum: 8.8e-6
+
+paramId=234:
+    maximum: -1.38
+    minimum: -20.
+
+paramId=238/35/36/37/38/262024:
+    maximum: 273.16
+    minimum: 210.
+
+paramId=246/247:
+    maximum: 1.e-3
+    minimum: 0.
+
+paramId=248:
+    maximum: 1.
+    minimum: 0.
+
+paramId=160198:
+    maximum: 8.e-1
+    minimum: 0.
+
+paramId=228032:
+    maximum: 100.
+    minimum: 0.
+
+paramId=228141/228038:
+    maximum: 10000.
+    minimum: 0.
