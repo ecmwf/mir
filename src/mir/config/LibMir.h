@@ -43,6 +43,7 @@ public:
         GRIB_INPUT,
         GRIB_OUTPUT,
         GRIDS,
+        LIMITER,
         LSM,
         NETCDF,
         PARAMETER_CLASS,

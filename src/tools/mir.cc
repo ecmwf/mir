@@ -260,6 +260,10 @@ struct MIR : MIRTool {
             "bandpass",
             "spectral bandpass filter on zonal/meridional minimum/maximum wave numbers (M min/M max/N min/N max)", 4));
 
+        options_.push_back(new SimpleOption<bool>("limiter", "Apply limiter to field values"));
+        options_.push_back(new SimpleOption<double>("limiter-minimum", "Limiter minimum value"));
+        options_.push_back(new SimpleOption<double>("limiter-maximum", "Limiter maximum value"));
+
         //==============================================
         options_.push_back(new Separator("Compute"));
         for (const auto& when : std::vector<std::string>{"prologue", "raw", "spectral", "gridded", "epilogue"}) {

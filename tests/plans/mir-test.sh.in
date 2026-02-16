@@ -73,6 +73,8 @@ do
             env $env $mir --dryrun --dump-plan-file=plan.$t $n data.in.$t data.out.$t
             # For some reason set -e does not trigger
             [[ $? -eq 0 ]] || exit 1
+
+            unset env
             state=plan
             ;;
 

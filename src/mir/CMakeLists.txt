@@ -55,6 +55,8 @@ list(APPEND mir_srcs
     action/filter/FrameFilter.h
     action/filter/GlobaliseFilter.cc
     action/filter/GlobaliseFilter.h
+    action/filter/Limiter.cc
+    action/filter/Limiter.h
     action/filter/MaskLSM.cc
     action/filter/MaskLSM.h
     action/filter/NablaFilter.cc
