@@ -1,0 +1,6 @@
+# input
+tiny-3x3.grib
+# mir
+--interpolation=matrix --interpolation-matrix=$tests_assertions_dir/33-to-11.mat --grid=1/1
+# grib_get
+# (none)
