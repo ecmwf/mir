@@ -12,7 +12,6 @@
 
 #include "mir/repres/gauss/reduced/Classic.h"
 
-#include "mir/api/mir_config.h"
 #include "mir/api/MIRJob.h"
 #include "mir/api/mir_config.h"
 #include "mir/util/Domain.h"

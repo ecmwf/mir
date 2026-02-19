@@ -223,4 +223,4 @@ atlas::Grid FESOM::atlasGrid() const {
 static const RepresentationBuilder<FESOM> __grid("fesom");
 
 
-}  // namespace mir::repres::geo
+}  // namespace mir::repres

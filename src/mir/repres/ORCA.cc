@@ -223,4 +223,4 @@ atlas::Grid ORCA::atlasGrid() const {
 static const RepresentationBuilder<ORCA> __grid("orca");
 
 
-}  // namespace mir::repres::geo
+}  // namespace mir::repres
