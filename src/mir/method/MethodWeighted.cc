@@ -57,19 +57,6 @@ static caching::InMemoryCache<WeightMatrix> MATRIX_CACHE_MEMORY("mirMatrix", MIR
                                                                 "$MIR_MATRIX_CACHE_MEMORY_FOOTPRINT");
 
 
-// WeightCache is parametrised by 'caching' (it may be disabled for specific fields, eg. unstructured grids)
-static caching::WeightCache& matrix_cache_disk(const param::MIRParametrisation& parametrisation) {
-    static caching::WeightCache cache(parametrisation);
-    return cache;
-}
-
-
-static void matrix_write(const WeightMatrix& mat, const eckit::PathName& path) {
-    path.dirName().mkdir(0777);  // ensure directory exists
-    mat.save(path);
-}
-
-
 const static std::map<eckit::Hash::digest_t, std::string> KNOWN_METHOD{
     {"73e1dd539879ffbbbb22d6bc789c2262", "linear"},
     {"7738675c7e2c64d463718049ebef6563", "nearest-neighbour"},
@@ -97,8 +84,6 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation)
         addNonLinearTreatment(nonlinear::NonLinearFactory::build(n, parametrisation_));
         ASSERT(nonLinear_.back());
     }
-
-    parametrisation_.get("interpolation-matrix", interpolationMatrix_);
 }
 
 
@@ -243,10 +228,6 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
         log << "MethodWeighted::getMatrix cache key: " << memory_key << " " << timer.elapsedSeconds(here)
             << ", found in memory cache (" << mat << ")" << std::endl;
 
-        if (!interpolationMatrix_.empty()) {
-            matrix_write(mat, interpolationMatrix_);
-        }
-
         return mat;
     }
 
@@ -263,13 +244,12 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     bool caching = LibMir::caching();
     parametrisation_.get("caching", caching);
 
-    if (const std::string ext = caching::WeightCacheTraits::extension(); eckit::StringTools::endsWith(disk_key, ext)) {
-        caching::WeightCacheTraits::load(matrix_cache_disk(parametrisation_), W, disk_key);
-        cacheFile = disk_key;
-    }
-    else if (caching) {
+    if (caching) {
+        // WeightCache is parametrised by 'caching' (it may be disabled for specific fields, eg. unstructured grids)
+        static caching::WeightCache matrix_cache_disk(parametrisation_);
+
         MatrixCacheCreator creator(*this, ctx, in, out, masks, cropping_);
-        cacheFile = matrix_cache_disk(parametrisation_).getOrCreate(disk_key, creator, W);
+        cacheFile = matrix_cache_disk.getOrCreate(disk_key, creator, W);
     }
     else {
         createMatrix(ctx, in, out, W, masks, cropping_);
@@ -280,10 +260,6 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     if (masks.active() && !masks.cacheable()) {
         applyMasks(W, masks);
         W.validate("applyMasks", validateMatrixWeights());
-    }
-
-    if (!interpolationMatrix_.empty()) {
-        matrix_write(W, interpolationMatrix_);
     }
 
     log << "MethodWeighted::getMatrix create weights matrix: " << timer.elapsedSeconds(here) << std::endl;
