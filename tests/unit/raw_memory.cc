@@ -335,7 +335,7 @@ CASE("Example 3") {
         // matrix file
         if (!matrix.exists()) {
             method::WeightMatrix W(4, 3);
-            W.setFromTriplets({{0, 0, 1.}, {0, 1, 1.}, {0, 2, 1.}, {1, 0, 2.}, {1, 1, 1.}, {1, 2, -1.}, {2, 2, 1.}});
+            W.setFromTriplets({{0, 1, 0.4}, {0, 2, 0.6}, {1, 0, 0.1}, {1, 1, 0.1}, {1, 2, 0.8}, {2, 2, 1.}});
             W.save(matrix);
         }
 
@@ -355,8 +355,8 @@ CASE("Example 3") {
 
         EXPECT(values2.size() == 4);
 
-        EXPECT_EQUAL(values2[0], 3.);
-        EXPECT_EQUAL(values2[1], 2.);
+        EXPECT_EQUAL(values2[0], 1.);
+        EXPECT_EQUAL(values2[1], 1.);
         EXPECT_EQUAL(values2[2], 1.);
         EXPECT_EQUAL(values2[3], missingValue);
 

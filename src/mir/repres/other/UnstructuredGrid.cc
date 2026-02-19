@@ -20,7 +20,6 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/api/mir_config.h"
 #include "mir/api/MIRJob.h"
 #include "mir/api/mir_config.h"
 #include "mir/input/GriddefInput.h"

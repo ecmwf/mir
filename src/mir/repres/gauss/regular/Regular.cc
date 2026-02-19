@@ -15,7 +15,6 @@
 #include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 
-#include "mir/api/mir_config.h"
 #include "mir/api/MIRJob.h"
 #include "mir/api/mir_config.h"
 #include "mir/util/Atlas.h"
