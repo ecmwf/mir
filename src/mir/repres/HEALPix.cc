@@ -15,7 +15,7 @@
 #include <ostream>
 #include <regex>
 
-#include "eckit/geo/grid/HEALPix.h"
+#include "eckit/geo/grid/reduced/HEALPix.h"
 #include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 
@@ -109,7 +109,7 @@ const RepresentationBuilder<HEALPix> HEALPIX("healpix");
 }  // namespace
 
 
-HEALPix::HEALPix(size_t Nside, const std::string& order) : grid_(new eckit::geo::grid::HEALPix(Nside, order)) {
+HEALPix::HEALPix(size_t Nside, const std::string& order) : grid_(new eckit::geo::grid::reduced::HEALPix(Nside, order)) {
     ASSERT(grid_);
 }
 

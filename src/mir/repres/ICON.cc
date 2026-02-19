@@ -106,8 +106,8 @@ const ICONPattern __ICON(PATTERN);
 
 ICON::ICON(const std::string& grid) :
     grid_([&grid]() {
-        eckit::geo::spec::Custom custom{{"grid", grid}};
-        std::unique_ptr<eckit::geo::Spec> spec(eckit::geo::GridFactory::make_spec(custom));
+        eckit::spec::Custom custom{{"grid", grid}};
+        std::unique_ptr<eckit::spec::Spec> spec(eckit::geo::GridFactory::make_spec(custom));
 
         return new grid_type(*spec);
     }()) {}

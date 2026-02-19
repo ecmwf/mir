@@ -75,8 +75,8 @@ public:
     const eckit::geo::projection::Rotation& rotation() const { return rotation_; }
     BoundingBox boundingBox(const BoundingBox&) const;
 
-    Latitude south_pole_latitude() const { return rotation_.south_pole().lat; }
-    Longitude south_pole_longitude() const { return rotation_.south_pole().lon; }
+    Latitude south_pole_latitude() const { return rotation_.south_pole().lat(); }
+    Longitude south_pole_longitude() const { return rotation_.south_pole().lon(); }
     double south_pole_rotation_angle() const { return rotation_.angle(); }
 
     void fillGrib(grib_info&) const;
