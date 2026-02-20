@@ -22,14 +22,6 @@ class Limiter final : public Action {
 public:
     explicit Limiter(const param::MIRParametrisation&);
 
-    Limiter(const Limiter&) = delete;
-    Limiter(Limiter&&)      = delete;
-
-    ~Limiter() override = default;
-
-    Limiter& operator=(const Limiter&) = delete;
-    Limiter& operator=(Limiter&&)      = delete;
-
 private:
     double minimum_;
     double maximum_;

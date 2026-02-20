@@ -21,7 +21,6 @@
 #include "eckit/geo/grid/reduced/ReducedGaussian.h"
 #include "eckit/geo/grid/regular/RegularGaussian.h"
 #include "eckit/geo/grid/regular/RegularLL.h"
-#include "eckit/geo/order/Scan.h"
 #include "eckit/geo/projection/Rotation.h"
 
 #include "mir/util/Exceptions.h"
@@ -50,14 +49,16 @@ struct MappingGridRegularLL : GridMapping {
         param.set("gridType", "regular_ll");
         param.set("gridded", true);
 
-        // FIXME improve handling of scan modes
-        eckit::geo::order::Scan scan(grid_.order());
-        auto dlon = scan.is_scan_i_positive() ? grid_.dlon() : -grid_.dlon();
-        auto dlat = scan.is_scan_j_positive() ? grid_.dlat() : -grid_.dlat();
+        auto dlon = grid_.dlon();
+        const std::string i(dlon < 0. ? "i-" : "i+");
+        param.set("west_east_increment", std::abs(dlon));
 
-        param.set("west_east_increment", dlon);
-        param.set("south_north_increment", dlat);
+        auto dlat = grid_.dlat();
+        const std::string j(dlat < 0. ? "j-" : "j+");
+        param.set("south_north_increment", std::abs(dlat));
+
         param.set("grid", std::vector<double>{dlon, dlat});
+        param.set("order", i + j);  // TODO take from parameterisation
 
         param.set("Ni", grid_.nlon());
         param.set("Nj", grid_.nlat());

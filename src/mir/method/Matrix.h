@@ -14,46 +14,33 @@
 
 #include "mir/method/MethodWeighted.h"
 
+#include "eckit/filesystem/PathName.h"
+
 
 namespace mir::method {
 
 
 class Matrix final : public MethodWeighted {
 public:
-    // -- Constructors
-
     explicit Matrix(const param::MIRParametrisation&);
 
 private:
-    // -- Members
+    const eckit::PathName path_;
 
-    std::string diskKey_;
-    std::string memoryKey_;
-
-    // -- Overridden methods
-
-    // From MethodWeighted
     void json(eckit::JSON&) const override;
     const char* type() const override;
 
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
                   const repres::Representation& out) const override;
 
-    CacheKeys getDiskAndMemoryCacheKeys(const repres::Representation& in, const repres::Representation& out,
-                                        const lsm::LandSeaMasks&) const override;
-
-    int version() const override { return 0; }
+    CacheKeys getDiskAndMemoryCacheKeys(const repres::Representation&, const repres::Representation&,
+                                        const lsm::LandSeaMasks&) const override {
+        return {path_, path_};
+    }
 
     void hash(eckit::MD5&) const override;
     bool sameAs(const Method&) const override;
     void print(std::ostream&) const override;
-
-    // -- Friends
-
-    friend eckit::JSON& operator<<(eckit::JSON& s, const Matrix& o) {
-        o.json(s);
-        return s;
-    }
 };
 
 
