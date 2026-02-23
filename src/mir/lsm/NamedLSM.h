@@ -17,7 +17,8 @@
 
 namespace eckit {
 class MD5;
-}
+class PathName;
+}  // namespace eckit
 
 
 namespace mir::lsm {
@@ -64,16 +65,17 @@ private:
 
     void print(std::ostream&) const override;
 
-    // -- Class members
-    // None
-
-    // -- Class methods
-
     Mask* create(const param::MIRParametrisation&, const repres::Representation&,
                  const std::string& which) const override;
 
     std::string cacheKey(const param::MIRParametrisation&, const repres::Representation&,
                          const std::string& which) const override;
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
 
     // -- Friends
     // None
@@ -89,10 +91,12 @@ protected:
     const std::string name_;
     const std::string path_;
 
-    NamedMaskFactory(const std::string& name, const std::string& path);
-    virtual ~NamedMaskFactory();
+    static eckit::PathName resolve_path(const param::MIRParametrisation& param, const std::string& path);
 
 public:
+    NamedMaskFactory(const std::string& name, const std::string& path) : name_(name), path_(path) {}
+    virtual ~NamedMaskFactory() = default;
+
     NamedMaskFactory(const NamedMaskFactory&) = delete;
     NamedMaskFactory(NamedMaskFactory&&)      = delete;
 
@@ -110,7 +114,7 @@ template <class T>
 class NamedMaskBuilder : public NamedMaskFactory {
     Mask* make(const param::MIRParametrisation& param, const repres::Representation& representation,
                const std::string& which) override {
-        return new T(name_, path_, param, representation, which);
+        return new T(name_, resolve_path(param, path_), param, representation, which);
     }
     void hashCacheKey(eckit::MD5& md5, const param::MIRParametrisation& parametrisation,
                       const repres::Representation& representation, const std::string& which) override {

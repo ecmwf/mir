@@ -1,10 +1,15 @@
 
 # Setup cache directory
-set(TEST_ECKIT_CACHE_DIR ${CMAKE_CURRENT_BINARY_DIR}/cache/)
-file(REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR})
+set(MIR_CACHE_PATH "${CMAKE_CURRENT_BINARY_DIR}/cache")
+file(REMOVE_RECURSE "${MIR_CACHE_PATH}")
+file(COPY cache DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 
 # Set testing environment
-set(_testEnvironment "MIR_DEBUG=1" "MIR_HOME=${CMAKE_BINARY_DIR}" "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}")
+set(_testEnvironment
+    "MIR_DEBUG=1"
+    "MIR_HOME=${CMAKE_BINARY_DIR}"
+    "MIR_CACHE_PATH=${MIR_CACHE_PATH}"
+    "TEST_ECKIT_CACHE_DIR=${MIR_CACHE_PATH}")
 
 if(NOT eccodes_HAVE_MEMFS)
     if(ECCODES_DEFINITION_PATH)
@@ -18,7 +23,13 @@ endif()
 function(target_from_path path out_var)
     file(RELATIVE_PATH _rel "${CMAKE_SOURCE_DIR}" "${path}")
     string(MAKE_C_IDENTIFIER "${_rel}" _id)
+    if(NOT _id MATCHES "^mir_")
+        set(_id "mir_${_id}")
+    endif()
     string(REGEX REPLACE "_test$" "" result "${_id}")
+    if(NOT _id MATCHES "^mir_")
+        set(_id "mir_${_id}")
+    endif()
     set(${out_var} "${result}" PARENT_SCOPE)
 endfunction()
 
@@ -31,8 +42,5 @@ else()
 endif()
 
 
-# defaults exercise non-core functionality
-if(mir_HAVE_ATLAS)
-    add_subdirectory(plans)
-endif()
+add_subdirectory(plans)
 add_subdirectory(unit)

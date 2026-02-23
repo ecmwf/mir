@@ -123,13 +123,15 @@ void SimulatedMissingValue::hash(eckit::MD5& h) const {
 }
 
 
+const std::string& SimulatedMissingValue::name() const {
+    static const std::string NAME{"simulated-missing-value"};
+    return NAME;
+}
+
+
 void SimulatedMissingValue::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "type"
-      << "simulated-missing-value";
-    j << "missingValue" << missingValue_;
-    j << "epsilon" << epsilon_;
-    j.endObject();
+    j << "simulated-missing-value" << missingValue_;
+    j << "simulated-missing-value-epsilon" << epsilon_;
 }
 
 

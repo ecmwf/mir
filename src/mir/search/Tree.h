@@ -71,9 +71,6 @@ private:
 };
 
 class TreeFactory {
-    TreeFactory(const TreeFactory&)            = delete;
-    TreeFactory& operator=(const TreeFactory&) = delete;
-
 protected:
     std::string name_;
     virtual Tree* make(const repres::Representation&) = 0;
@@ -81,6 +78,11 @@ protected:
     virtual ~TreeFactory();
 
 public:
+    TreeFactory(const TreeFactory&)            = delete;
+    TreeFactory(TreeFactory&&)                 = delete;
+    TreeFactory& operator=(const TreeFactory&) = delete;
+    TreeFactory& operator=(TreeFactory&&)      = delete;
+
     static Tree* build(const std::string&, const repres::Representation&);
     static void list(std::ostream&);
 };

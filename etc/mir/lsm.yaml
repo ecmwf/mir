@@ -1,0 +1,46 @@
+---
+# yamllint disable rule:line-length
+
+1km:
+  type: mapped
+  path: ~mir/share/mir/masks/lsm.1km.climate.v020.mask
+
+1km.climate.v020:
+  type: mapped
+  path: ~mir/share/mir/masks/lsm.1km.climate.v020.mask
+
+1km.climate.v013:
+  type: mapped
+  path: ~mir/share/mir/masks/lsm.1km.climate.v013.mask
+
+10min:
+  type: ten minutes
+  path: ~mir/share/mir/masks/lsm.10min.mask
+
+N128:
+  type: grib
+  path: ~mir/share/mir/masks/lsm.N128.grib
+
+N256:
+  type: grib
+  path: ~mir/share/mir/masks/lsm.N256.grib
+
+N320:
+  type: grib
+  path: ~mir/share/mir/masks/lsm.N320.grib
+
+N640:
+  type: grib
+  path: ~mir/share/mir/masks/lsm.N640.grib
+
+O320:
+  type: grib
+  path: ~mir/share/mir/masks/lsm.O320.grib
+
+O640:
+  type: grib
+  path: ~mir/share/mir/masks/lsm.O640.grib
+
+O1280:
+  type: grib
+  path: ~mir/share/mir/masks/lsm.O1280.grib

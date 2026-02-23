@@ -12,6 +12,7 @@
 
 #pragma once
 
+#include <limits>
 #include <vector>
 
 #include "mir/output/MIROutput.h"
@@ -27,11 +28,13 @@ public:
     std::vector<double>& values() { return values_; }
     std::vector<size_t> shape() const { return shape_; }
     std::string gridspec() const { return gridspec_; }
+    double missingValue() const { return missingValue_; }
 
 private:
     std::vector<double> values_;
     std::vector<size_t> shape_;
     std::string gridspec_;
+    double missingValue_{std::numeric_limits<double>::quiet_NaN()};
 
     size_t save(const param::MIRParametrisation&, context::Context&) override;
     void print(std::ostream&) const override;

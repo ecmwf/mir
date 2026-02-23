@@ -12,6 +12,7 @@
 
 #pragma once
 
+#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -25,8 +26,9 @@ public:
 
     // -- Constructors
 
-    CombinedParametrisation(const MIRParametrisation& userParametrisation, const MIRParametrisation& metadata,
-                            const MIRParametrisation& defaults);
+    CombinedParametrisation(const MIRParametrisation& userParametrisation,
+                            const MIRParametrisation& metadata = DefaultParametrisation::instance(),
+                            const MIRParametrisation& defaults = DefaultParametrisation::instance());
 
     // -- Destructor
 

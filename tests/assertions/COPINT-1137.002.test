@@ -1,0 +1,6 @@
+# input
+gridName=N256.ERROR.grib2
+# mir
+--grid=10/10
+# grib_get
+# (none)

@@ -77,6 +77,8 @@ protected:
     util::Domain domain() const override;
     const util::BoundingBox& boundingBox() const override;
     bool getLongestElementDiagonal(double&) const override;
+
+    std::string intersectionOnCrop() const override { return "none"; }
     bool crop(util::BoundingBox&, util::IndexMapping&) const override;
 
     // -- Class members

@@ -15,6 +15,7 @@
 #include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
+#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
 
@@ -22,9 +23,8 @@
 namespace mir::method::knn::pick {
 
 
-NClosest::NClosest(const param::MIRParametrisation& param) {
-    nClosest_ = 4;
-    param.get("nclosest", nClosest_);
+NClosest::NClosest(const param::MIRParametrisation& param) :
+    nClosest_(param::DefaultParametrisation::instance().get_value<size_t>("nclosest", param)) {
     ASSERT(nClosest_ > 0);
 }
 
@@ -47,11 +47,8 @@ bool NClosest::sameAs(const Pick& other) const {
 
 
 void NClosest::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "type"
-      << "nclosest";
-    j << "nclosest" << nClosest_;
-    j.endObject();
+    j << type() << "nclosest";
+    param::DefaultParametrisation::instance().json(j, "nclosest", nClosest_);
 }
 
 

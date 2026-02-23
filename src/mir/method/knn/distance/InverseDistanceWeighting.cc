@@ -83,11 +83,8 @@ bool InverseDistanceWeighting::sameAs(const DistanceWeighting& other) const {
 
 
 void InverseDistanceWeighting::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "type"
-      << "inverse-distance-weighting";
+    j << type() << "inverse-distance-weighting";
     j << "inverse-distance-weighting-power" << power_;
-    j.endObject();
 }
 
 

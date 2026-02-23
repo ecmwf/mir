@@ -143,8 +143,6 @@ private:
 
     const LatLon* croppedRepresentation(const util::BoundingBox&) const override;
 
-    bool extendBoundingBoxOnIntersect() const override;
-
     // -- Class members
     // None
 

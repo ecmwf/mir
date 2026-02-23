@@ -12,8 +12,6 @@
 
 #include "mir/repres/gauss/reduced/Octahedral.h"
 
-#include "mir/api/MIRJob.h"
-#include "mir/api/mir_config.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -45,17 +43,6 @@ Octahedral::Octahedral(size_t N, const util::BoundingBox& bbox, double angularPr
 }
 
 
-void Octahedral::fillGrib(grib_info& info) const {
-    Reduced::fillGrib(info);
-}
-
-
-void Octahedral::fillJob(api::MIRJob& job) const {
-    Reduced::fillJob(job);
-    job.set("grid", "O" + std::to_string(N_));
-}
-
-
 void Octahedral::makeName(std::ostream& out) const {
     out << "O" << N_;
     bbox_.makeName(out);
@@ -69,11 +56,7 @@ bool Octahedral::sameAs(const Representation& other) const {
 
 
 atlas::Grid Octahedral::atlasGrid() const {
-#if mir_HAVE_ATLAS
     return atlas::ReducedGaussianGrid("O" + std::to_string(N_), domain());
-#else
-    NOTIMP;
-#endif
 }
 
 

@@ -62,7 +62,8 @@ const param::SimpleParametrisation& Config::find(const param::MIRParametrisation
     }
 
     if (!silent_ && fixes->size() > 0) {
-        Log::warning() << "Config: " << *fixes << std::endl;
+        static const Log::Plural fix{"Fix", "Fixes"};
+        Log::debug() << fix(fixes->size()) << *fixes << std::endl;
     }
 
     return *fixes;

@@ -11,7 +11,7 @@
 cimport eckit_defs as eckit
 cimport eckit_geo_defs as eckit_geo
 cimport mir_defs as mir
-cimport std_defs as std
+cimport numpy as cnp
 from cython.operator cimport dereference
 from libc.stdlib cimport free
 from libc.stdlib cimport malloc
@@ -19,16 +19,6 @@ from libc.string cimport strdup
 from libcpp.string cimport string
 from libcpp.utility cimport pair
 from libcpp.vector cimport vector
-
-
-cdef extern from *:
-    cdef int MIR_PYTHON_HAVE_NUMPY
-
-try:
-    cimport numpy as cnp
-except ImportError:
-    pass
-
 
 # init section -- ensure libmir.so is loaded
 
@@ -38,6 +28,7 @@ import findlibs
 
 m = findlibs.find("mir")
 CDLL(m)
+
 
 # definitions
 cdef class Args:
@@ -53,8 +44,7 @@ cdef class Args:
             raise MemoryError("Args: failed to allocate argv")
 
         for i, arg in enumerate(sys.argv):
-            arg_str = arg.encode()
-            self.argv[i] = strdup(arg_str)
+            self.argv[i] = strdup(arg)
 
     def __dealloc__(self):
         free(self.argv)
@@ -67,12 +57,20 @@ _args = Args()
 init(_args)
 
 
-def home():
-    return mir.LibMir.homeDir().decode()
+def home() -> str:
+    return mir.LibMir.homeDir()
 
 
-def cache():
-    return mir.LibMir.cacheDir().decode()
+def cache() -> str:
+    return mir.LibMir.cacheDir()
+
+
+def version() -> str:
+    return mir.LibMir.instance().version()
+
+
+def git_sha1() -> str:
+    return mir.LibMir.instance().gitsha1(40)
 
 
 cdef class MIRInput:
@@ -171,8 +169,6 @@ cdef class ArrayInput(MIRInput):
 
 
 cdef class ArrayOutput(MIROutput):
-    cdef public str _typecode
-
     def __cinit__(self):
         self._output = new mir.ArrayOutput()
 
@@ -181,7 +177,7 @@ cdef class ArrayOutput(MIROutput):
 
     @property
     def spec_str(self) -> str:
-        return (<mir.ArrayOutput*> self._output).gridspec().decode()
+        return (<mir.ArrayOutput*> self._output).gridspec()
 
     @property
     def spec(self) -> dict:
@@ -197,32 +193,24 @@ cdef class ArrayOutput(MIROutput):
     def size(self) -> int:
         return (<mir.ArrayOutput*> self._output).values().size()
 
-    def values(self, typecode = None, dtype = None):
+    def values(self, dtype = None):
+        import numpy as np
+
         cdef double* data_ptr = (<mir.ArrayOutput*> self._output).values().data()
         cdef Py_ssize_t size = (<mir.ArrayOutput*> self._output).values().size()
         cdef vector[size_t] shape_vec = (<mir.ArrayOutput*> self._output).shape()
         cdef tuple shape = tuple(shape_vec)
 
-        if MIR_PYTHON_HAVE_NUMPY and not typecode:
-            import numpy as np
+        assert dtype in (None, np.float32, np.float64)
+        arr = np.array(<cnp.float64_t[:size]>data_ptr, dtype=dtype)  # copy
 
-            assert dtype in (None, np.float32, np.float64)
-            if dtype == np.float32:
-                arr = np.array(<cnp.float64_t[:size]>data_ptr, dtype=np.float32)  # copy
-            else:
-                arr = np.asarray(<cnp.float64_t[:size]>data_ptr)  # no-copy
+        cdef double miss = (<mir.ArrayOutput*> self._output).missingValue()
+        if not np.isnan(miss):
+            arr[arr == miss] = np.nan
 
-            if len(shape) > 1:
-                return arr.reshape(shape)
-            return arr
-
-        else:
-            from array import array
-
-            assert typecode in (None, "d", "f")
-            if typecode == "f":
-                return array("f", [<float> data_ptr[i] for i in range(size)])  # copy
-            return array("d", <double[:size]>data_ptr)  # no-copy
+        if len(shape) > 1:
+            return arr.reshape(shape)
+        return arr
 
 
 cdef class MultiDimensionalGribFileInput(MIRInput):
@@ -237,7 +225,6 @@ cdef class Job:
     cdef mir.MIRJob j
 
     def __init__(self, **kwargs):
-        cdef str key, value
         for key, value in kwargs.items():
             self.set(key, value)
 
@@ -245,12 +232,14 @@ cdef class Job:
         cdef string key_str, value_str
 
         assert isinstance(key, str)
-        key_str = key.encode()
+        key_str = key.replace("_", "-")
 
         if isinstance(value, dict):
-            from yaml import dump
-            value_str = dump(value, default_flow_style=True).strip().encode()
-            self.j.set(key_str, value_str)
+            for k, v in value.items():
+                assert isinstance(k, str)
+                self.set(key if k == "type" else k, v)
+        elif isinstance(value, list):
+            self.set(key, "/".join(str(v) for v in value))
         elif isinstance(value, str):
             value_str = value.encode()
             self.j.set(key_str, value_str)
@@ -295,18 +284,11 @@ cdef class Job:
     #     return self
 
     @property
-    def json(self):
-        cdef std.ostringstream oss
-        cdef eckit.JSON* j = new eckit.JSON(oss)
-        self.j.json(dereference(j))
-        del j
-        return oss.to_string()
+    def json(self) -> str:
+        return self.j.json_str()
 
     def __str__(self):
-        cdef mir.ostringstream oss
-        oss << self.j
-        cdef str jstr = oss.to_string()
-        return jstr
+        return self.json
 
     __repr__ = __str__
 
@@ -323,7 +305,7 @@ cdef class Grid:
 
         try:
             assert isinstance(spec, str)
-            self._grid = eckit_geo.GridFactory.make_from_string(spec.encode())
+            self._grid = eckit_geo.GridFactory.make_from_string(spec)
 
         except RuntimeError as e:
             # opportunity to do something interesting
@@ -340,15 +322,15 @@ cdef class Grid:
 
     def bounding_box(self) -> tuple:
         cdef const eckit_geo.BoundingBox* bbox = &self._grid.boundingBox()
-        cdef double north = bbox.north
-        cdef double west = bbox.west
-        cdef double south = bbox.south
-        cdef double east = bbox.east
+        cdef double north = bbox.north()
+        cdef double west = bbox.west()
+        cdef double south = bbox.south()
+        cdef double east = bbox.east()
         return north, west, south, east
 
     @property
     def spec_str(self) -> str:
-        return self._grid.spec_str().decode()
+        return self._grid.spec_str()
 
     @property
     def spec(self) -> dict:
@@ -357,7 +339,7 @@ cdef class Grid:
 
     @property
     def type(self) -> str:
-        return self._grid.type().decode()
+        return self._grid.type()
 
     @property
     def shape(self) -> tuple:
@@ -372,3 +354,55 @@ cdef class Grid:
 
     def __dealloc__(self):
         del self._grid
+
+
+cdef class Interpolation:
+    cdef const mir.Method* _method
+
+    def __cinit__(self, spec = None, **kwargs):
+        # convert arguments to spec: dict without None/blank string values
+        if kwargs:
+            assert not spec
+            spec = kwargs
+
+        if spec is None:
+            spec = dict()
+        elif isinstance(spec, str):
+            spec = dict(interpolation=spec) if spec.strip() else dict()
+        elif not isinstance(spec, dict):
+            raise TypeError(f"Interpolation: unsupported spec type: {type(spec)}")
+
+        spec = {k.replace("_", "-"): v
+                for k, v in spec.items()
+                if v is not None and not (isinstance(v, str) and not v.strip())}
+
+        try:
+            from yaml import dump
+
+            s = dump(spec, default_flow_style=True).strip() if spec else ""
+            self._method = mir.MethodFactory.make_from_string(s)
+
+        except RuntimeError as e:
+            # opportunity to do something interesting
+            raise
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Interpolation):
+            return NotImplemented
+        return self.json == other.json
+
+    @property
+    def spec(self) -> dict:
+        from yaml import safe_load
+        return safe_load(self.json)
+
+    @property
+    def type(self) -> str:
+        return self._method.type()
+
+    @property
+    def json(self) -> str:
+        return self._method.json_str()
+
+    def __dealloc__(self):
+        del self._method

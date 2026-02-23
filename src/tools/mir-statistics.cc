@@ -24,7 +24,6 @@
 #include "mir/output/GribFileOutput.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/ConfigurationWrapper.h"
-#include "mir/param/DefaultParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/stats/Method.h"
 #include "mir/stats/Statistics.h"
@@ -103,7 +102,6 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
     // - lookup configuration for input metadata-specific parametrisation
 
     const param::ConfigurationWrapper args_wrap(args);
-    const param::DefaultParametrisation defaults;
 
     auto& log = Log::info();
     prec_t precision;
@@ -129,8 +127,7 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
         args_wrap.get("statistics", statistics);
 
         // per-point statistics
-        std::unique_ptr<param::MIRParametrisation> param(
-            new param::CombinedParametrisation(args_wrap, firstGribFile, defaults));
+        std::unique_ptr<param::MIRParametrisation> param(new param::CombinedParametrisation(args_wrap, firstGribFile));
         std::unique_ptr<stats::Method> pps(stats::MethodFactory::build(statistics, *param));
         pps->resize(Nfirst);
 
@@ -197,8 +194,7 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
             args_wrap.get("statistics", statistics);
 
             // Calculate and show statistics
-            std::unique_ptr<param::MIRParametrisation> param(
-                new param::CombinedParametrisation(args_wrap, grib, defaults));
+            std::unique_ptr<param::MIRParametrisation> param(new param::CombinedParametrisation(args_wrap, grib));
             std::unique_ptr<stats::Statistics> stats(stats::StatisticsFactory::build(statistics, *param));
             stats->execute(input.field());
 

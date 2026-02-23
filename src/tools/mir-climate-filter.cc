@@ -28,7 +28,6 @@
 #include "mir/output/GribFileOutput.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/ConfigurationWrapper.h"
-#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
@@ -101,7 +100,6 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
     util::MIRStatistics statistics;
     context::Context ctx(*in, statistics);
 
-    static const param::DefaultParametrisation defaults;
     static const param::ConfigurationWrapper commandLine(args);
     param::RuntimeParametrisation user(commandLine);
     user.set("filter", true);
@@ -131,7 +129,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
 
         // setup parametrisation
         std::unique_ptr<param::MIRParametrisation> param(
-            new param::CombinedParametrisation(user, in->parametrisation(), defaults));
+            new param::CombinedParametrisation(user, in->parametrisation()));
         ASSERT(param);
 
 

@@ -14,6 +14,8 @@
 
 #include <sstream>
 
+#include "eckit/utils/SafeCasts.h"
+
 #include "mir/util/Exceptions.h"
 
 
@@ -41,10 +43,8 @@ const MIRParametrisation& MIRParametrisation::fieldParametrisation() const {
 
 
 bool MIRParametrisation::get(const std::string& name, size_t& value) const {
-    long v;
-    if (get(name, v)) {
-        ASSERT(v >= 0);
-        value = size_t(v);
+    if (long v = 0; get(name, v)) {
+        value = eckit::into_unsigned(v);
         return true;
     }
     return false;
@@ -52,13 +52,11 @@ bool MIRParametrisation::get(const std::string& name, size_t& value) const {
 
 
 bool MIRParametrisation::get(const std::string& name, std::vector<size_t>& value) const {
-    std::vector<long> v;
-    if (get(name, v)) {
+    if (std::vector<long> v; get(name, v)) {
         value.clear();
         value.reserve(v.size());
-        for (const long& l : v) {
-            ASSERT(l >= 0);
-            value.push_back(size_t(l));
+        for (const auto& l : v) {
+            value.emplace_back(eckit::into_unsigned(l));
         }
         return true;
     }
@@ -66,8 +64,7 @@ bool MIRParametrisation::get(const std::string& name, std::vector<size_t>& value
 }
 
 bool MIRParametrisation::get(const std::string& name, long long& value) const {
-    long v;
-    if (get(name, v)) {
+    if (long v = 0; get(name, v)) {
         ASSERT(v >= 0);
         value = v;
         return true;
@@ -77,12 +74,11 @@ bool MIRParametrisation::get(const std::string& name, long long& value) const {
 
 
 bool MIRParametrisation::get(const std::string& name, std::vector<long long>& value) const {
-    std::vector<long> v;
-    if (get(name, v)) {
+    if (std::vector<long> v; get(name, v)) {
         value.clear();
         value.reserve(v.size());
-        for (const long& l : v) {
-            value.push_back(l);
+        for (const auto& l : v) {
+            value.emplace_back(l);
         }
         return true;
     }

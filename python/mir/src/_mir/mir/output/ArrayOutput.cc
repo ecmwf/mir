@@ -12,6 +12,7 @@
 
 #include "mir/output/ArrayOutput.h"
 
+#include <cmath>
 #include <ostream>
 #include <sstream>
 
@@ -36,6 +37,11 @@ size_t ArrayOutput::save(const param::MIRParametrisation&, context::Context& ctx
     ASSERT(field.dimensions() == 1);
     field.validate();
     values_ = field.values(0);
+
+    missingValue_ = field.missingValue();
+    if (std::isnan(missingValue_)) {
+        missingValue_ = std::numeric_limits<double>::quiet_NaN();
+    }
 
     // save gridspec (a hack)
     api::MIRJob job;

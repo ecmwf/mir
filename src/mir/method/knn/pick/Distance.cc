@@ -16,6 +16,7 @@
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
+#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
 
@@ -23,9 +24,8 @@
 namespace mir::method::knn::pick {
 
 
-Distance::Distance(const param::MIRParametrisation& param) {
-    distance_ = 1.;
-    param.get("distance", distance_);
+Distance::Distance(const param::MIRParametrisation& param) :
+    distance_(param::DefaultParametrisation::instance().get_value<double>("distance", param)) {
     ASSERT(distance_ > 0.);
 }
 
@@ -48,11 +48,8 @@ bool Distance::sameAs(const Pick& other) const {
 
 
 void Distance::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "type"
-      << "distance";
-    j << "distance" << distance_;
-    j.endObject();
+    j << type() << "distance";
+    param::DefaultParametrisation::instance().json(j, "distance", distance_);
 }
 
 

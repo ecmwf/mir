@@ -12,8 +12,6 @@
 
 #include "mir/repres/gauss/reduced/Classic.h"
 
-#include "mir/api/MIRJob.h"
-#include "mir/api/mir_config.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -44,17 +42,6 @@ Classic::Classic(size_t N, const util::BoundingBox& bbox, double angularPrecisio
 }
 
 
-void Classic::fillGrib(grib_info& info) const {
-    Reduced::fillGrib(info);
-}
-
-
-void Classic::fillJob(api::MIRJob& job) const {
-    Reduced::fillJob(job);
-    job.set("grid", "N" + std::to_string(N_));
-}
-
-
 void Classic::makeName(std::ostream& out) const {
     out << "N" << N_;
     bbox_.makeName(out);
@@ -68,11 +55,7 @@ bool Classic::sameAs(const Representation& other) const {
 
 
 atlas::Grid Classic::atlasGrid() const {
-#if mir_HAVE_ATLAS
     return atlas::ReducedGaussianGrid("N" + std::to_string(N_), domain());
-#else
-    NOTIMP;
-#endif
 }
 
 

@@ -34,9 +34,9 @@ public:
     };
 
 public:
-    WeightMatrix(SparseMatrix::Allocator* = nullptr);
+    explicit WeightMatrix(SparseMatrix::Allocator* = nullptr);
 
-    WeightMatrix(const eckit::PathName&);
+    explicit WeightMatrix(const eckit::PathName&);
 
     WeightMatrix(Size rows, Size cols);
 

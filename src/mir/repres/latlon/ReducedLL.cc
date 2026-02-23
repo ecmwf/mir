@@ -129,7 +129,6 @@ void ReducedLL::fillJob(api::MIRJob& job) const {
 }
 
 atlas::Grid ReducedLL::atlasGrid() const {
-#if mir_HAVE_ATLAS
     const util::Domain dom = domain();
     auto N                 = long(pl_.size());
 
@@ -137,9 +136,6 @@ atlas::Grid ReducedLL::atlasGrid() const {
     atlas::StructuredGrid::YSpace yspace(atlas::grid::LinearSpacing({{dom.north().value(), dom.south().value()}}, N));
 
     return atlas::StructuredGrid(xspace, yspace);
-#else
-    NOTIMP;
-#endif
 }
 
 void ReducedLL::fillMeshGen(util::MeshGeneratorParameters& params) const {

@@ -50,8 +50,12 @@ public:
 
     virtual void distance(const repres::Representation&) const;
 
+    virtual void json(eckit::JSON&) const = 0;
+
+protected:
+    const std::string& type() const;
+
 private:
-    virtual void json(eckit::JSON&) const   = 0;
     virtual void print(std::ostream&) const = 0;
 
     friend std::ostream& operator<<(std::ostream& s, const Pick& p) {
@@ -71,14 +75,16 @@ private:
     std::string name_;
     virtual Pick* make(const param::MIRParametrisation&) = 0;
 
-    PickFactory(const PickFactory&)            = default;
-    PickFactory& operator=(const PickFactory&) = default;
-
 protected:
-    PickFactory(const std::string& name);
+    explicit PickFactory(const std::string& name);
     virtual ~PickFactory();
 
 public:
+    PickFactory(const PickFactory&)            = default;
+    PickFactory(PickFactory&&)                 = default;
+    PickFactory& operator=(const PickFactory&) = default;
+    PickFactory& operator=(PickFactory&&)      = default;
+
     static const Pick* build(const std::string& name, const param::MIRParametrisation&);
     static void list(std::ostream&);
 };
@@ -89,7 +95,7 @@ class PickBuilder : public PickFactory {
     Pick* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
-    PickBuilder(const std::string& name) : PickFactory(name) {}
+    explicit PickBuilder(const std::string& name) : PickFactory(name) {}
 };
 
 

@@ -36,7 +36,6 @@
 #include "mir/input/GribFileInput.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/ConfigurationWrapper.h"
-#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/stats/Comparator.h"
@@ -618,10 +617,9 @@ void FieldComparator::compareFieldValues(const FieldComparator::MultiFile& multi
 
     // comparison method can be set by classification and/or representation
     const param::ConfigurationWrapper args_wrap(args_);
-    static param::DefaultParametrisation defaults;
 
-    param::CombinedParametrisation param1(args_wrap, input1->parametrisation(), defaults);
-    param::CombinedParametrisation param2(args_wrap, input2->parametrisation(), defaults);
+    param::CombinedParametrisation param1(args_wrap, input1->parametrisation());
+    param::CombinedParametrisation param2(args_wrap, input2->parametrisation());
 
     auto get_comparison = [](const param::MIRParametrisation& param, const data::MIRField& field) {
         std::string s;
@@ -663,10 +661,9 @@ void FieldComparator::compareFieldMissingValues(const FieldComparator::MultiFile
 
 
     const param::ConfigurationWrapper args_wrap(args_);
-    static param::DefaultParametrisation defaults;
 
-    param::CombinedParametrisation param1(args_wrap, input1->parametrisation(), defaults);
-    param::CombinedParametrisation param2(args_wrap, input2->parametrisation(), defaults);
+    param::CombinedParametrisation param1(args_wrap, input1->parametrisation());
+    param::CombinedParametrisation param2(args_wrap, input2->parametrisation());
 
     std::unique_ptr<stats::Comparator> comp(stats::ComparatorFactory::build("missing-values", param1, param2));
     auto problems = comp->execute(input1->field(), input2->field());

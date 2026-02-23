@@ -18,6 +18,7 @@
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
+#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
 
@@ -25,14 +26,12 @@
 namespace mir::method::knn::distance {
 
 
-Cressman::Cressman(const param::MIRParametrisation& parametrisation) {
-    parametrisation.get("cressman-model-extension-power", power_ = 1.);
+Cressman::Cressman(const param::MIRParametrisation& param) :
+    r_(param::DefaultParametrisation::instance().get_value<double>("distance", param)), r2_(r_ * r_) {
+    param.get("cressman-model-extension-power", power_ = 1.);
     ASSERT(power_ >= 1.);
 
-    parametrisation.get("distance", r_ = 1.);
     ASSERT(r_ >= 0.);
-
-    r2_ = r_ * r_;
 }
 
 
@@ -71,10 +70,7 @@ bool Cressman::sameAs(const DistanceWeighting& other) const {
 
 
 void Cressman::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "type"
-      << "cressman";
-    j.endList();
+    j << type() << "cressman";
 }
 
 

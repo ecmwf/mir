@@ -31,7 +31,7 @@ private:
     void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
 
-    Sample sample_;
+    const Sample sample_;
 };
 
 

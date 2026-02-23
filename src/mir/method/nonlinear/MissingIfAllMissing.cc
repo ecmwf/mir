@@ -108,11 +108,9 @@ void MissingIfAllMissing::hash(eckit::MD5& h) const {
 }
 
 
-void MissingIfAllMissing::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "type"
-      << "missing-if-all-missing";
-    j.endObject();
+const std::string& MissingIfAllMissing::name() const {
+    static const std::string NAME{"missing-if-all-missing"};
+    return NAME;
 }
 
 

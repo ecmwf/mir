@@ -1,0 +1,13 @@
+# input
+gridType=regular_ll,param=t,levtype=ml,level=1,grid=9-9.grib2
+# mir
+--bitmap=$tests_assertions_dir/GAUSS640_EU_GL --grid=F640 --area=90/-179.86/-90/180
+# grib_get
+Ni = 2560
+Nj = 1280
+gridName = F640
+longitudeOfFirstGridPointInDegrees = 180.141
+longitudeOfLastGridPointInDegrees = 180
+latitudeOfFirstGridPointInDegrees = 89.8924
+latitudeOfLastGridPointInDegrees = -89.8924
+numberOfMissingValues = 3067579

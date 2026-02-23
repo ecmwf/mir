@@ -46,7 +46,7 @@ const distance::DistanceWeighting& NearestNeighbour::distanceWeighting() const {
 }
 
 
-const char* NearestNeighbour::name() const {
+const char* NearestNeighbour::type() const {
     return "nearest-neighbour";
 }
 

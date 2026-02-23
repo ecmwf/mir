@@ -14,7 +14,6 @@
 
 #include "eckit/utils/MD5.h"
 
-#include "mir/api/mir_config.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 
@@ -48,22 +47,8 @@ bool FromPL::sameAs(const Representation& other) const {
 }
 
 
-void FromPL::fillGrib(grib_info& info) const {
-    Reduced::fillGrib(info);
-}
-
-
-void FromPL::fillJob(api::MIRJob& job) const {
-    Reduced::fillJob(job);
-}
-
-
 atlas::Grid FromPL::atlasGrid() const {
-#if mir_HAVE_ATLAS
     return atlas::ReducedGaussianGrid(pls(), domain());
-#else
-    NOTIMP;
-#endif
 }
 
 

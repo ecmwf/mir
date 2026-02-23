@@ -32,7 +32,7 @@ private:
 
     lsm::LandSeaMasks getMasks(const repres::Representation& in, const repres::Representation& out) const override;
 
-    const char* name() const override;
+    const char* type() const override;
     bool sameAs(const Method&) const override;
 
     const pick::Pick& pick() const override;

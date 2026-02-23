@@ -3,4 +3,4 @@ gridType=healpix,Nside=2,orderingConvention=nested.grib2
 # mir
 --grid=H2 --interpolation=linear
 # plan
-Gridded2NamedGrid[grid=H2,interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|Save[output=...]
+Gridded2NamedGrid[grid=H2,interpolation=linear,method=FiniteElement[type=linear,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|Save[output=...]

@@ -14,7 +14,6 @@
 
 #include <eccodes.h>
 
-#include <sstream>
 #include <string>
 #include <vector>
 

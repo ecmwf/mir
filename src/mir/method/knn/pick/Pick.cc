@@ -42,6 +42,12 @@ void Pick::distance(const repres::Representation& /*unused*/) const {
 }
 
 
+const std::string& Pick::type() const {
+    static const std::string TYPE{"nearest-method"};
+    return TYPE;
+}
+
+
 PickFactory::PickFactory(const std::string& name) : name_(name) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);

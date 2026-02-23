@@ -18,3 +18,6 @@ CDLL(m)
 
 # import mir-python itself
 from _mir import *
+
+__version__ = version()
+__git_sha1__ = git_sha1()

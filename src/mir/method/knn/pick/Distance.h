@@ -30,7 +30,7 @@ private:
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;
 
-    double distance_;
+    const double distance_;
 };
 
 

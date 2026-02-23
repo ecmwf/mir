@@ -66,14 +66,16 @@ class LegendreLoaderFactory {
     virtual LegendreLoader* make(const param::MIRParametrisation&, const eckit::PathName& path) = 0;
     virtual bool shared() const                                                                 = 0;
 
-    LegendreLoaderFactory(const LegendreLoaderFactory&)            = delete;
-    LegendreLoaderFactory& operator=(const LegendreLoaderFactory&) = delete;
-
 protected:
     LegendreLoaderFactory(const std::string&);
     virtual ~LegendreLoaderFactory();
 
 public:
+    LegendreLoaderFactory(const LegendreLoaderFactory&)            = delete;
+    LegendreLoaderFactory(LegendreLoaderFactory&&)                 = delete;
+    LegendreLoaderFactory& operator=(const LegendreLoaderFactory&) = delete;
+    LegendreLoaderFactory& operator=(LegendreLoaderFactory&&)      = delete;
+
     static LegendreLoader* build(const param::MIRParametrisation&, const eckit::PathName&);
     static void list(std::ostream&);
     static bool inSharedMemory(const param::MIRParametrisation&);

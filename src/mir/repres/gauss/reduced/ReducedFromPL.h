@@ -77,7 +77,9 @@ private:
     // -- Overridden methods
 
     Iterator* iterator() const override;
+
     const Gridded* croppedRepresentation(const util::BoundingBox&) const override;
+
     void makeName(std::ostream&) const override;
     bool sameAs(const Representation&) const override;
 

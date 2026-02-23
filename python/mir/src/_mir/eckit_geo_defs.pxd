@@ -20,10 +20,10 @@ cdef extern from "eckit/filesystem/PathName.h" namespace "eckit":
 
 cdef extern from "eckit/geo/area/BoundingBox.h" namespace "eckit::geo::area":
     cdef cppclass BoundingBox:
-        const double& north
-        const double& west
-        const double& south
-        const double& east
+        double north() const
+        double west() const
+        double south() const
+        double east() const
 
 
 cdef extern from "eckit/geo/Grid.h" namespace "eckit::geo":
@@ -37,4 +37,4 @@ cdef extern from "eckit/geo/Grid.h" namespace "eckit::geo":
 
     cdef cppclass GridFactory:
         @staticmethod
-        const Grid* make_from_string(const string) except +
+        const Grid* make_from_string(const string&) except +

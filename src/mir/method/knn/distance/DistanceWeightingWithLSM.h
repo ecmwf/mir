@@ -32,6 +32,8 @@ public:
 
     const DistanceWeighting* distanceWeighting(const param::MIRParametrisation&, const lsm::LandSeaMasks&) const;
 
+    const std::string& type() const override;
+
 private:
     bool sameAs(const DistanceWeighting&) const override;
     void json(eckit::JSON&) const override;

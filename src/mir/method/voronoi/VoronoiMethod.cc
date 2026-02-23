@@ -53,7 +53,7 @@ VoronoiMethod::VoronoiMethod(const param::MIRParametrisation& param) : MethodWei
 
 bool VoronoiMethod::sameAs(const Method& other) const {
     const auto* o = dynamic_cast<const VoronoiMethod*>(&other);
-    return (o != nullptr) && name() == o->name() && MethodWeighted::sameAs(*o);
+    return (o != nullptr) && type() == o->type() && MethodWeighted::sameAs(*o);
 }
 
 
@@ -154,15 +154,8 @@ void VoronoiMethod::hash(eckit::MD5& md5) const {
 }
 
 
-void VoronoiMethod::json(eckit::JSON& j) const {
-    j.startObject();
-    MethodWeighted::json(j);
-    j.endObject();
-}
-
-
 void VoronoiMethod::print(std::ostream& out) const {
-    out << "VoronoiMethod[name=" << name() << ",";
+    out << "VoronoiMethod[type=" << type() << ",";
     MethodWeighted::print(out);
     out << "]";
 }
@@ -173,13 +166,8 @@ WeightMatrix::Check VoronoiMethod::validateMatrixWeights() const {
 }
 
 
-const char* VoronoiMethod::name() const {
-    return "voronoi";
-}
-
-
 int VoronoiMethod::version() const {
-    return 1;
+    return 0;
 }
 
 

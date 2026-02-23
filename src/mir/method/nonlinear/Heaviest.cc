@@ -75,11 +75,9 @@ void Heaviest::hash(eckit::MD5& h) const {
 }
 
 
-void Heaviest::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "type"
-      << "heaviest";
-    j.endObject();
+const std::string& Heaviest::name() const {
+    static const std::string NAME{"heaviest"};
+    return NAME;
 }
 
 

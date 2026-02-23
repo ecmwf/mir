@@ -113,11 +113,9 @@ void MissingIfHeaviestMissing::hash(eckit::MD5& h) const {
 }
 
 
-void MissingIfHeaviestMissing::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "type"
-      << "missing-if-heaviest-missing";
-    j.endObject();
+const std::string& MissingIfHeaviestMissing::name() const {
+    static const std::string NAME{"missing-if-heaviest-missing"};
+    return NAME;
 }
 
 

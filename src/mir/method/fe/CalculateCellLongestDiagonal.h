@@ -33,7 +33,7 @@ public:
 
     // -- Constructors
 
-    CalculateCellLongestDiagonal(std::string name = "cell_longest_diagonal", bool force_recompute = false);
+    explicit CalculateCellLongestDiagonal(std::string name = "cell_longest_diagonal", bool force_recompute = false);
 
     // -- Destructor
     // None

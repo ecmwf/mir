@@ -14,6 +14,8 @@
 
 #include <string>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 
@@ -54,6 +56,11 @@ void FailMethod::execute(context::Context& /*unused*/, const repres::Representat
 }
 
 
+const char* FailMethod::type() const {
+    return "fail";
+}
+
+
 void FailMethod::hash(eckit::MD5& /*unused*/) const {}
 
 
@@ -64,6 +71,11 @@ int FailMethod::version() const {
 
 void FailMethod::print(std::ostream& out) const {
     out << "FailMethod[]";
+}
+
+
+void FailMethod::json(eckit::JSON& out) const {
+    out << type();
 }
 
 

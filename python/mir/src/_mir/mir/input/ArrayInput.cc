@@ -25,10 +25,8 @@
 #include "mir/param/GridSpecParametrisation.h"
 #include "mir/repres/Representation.h"
 
-#if defined(MIR_PYTHON_HAVE_NUMPY)
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <numpy/arrayobject.h>
-#endif
 
 
 namespace mir::input {
@@ -45,7 +43,6 @@ ArrayInput::ArrayInput(PyObject* values, PyObject* gridspec) : values_(values), 
     param_ = std::make_unique<mir::param::GridSpecParametrisation>(std::string{PyUnicode_AsUTF8(gridspec_)});
     ASSERT(param_);
 
-#if defined(MIR_PYTHON_HAVE_NUMPY)
     if (_import_array() < 0) {
         PyErr_Print();
         throw std::runtime_error("ArrayInput: NumPy failed to import/initialise");
@@ -78,7 +75,6 @@ ArrayInput::ArrayInput(PyObject* values, PyObject* gridspec) : values_(values), 
 
         throw std::runtime_error("ArrayInput: NumPy array must be float32 or float64.");
     }
-#endif
 
     // Check if input is a array.array (continuous memory)
     if (PyObject_GetBuffer(values_, &buffer_, PyBUF_CONTIG_RO | PyBUF_FORMAT) == -1) {

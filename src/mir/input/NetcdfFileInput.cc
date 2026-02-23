@@ -48,20 +48,17 @@ NetcdfFileInput::~NetcdfFileInput() {
 
 const netcdf::Field& NetcdfFileInput::currentField() const {
     ASSERT(0 <= current_ && current_ < int(fields_.size()));
-    return *fields_[size_t(current_)];
+    return *fields_[static_cast<size_t>(current_)];
 }
 
 
-grib_handle* NetcdfFileInput::gribHandle(size_t /*which*/) const {
-    // ASSERT(which == 0);
-    static grib_handle* handle = nullptr;
-    if (handle == nullptr) {
-        handle = codes_grib_handle_new_from_samples(nullptr, "GRIB1");
+grib_handle* NetcdfFileInput::gribHandle(size_t which) const {
+    auto* handle = MIRInput::gribHandle(which);
+    ASSERT(handle != nullptr);
 
-        constexpr long MISSING = 255;
-        codes_set_long(handle, "paramId", MISSING);
-        ASSERT(handle);
-    }
+    constexpr long MISSING = 255;
+    codes_set_long(handle, "paramId", MISSING);
+
     return handle;
 }
 
@@ -92,7 +89,7 @@ bool NetcdfFileInput::next() {
     FieldParametrisation::reset();
 
     current_++;
-    return size_t(current_) < fields_.size();
+    return static_cast<size_t>(current_) < fields_.size();
 }
 
 

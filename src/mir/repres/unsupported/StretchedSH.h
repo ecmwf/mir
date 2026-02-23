@@ -12,13 +12,13 @@
 
 #pragma once
 
-#include "mir/repres/Gridded.h"
+#include "mir/repres/Representation.h"
 
 
 namespace mir::repres::unsupported {
 
 
-class StretchedSH final : public Gridded {
+class StretchedSH final : public Representation {
 public:
     // -- Exceptions
     // None

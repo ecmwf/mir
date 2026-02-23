@@ -10,7 +10,7 @@ foreach(_t ${test_files})
         ARGS        ${_t}
         ENVIRONMENT ${_testEnvironment})
     if((_t MATCHES "[.]fail$") OR
-       (_t MATCHES "[.]lsm[.]" AND NOT HAVE_MIR_DOWNLOAD_MASKS))
+       (_t MATCHES "[.]proj[.]" AND NOT atlas_HAVE_PROJ))
         set_tests_properties(${_t} PROPERTIES WILL_FAIL TRUE)
     endif()
 endforeach()

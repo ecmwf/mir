@@ -12,77 +12,65 @@
 
 #pragma once
 
+#include <type_traits>
+
+#include "eckit/log/JSON.h"
+#include "eckit/types/FloatCompare.h"
+
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir::param {
 
 
 class DefaultParametrisation : public SimpleParametrisation {
-public:
-    // -- Exceptions
-    // None
-
+private:
     // -- Constructors
 
     DefaultParametrisation();
 
-    // -- Destructor
-
-    ~DefaultParametrisation() override;
-
-    // -- Convertors
-    // None
-
-    // -- Operators
-    // None
-
+public:
     // -- Methods
-    // None
 
-    // -- Class members
-    // None
+    static const DefaultParametrisation& instance() {
+        static const DefaultParametrisation instance;
+        return instance;
+    }
 
-    // -- Class methods
-    // None
+    template <typename T>
+    T get_value(const std::string& name, const MIRParametrisation& param) const {
+        T value{};
 
-protected:
-    // -- Members
-    // None
+        if constexpr (std::is_same_v<std::remove_cv_t<T>, size_t>) {
+            ASSERT(MIRParametrisation::get(name, value));
+        }
+        else {
+            ASSERT(get(name, value));
+        }
+        param.get(name, value);
 
-    // -- Methods
-    // None
+        return value;
+    }
 
-    // -- Overridden methods
-    // None
+    template <typename T>
+    void json(eckit::JSON& j, const std::string& name, const T& value) const {
+        T default_value{};
 
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-private:
-    // -- Types
-    // None
-
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-    // -- Friends
-    // None
+        if constexpr (std::is_floating_point_v<std::remove_cv_t<T>>) {
+            if (!get(name, default_value) || !eckit::types::is_approximately_equal(value, default_value)) {
+                j << name << value;
+            }
+        }
+        else if constexpr (std::is_same_v<std::remove_cv_t<T>, size_t>) {
+            if (!MIRParametrisation::get(name, default_value) || value != default_value) {
+                j << name << value;
+            }
+        }
+        else if (!get(name, default_value) || value != default_value) {
+            j << name << value;
+        }
+    }
 };
 
 

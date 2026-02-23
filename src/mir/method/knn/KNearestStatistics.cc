@@ -36,7 +36,7 @@ KNearestStatistics::KNearestStatistics(const param::MIRParametrisation& param) :
 }
 
 
-const char* KNearestStatistics::name() const {
+const char* KNearestStatistics::type() const {
     return "k-nearest-statistics";
 }
 

@@ -40,6 +40,13 @@ std::string LibMir::cacheDir() {
 }
 
 
+std::string LibMir::homeUrl() {
+    static std::string mirHomeUrl =
+        eckit::LibResource<std::string, LibMir>("mir-home-url;$MIR_HOME_URL", "https://sites.ecmwf.int/repository/mir");
+    return mirHomeUrl;
+}
+
+
 bool LibMir::caching() {
     static bool mirCaching = eckit::LibResource<bool, LibMir>("mir-caching;$MIR_CACHING", true);
     return mirCaching;
@@ -53,6 +60,16 @@ const std::string& LibMir::lsmNamed() {
 }
 
 
+const std::string& LibMir::gribSampleName() {
+    // FIXME: make this edition-independent
+    static const std::string mirGribSample{[&](std::string value) {
+        instance().configuration().get("grib-sample", value);
+        return eckit::LibResource<std::string, LibMir>("mir-grib-sample;$MIR_GRIB_SAMPLE", value);
+    }("GRIB2")};
+    return mirGribSample;
+}
+
+
 eckit::PathName LibMir::configFile(config_file c) {
     using r = eckit::LibResource<std::string, LibMir>;
 
@@ -63,6 +80,7 @@ eckit::PathName LibMir::configFile(config_file c) {
         {r("mir-config-grib-output;$MIR_CONFIG_GRIB_OUTPUT", "~mir/etc/mir/grib-output.yaml")},
         {r("mir-config-grids;$MIR_CONFIG_GRIDS", "~mir/etc/mir/grids.yaml")},
         {r("mir-config-limiter;$MIR_CONFIG_LIMITER", "~mir/etc/mir/limiter.yaml")},
+        {r("mir-config-lsm;$MIR_CONFIG_LSM", "~mir/etc/mir/lsm.yaml")},
         {r("mir-config-netcdf;$MIR_CONFIG_NETCDF", "~mir/etc/mir/netcdf.yaml")},
         {r("mir-config-parameter-class;$MIR_CONFIG_PARAMETER_CLASS", "~mir/etc/mir/parameter-class.yaml")},
         {r("mir-config-parameters;$MIR_CONFIG_PARAMETERS", "~mir/etc/mir/parameters.yaml")},

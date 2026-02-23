@@ -1,7 +1,7 @@
 # input
 level=500,param=t,type=cf,stream=enfo
-# mir
---area=11.4/-18.4/-10.8/8 --grid=0.2/0.2 --rotation=-43/10 --dont-compress-plan
+# mir (truncation to reduce Legendre coefficients file size)
+--area=11.4/-18.4/-10.8/8 --grid=0.2/0.2 --rotation=-43/10 --dont-compress-plan --truncation=20
 # grib_get
 Nj = 112
 Ni = 133

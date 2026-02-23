@@ -23,6 +23,7 @@
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Intersect.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -34,8 +35,8 @@ Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParam
     method_.reset(method::MethodFactory::build(interpolation_, param));
     ASSERT(method_);
 
-    inputIntersectsOutput_ = !param.has("rotation");
     param.get("interpolation-global-input", inputGlobal_ = false);
+    param.get("interpolation-global-output", outputGlobal_ = false);
 }
 
 
@@ -63,53 +64,29 @@ bool Gridded2GriddedInterpolation::canCrop() const {
 
 
 method::Cropping Gridded2GriddedInterpolation::cropping(context::Context& ctx) const {
-
-    const data::MIRField& field = ctx.field();
+    const auto& field = ctx.field();
 
     repres::RepresentationHandle in(field.representation());
-    auto input = inputGlobal_ ? util::Domain{} : in->domain();
-    auto output(outputBoundingBox());
 
     method::Cropping crop;
     if (method_->hasCropping()) {
         crop.boundingBox(method_->getCropping());
     }
 
-    if (!input.isGlobal()) {
-        if (inputIntersectsOutput_) {
+    auto in_bbox = inputGlobal_ ? util::Domain{} : in->domain();
+    if (!in_bbox.isGlobal()) {
+        repres::RepresentationHandle out(outputRepresentation());
+        auto out_bbox = outputGlobal_ ? util::Domain{} : outputBoundingBox();
 
-            repres::RepresentationHandle out(outputRepresentation());
-            if (out->extendBoundingBoxOnIntersect()) {
-                out->extendBoundingBox(input).intersects(output);
-            }
-            else {
-                input.intersects(output);
-            }
-
-            if (crop) {
-                crop.boundingBox().intersects(output);
-            }
-            crop.boundingBox(output);
-        }
-        else if (!input.contains(output)) {
-            std::ostringstream msg;
-            msg << "Input does not contain output:"
-                << "\n\t"
-                   "Input: "
-                << input
-                << "\n\t"
-                   "Output: "
-                << outputBoundingBox();
-            throw exception::UserError(msg.str());
-        }
+        util::Intersect::build(out->intersectionOnCrop()).apply(*in, in_bbox, *out, out_bbox, crop);
     }
 
     if (crop) {
         // disable cropping if global and West aligned with input (no "renumbering")
         const auto& bbox = crop.boundingBox();
         const util::Domain domain(bbox.north(), bbox.west(), bbox.south(), bbox.east());
-        if (domain.isGlobal() && bbox.west() == input.west()) {
-            return method::Cropping();
+        if (domain.isGlobal() && bbox.west() == in_bbox.west()) {
+            return {};
         }
     }
 
@@ -136,8 +113,7 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
 
 bool Gridded2GriddedInterpolation::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const Gridded2GriddedInterpolation*>(&other);
-    return (o != nullptr) && (interpolation_ == o->interpolation_) && method_->sameAs(*o->method_) &&
-           (inputIntersectsOutput_ == o->inputIntersectsOutput_);
+    return (o != nullptr) && (interpolation_ == o->interpolation_) && method_->sameAs(*o->method_);
 }
 
 

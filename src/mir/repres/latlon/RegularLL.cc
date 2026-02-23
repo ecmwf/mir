@@ -72,7 +72,6 @@ void RegularLL::json(eckit::JSON& json) const {
 }
 
 atlas::Grid RegularLL::atlasGrid() const {
-#if mir_HAVE_ATLAS
     // NOTE: yspace uses bounding box and not the domain
     // (this works together with the Atlas RectangularDomain cropping)
     const auto dom = domain();
@@ -84,9 +83,6 @@ atlas::Grid RegularLL::atlasGrid() const {
         atlas::grid::LinearSpacing(bbox_.north().value(), bbox_.south().value(), long(nj_)));
 
     return atlas::StructuredGrid(xspace, yspace, {}, dom);
-#else
-    NOTIMP;
-#endif
 }
 
 void RegularLL::fillGrib(grib_info& info) const {

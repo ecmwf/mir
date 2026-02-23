@@ -18,6 +18,7 @@
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
+#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
 
@@ -25,13 +26,10 @@
 namespace mir::method::knn::pick {
 
 
-Sample::Sample(const param::MIRParametrisation& param) {
-    distance_ = 1.;
-    param.get("distance", distance_);
+Sample::Sample(const param::MIRParametrisation& param) :
+    nClosest_(param::DefaultParametrisation::instance().get_value<size_t>("nclosest", param)),
+    distance_(param::DefaultParametrisation::instance().get_value<double>("distance", param)) {
     ASSERT(distance_ > 0.);
-
-    nClosest_ = 4;
-    param.get("nclosest", nClosest_);
     ASSERT(nClosest_ > 0);
 }
 
@@ -44,14 +42,14 @@ void Sample::pick(const search::PointSearch& tree, const Point3& p, Pick::neighb
 
     // reservoir sampling in-place (output not ordered by distance)
     for (size_t n = nClosest_; n < closest.size(); ++n) {
-        auto r = size_t(std::rand()) % n;
+        auto r = static_cast<size_t>(std::rand()) % n;
         if (r < nClosest_) {
             closest[r] = closest[n];
         }
     }
 
     // closest.resize(nClosest_);  // FIXME: better than below (but has black magic)
-    closest.erase(closest.begin() + long(nClosest_), closest.end());
+    closest.erase(closest.begin() + static_cast<long>(nClosest_), closest.end());
 }
 
 
@@ -67,12 +65,9 @@ bool Sample::sameAs(const Pick& other) const {
 
 
 void Sample::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "type"
-      << "sample";
-    j << "nclosest" << nClosest_;
-    j << "distance" << distance_;
-    j.endObject();
+    j << type() << "sample";
+    param::DefaultParametrisation::instance().json(j, "nclosest", nClosest_);
+    param::DefaultParametrisation::instance().json(j, "distance", distance_);
 }
 
 
@@ -85,6 +80,11 @@ void Sample::hash(eckit::MD5& h) const {
     h << "sample";
     h << nClosest_;
     h << distance_;
+}
+
+
+double Sample::d() const {
+    return distance_;
 }
 
 

@@ -117,14 +117,16 @@ private:
     std::string name_;
     virtual Method* make(const param::MIRParametrisation&) = 0;
 
-    MethodFactory(const MethodFactory&)            = delete;
-    MethodFactory& operator=(const MethodFactory&) = delete;
-
 protected:
     MethodFactory(const std::string&);
     virtual ~MethodFactory();
 
 public:
+    MethodFactory(const MethodFactory&)            = delete;
+    MethodFactory(MethodFactory&&)                 = delete;
+    MethodFactory& operator=(const MethodFactory&) = delete;
+    MethodFactory& operator=(MethodFactory&&)      = delete;
+
     static void list(std::ostream&);
     static Method* build(const std::string&, const param::MIRParametrisation&);
 };

@@ -160,7 +160,6 @@ private:
 
 struct CoordinatesFromAtlas : Coordinates {
     CoordinatesFromAtlas(const atlas::Grid& grid) : Coordinates("atlas") {
-#if mir_HAVE_ATLAS
         auto N = size_t(grid.size());
         lats_.assign(N, std::numeric_limits<double>::signaling_NaN());
         lons_.assign(N, std::numeric_limits<double>::signaling_NaN());
@@ -172,9 +171,6 @@ struct CoordinatesFromAtlas : Coordinates {
             lons_[n] = p.lon();
             ++n;
         }
-#else
-        NOTIMP;
-#endif
     }
     const coord_t& latitudes() const override { return lats_; }
     const coord_t& longitudes() const override { return lons_; }

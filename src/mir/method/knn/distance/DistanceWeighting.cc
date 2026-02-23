@@ -90,4 +90,10 @@ WeightMatrix::Check DistanceWeighting::validateMatrixWeights() const {
 }
 
 
+const std::string& DistanceWeighting::type() const {
+    static const std::string TYPE{"distance-weighting"};
+    return TYPE;
+}
+
+
 }  // namespace mir::method::knn::distance

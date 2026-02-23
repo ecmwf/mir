@@ -27,7 +27,6 @@ namespace mir::tests::unit {
 
 
 CASE("NamedGrid") {
-
     auto& log = Log::info();
     auto old  = log.precision(16);
 
@@ -37,6 +36,7 @@ CASE("NamedGrid") {
         size_t numberOfCroppedPoints;
         util::BoundingBox bbox;
     };
+
 
     SECTION("numberOfPoints (F)") {
         std::vector<test_t> tests{
@@ -56,6 +56,7 @@ CASE("NamedGrid") {
             EXPECT(local->numberOfPoints() == t.numberOfCroppedPoints);
         }
     }
+
 
     SECTION("numberOfPoints (O)") {
         std::vector<test_t> tests{
@@ -84,25 +85,25 @@ CASE("NamedGrid") {
         }
     }
 
-    if constexpr (MIR_HAVE_ATLAS) {
-        SECTION("numberOfPoints (N)") {
-            std::vector<test_t> tests{
-                {"N128", 88838, 88838, {90, 0, -90, 359.297}},
-                {"N320", 542080, 13437, {-60, 50, -90, 180}},
-                {"N640", 2140702, 52654, {-60, 50, -90, 180}},
-            };
 
-            for (const auto& t : tests) {
-                log << "Test " + t.grid + " (global)" << std::endl;
-                repres::RepresentationHandle global(key::grid::Grid::lookup(t.grid).representation());
-                EXPECT(global->numberOfPoints() == t.numberOfPoints);
+    SECTION("numberOfPoints (N)") {
+        std::vector<test_t> tests{
+            {"N128", 88838, 88838, {90, 0, -90, 359.297}},
+            {"N320", 542080, 13437, {-60, 50, -90, 180}},
+            {"N640", 2140702, 52654, {-60, 50, -90, 180}},
+        };
 
-                log << "Test " + t.grid + " (cropped)" << std::endl;
-                repres::RepresentationHandle local(global->croppedRepresentation(t.bbox));
-                EXPECT(local->numberOfPoints() == t.numberOfCroppedPoints);
-            }
+        for (const auto& t : tests) {
+            log << "Test " + t.grid + " (global)" << std::endl;
+            repres::RepresentationHandle global(key::grid::Grid::lookup(t.grid).representation());
+            EXPECT(global->numberOfPoints() == t.numberOfPoints);
+
+            log << "Test " + t.grid + " (cropped)" << std::endl;
+            repres::RepresentationHandle local(global->croppedRepresentation(t.bbox));
+            EXPECT(local->numberOfPoints() == t.numberOfCroppedPoints);
         }
     }
+
 
     log.precision(old);
 }

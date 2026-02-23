@@ -19,6 +19,7 @@
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
+#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
 
@@ -26,8 +27,8 @@
 namespace mir::method::knn::pick {
 
 
-NearestNeighbourWithLowestIndex::NearestNeighbourWithLowestIndex(const param::MIRParametrisation& param) {
-    param.get("nclosest", nClosest_ = 4);
+NearestNeighbourWithLowestIndex::NearestNeighbourWithLowestIndex(const param::MIRParametrisation& param) :
+    nClosest_(param::DefaultParametrisation::instance().get_value<size_t>("nclosest", param)) {
     ASSERT(nClosest_ > 0);
 }
 
@@ -75,11 +76,8 @@ bool NearestNeighbourWithLowestIndex::sameAs(const Pick& other) const {
 
 
 void NearestNeighbourWithLowestIndex::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "type"
-      << "nearest-neighbour-with-lowest-index";
-    j << "nclosest" << nClosest_;
-    j.endObject();
+    j << type() << "nearest-neighbour-with-lowest-index";
+    param::DefaultParametrisation::instance().json(j, "nclosest", nClosest_);
 }
 
 

@@ -117,6 +117,13 @@ void Representation::fillMeshGen(util::MeshGeneratorParameters& /*unused*/) cons
 }
 
 
+std::string Representation::intersectionOnCrop() const {
+    std::ostringstream os;
+    os << "Representation::intersectionOnCrop() not implemented for " << *this;
+    throw exception::SeriousBug(os.str());
+}
+
+
 const Representation* Representation::croppedRepresentation(const util::BoundingBox& /*unused*/) const {
     std::ostringstream os;
     os << "Representation::croppedRepresentation() not implemented for " << *this;
@@ -188,13 +195,6 @@ const util::BoundingBox& Representation::boundingBox() const {
 util::BoundingBox Representation::extendBoundingBox(const util::BoundingBox& /*unused*/) const {
     std::ostringstream os;
     os << "Representation::extendBoundingBox() not implemented for " << *this;
-    throw exception::SeriousBug(os.str());
-}
-
-
-bool Representation::extendBoundingBoxOnIntersect() const {
-    std::ostringstream os;
-    os << "Representation::extendBoundingBoxOnIntersect() not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 

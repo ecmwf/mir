@@ -17,7 +17,7 @@ name = "mir-python"
 description = "Don't use this"
 requires-python=">=3.9"
 license = "Apache-2.0"
-license-files = ["../../LICENSE"]
+license-files = ["LICENSE"]
 authors = [
 	{ name = "European Centre for Medium-Range Weather Forecasts (ECMWF)", email = "software.support@ecmwf.int" }
 ]

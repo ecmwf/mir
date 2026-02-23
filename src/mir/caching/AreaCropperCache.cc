@@ -33,7 +33,7 @@ const char* AreaCropperCacheTraits::name() {
 
 
 int AreaCropperCacheTraits::version() {
-    return 2;
+    return 3;
 }
 
 

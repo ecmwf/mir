@@ -23,7 +23,6 @@ namespace mir::method {
 class Cropping {
 public:
     Cropping();
-    Cropping(const Cropping&);
 
     operator bool() const { return active_; }
 

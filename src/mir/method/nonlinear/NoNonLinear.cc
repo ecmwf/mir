@@ -50,11 +50,9 @@ void NoNonLinear::hash(eckit::MD5& h) const {
 }
 
 
-void NoNonLinear::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "type"
-      << "no";
-    j.endObject();
+const std::string& NoNonLinear::name() const {
+    static const std::string NAME{"no"};
+    return NAME;
 }
 
 

@@ -1,0 +1,14 @@
+# input
+gridType=regular_ll,param=t,levtype=ml,level=1,grid=9-9.grib2
+# mir
+--bitmap=$tests_assertions_dir/GRE01.MAP --grid=.5/.5 --area=65/-10/25/45
+# grib_get
+Ni = 111
+Nj = 81
+iDirectionIncrementInDegrees = 0.5
+jDirectionIncrementInDegrees = 0.5
+longitudeOfFirstGridPointInDegrees = 350
+longitudeOfLastGridPointInDegrees = 45
+latitudeOfFirstGridPointInDegrees = 65
+latitudeOfLastGridPointInDegrees = 25
+numberOfMissingValues = 7514

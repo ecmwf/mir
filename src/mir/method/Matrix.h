@@ -28,7 +28,7 @@ private:
     const eckit::PathName path_;
 
     void json(eckit::JSON&) const override;
-    const char* name() const override;
+    const char* type() const override;
 
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
                   const repres::Representation& out) const override;

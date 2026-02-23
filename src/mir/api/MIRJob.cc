@@ -13,7 +13,9 @@
 #include "mir/api/MIRJob.h"
 
 #include <ostream>
+#include <sstream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/utils/Tokenizer.h"
 
 #include "mir/action/plan/Job.h"
@@ -272,5 +274,14 @@ void MIRJob::mirToolCall(std::ostream& out) const {
 void MIRJob::json(eckit::JSON& json) const {
     SimpleParametrisation::json(json);
 }
+
+
+std::string MIRJob::json_str() const {
+    std::ostringstream s;
+    eckit::JSON j(s);
+    json(j);
+    return s.str();
+}
+
 
 }  // namespace mir::api

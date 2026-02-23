@@ -3,4 +3,4 @@ regular_ll.2-2.grib2
 # mir
 --grid=5/5 --interpolation=grid-box-average
 # plan
-Gridded2RegularLL[increments=Increments[west_east=5,south_north=5],bbox=BoundingBox[north=90,west=0,south=-90,east=355],interpolation=grid-box-average,method=GridBoxMethod[name=grid-box-average,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0]]|Save[output=...]
+Gridded2RegularLL[increments=Increments[west_east=5,south_north=5],bbox=BoundingBox[north=90,west=0,south=-90,east=355],interpolation=grid-box-average,method=GridBoxMethod[type=grid-box-average,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0]]|Save[output=...]

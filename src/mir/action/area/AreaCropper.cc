@@ -12,6 +12,7 @@
 
 #include "mir/action/area/AreaCropper.h"
 
+#include <algorithm>
 #include <ostream>
 #include <sstream>
 
@@ -149,14 +150,10 @@ void AreaCropper::execute(context::Context& ctx) const {
     ASSERT_NONEMPTY_AREA("AreaCropper", !c.mapping_.empty());
 
     for (size_t i = 0; i < field.dimensions(); i++) {
-        const MIRValuesVector& values = field.values(i);
+        const auto& values = field.values(i);
 
-        MIRValuesVector result;
-        result.reserve(c.mapping_.size());
-
-        for (const auto& j : c.mapping_) {
-            result.push_back(values[j]);
-        }
+        MIRValuesVector result(c.mapping_.size());
+        std::transform(c.mapping_.begin(), c.mapping_.end(), result.begin(), [&](auto index) { return values[index]; });
 
         repres::RepresentationHandle cropped(representation->croppedRepresentation(c.bbox_));
         // Log::debug() << *cropped << std::endl;

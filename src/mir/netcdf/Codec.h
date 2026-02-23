@@ -71,17 +71,18 @@ class CodecFactory {
     std::string name_;
     virtual Codec* make(const Variable&) = 0;
 
-    CodecFactory(const CodecFactory&)            = delete;
-    CodecFactory& operator=(const CodecFactory&) = delete;
-
 protected:
     CodecFactory(const std::string&);
 
     virtual ~CodecFactory();
 
 public:
-    static Codec* build(const std::string&, const Variable&);
+    CodecFactory(const CodecFactory&)            = delete;
+    CodecFactory(CodecFactory&&)                 = delete;
+    CodecFactory& operator=(const CodecFactory&) = delete;
+    CodecFactory& operator=(CodecFactory&&)      = delete;
 
+    static Codec* build(const std::string&, const Variable&);
     static void list(std::ostream&);
 };
 

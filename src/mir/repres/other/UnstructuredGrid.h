@@ -58,7 +58,7 @@ public:
                      const std::vector<double>& longitudes, bool binary);
 
     // -- Overridden methods
-
+    // None
 
     // -- Class members
     // None
@@ -72,8 +72,6 @@ protected:
 
     // -- Methods
 
-    // From Representation
-    bool extendBoundingBoxOnIntersect() const override;
     void print(std::ostream&) const override;
 
     // -- Overridden methods

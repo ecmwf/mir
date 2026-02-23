@@ -110,7 +110,7 @@ public:
 
 
 SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
-    LegendreLoader(parametrisation, path), address_(nullptr), size_(size_t(path.size())), unload_(false) {
+    LegendreLoader(parametrisation, path), address_(nullptr), size_(static_cast<size_t>(path.size())), unload_(false) {
 
     trace::Timer timer("SharedMemoryLoader: loading '" + path.asString() + "'");
 
@@ -119,11 +119,10 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
         unload_ = name.substr(0, 4) == "tmp-";
     }
 
-    eckit::PathName real = path.realName();
+    const auto real = path.realName();
 
-    std::ostringstream msg("SharedMemoryLoader: ");
-
-    msg << "path='" << real << "', hostname='" << eckit::Main::hostname() << "'";
+    std::ostringstream msg;
+    msg << "SharedMemoryLoader: path='" << real << "', hostname='" << eckit::Main::hostname() << "'";
     Log::debug() << msg.str() << std::endl;
 
     if (real.asString().size() >= INFO_PATH - 1) {

@@ -28,7 +28,6 @@
 #include "mir/key/resol/Resol.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/CombinedParametrisation.h"
-#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/param/SameParametrisation.h"
@@ -440,8 +439,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
             runtime->set("grid", intgrid);
             runtime->unset("rotation");
 
-            static param::DefaultParametrisation defaults;
-            auto recombined = std::make_unique<param::CombinedParametrisation>(*runtime, field, defaults);
+            auto recombined = std::make_unique<param::CombinedParametrisation>(*runtime, field);
             auto target     = target_gridded_from_parametrisation(*recombined, false);
 
             plan.add("interpolate.grid2" + target, runtime);
@@ -560,11 +558,15 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, output::MIROutput& output) co
         user_wants_gridded++;
     }
 
+    ASSERT(user_wants_gridded <= 1);
+
     if (option(user, "pre-globalise", false)) {
         plan.add("filter.globalise");
     }
 
-    ASSERT(user_wants_gridded <= 1);
+    if (user.has("mask-input-lsm-value")) {
+        plan.add("filter.mask-input-lsm");
+    }
 
     bool field_gridded  = parametrisation_.fieldParametrisation().has("gridded");
     bool field_spectral = parametrisation_.fieldParametrisation().has("spectral");
@@ -589,9 +591,7 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, output::MIROutput& output) co
 
 
     if (field_gridded || (user_wants_gridded > 0)) {
-
-        std::string nabla;
-        if (user.get("nabla", nabla)) {
+        if (std::string nabla; user.get("nabla", nabla)) {
             for (const auto& operation : eckit::StringTools::split("/", nabla)) {
                 plan.add("filter." + operation);
             }
@@ -607,6 +607,10 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, output::MIROutput& output) co
 
         if (user.has("bitmap")) {
             plan.add("filter.bitmap");
+        }
+
+        if (user.has("mask-output-lsm-value")) {
+            plan.add("filter.mask-output-lsm");
         }
 
         if (user.has("frame")) {

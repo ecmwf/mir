@@ -42,10 +42,7 @@ bool NearestNeighbour::sameAs(const DistanceWeighting& other) const {
 
 
 void NearestNeighbour::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "type"
-      << "nearest-neighbour";
-    j.endObject();
+    j << type() << "nearest-neighbour";
 }
 
 

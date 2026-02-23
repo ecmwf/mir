@@ -17,10 +17,7 @@
 #include "mir/api/mir_version.h"
 
 
-#cmakedefine01 mir_HAVE_ATLAS
-#cmakedefine01 mir_HAVE_GRID_FESOM
-#cmakedefine01 mir_HAVE_GRID_ICON
-#cmakedefine01 mir_HAVE_GRID_ORCA
+#cmakedefine01 mir_HAVE_ECKIT_CODEC
 #cmakedefine01 mir_HAVE_PNG
 
 
@@ -28,9 +25,7 @@ constexpr bool _to_bool(int x = 0) {
     return x != 0;
 }
 
-constexpr bool MIR_HAVE_ATLAS       = _to_bool(@mir_HAVE_ATLAS@);
-constexpr bool MIR_HAVE_NETCDF      = _to_bool(@mir_HAVE_NETCDF@);
-constexpr bool MIR_HAVE_OMP         = _to_bool(@mir_HAVE_OMP@);
-constexpr bool MIR_HAVE_PNG         = _to_bool(@mir_HAVE_PNG@);
-constexpr bool MIR_HAVE_PROJ        = _to_bool(@atlas_HAVE_PROJ@);
-constexpr bool MIR_HAVE_TESSELATION = _to_bool(@atlas_HAVE_TESSELATION@);
+constexpr bool MIR_HAVE_NETCDF = _to_bool(@mir_HAVE_NETCDF@);
+constexpr bool MIR_HAVE_OMP    = _to_bool(@mir_HAVE_OMP@);
+constexpr bool MIR_HAVE_PNG    = _to_bool(@mir_HAVE_PNG@);
+constexpr bool MIR_HAVE_PROJ   = _to_bool(@atlas_HAVE_PROJ@);

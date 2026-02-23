@@ -62,6 +62,7 @@ private:
 
     // -- Overridden methods
 
+    void custom(std::ostream&) const override;
     void print(std::ostream&) const override;
 
     void execute(context::Context&) const override;

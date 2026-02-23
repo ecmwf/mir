@@ -51,7 +51,7 @@ private:
     void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
 
-    const char* name() const override = 0;
+    const char* type() const override = 0;
     int version() const override;
 
     virtual const pick::Pick& pick() const                               = 0;

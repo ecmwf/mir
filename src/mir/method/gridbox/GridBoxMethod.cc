@@ -21,25 +21,18 @@ namespace mir::method::gridbox {
 
 bool GridBoxMethod::sameAs(const Method& other) const {
     const auto* o = dynamic_cast<const GridBoxMethod*>(&other);
-    return (o != nullptr) && name() == o->name() && MethodWeighted::sameAs(*o);
+    return (o != nullptr) && type() == o->type() && MethodWeighted::sameAs(*o);
 }
 
 
 void GridBoxMethod::hash(eckit::MD5& md5) const {
     MethodWeighted::hash(md5);
-    md5.add(name());
-}
-
-
-void GridBoxMethod::json(eckit::JSON& j) const {
-    j.startObject();
-    MethodWeighted::json(j);
-    j.endObject();
+    md5.add(type());
 }
 
 
 void GridBoxMethod::print(std::ostream& out) const {
-    out << "GridBoxMethod[name=" << name() << ",";
+    out << "GridBoxMethod[type=" << type() << ",";
     MethodWeighted::print(out);
     out << "]";
 }

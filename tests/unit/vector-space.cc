@@ -19,7 +19,6 @@
 
 #include "mir/data/Space.h"
 #include "mir/param/CombinedParametrisation.h"
-#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -31,15 +30,12 @@ namespace mir::tests::unit {
 CASE("vector-space") {
 
     static const std::string key = "vector-space";
-    static const param::DefaultParametrisation defaults;
 
     std::string defaultSpace;
-    ASSERT(defaults.get(key, defaultSpace));
+    ASSERT(param::DefaultParametrisation::instance().get(key, defaultSpace));
 
-    auto combined = [](const param::MIRParametrisation& user, const param::MIRParametrisation& input,
-                       const param::MIRParametrisation& defaults) {
-        return std::unique_ptr<const param::MIRParametrisation>(
-            new param::CombinedParametrisation(user, input, defaults));
+    auto combined = [](const param::MIRParametrisation& user, const param::MIRParametrisation& input) {
+        return std::unique_ptr<const param::MIRParametrisation>(new param::CombinedParametrisation(user, input));
     };
 
     std::vector<std::pair<std::string, size_t>> tests{{"1d-angle-degree-asymmetric", 1},
@@ -63,7 +59,7 @@ CASE("vector-space") {
         const param::SimpleParametrisation input;  // empty
 
         std::string space;
-        ASSERT(combined(user, input, defaults)->get(key, space));
+        ASSERT(combined(user, input)->get(key, space));
 
         EXPECT_NOT(defaultSpace.empty());
         EXPECT_EQUAL(space, defaultSpace);
@@ -78,7 +74,7 @@ CASE("vector-space") {
             input.set(key, f.first);
 
             std::string space;
-            ASSERT(combined(user, input, defaults)->get(key, space));
+            ASSERT(combined(user, input)->get(key, space));
 
             EXPECT_NOT(space.empty());
 
@@ -103,7 +99,7 @@ CASE("vector-space") {
                 user.set(key, u.first);
 
                 std::string space;
-                ASSERT(combined(user, input, defaults)->get(key, space));
+                ASSERT(combined(user, input)->get(key, space));
 
                 EXPECT_NOT(space.empty());
 

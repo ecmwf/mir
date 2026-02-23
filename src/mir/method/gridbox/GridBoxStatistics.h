@@ -23,8 +23,12 @@ struct GridBoxStatistics final : GridBoxMethod {
 
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
                   const repres::Representation& out) const override;
-    const char* name() const override;
+    const char* type() const override;
     int version() const override;
+    void json(eckit::JSON&) const override;
+
+private:
+    std::string interpolationStatistics_;
 };
 
 

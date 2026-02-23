@@ -1,8 +1,4 @@
 
-# Setup cache directory
-set(TEST_ECKIT_CACHE_DIR ${CMAKE_CURRENT_BINARY_DIR}/cache/)
-file(REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR})
-
 set(TESTS
 #    MIR-333
 #    MIR-356
@@ -10,8 +6,10 @@ set(TESTS
     MIR-536
     PGEN-412
     PGEN-492
+    PGEN-558
     action_graph
     area
+    atlas
     bounding_box
     earthkit-regrid
     formula
@@ -25,7 +23,9 @@ set(TESTS
     increments
     input
     interpolations
+    interpolationspec
     iterator
+    job
     knn_weighting
     packing
     raw_memory
@@ -36,11 +36,7 @@ set(TESTS
     weight_matrix
     wind)
 
-if(mir_HAVE_ATLAS)
-    list(APPEND TESTS atlas)
-endif()
-
-if(mir_HAVE_NETCDF)
+if(mir_HAVE_NETCDF AND atlas_HAVE_TESSELATION)
     list(APPEND TESTS interpolation_netcdf)
 endif()
 
@@ -53,6 +49,12 @@ foreach(_t ${TESTS})
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 endforeach()
+
+if(NOT atlas_HAVE_TESSELATION)
+    set_tests_properties(
+        mir_tests_unit_gridspec
+        PROPERTIES WILL_FAIL TRUE)
+endif()
 
 if(ENABLE_BUILD_TOOLS)
     ecbuild_configure_file(grib_fail_decode.sh.in grib_fail_decode.sh)
@@ -80,4 +82,10 @@ if(ENABLE_BUILD_TOOLS)
             ENVIRONMENT       ${_testEnvironment}
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
     endforeach()
+
+    if(NOT eccodes_HAVE_AEC)
+        set_tests_properties(
+	        mir_tests_unit_grib_decode_gridName=F1280.area=55_65_0_145.grib2
+            PROPERTIES WILL_FAIL TRUE)
+    endif()
 endif()

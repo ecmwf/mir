@@ -12,11 +12,10 @@
 
 #include "mir/repres/regular/RegularGrid.h"
 
-#include <algorithm>
-#include <memory>
 #include <ostream>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "eckit/config/Resource.h"
@@ -140,11 +139,6 @@ RegularGrid::LinearSpacing RegularGrid::linspace(double start, double step, long
 void RegularGrid::print(std::ostream& out) const {
     out << "RegularGrid[x=" << x_.spec() << ",y=" << y_.spec() << ",projection=" << grid_.projection().spec()
         << ",firstPointBottomLeft=" << firstPointBottomLeft_ << ",bbox=" << bbox_ << "]";
-}
-
-
-bool RegularGrid::extendBoundingBoxOnIntersect() const {
-    return true;
 }
 
 

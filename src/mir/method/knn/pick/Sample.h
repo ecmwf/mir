@@ -26,12 +26,14 @@ struct Sample : Pick {
     bool sameAs(const Pick&) const override;
     void hash(eckit::MD5&) const override;
 
+    double d() const;
+
 private:
     void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
 
-    size_t nClosest_;
-    double distance_;
+    const size_t nClosest_;
+    const double distance_;
 };
 
 

@@ -30,7 +30,7 @@ private:
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;
 
-    size_t nClosest_;
+    const size_t nClosest_;
 };
 
 

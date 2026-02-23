@@ -118,15 +118,17 @@ private:
 class MIROutputFactory {
     const std::string name_;
 
-    MIROutputFactory(const MIROutputFactory&)            = delete;
-    MIROutputFactory& operator=(const MIROutputFactory&) = delete;
-
 protected:
     MIROutputFactory(const std::string& name, const std::vector<std::string>& extensions = {});
     virtual ~MIROutputFactory();
     static const std::vector<std::string> no_extensions;
 
 public:
+    MIROutputFactory(const MIROutputFactory&)            = delete;
+    MIROutputFactory(MIROutputFactory&&)                 = delete;
+    MIROutputFactory& operator=(const MIROutputFactory&) = delete;
+    MIROutputFactory& operator=(MIROutputFactory&&)      = delete;
+
     virtual MIROutput* make(const std::string& path) = 0;
     static MIROutput* build(const std::string& path, const param::MIRParametrisation&);
     static void list(std::ostream&);

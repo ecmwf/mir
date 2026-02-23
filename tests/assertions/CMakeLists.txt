@@ -23,34 +23,80 @@ if(MARS_SCRIPT)
             ARGS        ${_t}
             ENVIRONMENT ${_testEnvironment})
         if((_t MATCHES "[.]fail[.]") OR
-           (_t MATCHES "[.]lsm[.]" AND NOT HAVE_MIR_DOWNLOAD_MASKS) OR
-           (NOT mir_HAVE_ATLAS AND NOT (_t MATCHES "[.]core[.]")) OR
-           (NOT atlas_HAVE_PROJ AND (_t MATCHES "[.]proj[.]")))
+           (_t MATCHES "[.]proj[.]" AND NOT atlas_HAVE_PROJ))
             set_tests_properties(${target} PROPERTIES WILL_FAIL TRUE)
         endif()
     endforeach()
 endif()
 
 if(NOT eccodes_HAVE_AEC)
-    foreach(_r
-        MIR-513.packingType=grid_ccsds.001.core.test
-        MIR-513.packingType=grid_ccsds.002.core.test
-        MIR-513.packingType=grid_ccsds.004.core.test
-        MIR-513.packingType=grid_ccsds.005.core.test
-        MIR-513.packingType=grid_ieee.003.core.test
-        MIR-513.packingType=grid_second_order.003.core.test
-        MIR-513.packingType=grid_simple.003.core.test)
-        get_filename_component(_t "${_r}" ABSOLUTE)
-        target_from_path("${_t}" target)
-        set_tests_properties(${target} PROPERTIES WILL_FAIL TRUE)
-    endforeach()
+    set_tests_properties(
+	    mir_tests_assertions_MIR_488_001
+	    mir_tests_assertions_MIR_488_002
+	    mir_tests_assertions_MIR_513_003
+	    mir_tests_assertions_MIR_513_004
+	    mir_tests_assertions_MIR_513_packingType_grid_ccsds_001
+	    mir_tests_assertions_MIR_513_packingType_grid_ccsds_002
+	    mir_tests_assertions_MIR_513_packingType_grid_ccsds_004
+	    mir_tests_assertions_MIR_513_packingType_grid_ccsds_005
+	    mir_tests_assertions_MIR_513_packingType_grid_ccsds_007
+	    mir_tests_assertions_MIR_513_packingType_grid_ieee_003
+	    mir_tests_assertions_MIR_513_packingType_grid_second_order_003
+	    mir_tests_assertions_MIR_513_packingType_grid_simple_003
+	    mir_tests_assertions_MIR_513_packingType_grid_simple_011
+	    mir_tests_assertions_MIR_513_packingType_grid_simple_016
+	    mir_tests_assertions_MIR_513_packingType_grid_simple_019
+	    mir_tests_assertions_MIR_513_packingType_spectral_complex_003
+	    mir_tests_assertions_MIR_513_packingType_spectral_complex_017
+	    mir_tests_assertions_MIR_513_packingType_spectral_complex_026
+	    mir_tests_assertions_MIR_513_packingType_spectral_complex_032
+	    mir_tests_assertions_MIR_513_packingType_spectral_complex_035
+	    mir_tests_assertions_MIR_513_packingType_spectral_complex_037
+	    mir_tests_assertions_MIR_513_packingType_spectral_complex_040
+	    mir_tests_assertions_MIR_513_packingType_spectral_complex_041
+	    mir_tests_assertions_MIR_513_packingType_spectral_simple_003
+	    mir_tests_assertions_MIR_632_002
+	    mir_tests_assertions_MIR_632_003
+	    mir_tests_assertions_MIR_632_005
+	    mir_tests_assertions_MIR_632_007
+	    mir_tests_assertions_MIR_632_008
+	    mir_tests_assertions_MIR_632_009
+	    mir_tests_assertions_MIR_632_010
+	    mir_tests_assertions_MIR_632_012
+	    mir_tests_assertions_MIR_632_013
+	    mir_tests_assertions_MIR_632_014
+	    mir_tests_assertions_MIR_632_015
+	    mir_tests_assertions_MIR_632_016
+	    mir_tests_assertions_MIR_632_018
+	    mir_tests_assertions_MIR_643_001
+	    mir_tests_assertions_MIR_643_002
+	    mir_tests_assertions_MIR_643_003
+	    mir_tests_assertions_MIR_647_001
+	    mir_tests_assertions_MIR_647_002
+	    mir_tests_assertions_MIR_651_packingType_spectral_ieee_003
+	    mir_tests_assertions_MIR_679_WP_to_ICON
+	    mir_tests_assertions_MIR_683_001
+	    mir_tests_assertions_MIR_683_002
+	    mir_tests_assertions_MIR_684_005
+	    mir_tests_assertions_MIR_684_006
+	    mir_tests_assertions_MIR_684_007
+	    mir_tests_assertions_MIR_692_003
+	    mir_tests_assertions_bitmap_001
+	    mir_tests_assertions_bitmap_002
+	    mir_tests_assertions_bitmap_003
+	    mir_tests_assertions_bitmap_004
+	    mir_tests_assertions_bitmap_005
+	    mir_tests_assertions_bitmap_006
+	    mir_tests_assertions_grid_from_geopoints_format_ncols
+	    mir_tests_assertions_grid_from_geopoints_format_polar_vector
+	    mir_tests_assertions_grid_from_geopoints_format_xy_vector
+	    mir_tests_assertions_grid_from_geopoints_format_xyv
+	    mir_tests_assertions_grid_from_geopoints_standard
+        PROPERTIES WILL_FAIL TRUE)
 endif()
 
 if(NOT atlas_HAVE_TESSELATION)
-    foreach(_r
-            MIR-647.001.test)
-        get_filename_component(_t "${_r}" ABSOLUTE)
-        target_from_path("${_t}" target)
-        set_tests_properties(${target} PROPERTIES WILL_FAIL TRUE)
-    endforeach()
+    set_tests_properties(
+        mir_tests_assertions_MIR_647_001
+        PROPERTIES WILL_FAIL TRUE)
 endif()

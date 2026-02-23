@@ -12,12 +12,17 @@
 
 #include "mir/repres/other/UnstructuredGrid.h"
 
+#include <cctype>
 #include <limits>
 #include <memory>
 #include <numeric>
 #include <ostream>
+#include <string>
+#include <utility>
 
 #include "eckit/filesystem/PathName.h"
+#include "eckit/parser/YAMLParser.h"
+#include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/api/MIRJob.h"
@@ -26,47 +31,472 @@
 #include "mir/iterator/UnstructuredIterator.h"
 #include "mir/output/GriddefOutput.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Iterator.h"
+#include "mir/repres/other/UnstructuredGrid.h"
+#include "mir/util/Atlas.h"
+#include "mir/util/BoundingBox.h"
 #include "mir/util/CheckDuplicatePoints.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
 #include "mir/util/MeshGeneratorParameters.h"
+#include "mir/util/ValueMap.h"
 
-#if mir_HAVE_GRID_FESOM
-#include "mir/repres/FESOM.h"
-#endif
+#if mir_HAVE_ECKIT_CODEC
+#include <algorithm>
 
-#if mir_HAVE_GRID_ICON
-#include "mir/repres/ICON.h"
-#endif
+#include "eckit/geo/area/BoundingBox.h"
+#include "eckit/geo/grid/ORCA.h"
+#include "eckit/geo/grid/unstructured/FESOM.h"
+#include "eckit/geo/grid/unstructured/ICON.h"
+#include "eckit/spec/Custom.h"
+#include "eckit/spec/Spec.h"
 
-#if mir_HAVE_GRID_ORCA
-#include "mir/repres/ORCA.h"
+#include "mir/key/grid/GridPattern.h"
+#include "mir/key/grid/NamedGrid.h"
 #endif
 
 
 namespace mir::repres {
 
 
+#if mir_HAVE_ECKIT_CODEC
+namespace {
+
+
+inline std::string to_lower(std::string str) {
+    std::transform(str.begin(), str.end(), str.begin(), [](auto c) { return c == '_' ? '-' : std::tolower(c); });
+    return str;
+}
+
+
+class UnstructuredGridFromUID : public Gridded {
+public:
+    explicit UnstructuredGridFromUID(const std::string& grid) :
+        UnstructuredGridFromUID([&grid]() {
+            eckit::spec::Custom custom{{"grid", grid}};
+            std::unique_ptr<eckit::geo::Grid::Spec> spec(eckit::geo::GridFactory::make_spec(custom));
+            return eckit::geo::GridFactory::build(*spec);
+        }()) {}
+
+    explicit UnstructuredGridFromUID(const param::MIRParametrisation& param) :
+        UnstructuredGridFromUID([&param]() {
+            std::string uid;
+            ASSERT(param.get("uid", uid));
+            return uid;
+        }()) {}
+
+protected:
+    using points_type = std::pair<std::vector<double>, std::vector<double>>;
+    using grid_type   = const eckit::geo::Grid;
+
+    explicit UnstructuredGridFromUID(grid_type* grid_ptr) :
+        Gridded([grid_ptr]() {
+            ASSERT(grid_ptr != nullptr);
+            auto [n, w, s, e] = grid_ptr->boundingBox().deconstruct();
+            return util::BoundingBox{n, w, s, e};
+        }()),
+        grid_(grid_ptr) {
+        ASSERT(grid_);
+    }
+
+    const points_type& to_latlons() const {
+        if (points_.first.empty() || points_.second.empty()) {
+            ASSERT(points_.first.empty() && points_.second.empty());
+
+            points_ = grid_->to_latlons();
+            ASSERT(points_.first.size() == points_.second.size());
+            ASSERT(points_.first.size() == numberOfPoints());
+        }
+
+        return points_;
+    }
+
+    bool sameAs(const Representation& other) const override {
+        const auto* o = dynamic_cast<const UnstructuredGridFromUID*>(&other);
+        return (o != nullptr) && *grid_ == *(o->grid_);
+    }
+
+    void makeName(std::ostream& out) const override {
+        const auto uid = grid_->uid();
+        out << grid_->type() << '-' << numberOfPoints() << '-' << uid;
+
+        if (atlas::grid::SpecRegistry::has(uid)) {
+            out << "-atlas";
+
+            if (auto type = to_lower(atlas::grid::SpecRegistry::get(uid).getString("type", ""));
+                atlas::meshgenerator::MeshGeneratorFactory::has(type)) {
+                out << '-' << type;
+            }
+        }
+    }
+
+    void fillMeshGen(util::MeshGeneratorParameters& params) const override {
+        if (params.meshGenerator_.empty()) {
+            if (const auto uid = grid_ptr()->uid(); atlas::grid::SpecRegistry::has(uid)) {
+                if (auto type = to_lower(atlas::grid::SpecRegistry::get(uid).getString("type", ""));
+                    atlas::meshgenerator::MeshGeneratorFactory::has(type)) {
+                    Log::debug() << "UnstructuredGrid: atlas::MeshGenerator(\"" << type << "\")" << std::endl;
+                    params.meshGenerator_ = type;
+                    return;
+                }
+            }
+
+            params.meshGenerator_ = "delaunay";
+        }
+    }
+
+    void fillJob(api::MIRJob& job) const override {
+        util::ValueMap map(eckit::YAMLParser::decodeString(grid_->spec().str()));
+        map.set(static_cast<param::SimpleParametrisation&>(job));
+    }
+
+    void print(std::ostream& out) const override { out << grid_->spec().str(); }
+    void json(eckit::JSON& j) const override { grid_->spec().json(j); }
+
+    size_t numberOfPoints() const override { return grid_->size(); }
+
+    Iterator* iterator() const override {
+        const auto& [lats, lons] = to_latlons();
+        return new iterator::UnstructuredIterator(lats, lons);
+    }
+
+    bool includesNorthPole() const override { return bbox_.north() == Latitude::NORTH_POLE; }
+    bool includesSouthPole() const override { return bbox_.south() == Latitude::SOUTH_POLE; }
+    bool isPeriodicWestEast() const override {
+        return eckit::types::is_approximately_greater_or_equal(bbox_.east().value() - bbox_.west().value(),
+                                                               Longitude::GLOBE.value());
+    }
+
+    ::atlas::Grid atlasGrid() const override {
+        if (const auto uid = grid_->uid(); atlas::grid::SpecRegistry::has(uid)) {
+            Log::debug() << "UnstructuredGrid: atlas::Grid(uid=\"" << uid << "\")" << std::endl;
+            return {atlas::grid::SpecRegistry::get(uid)};
+        }
+
+        const auto& [lats, lons] = to_latlons();
+        ASSERT(!lats.empty());
+        ASSERT(lats.size() == lons.size());
+
+        const auto N = lats.size();
+        std::vector<atlas::PointXY> points(N);
+        for (size_t i = 0; i < N; ++i) {
+            points[i].assign(lons[i], lats[i]);
+        }
+
+        const auto grid = atlas::UnstructuredGrid(std::move(points));
+        ASSERT(grid.size() == grid_->size());
+
+        const auto dom = domain();
+        return dom.isGlobal() ? grid : atlas::UnstructuredGrid(grid, dom);
+    }
+
+    grid_type* grid_ptr() const { return grid_.get(); }
+
+private:
+    std::unique_ptr<grid_type> grid_;
+    mutable points_type points_;
+};
+
+
+class FESOM final : public UnstructuredGridFromUID {
+public:
+    using UnstructuredGridFromUID::UnstructuredGridFromUID;
+
+    void fillGrib(grib_info& info) const override {
+        info.grid.grid_type        = GRIB_UTIL_GRID_SPEC_UNSTRUCTURED;
+        info.packing.editionNumber = 2;
+
+        const auto* ptr = dynamic_cast<const eckit::geo::grid::unstructured::FESOM*>(grid_ptr());
+        ASSERT(ptr != nullptr);
+
+        info.extra_set("unstructuredGridType", ptr->name().c_str());
+        info.extra_set("unstructuredGridSubtype", ptr->arrangement().c_str());
+        info.extra_set("uuidOfHGrid", ptr->uid().c_str());
+    }
+
+    void validate(const MIRValuesVector& values) const override {
+        ASSERT_VALUES_SIZE_EQ_ITERATOR_COUNT("FESOM", values.size(), numberOfPoints());
+    }
+
+    static std::string match(const std::string& name, const param::MIRParametrisation& param) {
+        return key::grid::GridPattern::match(name, param);
+    }
+};
+
+
+class ICON final : public UnstructuredGridFromUID {
+public:
+    using UnstructuredGridFromUID::UnstructuredGridFromUID;
+
+    void fillGrib(grib_info& info) const override {
+        info.grid.grid_type        = GRIB_UTIL_GRID_SPEC_UNSTRUCTURED;
+        info.packing.editionNumber = 2;
+
+        const auto* ptr = dynamic_cast<const eckit::geo::grid::unstructured::ICON*>(grid_ptr());
+        ASSERT(ptr != nullptr);
+
+        info.extra_set("uuidOfHGrid", ptr->uid().c_str());
+
+        const auto& catalog = ptr->catalog();
+        if (static const std::string key{"icon_number_of_grid_used"}; catalog.has(key)) {
+            info.extra_set("numberOfGridUsed", static_cast<long>(catalog.get_unsigned(key)));
+        }
+
+        if (static const std::string key{"icon_number_of_grid_in_reference"}; catalog.has(key)) {
+            info.extra_set("numberOfGridInReference", static_cast<long>(catalog.get_unsigned(key)));
+        }
+    }
+
+    void validate(const MIRValuesVector& values) const override {
+        ASSERT_VALUES_SIZE_EQ_ITERATOR_COUNT("ICON", values.size(), numberOfPoints());
+    }
+
+    static std::string match(const std::string& name, const param::MIRParametrisation& param) {
+        return key::grid::GridPattern::match(name, param);
+    }
+};
+
+
+class ORCA final : public UnstructuredGridFromUID {
+public:
+    using UnstructuredGridFromUID::UnstructuredGridFromUID;
+
+    void fillGrib(grib_info& info) const override {
+        info.grid.grid_type        = GRIB_UTIL_GRID_SPEC_UNSTRUCTURED;
+        info.packing.editionNumber = 2;
+
+        const auto* ptr = dynamic_cast<const eckit::geo::grid::ORCA*>(grid_ptr());
+        ASSERT(ptr != nullptr);
+
+        info.extra_set("unstructuredGridType", ptr->name().c_str());
+        info.extra_set("unstructuredGridSubtype", ptr->arrangement().c_str());
+        info.extra_set("uuidOfHGrid", ptr->uid().c_str());
+    }
+
+    void validate(const MIRValuesVector& values) const override {
+        ASSERT_VALUES_SIZE_EQ_ITERATOR_COUNT("ORCA", values.size(), numberOfPoints());
+    }
+
+    static std::string match(const std::string& name, const param::MIRParametrisation& param) {
+        return key::grid::GridPattern::match(name, param);
+    }
+};
+
+
+class NamedFESOM : public key::grid::NamedGrid {
+public:
+    // -- Constructors
+
+    explicit NamedFESOM(const std::string& key) : NamedGrid(key) {}
+
+protected:
+    // -- Overridden methods
+
+    void print(std::ostream& out) const override { out << "NamedFESOM[key=" << key_ << "]"; }
+    size_t gaussianNumber() const override { return default_gaussian_number(); }
+    const repres::Representation* representation() const override { return new FESOM(key_); }
+    const repres::Representation* representation(const util::Rotation&) const override { NOTIMP; }
+};
+
+
+class FESOMPattern : public key::grid::GridPattern {
+public:
+    // -- Constructors
+
+    explicit FESOMPattern(const std::string& pattern) : GridPattern(pattern) {}
+
+private:
+    // -- Overridden methods
+
+    void print(std::ostream& out) const override { out << "FESOMPattern[pattern=" << pattern_ << "]"; }
+
+    const key::grid::Grid* make(const std::string& name) const override { return new NamedFESOM(name); }
+
+    std::string canonical(const std::string& name, const param::MIRParametrisation& param) const override {
+        ASSERT(name.size() >= 2);
+
+        auto can(name);
+        std::transform(can.begin(), can.end(), can.begin(), [](auto c) { return std::toupper(c); });
+
+        if (can.find("PI") == 0) {
+            can[0] = 'p';
+            can[1] = 'i';
+        }
+
+        if (can.find('_') == std::string::npos) {
+            can += "_C";  // arbitrary choice (to review)
+        }
+
+        return can;
+    }
+};
+
+
+class NamedICON : public key::grid::NamedGrid {
+public:
+    // -- Constructors
+
+    explicit NamedICON(const std::string& key) : NamedGrid(key) {}
+
+protected:
+    // -- Overridden methods
+
+    void print(std::ostream& out) const override { out << "NamedICON[key=" << key_ << "]"; }
+    size_t gaussianNumber() const override { return default_gaussian_number(); }
+    const repres::Representation* representation() const override { return new ICON(key_); }
+    const repres::Representation* representation(const util::Rotation&) const override { NOTIMP; }
+};
+
+
+class ICONPattern : public key::grid::GridPattern {
+public:
+    // -- Constructors
+
+    explicit ICONPattern(const std::string& pattern) : GridPattern(pattern) {}
+
+private:
+    // -- Overridden methods
+
+    void print(std::ostream& out) const override { out << "ICONPattern[pattern=" << pattern_ << "]"; }
+
+    const key::grid::Grid* make(const std::string& name) const override { return new NamedICON(name); }
+
+    std::string canonical(const std::string& name, const param::MIRParametrisation& param) const override {
+        ASSERT(!name.empty());
+
+        // icon-ch grids have a -v<number> suffix
+        auto can = to_lower(name);
+        if (can.find("-ch") != std::string::npos) {
+            static const std::regex version("-v[1-9][0-9]*$");
+            if (!std::regex_search(can, version)) {
+                can += "-v1";
+            }
+        }
+
+        return can;
+    }
+};
+
+
+class NamedORCA : public key::grid::NamedGrid {
+public:
+    // -- Constructors
+
+    explicit NamedORCA(const std::string& key) : NamedGrid(key) {}
+
+protected:
+    // -- Overridden methods
+
+    void print(std::ostream& out) const override { out << "NamedORCA[key=" << key_ << "]"; }
+    size_t gaussianNumber() const override { return default_gaussian_number(); }
+    const repres::Representation* representation() const override { return new ORCA(key_); }
+    const repres::Representation* representation(const util::Rotation&) const override { NOTIMP; }
+};
+
+
+const std::string ORCA_PATTERN("^([eE])?[oO][rR][cC][aA]([0-9]+)(_[tTuUvVwWfF])?$");
+
+
+class ORCAPattern : public key::grid::GridPattern {
+public:
+    // -- Constructors
+
+    explicit ORCAPattern(const std::string& pattern) : GridPattern(pattern) {}
+
+private:
+    // -- Overridden methods
+
+    void print(std::ostream& out) const override { out << "ORCAPattern[pattern=" << pattern_ << "]"; }
+
+    const key::grid::Grid* make(const std::string& name) const override { return new NamedORCA(name); }
+
+    std::string canonical(const std::string& name, const param::MIRParametrisation& param) const override {
+        ASSERT(!name.empty());
+
+        static const std::regex rex(ORCA_PATTERN);
+
+        std::smatch match;
+        ASSERT(std::regex_search(name, match, rex) && match.size() == 4);
+
+        auto e(match[1].str());
+        auto n(match[2].str());
+        auto a(match[3].str());
+
+        if (e.size() == 1) {
+            e = static_cast<char>(std::tolower(e.back()));
+        }
+
+        if (a.empty()) {
+            a = "T";  // arbitrary choice (to review)
+            param.get("orca-arrangement", a);
+        }
+        else if (a.size() == 2) {
+            a = static_cast<char>(std::toupper(a.back()));
+        }
+        ASSERT(a.size() == 1);
+
+        return e + "ORCA" + n + "_" + a;
+    }
+};
+
+
+const FESOMPattern __FESOM("^([cC][oO][rR][eE]2|[dD][aA][rR][tT]|[nN][gG]5|[pP][iI])(_[cCnN])?$");
+const ICONPattern __ICON("^[iI][cC][oO][nN]-([gG][rR][iI][dD]-(....)-(......)(-(.*))?|[cC][hH].(-[vV][1-9][0-9]*)?)$");
+const ORCAPattern __ORCA(ORCA_PATTERN);
+
+const RepresentationBuilder<FESOM> REPRESENTATION_1("fesom");
+const RepresentationBuilder<FESOM> REPRESENTATION_2("FESOM");
+const RepresentationBuilder<ICON> REPRESENTATION_3("icon");
+const RepresentationBuilder<ICON> REPRESENTATION_4("ICON");
+const RepresentationBuilder<ORCA> REPRESENTATION_5("orca");
+const RepresentationBuilder<ORCA> REPRESENTATION_6("ORCA");
+
+
+}  // namespace
+#endif
+
+
 template <>
 Representation* RepresentationBuilder<other::UnstructuredGrid>::make(const param::MIRParametrisation& param) {
-    // specially-named unstructured grids
-#if mir_HAVE_GRID_FESOM
-    if (std::string grid; param.get("grid", grid) && !FESOM::match(grid, param).empty()) {
-        return new FESOM(param);
+    // NOTE: for grids defined by lat/lon auxiliary data
+    if (param.has("latitudes/longitudes")) {
+        return new other::UnstructuredGrid(param);
     }
-#endif
 
-#if mir_HAVE_GRID_ICON
-    if (std::string grid; param.get("grid", grid) && !ICON::match(grid, param).empty()) {
-        return new ICON(param);
+    // specially-named grids
+#if mir_HAVE_ECKIT_CODEC
+    if (std::string uid; param.get("uid", uid) && eckit::geo::GridSpecByUID::instance().exists(uid)) {
+        std::unique_ptr<eckit::spec::Spec> spec(eckit::geo::GridSpecByUID::instance().get(uid).spec());
+        ASSERT(spec);
+
+        auto type = spec->get_string("type");
+        if (type == "FESOM") {
+            return new FESOM(param);
+        }
+
+        if (type == "ICON") {
+            return new ICON(param);
+        }
+
+        if (type == "ORCA") {
+            return new ORCA(param);
+        }
     }
-#endif
 
-#if mir_HAVE_GRID_ORCA
-    if (std::string grid; param.get("grid", grid) && !ORCA::match(grid, param).empty()) {
-        return new ORCA(param);
+    if (std::string grid; param.get("grid", grid)) {
+        if (!FESOM::match(grid, param).empty()) {
+            return new FESOM(param);
+        }
+
+        if (!ICON::match(grid, param).empty()) {
+            return new ICON(param);
+        }
+
+        if (!ORCA::match(grid, param).empty()) {
+            return new ORCA(param);
+        }
     }
 #endif
 
@@ -182,7 +612,6 @@ util::Domain UnstructuredGrid::domain() const {
 
 
 atlas::Grid UnstructuredGrid::atlasGrid() const {
-#if mir_HAVE_ATLAS
     ASSERT(numberOfPoints());
 
     std::vector<atlas::PointXY> pts;
@@ -193,9 +622,6 @@ atlas::Grid UnstructuredGrid::atlasGrid() const {
     }
 
     return atlas::UnstructuredGrid(std::move(pts));
-#else
-    NOTIMP;
-#endif
 }
 
 
@@ -243,7 +669,8 @@ Iterator* UnstructuredGrid::iterator() const {
 
 
 bool UnstructuredGrid::isPeriodicWestEast() const {
-    return bbox_.east() - bbox_.west() == Longitude::GLOBE;
+    return eckit::types::is_approximately_greater_or_equal(bbox_.east().value() - bbox_.west().value(),
+                                                           Longitude::GLOBE.value());
 }
 
 
@@ -257,16 +684,9 @@ bool UnstructuredGrid::includesSouthPole() const {
 }
 
 
-bool UnstructuredGrid::extendBoundingBoxOnIntersect() const {
-    return false;
-}
-
-
 static const RepresentationBuilder<UnstructuredGrid> triangular_grid("triangular_grid");
 static const RepresentationBuilder<UnstructuredGrid> unstructured_grid("unstructured_grid");
 
 
 }  // namespace other
-
-
 }  // namespace mir::repres

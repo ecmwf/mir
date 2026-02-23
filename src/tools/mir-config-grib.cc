@@ -22,7 +22,6 @@
 #include "mir/input/MIRInput.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/ConfigurationWrapper.h"
-#include "mir/param/DefaultParametrisation.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -71,7 +70,6 @@ T get(const param::MIRParametrisation& param, const std::string& name, T value) 
 
 
 void MIRConfigGrib::execute(const eckit::option::CmdArgs& args) {
-    static const param::DefaultParametrisation defaults;
     const param::ConfigurationWrapper args_wrap(args);
 
     static const grib::Config config(LibMir::configFile(LibMir::config_file::GRIB_OUTPUT), false);
@@ -82,7 +80,7 @@ void MIRConfigGrib::execute(const eckit::option::CmdArgs& args) {
 
         while (input->next()) {
             std::unique_ptr<param::MIRParametrisation> param(
-                new param::CombinedParametrisation(args_wrap, input->parametrisation(), defaults));
+                new param::CombinedParametrisation(args_wrap, input->parametrisation()));
             config.find(*param);
         }
     }

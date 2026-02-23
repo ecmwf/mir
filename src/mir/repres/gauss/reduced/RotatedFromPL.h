@@ -82,7 +82,10 @@ private:
     void fillGrib(grib_info&) const override;
     void fillJob(api::MIRJob&) const override;
     atlas::Grid atlasGrid() const override;
+
+    std::string intersectionOnCrop() const override { return "input-contains-output-check"; }
     const Gridded* croppedRepresentation(const util::BoundingBox&) const override;
+
     void makeName(std::ostream&) const override;
     bool sameAs(const Representation&) const override;
 

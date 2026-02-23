@@ -21,6 +21,7 @@
 #include "eckit/parser/YAMLParser.h"
 #include "eckit/utils/StringTools.h"
 
+#include "mir/config/LibMir.h"
 #include "mir/input/ArtificialInput.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/input/MultiDimensionalGribFileInput.h"
@@ -44,11 +45,10 @@ grib_handle* MIRInput::gribHandle(size_t /*unused*/) const {
     // ASSERT(which == 0);
     static grib_handle* handle = nullptr;
     if (handle == nullptr) {
-        // NOTE: starts from GRIB1 to avoid supporting user-requested conversions of GRIB2 to 1
-        // FIXME: make this edition-independent
-        handle = codes_grib_handle_new_from_samples(nullptr, "GRIB1");
+        handle = codes_grib_handle_new_from_samples(nullptr, LibMir::gribSampleName().c_str());
         ASSERT(handle != nullptr);
     }
+
     return handle;
 }
 
@@ -150,7 +150,7 @@ MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParame
 
     // attach information after construction (pe. extra files), so virtual methods are specific to child class
     auto aux = [](MIRInput* in, const util::ValueMap& map) {
-        ASSERT(in);
+        ASSERT(in != nullptr);
         if (!map.empty()) {
             in->setAuxiliaryInformation(map);
         }

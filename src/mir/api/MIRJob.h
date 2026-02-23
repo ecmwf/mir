@@ -90,6 +90,7 @@ public:
     void mirToolCall(std::ostream&) const;
 
     void json(eckit::JSON&) const;
+    std::string json_str() const;
 
     // -- Overridden methods
     // None

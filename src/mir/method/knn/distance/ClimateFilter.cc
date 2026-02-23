@@ -19,6 +19,7 @@
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
+#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -28,8 +29,7 @@ namespace mir::method::knn::distance {
 
 
 ClimateFilter::ClimateFilter(const param::MIRParametrisation& param) {
-    double distance = 1.;
-    param.get("distance", distance);
+    auto distance = param::DefaultParametrisation::instance().get_value<double>("distance", param);
     ASSERT(distance > 0.);
 
     delta_ = 1000.;
@@ -93,11 +93,8 @@ bool ClimateFilter::sameAs(const DistanceWeighting& other) const {
 
 
 void ClimateFilter::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "type"
-      << "climate-filter";
+    j << type() << "climate-filter";
     j << "climate-filter-delta" << delta_;
-    j.endObject();
 }
 
 

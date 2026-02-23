@@ -11,20 +11,20 @@
 
 
 #include <memory>
-#include <regex>
 #include <string>
 #include <vector>
 
 #include "eckit/geo/Grid.h"
+#include "eckit/geo/area/BoundingBox.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/api/MIRJob.h"
-#include "mir/api/mir_config.h"
 #include "mir/input/MIRInput.h"
 #include "mir/input/RawInput.h"
 #include "mir/output/EmptyOutput.h"
 #include "mir/param/GridSpecParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/repres/Representation.h"
 
 
 namespace mir::tests::unit {
@@ -37,25 +37,35 @@ CASE("GridSpec input/output") {
         std::string grid;
         std::string canonical;
         size_t size;
+        bool croppable;
     };
 
     std::vector<test_t> tests{
-        test_t{"{grid: 10/10}", "{\"grid\":[10,10]}", 684},
-        {"{grid: [20, 10]}", "{\"grid\":[20,10]}", 342},
-        {"{grid: o8}", "{\"grid\":\"O8\"}", 544},
-        {"{grid: h2_ring}", "{\"grid\":\"H2\"}", 48},
-
+        test_t{"{grid: eORCA1_T}", R"({"grid":"eORCA1_T"})", 120184, false},  // NOTE: ORCA is non-croppable
+        {"{grid: 10/10}", R"({"grid":[10,10]})", 684, true},                  //
+        {"{grid: [20, 10]}", R"({"grid":[20,10]})", 342, true},               //
+        {"{pl: [20, 24, 24, 20]}", R"({"grid":"O2"})", 88, true},             //
+        {"{grid: o8}", R"({"grid":"O8"})", 544, true},                        //
+        {"{grid: h2_ring}", R"({"grid":"H2"})", 48, false},                   // NOTE: HEALPix is non-croppable
+        {"{grid: h2n}", R"({"grid":"H2","order":"nested"})", 48, false},      // NOTE: HEALPix is non-croppable
     };
 
-    if (MIR_HAVE_TESSELATION) {
-        tests.push_back(test_t{"{grid: h2n}", "{\"grid\":\"H2\",\"order\":\"nested\"}", 48});
-    }
 
     SECTION("GridSpec canonical") {
         for (const auto& test : tests) {
+            std::unique_ptr<param::MIRParametrisation> param(new param::GridSpecParametrisation(test.grid));
+            ASSERT(param);
+
             std::unique_ptr<const eckit::geo::Grid> grid(eckit::geo::GridFactory::make_from_string(test.grid));
             EXPECT(grid->size() == test.size);
             EXPECT(grid->spec_str() == test.canonical);
+
+            static const auto bbox_spec_str = eckit::geo::area::BoundingBox::bounding_box_default().spec_str();
+            EXPECT(grid->boundingBox().spec_str() == bbox_spec_str);
+
+            repres::RepresentationHandle rep(repres::RepresentationFactory::build(*param));
+            EXPECT(rep->numberOfPoints() == test.size);
+            EXPECT(rep->isGlobal());
         }
     }
 
@@ -90,9 +100,7 @@ CASE("GridSpec input/output") {
         meta.set("Nj", 5);
 
         for (const auto& test_output : tests) {
-            // HEALPix is non-croppable
-            static const std::regex pattern(R"("grid":"H[1-9][0-9]*")");
-            if (std::regex_search(test_output.canonical, pattern)) {
+            if (!test_output.croppable) {
                 continue;
             }
 

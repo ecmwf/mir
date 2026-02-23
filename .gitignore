@@ -5,6 +5,7 @@
 *.pyc
 *.sublime-workspace
 *.swp
+.env
 .tag*
 CMakeLists.txt.user*
 suite/check.def
@@ -19,3 +20,4 @@ python/**/dist
 python/**/*.cpp
 python/**/*.c
 python/**/__pycache__
+python/**/*.cpython-*

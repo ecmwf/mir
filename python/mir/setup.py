@@ -8,19 +8,9 @@ from typing import List
 from typing import Tuple
 
 from Cython.Build import cythonize
+from numpy import get_include as numpy_includes
 from setuptools import Extension
 from setuptools import setup
-
-define_macros = []
-extra_include_dirs = []
-if "--without-numpy" not in sys.argv:
-    from numpy import get_include
-
-    define_macros.append(("MIR_PYTHON_HAVE_NUMPY", 1))
-    define_macros.append(("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION"))
-    extra_include_dirs = [get_include()]
-else:
-    define_macros.append(("MIR_PYTHON_HAVE_NUMPY", 0))
 
 if source_lib_root := os.getenv("SOURCE_LIB_ROOT", ""):
     # NOTE this whole branch is probably obsolete -- we dont want to build such wheels anymore
@@ -75,11 +65,15 @@ else:
     library_dirs = os.getenv("MIR_LIB_DIR", str(Path(build, "lib"))).split(":")
 
     include_dirs_default = ":".join(
-        str(Path(base, pkg, "src"))
-        for base in [source, build]
-        for pkg in ["mir", "eccodes", "eckit"]
+        str(Path(base, *path))
+        for base in (source, build)
+        for path in (
+            ("mir", "src"),
+            ("eccodes", "src"),
+            ("eccodes", "src", "eccodes"),
+            ("eckit", "src"),
+        )
     )
-    include_dirs_default += ":" + str(Path(build, "eccodes", "src", "eccodes"))
     include_dirs = os.getenv("MIR_INCLUDE_DIRS", include_dirs_default).split(":")
 
     extra_link_args = []
@@ -101,7 +95,7 @@ except ImportError:
 
 version: str
 try:
-    with open("../../VERSION", 'r') as f:
+    with open("../../VERSION", "r") as f:
         version = f.readlines()[0].strip()
 except Exception:
     warnings.warn("failed to read VERSION, falling back to 0.0.0")
@@ -110,6 +104,7 @@ except Exception:
 install_requires = ["findlibs", "numpy", "pyyaml"]
 try:
     import mirlib
+
     install_requires.append(f"mirlib=={mirlib.__version__}")
 except ImportError:
     warnings.warn("failed to import prereq libs, not listing as a dependency")
@@ -131,12 +126,16 @@ setup(
             language="c++",
             libraries=["mir"],
             library_dirs=library_dirs,
-            include_dirs=include_dirs + extra_include_dirs + ["src/_mir"],
+            include_dirs=include_dirs + [numpy_includes()] + ["src/_mir"],
             extra_compile_args=["-std=c++17"],
-            define_macros=define_macros,
+            define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")],
             **kwargs_ext,
         ),
-        compiler_directives={"language_level": 3, "c_string_encoding": "default"},
+        compiler_directives={
+            "language_level": 3,
+            "c_string_type": "unicode",  # accept Python str
+            "c_string_encoding": "utf8",
+        },
     ),
     **kwargs_set,
 )

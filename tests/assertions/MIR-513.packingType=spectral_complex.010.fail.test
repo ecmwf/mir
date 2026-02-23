@@ -1,0 +1,6 @@
+# input
+packingType=spectral_complex.grib1
+# mir
+--truncation=21 --packing=simple
+# grib_get
+FAIL

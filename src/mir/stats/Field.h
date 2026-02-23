@@ -121,14 +121,16 @@ class FieldFactory {
     std::string name_;
     virtual Field* make(const param::MIRParametrisation&) = 0;
 
-    FieldFactory(const FieldFactory&)            = delete;
-    FieldFactory& operator=(const FieldFactory&) = delete;
-
 protected:
     FieldFactory(const std::string&);
     virtual ~FieldFactory();
 
 public:
+    FieldFactory(const FieldFactory&)            = delete;
+    FieldFactory(FieldFactory&&)                 = delete;
+    FieldFactory& operator=(const FieldFactory&) = delete;
+    FieldFactory& operator=(FieldFactory&&)      = delete;
+
     static void list(std::ostream&);
     static Field* build(const std::string&, const param::MIRParametrisation&);
 };

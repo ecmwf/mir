@@ -90,11 +90,9 @@ void MissingIfAnyMissing::hash(eckit::MD5& h) const {
 }
 
 
-void MissingIfAnyMissing::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "type"
-      << "missing-if-any-missing";
-    j.endObject();
+const std::string& MissingIfAnyMissing::name() const {
+    static const std::string NAME{"missing-if-any-missing"};
+    return NAME;
 }
 
 

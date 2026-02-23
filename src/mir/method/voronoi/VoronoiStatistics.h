@@ -20,6 +20,12 @@ namespace mir::method::voronoi {
 
 struct VoronoiStatistics final : VoronoiMethod {
     explicit VoronoiStatistics(const param::MIRParametrisation&);
+
+    const char* type() const override;
+    void json(eckit::JSON&) const override;
+
+private:
+    std::string interpolationStatistics_;
 };
 
 

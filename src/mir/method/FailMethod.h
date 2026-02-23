@@ -61,15 +61,20 @@ private:
     // -- Overridden methods
 
     // From Method
-    bool canCrop() const override;
-    bool hasCropping() const override;
-    bool sameAs(const Method&) const override;
-    const util::BoundingBox& getCropping() const override;
-    void execute(context::Context&, const repres::Representation& in, const repres::Representation& out) const override;
+    const char* type() const override;
     void hash(eckit::MD5&) const override;
+    bool sameAs(const Method&) const override;
     int version() const override;
-    void print(std::ostream&) const override;
+
+    bool canCrop() const override;
     void setCropping(const util::BoundingBox&) override;
+    bool hasCropping() const override;
+    const util::BoundingBox& getCropping() const override;
+
+    void execute(context::Context&, const repres::Representation& in, const repres::Representation& out) const override;
+
+    void print(std::ostream&) const override;
+    void json(eckit::JSON&) const override;
 
     // -- Class members
     // None

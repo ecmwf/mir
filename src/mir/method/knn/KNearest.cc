@@ -53,7 +53,7 @@ const distance::DistanceWeighting& KNearest::distanceWeighting() const {
 }
 
 
-const char* KNearest::name() const {
+const char* KNearest::type() const {
     return "k-nearest";
 }
 

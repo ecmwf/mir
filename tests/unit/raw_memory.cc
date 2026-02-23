@@ -10,23 +10,22 @@
  */
 
 
+#include <algorithm>
 #include <memory>
-#include <numeric>
 #include <sstream>
 #include <vector>
 
 #include "eckit/filesystem/PathName.h"
-#include "eckit/system/Library.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/api/MIRJob.h"
-#include "mir/api/mir_config.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/RawInput.h"
 #include "mir/method/WeightMatrix.h"
 #include "mir/output/RawOutput.h"
 #include "mir/output/ResizableOutput.h"
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/repres/Representation.h"
 #include "mir/util/Log.h"
 
 
@@ -63,6 +62,10 @@ CASE("RawInput") {
 
         auto field = input->field();
         log << field << std::endl;
+
+        const repres::RepresentationHandle rep(field.representation());
+        ASSERT(rep);
+        log << *rep << std::endl;
     }
 
 
@@ -90,6 +93,10 @@ CASE("RawInput") {
 
         auto field = input->field();
         log << field << std::endl;
+
+        const repres::RepresentationHandle rep(field.representation());
+        ASSERT(rep);
+        log << *rep << std::endl;
     }
 
 
@@ -112,10 +119,13 @@ CASE("RawInput") {
 
         auto field = input->field();
         log << field << std::endl;
+
+        const repres::RepresentationHandle rep(field.representation());
+        ASSERT(rep);
+        log << *rep << std::endl;
     }
 
 
-#if mir_HAVE_GEO_GRID_ORCA
     SECTION("grid=ORCA2_T") {
         // metadata
         param::SimpleParametrisation meta;
@@ -135,8 +145,11 @@ CASE("RawInput") {
 
         auto field = input->field();
         log << field << std::endl;
+
+        const repres::RepresentationHandle rep(field.representation());
+        ASSERT(rep);
+        log << *rep << std::endl;
     }
-#endif
 }
 
 

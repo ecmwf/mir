@@ -19,7 +19,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
-ecbuild_add_option(FEATURE BUILD_TOOLS        DEFAULT OFF DESCRIPTION "build the command line tools (install)")
+ecbuild_add_option(FEATURE BUILD_TOOLS        DEFAULT ON  DESCRIPTION "build the command line tools (install)")
 ecbuild_add_option(FEATURE MIR_DOWNLOAD_MASKS DEFAULT ON  DESCRIPTION "download LSM files")
 ecbuild_add_option(FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support for netCDF" REQUIRED_PACKAGES "NetCDF COMPONENTS C CXX")
 ecbuild_add_option(FEATURE PNG                DEFAULT OFF DESCRIPTION "support for PNG encoding" REQUIRED_PACKAGES PNG)
@@ -29,20 +29,26 @@ if(NOT TARGET OpenMP::OpenMP_CXX)
     set(mir_HAVE_OMP 0)
 endif()
 
-ecbuild_find_package(NAME eccodes VERSION 2.40 REQUIRED)
 ecbuild_find_package(NAME eckit   VERSION 1.31 REQUIRED)
-
-ecbuild_add_option(FEATURE ATLAS DEFAULT ON DESCRIPTION "support for Atlas" REQUIRED_PACKAGES "atlas VERSION 0.36")
+ecbuild_find_package(NAME eccodes VERSION 2.44 REQUIRED)
+ecbuild_find_package(NAME atlas   VERSION 0.43 REQUIRED)
 
 if(NOT TARGET eckit_geo)
-    MESSAGE(FATAL_ERROR "eckit::geo (feature ECKIT_GEO) is required but not found")
+    MESSAGE(FATAL_ERROR "mir: eckit feature ECKIT_GEO is required")
 endif()
+
+#TODO ensure eccodes has required features
+#if(NOT eccodes_HAVE_AEC)
+#    MESSAGE(FATAL_ERROR "mir: eccodes feature AEC is required")
+#endif()
+
+#TODO ensure atlas has required features
+#if(NOT atlas_HAVE_TESSELATION)
+#    MESSAGE(FATAL_ERROR "mir: atlas feature TESSELATION is required")
+#endif()
 
 # shortcut upstream features into mir features (avoid additional optional behaviour)
 set(mir_HAVE_ECKIT_CODEC eckit_HAVE_ECKIT_CODEC)
-set(mir_HAVE_GRID_FESOM eckit_HAVE_GEO_GRID_FESOM)
-set(mir_HAVE_GRID_ICON eckit_HAVE_GEO_GRID_ICON)
-set(mir_HAVE_GRID_ORCA eckit_HAVE_GEO_GRID_ORCA)
 
 set(MIR_LIBRARIES mir)
 

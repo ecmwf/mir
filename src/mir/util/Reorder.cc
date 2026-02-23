@@ -12,6 +12,7 @@
 
 #include "mir/util/Reorder.h"
 
+#include <cmath>
 #include <map>
 #include <numeric>
 #include <ostream>
@@ -49,7 +50,7 @@ public:
 
     std::vector<size_t> reorder() override {
         auto Nside = static_cast<size_t>(std::sqrt(size / 12));
-        ASSERT(Nside * Nside * 12 == size);
+        ASSERT(12 * Nside * Nside == size);
 
         using H = eckit::geo::order::HEALPix;
         return H(H::RING).reorder(H::NESTED, Nside);
@@ -65,7 +66,7 @@ public:
 
     std::vector<size_t> reorder() override {
         auto Nside = static_cast<size_t>(std::sqrt(size / 12));
-        ASSERT(Nside * Nside * 12 == size);
+        ASSERT(12 * Nside * Nside == size);
 
         using H = eckit::geo::order::HEALPix;
         return H(H::NESTED).reorder(H::RING, Nside);

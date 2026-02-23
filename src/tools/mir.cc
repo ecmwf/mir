@@ -23,9 +23,12 @@
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
 
+#include "mir/action/filter/MaskLSM.h"
 #include "mir/action/filter/NablaFilter.h"
 #include "mir/action/plan/Executor.h"
 #include "mir/api/MIRJob.h"
+#include "mir/api/mir_config.h"
+#include "mir/caching/legendre/LegendreLoader.h"
 #include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/data/Space.h"
 #include "mir/grib/BasicAngle.h"
@@ -39,6 +42,7 @@
 #include "mir/lsm/LSMSelection.h"
 #include "mir/lsm/NamedLSM.h"
 #include "mir/method/Method.h"
+#include "mir/method/fe/FiniteElement.h"
 #include "mir/method/knn/distance/DistanceWeighting.h"
 #include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
 #include "mir/method/knn/pick/Pick.h"
@@ -57,12 +61,8 @@
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
-#if mir_HAVE_ATLAS
-#include "mir/caching/legendre/LegendreLoader.h"
-#include "mir/method/fe/FiniteElement.h"
 #if mir_HAVE_PNG
 #include "mir/output/PNGOutput.h"
-#endif
 #endif
 
 
@@ -125,17 +125,13 @@ struct MIR : MIRTool {
             new SimpleOption<bool>("interpolation-matrix-free", "Matrix-free interpolation (proxy methods)"));
         options_.push_back(
             new SimpleOption<bool>("interpolation-global-input", "Interpolation input grid assumed global"));
+        options_.push_back(
+            new SimpleOption<bool>("interpolation-global-output", "Interpolation output grid assumed global"));
 
-#if mir_HAVE_ATLAS
-        options_.push_back(new FactoryOption<method::fe::FiniteElementFactory>("l2-projection-input-method",
-                                                                               "L2 Projection FE method for input"));
-        options_.push_back(new FactoryOption<method::fe::FiniteElementFactory>("l2-projection-output-method",
-                                                                               "L2 Projection FE method for output"));
         options_.push_back(new SimpleOption<bool>("finite-element-validate-mesh",
                                                   "FE method check mesh quadrilaterals validity (default false)"));
         options_.push_back(new FactoryOption<method::fe::FiniteElement::ProjectionFail>(
             "finite-element-projection-fail", "FE method failed projection handling (default missing-value)"));
-#endif
 
         options_.push_back(new SimpleOption<double>("pole-displacement-in-degree",
                                                     "Infinitesimal displacement at the poles [degree] (default 0.)"));
@@ -192,39 +188,28 @@ struct MIR : MIRTool {
             "Linear algebra sparse backend (default '" + eckit::linalg::LinearAlgebraSparse::backend().name() + "')"));
         options_.push_back(new FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
 
-        if constexpr (MIR_HAVE_ATLAS) {
-            for (const auto& which : std::vector<std::string>{"input", "output"}) {
-                options_.push_back(
-                    new SimpleOption<std::string>(which + "-mesh-generator", "Mesh generator for " + which + " grid"));
-                options_.push_back(new SimpleOption<bool>(which + "-mesh-cell-centres",
-                                                          "Calculate cell centres for " + which + " mesh"));
-                options_.push_back(new SimpleOption<bool>(which + "-mesh-cell-longest-diagonal",
-                                                          "Calculate cells longest diagonal for " + which + " mesh"));
-                options_.push_back(
-                    new SimpleOption<bool>(which + "-mesh-node-to-cell-connectivity",
-                                           "Calculate node-to-cell connectivity for " + which + " mesh"));
-                options_.push_back(new SimpleOption<std::string>(
-                    which + "-mesh-file-ll",
-                    "Output file for " + which + " grid, in lon/lat coordinates (default <empty>)"));
-                options_.push_back(new SimpleOption<std::string>(
-                    which + "-mesh-file-xy",
-                    "Output file for " + which + " grid, in X/Y coordinates (default <empty>)"));
-                options_.push_back(new SimpleOption<std::string>(
-                    which + "-mesh-file-xyz",
-                    "Output file for " + which + " grid, in X/Y/Z coordinates (default <empty>)"));
-                options_.push_back(new SimpleOption<bool>(which + "-mesh-generator-three-dimensional",
-                                                          "Generate 3-dimensional " + which + " mesh"));
-                options_.push_back(new SimpleOption<bool>(which + "-mesh-generator-triangulate",
-                                                          "Generate triangulated " + which + " mesh"));
-                options_.push_back(
-                    new SimpleOption<double>(which + "-mesh-generator-angle",
-                                             "Generate with quadrilateral tolerance angle on " + which + " mesh"));
-                options_.push_back(new SimpleOption<bool>(which + "-mesh-generator-force-include-north-pole",
-                                                          "Generate including North pole on " + which + " mesh"));
-                options_.push_back(new SimpleOption<bool>(which + "-mesh-generator-force-include-south-pole",
-                                                          "Generate including South pole on " + which + " mesh"));
-            }
-        }
+        options_.push_back(new SimpleOption<std::string>("mesh-generator", "Mesh generator"));
+        options_.push_back(new SimpleOption<bool>("mesh-cell-centres", "Calculate mesh cell centres"));
+        options_.push_back(
+            new SimpleOption<bool>("mesh-cell-longest-diagonal", "Calculate mesh cells longest diagonal"));
+        options_.push_back(
+            new SimpleOption<bool>("mesh-node-to-cell-connectivity", "Calculate mesh node-to-cell connectivity"));
+        options_.push_back(new SimpleOption<std::string>("mesh-file-ll",
+                                                         "Output mesh file, in lon/lat coordinates (default <empty>)"));
+        options_.push_back(
+            new SimpleOption<std::string>("mesh-file-xy", "Output mesh file, in X/Y coordinates (default <empty>)"));
+        options_.push_back(
+            new SimpleOption<std::string>("mesh-file-xyz", "Output mesh file, in X/Y/Z coordinates (default <empty>)"));
+        options_.push_back(new SimpleOption<bool>("mesh-generator-three-dimensional", "Generate 3-dimensional mesh"));
+        options_.push_back(new SimpleOption<bool>("mesh-generator-triangulate", "Generate triangulated mesh"));
+        options_.push_back(
+            new SimpleOption<double>("mesh-generator-angle", "Generate mesh with quadrilateral tolerance angle"));
+        options_.push_back(
+            new SimpleOption<bool>("mesh-generator-force-include-north-pole", "Generate mesh including North pole"));
+        options_.push_back(
+            new SimpleOption<bool>("mesh-generator-force-include-south-pole", "Generate mesh including South pole"));
+        options_.push_back(new SimpleOption<std::string>("mesh-generator-extension-grid",
+                                                         "Delaunay mesh generator global extension grid"));
 
         options_.push_back(
             new SimpleOption<double>("counter-upper-limit", "Statistics count values below lower limit"));
@@ -246,6 +231,10 @@ struct MIR : MIRTool {
         options_.push_back(new FactoryOption<key::Area::Mode>("area-mode", "area cropping/masking mode"));
         options_.push_back(new SimpleOption<eckit::PathName>("bitmap", "Bitmap file to apply"));
         options_.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
+        options_.push_back(new FactoryOption<action::filter::MaskLSM::Value>(
+            "mask-input-lsm-value", "Mask input land-sea mask value (default 0)"));
+        options_.push_back(new FactoryOption<action::filter::MaskLSM::Value>(
+            "mask-output-lsm-value", "Mask output land-sea mask value (default 0)"));
         options_.push_back(new FactoryOption<stats::DistributionFactory>(
             "add-random", "Add random numbers to field values according to a probability density function"));
 
@@ -364,10 +353,8 @@ struct MIR : MIRTool {
         options_.push_back(new Separator("Caching"));
         options_.push_back(new FactoryOption<caching::matrix::MatrixLoaderFactory>(
             "matrix-loader", "Select how to load matrices in memory"));
-#if mir_HAVE_ATLAS
         options_.push_back(new FactoryOption<caching::legendre::LegendreLoaderFactory>(
             "legendre-loader", "Select how to load Legendre coefficients in memory"));
-#endif
 
         if constexpr (MIR_HAVE_OMP) {
             options_.push_back(
@@ -393,12 +380,10 @@ struct MIR : MIRTool {
             options_.push_back(new FactoryOption<output::MIROutputFactory>("format", "Output format"));
             options_.push_back(
                 new SimpleOption<bool>("reset-missing-values", "Use first encoded value to set missing value"));
-#if mir_HAVE_ATLAS
 #if mir_HAVE_PNG
             options_.push_back(
                 new FactoryOption<output::PNGEncoderFactory>("png-output-encoder", "PNG output encoder"));
             options_.push_back(new VectorOption<double>("png-output-minmax", "PNG output minimum/maximum", 2));
-#endif
 #endif
         }
     }

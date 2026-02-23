@@ -92,9 +92,9 @@ public:
     virtual void fillMeshGen(util::MeshGeneratorParameters&) const;
 
     // Return a cropped version
+    virtual std::string intersectionOnCrop() const;
     virtual const Representation* croppedRepresentation(const util::BoundingBox&) const;
     virtual util::BoundingBox extendBoundingBox(const util::BoundingBox&) const;
-    virtual bool extendBoundingBoxOnIntersect() const;
     virtual bool crop(util::BoundingBox&, util::IndexMapping&) const;
 
     virtual size_t frame(MIRValuesVector&, size_t size, double missingValue) const;
@@ -210,14 +210,16 @@ class RepresentationFactory {
     std::string name_;
     virtual Representation* make(const param::MIRParametrisation&) = 0;
 
-    RepresentationFactory(const RepresentationFactory&)            = delete;
-    RepresentationFactory& operator=(const RepresentationFactory&) = delete;
-
 protected:
     explicit RepresentationFactory(const std::string&);
     virtual ~RepresentationFactory();
 
 public:
+    RepresentationFactory(const RepresentationFactory&)            = delete;
+    RepresentationFactory(RepresentationFactory&&)                 = delete;
+    RepresentationFactory& operator=(const RepresentationFactory&) = delete;
+    RepresentationFactory& operator=(RepresentationFactory&&)      = delete;
+
     // This is 'const' as the representation uses reference counting
     // Represention should always be immutable
     static const Representation* build(const param::MIRParametrisation&);

@@ -116,11 +116,10 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
     unload_ = name.substr(0, 4) == "tmp-";
 
-    eckit::PathName real = path.realName();
+    const auto real = path.realName();
 
-    std::ostringstream msg("SharedMemoryLoader: ");
-
-    msg << "path='" << real << "', hostname='" << eckit::Main::hostname() << "'";
+    std::ostringstream msg;
+    msg << "SharedMemoryLoader: path='" << real << "', hostname='" << eckit::Main::hostname() << "'";
     Log::debug() << msg.str() << std::endl;
 
     if (real.asString().size() >= INFO_PATH - 1) {

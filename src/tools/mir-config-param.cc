@@ -25,7 +25,6 @@
 #include "mir/config/LibMir.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/param/CombinedParametrisation.h"
-#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/FieldParametrisation.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Exceptions.h"
@@ -77,8 +76,7 @@ struct Map : std::map<long, std::string> {
 
 void display(const param::MIRParametrisation& metadata, const std::string& key) {
     static param::SimpleParametrisation empty;
-    static param::DefaultParametrisation defaults;
-    const param::CombinedParametrisation combined(empty, metadata, defaults);
+    const param::CombinedParametrisation combined(empty, metadata);
     const param::MIRParametrisation& param(combined);
 
     long paramId = 0;

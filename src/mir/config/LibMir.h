@@ -26,10 +26,15 @@ public:
     static const LibMir& instance();
 
     static std::string homeDir();
+    static std::string homeUrl();
     static std::string cacheDir();
 
     static bool caching();
     static const std::string& lsmNamed();
+    static const std::string& gribSampleName();
+
+    std::string version() const override;
+    std::string gitsha1(unsigned int count) const override;
 
     enum config_file
     {
@@ -39,6 +44,7 @@ public:
         GRIB_OUTPUT,
         GRIDS,
         LIMITER,
+        LSM,
         NETCDF,
         PARAMETER_CLASS,
         PARAMETERS,
@@ -62,8 +68,6 @@ private:
     LibMir();
 
     const void* addr() const override;
-    std::string version() const override;
-    std::string gitsha1(unsigned int count) const override;
 };
 
 

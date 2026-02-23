@@ -36,11 +36,12 @@ public:
     virtual bool treatment(DenseMatrix& A, WeightMatrix& W, DenseMatrix& B, const MIRValuesVector&,
                            const double& missingValue) const = 0;
 
-    virtual bool sameAs(const NonLinear&) const = 0;
-    virtual void hash(eckit::MD5&) const        = 0;
-    virtual void json(eckit::JSON&) const       = 0;
-
+    virtual bool sameAs(const NonLinear&) const                   = 0;
+    virtual void hash(eckit::MD5&) const                          = 0;
     virtual bool modifiesMatrix(bool fieldHasMissingValues) const = 0;
+
+    virtual const std::string& name() const = 0;
+    virtual void json(eckit::JSON&) const { /* do nothing */ }
 
 private:
     virtual void print(std::ostream&) const = 0;
@@ -69,8 +70,8 @@ protected:
 public:
     NonLinearFactory(const NonLinearFactory&)            = delete;
     NonLinearFactory(NonLinearFactory&&)                 = delete;
-    NonLinearFactory& operator=(NonLinearFactory&&)      = delete;
     NonLinearFactory& operator=(const NonLinearFactory&) = delete;
+    NonLinearFactory& operator=(NonLinearFactory&&)      = delete;
 
     static const NonLinear* build(const std::string& name, const param::MIRParametrisation&);
     static void list(std::ostream&);

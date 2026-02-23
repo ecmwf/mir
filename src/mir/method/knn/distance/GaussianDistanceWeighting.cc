@@ -19,6 +19,7 @@
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
+#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Types.h"
@@ -27,8 +28,9 @@
 namespace mir::method::knn::distance {
 
 
-GaussianDistanceWeighting::GaussianDistanceWeighting(const param::MIRParametrisation& parametrisation) : stddev_(0.) {
-    parametrisation.get("distance-weighting-gaussian-stddev", stddev_);
+GaussianDistanceWeighting::GaussianDistanceWeighting(const param::MIRParametrisation& param) :
+    stddev_(param::DefaultParametrisation::instance().get_value<double>("distance", param)) {
+    param.get("distance-weighting-gaussian-stddev", stddev_);
     ASSERT(stddev_ > 0.);
 
     // exponent factor is used (instead of stddev) to speed weights calculations
@@ -71,11 +73,8 @@ bool GaussianDistanceWeighting::sameAs(const DistanceWeighting& other) const {
 
 
 void GaussianDistanceWeighting::json(eckit::JSON& j) const {
-    j.startObject();
-    j << "type"
-      << "gaussian";
+    j << type() << "gaussian";
     j << "distance-weighting-gaussian-stddev" << stddev_;
-    j.endObject();
 }
 
 

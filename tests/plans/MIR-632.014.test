@@ -3,4 +3,4 @@ gridType=healpix,Nside=32,orderingConvention=ring.grib2
 # mir
 --interpolation=grid-box-average --grid=O8
 # plan
-Gridded2NamedGrid[grid=O8,interpolation=grid-box-average,method=GridBoxMethod[name=grid-box-average,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0]]|Save[output=...]
+Gridded2NamedGrid[grid=O8,interpolation=grid-box-average,method=GridBoxMethod[type=grid-box-average,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0]]|Save[output=...]

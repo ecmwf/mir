@@ -19,7 +19,8 @@ namespace mir::method::knn::distance {
 
 
 struct ClimateFilter : DistanceWeighting {
-    ClimateFilter(const param::MIRParametrisation&);
+    explicit ClimateFilter(const param::MIRParametrisation&);
+
     void operator()(size_t ip, const Point3& point, const std::vector<search::PointSearch::PointValueType>& neighbours,
                     std::vector<WeightMatrix::Triplet>& triplets) const override;
 

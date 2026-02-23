@@ -21,13 +21,7 @@ cdef extern from "mir/api/MIRJob.h" namespace "mir::api":
         MIRJob& set(string, double)
         MIRJob& set(string, double, double)
         void execute(MIRInput, MIROutput) except +
-        void json(eckit.JSON&)
-
-
-cdef extern from "<sstream>" namespace "std" nogil:
-    cdef cppclass ostringstream:
-        ostringstream& operator<<(MIRJob)
-        string to_string "str" () const
+        string json_str() const
 
 
 cdef extern from "mir/config/LibMir.h" namespace "mir":
@@ -37,6 +31,12 @@ cdef extern from "mir/config/LibMir.h" namespace "mir":
 
         @staticmethod
         string homeDir()
+
+        @staticmethod
+        LibMir& instance()
+
+        string version()
+        string gitsha1(unsigned int n)  # n=40 for full sha1
 
 
 cdef extern from "mir/input/MIRInput.h" namespace "mir::input":
@@ -111,3 +111,14 @@ cdef extern from "mir/output/ArrayOutput.h" namespace "mir::output":
         vector[double]& values()
         vector[size_t] shape() const
         string gridspec() const
+        double missingValue() const
+
+
+cdef extern from "mir/method/Method.h" namespace "mir::method":
+    cdef cppclass Method:
+        string json_str() const
+        string type() const
+
+    cdef cppclass MethodFactory:
+        @staticmethod
+        const Method* make_from_string(const string&) except +

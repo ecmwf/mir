@@ -22,13 +22,16 @@ DefaultParametrisation::DefaultParametrisation() {
     set("style", "ecmwf");
     set("executor", "simple");
 
-    set("interpolation", "linear/k-nearest-neighbours");
+    set("interpolation", "linear");
     set("vector-space", "1d-linear");
 
     set("caching", LibMir::caching());
 
     set("prune-epsilon", 1e-10);
     set("nclosest", 4L);
+    set("distance", 1.);
+    set("distance-tolerance", 1.);
+    set("pole-displacement-in-degree", 0.);
 
     set("lsm", false);
     set("lsm-selection", "named");
@@ -41,9 +44,6 @@ DefaultParametrisation::DefaultParametrisation() {
 
     set("compare", "scalar");
 }
-
-
-DefaultParametrisation::~DefaultParametrisation() = default;
 
 
 }  // namespace mir::param

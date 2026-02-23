@@ -31,12 +31,6 @@ namespace mir::method::solver {
 struct Statistics final : solver::Solver {
     Statistics(const param::MIRParametrisation&, stats::Field*);
 
-    Statistics(const Statistics&) = delete;
-    Statistics(Statistics&&)      = delete;
-
-    void operator=(const Statistics&) = delete;
-    void operator=(Statistics&&)      = delete;
-
     void solve(const DenseMatrix& A, const WeightMatrix& W, DenseMatrix& B, const double& missingValue) const override;
 
 private:
