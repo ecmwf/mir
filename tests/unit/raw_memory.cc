@@ -16,7 +16,7 @@
 #include <vector>
 
 #include "eckit/filesystem/PathName.h"
-#include "eckit/system/Library.h"
+#include "eckit/system/LibraryManager.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/api/MIRJob.h"
@@ -115,7 +115,7 @@ CASE("RawInput") {
 
 
     // (plugins are optional)
-    if (eckit::system::Library::exists("atlas-orca")) {
+    if (eckit::system::LibraryManager::exists("atlas-orca")) {
         SECTION("grid=ORCA2_T") {
             // metadata
             param::SimpleParametrisation meta;
