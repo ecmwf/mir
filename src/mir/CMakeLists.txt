@@ -731,16 +731,14 @@ list(APPEND mir_srcs
     util/Wind.cc
     util/Wind.h)
 
-if(mir_HAVE_GRID_FESOM)
-    list(APPEND mir_srcs repres/FESOM.cc repres/FESOM.h)
-endif()
-
-if(mir_HAVE_GRID_ICON)
-    list(APPEND mir_srcs repres/ICON.cc repres/ICON.h)
-endif()
-
-if(mir_HAVE_GRID_ORCA)
-    list(APPEND mir_srcs repres/ORCA.cc repres/ORCA.h)
+if(mir_HAVE_ECKIT_CODEC)
+    list(APPEND mir_srcs
+        repres/FESOM.cc
+        repres/FESOM.h
+        repres/ICON.cc
+        repres/ICON.h
+        repres/ORCA.cc
+        repres/ORCA.h )
 endif()
 
 if(mir_HAVE_ATLAS)
