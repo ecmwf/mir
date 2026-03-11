@@ -31,7 +31,6 @@
 #include "mir/compare/Field.h"
 #include "mir/compare/FieldSet.h"
 #include "mir/compare/GribField.h"
-#include "mir/compare/MultiFile.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/param/CombinedParametrisation.h"
