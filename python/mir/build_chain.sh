@@ -37,7 +37,7 @@ fi
 # TODO get these from pyproject...
 if [ -n "$INSTALL_LOCALLY" ] ; then
     # TODO reuse the dep resolver from setup utils
-    uv pip install --no-cache $INSTALL_LOCALLY/eckitlib* $INSTALL_LOCALLY/fckitlib* $INSTALL_LOCALLY/eccodeslib* $INSTALL_LOCALLY/atlaslib* $INSTALL_LOCALLY/mirlib*
+    uv pip install --no-cache $INSTALL_LOCALLY/eckitlib* $INSTALL_LOCALLY/eccodeslib* $INSTALL_LOCALLY/atlaslib* $INSTALL_LOCALLY/mirlib*
 else
     uv pip install --prerelease=allow $EXTRA_PIP mirlib
 fi
