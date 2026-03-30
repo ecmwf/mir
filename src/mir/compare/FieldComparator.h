@@ -15,6 +15,8 @@
 #include <string>
 #include <vector>
 
+#include "mir/compare/MultiFile.h"
+
 
 namespace eckit {
 class Buffer;
@@ -29,7 +31,6 @@ class CmdArgs;
 namespace mir::compare {
 class Field;
 class FieldSet;
-class MultiFile;
 }  // namespace mir::compare
 
 

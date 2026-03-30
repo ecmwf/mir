@@ -12,10 +12,10 @@
 
 #pragma once
 
-#include <eccodes.h>
-
 #include <string>
 #include <vector>
+
+#include "eccodes.h"
 
 
 bool grib_call(int e, const char* call, bool NOT_FOUND_IS_OK = false);
