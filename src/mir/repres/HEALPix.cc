@@ -130,6 +130,16 @@ HEALPix::HEALPix(const param::MIRParametrisation& param) :
         }()) {}
 
 
+size_t HEALPix::Nside() const {
+    return grid_->Nside();
+}
+
+
+std::string HEALPix::order() const {
+    return grid_->order();
+}
+
+
 std::string HEALPix::name() const {
     return "H" + std::to_string(grid_->Nside()) + (grid_->order() == "nested" ? "n" : "");
 }

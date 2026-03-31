@@ -356,6 +356,8 @@ list(APPEND mir_srcs
     method/Cropping.h
     method/FailMethod.cc
     method/FailMethod.h
+    method/HEALPixMethod.cc
+    method/HEALPixMethod.h
     method/Matrix.cc
     method/Matrix.h
     method/MatrixCacheCreator.cc

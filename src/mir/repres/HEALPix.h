@@ -38,6 +38,11 @@ public:
     explicit HEALPix(size_t Nside, const std::string& order = "ring");
     explicit HEALPix(const param::MIRParametrisation&);
 
+    // -- Methods
+
+    size_t Nside() const;
+    std::string order() const;
+
 private:
     // -- Members
 
