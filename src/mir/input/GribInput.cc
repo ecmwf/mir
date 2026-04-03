@@ -611,34 +611,17 @@ static ProcessingT<std::string>* packing() {
 
 static ProcessingT<std::string>* gridName_fix_for_healpix_grids() {
     return new ProcessingT<std::string>([](grib_handle* h, std::string& value) {
-        std::string gridName;
+        long Nside = 0;
+        GRIB_CALL(codes_get_long(h, "Nside", &Nside));
 
         char buffer[64];
         size_t size = sizeof(buffer);
-
-        GRIB_CALL(codes_get_string(h, "gridName", buffer, &size));
-        ASSERT(size < sizeof(buffer) - 1);
-
-        if (std::strcmp(buffer, "MISSING") != 0) {
-            gridName += buffer;
-        }
-
-        size = sizeof(buffer);
         GRIB_CALL(codes_get_string(h, "orderingConvention", buffer, &size));
+
         ASSERT(size < sizeof(buffer) - 1);
 
-        if (std::strcmp(buffer, "MISSING") != 0) {
-            if (std::strcmp(buffer, "nested") == 0) {
-                gridName += "_nested";
-            }
-        }
-
-        if (!gridName.empty()) {
-            value = gridName;
-            return true;
-        }
-
-        return false;
+        value = (std::strcmp(buffer, "nested") == 0 ? "HN" : "H") + std::to_string(Nside);
+        return true;
     });
 }
 

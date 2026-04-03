@@ -88,7 +88,7 @@ private:
     }
 
     std::string canonical(const std::string& name, const param::MIRParametrisation&) const override {
-        return "H" + std::to_string(Nside(name)) + (nested_ ? "n" : "");
+        return (nested_ ? "HN" : "H") + std::to_string(Nside(name));
     }
 
     // -- Members
@@ -130,8 +130,18 @@ HEALPix::HEALPix(const param::MIRParametrisation& param) :
         }()) {}
 
 
+size_t HEALPix::Nside() const {
+    return grid_->Nside();
+}
+
+
+std::string HEALPix::order() const {
+    return grid_->order();
+}
+
+
 std::string HEALPix::name() const {
-    return "H" + std::to_string(grid_->Nside()) + (grid_->order() == "nested" ? "n" : "");
+    return (grid_->order() == "nested" ? "HN" : "H") + std::to_string(grid_->Nside());
 }
 
 
