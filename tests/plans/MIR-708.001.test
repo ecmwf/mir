@@ -1,0 +1,6 @@
+# input
+gridType=healpix,Nside=2,orderingConvention=ring.grib2
+# mir
+--grid=hn2 --interpolation=healpix-resample
+# plan
+Gridded2NamedGrid[grid=HN2,interpolation=healpix-resample,method=HEALPixResample[nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0]]|Save[output=...]
