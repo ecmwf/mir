@@ -49,60 +49,42 @@ ArrayInput::ArrayInput(PyObject* values, PyObject* gridspec) : values_(values), 
     }
 
     // Check if input is a NumPy array
-    if (PyArray_Check(values_)) {
-        PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(values_);
-
-        if (!PyArray_ISCARRAY_RO(arr)) {
-            throw std::runtime_error("ArrayInput: NumPy array must be contiguous and readable.");
-        }
-
-        if (PyArray_TYPE(arr) == NPY_DOUBLE) {
-            auto* src = static_cast<double*>(PyArray_DATA(arr));
-            auto size = static_cast<size_t>(PyArray_SIZE(arr));
-
-            input_ = std::make_unique<mir::input::RawInput>(src, size, *param_);
-            return;
-        }
-
-        if (PyArray_TYPE(arr) == NPY_FLOAT) {
-            converted_.resize(PyArray_SIZE(arr));
-            float* src = static_cast<float*>(PyArray_DATA(arr));
-            std::copy(src, src + converted_.size(), converted_.begin());
-
-            input_ = std::make_unique<mir::input::RawInput>(converted_.data(), converted_.size(), *param_);
-            return;
-        }
-
-        throw std::runtime_error("ArrayInput: NumPy array must be float32 or float64.");
+    if (!PyArray_Check(values_)) {
+        throw std::runtime_error("ArrayInput: must be a NumPy array.");
     }
 
-    // Check if input is a array.array (continuous memory)
-    if (PyObject_GetBuffer(values_, &buffer_, PyBUF_CONTIG_RO | PyBUF_FORMAT) == -1) {
-        throw std::runtime_error("ArrayInput: Failed to get buffer.");
+    PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(values_);
+
+    if (!PyArray_ISCARRAY_RO(arr)) {
+        throw std::runtime_error("ArrayInput: NumPy array must be contiguous and readable.");
     }
 
-    if (strcmp(buffer_.format, "d") == 0) {
-        auto size = static_cast<size_t>(buffer_.len / sizeof(double));
-        input_    = std::make_unique<mir::input::RawInput>(static_cast<double*>(buffer_.buf), size, *param_);
+    if (PyArray_TYPE(arr) == NPY_DOUBLE) {
+        auto* src = static_cast<double*>(PyArray_DATA(arr));
+        auto size = static_cast<size_t>(PyArray_SIZE(arr));
+
+        input_ = std::make_unique<mir::input::RawInput>(src, size, *param_);
+        ASSERT(input_);
+
+        return;
     }
-    else if (strcmp(buffer_.format, "f") == 0) {
-        converted_.resize(buffer_.len / sizeof(float));
-        auto* src = static_cast<float*>(buffer_.buf);
+
+    if (PyArray_TYPE(arr) == NPY_FLOAT) {
+        converted_.resize(PyArray_SIZE(arr));
+        float* src = static_cast<float*>(PyArray_DATA(arr));
         std::copy(src, src + converted_.size(), converted_.begin());
 
         input_ = std::make_unique<mir::input::RawInput>(converted_.data(), converted_.size(), *param_);
-    }
-    else {
-        PyBuffer_Release(&buffer_);
-        throw std::runtime_error("ArrayInput: Unsupported buffer format, expected 'd' or 'f'.");
+        ASSERT(input_);
+
+        return;
     }
 
-    ASSERT(input_);
+    throw std::runtime_error("ArrayInput: NumPy array must be float32 or float64.");
 }
 
 
 ArrayInput::~ArrayInput() {
-    PyBuffer_Release(&buffer_);
     Py_DECREF(values_);
     Py_DECREF(gridspec_);
 }
