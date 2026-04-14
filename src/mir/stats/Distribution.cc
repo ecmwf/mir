@@ -12,7 +12,7 @@
 
 #include "mir/stats/Distribution.h"
 
-#include <sstream>
+#include <ostream>
 
 #include "eckit/parser/YAMLParser.h"
 
@@ -46,9 +46,7 @@ DistributionFactory::DistributionFactory(const std::string& name) : name_(name) 
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
-        std::ostringstream oss;
-        oss << "DistributionFactory: duplicate '" << name << "'";
-        throw exception::SeriousBug(oss.str());
+        throw exception::SeriousBug("DistributionFactory: duplicate '" + name + "'");
     }
 
     (*m)[name] = this;
@@ -78,7 +76,8 @@ Distribution* DistributionFactory::build(const std::string& name) {
     auto j = m->find(key);
     if (j == m->end()) {
         list(Log::error() << "DistributionFactory: unknown '" << key << "', choices are: ");
-        Log::warning() << std::endl;
+        Log::error() << std::endl;
+        throw exception::SeriousBug("DistributionFactory: unknown '" + key + "'");
     }
 
     param::SimpleParametrisation args;

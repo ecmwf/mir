@@ -284,7 +284,7 @@ size_t CounterBinary::missingIn1NotIn2() const {
 
 
 size_t CounterBinary::missingIn2NotIn1() const {
-    return missingIn1NotIn2_;
+    return missingIn2NotIn1_;
 }
 
 
