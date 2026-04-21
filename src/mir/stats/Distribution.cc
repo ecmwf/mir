@@ -76,7 +76,6 @@ Distribution* DistributionFactory::build(const std::string& name) {
     auto j = m->find(key);
     if (j == m->end()) {
         list(Log::error() << "DistributionFactory: unknown '" << key << "', choices are: ");
-        Log::error() << std::endl;
         throw exception::SeriousBug("DistributionFactory: unknown '" + key + "'");
     }
 

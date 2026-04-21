@@ -32,29 +32,6 @@ public:
     explicit GridSpecParametrisation(const std::string& gridspec);
     explicit GridSpecParametrisation(const eckit::geo::Grid*);
 
-    // -- Types
-
-    struct Mapping {
-        Mapping(const Mapping&) = delete;
-        Mapping(Mapping&&)      = delete;
-
-        virtual ~Mapping() = default;
-
-        Mapping& operator=(const Mapping&) = delete;
-        Mapping& operator=(Mapping&&)      = delete;
-
-        virtual void fill(SimpleParametrisation& param) const {}
-
-        virtual bool get(const std::string& name, std::vector<int>&) const { return false; }
-        virtual bool get(const std::string& name, std::vector<long>&) const { return false; }
-        virtual bool get(const std::string& name, std::vector<float>&) const { return false; }
-        virtual bool get(const std::string& name, std::vector<double>&) const { return false; }
-        virtual bool get(const std::string& name, std::vector<std::string>&) const { return false; }
-
-    protected:
-        Mapping() = default;
-    };
-
     // -- Methods
 
     const eckit::geo::Grid& grid() const;
@@ -68,8 +45,6 @@ private:
 
     mutable SimpleParametrisation cache_;
     mutable util::recursive_mutex mutex_;  // to protect the cache
-
-    std::unique_ptr<const Mapping> mapping_;
 
     // -- Methods
 

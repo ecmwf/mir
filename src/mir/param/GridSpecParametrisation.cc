@@ -19,6 +19,7 @@
 #include "eckit/geo/grid/SphericalHarmonics.h"
 #include "eckit/geo/grid/reduced/HEALPix.h"
 #include "eckit/geo/grid/reduced/ReducedGaussian.h"
+#include "eckit/geo/grid/reduced/ReducedLonLat.h"
 #include "eckit/geo/grid/regular/RegularGaussian.h"
 #include "eckit/geo/grid/regular/RegularLL.h"
 #include "eckit/geo/projection/Rotation.h"
@@ -32,204 +33,127 @@ namespace mir::param {
 namespace {
 
 
-struct GridMapping : GridSpecParametrisation::Mapping {};
+void fill_grid(SimpleParametrisation& param, const eckit::geo::Grid& grid) {
+    const auto& type = grid.type();
 
+    if (type == "regular_ll") {
+        const auto& g = dynamic_cast<const eckit::geo::grid::regular::RegularLL&>(grid);
 
-struct AreaMapping : GridSpecParametrisation::Mapping {};
-
-
-struct ProjectionMapping : GridSpecParametrisation::Mapping {};
-
-
-struct MappingGridRegularLL : GridMapping {
-    explicit MappingGridRegularLL(const eckit::geo::Grid& _grid) :
-        grid_(dynamic_cast<const eckit::geo::grid::regular::RegularLL&>(_grid)) {}
-
-    void fill(SimpleParametrisation& param) const override {
         param.set("gridType", "regular_ll");
         param.set("gridded", true);
 
-        auto dlon = grid_.dlon();
+        auto dlon = g.dlon();
         const std::string i(dlon < 0. ? "i-" : "i+");
         param.set("west_east_increment", std::abs(dlon));
 
-        auto dlat = grid_.dlat();
+        auto dlat = g.dlat();
         const std::string j(dlat < 0. ? "j-" : "j+");
         param.set("south_north_increment", std::abs(dlat));
 
         param.set("grid", std::vector<double>{dlon, dlat});
-        param.set("order", i + j);  // TODO take from parameterisation
+        param.set("order", i + j);
 
-        param.set("Ni", grid_.nlon());
-        param.set("Nj", grid_.nlat());
+        param.set("Ni", g.nlon());
+        param.set("Nj", g.nlat());
+        return;
     }
 
-    const eckit::geo::grid::regular::RegularLL& grid_;
-};
-
-
-struct MappingGridRegularGG : GridMapping {
-    explicit MappingGridRegularGG(const eckit::geo::Grid& _grid) :
-        grid_(dynamic_cast<const eckit::geo::grid::regular::RegularGaussian&>(_grid)) {}
-
-    void fill(SimpleParametrisation& param) const override {
+    if (type == "regular_gg") {
+        const auto& g = dynamic_cast<const eckit::geo::grid::regular::RegularGaussian&>(grid);
         param.set("gridType", "regular_gg");
         param.set("gridded", true);
-        param.set("N", grid_.N());
+        param.set("N", g.N());
+        return;
     }
 
-    const eckit::geo::grid::regular::RegularGaussian& grid_;
-};
-
-
-struct MappingGridHEALPix : GridMapping {
-    explicit MappingGridHEALPix(const eckit::geo::Grid& _grid) :
-        grid_(dynamic_cast<const eckit::geo::grid::reduced::HEALPix&>(_grid)) {}
-
-    void fill(SimpleParametrisation& param) const override {
-        param.set("gridType", "healpix");
-        param.set("gridded", true);
-        param.set("Nside", grid_.Nside());
-        param.set("orderingConvention", grid_.order());
-        param.set("longitudeOfFirstGridPointInDegrees", 45.);
-    }
-
-    const eckit::geo::grid::reduced::HEALPix& grid_;
-};
-
-
-struct MappingSphericalHarmonics : GridMapping {
-    explicit MappingSphericalHarmonics(const eckit::geo::Grid& _grid) :
-        grid_(dynamic_cast<const eckit::geo::grid::SphericalHarmonics&>(_grid)) {}
-
-    void fill(SimpleParametrisation& param) const override {
-        param.set("gridType", "sh");
-        param.set("spectral", true);
-        param.set("truncation", grid_.truncation());
-    }
-
-    const eckit::geo::grid::SphericalHarmonics& grid_;
-};
-
-
-struct MappingGridByUID : GridMapping {
-    MappingGridByUID(const std::string& type, const eckit::geo::Grid::uid_type& uid) : type_(type), uid_(uid) {}
-
-    void fill(SimpleParametrisation& param) const override {
-        param.set("gridType", type_);
-        param.set("gridded", true);
-        param.set("uid", uid_);
-    }
-
-    const std::string type_;
-    const eckit::geo::Grid::uid_type uid_;
-};
-
-
-struct MappingGridReducedGG : GridMapping {
-    explicit MappingGridReducedGG(const eckit::geo::Grid& _grid) :
-        grid_(dynamic_cast<const eckit::geo::grid::reduced::ReducedGaussian&>(_grid)) {}
-
-    void fill(SimpleParametrisation& param) const override {
+    if (type == "reduced_gg") {
+        const auto& g = dynamic_cast<const eckit::geo::grid::reduced::ReducedGaussian&>(grid);
         param.set("gridType", "reduced_gg");
         param.set("gridded", true);
-        param.set("N", grid_.N());
+        param.set("N", g.N());
+        return;
     }
 
-    const eckit::geo::grid::reduced::ReducedGaussian& grid_;
-};
-
-
-struct MappingAreaBoundingBox : AreaMapping {
-    explicit MappingAreaBoundingBox(const eckit::geo::Area& _area) :
-        area(dynamic_cast<const eckit::geo::area::BoundingBox&>(_area)) {}
-
-    void fill(SimpleParametrisation& param) const override {
-        param.set("north", area.north());
-        param.set("west", area.west());
-        param.set("south", area.south());
-        param.set("east", area.east());
+    if (type == "HEALPix") {
+        const auto& g = dynamic_cast<const eckit::geo::grid::reduced::HEALPix&>(grid);
+        param.set("gridType", "healpix");
+        param.set("gridded", true);
+        param.set("Nside", g.Nside());
+        param.set("orderingConvention", g.order());
+        param.set("longitudeOfFirstGridPointInDegrees", 45.);
+        return;
     }
 
-    const eckit::geo::area::BoundingBox& area;
-};
+    if (type == "FESOM" || type == "ICON" || type == "ORCA" || type == "unstructured_ll") {
+        param.set("gridType", type);
+        param.set("gridded", true);
+        param.set("uid", grid.uid());
 
+        if (type == "unstructured_ll") {
+            auto [lats, lons] = grid.to_latlons();
+            param.set("latitudes", lats);
+            param.set("longitudes", lons);
+        }
 
-struct MappingAreaNone : AreaMapping {
-    explicit MappingAreaNone(const eckit::geo::Area&) {}
-};
+        return;
+    }
 
+    if (type == "sh") {
+        const auto& g = dynamic_cast<const eckit::geo::grid::SphericalHarmonics&>(grid);
+        param.set("gridType", "sh");
+        param.set("spectral", true);
+        param.set("truncation", g.truncation());
+        return;
+    }
 
-struct MappingProjectionRotation : ProjectionMapping {
-    explicit MappingProjectionRotation(const eckit::geo::Projection& _proj) :
-        projection(dynamic_cast<const eckit::geo::projection::Rotation&>(_proj)) {}
-
-    void fill(SimpleParametrisation& param) const override { NOTIMP; }
-
-    const eckit::geo::projection::Rotation& projection;
-};
-
-
-struct MappingProjectionNone : ProjectionMapping {
-    explicit MappingProjectionNone(const eckit::geo::Projection&) {}
-};
-
-
-GridMapping* build_grid_mapping(const eckit::geo::Grid& grid) {
-    const auto& type = grid.type();
-
-    return type == "regular-ll"   ? static_cast<GridMapping*>(new MappingGridRegularLL(grid))
-           : type == "regular-gg" ? static_cast<GridMapping*>(new MappingGridRegularGG(grid))
-           : type == "reduced-gg" ? static_cast<GridMapping*>(new MappingGridReducedGG(grid))
-           : type == "healpix"    ? static_cast<GridMapping*>(new MappingGridHEALPix(grid))
-           : type == "FESOM"      ? static_cast<GridMapping*>(new MappingGridByUID(type, grid.uid()))
-           : type == "ICON"       ? static_cast<GridMapping*>(new MappingGridByUID(type, grid.uid()))
-           : type == "ORCA"       ? static_cast<GridMapping*>(new MappingGridByUID(type, grid.uid()))
-           : type == "sh"
-               ? static_cast<GridMapping*>(new MappingSphericalHarmonics(grid))
-               : throw exception::UserError("GridSpecParametrisation: unsupported grid mapping type: '" + type + "'");
+    throw exception::UserError("GridSpecParametrisation: unsupported grid type: '" + type + "'");
 }
 
 
-AreaMapping* build_area_mapping(const eckit::geo::Area& area) {
+void fill_area(SimpleParametrisation& param, const eckit::geo::Grid& grid) {
+    const auto& area = grid.area();
     const auto& type = area.type();
-    return type == "bounding-box" ? static_cast<AreaMapping*>(new MappingAreaBoundingBox(area))
-           : type == "none"
-               ? static_cast<AreaMapping*>(new MappingAreaNone(area))
-               : throw exception::UserError("GridSpecParametrisation: unsupported area mapping type: '" + type + "'");
+
+    if (type == "bounding_box") {
+        if (auto grid_type = grid.type(); grid_type == "regular_ll") {
+            const auto& g = dynamic_cast<const eckit::geo::grid::regular::RegularLL&>(grid);
+            param.set("north", g.y().max());
+            param.set("west", g.x().min());
+            param.set("south", g.y().min());
+            param.set("east", g.x().max());
+        }
+        else {
+            const auto& a = dynamic_cast<const eckit::geo::area::BoundingBox&>(area);
+            param.set("north", a.north());
+            param.set("west", a.west());
+            param.set("south", a.south());
+            param.set("east", a.east());
+        }
+        return;
+    }
+
+    if (type == "none") {
+        return;
+    }
+
+    throw exception::UserError("GridSpecParametrisation: unsupported area type: '" + type + "'");
 }
 
 
-ProjectionMapping* build_projection_mapping(const eckit::geo::Projection& projection) {
+void fill_projection(SimpleParametrisation& param, const eckit::geo::Projection& projection) {
     const auto& type = projection.type();
-    return type == "rotation" ? static_cast<ProjectionMapping*>(new MappingProjectionRotation(projection))
-           : type == "none"   ? static_cast<ProjectionMapping*>(new MappingProjectionNone(projection))
-           : type == "eqc"    ? static_cast<ProjectionMapping*>(new MappingProjectionNone(projection))
-                              : throw exception::UserError(
-                                 "GridSpecParametrisation: unsupported projection mapping type: '" + type + "'");
+
+    if (type == "rotation") {
+        static_cast<void>(param);
+        NOTIMP;
+    }
+
+    if (type == "none" || type == "eqc") {
+        return;
+    }
+
+    throw exception::UserError("GridSpecParametrisation: unsupported projection type: '" + type + "'");
 }
-
-
-struct Mappings : GridSpecParametrisation::Mapping {
-    explicit Mappings(const eckit::geo::Grid& _grid) :
-        grid(build_grid_mapping(_grid)),
-        area(build_area_mapping(_grid.area())),
-        projection(build_projection_mapping(_grid.projection())) {
-        ASSERT(grid);
-        ASSERT(area);
-        ASSERT(projection);
-    }
-
-    void fill(SimpleParametrisation& param) const override {
-        grid->fill(param);
-        area->fill(param);
-        projection->fill(param);
-    }
-
-    std::unique_ptr<GridMapping> grid;
-    std::unique_ptr<AreaMapping> area;
-    std::unique_ptr<ProjectionMapping> projection;
-};
 
 
 }  // namespace
@@ -239,10 +163,10 @@ GridSpecParametrisation::GridSpecParametrisation(const std::string& gridspec) :
     GridSpecParametrisation(eckit::geo::GridFactory::make_from_string(gridspec)) {}
 
 
-GridSpecParametrisation::GridSpecParametrisation(const eckit::geo::Grid* grid) :
-    grid_(grid), spec_(grid_->spec()), mapping_(new Mappings(*grid_)) {
-    ASSERT(mapping_);
-    mapping_->fill(cache_);
+GridSpecParametrisation::GridSpecParametrisation(const eckit::geo::Grid* grid) : grid_(grid), spec_(grid_->spec()) {
+    fill_grid(cache_, *grid);
+    fill_area(cache_, *grid);
+    fill_projection(cache_, grid->projection());
 
     ASSERT(has("gridType"));
 }
@@ -297,10 +221,15 @@ bool GridSpecParametrisation::get(const std::string& name, std::vector<int>& val
 
 bool GridSpecParametrisation::get(const std::string& name, std::vector<long>& value) const {
     if (name == "pl") {
-        if (grid_->type() == "reduced-gg") {
-            const auto& g = dynamic_cast<const eckit::geo::grid::reduced::ReducedGaussian&>(*grid_);
+        using eckit::geo::grid::reduced::ReducedGaussian;
+        if (const auto* g = dynamic_cast<const ReducedGaussian*>(grid_.get()); g != nullptr) {
+            value = g->pl();
+            return true;
+        }
 
-            value = g.pl();
+        using eckit::geo::grid::reduced::ReducedLonLat;
+        if (const auto* g = dynamic_cast<const ReducedLonLat*>(grid_.get()); g != nullptr) {
+            value = g->pl();
             return true;
         }
     }

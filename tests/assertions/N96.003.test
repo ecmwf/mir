@@ -1,0 +1,9 @@
+# input
+/dev/null
+# mir
+--input={artificialInput:gridspec,gridspec:{type:arakawa_c_um,grid:n96,arrangement:T}} --grid={grid:o96} --interpolation=nn
+# grib_get
+numberOfDataPoints=40320
+gridType=reduced_gg
+latitudeOfFirstGridPointInDegrees=89.2842
+longitudeOfFirstGridPointInDegrees=0

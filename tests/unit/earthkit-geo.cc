@@ -91,7 +91,6 @@ CASE("InterpolationSpec") {
     }
 
 
-#if 0
     SECTION("interpolation=linear with non-default option(s)") {
         std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
 
@@ -107,6 +106,7 @@ CASE("InterpolationSpec") {
     }
 
 
+#if 0
     SECTION("interpolation=nn (default)") {
         std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
 
@@ -117,8 +117,10 @@ CASE("InterpolationSpec") {
         job.set("dump-weights-info", info_path);
         job.execute(*input, *output);
 
+        Log::info() << info_interpolation(info_path) << std::endl;
         EXPECT(info_interpolation(info_path) == EXPECTED_INTERPOLATION_NN);
     }
+#endif
 
 
     SECTION("interpolation=nn with non-default option(s)") {
@@ -136,6 +138,7 @@ CASE("InterpolationSpec") {
     }
 
 
+#if 0
     SECTION("interpolation=grid-box-average (default)") {
         std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
 
@@ -145,8 +148,11 @@ CASE("InterpolationSpec") {
         job.set("interpolation", "grid-box-average");
         job.set("dump-weights-info", info_path);
         job.execute(*input, *output);
+
+        Log::info() << info_interpolation(info_path) << std::endl;
         EXPECT(info_interpolation(info_path) == EXPECTED_INTERPOLATION_GBA);
     }
+#endif
 
 
     SECTION("interpolation=grid-box-average with non-default option(s)") {
@@ -162,11 +168,9 @@ CASE("InterpolationSpec") {
 
         EXPECT(info_interpolation(info_path) != EXPECTED_INTERPOLATION_GBA);
     }
-#endif
 }
 
 
-#if 0
 CASE("GridSpec") {
     auto& log = Log::info();
 
@@ -177,11 +181,11 @@ CASE("GridSpec") {
     SECTION("HEALPix grids") {
         for (const auto& tests : []() {
                  std::vector<std::string> tests;
-                 for (std::string ordering : {"", "ring", "nested"}) {
+                 for (std::string order : {"", "ring", "nested"}) {
                      for (size_t N : {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024}) {
-                         tests.emplace_back(ordering.empty() || ordering == "ring"
+                         tests.emplace_back(order.empty() || order == "ring"
                                                 ? "{grid: H" + std::to_string(N)
-                                                : "{grid: H" + std::to_string(N) + ", ordering: " + ordering + "}");
+                                                : "{grid: H" + std::to_string(N) + ", order: " + order + "}");
                      }
                  }
                  return tests;
@@ -233,7 +237,6 @@ CASE("GridSpec") {
         }
     }
 }
-#endif
 
 
 }  // namespace mir::tests::unit

@@ -11,7 +11,7 @@ set(TESTS
     area
     atlas
     bounding_box
-    earthkit-regrid
+    earthkit-geo
     formula
     gaussian_grid
     grib_basic_angle
