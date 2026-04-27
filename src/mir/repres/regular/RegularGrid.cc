@@ -193,7 +193,7 @@ bool RegularGrid::isPeriodicWestEast() const {
 }
 
 
-void RegularGrid::reorder(long /*scanningMode*/, MIRValuesVector& /*unused*/) const {
+void RegularGrid::reorder(MIRValuesVector& /*unused*/) const {
     // do not reorder, iterator is doing the right thing
     // FIXME this function should not be overriding to do nothing
 }

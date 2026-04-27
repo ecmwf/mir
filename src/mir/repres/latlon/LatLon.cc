@@ -35,7 +35,12 @@ namespace mir::repres::latlon {
 
 
 LatLon::LatLon(const param::MIRParametrisation& parametrisation) :
-    Gridded(parametrisation), increments_(parametrisation), reference_(bbox_.south(), bbox_.west()), ni_(0), nj_(0) {
+    Gridded(parametrisation),
+    increments_(parametrisation),
+    reference_(bbox_.south(), bbox_.west()),
+    ni_(0),
+    nj_(0),
+    scan_(parametrisation) {
     correctBoundingBox(bbox_, ni_, nj_, increments_, reference_);
     ASSERT(ni_ != 0);
     ASSERT(nj_ != 0);
@@ -60,8 +65,9 @@ LatLon::LatLon(const param::MIRParametrisation& parametrisation) :
 }
 
 
-LatLon::LatLon(const util::Increments& increments, const util::BoundingBox& bbox, const PointLatLon& reference) :
-    Gridded(bbox), increments_(increments), reference_(reference), ni_(0), nj_(0) {
+LatLon::LatLon(const util::Increments& increments, const util::BoundingBox& bbox, const PointLatLon& reference,
+               const std::string& scan) :
+    Gridded(bbox), increments_(increments), reference_(reference), ni_(0), nj_(0), scan_(scan) {
     correctBoundingBox(bbox_, ni_, nj_, increments_, reference_);
     ASSERT(ni_ != 0);
     ASSERT(nj_ != 0);
@@ -71,8 +77,8 @@ LatLon::LatLon(const util::Increments& increments, const util::BoundingBox& bbox
 LatLon::~LatLon() = default;
 
 
-void LatLon::reorder(long scanningMode, MIRValuesVector& values) const {
-    grib_reorder(values, scanningMode, ni_, nj_);
+void LatLon::reorder(MIRValuesVector& values) const {
+    grib_reorder(values, order(), ni_, nj_);
 }
 
 
@@ -94,17 +100,19 @@ void LatLon::fillGrib(grib_info& info) const {
     // See copy_spec_from_ksec.c in libemos for info
     // Warning: scanning mode not considered
 
-    info.grid.Ni = long(ni_);
-    info.grid.Nj = long(nj_);
+    info.grid.Ni = static_cast<long>(ni_);
+    info.grid.Nj = static_cast<long>(nj_);
 
     increments_.fillGrib(info);
     bbox_.fillGrib(info);
+    scan_.fillGrib(info);
 }
 
 
 void LatLon::fillJob(api::MIRJob& job) const {
     increments_.fillJob(job);
     bbox_.fillJob(job);
+    scan_.fillJob(job);
 }
 
 

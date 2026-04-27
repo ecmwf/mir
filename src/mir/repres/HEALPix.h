@@ -41,7 +41,10 @@ public:
     // -- Methods
 
     size_t Nside() const;
-    std::string order() const;
+
+    // -- Overridden methods
+
+    const std::string& order() const override;
 
 private:
     // -- Members

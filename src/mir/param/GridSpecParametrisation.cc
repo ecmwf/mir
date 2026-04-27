@@ -33,6 +33,11 @@ namespace mir::param {
 namespace {
 
 
+void fill_scanning_mode(SimpleParametrisation& param, const eckit::geo::Grid& grid) {
+    param.set("order", grid.order());
+}
+
+
 void fill_grid(SimpleParametrisation& param, const eckit::geo::Grid& grid) {
     const auto& type = grid.type();
 
@@ -55,6 +60,8 @@ void fill_grid(SimpleParametrisation& param, const eckit::geo::Grid& grid) {
 
         param.set("Ni", g.nlon());
         param.set("Nj", g.nlat());
+
+        fill_scanning_mode(param, grid);
         return;
     }
 
@@ -63,6 +70,8 @@ void fill_grid(SimpleParametrisation& param, const eckit::geo::Grid& grid) {
         param.set("gridType", "regular_gg");
         param.set("gridded", true);
         param.set("N", g.N());
+
+        fill_scanning_mode(param, grid);
         return;
     }
 
@@ -71,6 +80,8 @@ void fill_grid(SimpleParametrisation& param, const eckit::geo::Grid& grid) {
         param.set("gridType", "reduced_gg");
         param.set("gridded", true);
         param.set("N", g.N());
+
+        fill_scanning_mode(param, grid);
         return;
     }
 

@@ -98,7 +98,7 @@ protected:
     void fillJob(api::MIRJob&) const override;
     void fillMeshGen(util::MeshGeneratorParameters&) const override;
 
-    void reorder(long scanningMode, MIRValuesVector&) const override;
+    void reorder(MIRValuesVector&) const override;
     void validate(const MIRValuesVector&) const override;
     void makeName(std::ostream&) const override;
     void print(std::ostream&) const override;

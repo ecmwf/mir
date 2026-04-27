@@ -135,7 +135,7 @@ size_t HEALPix::Nside() const {
 }
 
 
-std::string HEALPix::order() const {
+const std::string& HEALPix::order() const {
     return grid_->order();
 }
 

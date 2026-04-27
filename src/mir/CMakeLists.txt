@@ -722,6 +722,8 @@ list(APPEND mir_srcs
     util/Reorder.h
     util/Rotation.cc
     util/Rotation.h
+    util/ScanningMode.cc
+    util/ScanningMode.h
     util/Shape.cc
     util/Shape.h
     util/SpectralOrder.cc

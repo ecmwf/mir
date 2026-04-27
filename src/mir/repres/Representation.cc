@@ -185,6 +185,13 @@ util::Domain Representation::domain() const {
 }
 
 
+const std::string& Representation::order() const {
+    std::ostringstream os;
+    os << "Representation::order() not implemented for " << *this;
+    throw exception::SeriousBug(os.str());
+}
+
+
 const util::BoundingBox& Representation::boundingBox() const {
     std::ostringstream os;
     os << "Representation::boundingBox() not implemented for " << *this;
@@ -253,7 +260,7 @@ std::string Representation::factory() const {
 }
 
 
-void Representation::reorder(long /*unused*/, MIRValuesVector& /*unused*/) const {
+void Representation::reorder(MIRValuesVector& /*unused*/) const {
     std::ostringstream os;
     os << "Representation::reorder() not implemented for " << *this;
     throw exception::SeriousBug(os.str());

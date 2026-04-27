@@ -17,6 +17,7 @@ set(TESTS
     grib_basic_angle
     grib_encoding
     grib_input
+    grib_scanning_mode
     grid_box_method
     grids
     gridspec

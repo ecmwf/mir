@@ -14,6 +14,7 @@
 
 #include "mir/repres/Gridded.h"
 #include "mir/util/Increments.h"
+#include "mir/util/ScanningMode.h"
 
 
 namespace mir::repres::latlon {
@@ -26,8 +27,9 @@ public:
 
     // -- Constructors
 
-    LatLon(const param::MIRParametrisation&);
-    LatLon(const util::Increments&, const util::BoundingBox& = {}, const PointLatLon& reference = {0, 0});
+    explicit LatLon(const param::MIRParametrisation&);
+    LatLon(const util::Increments&, const util::BoundingBox& = {}, const PointLatLon& reference = {0, 0},
+           const std::string& = util::ScanningMode::default_scanning_mode());
 
     // -- Destructor
 
@@ -67,6 +69,7 @@ protected:
     const PointLatLon reference_;
     size_t ni_;
     size_t nj_;
+    util::ScanningMode scan_;
 
     // -- Methods
     // None
@@ -137,7 +140,9 @@ private:
 
     size_t frame(MIRValuesVector& values, size_t size, double missingValue) const override;
 
-    void reorder(long scanningMode, MIRValuesVector& values) const override;
+    const std::string& order() const override { return scan_.order(); }
+
+    void reorder(MIRValuesVector& values) const override;
 
     void validate(const MIRValuesVector&) const override;
 

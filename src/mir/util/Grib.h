@@ -97,7 +97,10 @@ private:
 };
 
 
-void grib_reorder(std::vector<double>& values, long scanningMode, size_t Ni, size_t Nj);
+long grib_order_to_scanning_mode(const std::string& order);
+
+
+void grib_reorder(std::vector<double>& values, const std::string& order, size_t Ni, size_t Nj);
 
 
 void grib_get_unique_missing_value(const std::vector<double>& values, double& missingValue);

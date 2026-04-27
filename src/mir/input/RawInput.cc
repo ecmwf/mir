@@ -57,7 +57,7 @@ data::MIRField RawInput::field() const {
     bool hasMissing     = metadata_.get("missing_value", missingValue);
 
     // TODO support parametrisation for dimensions > 1
-    data::MIRField field(parametrisation(0), hasMissing, missingValue);
+    data::MIRField field(metadata_, hasMissing, missingValue);
 
     repres::RepresentationHandle repres(field.representation());
     auto n = repres->numberOfValues();
@@ -66,6 +66,8 @@ data::MIRField RawInput::field() const {
     const auto* here = values_;
     for (size_t which = 0; which < dimensions(); ++which, here += count_) {
         MIRValuesVector values(here, here + count_);
+        repres->reorder(values);  // to canonical ordering
+
         field.update(values, which);
     }
 
