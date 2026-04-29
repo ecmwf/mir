@@ -12,7 +12,7 @@
 
 #include "mir/util/ScanningMode.h"
 
-#include "eckit/geo/order/Scan.h"
+#include "eckit/spec/Custom.h"
 
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
@@ -28,25 +28,31 @@ const std::string& ScanningMode::default_scanning_mode() {
 
 
 ScanningMode::ScanningMode(const param::MIRParametrisation& param) :
-    order_([&param]() {
+    ScanningMode([&param]() {
         auto order = eckit::geo::order::Scan::order_default();
         param.get("order", order);
         return order;
     }()) {}
 
 
+ScanningMode::ScanningMode(const std::string& order) : scan_(order) {}
+
+
 void ScanningMode::fillGrib(grib_info& info) const {
-    eckit::geo::order::Scan scan(order_);
+    info.grid.iScansNegatively = scan_.is_scan_i_positive() ? 0 : 1;
+    info.grid.jScansPositively = scan_.is_scan_j_positive() ? 1 : 0;
 
-    info.grid.iScansNegatively = scan.is_scan_i_positive() ? 0 : 1;
-    info.grid.jScansPositively = scan.is_scan_j_positive() ? 1 : 0;
-
-    info.extra_set("scanningMode", grib_order_to_scanning_mode(order_));
+    info.extra_set("scanningMode", grib_order_to_scanning_mode(scan_.order()));
 }
 
 
 void ScanningMode::fillJob(api::MIRJob& job) const {
-    job.set("order", order_);
+    job.set("order", scan_.order());
+}
+
+
+void ScanningMode::fillSpec(eckit::spec::Custom& spec) const {
+    spec.set("order", scan_.order());
 }
 
 

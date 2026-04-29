@@ -72,6 +72,8 @@ protected:
 
     void fillGrib(grib_info&) const override;
     void fillJob(api::MIRJob&) const override;
+    void fillSpec(CustomSpec&) const override;
+
     bool sameAs(const Representation&) const override;
     atlas::Grid atlasGrid() const override;
     void makeName(std::ostream&) const override;
@@ -101,7 +103,7 @@ private:
     // from Representation
     size_t frame(MIRValuesVector&, size_t size, double missingValue) const override;
     const std::string& order() const override { return scan_.order(); }
-    void reorder(MIRValuesVector& values) const override;
+    void reorder(MIRValuesVector&) const override;
     size_t numberOfPoints() const override;
     bool getLongestElementDiagonal(double&) const override;
     void json(eckit::JSON&) const override;

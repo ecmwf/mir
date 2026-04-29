@@ -13,6 +13,7 @@
 #pragma once
 
 #include <iosfwd>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -30,7 +31,11 @@ class Grid;
 
 namespace eckit {
 class JSON;
-}
+namespace spec {
+class Custom;
+class Spec;
+}  // namespace spec
+}  // namespace eckit
 
 namespace mir {
 
@@ -65,6 +70,11 @@ namespace mir::repres {
 
 class Representation : public eckit::Counted {
 public:
+    // -- Types
+
+    using CustomSpec = eckit::spec::Custom;
+    using Spec       = eckit::spec::Spec;
+
     // -- Exceptions
     // None
 
@@ -72,23 +82,30 @@ public:
 
     Representation();
 
+    Representation(const Representation&) = delete;
+    Representation(Representation&&)      = delete;
+
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const Representation&) = delete;
+    void operator=(Representation&&)      = delete;
 
     // -- Methods
+
+    virtual const eckit::spec::Spec& spec() const;
 
     virtual const std::string& uniqueName() const;
     virtual bool sameAs(const Representation&) const;
 
     virtual Iterator* iterator() const;
-
     virtual void validate(const MIRValuesVector&) const;
 
     virtual void fillGrib(grib_info&) const;
     virtual void fillJob(api::MIRJob&) const;
+    virtual void fillSpec(CustomSpec&) const;
     virtual void fillMeshGen(util::MeshGeneratorParameters&) const;
 
     // Return a cropped version
@@ -163,7 +180,8 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    mutable std::unique_ptr<eckit::spec::Custom> spec_;
 
     // -- Methods
     // None

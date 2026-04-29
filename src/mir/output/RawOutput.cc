@@ -15,8 +15,9 @@
 #include <cstring>
 #include <ostream>
 
+#include "eckit/spec/Spec.h"
+
 #include "mir/action/context/Context.h"
-#include "mir/api/MIRJob.h"
 #include "mir/data/MIRField.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
@@ -34,28 +35,15 @@ size_t RawOutput::save(const param::MIRParametrisation& /*param*/, context::Cont
     const auto& field = ctx.field();
     field.validate();
 
-
     // save metadata
-    {
-        Log::debug() << "RawOutput::save metadata" << std::endl;
-        repres::RepresentationHandle repres(field.representation());
-
-        // (a hack)
-        api::MIRJob job;
-        repres->fillJob(job);
-        job.copyValuesTo(metadata_);
-
-        if (field.hasMissing()) {
-            metadata_.set("missing_value", field.missingValue());
-        }
+    metadata_.set("grid", repres::RepresentationHandle(field.representation())->spec().str());
+    if (field.hasMissing()) {
+        metadata_.set("missing_value", field.missingValue());
     }
-
 
     // save data
     ASSERT(field.dimensions() == 1);
     const auto& values = field.values(0);
-
-    Log::debug() << "RawOutput::save values: " << values.size() << ", user: " << count_ << std::endl;
 
     size_ = values.size();
     ASSERT(size_ <= count_);

@@ -110,4 +110,9 @@ void PolarStereographic::fillJob(api::MIRJob& job) const {
 }
 
 
+void PolarStereographic::fillSpec(CustomSpec&) const {
+    NOTIMP;
+}
+
+
 }  // namespace mir::repres::regular

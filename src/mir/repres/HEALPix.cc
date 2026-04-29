@@ -21,6 +21,8 @@
 
 #include "mir/api/MIRJob.h"
 #include "mir/iterator/UnstructuredIterator.h"
+
+#include "eckit/spec/Custom.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/grid/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
@@ -192,6 +194,11 @@ void HEALPix::fillMeshGen(util::MeshGeneratorParameters& params) const {
 
 void HEALPix::fillJob(api::MIRJob& job) const {
     job.set("grid", name());
+}
+
+
+void HEALPix::fillSpec(CustomSpec& spec) const {
+    spec.set("grid", name());
 }
 
 

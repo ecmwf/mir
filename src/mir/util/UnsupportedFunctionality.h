@@ -10,23 +10,22 @@
  */
 
 
-#include "mir/repres/unsupported/StretchedGG.h"
+#pragma once
 
-#include <ostream>
+#include <string>
 
-
-namespace mir::repres::unsupported {
-
-
-StretchedGG::StretchedGG(const param::MIRParametrisation&) {}
+#include "mir/util/Log.h"
 
 
-void StretchedGG::print(std::ostream& out) const {
-    out << "StretchedGG[]";
-}
+namespace mir::util {
 
 
-static const RepresentationBuilder<StretchedGG> __repres("stretched_gg");
+struct UnsupportedFunctionality {
+    explicit UnsupportedFunctionality(const std::string& msg, Log::Channel& = Log::warning());
+
+private:
+    static void message(const std::string& msg, Log::Channel& = Log::warning());
+};
 
 
-}  // namespace mir::repres::unsupported
+}  // namespace mir::util

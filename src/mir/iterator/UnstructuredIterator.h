@@ -30,9 +30,6 @@ public:
 
     UnstructuredIterator(const std::vector<double>& latitudes, const std::vector<double>& longitudes);
 
-    UnstructuredIterator(const UnstructuredIterator&) = delete;
-    UnstructuredIterator(UnstructuredIterator&&)      = delete;
-
     // -- Destructor
     // None
 
@@ -40,9 +37,7 @@ public:
     // None
 
     // -- Operators
-
-    void operator=(const UnstructuredIterator&) = delete;
-    void operator=(UnstructuredIterator&&)      = delete;
+    // None
 
     // -- Methods
     // None

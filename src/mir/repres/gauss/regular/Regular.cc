@@ -13,6 +13,7 @@
 #include "mir/repres/gauss/regular/Regular.h"
 
 #include "eckit/log/JSON.h"
+#include "eckit/spec/Custom.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/api/MIRJob.h"
@@ -87,6 +88,15 @@ void Regular::fillJob(api::MIRJob& job) const {
     job.set("grid", "F" + std::to_string(N_));
 
     scan_.fillJob(job);
+}
+
+
+void Regular::fillSpec(CustomSpec& spec) const {
+    Gaussian::fillSpec(spec);
+
+    spec.set("grid", "F" + std::to_string(N_));
+
+    scan_.fillSpec(spec);
 }
 
 

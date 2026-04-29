@@ -152,6 +152,11 @@ protected:
         map.set(static_cast<param::SimpleParametrisation&>(job));
     }
 
+    void fillSpec(CustomSpec& spec) const override {
+        const auto& geoSpec = grid_->spec();
+        spec.set("grid", geoSpec.get_string(geoSpec.has("uid") ? "uid" : "grid"));
+    }
+
     void print(std::ostream& out) const override { out << grid_->spec().str(); }
     void json(eckit::JSON& j) const override { grid_->spec().json(j); }
 
@@ -595,6 +600,12 @@ void UnstructuredGrid::fillGrib(grib_info& info) const {
 void UnstructuredGrid::fillJob(api::MIRJob& job) const {
     job.set("latitudes", latitudes_);
     job.set("longitudes", longitudes_);
+}
+
+
+void UnstructuredGrid::fillSpec(CustomSpec& spec) const {
+    spec.set("latitudes", latitudes_);
+    spec.set("longitudes", longitudes_);
 }
 
 

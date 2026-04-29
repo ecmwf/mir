@@ -15,6 +15,7 @@
 #include <ostream>
 
 #include "eckit/log/JSON.h"
+#include "eckit/spec/Custom.h"
 #include "eckit/types/Fraction.h"
 
 #include "mir/api/MIRJob.h"
@@ -143,6 +144,11 @@ void Increments::fillGrib(grib_info& info) const {
 
 void Increments::fillJob(api::MIRJob& job) const {
     job.set("grid", west_east_.longitude().value(), south_north_.latitude().value());
+}
+
+
+void Increments::fillSpec(eckit::spec::Custom& spec) const {
+    spec.set("grid", std::vector<double>{west_east_.longitude().value(), south_north_.latitude().value()});
 }
 
 

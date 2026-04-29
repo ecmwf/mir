@@ -17,6 +17,7 @@
 #include <sstream>
 
 #include "eckit/log/JSON.h"
+#include "eckit/spec/Custom.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
 
@@ -113,6 +114,12 @@ void LatLon::fillJob(api::MIRJob& job) const {
     increments_.fillJob(job);
     bbox_.fillJob(job);
     scan_.fillJob(job);
+}
+
+
+void LatLon::fillSpec(CustomSpec& spec) const {
+    Gridded::fillSpec(spec);
+    scan_.fillSpec(spec);
 }
 
 

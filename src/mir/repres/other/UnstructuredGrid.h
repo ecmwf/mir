@@ -37,9 +37,6 @@ public:
     UnstructuredGrid(const std::vector<double>& latitudes, const std::vector<double>& longitudes,
                      const util::BoundingBox& = util::BoundingBox());
 
-    UnstructuredGrid(const UnstructuredGrid&) = delete;
-    UnstructuredGrid(UnstructuredGrid&&)      = delete;
-
     // -- Destructor
 
     ~UnstructuredGrid() override;
@@ -48,9 +45,7 @@ public:
     // None
 
     // -- Operators
-
-    void operator=(const UnstructuredGrid&)  = delete;
-    void operator=(const UnstructuredGrid&&) = delete;
+    // None
 
     // -- Methods
 
@@ -96,6 +91,7 @@ private:
 
     void fillGrib(grib_info&) const override;
     void fillJob(api::MIRJob&) const override;
+    void fillSpec(CustomSpec&) const override;
     void fillMeshGen(util::MeshGeneratorParameters&) const override;
 
     atlas::Grid atlasGrid() const override;

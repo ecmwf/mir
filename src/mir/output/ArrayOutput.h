@@ -26,8 +26,8 @@ public:
     ArrayOutput() = default;
 
     std::vector<double>& values() { return values_; }
-    std::vector<size_t> shape() const { return shape_; }
-    std::string gridspec() const { return gridspec_; }
+    const std::vector<size_t>& shape() const { return shape_; }
+    const std::string& gridspec() const { return gridspec_; }
     double missingValue() const { return missingValue_; }
 
 private:

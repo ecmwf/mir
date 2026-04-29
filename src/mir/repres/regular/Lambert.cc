@@ -104,4 +104,9 @@ void Lambert::fillGrib(grib_info& info) const {
 }
 
 
+void Lambert::fillSpec(CustomSpec&) const {
+    NOTIMP;
+}
+
+
 }  // namespace mir::repres::regular

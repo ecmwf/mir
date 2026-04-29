@@ -17,6 +17,8 @@
 #include "mir/util/Atlas.h"
 #include "mir/util/Grib.h"
 
+#include "eckit/spec/Custom.h"
+
 
 namespace mir::repres::gauss::reduced {
 
@@ -64,6 +66,12 @@ void RotatedFromPL::fillGrib(grib_info& info) const {
 void RotatedFromPL::fillJob(api::MIRJob& job) const {
     FromPL::fillJob(job);
     rotation_.fillJob(job);
+}
+
+
+void RotatedFromPL::fillSpec(CustomSpec& spec) const {
+    FromPL::fillSpec(spec);
+    rotation_.fillSpec(spec);
 }
 
 

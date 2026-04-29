@@ -12,14 +12,16 @@
 
 #include "mir/output/ResizableOutput.h"
 
+#include <memory>
 #include <ostream>
 
+#include "eckit/geo/Grid.h"
+#include "eckit/spec/Spec.h"
+
 #include "mir/action/context/Context.h"
-#include "mir/api/MIRJob.h"
 #include "mir/data/MIRField.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
-#include "mir/util/Log.h"
 
 
 namespace mir::output {
@@ -33,25 +35,19 @@ size_t ResizableOutput::save(const param::MIRParametrisation& /*param*/, context
     const auto& field = ctx.field();
     field.validate();
 
-
     // save metadata
-    {
-        Log::debug() << "ResizableOutput::save metadata" << std::endl;
-        repres::RepresentationHandle repres(field.representation());
+    std::unique_ptr<const eckit::geo::Grid> grid(
+        eckit::geo::GridFactory::build(repres::RepresentationHandle(field.representation())->spec()));
+    ASSERT(grid);
 
-        // (a hack)
-        api::MIRJob job;
-        repres->fillJob(job);
-        job.copyValuesTo(metadata_);
-
-        if (field.hasMissing()) {
-            metadata_.set("missing_value", field.missingValue());
-        }
+    metadata_.set("grid", grid->spec_str());
+    if (field.hasMissing()) {
+        metadata_.set("missing_value", field.missingValue());
     }
-
 
     // save data
     ASSERT(field.dimensions() == 1);
+    ASSERT(field.values(0).size() == grid->size());
     values_ = field.values(0);
 
     return values_.size() * sizeof(double);
@@ -75,7 +71,7 @@ bool ResizableOutput::printParametrisation(std::ostream& /*out*/, const param::M
 
 
 void ResizableOutput::print(std::ostream& out) const {
-    out << "ResizableOutput[size=" << size() << "]";
+    out << "ResizableOutput[#values=" << size() << "]";
 }
 
 

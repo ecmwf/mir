@@ -20,6 +20,9 @@
 
 namespace eckit {
 class JSON;
+namespace spec {
+class Custom;
+}  // namespace spec
 }  // namespace eckit
 
 struct grib_info;
@@ -86,6 +89,7 @@ public:
     void fillGrib(grib_info&) const;
 
     void fillJob(api::MIRJob&) const;
+    void fillSpec(eckit::spec::Custom&) const;
 
     void makeName(std::ostream&) const;
 

@@ -58,6 +58,7 @@ private:
     // -- Overridden methods
 
     void fillGrib(grib_info&) const override;
+    void fillSpec(CustomSpec&) const override;
 
     // -- Class members
     // None

@@ -18,6 +18,7 @@
 #include <sstream>
 
 #include "eckit/types/FloatCompare.h"
+#include "eckit/spec/Custom.h"
 #include "eckit/types/Fraction.h"
 #include "eckit/utils/MD5.h"
 
@@ -126,6 +127,13 @@ void ReducedLL::fillJob(api::MIRJob& job) const {
     job.set("pl", pl_);
     job.set("Nj", pl_.size());
     NOTIMP;
+}
+
+void ReducedLL::fillSpec(CustomSpec& spec) const {
+    Gridded::fillSpec(spec);
+
+    spec.set("pl", pl_);
+    spec.set("Nj", pl_.size());
 }
 
 atlas::Grid ReducedLL::atlasGrid() const {

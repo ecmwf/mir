@@ -15,6 +15,8 @@
 #include <memory>
 #include <sstream>
 
+#include "eckit/spec/Custom.h"
+
 #include "mir/data/MIRField.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/param/MIRParametrisation.h"
@@ -110,6 +112,13 @@ void Representation::fillJob(api::MIRJob& /*unused*/) const {
 }
 
 
+void Representation::fillSpec(CustomSpec& /*unused*/) const {
+    std::ostringstream os;
+    os << "Representation::fillSpec(CustomSpec&) not implemented for " << *this;
+    throw exception::SeriousBug(os.str());
+}
+
+
 void Representation::fillMeshGen(util::MeshGeneratorParameters& /*unused*/) const {
     std::ostringstream os;
     os << "Representation::fillMeshGen(util::MeshGeneratorParameters&) not implemented for " << *this;
@@ -136,6 +145,15 @@ const Representation* Representation::truncate(size_t /*unused*/, const MIRValue
     std::ostringstream os;
     os << "Representation::truncate() not implemented for " << *this;
     throw exception::SeriousBug(os.str());
+}
+
+
+const Representation::Spec& Representation::spec() const {
+    if (!spec_) {
+        spec_ = std::make_unique<CustomSpec>();
+        fillSpec(*spec_);
+    }
+    return *spec_;
 }
 
 

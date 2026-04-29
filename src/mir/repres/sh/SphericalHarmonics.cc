@@ -16,6 +16,8 @@
 
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
+
+#include "eckit/spec/Custom.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
@@ -82,6 +84,11 @@ void SphericalHarmonics::fillGrib(grib_info& info) const {
 
 void SphericalHarmonics::fillJob(api::MIRJob& job) const {
     job.set("resol", truncation_);
+}
+
+
+void SphericalHarmonics::fillSpec(CustomSpec& spec) const {
+    spec.set("resol", truncation_);
 }
 
 

@@ -13,18 +13,15 @@
 #include "mir/output/ArrayOutput.h"
 
 #include <cmath>
+#include <memory>
 #include <ostream>
-#include <sstream>
 
-#include "eckit/geo/Exceptions.h"
 #include "eckit/geo/Grid.h"
-#include "eckit/log/JSON.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/api/MIRJob.h"
 #include "mir/data/MIRField.h"
-#include "mir/param/GridSpecParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir::output {
@@ -32,32 +29,24 @@ namespace mir::output {
 
 size_t ArrayOutput::save(const param::MIRParametrisation&, context::Context& ctx) {
     const auto& field = ctx.field();
-
-    // save values
-    ASSERT(field.dimensions() == 1);
     field.validate();
-    values_ = field.values(0);
 
-    missingValue_ = field.missingValue();
-    if (std::isnan(missingValue_)) {
-        missingValue_ = std::numeric_limits<double>::quiet_NaN();
-    }
-
-    // save gridspec (a hack)
-    api::MIRJob job;
-    repres::RepresentationHandle(field.representation())->fillJob(job);
-
-    std::ostringstream spec;
-    eckit::JSON j(spec);
-    j << job;
-
-    std::unique_ptr<const eckit::geo::Grid> grid(eckit::geo::GridFactory::make_from_string(spec.str()));
+    // save metadata
+    std::unique_ptr<const eckit::geo::Grid> grid(
+        eckit::geo::GridFactory::build(repres::RepresentationHandle(field.representation())->spec()));
     ASSERT(grid);
 
     shape_    = grid->shape();
     gridspec_ = grid->spec_str();
 
-    return 1;
+    // save data
+    ASSERT(field.dimensions() == 1);
+    ASSERT(field.values(0).size() == grid->size());
+    values_       = field.values(0);
+    missingValue_ = std::isnan(missingValue_) ? std::numeric_limits<double>::quiet_NaN()  //
+                                              : field.missingValue();
+
+    return values_.size() * sizeof(double);
 }
 
 

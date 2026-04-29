@@ -109,8 +109,8 @@ cdef extern from "mir/output/ArrayOutput.h" namespace "mir::output":
     cdef cppclass ArrayOutput(mir.MIROutput):
         ArrayOutput()
         vector[double]& values()
-        vector[size_t] shape() const
-        string gridspec() const
+        const vector[size_t] shape() const
+        const string gridspec() const
         double missingValue() const
 
 

@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/repres/unsupported/IrregularLatlon.h"
+#include "mir/repres/IrregularLatlon.h"
 
 #include <cmath>
 #include <ostream>
@@ -27,7 +27,7 @@
 #include "mir/util/Types.h"
 
 
-namespace mir::repres::unsupported {
+namespace mir::repres {
 
 
 static void range(const std::vector<double>& v, double& mn, double& mx, double& dmax) {
@@ -213,11 +213,6 @@ public:
         auto count = count_ + (i_ > 0 || j_ > 0 ? 1 : 0);
         ASSERT(count == ni_ * nj_);
     }
-
-    IrregularLatlonIterator(const IrregularLatlonIterator&)            = delete;
-    IrregularLatlonIterator(IrregularLatlonIterator&&)                 = delete;
-    IrregularLatlonIterator& operator=(const IrregularLatlonIterator&) = delete;
-    IrregularLatlonIterator& operator=(IrregularLatlonIterator&&)      = delete;
 };
 
 
@@ -260,4 +255,4 @@ atlas::Grid IrregularLatlon::atlasGrid() const {
 static const RepresentationBuilder<IrregularLatlon> irregularLatlon("irregular_latlon");
 
 
-}  // namespace mir::repres::unsupported
+}  // namespace mir::repres

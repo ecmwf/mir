@@ -79,6 +79,7 @@ private:
 
     void fillGrib(grib_info&) const override;
     void fillJob(api::MIRJob&) const override;
+    void fillSpec(CustomSpec&) const override;
 
     atlas::Grid atlasGrid() const override;
     Iterator* iterator() const override;
