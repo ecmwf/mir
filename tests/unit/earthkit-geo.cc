@@ -13,18 +13,22 @@
 #include <memory>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "eckit/filesystem/PathName.h"
+#include "eckit/geo/Grid.h"
 #include "eckit/parser/YAMLParser.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/api/MIRJob.h"
-#include "mir/api/mir_config.h"
 #include "mir/caching/WeightCache.h"
 #include "mir/input/RawInput.h"
+#include "mir/output/ArrayOutput.h"
 #include "mir/output/EmptyOutput.h"
+#include "mir/param/GridSpecParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/repres/Representation.h"
 #include "mir/util/Log.h"
 
 
@@ -172,68 +176,139 @@ CASE("InterpolationSpec") {
 
 
 CASE("GridSpec") {
-    auto& log = Log::info();
+    using Grid = std::unique_ptr<const eckit::geo::Grid>;
 
-    // output
-    std::unique_ptr<output::MIROutput> output(new output::EmptyOutput);
-
-
-    SECTION("HEALPix grids") {
-        for (const auto& tests : []() {
-                 std::vector<std::string> tests;
-                 for (std::string order : {"", "ring", "nested"}) {
-                     for (size_t N : {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024}) {
-                         tests.emplace_back(order.empty() || order == "ring"
-                                                ? "{grid: H" + std::to_string(N)
-                                                : "{grid: H" + std::to_string(N) + ", order: " + order + "}");
-                     }
-                 }
-                 return tests;
-             }()) {
-        }
-    }
+    using eckit::geo::GridFactory;
+    using eckit::geo::PointLonLat;
 
 
-    SECTION("Gaussian grids") {
-        for (const auto& tests : []() {
-                 std::vector<std::string> tests;
+    SECTION("common") {
+        for (const auto& test : {
+                 std::pair<std::string, std::string>{R"({grid: H2})", R"({"grid":"H2"})"},  // HEALPix ring grids
+                 {R"({grid: H4})", R"({"grid":"H4"})"},                                     //
+                 {R"({grid: h8R})", R"({"grid":"H8"})"},                                    //
+                 {R"({grid: Hr16})", R"({"grid":"H16"})"},                                  //
+                 {R"({grid: H32, order: ring})", R"({"grid":"H32"})"},                      //
 
-                 for (const std::string& type : {"F", "O", "N"}) {
-                     for (size_t N : {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024}) {
-                         tests.emplace_back("{grid: " + type + std::to_string(N) + "}");
-                     }
-                     if (type == "O") {
-                         tests.emplace_back("{grid: O2560}");
-                     }
-                 }
-                 return tests;
-             }()) {
-            // TODO
-        }
-    }
+                 {R"({grid: H64, order: nested})", R"({"grid":"H64","order":"nested"})"},    // HEALPix nested grids
+                 {R"({grid: h128N})", R"({"grid":"H128","order":"nested"})"},                //
+                 {R"({grid: Hn256})", R"({"grid":"H256","order":"nested"})"},                //
+                 {R"({grid: h512, order: nested})", R"({"grid":"H512","order":"nested"})"},  //
+                 {R"({grid: hN1024})", R"({"grid":"H1024","order":"nested"})"},              //
 
+                 {R"({grid: F2})", R"({"grid":"F2"})"},          // Gaussian grids
+                 {R"({"grid": "f32"})", R"({"grid":"F32"})"},    //
+                 {R"({grid: o2})", R"({"grid":"O2"})"},          //
+                 {R"({grid: o2560})", R"({"grid":"O2560"})"},    //
+                 {R"({"grid": "n640"})", R"({"grid":"N640"})"},  //
 
-    SECTION("Regular lat/lon grids") {
-        for (const auto& tests : []() {
-                 std::vector<std::string> tests;
-                 for (double l : {
-                          0.1, 0.125, 0.15, 0.2,  0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8,
-                          0.9, 1.,    1.2,  1.25, 1.4,  1.5, 1.6, 1.8, 10., 2.,  2.5,  5.,
-                      }) {
-                     tests.emplace_back("{grid: [" + std::to_string(l) + ", " + std::to_string(l) + "]}");
-                 }
-                 return tests;
-             }()) {
-            // TODO
-        }
-    }
+                 {"{grid: [0.1,0.1]}", R"({"grid":[0.1,0.1]})"},          // regular lat-lon grids
+                 {"{grid: [0.125,0.125]}", R"({"grid":[0.125,0.125]})"},  //
+                 {"{grid: [0.15,0.15]}", R"({"grid":[0.15,0.15]})"},      //
+                 {"{grid: [0.2,0.2]}", R"({"grid":[0.2,0.2]})"},          //
+                 {"{grid: [0.25,0.25]}", R"({"grid":[0.25,0.25]})"},      //
+                 {"{grid: [0.3,0.3]}", R"({"grid":[0.3,0.3]})"},          //
+                 {"{grid: [0.4,0.4]}", R"({"grid":[0.4,0.4]})"},          //
+                 {"{grid: [0.5,0.5]}", R"({"grid":[0.5,0.5]})"},          //
+                 {"{grid: [0.6,0.6]}", R"({"grid":[0.6,0.6]})"},          //
+                 {"{grid: [0.7,0.7]}", R"({"grid":[0.7,0.7]})"},          //
+                 {"{grid: [0.75,0.75]}", R"({"grid":[0.75,0.75]})"},      //
+                 {"{grid: [0.8,0.8]}", R"({"grid":[0.8,0.8]})"},          //
+                 {"{grid: [0.9,0.9]}", R"({"grid":[0.9,0.9]})"},          //
+                 {"{grid: [1,1]}", R"({"grid":[1,1]})"},                  //
+                 {"{grid: [1.2,1.2]}", R"({"grid":[1.2,1.2]})"},          //
+                 {"{grid: [1.25,1.25]}", R"({"grid":[1.25,1.25]})"},      //
+                 {"{grid: [1.4,1.4]}", R"({"grid":[1.4,1.4]})"},          //
+                 {"{grid: [1.5,1.5]}", R"({"grid":[1.5,1.5]})"},          //
+                 {"{grid: [1.6,1.6]}", R"({"grid":[1.6,1.6]})"},          //
+                 {"{grid: [1.8,1.8]}", R"({"grid":[1.8,1.8]})"},          //
+                 {"{grid: [10,10]}", R"({"grid":[10,10]})"},              //
+                 {"{grid: [2,2]}", R"({"grid":[2,2]})"},                  //
+                 {"{grid: [2.5,2.5]}", R"({"grid":[2.5,2.5]})"},          //
+                 {"{grid: [5,5]}", R"({"grid":[5,5]})"},                  //
 
-
-    SECTION("ORCA grids") {
-        for (const auto& test : std::vector<std::string>{
-                 "eORCA025_T",
+                 {"{grid: eORCA1_T}", R"({"grid":"eORCA1_T"})"},  // ORCA grids
+                 {"{grid: 16076978a048410747dd7c9876677b28}",
+                  R"({"grid":"eORCA1_T","uid":"16076978a048410747dd7c9876677b28"})"},  //
+                 {"{grid: 16076978a048410747dd7c9876677b28}",
+                  R"({"grid":"eORCA1_T","uid":"16076978a048410747dd7c9876677b28"})"},  //
              }) {
-            // TODO
+            Grid a(eckit::geo::GridFactory::make_from_string(test.first));
+
+            Log::info() << test.second << " == " << a->spec_str() << std::endl;
+            EXPECT(test.second == a->spec_str());
+
+            Grid b(eckit::geo::GridFactory::build(a->spec()));
+            EXPECT(*a == *b);
+
+            Grid c(eckit::geo::GridFactory::make_from_string(b->spec_str()));
+            EXPECT(*a == *c);
+        }
+    }
+
+
+    SECTION("Arakawa C-type grids") {
+        struct test_t {
+            size_t N;
+            std::vector<size_t> shape;
+            std::string spec_str;
+        };
+
+        for (const auto& test : {
+                 test_t{48, {72, 96}, R"({"grid":[3.75,2.5],"order":"i+j+","reference":[1.875,1.25]})"},
+                 test_t{400, {600, 800}, R"({"grid":[0.45,0.3],"order":"i+j+","reference":[0.225,0.15]})"},
+             }) {
+            eckit::spec::Custom spec({{"type", "arakawa_c_um"}, {"N", test.N}});
+
+            Grid g(GridFactory::build(spec));
+
+            EXPECT(g->shape() == test.shape);
+            EXPECT(g->spec_str() == test.spec_str);
+
+            spec.set("arrangement", "T");
+            Grid t(GridFactory::build(spec));
+
+            EXPECT(t->shape() == test.shape);
+
+            spec.set("arrangement", "U");
+            Grid u(GridFactory::build(spec));
+
+            EXPECT(u->shape() == test.shape);
+
+            spec.set("arrangement", "V");
+            Grid v(GridFactory::build(spec));
+            auto test_shape_v = test.shape;
+            test_shape_v[0] += 1;
+
+            EXPECT(v->shape() == test_shape_v);
+
+
+            // test representation/interpolation for arrangements T (default), T, U and V
+            for (const auto* grid : {g.get(), t.get(), u.get(), v.get()}) {
+                ASSERT(grid != nullptr);
+
+                param::GridSpecParametrisation param(grid->spec_str());
+                repres::RepresentationHandle rep(repres::RepresentationFactory::build(param));
+
+                auto v              = std::get<PointLonLat>(grid->first_point()).south_pole();
+                auto numberOfPoints = (test.shape[0] + (v ? 1 : 0)) * test.shape[1];
+
+                EXPECT(rep && rep->isGlobal());
+                EXPECT(rep->numberOfPoints() == numberOfPoints);
+
+                std::vector<double> values(grid->size(), 0.);
+                std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), param));
+
+                const std::vector<size_t> output_shape{19, 36};
+                output::ArrayOutput output;
+
+                api::MIRJob job;
+                job.set("grid", std::vector<double>{10., 10.});
+                job.execute(*input, output);
+
+                EXPECT(output.shape() == output_shape);
+                EXPECT(output.gridspec() == R"({"grid":[10,10]})");
+            }
         }
     }
 }

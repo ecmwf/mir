@@ -12,11 +12,13 @@
 
 #include "mir/output/ArrayOutput.h"
 
+#include <algorithm>
 #include <cmath>
 #include <memory>
 #include <ostream>
 
 #include "eckit/geo/Grid.h"
+#include "eckit/types/FloatCompare.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
@@ -43,8 +45,12 @@ size_t ArrayOutput::save(const param::MIRParametrisation&, context::Context& ctx
     ASSERT(field.dimensions() == 1);
     ASSERT(field.values(0).size() == grid->size());
     values_       = field.values(0);
-    missingValue_ = std::isnan(missingValue_) ? std::numeric_limits<double>::quiet_NaN()  //
-                                              : field.missingValue();
+
+    auto mv       = field.missingValue();
+    missingValue_ = std::any_of(values_.begin(), values_.end(),
+                                [&mv](double v) { return eckit::types::is_approximately_equal(v, mv); })
+                        ? mv
+                        : std::numeric_limits<double>::quiet_NaN();
 
     return values_.size() * sizeof(double);
 }

@@ -119,6 +119,7 @@ void LatLon::fillJob(api::MIRJob& job) const {
 
 void LatLon::fillSpec(CustomSpec& spec) const {
     Gridded::fillSpec(spec);
+    increments_.fillSpec(spec);
     scan_.fillSpec(spec);
 }
 
