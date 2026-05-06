@@ -120,7 +120,6 @@ setup(
                 "src/_mir/_mir.pyx",
                 "src/_mir/mir/input/ArrayInput.cc",
                 "src/_mir/mir/input/PyGribInput.cc",
-                "src/_mir/mir/output/ArrayOutput.cc",
                 "src/_mir/mir/output/PyGribOutput.cc",
             ],
             language="c++",

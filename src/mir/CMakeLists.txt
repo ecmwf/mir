@@ -451,6 +451,8 @@ list(APPEND mir_srcs
     method/voronoi/VoronoiMethod.h
     method/voronoi/VoronoiStatistics.cc
     method/voronoi/VoronoiStatistics.h
+    output/ArrayOutput.cc
+    output/ArrayOutput.h
     output/EmptyOutput.cc
     output/EmptyOutput.h
     output/GeoPointsFileOutput.cc
