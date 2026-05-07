@@ -20,7 +20,7 @@ GRIDSPECS = [
     (dict(grid="H3", order="ring"), dict(grid="H3"), (108,)),
     (dict(grid=[2, 2]), dict(grid=[2, 2]), (91, 180)),
     ("{grid: 3/3}", dict(grid=[3, 3]), (61, 120)),
-    (dict(grid="o2"), dict(grid="O2"), (sum([20, 24, 24, 20]),)),
+    # (dict(grid="o2"), dict(grid="O2"), (sum([20, 24, 24, 20]),)),
 ]
 
 

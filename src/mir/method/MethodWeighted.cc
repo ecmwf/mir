@@ -64,7 +64,12 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation& param) :
     pruneEpsilon_(param::DefaultParametrisation::instance().get_value<double>("prune-epsilon", param)),
     poleDisplacement_(
         param::DefaultParametrisation::instance().get_value<double>("pole-displacement-in-degree", param)),
-    solver_(new solver::Multiply(param)) {
+    solver_(new solver::Multiply(param)),
+    interpolationMatrix_([&param]() {
+        std::string str;
+        param.get("interpolation-matrix", str);
+        return str;
+    }()) {
     ASSERT(lsmWeightAdjustment_ >= 0);
     ASSERT(pruneEpsilon_ >= 0);
     ASSERT(poleDisplacement_ >= 0);
@@ -262,6 +267,18 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
 
     log << "MethodWeighted::getMatrix create weights matrix: " << timer.elapsedSeconds(here) << std::endl;
     log << "MethodWeighted::getMatrix matrix W " << W << std::endl;
+
+    if (!interpolationMatrix_.empty()) {
+        log << "MethodWeighted::getMatrix link '" << cacheFile << "' to '" << interpolationMatrix_ << "'" << std::endl;
+        ASSERT(cacheFile.exists() && cacheFile != interpolationMatrix_);
+
+        eckit::PathName anotherFile(interpolationMatrix_);
+        if (anotherFile.exists()) {
+            anotherFile.unlink();
+        }
+        eckit::PathName::link(cacheFile, anotherFile);
+        ASSERT(anotherFile.exists());
+    }
 
     // insert matrix in the in-memory cache and update memory footprint
 
