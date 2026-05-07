@@ -17,6 +17,7 @@ import mir
 GRIDSPECS = [
     (dict(grid="1/1"), dict(grid=[1, 1]), (181, 360)),
     (dict(grid="h2n"), dict(grid="H2", order="nested"), (48,)),
+    (dict(grid="H4", order="nested"), dict(grid="H4", order="nested"), (192,)),
     (dict(grid="H3", order="ring"), dict(grid="H3"), (108,)),
     (dict(grid=[2, 2]), dict(grid=[2, 2]), (91, 180)),
     ("{grid: 3/3}", dict(grid=[3, 3]), (61, 120)),

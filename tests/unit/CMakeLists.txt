@@ -14,6 +14,7 @@ set(TESTS
     earthkit-geo
     formula
     gaussian_grid
+    healpix
     grib_basic_angle
     grib_encoding
     grib_input

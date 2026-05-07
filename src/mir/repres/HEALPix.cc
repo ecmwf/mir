@@ -25,7 +25,7 @@
 #include "eckit/spec/Custom.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/grid/NamedGrid.h"
-#include "mir/param/MIRParametrisation.h"
+#include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
@@ -69,7 +69,7 @@ class HEALPixPattern : public key::grid::GridPattern {
 public:
     // -- Constructors
 
-    explicit HEALPixPattern(const std::string& pattern, bool nested) : GridPattern(pattern), nested_(nested) {}
+    explicit HEALPixPattern(const std::string& pattern) : GridPattern(pattern) {}
 
 private:
     static size_t Nside(const std::string& name) {
@@ -86,21 +86,23 @@ private:
     void print(std::ostream& out) const override { out << "HEALPixPattern[pattern=" << pattern_ << "]"; }
 
     const key::grid::Grid* make(const std::string& name) const override {
-        return new NamedHEALPix(name, Nside(name), nested_ ? "nested" : "ring");
+        static const param::SimpleParametrisation empty;
+        const auto canonical_name = canonical(name, empty);
+        return new NamedHEALPix(canonical_name, Nside(name),
+                                canonical_name.find('N') != std::string::npos ? "nested" : "ring");
     }
 
-    std::string canonical(const std::string& name, const param::MIRParametrisation&) const override {
-        return (nested_ ? "HN" : "H") + std::to_string(Nside(name));
+    std::string canonical(const std::string& name, const param::MIRParametrisation& param) const override {
+        std::string order;
+        param.get("order", order);
+
+        auto nested = order == "nested" || name.find('n') != std::string::npos || name.find('N') != std::string::npos;
+        return (nested ? "HN" : "H") + std::to_string(Nside(name));
     }
-
-    // -- Members
-
-    const bool nested_;
 };
 
 
-const HEALPixPattern HEALPIX_N("^[hH]([nN][1-9][0-9]*|[1-9][0-9]*([nN]|_[nN][eE][sS][tT][eE][dD]))$", true);
-const HEALPixPattern HEALPIX_R("^[hH]([rR][1-9][0-9]*|[1-9][0-9]*([rR]|_[rR][iI][nN][gG])?)$", false);
+const HEALPixPattern HEALPIX_PATTERN("^[hH]([nNrR][1-9][0-9]*|[1-9][0-9]*[nNrR]?)$");
 
 
 const RepresentationBuilder<HEALPix> HEALPIX("healpix");
