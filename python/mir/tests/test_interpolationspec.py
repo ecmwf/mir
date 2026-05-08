@@ -9,6 +9,7 @@
 
 
 import pytest
+from yaml import safe_load
 
 import mir
 
@@ -116,23 +117,23 @@ def test_spec_as_str(type):
 )
 def test_job_set_interpolationspec(type):
     interpolation = mir.Interpolation(interpolation=type)
-    j = mir.Job(interpolation=interpolation.spec).json
-    assert j == f'{{"interpolation":"{type}"}}'
+    j = mir.Job()
+    j.set("interpolation", interpolation.spec)
+    payload = safe_load(safe_load(j.json)["interpolation"])
+    assert payload == interpolation.spec
 
     # nclosest (default 4) is only relevant for nearest-neighbour
     interpolation = mir.Interpolation(interpolation=type, nclosest=4)
-    j = mir.Job(interpolation=interpolation.spec).json
-    assert j == f'{{"interpolation":"{type}"}}'
+    j = mir.Job()
+    j.set("interpolation", interpolation.spec)
+    payload = safe_load(safe_load(j.json)["interpolation"])
+    assert payload == interpolation.spec
 
     interpolation = mir.Interpolation(interpolation=type, nclosest=5)
-    j = mir.Job(interpolation=interpolation.spec).json
-    if type == "nearest-neighbour":
-        assert (
-            j
-            == '{"distance-weighting":"inverse-distance-weighting-squared","interpolation":"nearest-neighbour","nclosest":5,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":"missing-if-heaviest-missing"}'
-        )
-    else:
-        assert j == f'{{"interpolation":"{type}"}}'
+    j = mir.Job()
+    j.set("interpolation", interpolation.spec)
+    payload = safe_load(safe_load(j.json)["interpolation"])
+    assert payload == interpolation.spec
 
 
 @pytest.mark.parametrize(
@@ -146,11 +147,10 @@ def test_job_set_interpolationspec(type):
 )
 def test_job_set_interpolationspec_statistics(type, stat):
     interpolation = mir.Interpolation(interpolation=type, interpolation_statistics=stat)
-    j = mir.Job(interpolation=interpolation.spec)
-    assert (
-        j.json
-        == f'{{"interpolation":"{type}","interpolation-statistics":"{stat}","non-linear":"missing-if-heaviest-missing"}}'
-    )
+    j = mir.Job()
+    j.set("interpolation", interpolation.spec)
+    payload = safe_load(safe_load(j.json)["interpolation"])
+    assert payload == interpolation.spec
 
 
 if __name__ == "__main__":

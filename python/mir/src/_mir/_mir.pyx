@@ -234,7 +234,12 @@ cdef class Job:
         assert isinstance(key, str)
         key_str = key.replace("_", "-")
 
-        if isinstance(value, dict):
+        if isinstance(value, dict) and key_str in ("grid", "interpolation"):
+            # spec-like values encoded as YAML strings
+            from yaml import dump
+            value_str = dump(value, default_flow_style=True).strip().encode()
+            self.j.set(key_str, value_str)
+        elif isinstance(value, dict):
             for k, v in value.items():
                 assert isinstance(k, str)
                 self.set(key if k == "type" else k, v)
