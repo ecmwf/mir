@@ -16,8 +16,8 @@ import findlibs
 m = findlibs.find("mir")
 CDLL(m)
 
-# import mir-python itself
 from _mir import *
+from eckit.geo import Grid
 
 __version__ = version()
 __git_sha1__ = git_sha1()
