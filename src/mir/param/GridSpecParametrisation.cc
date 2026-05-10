@@ -80,6 +80,7 @@ void fill_grid(SimpleParametrisation& param, const eckit::geo::Grid& grid) {
         param.set("gridType", "reduced_gg");
         param.set("gridded", true);
         param.set("N", g.N());
+        param.set("pl", g.pl());
 
         fill_scanning_mode(param, grid);
         return;
