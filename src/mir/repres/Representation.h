@@ -31,6 +31,9 @@ class Grid;
 
 namespace eckit {
 class JSON;
+namespace geo {
+class Grid;
+}
 namespace spec {
 class Custom;
 class Spec;
@@ -181,7 +184,7 @@ protected:
 private:
     // -- Members
 
-    mutable std::unique_ptr<eckit::spec::Custom> spec_;
+    mutable std::unique_ptr<const eckit::geo::Grid> grid_;
 
     // -- Methods
     // None

@@ -21,6 +21,7 @@
 #include "mir/api/MIRJob.h"
 #include "mir/input/MIRInput.h"
 #include "mir/input/RawInput.h"
+#include "mir/output/ArrayOutput.h"
 #include "mir/output/EmptyOutput.h"
 #include "mir/param/GridSpecParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
@@ -46,8 +47,10 @@ CASE("GridSpec input/output") {
         {"{grid: [20, 10]}", R"({"grid":[20,10]})", 342, true},               //
         {"{pl: [20, 24, 24, 20]}", R"({"grid":"O2"})", 88, true},             //
         {"{grid: o8}", R"({"grid":"O8"})", 544, true},                        //
-        {"{grid: h2_ring}", R"({"grid":"H2"})", 48, false},                   // NOTE: HEALPix is non-croppable
+        {"{grid: hr2}", R"({"grid":"H2"})", 48, false},                       // NOTE: HEALPix is non-croppable
         {"{grid: h2n}", R"({"grid":"H2","order":"nested"})", 48, false},      // NOTE: HEALPix is non-croppable
+        {"{grid: o96}", R"({"grid":"O96"})", 40320, false},
+        {R"({"area":[89.2842275325138,0,-89.2842275325138,359.1],"grid":"O96"})", R"({"grid":"O96"})", 40320, false},
     };
 
 
@@ -117,18 +120,29 @@ CASE("GridSpec input/output") {
 
 
     SECTION("GridSpec as input and output") {
-        for (const auto& test_input : tests) {
-            param::GridSpecParametrisation meta(test_input.grid);
+        for (const auto& test : tests) {
+            param::GridSpecParametrisation meta(test.grid);
+
+            EXPECT(meta.grid().size() == test.size);
+            EXPECT(meta.spec().str() == test.canonical);
+
+            repres::RepresentationHandle repres(repres::RepresentationFactory::build(meta));
+
+            EXPECT(repres->spec().str() == test.canonical);
 
             for (const auto& test_output : tests) {
+                output::ArrayOutput output;
                 api::MIRJob job;
                 job.set("grid", test_output.grid);
 
-                std::vector<double> values(test_input.size, 0.);
+                std::vector<double> values(test.size, 0.);
                 for (std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
                      input->next();) {
                     job.execute(*input, output);
                 }
+
+                EXPECT(output.gridspec() == test_output.canonical);
+                EXPECT(output.size() == test_output.size);
             }
         }
     }

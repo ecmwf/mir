@@ -13,8 +13,8 @@
 #include "mir/output/ArrayOutput.h"
 
 #include <algorithm>
-#include <cmath>
 #include <memory>
+#include <numeric>
 #include <ostream>
 
 #include "eckit/geo/Grid.h"
@@ -27,6 +27,12 @@
 
 
 namespace mir::output {
+
+
+size_t ArrayOutput::size() const {
+    constexpr size_t ONE = 1;
+    return std::accumulate(shape_.begin(), shape_.end(), ONE, [](size_t a, size_t b) { return a * b; });
+}
 
 
 size_t ArrayOutput::save(const param::MIRParametrisation&, context::Context& ctx) {

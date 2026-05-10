@@ -15,6 +15,7 @@
 #include <memory>
 #include <sstream>
 
+#include "eckit/geo/Grid.h"
 #include "eckit/spec/Custom.h"
 
 #include "mir/data/MIRField.h"
@@ -149,11 +150,15 @@ const Representation* Representation::truncate(size_t /*unused*/, const MIRValue
 
 
 const Representation::Spec& Representation::spec() const {
-    if (!spec_) {
-        spec_ = std::make_unique<CustomSpec>();
-        fillSpec(*spec_);
+    if (!grid_) {
+        auto custom = std::make_unique<CustomSpec>();
+        fillSpec(*custom);
+
+        grid_.reset(eckit::geo::GridFactory::build(*custom));
+        ASSERT(grid_);
     }
-    return *spec_;
+
+    return grid_->spec();
 }
 
 

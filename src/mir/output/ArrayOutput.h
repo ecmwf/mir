@@ -30,6 +30,8 @@ public:
     const std::string& gridspec() const { return gridspec_; }
     double missingValue() const { return missingValue_; }
 
+    size_t size() const;
+
 private:
     std::vector<double> values_;
     std::vector<size_t> shape_;
