@@ -110,13 +110,6 @@ void LatLon::fillGrib(grib_info& info) const {
 }
 
 
-void LatLon::fillJob(api::MIRJob& job) const {
-    increments_.fillJob(job);
-    bbox_.fillJob(job);
-    scan_.fillJob(job);
-}
-
-
 void LatLon::fillSpec(CustomSpec& spec) const {
     Gridded::fillSpec(spec);
     increments_.fillSpec(spec);

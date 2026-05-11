@@ -194,11 +194,6 @@ void HEALPix::fillMeshGen(util::MeshGeneratorParameters& params) const {
 }
 
 
-void HEALPix::fillJob(api::MIRJob& job) const {
-    job.set("grid", name());
-}
-
-
 void HEALPix::fillSpec(CustomSpec& spec) const {
     spec.set("grid", name());
 }

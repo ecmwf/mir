@@ -18,6 +18,7 @@
 #include "eckit/geo/Grid.h"
 #include "eckit/spec/Custom.h"
 
+#include "mir/api/MIRJob.h"
 #include "mir/data/MIRField.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/param/MIRParametrisation.h"
@@ -106,10 +107,8 @@ void Representation::fillGrib(grib_info& /*unused*/) const {
 }
 
 
-void Representation::fillJob(api::MIRJob& /*unused*/) const {
-    std::ostringstream os;
-    os << "Representation::fillJob(api::MIRJob&) not implemented for " << *this;
-    throw exception::SeriousBug(os.str());
+void Representation::fillJob(api::MIRJob& job) const {
+    job.set("grid", spec().str());
 }
 
 

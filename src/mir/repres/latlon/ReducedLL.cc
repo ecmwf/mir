@@ -122,13 +122,6 @@ void ReducedLL::fillGrib(grib_info& /*unused*/) const {
     NOTIMP;
 }
 
-void ReducedLL::fillJob(api::MIRJob& job) const {
-    bbox_.fillJob(job);
-    job.set("pl", pl_);
-    job.set("Nj", pl_.size());
-    NOTIMP;
-}
-
 void ReducedLL::fillSpec(CustomSpec& spec) const {
     Gridded::fillSpec(spec);
 

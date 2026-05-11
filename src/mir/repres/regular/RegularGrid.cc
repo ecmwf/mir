@@ -164,21 +164,6 @@ void RegularGrid::fillGrib(grib_info& info) const {
 }
 
 
-void RegularGrid::fillJob(api::MIRJob& job) const {
-    // shape of the reference system
-    shape_.fillJob(job, grid_.projection().spec());
-
-    // scanningMode
-    std::string grid;
-    ASSERT(job.get("grid", grid) && !grid.empty());
-
-    grid += ";iScansNegatively=" + std::to_string(x().front() < x().back() ? 0 : 1);
-    grid += ";jScansPositively=" + std::to_string(y().front() < y().back() ? 1 : 0);
-
-    job.set("grid", grid);
-}
-
-
 void RegularGrid::fillSpec(CustomSpec& spec) const {
     // shape of the reference system
     shape_.fillSpec(spec, grid_.projection().spec());

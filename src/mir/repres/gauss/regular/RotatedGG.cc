@@ -70,12 +70,6 @@ void RotatedGG::fillGrib(grib_info& info) const {
 }
 
 
-void RotatedGG::fillJob(api::MIRJob& job) const {
-    Regular::fillJob(job);
-    rotation_.fillJob(job);
-}
-
-
 void RotatedGG::fillSpec(CustomSpec& spec) const {
     Regular::fillSpec(spec);
     rotation_.fillSpec(spec);

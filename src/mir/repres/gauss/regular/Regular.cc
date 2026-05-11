@@ -82,15 +82,6 @@ void Regular::fillGrib(grib_info& info) const {
 }
 
 
-void Regular::fillJob(api::MIRJob& job) const {
-    Gaussian::fillJob(job);
-
-    job.set("grid", "F" + std::to_string(N_));
-
-    scan_.fillJob(job);
-}
-
-
 void Regular::fillSpec(CustomSpec& spec) const {
     Gaussian::fillSpec(spec);
 

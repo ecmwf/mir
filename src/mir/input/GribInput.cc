@@ -586,12 +586,15 @@ static ProcessingT<std::string>* order() {
         static const std::string M{"-"};
 
         auto get_bool = [](const grib_handle* h, const char* key) -> bool {
+            if (codes_is_defined(h, key) == 0) {
+                return false;
+            }
             auto l = 0L;
             GRIB_CALL(codes_get_long(h, key, &l));
             return l != 0;
         };
 
-        const auto ip = get_bool(h, "iScansPositively");
+        const auto ip = !get_bool(h, "iScansNegatively");
         const auto jp = get_bool(h, "jScansPositively");
         const auto a  = get_bool(h, "alternativeRowScanning");
 

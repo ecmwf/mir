@@ -82,11 +82,6 @@ void SphericalHarmonics::fillGrib(grib_info& info) const {
 }
 
 
-void SphericalHarmonics::fillJob(api::MIRJob& job) const {
-    job.set("resol", truncation_);
-}
-
-
 void SphericalHarmonics::fillSpec(CustomSpec& spec) const {
     spec.set("resol", truncation_);
 }

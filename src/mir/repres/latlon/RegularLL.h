@@ -66,7 +66,6 @@ private:
     atlas::Grid atlasGrid() const override;
 
     void fillGrib(grib_info&) const override;
-    void fillJob(api::MIRJob&) const override;
     void fillSpec(CustomSpec&) const override;
 
     void makeName(std::ostream&) const override;

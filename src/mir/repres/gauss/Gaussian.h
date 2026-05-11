@@ -80,7 +80,6 @@ protected:
     // -- Overridden methods
 
     void fillMeshGen(util::MeshGeneratorParameters&) const override;
-    void fillJob(api::MIRJob&) const override;
     bool sameAs(const Representation&) const override;
     void validate(const MIRValuesVector&) const override;
 

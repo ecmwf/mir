@@ -90,7 +90,6 @@ protected:
     bool isPeriodicWestEast() const override;
 
     void fillGrib(grib_info&) const override;
-    void fillJob(api::MIRJob&) const override;
     void fillSpec(CustomSpec&) const override;
     void fillMeshGen(util::MeshGeneratorParameters&) const override;
 

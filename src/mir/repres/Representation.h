@@ -98,6 +98,8 @@ public:
 
     // -- Methods
 
+    void fillJob(api::MIRJob&) const;
+
     virtual const eckit::spec::Spec& spec() const;
 
     virtual const std::string& uniqueName() const;
@@ -107,7 +109,6 @@ public:
     virtual void validate(const MIRValuesVector&) const;
 
     virtual void fillGrib(grib_info&) const;
-    virtual void fillJob(api::MIRJob&) const;
     virtual void fillSpec(CustomSpec&) const;
     virtual void fillMeshGen(util::MeshGeneratorParameters&) const;
 

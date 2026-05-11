@@ -147,11 +147,6 @@ protected:
         }
     }
 
-    void fillJob(api::MIRJob& job) const override {
-        util::ValueMap map(eckit::YAMLParser::decodeString(grid_->spec().str()));
-        map.set(static_cast<param::SimpleParametrisation&>(job));
-    }
-
     void fillSpec(CustomSpec& spec) const override {
         const auto& geoSpec = grid_->spec();
         spec.set("grid", geoSpec.get_string(geoSpec.has("uid") ? "uid" : "grid"));
@@ -594,12 +589,6 @@ bool UnstructuredGrid::sameAs(const Representation& other) const {
 void UnstructuredGrid::fillGrib(grib_info& info) const {
     info.grid.grid_type        = CODES_UTIL_GRID_SPEC_UNSTRUCTURED;
     info.packing.editionNumber = 2;
-}
-
-
-void UnstructuredGrid::fillJob(api::MIRJob& job) const {
-    job.set("latitudes", latitudes_);
-    job.set("longitudes", longitudes_);
 }
 
 

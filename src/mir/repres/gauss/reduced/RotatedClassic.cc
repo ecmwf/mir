@@ -59,12 +59,6 @@ void RotatedClassic::fillGrib(grib_info& info) const {
 }
 
 
-void RotatedClassic::fillJob(api::MIRJob& job) const {
-    Classic::fillJob(job);
-    rotation_.fillJob(job);
-}
-
-
 void RotatedClassic::fillSpec(CustomSpec& spec) const {
     Classic::fillSpec(spec);
     rotation_.fillSpec(spec);

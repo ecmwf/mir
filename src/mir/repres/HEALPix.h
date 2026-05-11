@@ -65,7 +65,6 @@ private:
 
     void fillGrib(grib_info&) const override;
     void fillMeshGen(util::MeshGeneratorParameters&) const override;
-    void fillJob(api::MIRJob&) const override;
     void fillSpec(CustomSpec&) const override;
 
     void json(eckit::JSON&) const override;

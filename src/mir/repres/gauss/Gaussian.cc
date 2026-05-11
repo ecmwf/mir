@@ -209,14 +209,6 @@ void Gaussian::fillMeshGen(util::MeshGeneratorParameters& params) const {
 }
 
 
-void Gaussian::fillJob(api::MIRJob& job) const {
-    auto d = domain();
-    if (!d.isGlobal() || d.west() != Longitude::GREENWICH) {
-        bbox_.fillJob(job);
-    }
-}
-
-
 const std::vector<double>& Gaussian::latitudes(size_t N) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);

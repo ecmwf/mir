@@ -59,12 +59,6 @@ void RotatedOctahedral::fillGrib(grib_info& info) const {
 }
 
 
-void RotatedOctahedral::fillJob(api::MIRJob& job) const {
-    Octahedral::fillJob(job);
-    rotation_.fillJob(job);
-}
-
-
 void RotatedOctahedral::fillSpec(CustomSpec& spec) const {
     Octahedral::fillSpec(spec);
     rotation_.fillSpec(spec);

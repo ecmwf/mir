@@ -63,12 +63,6 @@ void RotatedFromPL::fillGrib(grib_info& info) const {
 }
 
 
-void RotatedFromPL::fillJob(api::MIRJob& job) const {
-    FromPL::fillJob(job);
-    rotation_.fillJob(job);
-}
-
-
 void RotatedFromPL::fillSpec(CustomSpec& spec) const {
     FromPL::fillSpec(spec);
     rotation_.fillSpec(spec);

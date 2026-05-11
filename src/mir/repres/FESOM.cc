@@ -178,12 +178,6 @@ void FESOM::fillMeshGen(util::MeshGeneratorParameters& params) const {
 }
 
 
-void FESOM::fillJob(api::MIRJob& job) const {
-    const auto& spec = static_cast<const eckit::geo::Grid&>(*grid_).spec();
-    job.set("grid", spec.get_string(spec.has("uid") ? "uid" : "grid"));
-}
-
-
 void FESOM::json(eckit::JSON& j) const {
     const auto& spec = static_cast<const eckit::geo::Grid&>(*grid_).spec();
     spec.json(j);

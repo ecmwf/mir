@@ -86,11 +86,6 @@ void RotatedLL::fillGrib(grib_info& info) const {
     rotation_.fillGrib(info);
 }
 
-void RotatedLL::fillJob(api::MIRJob& job) const {
-    LatLon::fillJob(job);
-    rotation_.fillJob(job);
-}
-
 void RotatedLL::fillSpec(CustomSpec& spec) const {
     LatLon::fillSpec(spec);
     rotation_.fillSpec(spec);

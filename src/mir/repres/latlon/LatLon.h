@@ -77,7 +77,6 @@ protected:
     // -- Overridden methods
 
     void fillGrib(grib_info&) const override;
-    void fillJob(api::MIRJob&) const override;
     void fillSpec(CustomSpec&) const override;
 
     void json(eckit::JSON&) const override;
