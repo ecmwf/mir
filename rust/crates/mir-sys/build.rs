@@ -21,6 +21,36 @@ fn main() {
     }
 }
 
+/// Generate `mir_exceptions.{h,rs}` for mir's own subclasses (`mir::exception::*`
+/// in `mir/util/Exceptions.h`) plus eckit's exceptions inherited from upstream
+/// `-sys` crates.
+fn generate_exceptions(include: &std::path::Path) {
+    use std::env;
+    use std::path::PathBuf;
+
+    let out_dir = PathBuf::from(env::var("OUT_DIR").expect("OUT_DIR not set"));
+
+    let own = vec![bindman_build::ExceptionSource {
+        header: include.join("mir/util/Exceptions.h"),
+        include_path: "mir/util/Exceptions.h".to_string(),
+        cpp_namespace: "mir::exception".to_string(),
+        message_prefix: "mir".to_string(),
+        base_class: "eckit::Exception".to_string(),
+        recursive: true,
+    }];
+
+    let inherited = bindman_build::collect_dep_exception_sources();
+
+    bindman_build::generate_exception_bridge(&bindman_build::ExceptionBridgeConfig {
+        primary_namespace: "mir",
+        out_dir: &out_dir,
+        own: &own,
+        inherited: &inherited,
+    });
+
+    bindman_build::publish_exception_sources(&own, &out_dir);
+}
+
 #[cfg(feature = "system")]
 fn build_system() {
     use std::env;
@@ -28,14 +58,16 @@ fn build_system() {
 
     let crate_dir =
         PathBuf::from(env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR not set"));
+    let out_dir = PathBuf::from(env::var("OUT_DIR").expect("OUT_DIR not set"));
 
     let eckit_include = env::var("DEP_ECKIT_SYS_INCLUDE").expect("DEP_ECKIT_SYS_INCLUDE not set");
-    let eckit_out_dir = env::var("DEP_ECKIT_SYS_OUT_DIR").expect("DEP_ECKIT_SYS_OUT_DIR not set");
     let eckit_cpp_dir = env::var("DEP_ECKIT_SYS_CPP_DIR").expect("DEP_ECKIT_SYS_CPP_DIR not set");
     let metkit_include =
         env::var("DEP_METKIT_SYS_INCLUDE").expect("DEP_METKIT_SYS_INCLUDE not set");
 
     let (root, mir_include, lib_dir) = bindman_utils::cmake_find_package("mir", MIR_VERSION);
+
+    generate_exceptions(&mir_include);
 
     println!("cargo:rustc-link-search=native={}", lib_dir.display());
     println!("cargo:rustc-link-lib=dylib=mir");
@@ -44,10 +76,10 @@ fn build_system() {
         .file(crate_dir.join("cpp/mir_bridge.cpp"))
         .include(&mir_include)
         .include(&eckit_include)
-        .include(&eckit_out_dir)
         .include(&eckit_cpp_dir)
         .include(&metkit_include)
         .include(crate_dir.join("cpp"))
+        .include(&out_dir) // for mir_exceptions.h (generated)
         .flag_if_supported("-std=c++17")
         .compile("mir_sys_bridge");
 
@@ -91,7 +123,6 @@ fn build_vendored() {
         .expect("DEP_ECCODES_SYS_ROOT not set - eccodes-sys dependency");
     let atlas_root =
         env::var("DEP_ATLAS_SYS_ROOT").expect("DEP_ATLAS_SYS_ROOT not set - atlas-sys dependency");
-    let eckit_out_dir = env::var("DEP_ECKIT_SYS_OUT_DIR").expect("DEP_ECKIT_SYS_OUT_DIR not set");
     let eckit_cpp_dir = env::var("DEP_ECKIT_SYS_CPP_DIR").expect("DEP_ECKIT_SYS_CPP_DIR not set");
 
     let ecbuild_src = bindman_utils::git_clone(ECBUILD_REPO, ECBUILD_TAG, &src_dir.join("ecbuild"));
@@ -143,14 +174,16 @@ fn build_vendored() {
 
     let lib_dir = bindman_utils::resolve_lib_dir(&install_dir);
 
+    generate_exceptions(&include_dir);
+
     cxx_build::bridge("src/lib.rs")
         .file(crate_dir.join("cpp/mir_bridge.cpp"))
         .include(&include_dir)
         .include(format!("{eckit_root}/include"))
-        .include(&eckit_out_dir)
         .include(&eckit_cpp_dir)
         .include(format!("{metkit_root}/include"))
         .include(crate_dir.join("cpp"))
+        .include(&out_dir) // for mir_exceptions.h (generated)
         .flag_if_supported("-std=c++17")
         .compile("mir_sys_bridge");
 
