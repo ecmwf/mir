@@ -274,9 +274,12 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
 
         eckit::PathName anotherFile(interpolationMatrix_);
         if (anotherFile.exists()) {
-            anotherFile.unlink();
+            log << "MethodWeighted::getMatrix another file '" << anotherFile << "' already exists, not writing"
+                << std::endl;
         }
-        eckit::PathName::link(cacheFile, anotherFile);
+        else {
+            eckit::PathName::link(cacheFile, anotherFile);
+        }
         ASSERT(anotherFile.exists());
     }
 
