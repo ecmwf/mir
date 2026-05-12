@@ -2,7 +2,7 @@
 #pragma once
 
 #include "eckit_bridge.h"
-#include "eckit_exceptions.h"
+#include "mir_exceptions.h"
 
 #include "mir/api/MIRJob.h"
 #include "mir/input/GribDataHandleInput.h"

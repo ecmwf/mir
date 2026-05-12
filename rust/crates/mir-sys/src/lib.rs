@@ -2,6 +2,9 @@
 
 use bindman::track_cpp_api;
 
+// Auto-generated mir Error enum + From<cxx::Exception> impl
+include!(concat!(env!("OUT_DIR"), "/mir_exceptions.rs"));
+
 #[track_cpp_api(("mir/api/MIRJob.h", class = "MIRJob"),)]
 #[cxx::bridge(namespace = "mir_bridge")]
 pub mod ffi {
