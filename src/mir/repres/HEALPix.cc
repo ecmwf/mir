@@ -25,7 +25,7 @@
 #include "eckit/spec/Custom.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/grid/NamedGrid.h"
-#include "mir/param/SimpleParametrisation.h"
+#include "mir/param/MIRParametrisation.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
@@ -86,17 +86,13 @@ private:
     void print(std::ostream& out) const override { out << "HEALPixPattern[pattern=" << pattern_ << "]"; }
 
     const key::grid::Grid* make(const std::string& name) const override {
-        static const param::SimpleParametrisation empty;
-        const auto canonical_name = canonical(name, empty);
+        const auto canonical_name = canonical(name);
         return new NamedHEALPix(canonical_name, Nside(name),
                                 canonical_name.find('N') != std::string::npos ? "nested" : "ring");
     }
 
-    std::string canonical(const std::string& name, const param::MIRParametrisation& param) const override {
-        std::string order;
-        param.get("order", order);
-
-        auto nested = order == "nested" || name.find('n') != std::string::npos || name.find('N') != std::string::npos;
+    std::string canonical(const std::string& name) const override {
+        auto nested = name.find('n') != std::string::npos || name.find('N') != std::string::npos;
         return (nested ? "HN" : "H") + std::to_string(Nside(name));
     }
 };

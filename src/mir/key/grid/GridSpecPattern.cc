@@ -36,7 +36,7 @@ const Grid* GridSpecPattern::make(const std::string& name) const {
 }
 
 
-std::string GridSpecPattern::canonical(const std::string& name, const param::MIRParametrisation&) const {
+std::string GridSpecPattern::canonical(const std::string& name) const {
     std::unique_ptr<const eckit::geo::Grid> grid(eckit::geo::GridFactory::make_from_string(name));
     return grid->spec_str();
 }

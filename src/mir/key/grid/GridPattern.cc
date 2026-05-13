@@ -61,7 +61,7 @@ void GridPattern::list(std::ostream& out) {
 }
 
 
-std::string GridPattern::match(const std::string& name, const param::MIRParametrisation& param) {
+std::string GridPattern::match(const std::string& name) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
@@ -78,7 +78,7 @@ std::string GridPattern::match(const std::string& name, const param::MIRParametr
 
     if (!conflicts && k != m->cend()) {
         Log::debug() << "GridPattern: '" << name << "' can be built" << std::endl;
-        return k->second->canonical(name, param);
+        return k->second->canonical(name);
     }
 
     Log::debug() << "GridPattern: '" << name << "' cannot be built" << std::endl;

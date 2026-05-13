@@ -781,8 +781,6 @@ list(APPEND mir_srcs
     caching/legendre/NoLoader.h
     caching/legendre/SharedMemoryLoader.cc
     caching/legendre/SharedMemoryLoader.h
-    key/grid/SourcePattern.cc
-    key/grid/SourcePattern.h
     method/ProxyMethod.cc
     method/ProxyMethod.h
     method/fe/CalculateCellLongestDiagonal.cc

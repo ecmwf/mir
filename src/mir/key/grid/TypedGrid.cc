@@ -127,7 +127,7 @@ struct TypedGenericPattern final : public GridPattern {
 
     const Grid* make(const std::string& name) const override { return new TYPE(name, requiredKeys_, optionalKeys_); }
 
-    std::string canonical(const std::string& name, const param::MIRParametrisation& /*unused*/) const override {
+    std::string canonical(const std::string& name) const override {
         // FIXME not implemented
         return name;
     }

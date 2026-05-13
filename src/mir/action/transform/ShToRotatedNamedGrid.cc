@@ -68,7 +68,7 @@ const char* ShToRotatedNamedGrid<Invtrans>::name() const {
 
 template <class Invtrans>
 const repres::Representation* ShToRotatedNamedGrid<Invtrans>::outputRepresentation() const {
-    const auto& ng = key::grid::Grid::lookup(grid_, parametrisation());
+    const auto& ng = key::grid::Grid::lookup(grid_);
     return ng.representation(rotation_);
 }
 

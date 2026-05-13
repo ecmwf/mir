@@ -88,6 +88,7 @@ void fill_grid(SimpleParametrisation& param, const eckit::geo::Grid& grid) {
 
     if (type == "HEALPix") {
         const auto& g = dynamic_cast<const eckit::geo::grid::reduced::HEALPix&>(grid);
+        param.set("grid", (g.order() == "nested" ? "HN" : "H") + std::to_string(g.Nside()));
         param.set("gridType", "healpix");
         param.set("gridded", true);
         param.set("Nside", g.Nside());
