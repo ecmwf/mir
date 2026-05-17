@@ -9,10 +9,13 @@
 
 
 from itertools import product
+from pathlib import Path
 
 import pytest
 
 import mir
+
+TEST_DIR = Path(__file__).parent
 
 GRIDSPECS = [
     (dict(grid="1/1"), dict(grid=[1, 1]), (181, 360)),
@@ -68,6 +71,76 @@ def test_interpolation(input_grid, output_grid, output_spec, output_shape):
     assert output.shape == output_shape
     assert output.values().dtype == np.float64
     assert output.values().size == output.size == len(result)
+
+
+
+@pytest.mark.parametrize(
+    "input_gs, output_gs",
+    [
+        (dict(grid="O96"), dict(type="arakawa_c_um", n=96)),
+        (dict(type="arakawa_c_um", n=96), dict(grid="O96")),
+    ]
+)
+def test_interpolation_n96_o96_array(input_gs, output_gs):
+    import numpy as np
+
+    input_grid = mir.Grid(input_gs)
+    expected_grid = mir.Grid(output_gs)
+
+    values = np.arange(len(input_grid), dtype=np.float64)
+    input = mir.ArrayInput(values, input_grid.spec_str)
+
+    job = mir.Job()
+    job.set("grid", output_gs)
+
+    output = mir.ArrayOutput()
+    job.execute(input, output)
+
+    result = mir.Grid(output.spec)
+    assert result.shape == expected_grid.shape
+    assert result.spec == expected_grid.spec
+
+
+@pytest.mark.parametrize(
+    "input_gs, output_gs, input_filename",
+    [
+        ("o96.grib2", dict(grid="O96"), dict(type="arakawa_c_um", n=96)),
+        ("n96.grib2", dict(type="arakawa_c_um", n=96), dict(grid="O96")),
+    ]
+)
+def test_interpolation_n96_o96_grib(input_filename, input_gs, output_gs, monkeypatch):
+    import io
+
+    monkeypatch.setenv("ECCODES_ECKIT_GEO", "1")
+    eccodes = pytest.importorskip("eccodes")
+
+    path = Path(TEST_DIR / input_filename)
+    assert path.is_file() and path.exists()
+
+    def gridspec_from_grib(h):
+        try:
+            from yaml import safe_load
+            return safe_load(eccodes.codes_get(h, "gridSpec"))
+        finally:
+            eccodes.codes_release(h)
+
+    with open(path, "rb") as f:
+        input_grid_spec = gridspec_from_grib(eccodes.codes_grib_new_from_file(f))
+
+    assert input_grid_spec == mir.Grid(input_gs).spec
+
+    input = mir.GribFileInput(str(path))
+    job = mir.Job()
+    job.set("grid", output_gs)
+
+    output = io.BytesIO()
+    job.execute(input, output)
+
+    message = output.getvalue()
+    assert message
+
+    output_grid_spec = gridspec_from_grib(eccodes.codes_new_from_message(message))
+    assert output_grid_spec == mir.Grid(output_gs).spec
 
 
 if __name__ == "__main__":

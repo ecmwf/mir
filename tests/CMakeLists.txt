@@ -7,6 +7,7 @@ file(COPY cache DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 # Set testing environment
 set(_testEnvironment
     "MIR_DEBUG=1"
+    "ECCODES_ECKIT_GEO=1"
     "MIR_HOME=${CMAKE_BINARY_DIR}"
     "MIR_CACHE_PATH=${MIR_CACHE_PATH}"
     "TEST_ECKIT_CACHE_DIR=${MIR_CACHE_PATH}")

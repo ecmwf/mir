@@ -232,7 +232,14 @@ cdef class Job:
         assert isinstance(key, str)
         key_str = key.replace("_", "-")
 
-        if isinstance(value, dict) and key_str in ("grid", "interpolation"):
+        if (
+            isinstance(value, dict)
+            and key_str == "grid"
+            and set(value.keys()) == {"grid"}
+        ):
+            # flatten a nested grid key
+            self.set(key, value["grid"])
+        elif isinstance(value, dict) and key_str in ("grid", "interpolation"):
             # spec-like values encoded as YAML strings
             from yaml import dump
             value_str = dump(value, default_flow_style=True).strip().encode()

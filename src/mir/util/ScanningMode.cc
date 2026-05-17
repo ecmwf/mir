@@ -39,8 +39,21 @@ ScanningMode::ScanningMode(const std::string& order) : scan_(order) {}
 
 
 void ScanningMode::fillGrib(grib_info& info) const {
-    info.grid.iScansNegatively = scan_.is_scan_i_positive() ? 0 : 1;
-    info.grid.jScansPositively = scan_.is_scan_j_positive() ? 1 : 0;
+    if (scan_.is_scan_i_positive()) {
+        info.grid.iScansNegatively = 0;
+    }
+    else {
+        info.grid.iScansNegatively = 1;
+        std::swap(info.grid.longitudeOfFirstGridPointInDegrees, info.grid.longitudeOfLastGridPointInDegrees);
+    }
+
+    if (scan_.is_scan_j_positive()) {
+        info.grid.jScansPositively = 1;
+        std::swap(info.grid.latitudeOfFirstGridPointInDegrees, info.grid.latitudeOfLastGridPointInDegrees);
+    }
+    else {
+        info.grid.jScansPositively = 0;
+    }
 
     info.extra_set("scanningMode", grib_order_to_scanning_mode(scan_.order()));
 }

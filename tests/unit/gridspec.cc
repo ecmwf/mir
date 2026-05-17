@@ -149,6 +149,42 @@ CASE("GridSpec input/output") {
 }
 
 
+CASE("GridSpec different routings") {
+    for (const auto* gs : {
+             "{grid: [1,1]}",
+             "{grid: 1/1}",
+         }) {
+        param::GridSpecParametrisation param(gs);
+        std::unique_ptr<const eckit::geo::Grid> grid(eckit::geo::GridFactory::make_from_string(gs));
+        ASSERT(grid);
+
+        const std::vector<size_t> expected_shape{181, 360};
+        const std::string expected_gs = R"({"grid":[1,1]})";
+
+        EXPECT(grid->spec_str() == expected_gs);
+        EXPECT(grid->shape() == expected_shape);
+        EXPECT(param.spec().str() == expected_gs);
+    }
+
+    for (const auto* gs : {
+             "{grid: 0.05/0.05, area: [89.975,-179.975,-89.975,179.975]}",
+             "{grid: [0.05, 0.05], area: 89.975/-179.975/-89.975/179.975}",
+         }) {
+        param::GridSpecParametrisation param(gs);
+        std::unique_ptr<const eckit::geo::Grid> grid(eckit::geo::GridFactory::make_from_string(gs));
+        ASSERT(grid);
+
+        const std::vector<size_t> expected_shape{3600, 7200};
+        const std::string expected_gs =
+            R"({"area":[90,-179.975,-90,180.025],"grid":[0.05,0.05],"reference":[0.025,0.025]})";
+
+        EXPECT(grid->spec_str() == expected_gs);
+        EXPECT(grid->shape() == expected_shape);
+        EXPECT(param.spec().str() == expected_gs);
+    }
+}
+
+
 }  // namespace mir::tests::unit
 
 
