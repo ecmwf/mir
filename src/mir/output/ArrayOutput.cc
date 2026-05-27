@@ -13,6 +13,7 @@
 #include "mir/output/ArrayOutput.h"
 
 #include <algorithm>
+#include <cmath>
 #include <memory>
 #include <numeric>
 #include <ostream>
@@ -50,13 +51,17 @@ size_t ArrayOutput::save(const param::MIRParametrisation&, context::Context& ctx
     // save data
     ASSERT(field.dimensions() == 1);
     ASSERT(field.values(0).size() == grid->size());
-    values_       = field.values(0);
+    values_ = field.values(0);
 
-    auto mv       = field.missingValue();
-    missingValue_ = std::any_of(values_.begin(), values_.end(),
-                                [&mv](double v) { return eckit::types::is_approximately_equal(v, mv); })
-                        ? mv
-                        : std::numeric_limits<double>::quiet_NaN();
+    if (auto mv = field.missingValue();
+        std::any_of(values_.begin(), values_.end(), [mv, mv_isnan = std::isnan(mv)](auto v) {
+            return mv_isnan ? std::isnan(v) : eckit::types::is_approximately_equal(v, mv);
+        })) {
+        missingValue_ = mv;
+    }
+    else {
+        missingValue_ = std::numeric_limits<double>::quiet_NaN();
+    }
 
     return values_.size() * sizeof(double);
 }
