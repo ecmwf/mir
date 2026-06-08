@@ -24,6 +24,7 @@ ecbuild_add_option(FEATURE MIR_DOWNLOAD_MASKS DEFAULT ON  DESCRIPTION "download 
 ecbuild_add_option(FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support for netCDF" REQUIRED_PACKAGES "NetCDF COMPONENTS C CXX")
 ecbuild_add_option(FEATURE PNG                DEFAULT OFF DESCRIPTION "support for PNG encoding" REQUIRED_PACKAGES PNG)
 ecbuild_add_option(FEATURE OMP                DEFAULT OFF DESCRIPTION "support for OpenMP shared memory parallelism" REQUIRED_PACKAGES "OpenMP COMPONENTS CXX")
+ecbuild_add_option(FEATURE PYTHON             DEFAULT OFF DESCRIPTION "Build Python bindings (Cython)" REQUIRED_PACKAGES "Python3 COMPONENTS Interpreter Development NumPy")
 
 if(NOT TARGET OpenMP::OpenMP_CXX)
     set(mir_HAVE_OMP 0)
@@ -63,6 +64,10 @@ include(cmake/compiler_warnings.cmake) # optionally handle compiler specific war
 add_subdirectory(src)
 add_subdirectory(etc)
 add_subdirectory(share)
+
+if(mir_HAVE_PYTHON)
+    add_subdirectory(python)
+endif()
 
 if(HAVE_TESTS)
     add_subdirectory(tests)
