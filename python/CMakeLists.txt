@@ -63,4 +63,13 @@ target_compile_definitions(_mir PRIVATE NPY_NO_DEPRECATED_API=NPY_1_7_API_VERSIO
 
 # _mir.so installs at site-packages root (not inside mir/) — matches setup.py Extension("_mir")
 install(TARGETS _mir DESTINATION ${MIR_PYTHON_INSTALL_DIR} COMPONENT python)
-install(FILES mir/src/mir/__init__.py DESTINATION ${MIR_PYTHON_INSTALL_DIR}/mir COMPONENT python)
+install(FILES
+    mir/src/mir/__init__.py
+    mir/src/mir/griddef.py
+    mir/src/mir/weight_matrix.py
+    DESTINATION ${MIR_PYTHON_INSTALL_DIR}/mir COMPONENT python)
+install(FILES
+    mir/src/mir/tools/__init__.py
+    mir/src/mir/tools/weight_matrix_convert.py
+    mir/src/mir/tools/weight_matrix_create.py
+    DESTINATION ${MIR_PYTHON_INSTALL_DIR}/mir/tools COMPONENT python)

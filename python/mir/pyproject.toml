@@ -32,11 +32,15 @@ classifiers = [
 	"Operating System :: MacOS",
 	"Topic :: Scientific/Engineering",
 ]
-dependencies = ["findlibs", "numpy", "pyyaml"]
+dependencies = ["eckit", "findlibs", "numpy", "pyyaml", "scipy"]
 dynamic = ["version"]
+
+[project.scripts]
+mir-weight-matrix-convert = "mir.tools.weight_matrix_convert:main"
+mir-weight-matrix-create  = "mir.tools.weight_matrix_create:main"
 
 [tool.setuptools.dynamic]
 version = {file = "../../VERSION"}
 
-[tool.setuptools]
-include-package-data = false
+[tool.setuptools.packages.find]
+where = ["src"]
