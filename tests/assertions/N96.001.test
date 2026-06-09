@@ -5,5 +5,5 @@
 # grib_get
 numberOfDataPoints=27648
 gridType=regular_ll
-latitudeOfFirstGridPointInDegrees=89.375
+latitudeOfFirstGridPointInDegrees=-89.375
 longitudeOfFirstGridPointInDegrees=0.937
