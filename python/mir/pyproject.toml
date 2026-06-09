@@ -17,7 +17,7 @@ name = "mir-python"
 description = "Python bindings for mir"
 requires-python = ">=3.9"
 license = "Apache-2.0"
-license-files = ["../../LICENSE"]
+license-files = ["LICENSE"]
 authors = [
 	{ name = "European Centre for Medium-Range Weather Forecasts (ECMWF)", email = "software.support@ecmwf.int" }
 ]
@@ -40,7 +40,7 @@ mir-weight-matrix-convert = "mir.tools.weight_matrix_convert:main"
 mir-weight-matrix-create  = "mir.tools.weight_matrix_create:main"
 
 [tool.setuptools.dynamic]
-version = {file = "../../VERSION"}
+version = {file = "VERSION"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
