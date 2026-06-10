@@ -32,8 +32,9 @@ classifiers = [
 	"Operating System :: MacOS",
 	"Topic :: Scientific/Engineering",
 ]
-dependencies = ["eckit", "findlibs", "numpy", "pyyaml", "scipy"]
-dynamic = ["version"]
+# NOTE don't list `dependencies` in this file, use setup.py instead
+dynamic = ["version", "dependencies"]
+
 
 [project.scripts]
 mir-weight-matrix-convert = "mir.tools.weight_matrix_convert:main"
@@ -44,3 +45,4 @@ version = {file = "VERSION"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
+exclude = ["_mir*"]

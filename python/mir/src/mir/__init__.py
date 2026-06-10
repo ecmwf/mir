@@ -8,16 +8,12 @@
 # does it submit to any jurisdiction.
 
 
-from ctypes import CDLL
-
-# init section -- ensure libmir.so is loaded, utilizing findlibs instead of relying on rpath
 import findlibs
 
-m = findlibs.find("mir")
-CDLL(m)
+findlibs.load("mir")
 
-from _mir import *
 from eckit.geo import Grid
+from mir._mir import *
 
-__version__ = version()
+__lib_version__ = version()
 __git_sha1__ = git_sha1()

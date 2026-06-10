@@ -61,8 +61,7 @@ target_include_directories(_mir PRIVATE ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINA
 target_link_libraries(_mir PRIVATE mir)
 target_compile_definitions(_mir PRIVATE NPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION)
 
-# _mir.so installs at site-packages root (not inside mir/) — matches setup.py Extension("_mir")
-install(TARGETS _mir DESTINATION ${MIR_PYTHON_INSTALL_DIR} COMPONENT python)
+install(TARGETS _mir DESTINATION ${MIR_PYTHON_INSTALL_DIR}/mir COMPONENT python)
 install(FILES
     mir/src/mir/__init__.py
     mir/src/mir/griddef.py
