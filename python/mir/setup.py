@@ -6,9 +6,10 @@ import sys
 
 with open('VERSION', 'r') as fVersion:
     version = fVersion.readlines()[0].strip()
+
 install_requires = [
     f"mirlib=={version}",
-    f"eckit=={version}",
+    "eckit", # NOTE we don't pin here, because mirlib is exactly pinned, which in turn exactly pins eckitlib, which in turn constraints eckit
     "findlibs",
     "numpy>=2.0,<3.0", # NOTE may need tighter range in case of ABI issues. Dont forget to keep in sync with pre-compile.sh (or cmake files if numpy install refactored)
     "scipy",
