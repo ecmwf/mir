@@ -6,18 +6,16 @@
 # granted to it by virtue of its status as an intergovernmental organisation nor
 # does it submit to any jurisdiction.
 
-# NumPy was listed in REQUIRED_PACKAGES; re-invoke to populate Python3_NumPy_INCLUDE_DIRS
-find_package(Python3 REQUIRED COMPONENTS NumPy)
-
-find_program(CYTHON_EXECUTABLE NAMES cython cython3
-    HINTS ${Python3_ROOT_DIR}/bin
-    DOC "Cython transpiler"
-    REQUIRED)
-
-message(STATUS "mir Python bindings: Cython=${CYTHON_EXECUTABLE}")
+# Require Cython; Install destination: prefix-relative site-packages
+execute_process(
+    COMMAND ${Python3_EXECUTABLE} -c "import cython; import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '${CMAKE_INSTALL_PREFIX}', 'base': '${CMAKE_INSTALL_PREFIX}'}))"
+    OUTPUT_VARIABLE _python_sitearch
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    COMMAND_ERROR_IS_FATAL ANY
+)
 
 set(_src ${CMAKE_CURRENT_SOURCE_DIR}/mir/src/_mir)
-
+set(PYTHONEXT_INSTALL_DIR ${_python_sitearch} CACHE PATH "Install directory for Python extensions")
 set(_cython_flags
     --cplus
     --directive language_level=3
@@ -25,19 +23,14 @@ set(_cython_flags
     --directive c_string_encoding=utf8
 )
 
-# Install destination: prefix-relative site-packages
-execute_process(
-    COMMAND ${Python3_EXECUTABLE} -c "import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '${CMAKE_INSTALL_PREFIX}', 'base': '${CMAKE_INSTALL_PREFIX}'}))"
-    OUTPUT_VARIABLE _python_sitearch
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-set(MIR_PYTHON_INSTALL_DIR ${_python_sitearch} CACHE PATH
-    "Install directory for mir Python extensions")
-
+# ---- mir._mir ----
 set(_mir_cpp ${CMAKE_CURRENT_BINARY_DIR}/_mir.cpp)
+
 add_custom_command(
     OUTPUT ${_mir_cpp}
-    COMMAND ${CYTHON_EXECUTABLE} ${_cython_flags}
+    COMMAND
+        ${Python3_EXECUTABLE} -m cython
+        ${_cython_flags}
         -I ${_src}
         ${_src}/_mir.pyx
         -o ${_mir_cpp}
@@ -57,18 +50,18 @@ Python3_add_library(_mir MODULE WITH_SOABI
     ${_src}/mir/output/PyGribOutput.cc
 )
 
-target_include_directories(_mir PRIVATE ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src ${_src} ${Python3_NumPy_INCLUDE_DIRS})
-target_link_libraries(_mir PRIVATE mir)
+target_include_directories(_mir PRIVATE ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src ${_src})
+target_link_libraries(_mir PRIVATE mir Python3::NumPy)
 target_compile_definitions(_mir PRIVATE NPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION)
 
-install(TARGETS _mir DESTINATION ${MIR_PYTHON_INSTALL_DIR}/mir COMPONENT python)
-install(FILES
-    mir/src/mir/__init__.py
-    mir/src/mir/griddef.py
-    mir/src/mir/weight_matrix.py
-    DESTINATION ${MIR_PYTHON_INSTALL_DIR}/mir COMPONENT python)
-install(FILES
-    mir/src/mir/tools/__init__.py
-    mir/src/mir/tools/weight_matrix_convert.py
-    mir/src/mir/tools/weight_matrix_create.py
-    DESTINATION ${MIR_PYTHON_INSTALL_DIR}/mir/tools COMPONENT python)
+install(
+    TARGETS _mir
+    DESTINATION ${PYTHONEXT_INSTALL_DIR}/mir
+    COMPONENT python
+)
+install(
+    DIRECTORY mir/src/mir/
+    DESTINATION ${PYTHONEXT_INSTALL_DIR}/mir
+    COMPONENT python
+    FILES_MATCHING PATTERN "*.py"
+)
