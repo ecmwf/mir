@@ -71,6 +71,21 @@ def git_sha1() -> str:
     return mir.LibMir.instance().gitsha1(40)
 
 
+def grid_box_areas(grid):
+    cdef string gridspec
+    cdef vector[double] areas
+    cdef Py_ssize_t size
+    import numpy as np
+
+    if not hasattr(grid, "spec_str"):
+        raise TypeError("grid_box_areas: expected an object with spec_str")
+
+    gridspec = str(grid.spec_str).encode()
+    areas = mir.grid_box_areas(gridspec)
+    size = areas.size()
+    return np.array(<cnp.float64_t[:size]>areas.data(), dtype=np.float64)
+
+
 cdef class MIRInput:
     cdef mir.MIRInput* _input
 

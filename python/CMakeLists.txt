@@ -45,6 +45,7 @@ add_custom_command(
 
 Python3_add_library(_mir MODULE WITH_SOABI
     ${_mir_cpp}
+    ${_src}/mir/appendix.cc
     ${_src}/mir/input/ArrayInput.cc
     ${_src}/mir/input/PyGribInput.cc
     ${_src}/mir/output/PyGribOutput.cc
@@ -54,14 +55,15 @@ target_include_directories(_mir PRIVATE ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINA
 target_link_libraries(_mir PRIVATE mir Python3::NumPy)
 target_compile_definitions(_mir PRIVATE NPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION)
 
-install(
-    TARGETS _mir
-    DESTINATION ${PYTHONEXT_INSTALL_DIR}/mir
-    COMPONENT python
-)
-install(
-    DIRECTORY mir/src/mir/
-    DESTINATION ${PYTHONEXT_INSTALL_DIR}/mir
-    COMPONENT python
-    FILES_MATCHING PATTERN "*.py"
-)
+install(TARGETS _mir          DESTINATION ${PYTHONEXT_INSTALL_DIR}/mir COMPONENT python)
+install(DIRECTORY mir/src/mir/ DESTINATION ${PYTHONEXT_INSTALL_DIR}/mir COMPONENT python FILES_MATCHING PATTERN "*.py")
+
+file(GLOB _tools RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} mir/src/mir/tools/*.py)
+foreach(_tool IN LISTS _tools)
+    get_filename_component(_tool_we ${_tool} NAME_WE)
+    if(_tool_we STREQUAL "__init__")
+        continue()
+    endif()
+    string(REPLACE "_" "-" _tool_we ${_tool_we})
+    install(PROGRAMS ${_tool} DESTINATION bin RENAME mir-${_tool_we} COMPONENT python)
+endforeach()

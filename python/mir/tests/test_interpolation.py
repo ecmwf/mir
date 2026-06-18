@@ -73,13 +73,12 @@ def test_interpolation(input_grid, output_grid, output_spec, output_shape):
     assert output.values().size == output.size == len(result)
 
 
-
 @pytest.mark.parametrize(
     "input_gs, output_gs",
     [
         (dict(grid="O96"), dict(type="arakawa_c_um", n=96)),
         (dict(type="arakawa_c_um", n=96), dict(grid="O96")),
-    ]
+    ],
 )
 def test_interpolation_n96_o96_array(input_gs, output_gs):
     import numpy as np
@@ -102,45 +101,41 @@ def test_interpolation_n96_o96_array(input_gs, output_gs):
 
 
 @pytest.mark.parametrize(
-    "input_gs, output_gs, input_filename",
+    "input_filename, input_gs, output_gs",
     [
         ("o96.grib2", dict(grid="O96"), dict(type="arakawa_c_um", n=96)),
         ("n96.grib2", dict(type="arakawa_c_um", n=96), dict(grid="O96")),
-    ]
+    ],
 )
 def test_interpolation_n96_o96_grib(input_filename, input_gs, output_gs, monkeypatch):
-    import io
-
     monkeypatch.setenv("ECCODES_ECKIT_GEO", "1")
-    eccodes = pytest.importorskip("eccodes")
 
-    path = Path(TEST_DIR / input_filename)
+    path = TEST_DIR / input_filename
     assert path.is_file() and path.exists()
 
-    def gridspec_from_grib(h):
-        try:
-            from yaml import safe_load
-            return safe_load(eccodes.codes_get(h, "gridSpec"))
-        finally:
-            eccodes.codes_release(h)
+    source = mir.GribFileInput(str(path))
+    input_output = mir.ArrayOutput()
+    mir.Job().execute(source, input_output)
 
-    with open(path, "rb") as f:
-        input_grid_spec = gridspec_from_grib(eccodes.codes_grib_new_from_file(f))
-
-    assert input_grid_spec == mir.Grid(input_gs).spec
+    assert input_output.spec == mir.Grid(input_gs).spec
 
     input = mir.GribFileInput(str(path))
     job = mir.Job()
     job.set("grid", output_gs)
 
-    output = io.BytesIO()
+    output = mir.ArrayOutput()
     job.execute(input, output)
 
-    message = output.getvalue()
-    assert message
+    assert output.spec == mir.Grid(output_gs).spec
 
-    output_grid_spec = gridspec_from_grib(eccodes.codes_new_from_message(message))
-    assert output_grid_spec == mir.Grid(output_gs).spec
+
+GRIDS = [
+    "1/1",
+    dict(grid=[2, 2]),
+    "H4n",
+    "ORCA2_T",
+    dict(latitudes=[1, 2, 3], longitudes=[4, 5, 6]),
+]
 
 
 if __name__ == "__main__":

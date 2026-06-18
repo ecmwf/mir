@@ -99,9 +99,7 @@ def test_simple_specs(interpolation, spec):
     assert interpolation.spec == spec
 
 
-@pytest.mark.parametrize(
-    "type", ["", "linear", "nearest-neighbour", "grid-box-average"]
-)
+@pytest.mark.parametrize("type", ["", "linear", "nearest-neighbour", "grid-box-average"])
 def test_spec_as_str(type):
     interpolation = mir.Interpolation(type)
     assert not type or interpolation.type == type

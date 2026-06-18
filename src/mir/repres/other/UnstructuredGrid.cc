@@ -680,6 +680,8 @@ bool UnstructuredGrid::includesSouthPole() const {
 static const RepresentationBuilder<UnstructuredGrid> triangular_grid("triangular_grid");
 static const RepresentationBuilder<UnstructuredGrid> unstructured_grid("unstructured_grid");
 
+static const RepresentationBuilder<UnstructuredGrid> unstructured_ll("unstructured_ll");
+
 
 }  // namespace other
 }  // namespace mir::repres

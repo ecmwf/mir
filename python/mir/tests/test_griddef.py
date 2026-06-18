@@ -36,6 +36,7 @@ def test_griddef_from_latlon_creates_file(tmp_path):
     path = griddef_from_latlon([0.0, 1.0], [10.0, 20.0], dir=tmp_path)
     assert path.endswith(".griddef")
     from pathlib import Path
+
     assert Path(path).exists()
 
 
