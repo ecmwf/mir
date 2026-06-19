@@ -13,6 +13,6 @@
 NAME="mir"
 _HERE="$(dirname -- "$(readlink -f -- "${BASH_SOURCE[0]}")")"
 PYTHON_INSTALL_DIR=$(cd -- "$_HERE/../mir/src" && pwd) # dont use readlink -m here, not macos portable
-CMAKE_PARAMS="-Deckit_ROOT=/tmp/mir/prereqs/eckitlib -Deccodes_ROOT=/tmp/mir/prereqs/eccodeslib -Datlas_ROOT=/tmp/mir/prereqs/atlaslib-ecmwf -DENABLE_ECKIT_GEO=1 -DENABLE_PYTHON=1 -DMIR_PYTHON_INSTALL_DIR=$PYTHON_INSTALL_DIR -DPython3_FIND_VIRTUALENV=ONLY"
+CMAKE_PARAMS="-Deckit_ROOT=/tmp/mir/prereqs/eckitlib -Deccodes_ROOT=/tmp/mir/prereqs/eccodeslib -Datlas_ROOT=/tmp/mir/prereqs/atlaslib-ecmwf -DENABLE_ECKIT_GEO=1 -DENABLE_PYTHON=1 -DPYTHONEXT_INSTALL_DIR=$PYTHON_INSTALL_DIR -DPython3_FIND_VIRTUALENV=ONLY"
 PYPROJECT_DIR="python/mirlib"
 DEPENDENCIES='["eccodeslib", "eckitlib", "atlaslib-ecmwf"]'
