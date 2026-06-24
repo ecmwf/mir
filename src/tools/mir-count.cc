@@ -111,7 +111,7 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
     // setup a regular lat/lon representation and perform count
     std::string grid;
     if (key::grid::Grid::get("grid", grid, param)) {
-        const auto& g = key::grid::Grid::lookup(grid, param);
+        const auto& g = key::grid::Grid::lookup(grid);
         repres::RepresentationHandle rep(g.representation());
 
         tools::Count counter(area);

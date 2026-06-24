@@ -13,6 +13,7 @@
 #pragma once
 
 #include <iosfwd>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -30,7 +31,14 @@ class Grid;
 
 namespace eckit {
 class JSON;
+namespace geo {
+class Grid;
 }
+namespace spec {
+class Custom;
+class Spec;
+}  // namespace spec
+}  // namespace eckit
 
 namespace mir {
 
@@ -65,6 +73,11 @@ namespace mir::repres {
 
 class Representation : public eckit::Counted {
 public:
+    // -- Types
+
+    using CustomSpec = eckit::spec::Custom;
+    using Spec       = eckit::spec::Spec;
+
     // -- Exceptions
     // None
 
@@ -72,23 +85,31 @@ public:
 
     Representation();
 
+    Representation(const Representation&) = delete;
+    Representation(Representation&&)      = delete;
+
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const Representation&) = delete;
+    void operator=(Representation&&)      = delete;
 
     // -- Methods
+
+    void fillJob(api::MIRJob&) const;
+
+    virtual const eckit::spec::Spec& spec() const;
 
     virtual const std::string& uniqueName() const;
     virtual bool sameAs(const Representation&) const;
 
     virtual Iterator* iterator() const;
-
     virtual void validate(const MIRValuesVector&) const;
 
     virtual void fillGrib(grib_info&) const;
-    virtual void fillJob(api::MIRJob&) const;
+    virtual void fillSpec(CustomSpec&) const;
     virtual void fillMeshGen(util::MeshGeneratorParameters&) const;
 
     // Return a cropped version
@@ -111,6 +132,7 @@ public:
 
     // Domain operations
     virtual util::Domain domain() const;
+    virtual const std::string& order() const;
     virtual const util::BoundingBox& boundingBox() const;
     virtual bool isGlobal() const;
     virtual bool isPeriodicWestEast() const;
@@ -121,7 +143,7 @@ public:
 
     virtual void comparison(std::string&) const;
 
-    virtual void reorder(long scanningMode, MIRValuesVector&) const;
+    virtual void reorder(MIRValuesVector&) const;
 
     virtual std::vector<util::GridBox> gridBoxes() const;
 
@@ -162,7 +184,8 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    mutable std::unique_ptr<const eckit::geo::Grid> grid_;
 
     // -- Methods
     // None

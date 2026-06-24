@@ -62,7 +62,7 @@ const char* ShToTypedGrid<Invtrans>::name() const {
 
 template <class Invtrans>
 const repres::Representation* ShToTypedGrid<Invtrans>::outputRepresentation() const {
-    const auto& ng = key::grid::Grid::lookup(grid_, parametrisation());
+    const auto& ng = key::grid::Grid::lookup(grid_);
     return ng.representation();
 }
 

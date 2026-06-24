@@ -15,6 +15,7 @@
 #include <ostream>
 
 #include "eckit/log/JSON.h"
+#include "eckit/spec/Custom.h"
 
 #include "mir/api/mir_config.h"
 #include "mir/iterator/detail/RegularIterator.h"
@@ -93,8 +94,8 @@ void RegularLL::fillGrib(grib_info& info) const {
     info.grid.grid_type = CODES_UTIL_GRID_SPEC_REGULAR_LL;
 }
 
-void RegularLL::fillJob(api::MIRJob& job) const {
-    LatLon::fillJob(job);
+void RegularLL::fillSpec(CustomSpec& spec) const {
+    LatLon::fillSpec(spec);
 }
 
 void RegularLL::makeName(std::ostream& out) const {

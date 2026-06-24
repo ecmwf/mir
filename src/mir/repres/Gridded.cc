@@ -33,6 +33,16 @@ Gridded::~Gridded() = default;
 Gridded::Gridded() = default;
 
 
+void Gridded::fillSpec(CustomSpec& spec) const {
+    bbox_.fillSpec(spec);
+}
+
+
+void Gridded::reorder(MIRValuesVector& /*unused*/) const {
+    // assume iterators do the right thing
+}
+
+
 util::Domain Gridded::domain() const {
     const Latitude& n  = includesNorthPole() ? Latitude::NORTH_POLE : bbox_.north();
     const Latitude& s  = includesSouthPole() ? Latitude::SOUTH_POLE : bbox_.south();

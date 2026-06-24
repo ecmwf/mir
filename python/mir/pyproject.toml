@@ -9,19 +9,19 @@
 
 
 [build-system]
-requires = ["setuptools>=65", "Cython>=3.0", "wheel", "numpy"]
+requires = ["setuptools>=65", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "mir-python"
-description = "Don't use this"
-requires-python=">=3.9"
+description = "Python bindings for mir"
+requires-python = ">=3.9"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
 authors = [
 	{ name = "European Centre for Medium-Range Weather Forecasts (ECMWF)", email = "software.support@ecmwf.int" }
 ]
-classifiers=[
+classifiers = [
 	"Development Status :: 3 - Alpha",
 	"Intended Audience :: Developers",
 	"Programming Language :: Python :: 3.10",
@@ -32,15 +32,17 @@ classifiers=[
 	"Operating System :: MacOS",
 	"Topic :: Scientific/Engineering",
 ]
-# dependencies = [] # NOTE don't put anything here, use setup.py instead
+# NOTE don't list `dependencies` in this file, use setup.py instead
 dynamic = ["version", "dependencies"]
 
 
+[project.scripts]
+mir-weight-matrix-convert = "mir.tools.weight_matrix_convert:main"
+mir-weight-matrix-create  = "mir.tools.weight_matrix_create:main"
 
-[tool.setuptools]
-# NOTE perhaps add a fine-grained exclude so that we eg keep headers only
-# https://setuptools.pypa.io/en/latest/userguide/datafiles.html#exclude-package-data
-# however, beware of the interaction with data_files -- with `true` it crashes on
-# absolute paths etc. Fine-graining such as `tool.setuptools.package-data` may be also
-# needed
-include-package-data = false
+[tool.setuptools.dynamic]
+version = {file = "VERSION"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["_mir*"]

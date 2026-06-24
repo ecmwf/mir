@@ -273,53 +273,92 @@ void TSettings<std::vector<double>>::print(std::ostream& out) const {
 template <>
 bool TSettings<std::vector<long>>::matchAll(const std::string& name, const MIRParametrisation& other) const {
     // if all of "this" values match "other" values
-    std::vector<long> values;
-    return other.get(name, values) && std::equal(value_.begin(), value_.end(), values.begin());
+    try {
+        if (std::vector<long> values; other.get(name, values)) {
+            return std::equal(value_.begin(), value_.end(), values.begin());
+        }
+    }
+    catch (...) {
+    }
+
+    return false;
 }
 
 
 template <>
 bool TSettings<std::vector<long>>::matchAny(const std::string& name, const MIRParametrisation& other) const {
     // if any of "this" values matches "other" values
-    long value;
-    return other.get(name, value) && std::any_of(value_.begin(), value_.end(), [&value](long v) { return value == v; });
+    try {
+        if (long value; other.get(name, value)) {
+            return std::any_of(value_.begin(), value_.end(), [&value](long v) { return value == v; });
+        }
+    }
+    catch (...) {
+    }
+
+    return false;
 }
 
 
 template <>
 bool TSettings<std::vector<double>>::matchAll(const std::string& name, const MIRParametrisation& other) const {
     // if all of "this" values match "other" values
-    std::vector<double> values;
-    return other.get(name, values) && std::equal(value_.begin(), value_.end(), values.begin(), [](double a, double b) {
-               return eckit::types::is_approximately_equal(a, b);
-           });
+    try {
+        if (std::vector<double> values; other.get(name, values)) {
+            return std::equal(value_.begin(), value_.end(), values.begin(),
+                              [](double a, double b) { return eckit::types::is_approximately_equal(a, b); });
+        }
+    }
+    catch (...) {
+    }
+
+    return false;
 }
 
 
 template <>
 bool TSettings<std::vector<double>>::matchAny(const std::string& name, const MIRParametrisation& other) const {
     // if any of "this" values matches "other" values
-    double value;
-    return other.get(name, value) && std::any_of(value_.begin(), value_.end(), [value](double v) {
-               return eckit::types::is_approximately_equal(v, value);
-           });
+    try {
+        if (double value; other.get(name, value)) {
+            return std::any_of(value_.begin(), value_.end(),
+                               [value](double v) { return eckit::types::is_approximately_equal(v, value); });
+        }
+    }
+    catch (...) {
+    }
+
+    return false;
 }
 
 
 template <>
 bool TSettings<std::vector<std::string>>::matchAll(const std::string& name, const MIRParametrisation& other) const {
     // if all of "this" values match "other" values
-    std::vector<std::string> values;
-    return other.get(name, values) && std::equal(value_.begin(), value_.end(), values.begin());
+    try {
+        if (std::vector<std::string> values; other.get(name, values)) {
+            return std::equal(value_.begin(), value_.end(), values.begin());
+        }
+    }
+    catch (...) {
+    }
+
+    return false;
 }
 
 
 template <>
 bool TSettings<std::vector<std::string>>::matchAny(const std::string& name, const MIRParametrisation& other) const {
     // if any of "this" values matches "other" values
-    std::string value;
-    return other.get(name, value) &&
-           std::any_of(value_.begin(), value_.end(), [&value](const std::string v) { return value == v; });
+    try {
+        if (std::string value; other.get(name, value)) {
+            return std::any_of(value_.begin(), value_.end(), [&value](const std::string& v) { return value == v; });
+        }
+    }
+    catch (...) {
+    }
+
+    return false;
 }
 
 

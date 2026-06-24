@@ -9,7 +9,6 @@
 
 
 cimport eckit_defs as eckit
-cimport eckit_geo_defs as eckit_geo
 cimport mir_defs as mir
 cimport numpy as cnp
 from cython.operator cimport dereference
@@ -17,7 +16,6 @@ from libc.stdlib cimport free
 from libc.stdlib cimport malloc
 from libc.string cimport strdup
 from libcpp.string cimport string
-from libcpp.utility cimport pair
 from libcpp.vector cimport vector
 
 # init section -- ensure libmir.so is loaded
@@ -71,6 +69,21 @@ def version() -> str:
 
 def git_sha1() -> str:
     return mir.LibMir.instance().gitsha1(40)
+
+
+def grid_box_areas(grid):
+    cdef string gridspec
+    cdef vector[double] areas
+    cdef Py_ssize_t size
+    import numpy as np
+
+    if not hasattr(grid, "spec_str"):
+        raise TypeError("grid_box_areas: expected an object with spec_str")
+
+    gridspec = str(grid.spec_str).encode()
+    areas = mir.grid_box_areas(gridspec)
+    size = areas.size()
+    return np.array(<cnp.float64_t[:size]>areas.data(), dtype=np.float64)
 
 
 cdef class MIRInput:
@@ -234,7 +247,19 @@ cdef class Job:
         assert isinstance(key, str)
         key_str = key.replace("_", "-")
 
-        if isinstance(value, dict):
+        if (
+            isinstance(value, dict)
+            and key_str == "grid"
+            and set(value.keys()) == {"grid"}
+        ):
+            # flatten a nested grid key
+            self.set(key, value["grid"])
+        elif isinstance(value, dict) and key_str in ("grid", "interpolation"):
+            # spec-like values encoded as YAML strings
+            from yaml import dump
+            value_str = dump(value, default_flow_style=True).strip().encode()
+            self.j.set(key_str, value_str)
+        elif isinstance(value, dict):
             for k, v in value.items():
                 assert isinstance(k, str)
                 self.set(key if k == "type" else k, v)
@@ -291,69 +316,6 @@ cdef class Job:
         return self.json
 
     __repr__ = __str__
-
-
-cdef class Grid:
-    cdef const eckit_geo.Grid* _grid
-
-    def __cinit__(self, spec = None, **kwargs):
-        assert bool(spec) != bool(kwargs)
-
-        if kwargs or isinstance(spec, dict):
-            from yaml import dump
-            spec = dump(kwargs if kwargs else spec, default_flow_style=True).strip()
-
-        try:
-            assert isinstance(spec, str)
-            self._grid = eckit_geo.GridFactory.make_from_string(spec)
-
-        except RuntimeError as e:
-            # opportunity to do something interesting
-            raise
-
-    def __eq__(self, other) -> bool:
-        if not isinstance(other, Grid):
-            return NotImplemented
-        return self.spec_str == other.spec_str
-
-    def to_latlons(self):
-        cdef pair[vector[double], vector[double]] latlons = self._grid.to_latlons()
-        return list(latlons.first), list(latlons.second)
-
-    def bounding_box(self) -> tuple:
-        cdef const eckit_geo.BoundingBox* bbox = &self._grid.boundingBox()
-        cdef double north = bbox.north()
-        cdef double west = bbox.west()
-        cdef double south = bbox.south()
-        cdef double east = bbox.east()
-        return north, west, south, east
-
-    @property
-    def spec_str(self) -> str:
-        return self._grid.spec_str()
-
-    @property
-    def spec(self) -> dict:
-        from yaml import safe_load
-        return safe_load(self.spec_str)
-
-    @property
-    def type(self) -> str:
-        return self._grid.type()
-
-    @property
-    def shape(self) -> tuple:
-        cdef vector[size_t] shape_vec = self._grid.shape()
-        return tuple(shape_vec)
-
-    def size(self) -> int:
-        return self._grid.size()
-
-    def __len__(self) -> int:
-        return self.size()
-
-    def __dealloc__(self):
-        del self._grid
 
 
 cdef class Interpolation:

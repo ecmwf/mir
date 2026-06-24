@@ -51,6 +51,16 @@ def test_value_dict():
     assert k.json == '{"ab":"cd","ef":"gh"}'
 
 
+def test_value_dict_set_grid_and_interpolation_yaml():
+    j = Job()
+    j.set("grid", dict(grid="H16", order="nested"))
+    assert j.json == '{"grid":"{grid: H16, order: nested}"}'
+
+    j = Job()
+    j.set("interpolation", dict(type="nearest-neighbour", nclosest=5))
+    assert j.json == '{"interpolation":"{nclosest: 5, type: nearest-neighbour}"}'
+
+
 def test_value_str():
     j = Job(key="")
     assert j.json == Job(key="").json

@@ -14,6 +14,8 @@
 
 #include <ostream>
 
+#include "eckit/spec/Custom.h"
+
 #include "mir/api/mir_config.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Atlas.h"
@@ -84,9 +86,9 @@ void RotatedLL::fillGrib(grib_info& info) const {
     rotation_.fillGrib(info);
 }
 
-void RotatedLL::fillJob(api::MIRJob& job) const {
-    LatLon::fillJob(job);
-    rotation_.fillJob(job);
+void RotatedLL::fillSpec(CustomSpec& spec) const {
+    LatLon::fillSpec(spec);
+    rotation_.fillSpec(spec);
 }
 
 void RotatedLL::makeName(std::ostream& out) const {

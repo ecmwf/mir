@@ -35,7 +35,7 @@ const Grid* ClassicPattern::make(const std::string& name) const {
 }
 
 
-std::string ClassicPattern::canonical(const std::string& name, const param::MIRParametrisation& /*unused*/) const {
+std::string ClassicPattern::canonical(const std::string& name) const {
     ASSERT(name.size() > 1);
     return "N" + name.substr(1);
 }

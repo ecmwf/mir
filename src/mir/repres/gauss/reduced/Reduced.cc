@@ -22,6 +22,7 @@
 
 #include "eckit/geo/util.h"
 #include "eckit/log/JSON.h"
+#include "eckit/spec/Custom.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
 
@@ -355,17 +356,17 @@ std::vector<util::GridBox> Reduced::gridBoxes() const {
 }
 
 
-void Reduced::fillJob(api::MIRJob& job) const {
-    Gaussian::fillJob(job);
+void Reduced::fillSpec(CustomSpec& spec) const {
+    Gaussian::fillSpec(spec);
 
     const auto& pl = pls();
     if (pl == eckit::geo::util::reduced_octahedral_pl(N_)) {
-        job.set("grid", "O" + std::to_string(N_));
+        spec.set("grid", "O" + std::to_string(N_));
     }
     else {
-        job.set("grid", "N" + std::to_string(N_));
+        spec.set("grid", "N" + std::to_string(N_));
         if (!eckit::geo::util::reduced_classical_pl_known(N_)) {
-            job.set("pl", pl);
+            spec.set("pl", pl);
         }
     }
 }

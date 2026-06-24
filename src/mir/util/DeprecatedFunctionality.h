@@ -21,7 +21,7 @@ namespace mir::util {
 
 
 struct DeprecatedFunctionality {
-    DeprecatedFunctionality(const std::string& msg, Log::Channel& = Log::warning());
+    explicit DeprecatedFunctionality(const std::string& msg, Log::Channel& = Log::warning());
 
 private:
     static void message(const std::string& msg, Log::Channel& = Log::warning());

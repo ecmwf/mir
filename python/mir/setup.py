@@ -1,141 +1,40 @@
-import os
+import platform
 import sys
-import warnings
-from itertools import groupby
-from pathlib import Path
-from typing import Iterable
-from typing import List
-from typing import Tuple
 
-from Cython.Build import cythonize
-from numpy import get_include as numpy_includes
-from setuptools import Extension
 from setuptools import setup
+from wheel.bdist_wheel import bdist_wheel
 
-if source_lib_root := os.getenv("SOURCE_LIB_ROOT", ""):
-    # NOTE this whole branch is probably obsolete -- we dont want to build such wheels anymore
-    print(f"assuming standalone wheel building, with {source_lib_root=}")
+with open("VERSION", "r") as fVersion:
+    version = fVersion.readlines()[0].strip()
 
-    include_dirs = [f"{source_lib_root}/include"]
-    library_dirs = [f"{source_lib_root}/lib64"]
+install_requires = [
+    f"mirlib=={version}",
+    "eckit",  # NOTE we don't pin here, because mirlib is exactly pinned, which in turn exactly pins eckitlib, which in turn constraints eckit
+    "findlibs",
+    "numpy>=2.0,<3.0",  # NOTE may need tighter range in case of ABI issues. Dont forget to keep in sync with pre-compile.sh (or cmake files if numpy install refactored)
+    "scipy",
+    "pyyaml",
+]
 
-    def extract(prefix: str) -> Iterable[Tuple[str, List[str]]]:
-        walk = os.walk(f"{source_lib_root}{prefix}")
-        # need: (relative prefix, list of full paths
-        mapped = (
-            (e[0][len(source_lib_root) :], f"{e[0]}/{f}") for e in walk for f in e[2]
-        )
-        for k, g in groupby(mapped, lambda e: e[0]):
-            yield (k, list(e[1] for e in g))
 
-    # NOTE the `-rpath` to linker must hit the `lib` which the data_files install to
-    extra_link_args = ["-std=c++17", "-Wl,-rpath,$ORIGIN/../.."]
-    data_files = [
-        (
-            "lib",
-            [
-                f"{source_lib_root}lib64/{e}"
-                for e in os.listdir(f"{source_lib_root}lib64")
-                if ".so" in e
-            ],
-        ),
-    ]
-    # etc & share: configs of eckit, mir, eccodes
-    # sadly it seems one cant list+generator in python, so we have to extend
-    data_files.extend(extract("etc/eckit"))
-    data_files.extend(extract("etc/eccodes"))
-    data_files.extend(extract("etc/atlas"))
-    data_files.extend(extract("etc/mir"))
-    data_files.extend(
-        extract("share/eccodes")
-    )  # possibly redundant since we compile eccodes with memfs
-    data_files.extend(extract("share/eckit"))
-    data_files.extend(extract("etc/atlas"))
-    data_files.extend(extract("share/mir"))
-    kwargs_set = {
-        "data_files": data_files,
-    }
-    kwargs_ext = {
-        "extra_link_args": extra_link_args,
-    }
-else:
-    home = os.getenv("HOME")
-    source = os.getenv("MIR_BUNDLE_SOURCE_DIR", str(Path(home, "git", "mir-bundle")))
-    build = os.getenv("MIR_BUNDLE_BUILD_DIR", str(Path(home, "build", "mir-bundle")))
-    library_dirs = os.getenv("MIR_LIB_DIR", str(Path(build, "lib"))).split(":")
+# NOTE see ci-utils/wheelmaker/buildscripts/setup_utils, we need to get the right abi compat tag
+class bdist_wheel_ext(bdist_wheel):
+    def get_tag(self):
+        python, abi, plat = bdist_wheel.get_tag(self)  # noqa: F841
+        return python, abi, f"manylinux_2_28_{platform.machine()}"
 
-    include_dirs_default = ":".join(
-        str(Path(base, *path))
-        for base in (source, build)
-        for path in (
-            ("mir", "src"),
-            ("eccodes", "src"),
-            ("eccodes", "src", "eccodes"),
-            ("eckit", "src"),
-        )
-    )
-    include_dirs = os.getenv("MIR_INCLUDE_DIRS", include_dirs_default).split(":")
 
-    extra_link_args = []
-    kwargs_set = {}
-    kwargs_ext = {
-        "runtime_library_dirs": library_dirs,
-        "extra_link_args": ["-std=c++17"],
-    }
-    print(
-        f"assuming .so module building, with library_dirs: {' '.join(library_dirs)} and include_dirs: {' '.join(include_dirs)}"
-    )
-
-try:
-    from setup_utils import ext_kwargs as wheel_ext_kwargs
-
-    kwargs_set.update(wheel_ext_kwargs[sys.platform])
-except ImportError:
-    warnings.warn("failed to import setup_utils, won't mark the wheel as manylinux")
-
-version: str
-try:
-    with open("../../VERSION", "r") as f:
-        version = f.readlines()[0].strip()
-except Exception:
-    warnings.warn("failed to read VERSION, falling back to 0.0.0")
-    version = "0.0.0"
-
-install_requires = ["findlibs", "numpy", "pyyaml"]
-try:
-    import mirlib
-
-    install_requires.append(f"mirlib=={mirlib.__version__}")
-except ImportError:
-    warnings.warn("failed to import prereq libs, not listing as a dependency")
+ext_kwargs = {
+    "darwin": {},
+    "linux": {"cmdclass": {"bdist_wheel": bdist_wheel_ext}},
+}
 
 setup(
-    name="mir-python",
     version=version,
+    package_data={
+        "": ["*.so"],
+    },
+    has_ext_modules=lambda: True,
     install_requires=install_requires,
-    ext_modules=cythonize(
-        Extension(
-            "_mir",
-            [
-                "src/_mir/_mir.pyx",
-                "src/_mir/mir/input/ArrayInput.cc",
-                "src/_mir/mir/input/PyGribInput.cc",
-                "src/_mir/mir/output/ArrayOutput.cc",
-                "src/_mir/mir/output/PyGribOutput.cc",
-            ],
-            language="c++",
-            libraries=["mir"],
-            library_dirs=library_dirs,
-            include_dirs=include_dirs + [numpy_includes()] + ["src/_mir"],
-            extra_compile_args=["-std=c++17"],
-            define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")],
-            **kwargs_ext,
-        ),
-        compiler_directives={
-            "language_level": 3,
-            "c_string_type": "unicode",  # accept Python str
-            "c_string_encoding": "utf8",
-        },
-    ),
-    **kwargs_set,
+    **ext_kwargs[sys.platform],
 )

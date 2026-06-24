@@ -29,4 +29,9 @@ void Mercator::fillGrib(grib_info& /*info*/) const {
 }
 
 
+void Mercator::fillSpec(CustomSpec&) const {
+    NOTIMP;
+}
+
+
 }  // namespace mir::repres::regular

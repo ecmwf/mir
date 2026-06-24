@@ -51,7 +51,7 @@ public:
     // -- Methods
 
     static void list(std::ostream&);
-    static std::string match(const std::string& name, const param::MIRParametrisation&);
+    static std::string match(const std::string& name);
     static const Grid* lookup(const std::string& name);
 
     // -- Overridden methods
@@ -74,9 +74,9 @@ protected:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const                                                        = 0;
-    virtual const Grid* make(const std::string&) const                                             = 0;
-    virtual std::string canonical(const std::string& name, const param::MIRParametrisation&) const = 0;
+    virtual void print(std::ostream&) const                      = 0;
+    virtual const Grid* make(const std::string&) const           = 0;
+    virtual std::string canonical(const std::string& name) const = 0;
 
     // -- Overridden methods
     // None

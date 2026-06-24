@@ -31,7 +31,7 @@ static const ArtificialInputBuilder<GridSpecInput> __artificial("gridspec");
 GridSpecInput::GridSpecInput() : size_(0) {}
 
 
-GridSpecInput::GridSpecInput(const std::string& gridspec, bool gridded) {
+GridSpecInput::GridSpecInput(const std::string& gridspec, bool gridded) : size_(0) {
     util::ValueMap map;
     map["gridspec"]                       = gridspec;
     map[gridded ? "gridded" : "spectral"] = true;
@@ -65,8 +65,8 @@ data::MIRField GridSpecInput::field() const {
 
     data::MIRField field(repres::RepresentationFactory::build(parametrisation()));
 
-    MIRValuesVector values(size_, 0.);
     for (size_t which = 0; which < dimensions(); ++which) {
+        MIRValuesVector values(size_, 0.);
         field.update(values, which);
     }
 

@@ -11,12 +11,14 @@ set(TESTS
     area
     atlas
     bounding_box
-    earthkit-regrid
+    earthkit-geo
     formula
     gaussian_grid
+    healpix
     grib_basic_angle
     grib_encoding
     grib_input
+    grib_scanning_mode
     grid_box_method
     grids
     gridspec
@@ -74,11 +76,12 @@ if(ENABLE_BUILD_TOOLS)
 
     foreach(_t
             gridName=F1280.area=55_65_0_145.grib1
-            gridName=F1280.area=55_65_0_145.grib2)
+            gridName=F1280.area=55_65_0_145.grib2
+            gridName=N320.area=5_75_-50_180.grib2)
         ecbuild_add_test(
             TARGET            mir_tests_unit_grib_decode_${_t}
             COMMAND           mir-get-data
-            ARGS              ${_t}
+            ARGS              ${_t} --diff-ecc --tolerance-lat=1e-3 --tolerance-lon=1e-3
             ENVIRONMENT       ${_testEnvironment}
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
     endforeach()

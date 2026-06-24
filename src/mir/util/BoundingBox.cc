@@ -16,6 +16,7 @@
 #include <ostream>
 
 #include "eckit/log/JSON.h"
+#include "eckit/spec/Custom.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -99,6 +100,11 @@ void BoundingBox::hash(eckit::MD5& md5) const {
 
 void BoundingBox::fillJob(api::MIRJob& job) const {
     job.set("area", north_.value(), west_.value(), south_.value(), east_.value());
+}
+
+
+void BoundingBox::fillSpec(eckit::spec::Custom& spec) const {
+    spec.set("area", std::vector<double>{north_.value(), west_.value(), south_.value(), east_.value()});
 }
 
 

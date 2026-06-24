@@ -42,7 +42,7 @@ void Gridded2RotatedNamedGrid::print(std::ostream& out) const {
 
 
 const repres::Representation* Gridded2RotatedNamedGrid::outputRepresentation() const {
-    const auto& ng = key::grid::Grid::lookup(grid_, parametrisation());
+    const auto& ng = key::grid::Grid::lookup(grid_);
     return ng.representation(rotation());
 }
 

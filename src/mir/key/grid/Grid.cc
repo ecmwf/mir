@@ -21,9 +21,11 @@
 #include "mir/config/LibMir.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/grid/NamedFromFile.h"
+#include "mir/key/intgrid/Source.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
+#include "mir/util/Regex.h"
 #include "mir/util/ValueMap.h"
 
 
@@ -37,6 +39,8 @@ static void init() {
     local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, Grid*>();
 }
+
+static const util::Regex SOURCE("^[sS][oO][uU][rR][cC][eE]$");
 
 
 static void read_configuration_files() {
@@ -146,24 +150,30 @@ bool Grid::get(const std::string& key, std::string& value, const param::MIRParam
     read_configuration_files();
 
     std::string grid;
-    if (!param.userParametrisation().get(key, grid)) {
+    if (!param.get(key, grid)) {
         return false;
     }
 
-    // Look for specific key matches
+    // Check for specific key matches
     auto find = m->find(grid);
     if (find != m->end()) {
         value = find->first;
         return true;
     }
 
-    // Look for pattern matchings
-    value = GridPattern::match(grid, param);
+    // Check for grid names from spectral truncation ("source" is a special case)
+    if (SOURCE.match(grid)) {
+        value = param.fieldParametrisation().has("truncation") ? intgrid::Source(param, 0 /*unused*/).gridname() : "";
+        return !value.empty();
+    }
+
+    // Check for pattern matchings
+    value = GridPattern::match(grid);
     return !value.empty();
 }
 
 
-const Grid& Grid::lookup(const std::string& key, const param::MIRParametrisation& param) {
+const Grid& Grid::lookup(const std::string& key) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
@@ -177,9 +187,16 @@ const Grid& Grid::lookup(const std::string& key, const param::MIRParametrisation
         return *(j->second);
     }
 
+    // Look for grid names from spectral truncation ("source" is a special case)
+    if (SOURCE.match(key)) {
+        NOTIMP;
+        // value = param.fieldParametrisation().has("truncation") ? intgrid::Source(param, 0 /*unused*/).gridname() :
+        // ""; return !value.empty();
+    }
+
     // Look for pattern matchings
     // This will automatically add the new Grid to the map
-    auto match = GridPattern::match(key, param);
+    auto match = GridPattern::match(key);
     if (!match.empty()) {
         const auto* gp = GridPattern::lookup(match);
         ASSERT(gp != nullptr);
