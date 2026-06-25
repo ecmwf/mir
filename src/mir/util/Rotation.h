@@ -21,6 +21,10 @@
 
 struct grib_info;
 
+namespace eckit::spec {
+class Custom;
+}  // namespace eckit::spec
+
 namespace mir {
 namespace api {
 class MIRJob;
@@ -81,6 +85,7 @@ public:
 
     void fillGrib(grib_info&) const;
     void fillJob(api::MIRJob&) const;
+    void fillSpec(eckit::spec::Custom&) const;
     void makeName(std::ostream&) const;
 
 private:

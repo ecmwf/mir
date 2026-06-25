@@ -113,6 +113,7 @@ private:
     std::unique_ptr<const solver::Solver> solver_;
     std::string reorderRows_;
     std::string reorderCols_;
+    std::string interpolationMatrix_;
 
     bool matrixAssemble_;
 

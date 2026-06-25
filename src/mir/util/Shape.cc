@@ -14,6 +14,8 @@
 
 #include <sstream>
 
+#include "eckit/spec/Custom.h"
+
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
@@ -139,6 +141,37 @@ void Shape::fillJob(api::MIRJob& job, const Projection::Spec& spec) const {
     ASSERT(job.get("grid", grid) && !grid.empty());
 
     job.set("grid", grid + shape.str());
+}
+
+
+void Shape::fillSpec(eckit::spec::Custom& spec, const Projection::Spec& projSpec) const {
+    if (provided) {
+        spec.set("shapeOfTheEarth", code);
+        switch (code) {
+            case 1:
+                spec.set("radius", projSpec.getDouble("radius", a));
+                break;
+            case 3:
+                spec.set("earthMajorAxis", projSpec.getDouble("semi_major_axis", a) / 1000.);
+                spec.set("earthMinorAxis", projSpec.getDouble("semi_minor_axis", b) / 1000.);
+                break;
+            case 7:
+                spec.set("earthMajorAxis", projSpec.getDouble("semi_major_axis", a));
+                spec.set("earthMinorAxis", projSpec.getDouble("semi_minor_axis", b));
+                break;
+            default:
+                break;
+        }
+    }
+    else if (projSpec.has("radius")) {
+        spec.set("shapeOfTheEarth", 1L);
+        spec.set("radius", projSpec.getDouble("radius"));
+    }
+    else if (projSpec.has("semi_major_axis") && projSpec.has("semi_minor_axis")) {
+        spec.set("shapeOfTheEarth", 7L);
+        spec.set("earthMajorAxis", projSpec.getDouble("semi_major_axis"));
+        spec.set("earthMinorAxis", projSpec.getDouble("semi_minor_axis"));
+    }
 }
 
 

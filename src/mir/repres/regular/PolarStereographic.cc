@@ -15,6 +15,8 @@
 #include <cmath>
 #include <sstream>
 
+#include "eckit/spec/Custom.h"
+
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Angles.h"
@@ -87,7 +89,9 @@ void PolarStereographic::fillGrib(grib_info& info) const {
 }
 
 
-void PolarStereographic::fillJob(api::MIRJob& job) const {
+void PolarStereographic::fillSpec(CustomSpec& custom) const {
+    NOTIMP;
+
     Point2 first   = {x().front(), y().front()};
     Point2 firstLL = grid().projection().lonlat(first);
 
@@ -103,10 +107,10 @@ void PolarStereographic::fillJob(api::MIRJob& job) const {
          << "latitudeOfFirstGridPointInDegrees=" << firstLL[LLCOORDS::LAT] << ";"
          << "longitudeOfFirstGridPointInDegrees=" << firstLL[LLCOORDS::LON];
 
-    job.set("grid", grid.str());
+    custom.set("grid", grid.str());
 
     // some extra keys are edition-specific, so parent call is here
-    RegularGrid::fillJob(job);
+    RegularGrid::fillSpec(custom);
 }
 
 

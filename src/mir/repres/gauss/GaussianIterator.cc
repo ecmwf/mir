@@ -43,9 +43,6 @@ GaussianIterator::GaussianIterator(const std::vector<double>& latitudes, std::ve
 }
 
 
-GaussianIterator::~GaussianIterator() = default;
-
-
 size_t GaussianIterator::resetToRow(size_t j) {
     ASSERT(j < latitudes_.size());
     lat_ = latitudes_[j];

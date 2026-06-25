@@ -67,7 +67,7 @@ private:
     atlas::Grid atlasGrid() const override;
 
     void fillGrib(grib_info&) const override;
-    void fillJob(api::MIRJob&) const override;
+    void fillSpec(CustomSpec&) const override;
 
     std::string intersectionOnCrop() const override { return "input-contains-output-check"; }
     const RotatedLL* croppedRepresentation(const util::BoundingBox&) const override;

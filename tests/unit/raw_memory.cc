@@ -15,15 +15,20 @@
 #include <sstream>
 #include <vector>
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/testing/Test.h"
+#include "eckit/types/FloatCompare.h"
 
 #include "mir/api/MIRJob.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/RawInput.h"
 #include "mir/method/WeightMatrix.h"
+#include "mir/output/ArrayOutput.h"
 #include "mir/output/RawOutput.h"
 #include "mir/output/ResizableOutput.h"
+#include "mir/param/GridSpecParametrisation.h"
+#include "mir/param/RuntimeParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Log.h"
@@ -32,7 +37,7 @@
 namespace mir::tests::unit {
 
 
-CASE("RawInput") {
+CASE("Interfacing 1") {
     auto& log = Log::info();
 
 
@@ -153,7 +158,7 @@ CASE("RawInput") {
 }
 
 
-CASE("Example 1") {
+CASE("Interfacing 2") {
     auto& log = Log::info();
 
 
@@ -216,7 +221,7 @@ CASE("Example 1") {
 
         std::ostringstream ss;
         ss << meta2;
-        EXPECT(ss.str() == R"({"area":[1,-1,-1,1],"grid":[2,2]})");
+        EXPECT(ss.str() == R"({"grid":"{\"area\":[1,-1,-1,1],\"grid\":[2,2],\"reference\":[1,1]}"})");
     }
 
 
@@ -241,12 +246,12 @@ CASE("Example 1") {
 
         std::ostringstream ss;
         ss << meta2;
-        EXPECT(ss.str() == R"({"area":[1,-1,-1,1],"grid":[2,2]})");
+        EXPECT(ss.str() == R"({"grid":"{\"area\":[1,-1,-1,1],\"grid\":[2,2],\"reference\":[1,1]}"})");
     }
 }
 
 
-CASE("Example 2") {
+CASE("Interfacing 3") {
     auto& log = Log::info();
 
 
@@ -288,7 +293,7 @@ CASE("Example 2") {
 
         std::ostringstream ss;
         ss << meta2;
-        EXPECT(ss.str() == R"({"area":[1,-1,-1,1],"grid":[2,2]})");
+        EXPECT(ss.str() == R"({"grid":"{\"area\":[1,-1,-1,1],\"grid\":[2,2],\"reference\":[1,1]}"})");
     }
 
 
@@ -313,12 +318,12 @@ CASE("Example 2") {
 
         std::ostringstream ss;
         ss << meta2;
-        EXPECT(ss.str() == R"({"area":[1,-1,-1,1],"grid":[2,2]})");
+        EXPECT(ss.str() == R"({"grid":"{\"area\":[1,-1,-1,1],\"grid\":[2,2],\"reference\":[1,1]}"})");
     }
 }
 
 
-CASE("Example 3") {
+CASE("Interfacing 4") {
     auto& log = Log::info();
 
 
@@ -377,8 +382,141 @@ CASE("Example 3") {
 
         std::ostringstream ss;
         ss << meta2;
-        EXPECT(ss.str() == R"({"area":[1,-1,-1,1],"grid":[2,2],"missing_value":42})");
+        EXPECT(ss.str() ==
+               R"({"grid":"{\"area\":[1,-1,-1,1],\"grid\":[2,2],\"reference\":[1,1]}","missing_value":42})");
     }
+}
+
+
+CASE("Interfacing 5") {
+    const std::string out_grid = "{\"grid\":[1, 1]}";
+    const double missing_value = 42.;
+
+
+    // input metadata & data
+    param::GridSpecParametrisation in_grid("{grid: [2, 2], area: [20, 1, 1, 20]}");
+    param::RuntimeParametrisation meta1(in_grid);
+
+    std::vector<size_t> in_shape{10, 10};
+    std::vector<double> values1(in_shape[0] * in_shape[1], 1.);
+    std::unique_ptr<input::MIRInput> input(new input::RawInput(values1.data(), values1.size(), meta1));
+
+
+    // confirm input grid is as expected
+    std::unique_ptr<const eckit::geo::Grid> grid1(
+        eckit::geo::GridFactory::build(repres::RepresentationHandle(input->field().representation())->spec()));
+
+    EXPECT(grid1->shape() == in_shape);
+    EXPECT(grid1->size() == in_shape[0] * in_shape[1]);
+    EXPECT(grid1->spec_str() == R"({"area":[19,1,1,19],"grid":[2,2],"reference":[1,1]})");
+
+
+    // output metadata (empty) & data (resizable)
+    std::vector<double> values2;
+    param::SimpleParametrisation meta2;
+    std::unique_ptr<output::MIROutput> output(new output::ResizableOutput(values2, meta2));
+
+
+    // job (1)
+    api::MIRJob job;
+    job.set("grid", out_grid);
+
+
+    // process (1)
+    job.execute(*input, *output);
+
+
+    // output (1)
+    const std::string out_spec_str = R"({"area":[19,1,1,19],"grid":[1,1]})";
+    const std::vector<size_t> out_shape{19, 19};
+
+    std::unique_ptr<const eckit::geo::Grid> grid2(eckit::geo::GridFactory::make_from_string([&meta2]() {
+        std::string grid;
+        meta2.get("grid", grid);
+        return grid;
+    }()));
+
+
+    EXPECT(out_spec_str == grid2->spec_str());
+    EXPECT(out_shape == grid2->shape());
+    EXPECT(values2.size() == grid2->size());
+
+    EXPECT_NOT(meta2.has("missing_value"));
+
+
+    // input (2)
+    meta1.set("missing_value", missing_value);
+    values1[3] = missing_value;
+
+
+    // process (2)
+    job.execute(*input, *output);
+
+
+    // output (2)
+    std::unique_ptr<const eckit::geo::Grid> grid3(eckit::geo::GridFactory::make_from_string([&meta2]() {
+        std::string grid;
+        meta2.get("grid", grid);
+        return grid;
+    }()));
+
+    EXPECT(*grid3 == *grid2);
+    EXPECT(meta2.has("missing_value"));
+    EXPECT(std::any_of(values2.begin(), values2.end(),
+                       [&missing_value](double v) { return eckit::types::is_approximately_equal(v, missing_value); }));
+}
+
+
+CASE("Interfacing 6") {
+    const std::string out_grid = "{\"grid\":[1, 1]}";
+    const double missing_value = 42.;
+
+
+    // input metadata & data
+    param::GridSpecParametrisation in_grid("{grid: [2, 2], area: [20, 1, 1, 20]}");
+    param::RuntimeParametrisation meta1(in_grid);
+    meta1.set("missing_value", missing_value);
+
+    std::vector<size_t> in_shape{10, 10};
+    std::vector<double> values1(in_shape[0] * in_shape[1], 1.);
+    values1[3] = missing_value;
+
+    std::unique_ptr<input::MIRInput> input(new input::RawInput(values1.data(), values1.size(), meta1));
+
+
+    // confirm input grid is as expected
+    std::unique_ptr<const eckit::geo::Grid> grid1(
+        eckit::geo::GridFactory::build(repres::RepresentationHandle(input->field().representation())->spec()));
+
+    EXPECT(grid1->shape() == in_shape);
+    EXPECT(grid1->size() == in_shape[0] * in_shape[1]);
+    EXPECT(grid1->spec_str() == R"({"area":[19,1,1,19],"grid":[2,2],"reference":[1,1]})");
+
+
+    // output
+    output::ArrayOutput output;
+
+
+    // job
+    api::MIRJob job;
+    job.set("grid", out_grid);
+
+
+    // process
+    job.execute(*input, output);
+
+
+    // output
+    const std::string out_spec_str = R"({"area":[19,1,1,19],"grid":[1,1]})";
+    const std::vector<size_t> out_shape{19, 19};
+
+    std::unique_ptr<const eckit::geo::Grid> grid2(eckit::geo::GridFactory::make_from_string(output.gridspec()));
+
+
+    EXPECT(out_spec_str == grid2->spec_str());
+    EXPECT(out_shape == grid2->shape());
+    EXPECT(output.values().size() == grid2->size());
+    EXPECT(eckit::types::is_approximately_equal(output.missingValue(), missing_value));
 }
 
 

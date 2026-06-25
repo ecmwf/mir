@@ -15,6 +15,10 @@
 #include <memory>
 #include <sstream>
 
+#include "eckit/geo/Grid.h"
+#include "eckit/spec/Custom.h"
+
+#include "mir/api/MIRJob.h"
 #include "mir/data/MIRField.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/param/MIRParametrisation.h"
@@ -103,9 +107,14 @@ void Representation::fillGrib(grib_info& /*unused*/) const {
 }
 
 
-void Representation::fillJob(api::MIRJob& /*unused*/) const {
+void Representation::fillJob(api::MIRJob& job) const {
+    job.set("grid", spec().str());
+}
+
+
+void Representation::fillSpec(CustomSpec& /*unused*/) const {
     std::ostringstream os;
-    os << "Representation::fillJob(api::MIRJob&) not implemented for " << *this;
+    os << "Representation::fillSpec(CustomSpec&) not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
@@ -136,6 +145,19 @@ const Representation* Representation::truncate(size_t /*unused*/, const MIRValue
     std::ostringstream os;
     os << "Representation::truncate() not implemented for " << *this;
     throw exception::SeriousBug(os.str());
+}
+
+
+const Representation::Spec& Representation::spec() const {
+    if (!grid_) {
+        auto custom = std::make_unique<CustomSpec>();
+        fillSpec(*custom);
+
+        grid_.reset(eckit::geo::GridFactory::build(*custom));
+        ASSERT(grid_);
+    }
+
+    return grid_->spec();
 }
 
 
@@ -181,6 +203,13 @@ atlas::Grid Representation::atlasGrid() const {
 util::Domain Representation::domain() const {
     std::ostringstream os;
     os << "Representation::domain() not implemented for " << *this;
+    throw exception::SeriousBug(os.str());
+}
+
+
+const std::string& Representation::order() const {
+    std::ostringstream os;
+    os << "Representation::order() not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
@@ -253,7 +282,7 @@ std::string Representation::factory() const {
 }
 
 
-void Representation::reorder(long /*unused*/, MIRValuesVector& /*unused*/) const {
+void Representation::reorder(MIRValuesVector& /*unused*/) const {
     std::ostringstream os;
     os << "Representation::reorder() not implemented for " << *this;
     throw exception::SeriousBug(os.str());

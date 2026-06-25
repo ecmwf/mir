@@ -147,9 +147,9 @@ protected:
         }
     }
 
-    void fillJob(api::MIRJob& job) const override {
-        util::ValueMap map(eckit::YAMLParser::decodeString(grid_->spec().str()));
-        map.set(static_cast<param::SimpleParametrisation&>(job));
+    void fillSpec(CustomSpec& spec) const override {
+        const auto& geoSpec = grid_->spec();
+        spec.set("grid", geoSpec.get_string(geoSpec.has("uid") ? "uid" : "grid"));
     }
 
     void print(std::ostream& out) const override { out << grid_->spec().str(); }
@@ -220,9 +220,7 @@ public:
         ASSERT_VALUES_SIZE_EQ_ITERATOR_COUNT("FESOM", values.size(), numberOfPoints());
     }
 
-    static std::string match(const std::string& name, const param::MIRParametrisation& param) {
-        return key::grid::GridPattern::match(name, param);
-    }
+    static std::string match(const std::string& name) { return key::grid::GridPattern::match(name); }
 };
 
 
@@ -253,9 +251,7 @@ public:
         ASSERT_VALUES_SIZE_EQ_ITERATOR_COUNT("ICON", values.size(), numberOfPoints());
     }
 
-    static std::string match(const std::string& name, const param::MIRParametrisation& param) {
-        return key::grid::GridPattern::match(name, param);
-    }
+    static std::string match(const std::string& name) { return key::grid::GridPattern::match(name); }
 };
 
 
@@ -279,9 +275,7 @@ public:
         ASSERT_VALUES_SIZE_EQ_ITERATOR_COUNT("ORCA", values.size(), numberOfPoints());
     }
 
-    static std::string match(const std::string& name, const param::MIRParametrisation& param) {
-        return key::grid::GridPattern::match(name, param);
-    }
+    static std::string match(const std::string& name) { return key::grid::GridPattern::match(name); }
 };
 
 
@@ -314,7 +308,7 @@ private:
 
     const key::grid::Grid* make(const std::string& name) const override { return new NamedFESOM(name); }
 
-    std::string canonical(const std::string& name, const param::MIRParametrisation& param) const override {
+    std::string canonical(const std::string& name) const override {
         ASSERT(name.size() >= 2);
 
         auto can(name);
@@ -363,7 +357,7 @@ private:
 
     const key::grid::Grid* make(const std::string& name) const override { return new NamedICON(name); }
 
-    std::string canonical(const std::string& name, const param::MIRParametrisation& param) const override {
+    std::string canonical(const std::string& name) const override {
         ASSERT(!name.empty());
 
         // icon-ch grids have a -v<number> suffix
@@ -412,7 +406,7 @@ private:
 
     const key::grid::Grid* make(const std::string& name) const override { return new NamedORCA(name); }
 
-    std::string canonical(const std::string& name, const param::MIRParametrisation& param) const override {
+    std::string canonical(const std::string& name) const override {
         ASSERT(!name.empty());
 
         static const std::regex rex(ORCA_PATTERN);
@@ -430,7 +424,6 @@ private:
 
         if (a.empty()) {
             a = "T";  // arbitrary choice (to review)
-            param.get("orca-arrangement", a);
         }
         else if (a.size() == 2) {
             a = static_cast<char>(std::toupper(a.back()));
@@ -486,15 +479,15 @@ Representation* RepresentationBuilder<other::UnstructuredGrid>::make(const param
     }
 
     if (std::string grid; param.get("grid", grid)) {
-        if (!FESOM::match(grid, param).empty()) {
+        if (!FESOM::match(grid).empty()) {
             return new FESOM(param);
         }
 
-        if (!ICON::match(grid, param).empty()) {
+        if (!ICON::match(grid).empty()) {
             return new ICON(param);
         }
 
-        if (!ORCA::match(grid, param).empty()) {
+        if (!ORCA::match(grid).empty()) {
             return new ORCA(param);
         }
     }
@@ -592,9 +585,9 @@ void UnstructuredGrid::fillGrib(grib_info& info) const {
 }
 
 
-void UnstructuredGrid::fillJob(api::MIRJob& job) const {
-    job.set("latitudes", latitudes_);
-    job.set("longitudes", longitudes_);
+void UnstructuredGrid::fillSpec(CustomSpec& spec) const {
+    spec.set("latitudes", latitudes_);
+    spec.set("longitudes", longitudes_);
 }
 
 
@@ -686,6 +679,8 @@ bool UnstructuredGrid::includesSouthPole() const {
 
 static const RepresentationBuilder<UnstructuredGrid> triangular_grid("triangular_grid");
 static const RepresentationBuilder<UnstructuredGrid> unstructured_grid("unstructured_grid");
+
+static const RepresentationBuilder<UnstructuredGrid> unstructured_ll("unstructured_ll");
 
 
 }  // namespace other

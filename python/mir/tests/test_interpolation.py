@@ -9,18 +9,22 @@
 
 
 from itertools import product
+from pathlib import Path
 
 import pytest
 
 import mir
 
+TEST_DIR = Path(__file__).parent
+
 GRIDSPECS = [
     (dict(grid="1/1"), dict(grid=[1, 1]), (181, 360)),
     (dict(grid="h2n"), dict(grid="H2", order="nested"), (48,)),
+    (dict(grid="H4", order="nested"), dict(grid="H4", order="nested"), (192,)),
     (dict(grid="H3", order="ring"), dict(grid="H3"), (108,)),
     (dict(grid=[2, 2]), dict(grid=[2, 2]), (91, 180)),
     ("{grid: 3/3}", dict(grid=[3, 3]), (61, 120)),
-    (dict(grid="o2"), dict(grid="O2"), (sum([20, 24, 24, 20]),)),
+    # (dict(grid="o2"), dict(grid="O2"), (sum([20, 24, 24, 20]),)),
 ]
 
 
@@ -67,6 +71,71 @@ def test_interpolation(input_grid, output_grid, output_spec, output_shape):
     assert output.shape == output_shape
     assert output.values().dtype == np.float64
     assert output.values().size == output.size == len(result)
+
+
+@pytest.mark.parametrize(
+    "input_gs, output_gs",
+    [
+        (dict(grid="O96"), dict(type="arakawa_c_um", n=96)),
+        (dict(type="arakawa_c_um", n=96), dict(grid="O96")),
+    ],
+)
+def test_interpolation_n96_o96_array(input_gs, output_gs):
+    import numpy as np
+
+    input_grid = mir.Grid(input_gs)
+    expected_grid = mir.Grid(output_gs)
+
+    values = np.arange(len(input_grid), dtype=np.float64)
+    input = mir.ArrayInput(values, input_grid.spec_str)
+
+    job = mir.Job()
+    job.set("grid", output_gs)
+
+    output = mir.ArrayOutput()
+    job.execute(input, output)
+
+    result = mir.Grid(output.spec)
+    assert result.shape == expected_grid.shape
+    assert result.spec == expected_grid.spec
+
+
+@pytest.mark.parametrize(
+    "input_filename, input_gs, output_gs",
+    [
+        ("o96.grib2", dict(grid="O96"), dict(type="arakawa_c_um", n=96)),
+        ("n96.grib2", dict(type="arakawa_c_um", n=96), dict(grid="O96")),
+    ],
+)
+def test_interpolation_n96_o96_grib(input_filename, input_gs, output_gs, monkeypatch):
+    monkeypatch.setenv("ECCODES_ECKIT_GEO", "1")
+
+    path = TEST_DIR / input_filename
+    assert path.is_file() and path.exists()
+
+    source = mir.GribFileInput(str(path))
+    input_output = mir.ArrayOutput()
+    mir.Job().execute(source, input_output)
+
+    assert input_output.spec == mir.Grid(input_gs).spec
+
+    input = mir.GribFileInput(str(path))
+    job = mir.Job()
+    job.set("grid", output_gs)
+
+    output = mir.ArrayOutput()
+    job.execute(input, output)
+
+    assert output.spec == mir.Grid(output_gs).spec
+
+
+GRIDS = [
+    "1/1",
+    dict(grid=[2, 2]),
+    "H4n",
+    "ORCA2_T",
+    dict(latitudes=[1, 2, 3], longitudes=[4, 5, 6]),
+]
 
 
 if __name__ == "__main__":

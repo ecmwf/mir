@@ -26,10 +26,7 @@ namespace mir::action::transform {
 
 template <class Invtrans>
 ShToNamedGrid<Invtrans>::ShToNamedGrid(const param::MIRParametrisation& param) : ShToGridded(param) {
-    std::string grid;
-    ASSERT(parametrisation().userParametrisation().get("grid", grid));
-
-    grid_ = key::grid::Grid::lookup(grid, parametrisation()).gridname();
+    ASSERT(key::grid::Grid::get("grid", grid_, parametrisation()));
     ASSERT(!grid_.empty());
 }
 
@@ -73,7 +70,7 @@ const char* ShToNamedGrid<Invtrans>::name() const {
 
 template <class Invtrans>
 const repres::Representation* ShToNamedGrid<Invtrans>::outputRepresentation() const {
-    const auto& ng = key::grid::Grid::lookup(grid_, parametrisation());
+    const auto& ng = key::grid::Grid::lookup(grid_);
     return ng.representation();
 }
 

@@ -79,4 +79,9 @@ void LambertAzimuthalEqualArea::fillGrib(grib_info& info) const {
 }
 
 
+void LambertAzimuthalEqualArea::fillSpec(CustomSpec&) const {
+    NOTIMP;
+}
+
+
 }  // namespace mir::repres::regular

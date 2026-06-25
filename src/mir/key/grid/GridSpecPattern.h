@@ -25,7 +25,7 @@ public:
 private:
     void print(std::ostream&) const override;
     const Grid* make(const std::string& name) const override;
-    std::string canonical(const std::string& name, const param::MIRParametrisation&) const override;
+    std::string canonical(const std::string& name) const override;
 };
 
 

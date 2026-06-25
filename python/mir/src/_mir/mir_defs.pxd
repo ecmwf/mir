@@ -39,6 +39,10 @@ cdef extern from "mir/config/LibMir.h" namespace "mir":
         string gitsha1(unsigned int n)  # n=40 for full sha1
 
 
+cdef extern from "mir/appendix.h" namespace "mir::appendix":
+    vector[double] grid_box_areas(const string&) except +
+
+
 cdef extern from "mir/input/MIRInput.h" namespace "mir::input":
     cdef cppclass MIRInput:
         bint next() except +
@@ -109,8 +113,8 @@ cdef extern from "mir/output/ArrayOutput.h" namespace "mir::output":
     cdef cppclass ArrayOutput(mir.MIROutput):
         ArrayOutput()
         vector[double]& values()
-        vector[size_t] shape() const
-        string gridspec() const
+        const vector[size_t] shape() const
+        const string gridspec() const
         double missingValue() const
 
 

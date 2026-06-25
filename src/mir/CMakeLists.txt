@@ -451,6 +451,8 @@ list(APPEND mir_srcs
     method/voronoi/VoronoiMethod.h
     method/voronoi/VoronoiStatistics.cc
     method/voronoi/VoronoiStatistics.h
+    output/ArrayOutput.cc
+    output/ArrayOutput.h
     output/EmptyOutput.cc
     output/EmptyOutput.h
     output/GeoPointsFileOutput.cc
@@ -509,10 +511,14 @@ list(APPEND mir_srcs
     repres/Gridded.h
     repres/HEALPix.cc
     repres/HEALPix.h
+    repres/IrregularLatlon.cc
+    repres/IrregularLatlon.h
     repres/Iterator.cc
     repres/Iterator.h
     repres/Representation.cc
     repres/Representation.h
+    repres/Spectral.cc
+    repres/Spectral.h
     repres/gauss/Gaussian.cc
     repres/gauss/Gaussian.h
     repres/gauss/GaussianIterator.cc
@@ -569,30 +575,6 @@ list(APPEND mir_srcs
     repres/regular/SpaceView.h
     repres/sh/SphericalHarmonics.cc
     repres/sh/SphericalHarmonics.h
-    repres/unsupported/Albers.cc
-    repres/unsupported/Albers.h
-    repres/unsupported/AzimuthRange.cc
-    repres/unsupported/AzimuthRange.h
-    repres/unsupported/EquatorialAzimuthalEquidistant.cc
-    repres/unsupported/EquatorialAzimuthalEquidistant.h
-    repres/unsupported/IrregularLatlon.cc
-    repres/unsupported/IrregularLatlon.h
-    repres/unsupported/RotatedSH.cc
-    repres/unsupported/RotatedSH.h
-    repres/unsupported/StretchedGG.cc
-    repres/unsupported/StretchedGG.h
-    repres/unsupported/StretchedLL.cc
-    repres/unsupported/StretchedLL.h
-    repres/unsupported/StretchedRotatedGG.cc
-    repres/unsupported/StretchedRotatedGG.h
-    repres/unsupported/StretchedRotatedLL.cc
-    repres/unsupported/StretchedRotatedLL.h
-    repres/unsupported/StretchedRotatedSH.cc
-    repres/unsupported/StretchedRotatedSH.h
-    repres/unsupported/StretchedSH.cc
-    repres/unsupported/StretchedSH.h
-    repres/unsupported/TransverseMercator.cc
-    repres/unsupported/TransverseMercator.h
     search/PointSearch.cc
     search/PointSearch.h
     search/Tree.cc
@@ -722,6 +704,8 @@ list(APPEND mir_srcs
     util/Reorder.h
     util/Rotation.cc
     util/Rotation.h
+    util/ScanningMode.cc
+    util/ScanningMode.h
     util/Shape.cc
     util/Shape.h
     util/SpectralOrder.cc
@@ -732,6 +716,8 @@ list(APPEND mir_srcs
     util/Trace.h
     util/Translator.h
     util/Types.h
+    util/UnsupportedFunctionality.cc
+    util/UnsupportedFunctionality.h
     util/ValueMap.cc
     util/ValueMap.h
     util/Wind.cc
@@ -795,8 +781,6 @@ list(APPEND mir_srcs
     caching/legendre/NoLoader.h
     caching/legendre/SharedMemoryLoader.cc
     caching/legendre/SharedMemoryLoader.h
-    key/grid/SourcePattern.cc
-    key/grid/SourcePattern.h
     method/ProxyMethod.cc
     method/ProxyMethod.h
     method/fe/CalculateCellLongestDiagonal.cc

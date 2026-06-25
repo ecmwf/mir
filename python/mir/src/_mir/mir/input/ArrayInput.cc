@@ -71,7 +71,7 @@ ArrayInput::ArrayInput(PyObject* values, PyObject* gridspec) : values_(values), 
 
     if (PyArray_TYPE(arr) == NPY_FLOAT) {
         converted_.resize(PyArray_SIZE(arr));
-        float* src = static_cast<float*>(PyArray_DATA(arr));
+        auto* src = static_cast<float*>(PyArray_DATA(arr));
         std::copy(src, src + converted_.size(), converted_.begin());
 
         input_ = std::make_unique<mir::input::RawInput>(converted_.data(), converted_.size(), *param_);

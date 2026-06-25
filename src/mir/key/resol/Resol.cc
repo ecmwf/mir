@@ -55,7 +55,7 @@ Resol::Resol(const param::MIRParametrisation& parametrisation, bool forceNoInter
 
     const auto Gi = intgrid_->gridname();
     if (!Gi.empty()) {
-        N = static_cast<long>(grid::Grid::lookup(Gi, parametrisation_).gaussianNumber());
+        N = static_cast<long>(grid::Grid::lookup(Gi).gaussianNumber());
         ASSERT(N > 0);
     }
 
@@ -136,7 +136,7 @@ long Resol::getTargetGaussianNumber() const {
     // get Gaussian N from interpreting grid
     std::string grid;
     if (grid::Grid::get("grid", grid, parametrisation_)) {
-        auto N = long(grid::Grid::lookup(grid, parametrisation_).gaussianNumber());
+        auto N = long(grid::Grid::lookup(grid).gaussianNumber());
         ASSERT(N >= 0);
         return N;
     }

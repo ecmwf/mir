@@ -23,7 +23,10 @@ class JSON;
 struct grib_info;
 namespace eckit {
 class MD5;
-}
+namespace spec {
+class Custom;
+}  // namespace spec
+}  // namespace eckit
 namespace mir {
 namespace api {
 class MIRJob;
@@ -93,6 +96,7 @@ public:
     void fillGrib(grib_info&) const;
 
     void fillJob(api::MIRJob&) const;
+    void fillSpec(eckit::spec::Custom&) const;
 
     void hash(eckit::MD5&) const;
 

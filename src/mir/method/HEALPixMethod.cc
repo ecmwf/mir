@@ -74,8 +74,8 @@ void HEALPixMethod::assemble(util::MIRStatistics& /*ignored*/, WeightMatrix& W, 
         }
     }
     else {
-        const auto N  = Nr / Nc;
-        const auto w  = 1.;
+        const auto N = Nr / Nc;
+        const auto w = 1.;
 
         for (size_t r = 0, c = 0; c < Nc; ++c) {
             for (size_t n = 0; n < N; ++n, ++r) {

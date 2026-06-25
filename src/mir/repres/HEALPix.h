@@ -41,7 +41,10 @@ public:
     // -- Methods
 
     size_t Nside() const;
-    std::string order() const;
+
+    // -- Overridden methods
+
+    const std::string& order() const override;
 
 private:
     // -- Members
@@ -62,7 +65,7 @@ private:
 
     void fillGrib(grib_info&) const override;
     void fillMeshGen(util::MeshGeneratorParameters&) const override;
-    void fillJob(api::MIRJob&) const override;
+    void fillSpec(CustomSpec&) const override;
 
     void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;

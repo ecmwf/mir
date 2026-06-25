@@ -35,3 +35,16 @@ gridType=space_view:
   - interpolation: k-nearest
   - nearest-method: longest-element-diagonal-and-nclosest
   - reset-missing-values: true
+
+# Arakawa C-grid UM N96, T/V (centre=egrr)
+md5GridSection=026edb6c52792bc15957072536dbe7c2/2e0f685a14d8ad3615dbc7252d5ebbb9, centre:i=74, gridType=regular_ll, edition=2:
+  - east: 359.0625
+
+# Arakawa C-grid UM N96, U (centre=egrr)
+md5GridSection=379bbee20b78c58b9e86e1377c14a3da, centre:i=74, gridType=regular_ll, edition=2:
+  - east: 358.125
+
+# Arakawa C-grid UM N320, T (centre=egrr)
+md5GridSection=fd45c3ec374370a77222de303aa00a23, centre:i=74, gridType=regular_ll, edition=2:
+  - north: -89.8125
+  - south: 89.8125
