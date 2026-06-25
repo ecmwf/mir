@@ -10,7 +10,6 @@
  */
 
 
-#include <initializer_list>
 #include <memory>
 #include <sstream>
 #include <string>
@@ -182,55 +181,57 @@ CASE("GridSpec") {
     using eckit::geo::GridFactory;
 
 
-    for (const auto& test : std::initializer_list<std::pair<std::string, std::string>> {
-             std::pair<std::string, std::string>{R"({grid: H2})", R"({"grid":"H2"})"},  // HEALPix ring grids
-             {R"({grid: H4})", R"({"grid":"H4"})"},                                     //
-             {R"({grid: h8R})", R"({"grid":"H8"})"},                                    //
-             {R"({grid: Hr16})", R"({"grid":"H16"})"},                                  //
-             {R"({grid: H32, order: ring})", R"({"grid":"H32"})"},                      //
+    using test_t = std::pair<std::string, std::string>;
 
-             {R"({grid: H64, order: nested})", R"({"grid":"H64","order":"nested"})"},    // HEALPix nested grids
-             {R"({grid: h128N})", R"({"grid":"H128","order":"nested"})"},                //
-             {R"({grid: Hn256})", R"({"grid":"H256","order":"nested"})"},                //
-             {R"({grid: h512, order: nested})", R"({"grid":"H512","order":"nested"})"},  //
-             {R"({grid: hN1024})", R"({"grid":"H1024","order":"nested"})"},              //
+    for (const auto& test : {
+             test_t{R"({grid: H2})", R"({"grid":"H2"})"},                 // HEALPix ring grids
+             test_t{R"({grid: H4})", R"({"grid":"H4"})"},                 //
+             test_t{R"({grid: h8R})", R"({"grid":"H8"})"},                //
+             test_t{R"({grid: Hr16})", R"({"grid":"H16"})"},              //
+             test_t{R"({grid: H32, order: ring})", R"({"grid":"H32"})"},  //
 
-             {R"({grid: F2})", R"({"grid":"F2"})"},          // Gaussian grids
-             {R"({"grid": "f32"})", R"({"grid":"F32"})"},    //
-             {R"({grid: o2})", R"({"grid":"O2"})"},          //
-             {R"({grid: o2560})", R"({"grid":"O2560"})"},    //
-             {R"({"grid": "n640"})", R"({"grid":"N640"})"},  //
+             test_t{R"({grid: H64, order: nested})", R"({"grid":"H64","order":"nested"})"},    // HEALPix nested grids
+             test_t{R"({grid: h128N})", R"({"grid":"H128","order":"nested"})"},                //
+             test_t{R"({grid: Hn256})", R"({"grid":"H256","order":"nested"})"},                //
+             test_t{R"({grid: h512, order: nested})", R"({"grid":"H512","order":"nested"})"},  //
+             test_t{R"({grid: hN1024})", R"({"grid":"H1024","order":"nested"})"},              //
 
-             {"{grid: [0.1,0.1]}", R"({"grid":[0.1,0.1]})"},          // regular lat-lon grids
-             {"{grid: [0.125,0.125]}", R"({"grid":[0.125,0.125]})"},  //
-             {"{grid: [0.15,0.15]}", R"({"grid":[0.15,0.15]})"},      //
-             {"{grid: [0.2,0.2]}", R"({"grid":[0.2,0.2]})"},          //
-             {"{grid: [0.25,0.25]}", R"({"grid":[0.25,0.25]})"},      //
-             {"{grid: [0.3,0.3]}", R"({"grid":[0.3,0.3]})"},          //
-             {"{grid: [0.4,0.4]}", R"({"grid":[0.4,0.4]})"},          //
-             {"{grid: [0.5,0.5]}", R"({"grid":[0.5,0.5]})"},          //
-             {"{grid: [0.6,0.6]}", R"({"grid":[0.6,0.6]})"},          //
-             {"{grid: [0.7,0.7]}", R"({"grid":[0.7,0.7]})"},          //
-             {"{grid: [0.75,0.75]}", R"({"grid":[0.75,0.75]})"},      //
-             {"{grid: [0.8,0.8]}", R"({"grid":[0.8,0.8]})"},          //
-             {"{grid: [0.9,0.9]}", R"({"grid":[0.9,0.9]})"},          //
-             {"{grid: [1,1]}", R"({"grid":[1,1]})"},                  //
-             {"{grid: [1.2,1.2]}", R"({"grid":[1.2,1.2]})"},          //
-             {"{grid: [1.25,1.25]}", R"({"grid":[1.25,1.25]})"},      //
-             {"{grid: [1.4,1.4]}", R"({"grid":[1.4,1.4]})"},          //
-             {"{grid: [1.5,1.5]}", R"({"grid":[1.5,1.5]})"},          //
-             {"{grid: [1.6,1.6]}", R"({"grid":[1.6,1.6]})"},          //
-             {"{grid: [1.8,1.8]}", R"({"grid":[1.8,1.8]})"},          //
-             {"{grid: [10,10]}", R"({"grid":[10,10]})"},              //
-             {"{grid: [2,2]}", R"({"grid":[2,2]})"},                  //
-             {"{grid: [2.5,2.5]}", R"({"grid":[2.5,2.5]})"},          //
-             {"{grid: [5,5]}", R"({"grid":[5,5]})"},                  //
+             test_t{R"({grid: F2})", R"({"grid":"F2"})"},          // Gaussian grids
+             test_t{R"({"grid": "f32"})", R"({"grid":"F32"})"},    //
+             test_t{R"({grid: o2})", R"({"grid":"O2"})"},          //
+             test_t{R"({grid: o2560})", R"({"grid":"O2560"})"},    //
+             test_t{R"({"grid": "n640"})", R"({"grid":"N640"})"},  //
 
-             {"{grid: eORCA1_T}", R"({"grid":"eORCA1_T"})"},  // ORCA grids
-             {"{grid: 16076978a048410747dd7c9876677b28}",
-              R"({"grid":"eORCA1_T","uid":"16076978a048410747dd7c9876677b28"})"},  //
-             {"{grid: 16076978a048410747dd7c9876677b28}",
-              R"({"grid":"eORCA1_T","uid":"16076978a048410747dd7c9876677b28"})"},  //
+             test_t{"{grid: [0.1,0.1]}", R"({"grid":[0.1,0.1]})"},          // regular lat-lon grids
+             test_t{"{grid: [0.125,0.125]}", R"({"grid":[0.125,0.125]})"},  //
+             test_t{"{grid: [0.15,0.15]}", R"({"grid":[0.15,0.15]})"},      //
+             test_t{"{grid: [0.2,0.2]}", R"({"grid":[0.2,0.2]})"},          //
+             test_t{"{grid: [0.25,0.25]}", R"({"grid":[0.25,0.25]})"},      //
+             test_t{"{grid: [0.3,0.3]}", R"({"grid":[0.3,0.3]})"},          //
+             test_t{"{grid: [0.4,0.4]}", R"({"grid":[0.4,0.4]})"},          //
+             test_t{"{grid: [0.5,0.5]}", R"({"grid":[0.5,0.5]})"},          //
+             test_t{"{grid: [0.6,0.6]}", R"({"grid":[0.6,0.6]})"},          //
+             test_t{"{grid: [0.7,0.7]}", R"({"grid":[0.7,0.7]})"},          //
+             test_t{"{grid: [0.75,0.75]}", R"({"grid":[0.75,0.75]})"},      //
+             test_t{"{grid: [0.8,0.8]}", R"({"grid":[0.8,0.8]})"},          //
+             test_t{"{grid: [0.9,0.9]}", R"({"grid":[0.9,0.9]})"},          //
+             test_t{"{grid: [1,1]}", R"({"grid":[1,1]})"},                  //
+             test_t{"{grid: [1.2,1.2]}", R"({"grid":[1.2,1.2]})"},          //
+             test_t{"{grid: [1.25,1.25]}", R"({"grid":[1.25,1.25]})"},      //
+             test_t{"{grid: [1.4,1.4]}", R"({"grid":[1.4,1.4]})"},          //
+             test_t{"{grid: [1.5,1.5]}", R"({"grid":[1.5,1.5]})"},          //
+             test_t{"{grid: [1.6,1.6]}", R"({"grid":[1.6,1.6]})"},          //
+             test_t{"{grid: [1.8,1.8]}", R"({"grid":[1.8,1.8]})"},          //
+             test_t{"{grid: [10,10]}", R"({"grid":[10,10]})"},              //
+             test_t{"{grid: [2,2]}", R"({"grid":[2,2]})"},                  //
+             test_t{"{grid: [2.5,2.5]}", R"({"grid":[2.5,2.5]})"},          //
+             test_t{"{grid: [5,5]}", R"({"grid":[5,5]})"},                  //
+
+             test_t{"{grid: eORCA1_T}", R"({"grid":"eORCA1_T"})"},  // ORCA grids
+             test_t{"{grid: 16076978a048410747dd7c9876677b28}",
+                    R"({"grid":"eORCA1_T","uid":"16076978a048410747dd7c9876677b28"})"},  //
+             test_t{"{grid: 16076978a048410747dd7c9876677b28}",
+                    R"({"grid":"eORCA1_T","uid":"16076978a048410747dd7c9876677b28"})"},  //
          }) {
         Grid a(eckit::geo::GridFactory::make_from_string(test.first));
 
