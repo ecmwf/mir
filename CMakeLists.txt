@@ -24,14 +24,15 @@ ecbuild_add_option(FEATURE MIR_DOWNLOAD_MASKS DEFAULT ON  DESCRIPTION "download 
 ecbuild_add_option(FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support for netCDF" REQUIRED_PACKAGES "NetCDF COMPONENTS C CXX")
 ecbuild_add_option(FEATURE PNG                DEFAULT OFF DESCRIPTION "support for PNG encoding" REQUIRED_PACKAGES PNG)
 ecbuild_add_option(FEATURE OMP                DEFAULT OFF DESCRIPTION "support for OpenMP shared memory parallelism" REQUIRED_PACKAGES "OpenMP COMPONENTS CXX")
+ecbuild_add_option(FEATURE PYTHON             DEFAULT OFF DESCRIPTION "Build Python bindings (Cython)" REQUIRED_PACKAGES "Python3 COMPONENTS Interpreter Development.Module NumPy")
 
 if(NOT TARGET OpenMP::OpenMP_CXX)
     set(mir_HAVE_OMP 0)
 endif()
 
-ecbuild_find_package(NAME eckit   VERSION 1.31 REQUIRED)
-ecbuild_find_package(NAME eccodes VERSION 2.44 REQUIRED)
-ecbuild_find_package(NAME atlas   VERSION 0.43 REQUIRED)
+ecbuild_find_package(NAME eckit   VERSION 2.1 REQUIRED)
+ecbuild_find_package(NAME eccodes VERSION 2.47 REQUIRED)
+ecbuild_find_package(NAME atlas   VERSION 0.46 REQUIRED)
 
 if(NOT TARGET eckit_geo)
     MESSAGE(FATAL_ERROR "mir: eckit feature ECKIT_GEO is required")
@@ -63,6 +64,10 @@ include(cmake/compiler_warnings.cmake) # optionally handle compiler specific war
 add_subdirectory(src)
 add_subdirectory(etc)
 add_subdirectory(share)
+
+if(mir_HAVE_PYTHON)
+    add_subdirectory(python)
+endif()
 
 if(HAVE_TESTS)
     add_subdirectory(tests)

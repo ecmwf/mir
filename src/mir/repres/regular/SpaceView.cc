@@ -202,6 +202,11 @@ void SpaceView::fillGrib(grib_info& /*info*/) const {
 }
 
 
+void SpaceView::fillSpec(CustomSpec&) const {
+    NOTIMP;
+}
+
+
 Iterator* SpaceView::iterator() const {
     class SpaceViewIterator : public Iterator {
         const std::vector<PointLonLat>& lonlat_;
@@ -231,12 +236,6 @@ Iterator* SpaceView::iterator() const {
 
     public:
         SpaceViewIterator(const std::vector<PointLonLat>& lonlat) : lonlat_(lonlat), count_(0) {}
-        ~SpaceViewIterator() override = default;
-
-        SpaceViewIterator(const SpaceViewIterator&)            = delete;
-        SpaceViewIterator(SpaceViewIterator&&)                 = delete;
-        SpaceViewIterator& operator=(const SpaceViewIterator&) = delete;
-        SpaceViewIterator& operator=(SpaceViewIterator&&)      = delete;
     };
 
     return new SpaceViewIterator(lonlat());

@@ -1,0 +1,10 @@
+# input
+gridType=healpix,Nside=2,orderingConvention=ring.grib2
+# mir
+--grid=hn2 --interpolation=healpix-resample
+# grib_get
+gridType=healpix
+orderingConvention=nested
+Nside=2
+numberOfDataPoints=48
+longitudeOfFirstGridPointInDegrees=45

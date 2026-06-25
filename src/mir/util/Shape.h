@@ -17,6 +17,10 @@
 
 struct grib_info;
 
+namespace eckit::spec {
+class Custom;
+}  // namespace eckit::spec
+
 namespace mir {
 namespace param {
 class MIRParametrisation;
@@ -47,6 +51,7 @@ struct Shape {
 
     void fillGrib(grib_info&, const Projection::Spec&) const;
     void fillJob(api::MIRJob&, const Projection::Spec&) const;
+    void fillSpec(eckit::spec::Custom&, const Projection::Spec&) const;
 
     long code;
     double a;

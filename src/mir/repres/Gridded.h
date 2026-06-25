@@ -74,6 +74,9 @@ protected:
 
     // -- Overridden methods
 
+    void fillSpec(CustomSpec&) const override;
+    void reorder(MIRValuesVector&) const override;
+
     util::Domain domain() const override;
     const util::BoundingBox& boundingBox() const override;
     bool getLongestElementDiagonal(double&) const override;

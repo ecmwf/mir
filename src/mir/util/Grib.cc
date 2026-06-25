@@ -38,8 +38,31 @@ bool grib_call(int e, const char* call, bool NOT_FOUND_IS_OK) {
 }
 
 
-void grib_reorder(std::vector<double>& values, long scanningMode, size_t Ni, size_t Nj) {
+long grib_order_to_scanning_mode(const std::string& order) {
+    if (order.empty()) {
+        throw mir::exception::SeriousBug("grib_order_to_scanning_mode: empty order");
+    }
+
+    auto alternativeRowScanning = order.find("i+-") != std::string::npos || order.find("i-+") != std::string::npos;
+    auto jPointsAreConsecutive  = order.front() == 'j';
+    auto jScansPositively       = order.find("j+") != std::string::npos;
+    auto iScansNegatively       = order.find("i-") != std::string::npos;
+
+    return (alternativeRowScanning ? (1 << 4) : 0) |  //
+           (jPointsAreConsecutive ? (1 << 5) : 0) |   //
+           (jScansPositively ? (1 << 6) : 0) |        //
+           (iScansNegatively ? (1 << 7) : 0);
+}
+
+
+void grib_reorder(std::vector<double>& values, const std::string& order, size_t Ni, size_t Nj) {
     using mir::Log;
+
+    auto scanningMode = grib_order_to_scanning_mode(order);
+    if (scanningMode == 0) {
+        // order is already the expected (canonical)
+        return;
+    }
 
     enum
     {

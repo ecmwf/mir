@@ -80,7 +80,7 @@ private:
 
     Iterator* iterator() const override;
     void fillGrib(grib_info&) const override;
-    void fillJob(api::MIRJob&) const override;
+    void fillSpec(CustomSpec&) const override;
     atlas::Grid atlasGrid() const override;
 
     std::string intersectionOnCrop() const override { return "input-contains-output-check"; }

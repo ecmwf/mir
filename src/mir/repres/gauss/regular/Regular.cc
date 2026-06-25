@@ -13,6 +13,7 @@
 #include "mir/repres/gauss/regular/Regular.h"
 
 #include "eckit/log/JSON.h"
+#include "eckit/spec/Custom.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/api/MIRJob.h"
@@ -26,7 +27,9 @@
 
 namespace mir::repres::gauss::regular {
 
-Regular::Regular(const param::MIRParametrisation& parametrisation) : Gaussian(parametrisation), k_(0), Ni_(0), Nj_(0) {
+
+Regular::Regular(const param::MIRParametrisation& parametrisation) :
+    Gaussian(parametrisation), k_(0), Ni_(0), Nj_(0), scan_(parametrisation) {
     // adjust latitudes, longitudes and re-set bounding box
     Latitude n = bbox_.north();
     Latitude s = bbox_.south();
@@ -44,8 +47,9 @@ Regular::Regular(const param::MIRParametrisation& parametrisation) : Gaussian(pa
     setNiNj();
 }
 
-Regular::Regular(size_t N, const util::BoundingBox& bbox, double angularPrecision) :
-    Gaussian(N, bbox, angularPrecision), k_(0), Ni_(0), Nj_(0) {
+
+Regular::Regular(size_t N, const util::BoundingBox& bbox, double angularPrecision, const std::string& scan) :
+    Gaussian(N, bbox, angularPrecision), k_(0), Ni_(0), Nj_(0), scan_(scan) {
 
     // adjust latitudes, longitudes and re-set bounding box
     Latitude n = bbox.north();
@@ -61,29 +65,37 @@ Regular::Regular(size_t N, const util::BoundingBox& bbox, double angularPrecisio
     setNiNj();
 }
 
+
 void Regular::fillGrib(grib_info& info) const {
 
     // See copy_spec_from_ksec.c in libemos for info
 
     info.grid.grid_type = CODES_UTIL_GRID_SPEC_REGULAR_GG;
 
-    info.grid.N                            = long(N_);
+    info.grid.N                            = static_cast<long>(N_);
     info.grid.iDirectionIncrementInDegrees = getSmallestIncrement();
-    info.grid.Ni                           = long(Ni_);
-    info.grid.Nj                           = long(Nj_);
+    info.grid.Ni                           = static_cast<long>(Ni_);
+    info.grid.Nj                           = static_cast<long>(Nj_);
 
     bbox_.fillGrib(info);
+    scan_.fillGrib(info);
 }
 
-void Regular::fillJob(api::MIRJob& job) const {
-    Gaussian::fillJob(job);
-    job.set("grid", "F" + std::to_string(N_));
+
+void Regular::fillSpec(CustomSpec& spec) const {
+    Gaussian::fillSpec(spec);
+
+    spec.set("grid", "F" + std::to_string(N_));
+
+    scan_.fillSpec(spec);
 }
+
 
 void Regular::makeName(std::ostream& out) const {
     out << "F" << N_;
     bbox_.makeName(out);
 }
+
 
 void Regular::correctWestEast(Longitude& w, Longitude& e) const {
     using eckit::Fraction;
@@ -120,21 +132,25 @@ void Regular::correctWestEast(Longitude& w, Longitude& e) const {
     }
 }
 
+
 bool Regular::sameAs(const Representation& other) const {
     const auto* o = dynamic_cast<const Regular*>(&other);
     return (o != nullptr) && (N_ == o->N_) && (bbox_ == o->bbox_);
 }
+
 
 eckit::Fraction Regular::getSmallestIncrement() const {
     ASSERT(N_);
     return {90, eckit::Fraction::value_type(N_)};
 }
 
+
 size_t Regular::numberOfPoints() const {
     ASSERT(Ni_);
     ASSERT(Nj_);
     return Ni_ * Nj_;
 }
+
 
 bool Regular::getLongestElementDiagonal(double& d) const {
     constexpr double TWO = 2.;
@@ -196,14 +212,17 @@ util::BoundingBox Regular::extendBoundingBox(const util::BoundingBox& bbox) cons
     return extended;
 }
 
+
 bool Regular::isPeriodicWestEast() const {
     eckit::Fraction inc = getSmallestIncrement();
     return bbox_.east() - bbox_.west() + inc >= Longitude::GLOBE;
 }
 
+
 atlas::Grid Regular::atlasGrid() const {
     return atlas::RegularGaussianGrid("F" + std::to_string(N_), domain());
 }
+
 
 void Regular::setNiNj() {
     ASSERT(N_);
@@ -260,6 +279,7 @@ void Regular::setNiNj() {
     Log::debug() << "Regular::setNiNj: Ni*Nj = " << Ni_ << " * " << Nj_ << " = " << (Ni_ * Nj_) << std::endl;
 }
 
+
 size_t Regular::frame(MIRValuesVector& values, size_t size, double missingValue) const {
 
     // TODO: Check if that logic cannot also be used for other grid, and therefore move it to a higher class
@@ -280,6 +300,11 @@ size_t Regular::frame(MIRValuesVector& values, size_t size, double missingValue)
 
     ASSERT(k == values.size());
     return count;
+}
+
+
+void Regular::reorder(MIRValuesVector& values) const {
+    grib_reorder(values, order(), Ni_, Nj_);
 }
 
 

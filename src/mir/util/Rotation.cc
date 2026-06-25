@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "eckit/geo/area/BoundingBox.h"
+#include "eckit/spec/Custom.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/api/MIRJob.h"
@@ -71,6 +72,15 @@ void Rotation::fillGrib(grib_info& info) const {
 
 void Rotation::fillJob(api::MIRJob& job) const {
     job.set("rotation", rotation_.south_pole().lat(), rotation_.south_pole().lon());
+}
+
+
+void Rotation::fillSpec(eckit::spec::Custom& spec) const {
+    spec.set("projection",
+             new eckit::spec::Custom{
+                 {"projection", "rotation"},
+                 {"rotation", std::vector<double>{rotation_.south_pole().lat(), rotation_.south_pole().lon()}},
+             });
 }
 
 

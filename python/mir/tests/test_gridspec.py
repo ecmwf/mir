@@ -15,7 +15,7 @@ import pytest
 
 GRIDSPECS = [
     (dict(grid="1/1"), 360 * 181),
-    (dict(grid="H2", ordering="nested"), 12 * 2 * 2),
+    (dict(grid="H2", order="nested"), 12 * 2 * 2),
     (dict(grid=[2, 2]), 180 * 91),
     ("{grid: 3/3}", 120 * 61),
     (dict(grid="o2"), sum([20, 24, 24, 20])),

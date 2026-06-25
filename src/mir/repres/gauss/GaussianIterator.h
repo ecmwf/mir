@@ -27,7 +27,6 @@ class GaussianIterator : public Iterator {
 public:
     GaussianIterator(const std::vector<double>& latitudes, std::vector<long>&& pl, const util::BoundingBox&, size_t N,
                      size_t Nj, size_t k, const util::Rotation& = util::Rotation());
-    ~GaussianIterator() override;
 
 private:
     const std::vector<double>& latitudes_;
@@ -45,7 +44,6 @@ private:
     size_t count_;
     bool first_;
 
-protected:
     void print(std::ostream&) const override;
     bool next(Latitude&, Longitude&) override;
     size_t index() const override;

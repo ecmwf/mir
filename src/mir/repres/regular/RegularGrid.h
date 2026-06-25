@@ -40,9 +40,6 @@ public:
     RegularGrid(const Projection&, const util::BoundingBox&, const LinearSpacing& x, const LinearSpacing& y,
                 const util::Shape&);
 
-    RegularGrid(const RegularGrid&) = delete;
-    RegularGrid(RegularGrid&&)      = delete;
-
     // -- Destructor
 
     ~RegularGrid() override;
@@ -51,9 +48,7 @@ public:
     // None
 
     // -- Operators
-
-    RegularGrid& operator=(const RegularGrid&) = delete;
-    RegularGrid& operator=(RegularGrid&&)      = delete;
+    // None
 
     // -- Methods
     // None
@@ -95,10 +90,9 @@ protected:
     bool isPeriodicWestEast() const override;
 
     void fillGrib(grib_info&) const override;
-    void fillJob(api::MIRJob&) const override;
+    void fillSpec(CustomSpec&) const override;
     void fillMeshGen(util::MeshGeneratorParameters&) const override;
 
-    void reorder(long scanningMode, MIRValuesVector&) const override;
     void validate(const MIRValuesVector&) const override;
     void makeName(std::ostream&) const override;
     void print(std::ostream&) const override;

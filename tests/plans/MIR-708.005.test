@@ -1,0 +1,6 @@
+# input
+gridType=healpix,Nside=2,orderingConvention=nested.grib2
+# mir
+--grid=h1 --interpolation=healpix-statistics
+# plan
+Gridded2NamedGrid[grid=H1,interpolation=healpix-statistics,method=HEALPixStatistics[interpolationStatistics=maximum,nonLinear[MissingIfHeaviestMissing[]],solver=Statistics[stats=Maximum[nan]],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0]]|Save[output=...]

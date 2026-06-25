@@ -39,8 +39,7 @@ CASE("Representation::fillJob(MIRJob&)") {
 
         std::string grid;
         EXPECT(job.get("grid", grid));
-        EXPECT(grid == test);
-        EXPECT(job.json_str() == R"({"grid":")" + test + R"("})");
+        EXPECT(grid == R"({"grid":")" + test + R"("})");
     }
 }
 

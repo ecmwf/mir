@@ -10,10 +10,12 @@
  */
 
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/option/CmdArgs.h"
 
 #include "mir/compare/FieldComparator.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Grib.h"
 #include "mir/util/Log.h"
 
 
@@ -46,7 +48,14 @@ void MIRCompare::execute(const eckit::option::CmdArgs& args) {
 }  // namespace mir::tools
 
 
+void mir_compare_assertion(const char* message) {
+    throw eckit::SeriousBug(message);
+}
+
+
 int main(int argc, char** argv) {
+    codes_set_codes_assertion_failed_proc(&mir_compare_assertion);
+
     mir::tools::MIRCompare tool(argc, argv);
     return tool.start();
 }

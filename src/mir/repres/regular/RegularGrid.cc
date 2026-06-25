@@ -19,6 +19,7 @@
 #include <vector>
 
 #include "eckit/config/Resource.h"
+#include "eckit/spec/Custom.h"
 #include "eckit/utils/MD5.h"
 #include "eckit/utils/StringTools.h"
 
@@ -30,6 +31,7 @@
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
 #include "mir/util/MeshGeneratorParameters.h"
+#include "mir/util/UnsupportedFunctionality.h"
 
 
 namespace mir::repres::regular {
@@ -162,18 +164,13 @@ void RegularGrid::fillGrib(grib_info& info) const {
 }
 
 
-void RegularGrid::fillJob(api::MIRJob& job) const {
+void RegularGrid::fillSpec(CustomSpec& spec) const {
     // shape of the reference system
-    shape_.fillJob(job, grid_.projection().spec());
+    shape_.fillSpec(spec, grid_.projection().spec());
 
     // scanningMode
-    std::string grid;
-    ASSERT(job.get("grid", grid) && !grid.empty());
-
-    grid += ";iScansNegatively=" + std::to_string(x().front() < x().back() ? 0 : 1);
-    grid += ";jScansPositively=" + std::to_string(y().front() < y().back() ? 1 : 0);
-
-    job.set("grid", grid);
+    spec.set("iScansNegatively", static_cast<long>(x().front() < x().back() ? 0 : 1));
+    spec.set("jScansPositively", static_cast<long>(y().front() < y().back() ? 1 : 0));
 }
 
 
@@ -190,12 +187,6 @@ bool RegularGrid::includesSouthPole() const {
 bool RegularGrid::isPeriodicWestEast() const {
     return includesNorthPole() || includesSouthPole() ||
            (bbox_.east().value() - bbox_.west().value() >= Longitude::GLOBE.value());
-}
-
-
-void RegularGrid::reorder(long /*scanningMode*/, MIRValuesVector& /*unused*/) const {
-    // do not reorder, iterator is doing the right thing
-    // FIXME this function should not be overriding to do nothing
 }
 
 
@@ -292,6 +283,81 @@ void RegularGrid::fillMeshGen(util::MeshGeneratorParameters& params) const {
         params.meshGenerator_ = "structured";
     }
 }
+
+
+// -----------------------------------------------------------------------------
+
+
+struct UnsupportedRegularGrid : RegularGrid, util::UnsupportedFunctionality {
+    static const RegularGrid::Projection PROJECTION_NONE;
+    explicit UnsupportedRegularGrid(const param::MIRParametrisation& p) :
+        RegularGrid(p, PROJECTION_NONE), util::UnsupportedFunctionality("grid " + [this]() {
+            std::ostringstream ss;
+            this->print(ss);
+            return ss.str();
+        }() + " is currently unsupported") {}
+};
+
+
+const RegularGrid::Projection UnsupportedRegularGrid::PROJECTION_NONE;
+
+
+struct Albers final : UnsupportedRegularGrid {
+    using UnsupportedRegularGrid::UnsupportedRegularGrid;
+    void print(std::ostream& out) const override { out << "Albers[]"; }
+};
+
+
+struct AzimuthRange final : UnsupportedRegularGrid {
+    using UnsupportedRegularGrid::UnsupportedRegularGrid;
+    void print(std::ostream& out) const override { out << "AzimuthRange[]"; }
+};
+
+
+struct EquatorialAzimuthalEquidistant final : UnsupportedRegularGrid {
+    using UnsupportedRegularGrid::UnsupportedRegularGrid;
+    void print(std::ostream& out) const override { out << "EquatorialAzimuthalEquidistant[]"; }
+};
+
+
+struct StretchedGG final : UnsupportedRegularGrid {
+    using UnsupportedRegularGrid::UnsupportedRegularGrid;
+    void print(std::ostream& out) const override { out << "StretchedGG[]"; }
+};
+
+
+struct StretchedLL final : UnsupportedRegularGrid {
+    using UnsupportedRegularGrid::UnsupportedRegularGrid;
+    void print(std::ostream& out) const override { out << "StretchedLL[]"; }
+};
+
+
+struct StretchedRotatedGG final : UnsupportedRegularGrid {
+    using UnsupportedRegularGrid::UnsupportedRegularGrid;
+    void print(std::ostream& out) const override { out << "StretchedRotatedGG[]"; }
+};
+
+
+struct StretchedRotatedLL final : UnsupportedRegularGrid {
+    using UnsupportedRegularGrid::UnsupportedRegularGrid;
+    void print(std::ostream& out) const override { out << "StretchedRotatedLL[]"; }
+};
+
+
+struct TransverseMercator final : UnsupportedRegularGrid {
+    using UnsupportedRegularGrid::UnsupportedRegularGrid;
+    void print(std::ostream& out) const override { out << "TransverseMercator[]"; }
+};
+
+
+static const RepresentationBuilder<Albers> ALBERS("albers");
+static const RepresentationBuilder<AzimuthRange> AZIMUTH_RANGE("azimuth_range");
+static const RepresentationBuilder<EquatorialAzimuthalEquidistant> EQUATORIAL_AZ_EQ("equatorial_azimuthal_equidistant");
+static const RepresentationBuilder<StretchedGG> STRETCHED_GG("stretched_gg");
+static const RepresentationBuilder<StretchedLL> STRETCHED_LL("stretched_ll");
+static const RepresentationBuilder<StretchedRotatedGG> STRETCHED_ROTATED_GG("stretched_rotated_gg");
+static const RepresentationBuilder<StretchedRotatedLL> STRETCHED_ROTATED_LL("stretched_rotated_ll");
+static const RepresentationBuilder<TransverseMercator> TRANSVERSE_MERCATOR("transverse_mercator");
 
 
 }  // namespace mir::repres::regular

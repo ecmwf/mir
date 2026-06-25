@@ -131,8 +131,8 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
 
 
     std::string grid;
-    if (grid::Grid::get("grid", grid, param)) {
-        const auto& g = grid::Grid::lookup(grid, field);
+    if (user.has("grid") && grid::Grid::get("grid", grid, param)) {
+        const auto& g = grid::Grid::lookup(grid);
 
         if (g.type() == "regular-ll") {
             std::vector<double> grid_v;

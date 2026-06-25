@@ -12,14 +12,14 @@
 
 #pragma once
 
-#include "mir/repres/Representation.h"
+#include "mir/repres/Spectral.h"
 #include "mir/util/Domain.h"
 
 
 namespace mir::repres::sh {
 
 
-class SphericalHarmonics : public Representation {
+class SphericalHarmonics : public Spectral {
 public:
     // -- Exceptions
     // None
@@ -29,9 +29,6 @@ public:
     SphericalHarmonics(const param::MIRParametrisation&);
     SphericalHarmonics(size_t truncation);
 
-    SphericalHarmonics(const SphericalHarmonics&) = delete;
-    SphericalHarmonics(SphericalHarmonics&&)      = delete;
-
     // -- Destructor
 
     ~SphericalHarmonics() override;
@@ -40,9 +37,7 @@ public:
     // None
 
     // -- Operators
-
-    void operator=(const SphericalHarmonics&) = delete;
-    void operator=(SphericalHarmonics&&)      = delete;
+    // None
 
     // -- Methods
 
@@ -91,7 +86,7 @@ private:
     // -- Overridden methods
 
     void fillGrib(grib_info&) const override;
-    void fillJob(api::MIRJob&) const override;
+    void fillSpec(CustomSpec&) const override;
     std::string factory() const override;
 
     const Representation* truncate(size_t truncation, const MIRValuesVector&, MIRValuesVector&) const override;

@@ -303,6 +303,8 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         {"proj", "projTargetString"},
         {"projSource", "projSourceString"},
 
+        {"order", "orderingConvention", is("gridType", "healpix")},
+
         // This will be just called for has()
         {
             "gridded",
@@ -578,6 +580,33 @@ static ProcessingT<std::vector<double>>* vector_double(std::initializer_list<std
 }
 
 
+static ProcessingT<std::string>* order() {
+    return new ProcessingT<std::string>([](grib_handle* h, std::string& value) {
+        static const std::string P{"+"};
+        static const std::string M{"-"};
+
+        auto get_bool = [](const grib_handle* h, const char* key) -> bool {
+            if (codes_is_defined(h, key) == 0) {
+                return false;
+            }
+            auto l = 0L;
+            GRIB_CALL(codes_get_long(h, key, &l));
+            return l != 0;
+        };
+
+        const auto ip = !get_bool(h, "iScansNegatively");
+        const auto jp = get_bool(h, "jScansPositively");
+        const auto a  = get_bool(h, "alternativeRowScanning");
+
+        value = get_bool(h, "jPointsAreConsecutive")
+                    ? "j" + (jp ? P : M) + (!a ? "" : (jp ? M : P)) + "i" + (ip ? P : M)
+                    : "i" + (ip ? P : M) + (!a ? "" : (ip ? M : P)) + "j" + (jp ? P : M);
+
+        return true;
+    });
+}
+
+
 static ProcessingT<std::string>* packing() {
     return new ProcessingT<std::string>([](grib_handle* h, std::string& value) {
         auto get = [](grib_handle* h, const char* key) -> std::string {
@@ -611,34 +640,17 @@ static ProcessingT<std::string>* packing() {
 
 static ProcessingT<std::string>* gridName_fix_for_healpix_grids() {
     return new ProcessingT<std::string>([](grib_handle* h, std::string& value) {
-        std::string gridName;
+        long Nside = 0;
+        GRIB_CALL(codes_get_long(h, "Nside", &Nside));
 
         char buffer[64];
         size_t size = sizeof(buffer);
-
-        GRIB_CALL(codes_get_string(h, "gridName", buffer, &size));
-        ASSERT(size < sizeof(buffer) - 1);
-
-        if (std::strcmp(buffer, "MISSING") != 0) {
-            gridName += buffer;
-        }
-
-        size = sizeof(buffer);
         GRIB_CALL(codes_get_string(h, "orderingConvention", buffer, &size));
+
         ASSERT(size < sizeof(buffer) - 1);
 
-        if (std::strcmp(buffer, "MISSING") != 0) {
-            if (std::strcmp(buffer, "nested") == 0) {
-                gridName += "_nested";
-            }
-        }
-
-        if (!gridName.empty()) {
-            value = gridName;
-            return true;
-        }
-
-        return false;
+        value = (std::strcmp(buffer, "nested") == 0 ? "HN" : "H") + std::to_string(Nside);
+        return true;
     });
 }
 
@@ -813,12 +825,7 @@ data::MIRField GribInput::field() const {
 
     data::MIRField field(cache_, missingValuesPresent != 0, missingValue);
 
-    long scanningMode = 0;
-    GRIB_GET(codes_get_long(grib_, "scanningMode", &scanningMode));
-    if (scanningMode != 0) {
-        field.representation()->reorder(scanningMode, values);
-    }
-
+    field.representation()->reorder(values);  // to canonical ordering
     field.update(values, 0);
     field.validate();
 
@@ -1053,7 +1060,10 @@ bool GribInput::get(const std::string& name, std::string& value) const {
 
     if (err == CODES_NOT_FOUND) {
         static const ProcessingList<std::string> process{
-            {"packing", packing()}, {"gridName_fix_for_healpix_grids", gridName_fix_for_healpix_grids()}};
+            {"order", order()},
+            {"packing", packing()},
+            {"gridName_fix_for_healpix_grids", gridName_fix_for_healpix_grids()},
+        };
 
         return get_value(key, grib_, value, process) || FieldParametrisation::get(name, value);
     }
