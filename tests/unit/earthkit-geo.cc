@@ -10,6 +10,7 @@
  */
 
 
+#include <initializer_list>
 #include <memory>
 #include <sstream>
 #include <string>
@@ -181,7 +182,7 @@ CASE("GridSpec") {
     using eckit::geo::GridFactory;
 
 
-    for (const auto& test : {
+    for (const auto& test : std::initializer_list<std::pair<std::string, std::string>> {
              std::pair<std::string, std::string>{R"({grid: H2})", R"({"grid":"H2"})"},  // HEALPix ring grids
              {R"({grid: H4})", R"({"grid":"H4"})"},                                     //
              {R"({grid: h8R})", R"({"grid":"H8"})"},                                    //
