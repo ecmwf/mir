@@ -50,7 +50,6 @@ size_t ArrayOutput::save(const param::MIRParametrisation&, context::Context& ctx
 
     // save data
     ASSERT(field.dimensions() == 1);
-    ASSERT(field.values(0).size() == grid->size());
     values_ = field.values(0);
 
     if (auto mv = field.missingValue();

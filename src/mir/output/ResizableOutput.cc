@@ -47,7 +47,6 @@ size_t ResizableOutput::save(const param::MIRParametrisation& /*param*/, context
 
     // save data
     ASSERT(field.dimensions() == 1);
-    ASSERT(field.values(0).size() == grid->size());
     values_ = field.values(0);
 
     return values_.size() * sizeof(double);
