@@ -83,7 +83,8 @@ void SphericalHarmonics::fillGrib(grib_info& info) const {
 
 
 void SphericalHarmonics::fillSpec(CustomSpec& spec) const {
-    spec.set("resol", truncation_);
+    spec.set("type", "sh");
+    spec.set("truncation", truncation_);
 }
 
 
