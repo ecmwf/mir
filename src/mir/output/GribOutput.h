@@ -19,6 +19,11 @@ struct grib_info;
 struct grib_handle;
 
 
+namespace mir::grib {
+class Config;
+}
+
+
 namespace mir::output {
 
 
@@ -42,17 +47,12 @@ public:
     // None
 
     // -- Methods
+
     virtual size_t interpolated() const;
     virtual size_t saved() const;
 
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
+    static const grib::Config& config();
+    static param::MIRParametrisation* make_parametrised_config(const param::MIRParametrisation&);
 
 protected:
     // -- Members
@@ -79,6 +79,7 @@ private:
     // -- Methods
 
     virtual void out(const void* message, size_t length, bool interpolated) = 0;
+    size_t save_with_metkit(const param::MIRParametrisation&, context::Context&);
 
     // -- Overridden methods
 

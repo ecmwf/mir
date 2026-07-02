@@ -13,6 +13,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/system/Library.h"
@@ -32,6 +33,7 @@ public:
     static bool caching();
     static const std::string& lsmNamed();
     static const std::string& gribSampleName();
+    static bool gribUseMetkitEncoder();
 
     std::string version() const override;
     std::string gitsha1(unsigned int count) const override;
@@ -63,6 +65,8 @@ public:
     };
 
     static std::string cacheLoader(cache_loader);
+
+    static const std::vector<std::string>& postProcessKeys();
 
 private:
     LibMir();

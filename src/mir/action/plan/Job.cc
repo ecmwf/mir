@@ -12,12 +12,14 @@
 
 #include "mir/action/plan/Job.h"
 
+#include <algorithm>
+
 #include "mir/action/context/Context.h"
 #include "mir/action/io/Copy.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/api/MIRJob.h"
+#include "mir/config/LibMir.h"
 #include "mir/input/MIRInput.h"
-#include "mir/key/Key.h"
 #include "mir/key/style/MIRStyle.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/util/Exceptions.h"
@@ -39,7 +41,9 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
 
 
     // skip preparing an Action plan if nothing to do, or input is already what was specified
-    if (!key::Key::postProcess(job) && job.matchAll(metadata)) {
+    const auto& ppKeys = LibMir::postProcessKeys();
+    if (!std::any_of(ppKeys.begin(), ppKeys.end(), [&job](const std::string& k) { return job.has(k); }) &&
+        job.matchAll(metadata)) {
         plan_->add(new io::Copy(*combined_, output_));
     }
     else {

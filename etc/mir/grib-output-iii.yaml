@@ -12,6 +12,7 @@ edition=1:
   - grib-packing-always-set: true
 
 edition=2:
+  - grib-use-metkit-encoder: true
   - grib-packing-gridded: ccsds
   - grib-packing-spectral: complex
   - grib-packing-always-set: true

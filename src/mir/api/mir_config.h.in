@@ -18,6 +18,7 @@
 
 
 #cmakedefine01 mir_HAVE_ECKIT_CODEC
+#cmakedefine01 mir_HAVE_METKIT
 #cmakedefine01 mir_HAVE_PNG
 
 

@@ -309,6 +309,8 @@ struct MIR : MIRTool {
         options_.push_back(new FactoryOption<grib::Packing>("packing", "GRIB packing method"));
         options_.push_back(new SimpleOption<size_t>("edition", "GRIB edition number"));
 
+        options_.push_back(
+            new SimpleOption<bool>("grib-use-metkit-encoder", "GRIB output using metkit encoder, default false"));
         options_.push_back(new SimpleOption<std::string>(
             "grib-packing-gridded", "GRIB default gridded packing, on gridded/spectral conversions"));
         options_.push_back(new SimpleOption<std::string>(

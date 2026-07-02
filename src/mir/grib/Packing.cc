@@ -15,13 +15,9 @@
 #include <memory>
 #include <ostream>
 
-#include "eckit/filesystem/PathName.h"
-
-#include "mir/config/LibMir.h"
 #include "mir/grib/Config.h"
-#include "mir/param/CombinedParametrisation.h"
+#include "mir/output/GribOutput.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/param/SimpleParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
@@ -313,10 +309,8 @@ Packing* Packing::build(const param::MIRParametrisation& param) {
     long edition = 2;
     param.get("edition", edition);
 
-    static const grib::Config config(LibMir::configFile(LibMir::config_file::GRIB_OUTPUT), true);
-    std::unique_ptr<param::MIRParametrisation> grib_config(
-        new param::CombinedParametrisation(user, field, config.find(param)));
-
+    std::unique_ptr<param::MIRParametrisation> grib_config(output::GribOutput::make_parametrised_config(param));
+    ASSERT(grib_config);
 
     // Check edition conversion
     bool edition_conversion = false;

@@ -7,5 +7,6 @@ edition=0:
   - grib-packing-always-set: true
 
 edition=1/2:
+  - grib-use-metkit-encoder: true
   - grib-packing-gridded: simple
   - grib-packing-spectral: complex

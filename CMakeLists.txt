@@ -34,6 +34,8 @@ ecbuild_find_package(NAME eckit   VERSION 2.1 REQUIRED)
 ecbuild_find_package(NAME eccodes VERSION 2.47 REQUIRED)
 ecbuild_find_package(NAME atlas   VERSION 0.46 REQUIRED)
 
+ecbuild_add_option(FEATURE METKIT DEFAULT ON REQUIRED_PACKAGES "metkit VERSION 1.18.3")
+
 if(NOT TARGET eckit_geo)
     MESSAGE(FATAL_ERROR "mir: eckit feature ECKIT_GEO is required")
 endif()

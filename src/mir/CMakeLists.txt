@@ -269,8 +269,6 @@ list(APPEND mir_srcs
     iterator/detail/RegularIterator.h
     key/Area.cc
     key/Area.h
-    key/Key.cc
-    key/Key.h
     key/grid/ClassicPattern.cc
     key/grid/ClassicPattern.h
     key/grid/Grid.cc
@@ -793,7 +791,7 @@ list(APPEND mir_srcs
     stats/statistics/Integral.h)
 
 if(mir_HAVE_PNG)
-    list(APPEND mir_srcs output/PNGOutput.h output/PNGOutput.cc)
+    list(APPEND mir_srcs output/PNGOutput.cc output/PNGOutput.h)
 endif()
 
 if(mir_HAVE_NETCDF)
@@ -938,6 +936,10 @@ ecbuild_add_library(
     PUBLIC_LIBS        atlas eckit_linalg eckit_geometry eckit_option eckit eckit_geo eccodes
     PUBLIC_INCLUDES    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/src>
     SOURCES            ${mir_srcs})
+
+if(mir_HAVE_METKIT)
+    target_link_libraries(mir PRIVATE metkit)
+endif()
 
 if(mir_HAVE_NETCDF)
     target_link_libraries(mir PRIVATE NetCDF::NetCDF_C)

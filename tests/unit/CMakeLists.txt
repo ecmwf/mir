@@ -38,6 +38,10 @@ set(TESTS
     weight_matrix
     wind)
 
+if(mir_HAVE_METKIT)
+    list(APPEND TESTS metkit)
+endif()
+
 if(mir_HAVE_NETCDF)
     list(APPEND TESTS interpolation_netcdf)
 endif()

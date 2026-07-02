@@ -23,12 +23,16 @@
 #include "mir/action/io/Save.h"
 #include "mir/action/io/Set.h"
 #include "mir/action/plan/ActionPlan.h"
+#include "mir/api/mir_config.h"
 #include "mir/compat/GribCompatibility.h"
+#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/grib/BasicAngle.h"
+#include "mir/grib/Config.h"
 #include "mir/grib/Packing.h"
 #include "mir/input/MIRInput.h"
 #include "mir/key/Area.h"
+#include "mir/param/CombinedParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
@@ -39,6 +43,15 @@
 #include "mir/util/Mutex.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
+
+#if mir_HAVE_METKIT
+#include "eckit/geo/Grid.h"
+
+#include "metkit/codes/api/CodesAPI.h"
+#include "metkit/mars2grib/api/Mars2Grib.h"
+
+#include "mir/param/RuntimeParametrisation.h"
+#endif
 
 
 namespace mir::output {
@@ -186,6 +199,34 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
     const auto& input = ctx.input();
 
     field.validate();
+
+    if constexpr (mir_HAVE_METKIT) {
+        std::unique_ptr<param::MIRParametrisation> grib_config(make_parametrised_config(param));
+        ASSERT(grib_config);
+
+        auto grib_use_metkit_encoder = LibMir::gribUseMetkitEncoder();
+        grib_config->get("grib-use-metkit-encoder", grib_use_metkit_encoder);
+
+        bool first = true;
+        for (size_t i = 0; i < field.dimensions() && grib_use_metkit_encoder; i++) {
+            const auto* h = input.gribHandle(i);
+            ASSERT(h != nullptr);
+
+            long MTG2Switch = 0;
+            GRIB_CALL(codes_get_long(h, "MTG2Switch", &MTG2Switch));
+            if (first) {
+                first                   = false;
+                grib_use_metkit_encoder = (MTG2Switch > 0);
+            }
+            else {
+                ASSERT(grib_use_metkit_encoder == (MTG2Switch > 0));
+            }
+        }
+
+        if (grib_use_metkit_encoder) {
+            return save_with_metkit(param, ctx);
+        }
+    }
 
     size_t total = 0;
 
@@ -505,6 +546,68 @@ size_t GribOutput::set(const param::MIRParametrisation& param, context::Context&
 
 
 void GribOutput::fill(grib_handle* /*unused*/, grib_info& /*unused*/) const {}
+
+
+const grib::Config& GribOutput::config() {
+    static const grib::Config cfg(LibMir::configFile(LibMir::config_file::GRIB_OUTPUT), true);
+    return cfg;
+}
+
+
+param::MIRParametrisation* GribOutput::make_parametrised_config(const param::MIRParametrisation& param) {
+    return new param::CombinedParametrisation(param.userParametrisation(), param.fieldParametrisation(),
+                                              config().find(param));
+}
+
+
+size_t GribOutput::save_with_metkit(const param::MIRParametrisation& param, context::Context& ctx) {
+#if mir_HAVE_METKIT
+    const auto& field = ctx.field();
+    field.validate();
+
+    std::string gridSpec;
+    ASSERT(param.get("gridSpec", gridSpec) && !gridSpec.empty());
+
+    param::RuntimeParametrisation runtime(param);
+    if (const std::string key = "origin"; !runtime.has(key)) {
+        runtime.set(key, "ecmf");
+    }
+
+    runtime.set("grid", gridSpec);
+    runtime.unset("area");
+    runtime.unset("rotation");
+
+    metkit::mars2grib::Mars2Grib enc;
+    size_t total = 0;
+
+    for (size_t d = 0; d < field.dimensions(); ++d, ++saved_) {
+        auto h = enc.encode(field.values(d), runtime);
+        ASSERT(h);
+
+        auto message = h->messageData();
+
+        GRIB_CALL(codes_check_message_header(message.data(), message.size(), PRODUCT_GRIB));
+        GRIB_CALL(codes_check_message_footer(message.data(), message.size(), PRODUCT_GRIB));
+
+        {
+            auto timing(ctx.statistics().saveTimer());
+            out(message.data(), message.size(), true);
+        }
+
+        total += message.size();
+
+        if (grib_check_is_message_valid()) {
+            if (const auto valid = h->getLong("isMessageValid"); valid != 1) {
+                throw exception::WriteError("GribOutput: invalid GRIB message");
+            }
+        }
+    }
+
+    return total;
+#else
+    NOTIMP;
+#endif
+}
 
 
 #undef Y

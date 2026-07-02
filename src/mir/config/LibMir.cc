@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <set>
 
+#include "eckit/config/Configuration.h"
 #include "eckit/config/Resource.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/utils/MD5.h"
@@ -70,6 +71,13 @@ const std::string& LibMir::gribSampleName() {
 }
 
 
+bool LibMir::gribUseMetkitEncoder() {
+    static const bool use =
+        eckit::LibResource<bool, LibMir>("mir-grib-use-metkit-encoder;$MIR_GRIB_USE_METKIT_ENCODER", false);
+    return use;
+}
+
+
 eckit::PathName LibMir::configFile(config_file c) {
     using r = eckit::LibResource<std::string, LibMir>;
 
@@ -122,6 +130,17 @@ std::string LibMir::cacheLoader(cache_loader l) {
 
     ASSERT(0 <= l && l < cache_loader::ALL_CACHE_LOADERS);
     return loaders[l];
+}
+
+
+const std::vector<std::string>& LibMir::postProcessKeys() {
+    static const std::vector<std::string> defaults{
+        "accuracy", "bitmap",  "checkerboard", "compatibility", "edition", "filter",  "format",  "formula",
+        "frame",    "griddef", "latitudes",    "longitudes",    "nabla",   "packing", "pattern", "vod2uv",
+    };
+
+    static const auto& keys = instance().configuration().getStringVector("post-process", defaults);
+    return keys;
 }
 
 
