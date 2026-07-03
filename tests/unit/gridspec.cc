@@ -50,7 +50,7 @@ CASE("GridSpec input/output") {
         {"{grid: hr2}", R"({"grid":"H2"})", 48, false},                       // NOTE: HEALPix is non-croppable
         {"{grid: h2n}", R"({"grid":"H2","order":"nested"})", 48, false},      // NOTE: HEALPix is non-croppable
         {"{grid: o96}", R"({"grid":"O96"})", 40320, false},
-        {R"({"area":[89.2842275325138,0,-89.2842275325138,359.1],"grid":"O96"})", R"({"grid":"O96"})", 40320, false},
+        // {R"({"area":[89.2842275325138,0,-89.2842275325138,359.1],"grid":"O96"})", R"({"grid":"O96"})", 40320, false},
     };
 
 

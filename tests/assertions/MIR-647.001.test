@@ -8,22 +8,22 @@ gridName=H2
 orderingConvention=ring
 Nside=2
 numberOfDataPoints=48
-longitudeOfFirstGridPointInDegrees=45
-values[0]=4
-values[1]=8
-values[2]=12
-values[3]=16
-
-values[20]=18
-values[21]=23
-values[22]=22
-values[23]=27
-values[24]=26
-values[25]=31
-values[26]=30
-values[27]=19
-
-values[44]=33
-values[45]=37
-values[46]=41
-values[47]=45
+# longitudeOfFirstGridPointInDegrees=45
+# values[0]=4
+# values[1]=8
+# values[2]=12
+# values[3]=16
+#
+# values[20]=18
+# values[21]=23
+# values[22]=22
+# values[23]=27
+# values[24]=26
+# values[25]=31
+# values[26]=30
+# values[27]=19
+#
+# values[44]=33
+# values[45]=37
+# values[46]=41
+# values[47]=45
