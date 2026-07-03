@@ -1,7 +1,7 @@
 # input
 gridType=healpix,Nside=2,orderingConvention=nested.grib2
 # mir
---grid=H2 --interpolation=linear
+--grid=H2 --interpolation=nn
 # grib_get
 gridType=healpix
 gridName=H2

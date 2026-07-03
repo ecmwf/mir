@@ -54,6 +54,7 @@ CASE("HEALPix") {
             for (const auto& out : tests) {
                 api::MIRJob job;
                 job.set("grid", out.grid);
+                job.set("interpolation", "nn");
 
                 std::unique_ptr<input::MIRInput> input(new input::GribFileInput(in));
                 ASSERT(input->next());
@@ -77,6 +78,7 @@ CASE("HEALPix") {
             for (const auto& out : tests) {
                 api::MIRJob job;
                 job.set("grid", out.grid);
+                job.set("interpolation", "nn");
 
                 std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), param));
                 ASSERT(input->next());

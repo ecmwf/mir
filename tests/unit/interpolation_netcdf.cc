@@ -25,13 +25,15 @@ namespace mir::tests::unit {
 
 
 CASE("interpolations") {
-    api::MIRJob jobs[3];  // jobs[0]: no post-processing
+    api::MIRJob jobs[3];  // jobs[2]: no post-processing
 
     jobs[0].set("caching", false);
     jobs[0].set("grid", "3/3");
+    jobs[0].set("interpolation", "nn");
 
     jobs[1].set("caching", false);
     jobs[1].set("grid", "1/1");
+    jobs[1].set("interpolation", "nn");
     jobs[1].set("area", "40/20/20/40");
     jobs[1].set("frame", 2);
 

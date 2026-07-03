@@ -79,6 +79,7 @@ CASE("GridSpec input/output") {
 
             api::MIRJob job;
             job.set("grid", std::vector<double>{5., 5.});
+            job.set("interpolation", "nn");
 
             std::vector<double> values(test_input.size, 0.);
             for (std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
@@ -109,6 +110,7 @@ CASE("GridSpec input/output") {
 
             api::MIRJob job;
             job.set("grid", test_output.grid);
+            job.set("interpolation", "nn");
 
             std::vector<double> values(15, 0.);
             for (std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
@@ -134,6 +136,7 @@ CASE("GridSpec input/output") {
                 output::ArrayOutput output;
                 api::MIRJob job;
                 job.set("grid", test_output.grid);
+                job.set("interpolation", "nn");
 
                 std::vector<double> values(test.size, 0.);
                 for (std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
