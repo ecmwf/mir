@@ -29,6 +29,17 @@ if(MARS_SCRIPT)
     endforeach()
 endif()
 
+foreach(_t
+        MIR-647
+    )
+    ecbuild_add_test(
+        TARGET            mir_tests_assertions_${_t}
+        SOURCES           ${_t}.cc
+        LIBS              mir
+        ENVIRONMENT       ${_testEnvironment}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+endforeach()
+
 if(NOT eccodes_HAVE_AEC)
     set_tests_properties(
 	    mir_tests_assertions_MIR_488_001
@@ -71,8 +82,6 @@ if(NOT eccodes_HAVE_AEC)
 	    mir_tests_assertions_MIR_643_001
 	    mir_tests_assertions_MIR_643_002
 	    mir_tests_assertions_MIR_643_003
-	    mir_tests_assertions_MIR_647_001
-	    mir_tests_assertions_MIR_647_002
 	    mir_tests_assertions_MIR_651_packingType_spectral_ieee_003
 	    mir_tests_assertions_MIR_679_WP_to_ICON
 	    mir_tests_assertions_MIR_683_001
@@ -92,11 +101,5 @@ if(NOT eccodes_HAVE_AEC)
 	    mir_tests_assertions_grid_from_geopoints_format_xy_vector
 	    mir_tests_assertions_grid_from_geopoints_format_xyv
 	    mir_tests_assertions_grid_from_geopoints_standard
-        PROPERTIES WILL_FAIL TRUE)
-endif()
-
-if(NOT atlas_HAVE_TESSELATION)
-    set_tests_properties(
-        mir_tests_assertions_MIR_647_001
         PROPERTIES WILL_FAIL TRUE)
 endif()

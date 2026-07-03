@@ -38,7 +38,7 @@ set(TESTS
     weight_matrix
     wind)
 
-if(mir_HAVE_NETCDF AND atlas_HAVE_TESSELATION)
+if(mir_HAVE_NETCDF)
     list(APPEND TESTS interpolation_netcdf)
 endif()
 
@@ -51,12 +51,6 @@ foreach(_t ${TESTS})
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 endforeach()
-
-if(NOT atlas_HAVE_TESSELATION)
-    set_tests_properties(
-        mir_tests_unit_gridspec
-        PROPERTIES WILL_FAIL TRUE)
-endif()
 
 if(ENABLE_BUILD_TOOLS)
     ecbuild_configure_file(grib_fail_decode.sh.in grib_fail_decode.sh)
