@@ -437,7 +437,7 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
         GRIB_CALL(codes_check_message_header(message, size, PRODUCT_GRIB));
         GRIB_CALL(codes_check_message_footer(message, size, PRODUCT_GRIB));
 
-        {  // Remove
+        {
             auto timing(ctx.statistics().saveTimer());
             out(message, size, true);
         }
@@ -531,7 +531,7 @@ size_t GribOutput::set(const param::MIRParametrisation& param, context::Context&
         GRIB_CALL(codes_check_message_header(message, size, PRODUCT_GRIB));
         GRIB_CALL(codes_check_message_footer(message, size, PRODUCT_GRIB));
 
-        {  // Remove
+        {
             auto timing(ctx.statistics().saveTimer());
             out(message, size, true);
         }

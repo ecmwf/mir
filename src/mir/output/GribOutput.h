@@ -29,9 +29,6 @@ namespace mir::output {
 
 class GribOutput : public MIROutput {
 public:
-    // -- Exceptions
-    // None
-
     // -- Constructors
 
     GribOutput();
@@ -39,12 +36,6 @@ public:
     // -- Destructor
 
     ~GribOutput() override;
-
-    // -- Convertors
-    // None
-
-    // -- Operators
-    // None
 
     // -- Methods
 
@@ -55,20 +46,9 @@ public:
     static param::MIRParametrisation* make_parametrised_config(const param::MIRParametrisation&);
 
 protected:
-    // -- Members
-
     // -- Methods
 
     virtual void fill(grib_handle* handle, grib_info& info) const;
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
 
 private:
     // -- Members
@@ -90,15 +70,6 @@ private:
     bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const override;
     bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const override;
     void prepare(const param::MIRParametrisation&, action::ActionPlan&, MIROutput&) override;
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-    // -- Friends
-    // None
 };
 
 

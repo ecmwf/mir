@@ -53,16 +53,15 @@ struct OutputFromExtension : public MIROutputFactory {
         const eckit::PathName p(path);
         const std::string ext = p.extension();
 
-        auto j = m_extensions->find(ext);
-        if (j == m_extensions->cend()) {
-            list(Log::debug() << "OutputFromExtension: unknown extension '" << ext << "', choices are: ");
-            Log::debug() << ", returning 'grib'" << std::endl;
-
-            return new GribFileOutput(p);
+        if (auto j = m_extensions->find(ext); j != m_extensions->cend()) {
+            Log::debug() << "MIROutputFactory: returning '" << ext << "' for '" << path << "'" << std::endl;
+            return j->second->make(path);
         }
 
-        Log::debug() << "MIROutputFactory: returning '" << ext << "' for '" << path << "'" << std::endl;
-        return j->second->make(path);
+        list(Log::debug() << "OutputFromExtension: unknown extension '" << ext << "', choices are: ");
+        Log::debug() << ", returning 'grib'" << std::endl;
+
+        return new GribFileOutput(p);
     }
 
     static void list(std::ostream& out) {
@@ -134,15 +133,14 @@ MIROutput* MIROutputFactory::build(const std::string& path, const param::MIRPara
 
     user.get("format", format);
 
-    auto j = m_formats->find(format);
-    if (j == m_formats->cend()) {
-        list(Log::error() << "MIROutputFactory: unknown '" << format << "', choices are: ");
-        Log::error() << std::endl;
-        throw exception::SeriousBug("MIROutputFactory: unknown '" + format + "'");
+    if (auto j = m_formats->find(format); j != m_formats->cend()) {
+        Log::debug() << "MIROutputFactory: returning '" << format << "' for '" << path << "'" << std::endl;
+        return j->second->make(path);
     }
 
-    Log::debug() << "MIROutputFactory: returning '" << format << "' for '" << path << "'" << std::endl;
-    return j->second->make(path);
+    list(Log::error() << "MIROutputFactory: unknown '" << format << "', choices are: ");
+    Log::error() << std::endl;
+    throw exception::SeriousBug("MIROutputFactory: unknown '" + format + "'");
 }
 
 
