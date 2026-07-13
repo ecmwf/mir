@@ -45,12 +45,10 @@
 #include "mir/util/Types.h"
 
 #if mir_HAVE_METKIT
-#include "eckit/geo/Grid.h"
-
 #include "metkit/codes/api/CodesAPI.h"
+#include "metkit/grib2mars/api/Grib2Mars.h"
 #include "metkit/mars2grib/api/Mars2Grib.h"
-
-#include "mir/param/RuntimeParametrisation.h"
+#include "metkit/mars2mars/api/Mars2Mars.h"
 #endif
 
 
@@ -204,31 +202,26 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
         std::unique_ptr<param::MIRParametrisation> grib_config(make_parametrised_config(param));
         ASSERT(grib_config);
 
-        auto grib_use_metkit_encoder = LibMir::gribUseMetkitEncoder();
+        auto grib_use_metkit_encoder = false;
         grib_config->get("grib-use-metkit-encoder", grib_use_metkit_encoder);
 
         bool first = true;
         for (size_t i = 0; i < field.dimensions() && grib_use_metkit_encoder; i++) {
-            static const auto* key = "MTG2Switch";
+            bool MTG2Switch = false;
+            param.fieldParametrisation().get("MTG2Switch", MTG2Switch);
 
-            const auto* h = input.gribHandle(i);
-            ASSERT(h != nullptr);
-
-            if (codes_is_defined(h, key) == 0) {
-                grib_use_metkit_encoder = false;
-                break;
-            }
-
-            long MTG2Switch = 0;
-            GRIB_CALL(codes_get_long(h, key, &MTG2Switch));
             if (first) {
                 first                   = false;
-                grib_use_metkit_encoder = (MTG2Switch > 0);
+                grib_use_metkit_encoder = MTG2Switch;
             }
             else {
-                ASSERT(grib_use_metkit_encoder == (MTG2Switch > 0));
+                ASSERT(grib_use_metkit_encoder == MTG2Switch);
             }
         }
+
+        // env variable & command-line override, for testing
+        grib_use_metkit_encoder |= LibMir::gribUseMetkitEncoder();
+        param.userParametrisation().get("grib-use-metkit-encoder", grib_use_metkit_encoder);
 
         if (grib_use_metkit_encoder) {
             return save_with_metkit(param, ctx);
@@ -570,38 +563,53 @@ param::MIRParametrisation* GribOutput::make_parametrised_config(const param::MIR
 size_t GribOutput::save_with_metkit(const param::MIRParametrisation& param, context::Context& ctx) {
 #if mir_HAVE_METKIT
     const auto& field = ctx.field();
+    const auto& input = ctx.input();
     field.validate();
 
     std::string gridSpec;
     ASSERT(param.get("gridSpec", gridSpec) && !gridSpec.empty());
 
-    param::RuntimeParametrisation runtime(param);
-    if (const std::string key = "origin"; !runtime.has(key)) {
-        runtime.set(key, "ecmf");
-    }
+    metkit::grib2mars::Grib2Mars grib2mars;
+    metkit::mars2mars::Mars2Mars mars2mars;
+    metkit::mars2grib::Mars2Grib mars2grib;
 
-    runtime.set("grid", gridSpec);
-    runtime.unset("area");
-    runtime.unset("rotation");
-
-    metkit::mars2grib::Mars2Grib enc;
     size_t total = 0;
 
     for (size_t d = 0; d < field.dimensions(); ++d, ++saved_) {
-        auto h = enc.encode(field.values(d), runtime);
+        auto ch = metkit::codes::codesHandleFromGRIBHandle(input.gribHandle(field.handle(d)));
+        ASSERT(ch);
+
+        auto original     = grib2mars.convert<eckit::LocalConfiguration>(*ch);
+        auto [mars, misc] = mars2mars.convert<eckit::LocalConfiguration>(original.mars);
+
+        mars.set("grid", gridSpec);
+        mars.remove("area");
+        mars.remove("rotation");
+
+        for (const auto& key : original.misc.keys()) {
+            if (original.misc.isString(key)) {
+                misc.set(key, original.misc.getString(key));
+            }
+            else if (original.misc.isIntegral(key)) {
+                misc.set(key, original.misc.getLong(key));
+            }
+            else if (original.misc.isFloatingPoint(key)) {
+                misc.set(key, original.misc.getDouble(key));
+            }
+            else {
+                throw exception::UserError("Unexpected type for '" + key + "'", Here());
+            }
+        }
+
+        const auto h = mars2grib.encode(field.values(d), mars, misc);
         ASSERT(h);
-
-        auto message = h->messageData();
-
-        GRIB_CALL(codes_check_message_header(message.data(), message.size(), PRODUCT_GRIB));
-        GRIB_CALL(codes_check_message_footer(message.data(), message.size(), PRODUCT_GRIB));
 
         {
             auto timing(ctx.statistics().saveTimer());
-            out(message.data(), message.size(), true);
+            out(h->messageData().data(), h->messageSize(), true);
         }
 
-        total += message.size();
+        total += h->messageSize();
 
         if (grib_check_is_message_valid()) {
             if (const auto valid = h->getLong("isMessageValid"); valid != 1) {
