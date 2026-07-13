@@ -209,11 +209,18 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
 
         bool first = true;
         for (size_t i = 0; i < field.dimensions() && grib_use_metkit_encoder; i++) {
+            static const auto* key = "MTG2Switch";
+
             const auto* h = input.gribHandle(i);
             ASSERT(h != nullptr);
 
+            if (codes_is_defined(h, key) == 0) {
+                grib_use_metkit_encoder = false;
+                break;
+            }
+
             long MTG2Switch = 0;
-            GRIB_CALL(codes_get_long(h, "MTG2Switch", &MTG2Switch));
+            GRIB_CALL(codes_get_long(h, key, &MTG2Switch));
             if (first) {
                 first                   = false;
                 grib_use_metkit_encoder = (MTG2Switch > 0);
