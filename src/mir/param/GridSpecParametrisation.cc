@@ -47,19 +47,19 @@ void fill_grid(SimpleParametrisation& param, const eckit::geo::Grid& grid) {
         param.set("gridType", "regular_ll");
         param.set("gridded", true);
 
-        auto dlon = g.dlon();
+        auto dlon = g.dx();
         const std::string i(dlon < 0. ? "i-" : "i+");
         param.set("west_east_increment", std::abs(dlon));
 
-        auto dlat = g.dlat();
+        auto dlat = g.dy();
         const std::string j(dlat < 0. ? "j-" : "j+");
         param.set("south_north_increment", std::abs(dlat));
 
         param.set("grid", std::vector<double>{dlon, dlat});
         param.set("order", i + j);
 
-        param.set("Ni", g.nlon());
-        param.set("Nj", g.nlat());
+        param.set("Ni", g.nx());
+        param.set("Nj", g.ny());
 
         fill_scanning_mode(param, grid);
         return;
