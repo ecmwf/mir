@@ -48,7 +48,6 @@
 #include "metkit/codes/api/CodesAPI.h"
 #include "metkit/grib2mars/api/Grib2Mars.h"
 #include "metkit/mars2grib/api/Mars2Grib.h"
-#include "metkit/mars2mars/api/Mars2Mars.h"
 #endif
 
 
@@ -570,7 +569,6 @@ size_t GribOutput::save_with_metkit(const param::MIRParametrisation& param, cont
     ASSERT(param.get("gridSpec", gridSpec) && !gridSpec.empty());
 
     metkit::grib2mars::Grib2Mars grib2mars;
-    metkit::mars2mars::Mars2Mars mars2mars;
     metkit::mars2grib::Mars2Grib mars2grib;
 
     size_t total = 0;
@@ -579,27 +577,11 @@ size_t GribOutput::save_with_metkit(const param::MIRParametrisation& param, cont
         auto ch = metkit::codes::codesHandleFromGRIBHandle(input.gribHandle(field.handle(d)));
         ASSERT(ch);
 
-        auto original     = grib2mars.convert<eckit::LocalConfiguration>(*ch);
-        auto [mars, misc] = mars2mars.convert<eckit::LocalConfiguration>(original.mars);
+        auto [mars, misc] = grib2mars.convert<eckit::LocalConfiguration>(*ch);
 
         mars.set("grid", gridSpec);
         mars.remove("area");
         mars.remove("rotation");
-
-        for (const auto& key : original.misc.keys()) {
-            if (original.misc.isString(key)) {
-                misc.set(key, original.misc.getString(key));
-            }
-            else if (original.misc.isIntegral(key)) {
-                misc.set(key, original.misc.getLong(key));
-            }
-            else if (original.misc.isFloatingPoint(key)) {
-                misc.set(key, original.misc.getDouble(key));
-            }
-            else {
-                throw exception::UserError("Unexpected type for '" + key + "'", Here());
-            }
-        }
 
         const auto h = mars2grib.encode(field.values(d), mars, misc);
         ASSERT(h);
