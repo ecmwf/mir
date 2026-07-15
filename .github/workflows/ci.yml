@@ -19,12 +19,13 @@ on:
   pull_request_target:
     types: [labeled]
 
+
 jobs:
   # Run CI including downstream packages on self-hosted runners
   downstream-ci:
     name: downstream-ci
     if: ${{ !github.event.pull_request.head.repo.fork && github.event.action != 'labeled' || github.event.label.name == 'approved-for-ci' }}
-    uses: ecmwf/downstream-ci/.github/workflows/downstream-ci.yml@main
+    uses: ecmwf/downstream-ci/.github/workflows/downstream-ci.yml@rename_deps_to_trigger
     with:
       mir: ecmwf/mir@${{ github.event.pull_request.head.sha || github.sha }}
       codecov_upload: true
@@ -48,11 +49,12 @@ jobs:
           event_type: downstream-ci
           payload: '{"mir": "ecmwf/mir@${{ github.event.pull_request.head.sha || github.sha }}"}'
 
+
   # Build downstream packages on HPC
   downstream-ci-hpc:
     name: downstream-ci-hpc
     if: ${{ !github.event.pull_request.head.repo.fork && github.event.action != 'labeled' || github.event.label.name == 'approved-for-ci' }}
-    uses: ecmwf/downstream-ci/.github/workflows/downstream-ci-hpc.yml@main
+    uses: ecmwf/downstream-ci/.github/workflows/downstream-ci-hpc.yml@rename_deps_to_trigger
     with:
       mir: ecmwf/mir@${{ github.event.pull_request.head.sha || github.sha }}
     secrets: inherit
