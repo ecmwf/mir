@@ -1,11 +1,14 @@
 build:
   modules:
     - ninja
+    - qhull
   dependencies:
     - ecmwf/ecbuild@develop
     - ecmwf/eccodes@develop
     - ecmwf/eckit@develop
     - ecmwf/atlas@develop
+  dependency_cmake_options:
+    - "ecmwf/atlas: '-DENABLE_TESSELATION=ON'"
   parallel: 64
   env:
     - MIR_CACHING=0
