@@ -32,8 +32,16 @@ public:
 
     static bool caching();
     static const std::string& lsmNamed();
+
+    enum grib_use_metkit_encoder
+    {
+        UNDEFINED = 0,
+        DEFINED_TRUE,
+        DEFINED_FALSE
+    };
+
     static const std::string& gribSampleName();
-    static bool gribUseMetkitEncoder();
+    static grib_use_metkit_encoder gribUseMetkitEncoder();
 
     std::string version() const override;
     std::string gitsha1(unsigned int count) const override;

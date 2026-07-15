@@ -16,6 +16,7 @@
 #include <ostream>
 #include <sstream>
 
+#include "eckit/config/LocalConfiguration.h"
 #include "eckit/config/Resource.h"
 
 #include "mir/action/context/Context.h"
@@ -45,6 +46,8 @@
 #include "mir/util/Types.h"
 
 #if mir_HAVE_METKIT
+#include "eckit/spec/Custom.h"
+
 #include "metkit/codes/api/CodesAPI.h"
 #include "metkit/grib2mars/api/Grib2Mars.h"
 #include "metkit/mars2grib/api/Mars2Grib.h"
@@ -197,34 +200,8 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
 
     field.validate();
 
-    if constexpr (mir_HAVE_METKIT) {
-        std::unique_ptr<param::MIRParametrisation> grib_config(make_parametrised_config(param));
-        ASSERT(grib_config);
-
-        auto grib_use_metkit_encoder = false;
-        grib_config->get("grib-use-metkit-encoder", grib_use_metkit_encoder);
-
-        bool first = true;
-        for (size_t i = 0; i < field.dimensions() && grib_use_metkit_encoder; i++) {
-            bool MTG2Switch = false;
-            param.fieldParametrisation().get("MTG2Switch", MTG2Switch);
-
-            if (first) {
-                first                   = false;
-                grib_use_metkit_encoder = MTG2Switch;
-            }
-            else {
-                ASSERT(grib_use_metkit_encoder == MTG2Switch);
-            }
-        }
-
-        // env variable & command-line override, for testing
-        grib_use_metkit_encoder |= LibMir::gribUseMetkitEncoder();
-        param.userParametrisation().get("grib-use-metkit-encoder", grib_use_metkit_encoder);
-
-        if (grib_use_metkit_encoder) {
-            return save_with_metkit(param, ctx);
-        }
+    if (do_save_with_metkit(param)) {
+        return save_with_metkit(param, ctx);
     }
 
     size_t total = 0;
@@ -547,6 +524,29 @@ size_t GribOutput::set(const param::MIRParametrisation& param, context::Context&
 void GribOutput::fill(grib_handle* /*unused*/, grib_info& /*unused*/) const {}
 
 
+bool GribOutput::do_save_with_metkit(const param::MIRParametrisation& param) {
+    bool grib_use_metkit_encoder = false;
+
+#if mir_HAVE_METKIT
+    if (param.userParametrisation().get("grib-use-metkit-encoder", grib_use_metkit_encoder)) {
+        return grib_use_metkit_encoder;
+    }
+
+    if (auto env = LibMir::gribUseMetkitEncoder(); env != LibMir::UNDEFINED) {
+        return env == LibMir::DEFINED_TRUE;
+    }
+
+    if (std::string centre; param.fieldParametrisation().get("centre", centre) && centre != "ecmf") {
+        return false;
+    }
+
+    param.fieldParametrisation().get("MTG2Switch", grib_use_metkit_encoder);
+#endif
+
+    return grib_use_metkit_encoder;
+}
+
+
 const grib::Config& GribOutput::config() {
     static const grib::Config cfg(LibMir::configFile(LibMir::config_file::GRIB_OUTPUT), true);
     return cfg;
@@ -554,8 +554,10 @@ const grib::Config& GribOutput::config() {
 
 
 param::MIRParametrisation* GribOutput::make_parametrised_config(const param::MIRParametrisation& param) {
-    return new param::CombinedParametrisation(param.userParametrisation(), param.fieldParametrisation(),
-                                              config().find(param));
+    auto* ptr = new param::CombinedParametrisation(param.userParametrisation(), param.fieldParametrisation(),
+                                                   config().find(param));
+    ASSERT(ptr != nullptr);
+    return ptr;
 }
 
 
@@ -563,15 +565,17 @@ size_t GribOutput::save_with_metkit(const param::MIRParametrisation& param, cont
 #if mir_HAVE_METKIT
     const auto& field = ctx.field();
     const auto& input = ctx.input();
-    field.validate();
 
-    std::string gridSpec;
-    ASSERT(param.get("gridSpec", gridSpec) && !gridSpec.empty());
+    eckit::LocalConfiguration cfg;
+    cfg.set("skipSection3", true);
 
     metkit::grib2mars::Grib2Mars grib2mars;
-    metkit::mars2grib::Mars2Grib mars2grib;
+    metkit::mars2grib::Mars2Grib mars2grib(cfg);
 
     size_t total = 0;
+
+    util::MIRStatistics::Timing saveTimer;
+    auto timer(ctx.statistics().gribEncodingTimer());
 
     for (size_t d = 0; d < field.dimensions(); ++d, ++saved_) {
         auto ch = metkit::codes::codesHandleFromGRIBHandle(input.gribHandle(field.handle(d)));
@@ -579,9 +583,15 @@ size_t GribOutput::save_with_metkit(const param::MIRParametrisation& param, cont
 
         auto [mars, misc] = grib2mars.convert<eckit::LocalConfiguration>(*ch);
 
-        mars.set("grid", gridSpec);
+        auto grid = [&field]() {
+            repres::Representation::CustomSpec spec;
+            repres::RepresentationHandle(field.representation())->fillSpec(spec);
+            return spec.str();
+        }();
+
         mars.remove("area");
         mars.remove("rotation");
+        mars.set("grid", grid);
 
         const auto h = mars2grib.encode(field.values(d), mars, misc);
         ASSERT(h);
@@ -599,6 +609,8 @@ size_t GribOutput::save_with_metkit(const param::MIRParametrisation& param, cont
             }
         }
     }
+
+    ctx.statistics().gribEncodingTiming() -= saveTimer;
 
     return total;
 #else

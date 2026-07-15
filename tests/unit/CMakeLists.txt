@@ -1,4 +1,3 @@
-
 set(TESTS
 #    MIR-333
 #    MIR-356
@@ -38,10 +37,6 @@ set(TESTS
     weight_matrix
     wind)
 
-if(mir_HAVE_METKIT)
-    list(APPEND TESTS metkit)
-endif()
-
 if(mir_HAVE_NETCDF)
     list(APPEND TESTS interpolation_netcdf)
 endif()
@@ -55,6 +50,16 @@ foreach(_t ${TESTS})
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 endforeach()
+
+if(mir_HAVE_METKIT)
+    # set(_t metkit_encoding)
+    # ecbuild_add_test(TARGET mir_tests_unit_${_t}       SOURCES ${_t}.cc LIBS mir WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ENVIRONMENT ${_testEnvironment})
+
+    set(_t metkit_control)
+    ecbuild_add_test(TARGET mir_tests_unit_${_t}       SOURCES ${_t}.cc LIBS mir WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ENVIRONMENT ${_testEnvironment})
+    ecbuild_add_test(TARGET mir_tests_unit_${_t}_env_0 SOURCES ${_t}.cc LIBS mir WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ENVIRONMENT ${_testEnvironment} MIR_GRIB_USE_METKIT_ENCODER=0)
+    ecbuild_add_test(TARGET mir_tests_unit_${_t}_env_1 SOURCES ${_t}.cc LIBS mir WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ENVIRONMENT ${_testEnvironment} MIR_GRIB_USE_METKIT_ENCODER=1)
+endif()
 
 if(ENABLE_BUILD_TOOLS)
     ecbuild_configure_file(grib_fail_decode.sh.in grib_fail_decode.sh)
