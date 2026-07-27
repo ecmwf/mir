@@ -6,6 +6,7 @@ build:
     - ecmwf/eccodes@develop
     - ecmwf/eckit@develop
     - ecmwf/atlas@develop
+    - ecmwf/metkit@develop
   parallel: 64
   env:
     - MIR_CACHING=0
