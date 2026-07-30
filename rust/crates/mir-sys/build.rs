@@ -3,8 +3,7 @@ const MIR_VERSION: &str = "1.28.2";
 fn main() {
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=src/lib.rs");
-    println!("cargo:rerun-if-changed=cpp/mir_bridge.h");
-    println!("cargo:rerun-if-changed=cpp/mir_bridge.cpp");
+    println!("cargo:rerun-if-changed=cpp");
     println!("cargo:rerun-if-env-changed=MIR_DIR");
     println!("cargo:rerun-if-env-changed=DOCS_RS");
 
@@ -73,7 +72,11 @@ fn build_system() {
     println!("cargo:rustc-link-lib=dylib=mir");
 
     cxx_build::bridge("src/lib.rs")
-        .file(crate_dir.join("cpp/mir_bridge.cpp"))
+        .file(crate_dir.join("cpp/Job.cc"))
+        .file(crate_dir.join("cpp/LibMir.cc"))
+        .file(crate_dir.join("cpp/MIRInput.cc"))
+        .file(crate_dir.join("cpp/MIROutput.cc"))
+        .file(crate_dir.join("cpp/Parametrisation.cc"))
         .include(&mir_include)
         .include(&eckit_include)
         .include(&eckit_cpp_dir)
@@ -177,7 +180,11 @@ fn build_vendored() {
     generate_exceptions(&include_dir);
 
     cxx_build::bridge("src/lib.rs")
-        .file(crate_dir.join("cpp/mir_bridge.cpp"))
+        .file(crate_dir.join("cpp/Job.cc"))
+        .file(crate_dir.join("cpp/LibMir.cc"))
+        .file(crate_dir.join("cpp/MIRInput.cc"))
+        .file(crate_dir.join("cpp/MIROutput.cc"))
+        .file(crate_dir.join("cpp/Parametrisation.cc"))
         .include(&include_dir)
         .include(format!("{eckit_root}/include"))
         .include(&eckit_cpp_dir)
