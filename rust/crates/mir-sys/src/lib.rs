@@ -189,12 +189,15 @@ pub use ffi::*;
 
 // ==================== Output callback adapter ====================
 
+/// The closure an output built by `to_callback` hands each message to.
+type OutputFn = Box<dyn FnMut(&[u8]) + Send>;
+
 /// Opaque wrapper holding the closure each interpolated message is handed to.
 ///
 /// The C++ `CallbackOutput` (declared in `MIROutput.h` as `struct OutputBox`)
 /// carries this by `rust::Box<OutputBox>` and forwards every
 /// `out(const void*, size_t, bool)` call via [`invoke_output`].
-pub struct OutputBox(Box<dyn FnMut(&[u8]) + Send>);
+pub struct OutputBox(OutputFn);
 
 /// Wrap a closure for [`ffi::MIROutputWrapper::to_callback`].
 ///
