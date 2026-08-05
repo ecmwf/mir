@@ -2,7 +2,7 @@
 #pragma once
 
 #include "Parametrisation.h"
-#include "eckit_bridge.h"
+#include "EckitBridge.h"
 
 #include "mir/input/MIRInput.h"
 
