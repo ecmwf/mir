@@ -76,20 +76,18 @@ CASE("metkit") {
         param::SimpleParametrisation user;
         param::CombinedParametrisation param(user, in->parametrisation());
 
-        long MTG2Switch = 0;
-        long centre     = 0;
-        EXPECT(in->parametrisation().get("MTG2Switch", MTG2Switch));
-        EXPECT(in->parametrisation().get("centre", centre));
-        const auto MTG2Encoder = (MTG2Switch != 0) && (centre == 98);
+        long isECMWFPostGRIB2MigrationMessage = 0;
+        EXPECT(in->parametrisation().get("isECMWFPostGRIB2MigrationMessage", isECMWFPostGRIB2MigrationMessage));
+        const auto test_mtg2_encoder = (isECMWFPostGRIB2MigrationMessage != 0);
 
-        EXPECT(MTG2Encoder == (path.find("mtg2") == 0));
+        EXPECT(test_mtg2_encoder == (path.find("mtg2") == 0));
 
         auto env = use_grib_metkit_encoder_env();
-        EXPECT(use_grib_metkit_encoder(param) == (env == UNDEFINED ? MTG2Encoder : env == TRUE));
+        EXPECT(use_grib_metkit_encoder(param) == (env == UNDEFINED ? test_mtg2_encoder : env == TRUE));
 
         // tests force the metkit encoder on/off, don't cover the unforced case
         // NOTE: work in progress
-        if (use_grib_metkit_encoder_env() == UNDEFINED || !MTG2Encoder) {
+        if (use_grib_metkit_encoder_env() == UNDEFINED || !test_mtg2_encoder) {
             continue;
         }
 

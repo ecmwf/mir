@@ -545,12 +545,10 @@ bool GribOutput::do_save_with_metkit(const param::MIRParametrisation& param) {
         return use != FALSE;
     }
 
-    long centre     = 0;
-    long MTG2Switch = 0;
-    param.fieldParametrisation().get("centre", centre);
-    param.fieldParametrisation().get("MTG2Switch", MTG2Switch);
+    long isECMWFPostGRIB2MigrationMessage = 0;
+    param.fieldParametrisation().get("isECMWFPostGRIB2MigrationMessage", isECMWFPostGRIB2MigrationMessage);
 
-    return centre == 98 /*ecmf*/ && MTG2Switch != 0;
+    return isECMWFPostGRIB2MigrationMessage != 0;
 #else
     return false;
 #endif
