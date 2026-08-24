@@ -42,10 +42,12 @@ public:
     virtual size_t interpolated() const;
     virtual size_t saved() const;
 
+    // -- Class methods
+
     static const grib::Config& config();
     static param::MIRParametrisation* make_parametrised_config(const param::MIRParametrisation&);
 
-    bool do_save_with_metkit(const param::MIRParametrisation&);
+    static bool do_save_with_metkit(const param::MIRParametrisation&);
 
 protected:
     // -- Methods

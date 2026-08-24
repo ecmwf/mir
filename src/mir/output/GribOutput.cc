@@ -51,6 +51,7 @@
 #include "metkit/codes/api/CodesAPI.h"
 #include "metkit/grib2mars/api/Grib2Mars.h"
 #include "metkit/mars2grib/api/Mars2Grib.h"
+#include "metkit/mars2mars/api/Mars2Mars.h"
 #endif
 
 
@@ -528,12 +529,22 @@ bool GribOutput::do_save_with_metkit(const param::MIRParametrisation& param) {
     bool grib_use_metkit_encoder = false;
 
 #if mir_HAVE_METKIT
-    if (param.userParametrisation().get("grib-use-metkit-encoder", grib_use_metkit_encoder)) {
-        return grib_use_metkit_encoder;
-    }
+    enum tristate_t
+    {
+        UNDEFINED = 0,
+        FALSE,
+        TRUE,
+    };
 
-    if (auto env = LibMir::gribUseMetkitEncoder(); env != LibMir::UNDEFINED) {
-        return env == LibMir::DEFINED_TRUE;
+    if (static auto use =
+            []() {
+                static const std::string str("$MIR_GRIB_OUTPUT_METKIT");
+                const long a = eckit::LibResource<long, LibMir>(str, 0);
+                const long b = eckit::LibResource<long, LibMir>(str, 1);
+                return a != b ? UNDEFINED : a == 0 ? FALSE : TRUE;
+            }();
+        use != UNDEFINED) {
+        return use != FALSE;
     }
 
     if (std::string centre; param.fieldParametrisation().get("centre", centre) && centre != "ecmf") {
@@ -567,9 +578,10 @@ size_t GribOutput::save_with_metkit(const param::MIRParametrisation& param, cont
     const auto& input = ctx.input();
 
     eckit::LocalConfiguration cfg;
-    cfg.set("skipSection3", true);
+    // cfg.set("skipSection3", true);
 
     metkit::grib2mars::Grib2Mars grib2mars;
+    metkit::mars2mars::Mars2Mars mars2mars;
     metkit::mars2grib::Mars2Grib mars2grib(cfg);
 
     size_t total = 0;
@@ -581,7 +593,29 @@ size_t GribOutput::save_with_metkit(const param::MIRParametrisation& param, cont
         auto ch = metkit::codes::codesHandleFromGRIBHandle(input.gribHandle(field.handle(d)));
         ASSERT(ch);
 
-        auto [mars, misc] = grib2mars.convert<eckit::LocalConfiguration>(*ch);
+        const auto original = grib2mars.convert<eckit::LocalConfiguration>(*ch);
+        auto [mars, misc]   = mars2mars.convert<eckit::LocalConfiguration>(original.mars);
+
+        for (const auto& key : original.misc.keys()) {
+            if (original.misc.isString(key)) {
+                misc.set(key, original.misc.getString(key));
+            }
+            else if (original.misc.isIntegral(key)) {
+                misc.set(key, original.misc.getLong(key));
+            }
+            else if (original.misc.isFloatingPoint(key)) {
+                misc.set(key, original.misc.getDouble(key));
+            }
+            else if (original.misc.isBoolean(key)) {
+                misc.set(key, original.misc.getBool(key));
+            }
+            else if (original.misc.isFloatingPointList(key)) {
+                misc.set(key, original.misc.getDoubleVector(key));
+            }
+            else {
+                throw exception::UserError("GribOutput: save_with_metkit unexpected type for '" + key + "'", Here());
+            }
+        }
 
         auto grid = [&field]() {
             repres::Representation::CustomSpec spec;

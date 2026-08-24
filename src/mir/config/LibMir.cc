@@ -71,17 +71,6 @@ const std::string& LibMir::gribSampleName() {
 }
 
 
-LibMir::grib_use_metkit_encoder LibMir::gribUseMetkitEncoder() {
-    static auto use = []() {
-        const std::string str("mir-grib-use-metkit-encoder;$MIR_GRIB_USE_METKIT_ENCODER");
-        const bool a = eckit::LibResource<bool, LibMir>(str, false);
-        const bool b = eckit::LibResource<bool, LibMir>(str, true);
-        return a != b ? UNDEFINED : (b ? DEFINED_TRUE : DEFINED_FALSE);
-    }();
-    return use;
-}
-
-
 eckit::PathName LibMir::configFile(config_file c) {
     using r = eckit::LibResource<std::string, LibMir>;
 
