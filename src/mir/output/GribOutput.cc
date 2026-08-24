@@ -526,8 +526,6 @@ void GribOutput::fill(grib_handle* /*unused*/, grib_info& /*unused*/) const {}
 
 
 bool GribOutput::do_save_with_metkit(const param::MIRParametrisation& param) {
-    bool grib_use_metkit_encoder = false;
-
 #if mir_HAVE_METKIT
     enum tristate_t
     {
@@ -547,14 +545,15 @@ bool GribOutput::do_save_with_metkit(const param::MIRParametrisation& param) {
         return use != FALSE;
     }
 
-    if (std::string centre; param.fieldParametrisation().get("centre", centre) && centre != "ecmf") {
-        return false;
-    }
+    long centre     = 0;
+    long MTG2Switch = 0;
+    param.fieldParametrisation().get("centre", centre);
+    param.fieldParametrisation().get("MTG2Switch", MTG2Switch);
 
-    param.fieldParametrisation().get("MTG2Switch", grib_use_metkit_encoder);
+    return centre == 98 /*ecmf*/ && MTG2Switch != 0;
+#else
+    return false;
 #endif
-
-    return grib_use_metkit_encoder;
 }
 
 
