@@ -76,13 +76,13 @@ CASE("metkit") {
         param::SimpleParametrisation user;
         param::CombinedParametrisation param(user, in->parametrisation());
 
-        long MTG2Encoder = 0;
-        EXPECT(in->parametrisation().get("MTG2Encoder", MTG2Encoder));
-
-        long centre = 0;
+        long MTG2Switch = 0;
+        long centre     = 0;
+        EXPECT(in->parametrisation().get("MTG2Switch", MTG2Switch));
         EXPECT(in->parametrisation().get("centre", centre));
+        const auto MTG2Encoder = (MTG2Switch != 0) && (centre == 98);
 
-        EXPECT(MTG2Encoder == (path.find("mtg2") == 0) && (centre) == 98);
+        EXPECT(MTG2Encoder == (path.find("mtg2") == 0));
 
         auto env = use_grib_metkit_encoder_env();
         EXPECT(use_grib_metkit_encoder(param) == (env == UNDEFINED ? MTG2Encoder : env == TRUE));
