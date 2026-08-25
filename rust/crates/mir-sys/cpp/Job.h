@@ -46,13 +46,7 @@ public:
 
     void clear_key(rust::Str name);
 
-    /// Take the output grid from an input rather than stating it.
-    void representation_from(const MIRInput& input);
-
     rust::String to_json() const;
-
-    /// The equivalent mir-tool command line, for debugging.
-    rust::String mir_tool_call() const;
 
     void execute_one(MIRInput& input, MIROutput& output) const;
 
