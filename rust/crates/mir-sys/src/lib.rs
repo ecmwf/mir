@@ -63,9 +63,7 @@ pub mod ffi {
         fn dimensions(self: &MIRInput) -> Result<usize>;
 
         #[Self = "MIRInput"]
-        fn from_data_handle(
-            handle: Pin<&mut DataHandleWrapper>,
-        ) -> Result<UniquePtr<MIRInput>>;
+        fn from_data_handle(handle: Pin<&mut DataHandleWrapper>) -> Result<UniquePtr<MIRInput>>;
 
         #[Self = "MIRInput"]
         fn from_grib_file(path: &str) -> Result<UniquePtr<MIRInput>>;
@@ -86,10 +84,7 @@ pub mod ffi {
         fn from_gridspec(gridspec: &str, gridded: bool) -> Result<UniquePtr<MIRInput>>;
 
         #[Self = "MIRInput"]
-        fn from_raw(
-            values: &[f64],
-            metadata: &Parametrisation,
-        ) -> Result<UniquePtr<MIRInput>>;
+        fn from_raw(values: &[f64], metadata: &Parametrisation) -> Result<UniquePtr<MIRInput>>;
 
         // ==================== MIROutput ====================
 
