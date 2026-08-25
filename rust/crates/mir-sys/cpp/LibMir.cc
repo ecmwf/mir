@@ -4,8 +4,6 @@
 
 namespace mir_bridge {
 
-//----------------------------------------------------------------------------------------------------------------------
-
 namespace {
 // Full 40-character hash, matching what the Python bindings report.
 constexpr unsigned int SHA1_LENGTH = 40;
@@ -30,7 +28,5 @@ rust::String LibMir::cache_dir() {
 bool LibMir::caching() {
     return mir::LibMir::caching();
 }
-
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace mir_bridge

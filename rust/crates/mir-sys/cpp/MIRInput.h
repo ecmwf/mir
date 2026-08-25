@@ -15,8 +15,6 @@
 
 namespace mir_bridge {
 
-//----------------------------------------------------------------------------------------------------------------------
-
 /**
  * Owns a `mir::input::MIRInput`, which is a cursor over a stream of fields
  * rather than a single field, and is consumed as `next()` advances it.
@@ -57,7 +55,5 @@ public:
     /// Values and metadata are both copied in.
     static std::unique_ptr<MIRInput> from_raw(rust::Slice<const double> values, const Parametrisation& metadata);
 };
-
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace mir_bridge

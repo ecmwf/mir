@@ -9,8 +9,6 @@
 
 namespace mir_bridge {
 
-//----------------------------------------------------------------------------------------------------------------------
-
 /**
  * The metadata carried alongside `RawInput` values, and filled in by
  * `ResizableOutput` with the grid a field was interpolated onto.
@@ -37,7 +35,5 @@ public:
 
     static std::unique_ptr<Parametrisation> make();
 };
-
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace mir_bridge

@@ -13,8 +13,6 @@
 
 namespace mir_bridge {
 
-//----------------------------------------------------------------------------------------------------------------------
-
 /**
  * A description of the transformation to apply, not the transformation itself:
  * a bag of key/value settings that mir compiles into an action plan on each
@@ -56,7 +54,5 @@ public:
 
     static std::unique_ptr<Job> make();
 };
-
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace mir_bridge
