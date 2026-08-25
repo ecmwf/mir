@@ -1,4 +1,3 @@
-// mir input bridge — implementation.
 #include "MIRInput.h"
 
 #include <string>
