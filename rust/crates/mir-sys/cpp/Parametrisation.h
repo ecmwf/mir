@@ -35,7 +35,7 @@ public:
 
     // ============== Factories ==============
 
-    static std::unique_ptr<Parametrisation> create();
+    static std::unique_ptr<Parametrisation> make();
 };
 
 //----------------------------------------------------------------------------------------------------------------------

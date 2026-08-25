@@ -80,7 +80,7 @@ size_t Job::execute_all(MIRInput& input, MIROutput& output) const {
     return processed;
 }
 
-std::unique_ptr<Job> Job::create() {
+std::unique_ptr<Job> Job::make() {
     return std::make_unique<Job>();
 }
 

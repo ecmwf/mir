@@ -50,7 +50,7 @@ pub mod ffi {
 
         #[Self = "Parametrisation"]
         #[must_use]
-        fn create() -> UniquePtr<Parametrisation>;
+        fn make() -> UniquePtr<Parametrisation>;
 
         // ==================== MIRInput ====================
 
@@ -160,7 +160,7 @@ pub mod ffi {
 
         #[Self = "Job"]
         #[must_use]
-        fn create() -> UniquePtr<Job>;
+        fn make() -> UniquePtr<Job>;
     }
 
     extern "Rust" {
