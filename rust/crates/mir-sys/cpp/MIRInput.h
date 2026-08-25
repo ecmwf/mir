@@ -1,17 +1,18 @@
 // mir input bridge — wraps `mir::input::MIRInput` and its factories.
 #pragma once
 
-#include "Parametrisation.h"
-#include "EckitBridge.h"
-
-#include "mir/input/MIRInput.h"
-
-#include "rust/cxx.h"
-
 #include <cstddef>
 #include <cstdint>
 #include <memory>
 #include <vector>
+
+#include "rust/cxx.h"
+
+#include "EckitBridge.h"
+
+#include "mir/input/MIRInput.h"
+
+#include "Parametrisation.h"
 
 namespace mir_bridge {
 
