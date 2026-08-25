@@ -17,12 +17,14 @@ namespace mir_bridge {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-/// Owns a `mir::input::MIRInput`, which is a cursor over a stream of fields
-/// rather than a single field.
-///
-/// `RawInput` and `GribMemoryInput` read through memory they do not own, and
-/// are `final` in mir, so that storage is held here instead, declared before
-/// `input_` so it outlives it. Unused by the other factories.
+/**
+ * Owns a `mir::input::MIRInput`, which is a cursor over a stream of fields
+ * rather than a single field, and is consumed as `next()` advances it.
+ *
+ * `RawInput` and `GribMemoryInput` read through memory they do not own, and
+ * are `final` in mir, so that storage is held here instead, declared before
+ * `input_` so it outlives it. Unused by the other factories.
+ */
 class MIRInputWrapper final {
     std::vector<double> values_;
     std::vector<unsigned char> message_;

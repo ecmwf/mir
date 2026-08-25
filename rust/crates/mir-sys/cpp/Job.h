@@ -15,16 +15,23 @@ namespace mir_bridge {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-/// A description of the transformation to apply, not the transformation itself:
-/// a bag of key/value settings that mir compiles into an action plan on each
-/// execute. The same job can be applied to any number of inputs and outputs.
-///
-/// Derives from `mir::api::MIRJob` rather than holding one so it can be passed
-/// straight to mir, and so that `set` and `clear` keep resolving key aliases
-/// (`gridname` becomes `grid`) instead of bypassing them. The members below
-/// shadow inherited overload sets purely for ergonomics — they take `rust::Str`
-/// and `rust::Slice` so Rust passes `&str` and `&[f64]` rather than building
-/// `CxxString` and `CxxVector` at every call site.
+/**
+ * A description of the transformation to apply, not the transformation itself:
+ * a bag of key/value settings that mir compiles into an action plan on each
+ * execute.
+ *
+ * The job is reusable and can be applied to any number of inputs and outputs.
+ * The input is not: it is consumed by `next()`, which `execute_all` calls until
+ * the stream is drained, and which the caller drives itself when using
+ * `execute_one`. The bridge exposes no rewind, so a second pass needs a fresh
+ * input.
+ *
+ * Derives from `mir::api::MIRJob` so it can be passed straight to mir, and so
+ * that `set` and `clear` keep resolving key aliases (`gridname` becomes `grid`)
+ * instead of bypassing them. The members below shadow inherited overload sets
+ * so Rust passes `&str` and `&[f64]` rather than building `CxxString` and
+ * `CxxVector` at every call site.
+ */
 class Job final : public mir::api::MIRJob {
 public:
 
