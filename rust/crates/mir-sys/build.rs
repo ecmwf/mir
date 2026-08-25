@@ -15,6 +15,9 @@ fn main() {
     println!("cargo:rerun-if-env-changed=DOCS_RS");
 
     if bindman_utils::is_docs_rs() {
+        // No native build on docs.rs, but lib.rs still `include!`s the
+        // generated exception bridge, so it has to exist.
+        generate_exceptions(&docs_source_include());
         return;
     }
 
@@ -25,6 +28,14 @@ fn main() {
     } else {
         build_vendored();
     }
+}
+
+/// Header root for docs builds (`DOCS_RS=1`), where the native mir build is
+/// skipped. `docs-headers/` mirrors the include-tree layout with a symlink
+/// into this repo's `src/`; `cargo package` embeds the linked file's content.
+fn docs_source_include() -> std::path::PathBuf {
+    std::path::PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR"))
+        .join("docs-headers")
 }
 
 /// Generate `mir_exceptions.{h,rs}` for mir's own subclasses (`mir::exception::*`

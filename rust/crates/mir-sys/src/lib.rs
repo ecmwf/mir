@@ -187,7 +187,7 @@ type OutputFn = Box<dyn FnMut(&[u8]) + Send>;
 /// Holds the closure a `to_callback` output hands each encoded message to.
 ///
 /// The C++ `CallbackOutput` carries this by `rust::Box<OutputBox>` and forwards
-/// every `out` call through [`invoke_output`].
+/// every `out` call through `invoke_output`.
 pub struct OutputBox(OutputFn);
 
 /// Wrap a closure for [`ffi::MIROutput::to_callback`].
