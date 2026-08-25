@@ -30,7 +30,7 @@ jobs:
       codecov_upload: true
     secrets: inherit
 
-  # Run Rust CI (fmt + clippy + test) on the rust/ workspace
+  # Run Rust CI (fmt + clippy + doc + test) on the rust/ workspace
   ci-rust:
     name: ci-rust
     if: ${{ !github.event.pull_request.head.repo.fork && github.event.action != 'labeled' || github.event.label.name == 'approved-for-ci' }}
