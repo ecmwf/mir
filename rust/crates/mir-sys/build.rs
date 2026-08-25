@@ -1,5 +1,3 @@
-const MIR_VERSION: &str = "1.28.2";
-
 fn main() {
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=src/lib.rs");
@@ -64,7 +62,8 @@ fn build_system() {
     let metkit_include =
         env::var("DEP_METKIT_SYS_INCLUDE").expect("DEP_METKIT_SYS_INCLUDE not set");
 
-    let (root, mir_include, lib_dir) = bindman_utils::cmake_find_package("mir", MIR_VERSION);
+    // Minimum supported system version; the crate version tracks the vendored release.
+    let (root, mir_include, lib_dir) = bindman_utils::cmake_find_package("mir", "1.28.2");
 
     generate_exceptions(&mir_include);
 
@@ -99,6 +98,47 @@ fn build_system() {
     unreachable!("build_system called without system feature");
 }
 
+/// Locate the mir C++ sources: prefer the in-tree checkout when the crate
+/// lives inside the mir repository (path or git dependency), falling back to
+/// cloning the release tag (packaged crates.io case).
+#[cfg(feature = "vendored")]
+fn resolve_mir_src(src_dir: &std::path::Path) -> std::path::PathBuf {
+    const MIR_REPO: &str = "https://github.com/ecmwf/mir.git";
+    const MIR_TAG: &str = env!("CARGO_PKG_VERSION");
+
+    let manifest_dir = std::path::PathBuf::from(
+        std::env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR not set"),
+    );
+    if let Some(root) = manifest_dir.ancestors().nth(3)
+        && root.join("CMakeLists.txt").exists()
+        && root.join("VERSION").exists()
+        && root.join("src/mir").is_dir()
+    {
+        eprintln!("mir-sys: building in-tree sources at {}", root.display());
+
+        // Retrigger on C++ source edits.
+        println!("cargo:rerun-if-changed={}", root.join("src").display());
+        println!(
+            "cargo:rerun-if-changed={}",
+            root.join("CMakeLists.txt").display()
+        );
+        println!("cargo:rerun-if-changed={}", root.join("VERSION").display());
+
+        // Diverging is fine mid-development, but should never go unnoticed.
+        let tree_version = std::fs::read_to_string(root.join("VERSION"))
+            .map(|s| s.trim().to_string())
+            .unwrap_or_default();
+        if tree_version != MIR_TAG {
+            println!(
+                "cargo:warning=mir-sys {MIR_TAG} is building in-tree mir {tree_version} (versions differ)"
+            );
+        }
+
+        return root.to_path_buf();
+    }
+    bindman_utils::git_clone(MIR_REPO, MIR_TAG, &src_dir.join("mir"))
+}
+
 #[cfg(feature = "vendored")]
 fn build_vendored() {
     use std::env;
@@ -108,7 +148,6 @@ fn build_vendored() {
 
     const ECBUILD_REPO: &str = "https://github.com/ecmwf/ecbuild.git";
     const ECBUILD_TAG: &str = "3.13.1";
-    const MIR_REPO: &str = "https://github.com/ecmwf/mir.git";
 
     let out_dir = PathBuf::from(env::var("OUT_DIR").expect("OUT_DIR not set"));
     let src_dir = out_dir.join("src");
@@ -129,7 +168,19 @@ fn build_vendored() {
     let eckit_cpp_dir = env::var("DEP_ECKIT_SYS_CPP_DIR").expect("DEP_ECKIT_SYS_CPP_DIR not set");
 
     let ecbuild_src = bindman_utils::git_clone(ECBUILD_REPO, ECBUILD_TAG, &src_dir.join("ecbuild"));
-    let mir_src = bindman_utils::git_clone(MIR_REPO, MIR_VERSION, &src_dir.join("mir"));
+    let mir_src = resolve_mir_src(&src_dir);
+
+    // cmake hard-errors if the source path recorded in CMakeCache.txt changes
+    // (e.g. cloned <-> in-tree); wipe the build dir when it is stale.
+    if let Ok(cache) = fs::read_to_string(build_dir.join("CMakeCache.txt")) {
+        let cached_src = cache
+            .lines()
+            .find_map(|l| l.strip_prefix("CMAKE_HOME_DIRECTORY:INTERNAL="));
+        if cached_src != mir_src.to_str() {
+            fs::remove_dir_all(&build_dir).expect("Failed to remove stale mir build directory");
+            fs::create_dir_all(&build_dir).expect("Failed to create build directory");
+        }
+    }
 
     let ecbuild_bin = ecbuild_src.join("bin/ecbuild");
     let num_jobs = bindman_utils::build_parallelism();
