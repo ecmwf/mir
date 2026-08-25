@@ -16,8 +16,6 @@
 
 namespace mir_bridge {
 
-//----------------------------------------------------------------------------------------------------------------------
-
 namespace {
 
 /// GribOutput that hands each encoded message to a Rust closure.
@@ -50,8 +48,6 @@ const T& as(const std::unique_ptr<mir::output::MIROutput>& output, const char* w
 
 }  // namespace
 
-//----------------------------------------------------------------------------------------------------------------------
-
 rust::Slice<const double> MIROutput::values() const {
     as<mir::output::ResizableOutput>(output_, "values requires an output built by to_resizable");
     return {values_.data(), values_.size()};
@@ -66,8 +62,6 @@ rust::Slice<const uint8_t> MIROutput::message() const {
     const auto& grib = as<mir::output::GribMemoryOutput>(output_, "message requires an output built by to_grib_memory");
     return {message_.data(), grib.length()};
 }
-
-//----------------------------------------------------------------------------------------------------------------------
 
 std::unique_ptr<MIROutput> MIROutput::to_callback(rust::Box<OutputBox> output) {
     auto wrapper     = std::make_unique<MIROutput>();
@@ -100,7 +94,5 @@ std::unique_ptr<MIROutput> MIROutput::to_empty() {
     wrapper->output_ = std::make_unique<mir::output::EmptyOutput>();
     return wrapper;
 }
-
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace mir_bridge

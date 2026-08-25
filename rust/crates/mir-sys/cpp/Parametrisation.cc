@@ -8,8 +8,6 @@
 
 namespace mir_bridge {
 
-//----------------------------------------------------------------------------------------------------------------------
-
 void Parametrisation::set_str(rust::Str name, rust::Str value) {
     set(std::string(name), std::string(value));
 }
@@ -34,8 +32,6 @@ void Parametrisation::set_i64_list(rust::Str name, rust::Slice<const int64_t> va
     set(std::string(name), std::vector<long long>(values.begin(), values.end()));
 }
 
-//----------------------------------------------------------------------------------------------------------------------
-
 rust::String Parametrisation::to_json() const {
     std::ostringstream s;
     eckit::JSON j(s);
@@ -46,7 +42,5 @@ rust::String Parametrisation::to_json() const {
 std::unique_ptr<Parametrisation> Parametrisation::make() {
     return std::make_unique<Parametrisation>();
 }
-
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace mir_bridge

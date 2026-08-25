@@ -16,8 +16,6 @@ namespace mir_bridge {
 // Defined on the Rust side, cxx generates the type.
 struct OutputBox;
 
-//----------------------------------------------------------------------------------------------------------------------
-
 /**
  * Owns a `mir::output::MIROutput` and the storage it writes through.
  *
@@ -62,7 +60,5 @@ public:
     /// Runs the job but discards the result, for timing and validation.
     static std::unique_ptr<MIROutput> to_empty();
 };
-
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace mir_bridge

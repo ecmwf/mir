@@ -5,8 +5,6 @@
 
 namespace mir_bridge {
 
-//----------------------------------------------------------------------------------------------------------------------
-
 void Job::set_str(rust::Str name, rust::Str value) {
     set(std::string(name), std::string(value));
 }
@@ -48,13 +46,9 @@ void Job::clear_key(rust::Str name) {
     clear(std::string(name));
 }
 
-//----------------------------------------------------------------------------------------------------------------------
-
 rust::String Job::to_json() const {
     return rust::String(json_str());
 }
-
-//----------------------------------------------------------------------------------------------------------------------
 
 void Job::execute_one(MIRInput& input, MIROutput& output) const {
     execute(input.inner(), output.inner());
@@ -72,7 +66,5 @@ size_t Job::execute_all(MIRInput& input, MIROutput& output) const {
 std::unique_ptr<Job> Job::make() {
     return std::make_unique<Job>();
 }
-
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace mir_bridge
