@@ -1,6 +1,5 @@
 #include "Job.h"
 
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -49,20 +48,10 @@ void Job::clear_key(rust::Str name) {
     clear(std::string(name));
 }
 
-void Job::representation_from(const MIRInput& input) {
-    representationFrom(input.inner());
-}
-
 //----------------------------------------------------------------------------------------------------------------------
 
 rust::String Job::to_json() const {
     return rust::String(json_str());
-}
-
-rust::String Job::mir_tool_call() const {
-    std::ostringstream s;
-    mirToolCall(s);
-    return rust::String(s.str());
 }
 
 //----------------------------------------------------------------------------------------------------------------------
