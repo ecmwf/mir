@@ -13,8 +13,6 @@
 
 namespace mir_bridge {
 
-//----------------------------------------------------------------------------------------------------------------------
-
 bool MIRInput::next() {
     return input_->next();
 }
@@ -22,8 +20,6 @@ bool MIRInput::next() {
 size_t MIRInput::dimensions() const {
     return input_->dimensions();
 }
-
-//----------------------------------------------------------------------------------------------------------------------
 
 std::unique_ptr<MIRInput> MIRInput::from_data_handle(eckit_bridge::DataHandleWrapper& handle) {
     auto wrapper    = std::make_unique<MIRInput>();
@@ -69,7 +65,5 @@ std::unique_ptr<MIRInput> MIRInput::from_raw(rust::Slice<const double> values, c
         std::make_unique<mir::input::RawInput>(wrapper->values_.data(), wrapper->values_.size(), wrapper->metadata_);
     return wrapper;
 }
-
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace mir_bridge
