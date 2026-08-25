@@ -26,14 +26,13 @@ struct OutputBox;
  * before `output_` so it outlives it. The readback accessors throw unless the
  * output held is the kind that fills them.
  */
-class MIROutputWrapper final {
+class MIROutput final {
     std::vector<double> values_;
     std::vector<unsigned char> message_;
     Parametrisation metadata_;
     std::unique_ptr<mir::output::MIROutput> output_;
 
 public:
-
     rust::Slice<const double> values() const;
 
     rust::String metadata_json() const;
@@ -47,21 +46,21 @@ public:
     // ============== Factories ==============
 
     /// Encodes each field as GRIB and hands the message to `output`.
-    static std::unique_ptr<MIROutputWrapper> to_callback(rust::Box<OutputBox> output);
+    static std::unique_ptr<MIROutput> to_callback(rust::Box<OutputBox> output);
 
     /// Appends to, or truncates, a GRIB file.
-    static std::unique_ptr<MIROutputWrapper> to_grib_file(rust::Str path, bool append);
+    static std::unique_ptr<MIROutput> to_grib_file(rust::Str path, bool append);
 
     /// Encodes into an owned buffer of `capacity` bytes, read back through
     /// `message`. mir throws if the encoded message does not fit.
-    static std::unique_ptr<MIROutputWrapper> to_grib_memory(size_t capacity);
+    static std::unique_ptr<MIROutput> to_grib_memory(size_t capacity);
 
     /// Collects values into an owned, growable buffer, read back through
     /// `values` and `metadata_json`.
-    static std::unique_ptr<MIROutputWrapper> to_resizable();
+    static std::unique_ptr<MIROutput> to_resizable();
 
     /// Runs the job but discards the result, for timing and validation.
-    static std::unique_ptr<MIROutputWrapper> to_empty();
+    static std::unique_ptr<MIROutput> to_empty();
 };
 
 //----------------------------------------------------------------------------------------------------------------------

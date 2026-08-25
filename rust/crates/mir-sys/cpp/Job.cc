@@ -49,7 +49,7 @@ void Job::clear_key(rust::Str name) {
     clear(std::string(name));
 }
 
-void Job::representation_from(const MIRInputWrapper& input) {
+void Job::representation_from(const MIRInput& input) {
     representationFrom(input.inner());
 }
 
@@ -67,11 +67,11 @@ rust::String Job::mir_tool_call() const {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void Job::execute_one(MIRInputWrapper& input, MIROutputWrapper& output) const {
+void Job::execute_one(MIRInput& input, MIROutput& output) const {
     execute(input.inner(), output.inner());
 }
 
-size_t Job::execute_all(MIRInputWrapper& input, MIROutputWrapper& output) const {
+size_t Job::execute_all(MIRInput& input, MIROutput& output) const {
     size_t processed = 0;
     while (input.next()) {
         execute(input.inner(), output.inner());
