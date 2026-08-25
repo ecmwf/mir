@@ -1,4 +1,3 @@
-// mir output bridge — implementation.
 #include "MIROutput.h"
 
 #include <string>
@@ -40,7 +39,7 @@ private:
     }
 };
 
-/// Downcast `output` or throw — the readback accessors only apply to the
+/// Downcast `output` or throw: the readback accessors only apply to the
 /// factory that produced the matching kind.
 template <class T>
 const T& as(const std::unique_ptr<mir::output::MIROutput>& output, const char* what) {
