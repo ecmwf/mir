@@ -1,11 +1,11 @@
 // mir parametrisation bridge — implementation.
 #include "Parametrisation.h"
 
-#include "eckit/log/JSON.h"
-
 #include <sstream>
 #include <string>
 #include <vector>
+
+#include "eckit/log/JSON.h"
 
 namespace mir_bridge {
 

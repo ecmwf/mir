@@ -1,6 +1,8 @@
 // mir output bridge — implementation.
 #include "MIROutput.h"
-#include "mir-sys/src/lib.rs.h"
+
+#include <string>
+#include <utility>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
@@ -11,8 +13,7 @@
 #include "mir/output/GribOutput.h"
 #include "mir/output/ResizableOutput.h"
 
-#include <string>
-#include <utility>
+#include "mir-sys/src/lib.rs.h"
 
 namespace mir_bridge {
 
