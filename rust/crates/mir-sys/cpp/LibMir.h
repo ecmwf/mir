@@ -1,4 +1,3 @@
-// mir library bridge — wraps `mir::LibMir` metadata.
 #pragma once
 
 #include "rust/cxx.h"
@@ -7,9 +6,8 @@ namespace mir_bridge {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-/// Static accessors for the mir library itself. Holds no state; it exists as a
-/// type only because every bridge entry point is a member, and because
-/// `version`/`gitsha1` are instance methods reached through `LibMir::instance`.
+/// Static accessors for `mir::LibMir::instance`. Stateless; a type only
+/// because every bridge entry point has to be a member.
 class LibMir final {
 public:
 

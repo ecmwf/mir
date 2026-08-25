@@ -1,4 +1,3 @@
-// mir parametrisation bridge — implementation.
 #include "Parametrisation.h"
 
 #include <sstream>

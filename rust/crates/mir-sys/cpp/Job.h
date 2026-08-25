@@ -1,4 +1,3 @@
-// mir job bridge — wraps `mir::api::MIRJob`.
 #pragma once
 
 #include <cstddef>
@@ -37,8 +36,6 @@ public:
     void set_i64_list(rust::Str name, rust::Slice<const int64_t> values);
     void set_str_list(rust::Str name, const rust::Vec<rust::String>& values);
 
-    /// Parse `name=value` pairs the way the mir tool does; a bare `name` sets
-    /// it to true.
     void set_from_string(rust::Str args);
 
     void clear_key(rust::Str name);
@@ -46,18 +43,13 @@ public:
     /// Take the output grid from an input rather than stating it.
     void representation_from(const MIRInputWrapper& input);
 
-    /// e.g. `{"grid":"F16"}`.
     rust::String to_json() const;
 
     /// The equivalent mir-tool command line, for debugging.
     rust::String mir_tool_call() const;
 
-    /// Transform the message the input is currently positioned on. Callers are
-    /// responsible for having advanced it; see `execute_all`.
     void execute_one(MIRInputWrapper& input, MIROutputWrapper& output) const;
 
-    /// Drain the input, transforming every message, and return how many were
-    /// processed. Single-field inputs such as `from_raw` yield one.
     size_t execute_all(MIRInputWrapper& input, MIROutputWrapper& output) const;
 
     // ============== Factories ==============

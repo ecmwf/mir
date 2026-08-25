@@ -1,4 +1,3 @@
-// mir job bridge — implementation.
 #include "Job.h"
 
 #include <sstream>
