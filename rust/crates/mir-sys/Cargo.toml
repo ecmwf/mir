@@ -21,28 +21,28 @@ vendored = [
     "eckit-sys/eckit-spec",
     "eckit-sys/eckit-geo",
     "eckit-sys/geo-codec-grids",
-    "metkit-sys/vendored",
-    "metkit-sys/grib",
     "eccodes-sys/vendored",
     "eccodes-sys/product-grib",
     "eccodes-sys/geography",
     "eccodes-sys/memfs",
     "eccodes-sys/eccodes-threads",
     "atlas-sys/vendored",
+    "metkit-sys/vendored",
+    "metkit-sys/grib",
 ]
 system = [
     "eckit-sys/system",
-    "metkit-sys/system",
     "eccodes-sys/system",
     "atlas-sys/system",
+    "metkit-sys/system",
 ]
 
 [dependencies]
 cxx.workspace = true
 eckit-sys = { workspace = true, default-features = false }
-metkit-sys = { workspace = true, default-features = false }
 eccodes-sys = { workspace = true, default-features = false }
 atlas-sys = { workspace = true, default-features = false }
+metkit-sys = { workspace = true, default-features = false }
 bindman.workspace = true
 
 [build-dependencies]

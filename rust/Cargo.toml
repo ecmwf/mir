@@ -17,9 +17,9 @@ mir-sys = { path = "crates/mir-sys" }
 
 # Foundation crates
 eckit-sys = { git = "ssh://git@github.com/ecmwf/eckit.git", branch = "rust-bindings", default-features = false }
-metkit-sys = { git = "ssh://git@github.com/ecmwf/metkit.git", branch = "rust-bindings", default-features = false }
 eccodes-sys = { git = "ssh://git@github.com/ecmwf/rust-wrappers-playground.git", default-features = false }
 atlas-sys = { git = "ssh://git@github.com/ecmwf/atlas.git", branch = "rust-bindings", default-features = false }
+metkit-sys = { git = "ssh://git@github.com/ecmwf/metkit.git", branch = "rust-bindings", default-features = false }
 
 # Build tools
 bindman = { git = "ssh://git@github.com/ecmwf/bindman.git", rev = "47edf68" }
