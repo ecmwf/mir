@@ -11,7 +11,9 @@
 #include "MIRInput.h"
 #include "MIROutput.h"
 
+
 namespace mir_bridge {
+
 
 /**
  * A description of the transformation to apply, not the transformation itself:
@@ -54,5 +56,6 @@ public:
 
     static std::unique_ptr<Job> make();
 };
+
 
 }  // namespace mir_bridge
