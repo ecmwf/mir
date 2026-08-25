@@ -11,13 +11,15 @@ namespace mir_bridge {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-/// The metadata carried alongside `RawInput` values, and filled in by
-/// `ResizableOutput` with the grid a field was interpolated onto.
-///
-/// Derives from `mir::param::SimpleParametrisation` so it can be passed
-/// straight to mir, and because `json` is protected on the base. The setters
-/// shadow inherited overloads so Rust passes `&str` and `&[i64]` rather than
-/// building `CxxString` and `CxxVector` at every call site.
+/**
+ * The metadata carried alongside `RawInput` values, and filled in by
+ * `ResizableOutput` with the grid a field was interpolated onto.
+ *
+ * Derives from `mir::param::SimpleParametrisation` so it can be passed
+ * straight to mir, and because `json` is protected on the base. The setters
+ * shadow inherited overloads so Rust passes `&str` and `&[i64]` rather than
+ * building `CxxString` and `CxxVector` at every call site.
+ */
 class Parametrisation final : public mir::param::SimpleParametrisation {
 public:
 
