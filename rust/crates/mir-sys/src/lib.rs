@@ -1,7 +1,7 @@
 //! FFI bindings to ECMWF mir (Meteorological Interpolation and Regridding) library.
 //!
-//! mir pulls fields from a [`MIRInputWrapper`], transforms them according to a
-//! [`Job`], and pushes them to a [`MIROutputWrapper`]. A job is a description
+//! mir pulls fields from a [`MIRInput`], transforms them according to a
+//! [`Job`], and pushes them to a [`MIROutput`]. A job is a description
 //! rather than an action, so one job applies to any number of input/output
 //! pairings.
 
@@ -54,71 +54,71 @@ pub mod ffi {
 
         // ==================== MIRInput ====================
 
-        type MIRInputWrapper;
+        type MIRInput;
 
         /// Advance to the next message; false once the stream is exhausted.
-        fn next(self: Pin<&mut MIRInputWrapper>) -> Result<bool>;
+        fn next(self: Pin<&mut MIRInput>) -> Result<bool>;
 
         /// Fields carried per message: 1 for a scalar, 2 for a vector pair.
-        fn dimensions(self: &MIRInputWrapper) -> Result<usize>;
+        fn dimensions(self: &MIRInput) -> Result<usize>;
 
-        #[Self = "MIRInputWrapper"]
+        #[Self = "MIRInput"]
         fn from_data_handle(
             handle: Pin<&mut DataHandleWrapper>,
-        ) -> Result<UniquePtr<MIRInputWrapper>>;
+        ) -> Result<UniquePtr<MIRInput>>;
 
-        #[Self = "MIRInputWrapper"]
-        fn from_grib_file(path: &str) -> Result<UniquePtr<MIRInputWrapper>>;
+        #[Self = "MIRInput"]
+        fn from_grib_file(path: &str) -> Result<UniquePtr<MIRInput>>;
 
-        #[Self = "MIRInputWrapper"]
-        fn from_grib_memory(message: &[u8]) -> Result<UniquePtr<MIRInputWrapper>>;
+        #[Self = "MIRInput"]
+        fn from_grib_memory(message: &[u8]) -> Result<UniquePtr<MIRInput>>;
 
         /// Consecutive messages read as one N-dimensional field, as mir pairs
         /// components for the `vod2uv` and `uv2uv` job keys.
-        #[Self = "MIRInputWrapper"]
+        #[Self = "MIRInput"]
         fn from_multi_dimensional_grib_file(
             path: &str,
             dimensions: usize,
             skip: usize,
-        ) -> Result<UniquePtr<MIRInputWrapper>>;
+        ) -> Result<UniquePtr<MIRInput>>;
 
-        #[Self = "MIRInputWrapper"]
-        fn from_gridspec(gridspec: &str, gridded: bool) -> Result<UniquePtr<MIRInputWrapper>>;
+        #[Self = "MIRInput"]
+        fn from_gridspec(gridspec: &str, gridded: bool) -> Result<UniquePtr<MIRInput>>;
 
-        #[Self = "MIRInputWrapper"]
+        #[Self = "MIRInput"]
         fn from_raw(
             values: &[f64],
             metadata: &Parametrisation,
-        ) -> Result<UniquePtr<MIRInputWrapper>>;
+        ) -> Result<UniquePtr<MIRInput>>;
 
         // ==================== MIROutput ====================
 
-        type MIROutputWrapper;
+        type MIROutput;
 
         /// Interpolated values, for an output built by `to_resizable`.
-        fn values(self: &MIROutputWrapper) -> Result<&[f64]>;
+        fn values(self: &MIROutput) -> Result<&[f64]>;
 
         /// The grid the field was interpolated onto, for an output built by
         /// `to_resizable`.
-        fn metadata_json(self: &MIROutputWrapper) -> Result<String>;
+        fn metadata_json(self: &MIROutput) -> Result<String>;
 
         /// The encoded message, for an output built by `to_grib_memory`.
-        fn message(self: &MIROutputWrapper) -> Result<&[u8]>;
+        fn message(self: &MIROutput) -> Result<&[u8]>;
 
-        #[Self = "MIROutputWrapper"]
-        fn to_callback(output: Box<OutputBox>) -> Result<UniquePtr<MIROutputWrapper>>;
+        #[Self = "MIROutput"]
+        fn to_callback(output: Box<OutputBox>) -> Result<UniquePtr<MIROutput>>;
 
-        #[Self = "MIROutputWrapper"]
-        fn to_grib_file(path: &str, append: bool) -> Result<UniquePtr<MIROutputWrapper>>;
+        #[Self = "MIROutput"]
+        fn to_grib_file(path: &str, append: bool) -> Result<UniquePtr<MIROutput>>;
 
-        #[Self = "MIROutputWrapper"]
-        fn to_grib_memory(capacity: usize) -> Result<UniquePtr<MIROutputWrapper>>;
+        #[Self = "MIROutput"]
+        fn to_grib_memory(capacity: usize) -> Result<UniquePtr<MIROutput>>;
 
-        #[Self = "MIROutputWrapper"]
-        fn to_resizable() -> Result<UniquePtr<MIROutputWrapper>>;
+        #[Self = "MIROutput"]
+        fn to_resizable() -> Result<UniquePtr<MIROutput>>;
 
-        #[Self = "MIROutputWrapper"]
-        fn to_empty() -> Result<UniquePtr<MIROutputWrapper>>;
+        #[Self = "MIROutput"]
+        fn to_empty() -> Result<UniquePtr<MIROutput>>;
 
         // ==================== Job ====================
 
@@ -139,7 +139,7 @@ pub mod ffi {
         fn clear_key(self: Pin<&mut Job>, name: &str) -> Result<()>;
 
         /// Take the output grid from an input rather than stating it.
-        fn representation_from(self: Pin<&mut Job>, input: &MIRInputWrapper) -> Result<()>;
+        fn representation_from(self: Pin<&mut Job>, input: &MIRInput) -> Result<()>;
 
         #[cxx_name = "to_json"]
         fn json_str(self: &Job) -> Result<String>;
@@ -151,16 +151,16 @@ pub mod ffi {
         /// drive iteration themselves; see `execute_all`.
         fn execute_one(
             self: &Job,
-            input: Pin<&mut MIRInputWrapper>,
-            output: Pin<&mut MIROutputWrapper>,
+            input: Pin<&mut MIRInput>,
+            output: Pin<&mut MIROutput>,
         ) -> Result<()>;
 
         /// Drain the input, transforming every message, and return how many
         /// were processed. Single-field inputs yield one.
         fn execute_all(
             self: &Job,
-            input: Pin<&mut MIRInputWrapper>,
-            output: Pin<&mut MIROutputWrapper>,
+            input: Pin<&mut MIRInput>,
+            output: Pin<&mut MIROutput>,
         ) -> Result<usize>;
 
         #[Self = "Job"]
@@ -188,7 +188,7 @@ type OutputFn = Box<dyn FnMut(&[u8]) + Send>;
 /// every `out` call through [`invoke_output`].
 pub struct OutputBox(OutputFn);
 
-/// Wrap a closure for [`ffi::MIROutputWrapper::to_callback`].
+/// Wrap a closure for [`ffi::MIROutput::to_callback`].
 ///
 /// The `'static` bound is what keeps this safe: the output owns the box and may
 /// outlive the call that created it, so the closure cannot borrow from its
