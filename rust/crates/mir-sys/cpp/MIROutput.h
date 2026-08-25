@@ -18,12 +18,14 @@ struct OutputBox;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-/// Owns a `mir::output::MIROutput` and the storage it writes through.
-///
-/// `ResizableOutput` and `GribMemoryOutput` write through memory they do not
-/// own, and are `final` in mir, so that storage is held here instead, declared
-/// before `output_` so it outlives it. The readback accessors throw unless the
-/// output held is the kind that fills them.
+/**
+ * Owns a `mir::output::MIROutput` and the storage it writes through.
+ *
+ * `ResizableOutput` and `GribMemoryOutput` write through memory they do not
+ * own, and are `final` in mir, so that storage is held here instead, declared
+ * before `output_` so it outlives it. The readback accessors throw unless the
+ * output held is the kind that fills them.
+ */
 class MIROutputWrapper final {
     std::vector<double> values_;
     std::vector<unsigned char> message_;
