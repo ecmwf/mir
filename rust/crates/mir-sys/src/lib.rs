@@ -1,10 +1,9 @@
 //! FFI bindings to ECMWF mir (Meteorological Interpolation and Regridding) library.
 //!
 //! mir pulls fields from a [`MIRInputWrapper`], transforms them according to a
-//! [`Job`], and pushes them to a [`MIROutputWrapper`]. The job is not an action
-//! but a description — a bag of key/value settings that mir compiles into an
-//! action plan on each execute — so one job applies to any number of
-//! input/output pairings.
+//! [`Job`], and pushes them to a [`MIROutputWrapper`]. A job is a description
+//! rather than an action, so one job applies to any number of input/output
+//! pairings.
 
 use bindman::track_cpp_api;
 
@@ -60,7 +59,7 @@ pub mod ffi {
         /// Advance to the next message; false once the stream is exhausted.
         fn next(self: Pin<&mut MIRInputWrapper>) -> Result<bool>;
 
-        /// Fields carried per message — 1 for a scalar, 2 for a vector pair.
+        /// Fields carried per message: 1 for a scalar, 2 for a vector pair.
         fn dimensions(self: &MIRInputWrapper) -> Result<usize>;
 
         #[Self = "MIRInputWrapper"]
@@ -74,7 +73,7 @@ pub mod ffi {
         #[Self = "MIRInputWrapper"]
         fn from_grib_memory(message: &[u8]) -> Result<UniquePtr<MIRInputWrapper>>;
 
-        /// Consecutive messages read as one N-dimensional field — how mir pairs
+        /// Consecutive messages read as one N-dimensional field, as mir pairs
         /// components for the `vod2uv` and `uv2uv` job keys.
         #[Self = "MIRInputWrapper"]
         fn from_multi_dimensional_grib_file(
@@ -170,40 +169,30 @@ pub mod ffi {
     }
 
     extern "Rust" {
-        /// Opaque Rust box holding the closure a `to_callback` output writes to.
-        ///
-        /// Constructed via [`make_output_box`]; the C++ `CallbackOutput` holds
-        /// it by `rust::Box<OutputBox>` and forwards each encoded message
-        /// through [`invoke_output`].
         type OutputBox;
 
-        /// Called by the C++ `CallbackOutput::out` shim with one encoded GRIB
-        /// message.
         fn invoke_output(output: &mut OutputBox, data: &[u8]);
     }
 }
 
-// Public re-exports for the safe wrapper crate
 pub use cxx::{Exception, UniquePtr};
 pub use ffi::*;
 
 // ==================== Output callback adapter ====================
 
-/// The closure an output built by `to_callback` hands each message to.
 type OutputFn = Box<dyn FnMut(&[u8]) + Send>;
 
-/// Opaque wrapper holding the closure each interpolated message is handed to.
+/// Holds the closure a `to_callback` output hands each encoded message to.
 ///
-/// The C++ `CallbackOutput` (declared in `MIROutput.h` as `struct OutputBox`)
-/// carries this by `rust::Box<OutputBox>` and forwards every
-/// `out(const void*, size_t, bool)` call via [`invoke_output`].
+/// The C++ `CallbackOutput` carries this by `rust::Box<OutputBox>` and forwards
+/// every `out` call through [`invoke_output`].
 pub struct OutputBox(OutputFn);
 
 /// Wrap a closure for [`ffi::MIROutputWrapper::to_callback`].
 ///
 /// The `'static` bound is what keeps this safe: the output owns the box and may
 /// outlive the call that created it, so the closure cannot borrow from its
-/// caller. Collect into an `Arc<Mutex<..>>` or send over a channel instead.
+/// caller.
 pub fn make_output_box<F>(f: F) -> Box<OutputBox>
 where
     F: FnMut(&[u8]) + Send + 'static,

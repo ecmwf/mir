@@ -1,4 +1,3 @@
-// mir library bridge — implementation.
 #include "LibMir.h"
 
 #include "mir/config/LibMir.h"
