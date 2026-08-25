@@ -15,61 +15,58 @@ namespace mir_bridge {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool MIRInputWrapper::next() {
+bool MIRInput::next() {
     return input_->next();
 }
 
-size_t MIRInputWrapper::dimensions() const {
+size_t MIRInput::dimensions() const {
     return input_->dimensions();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-std::unique_ptr<MIRInputWrapper> MIRInputWrapper::from_data_handle(eckit_bridge::DataHandleWrapper& handle) {
-    auto wrapper    = std::make_unique<MIRInputWrapper>();
+std::unique_ptr<MIRInput> MIRInput::from_data_handle(eckit_bridge::DataHandleWrapper& handle) {
+    auto wrapper    = std::make_unique<MIRInput>();
     wrapper->input_ = std::make_unique<mir::input::GribDataHandleInput>(handle.inner());
     return wrapper;
 }
 
-std::unique_ptr<MIRInputWrapper> MIRInputWrapper::from_grib_file(rust::Str path) {
-    auto wrapper    = std::make_unique<MIRInputWrapper>();
+std::unique_ptr<MIRInput> MIRInput::from_grib_file(rust::Str path) {
+    auto wrapper    = std::make_unique<MIRInput>();
     wrapper->input_ = std::make_unique<mir::input::GribFileInput>(eckit::PathName(std::string(path)));
     return wrapper;
 }
 
-std::unique_ptr<MIRInputWrapper> MIRInputWrapper::from_grib_memory(rust::Slice<const uint8_t> message) {
-    auto wrapper      = std::make_unique<MIRInputWrapper>();
+std::unique_ptr<MIRInput> MIRInput::from_grib_memory(rust::Slice<const uint8_t> message) {
+    auto wrapper      = std::make_unique<MIRInput>();
     wrapper->message_ = std::vector<unsigned char>(message.begin(), message.end());
-    wrapper->input_ =
-        std::make_unique<mir::input::GribMemoryInput>(wrapper->message_.data(), wrapper->message_.size());
+    wrapper->input_ = std::make_unique<mir::input::GribMemoryInput>(wrapper->message_.data(), wrapper->message_.size());
     return wrapper;
 }
 
-std::unique_ptr<MIRInputWrapper> MIRInputWrapper::from_multi_dimensional_grib_file(rust::Str path, size_t dimensions,
-                                                                                  size_t skip) {
-    auto wrapper    = std::make_unique<MIRInputWrapper>();
+std::unique_ptr<MIRInput> MIRInput::from_multi_dimensional_grib_file(rust::Str path, size_t dimensions, size_t skip) {
+    auto wrapper    = std::make_unique<MIRInput>();
     wrapper->input_ = std::make_unique<mir::input::MultiDimensionalGribFileInput>(eckit::PathName(std::string(path)),
-                                                                                 dimensions, skip);
+                                                                                  dimensions, skip);
     return wrapper;
 }
 
-std::unique_ptr<MIRInputWrapper> MIRInputWrapper::from_gridspec(rust::Str gridspec, bool gridded) {
-    auto wrapper    = std::make_unique<MIRInputWrapper>();
+std::unique_ptr<MIRInput> MIRInput::from_gridspec(rust::Str gridspec, bool gridded) {
+    auto wrapper    = std::make_unique<MIRInput>();
     wrapper->input_ = std::make_unique<mir::input::GridSpecInput>(std::string(gridspec), gridded);
     return wrapper;
 }
 
-std::unique_ptr<MIRInputWrapper> MIRInputWrapper::from_raw(rust::Slice<const double> values,
-                                                           const Parametrisation& metadata) {
-    auto wrapper     = std::make_unique<MIRInputWrapper>();
+std::unique_ptr<MIRInput> MIRInput::from_raw(rust::Slice<const double> values, const Parametrisation& metadata) {
+    auto wrapper     = std::make_unique<MIRInput>();
     wrapper->values_ = std::vector<double>(values.begin(), values.end());
 
     // Copied before the input is built: `RawInput`'s constructor reads
     // `dimensions` off the metadata it is handed.
     metadata.copyValuesTo(wrapper->metadata_);
 
-    wrapper->input_ = std::make_unique<mir::input::RawInput>(wrapper->values_.data(), wrapper->values_.size(),
-                                                            wrapper->metadata_);
+    wrapper->input_ =
+        std::make_unique<mir::input::RawInput>(wrapper->values_.data(), wrapper->values_.size(), wrapper->metadata_);
     return wrapper;
 }
 
