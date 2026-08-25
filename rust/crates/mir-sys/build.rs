@@ -159,12 +159,12 @@ fn build_vendored() {
 
     let eckit_root =
         env::var("DEP_ECKIT_SYS_ROOT").expect("DEP_ECKIT_SYS_ROOT not set - eckit-sys dependency");
-    let metkit_root = env::var("DEP_METKIT_SYS_ROOT")
-        .expect("DEP_METKIT_SYS_ROOT not set - metkit-sys dependency");
     let eccodes_root = env::var("DEP_ECCODES_SYS_ROOT")
         .expect("DEP_ECCODES_SYS_ROOT not set - eccodes-sys dependency");
     let atlas_root =
         env::var("DEP_ATLAS_SYS_ROOT").expect("DEP_ATLAS_SYS_ROOT not set - atlas-sys dependency");
+    let metkit_root = env::var("DEP_METKIT_SYS_ROOT")
+        .expect("DEP_METKIT_SYS_ROOT not set - metkit-sys dependency");
     let eckit_cpp_dir = env::var("DEP_ECKIT_SYS_CPP_DIR").expect("DEP_ECKIT_SYS_CPP_DIR not set");
 
     let ecbuild_src = bindman_utils::git_clone(ECBUILD_REPO, ECBUILD_TAG, &src_dir.join("ecbuild"));
@@ -185,7 +185,7 @@ fn build_vendored() {
     let ecbuild_bin = ecbuild_src.join("bin/ecbuild");
     let num_jobs = bindman_utils::build_parallelism();
 
-    let cmake_prefix_path = format!("{eckit_root};{metkit_root};{eccodes_root};{atlas_root}");
+    let cmake_prefix_path = format!("{eckit_root};{eccodes_root};{atlas_root};{metkit_root}");
 
     let mut cmd = Command::new(&ecbuild_bin);
     cmd.current_dir(&build_dir)
