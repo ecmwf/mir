@@ -34,7 +34,6 @@ namespace mir_bridge {
  */
 class Job final : public mir::api::MIRJob {
 public:
-
     void set_str(rust::Str name, rust::Str value);
     void set_f64(rust::Str name, double value);
     void set_i64(rust::Str name, int64_t value);
@@ -48,16 +47,16 @@ public:
     void clear_key(rust::Str name);
 
     /// Take the output grid from an input rather than stating it.
-    void representation_from(const MIRInputWrapper& input);
+    void representation_from(const MIRInput& input);
 
     rust::String to_json() const;
 
     /// The equivalent mir-tool command line, for debugging.
     rust::String mir_tool_call() const;
 
-    void execute_one(MIRInputWrapper& input, MIROutputWrapper& output) const;
+    void execute_one(MIRInput& input, MIROutput& output) const;
 
-    size_t execute_all(MIRInputWrapper& input, MIROutputWrapper& output) const;
+    size_t execute_all(MIRInput& input, MIROutput& output) const;
 
     // ============== Factories ==============
 
