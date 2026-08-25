@@ -43,7 +43,7 @@ rust::String Parametrisation::to_json() const {
     return rust::String(s.str());
 }
 
-std::unique_ptr<Parametrisation> Parametrisation::create() {
+std::unique_ptr<Parametrisation> Parametrisation::make() {
     return std::make_unique<Parametrisation>();
 }
 
