@@ -219,9 +219,7 @@ fn build_vendored() {
         ))
         .arg("-DENABLE_TESTS=OFF")
         .arg("-DBUILD_TESTING=OFF")
-        .arg("-DENABLE_DOCS=OFF")
-        .arg("-DENABLE_BUILD_TOOLS=OFF")
-        .arg("-DENABLE_MIR_TOOLS=OFF");
+        .arg("-DENABLE_BUILD_TOOLS=OFF");
 
     #[cfg(target_os = "macos")]
     cmd.arg("-DCMAKE_INSTALL_NAME_DIR=@rpath");
