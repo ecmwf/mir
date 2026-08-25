@@ -10,7 +10,11 @@ use bindman::track_cpp_api;
 // Auto-generated mir Error enum + From<cxx::Exception> impl
 include!(concat!(env!("OUT_DIR"), "/mir_exceptions.rs"));
 
-#[track_cpp_api(("mir/api/MIRJob.h", class = "MIRJob"),)]
+#[track_cpp_api(
+    ("mir/api/MIRJob.h", class = "MIRJob"),
+    // Deliberately not wrapped: mir is transitioning away from these.
+    ignore = ["representationFrom", "mirToolCall"]
+)]
 #[cxx::bridge(namespace = "mir_bridge")]
 pub mod ffi {
     unsafe extern "C++" {
@@ -133,14 +137,8 @@ pub mod ffi {
 
         fn clear_key(self: Pin<&mut Job>, name: &str) -> Result<()>;
 
-        /// Take the output grid from an input rather than stating it.
-        fn representation_from(self: Pin<&mut Job>, input: &MIRInput) -> Result<()>;
-
         #[cxx_name = "to_json"]
         fn json_str(self: &Job) -> Result<String>;
-
-        /// The equivalent mir-tool command line, for debugging.
-        fn mir_tool_call(self: &Job) -> Result<String>;
 
         /// Transform the message the input is currently positioned on. Callers
         /// drive iteration themselves; see `execute_all`.
