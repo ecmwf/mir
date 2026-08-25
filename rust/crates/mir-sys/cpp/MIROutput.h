@@ -1,16 +1,16 @@
 // mir output bridge — wraps `mir::output::MIROutput` and its factories.
 #pragma once
 
-#include "Parametrisation.h"
-
-#include "mir/output/MIROutput.h"
-
-#include "rust/cxx.h"
-
 #include <cstddef>
 #include <cstdint>
 #include <memory>
 #include <vector>
+
+#include "rust/cxx.h"
+
+#include "mir/output/MIROutput.h"
+
+#include "Parametrisation.h"
 
 namespace mir_bridge {
 

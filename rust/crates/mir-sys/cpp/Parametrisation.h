@@ -1,12 +1,12 @@
 // mir parametrisation bridge — wraps `mir::param::SimpleParametrisation`.
 #pragma once
 
-#include "mir/param/SimpleParametrisation.h"
+#include <cstdint>
+#include <memory>
 
 #include "rust/cxx.h"
 
-#include <cstdint>
-#include <memory>
+#include "mir/param/SimpleParametrisation.h"
 
 namespace mir_bridge {
 

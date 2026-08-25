@@ -1,6 +1,8 @@
 // mir input bridge — implementation.
 #include "MIRInput.h"
 
+#include <string>
+
 #include "eckit/filesystem/PathName.h"
 
 #include "mir/input/GribDataHandleInput.h"
@@ -9,8 +11,6 @@
 #include "mir/input/GridSpecInput.h"
 #include "mir/input/MultiDimensionalGribFileInput.h"
 #include "mir/input/RawInput.h"
-
-#include <string>
 
 namespace mir_bridge {
 

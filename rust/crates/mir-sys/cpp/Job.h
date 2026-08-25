@@ -1,16 +1,16 @@
 // mir job bridge — wraps `mir::api::MIRJob`.
 #pragma once
 
-#include "MIRInput.h"
-#include "MIROutput.h"
-
-#include "mir/api/MIRJob.h"
-
-#include "rust/cxx.h"
-
 #include <cstddef>
 #include <cstdint>
 #include <memory>
+
+#include "rust/cxx.h"
+
+#include "mir/api/MIRJob.h"
+
+#include "MIRInput.h"
+#include "MIROutput.h"
 
 namespace mir_bridge {
 
