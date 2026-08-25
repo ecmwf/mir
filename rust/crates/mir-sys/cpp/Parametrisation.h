@@ -7,7 +7,9 @@
 
 #include "mir/param/SimpleParametrisation.h"
 
+
 namespace mir_bridge {
+
 
 /**
  * The metadata carried alongside `RawInput` values, and filled in by
@@ -20,7 +22,6 @@ namespace mir_bridge {
  */
 class Parametrisation final : public mir::param::SimpleParametrisation {
 public:
-
     void set_str(rust::Str name, rust::Str value);
     void set_f64(rust::Str name, double value);
     void set_i64(rust::Str name, int64_t value);
@@ -35,5 +36,6 @@ public:
 
     static std::unique_ptr<Parametrisation> make();
 };
+
 
 }  // namespace mir_bridge

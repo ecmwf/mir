@@ -13,7 +13,9 @@
 
 #include "Parametrisation.h"
 
+
 namespace mir_bridge {
+
 
 /**
  * Owns a `mir::input::MIRInput`, which is a cursor over a stream of fields
@@ -55,5 +57,6 @@ public:
     /// Values and metadata are both copied in.
     static std::unique_ptr<MIRInput> from_raw(rust::Slice<const double> values, const Parametrisation& metadata);
 };
+
 
 }  // namespace mir_bridge
