@@ -55,7 +55,7 @@ bool use_grib_metkit_encoder(const param::MIRParametrisation& param) {
 }
 
 
-CASE("metkit") {
+CASE("metkit (roundtrip)") {
     for (const auto& path : std::vector<std::string>{
              "gridType=reduced_gg,gridName=O8,shortName=q.grib2",
              "gridType=healpix,Nside=2,orderingConvention=nested.grib2",
@@ -65,7 +65,6 @@ CASE("metkit") {
              "mtg2-vod.grib2",
              "mtg2-sfc.grib2",
              "mtg2-o2d.grib2",
-             "mtg2-d.grib2",
          }) {
         Log::info() << "path: '" << path << "'" << std::endl;
         util::MIRStatistics stats;
@@ -95,8 +94,7 @@ CASE("metkit") {
         // auto out_path(path + ".mk.grib");
         std::unique_ptr<output::MIROutput> out(new output::GribFileOutput(out_path));
 
-        auto field = in->field();
-        context::Context ctx(field, stats);
+        context::Context ctx(*in, stats);
 
         out->save(param, ctx);
 

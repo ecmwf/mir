@@ -575,11 +575,11 @@ size_t GribOutput::save_with_metkit(const param::MIRParametrisation& param, cont
     const auto& input = ctx.input();
 
     eckit::LocalConfiguration cfg;
-    // cfg.set("skipSection3", true);
+    cfg.set("skipSection3", true);
 
-    metkit::grib2mars::Grib2Mars grib2mars;
-    metkit::mars2mars::Mars2Mars mars2mars;
-    metkit::mars2grib::Mars2Grib mars2grib(cfg);
+    metkit::grib2mars::Grib2Mars grib2mars{cfg};
+    metkit::mars2mars::Mars2Mars mars2mars{cfg};
+    metkit::mars2grib::Mars2Grib mars2grib{cfg};
 
     size_t total = 0;
 
@@ -591,28 +591,7 @@ size_t GribOutput::save_with_metkit(const param::MIRParametrisation& param, cont
         ASSERT(ch);
 
         const auto original = grib2mars.convert<eckit::LocalConfiguration>(*ch);
-        auto [mars, misc]   = mars2mars.convert<eckit::LocalConfiguration>(original.mars);
-
-        for (const auto& key : original.misc.keys()) {
-            if (original.misc.isString(key)) {
-                misc.set(key, original.misc.getString(key));
-            }
-            else if (original.misc.isIntegral(key)) {
-                misc.set(key, original.misc.getLong(key));
-            }
-            else if (original.misc.isFloatingPoint(key)) {
-                misc.set(key, original.misc.getDouble(key));
-            }
-            else if (original.misc.isBoolean(key)) {
-                misc.set(key, original.misc.getBool(key));
-            }
-            else if (original.misc.isFloatingPointList(key)) {
-                misc.set(key, original.misc.getDoubleVector(key));
-            }
-            else {
-                throw exception::UserError("GribOutput: save_with_metkit unexpected type for '" + key + "'", Here());
-            }
-        }
+        auto [mars, misc]   = mars2mars.convert(original.mars, original.misc);
 
         auto grid = [&field]() {
             repres::Representation::CustomSpec spec;
