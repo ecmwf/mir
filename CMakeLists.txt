@@ -31,7 +31,7 @@ if(NOT TARGET OpenMP::OpenMP_CXX)
 endif()
 
 ecbuild_find_package(NAME eckit   VERSION 2.1 REQUIRED)
-ecbuild_find_package(NAME eccodes VERSION 2.47 REQUIRED)
+ecbuild_find_package(NAME eccodes VERSION 2.48 REQUIRED)
 ecbuild_find_package(NAME atlas   VERSION 0.46 REQUIRED)
 
 ecbuild_add_option(FEATURE METKIT DEFAULT ON REQUIRED_PACKAGES "metkit VERSION 1.18.3")
