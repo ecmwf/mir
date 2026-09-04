@@ -42,9 +42,44 @@ const MIRParametrisation& MIRParametrisation::fieldParametrisation() const {
 }
 
 
+bool MIRParametrisation::get(const std::string& name, long long& value) const {
+    if (long v = 0; get(name, v)) {
+        value = v;  // widening conversion, always representable
+        return true;
+    }
+    return false;
+}
+
+
 bool MIRParametrisation::get(const std::string& name, size_t& value) const {
     if (long v = 0; get(name, v)) {
         value = eckit::into_unsigned(v);
+        return true;
+    }
+    return false;
+}
+
+
+bool MIRParametrisation::get(const std::string& name, std::vector<bool>& value) const {
+    if (std::vector<long> v; get(name, v)) {
+        value.clear();
+        value.reserve(v.size());
+        for (const auto& l : v) {
+            value.emplace_back(l != 0);
+        }
+        return true;
+    }
+    return false;
+}
+
+
+bool MIRParametrisation::get(const std::string& name, std::vector<long long>& value) const {
+    if (std::vector<long> v; get(name, v)) {
+        value.clear();
+        value.reserve(v.size());
+        for (const auto& l : v) {
+            value.emplace_back(l);
+        }
         return true;
     }
     return false;
@@ -63,26 +98,5 @@ bool MIRParametrisation::get(const std::string& name, std::vector<size_t>& value
     return false;
 }
 
-bool MIRParametrisation::get(const std::string& name, long long& value) const {
-    if (long v = 0; get(name, v)) {
-        ASSERT(v >= 0);
-        value = v;
-        return true;
-    }
-    return false;
-}
-
-
-bool MIRParametrisation::get(const std::string& name, std::vector<long long>& value) const {
-    if (std::vector<long> v; get(name, v)) {
-        value.clear();
-        value.reserve(v.size());
-        for (const auto& l : v) {
-            value.emplace_back(l);
-        }
-        return true;
-    }
-    return false;
-}
 
 }  // namespace mir::param

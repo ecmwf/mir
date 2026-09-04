@@ -16,6 +16,7 @@
 #include <sstream>
 
 #include "eckit/log/JSON.h"
+#include "eckit/utils/SafeCasts.h"
 #include "eckit/utils/Tokenizer.h"
 
 #include "mir/action/plan/Job.h"
@@ -166,7 +167,13 @@ MIRJob& MIRJob::set(const std::string& name, float value) {
 }
 
 
-MIRJob& MIRJob::set(const std::string& name, bool value) {
+MIRJob& MIRJob::set(const std::string& name, double value) {
+    _setScalar(resolveAliases(name), resolveAliases(name, value));
+    return *this;
+}
+
+
+MIRJob& MIRJob::set(const std::string& name, int value) {
     _setScalar(resolveAliases(name), resolveAliases(name, value));
     return *this;
 }
@@ -177,27 +184,27 @@ MIRJob& MIRJob::set(const std::string& name, long value) {
     return *this;
 }
 
+
 MIRJob& MIRJob::set(const std::string& name, long long value) {
     _setScalar(resolveAliases(name), resolveAliases(name, value));
     return *this;
 }
 
+
+MIRJob& MIRJob::set(const std::string& name, bool value) {
+    _setScalar(resolveAliases(name), resolveAliases(name, value));
+    return *this;
+}
+
+
 MIRJob& MIRJob::set(const std::string& name, size_t value) {
-    ASSERT(static_cast<size_t>(static_cast<long>(value)) == value);
-
-    _setScalar(resolveAliases(name), static_cast<long>(value));
+    _setScalar(resolveAliases(name), eckit::into_signed(value));
     return *this;
 }
 
 
-MIRJob& MIRJob::set(const std::string& name, double value) {
-    _setScalar(resolveAliases(name), resolveAliases(name, value));
-    return *this;
-}
-
-
-MIRJob& MIRJob::set(const std::string& name, int value) {
-    _setScalar(resolveAliases(name), resolveAliases(name, value));
+MIRJob& MIRJob::set(const std::string& name, const std::vector<bool>& v) {
+    _setVector(resolveAliases(name), v);
     return *this;
 }
 
@@ -213,10 +220,12 @@ MIRJob& MIRJob::set(const std::string& name, const std::vector<long>& v) {
     return *this;
 }
 
+
 MIRJob& MIRJob::set(const std::string& name, const std::vector<long long>& v) {
     _setVector(resolveAliases(name), v);
     return *this;
 }
+
 
 MIRJob& MIRJob::set(const std::string& name, const std::vector<size_t>& value) {
     _setVector(resolveAliases(name), resolveAliases(name, value));

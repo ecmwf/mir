@@ -65,13 +65,14 @@ public:
     MIRJob& set(const std::string& name, double value) override;
     MIRJob& set(const std::string& name, int value) override;
     MIRJob& set(const std::string& name, long value) override;
-    MIRJob& set(const std::string& name, long long value);
+    MIRJob& set(const std::string& name, long long value) override;
     MIRJob& set(const std::string& name, bool value) override;
     MIRJob& set(const std::string& name, size_t value) override;
 
+    MIRJob& set(const std::string& name, const std::vector<bool>& value) override;
     MIRJob& set(const std::string& name, const std::vector<int>& value) override;
     MIRJob& set(const std::string& name, const std::vector<long>& value) override;
-    MIRJob& set(const std::string& name, const std::vector<long long>& value);
+    MIRJob& set(const std::string& name, const std::vector<long long>& value) override;
     MIRJob& set(const std::string& name, const std::vector<size_t>& value) override;
     MIRJob& set(const std::string& name, const std::vector<float>& value) override;
     MIRJob& set(const std::string& name, const std::vector<double>& value) override;

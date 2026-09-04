@@ -66,10 +66,12 @@ public:
     bool get(const std::string& name, std::vector<double>& value) const override      = 0;
     bool get(const std::string& name, std::vector<std::string>& value) const override = 0;
 
-    bool get(const std::string& name, size_t& value) const override;
-    bool get(const std::string& name, std::vector<size_t>& value) const override;
     bool get(const std::string& name, long long& value) const override;
+    bool get(const std::string& name, size_t& value) const override;
+
+    bool get(const std::string& name, std::vector<bool>& value) const override;
     bool get(const std::string& name, std::vector<long long>& value) const override;
+    bool get(const std::string& name, std::vector<size_t>& value) const override;
 
     // -- Class members
     // None

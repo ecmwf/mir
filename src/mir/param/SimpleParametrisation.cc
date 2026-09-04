@@ -19,6 +19,7 @@
 
 #include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
+#include "eckit/utils/SafeCasts.h"
 #include "eckit/utils/Tokenizer.h"
 #include "eckit/value/Value.h"
 
@@ -721,15 +722,21 @@ SimpleParametrisation& SimpleParametrisation::set(const std::string& name, long 
 
 
 SimpleParametrisation& SimpleParametrisation::set(const std::string& name, long long value) {
-    _set(name, long(value));
+    // NOTE: eckit SafeCasts only converts between signednesses, it cannot check this narrowing
+    _set(name, static_cast<long>(value));
     return *this;
 }
 
 
 SimpleParametrisation& SimpleParametrisation::set(const std::string& name, size_t value) {
-    // TODO: Support unsigned properly
-    ASSERT(size_t(long(value)) == value);
-    _set(name, long(value));
+    _set(name, eckit::into_signed(value));
+    return *this;
+}
+
+
+SimpleParametrisation& SimpleParametrisation::set(const std::string& name, const std::vector<bool>& value) {
+    std::vector<long> value_long(value.begin(), value.end());
+    _set(name, value_long);
     return *this;
 }
 
@@ -783,6 +790,7 @@ SimpleParametrisation& SimpleParametrisation::set(const std::string& name, const
 
 
 SimpleParametrisation& SimpleParametrisation::set(const std::string& name, const std::vector<long long>& value) {
+    // NOTE: eckit SafeCasts only converts between signednesses, it cannot check this narrowing
     std::vector<long> value_long(value.begin(), value.end());
     _set(name, value_long);
     return *this;

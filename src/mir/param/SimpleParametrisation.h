@@ -63,6 +63,7 @@ public:
     SimpleParametrisation& set(const std::string& name, bool value);
     SimpleParametrisation& set(const std::string& name, size_t value);
 
+    SimpleParametrisation& set(const std::string& name, const std::vector<bool>& value);
     SimpleParametrisation& set(const std::string& name, const std::vector<int>& value);
     SimpleParametrisation& set(const std::string& name, const std::vector<long>& value);
     SimpleParametrisation& set(const std::string& name, const std::vector<long long>& value);
