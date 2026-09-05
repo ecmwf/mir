@@ -21,3 +21,7 @@ python/**/*.cpp
 python/**/*.c
 python/**/__pycache__
 python/**/*.cpython-*
+
+# Rust
+rust/target/
+rust/Cargo.lock
