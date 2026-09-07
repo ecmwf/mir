@@ -3,7 +3,7 @@ dependency_cmake_options: |
   ecmwf/eccodes: "-DENABLE_ECKIT_GEO=ON"
 dependencies: |
   ecmwf/ecbuild
-  MathisRosenhauer/libaec@refs/tags/v1.1.4
+  Deutsches-Klimarechenzentrum/libaec@refs/tags/v1.1.6
   ecmwf/eckit
   ecmwf/eccodes
   ecmwf/atlas
