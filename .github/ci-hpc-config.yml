@@ -3,8 +3,8 @@ build:
     - ninja
   dependencies:
     - ecmwf/ecbuild@develop
-    - ecmwf/eccodes@develop
     - ecmwf/eckit@develop
+    - ecmwf/eccodes@develop
     - ecmwf/atlas@develop
     - ecmwf/metkit@develop
   dependency_cmake_options:
