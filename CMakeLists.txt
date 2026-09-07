@@ -40,6 +40,12 @@ if(NOT TARGET eckit_geo)
     MESSAGE(FATAL_ERROR "mir: eckit feature ECKIT_GEO is required")
 endif()
 
+if(TARGET metkit)
+    if(NOT metkit_HAVE_GRIB2MARS OR NOT metkit_HAVE_MARS2GRIB)
+        MESSAGE(FATAL_ERROR "mir: metkit features GRIB2MARS and MARS2GRIB are required")
+    endif()
+endif()
+
 #TODO ensure eccodes has required features
 #if(NOT eccodes_HAVE_AEC)
 #    MESSAGE(FATAL_ERROR "mir: eccodes feature AEC is required")

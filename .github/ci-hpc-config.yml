@@ -3,10 +3,13 @@ build:
     - ninja
   dependencies:
     - ecmwf/ecbuild@develop
-    - ecmwf/eccodes@develop
     - ecmwf/eckit@develop
+    - ecmwf/eccodes@develop
     - ecmwf/atlas@develop
     - ecmwf/metkit@develop
+  dependency_cmake_options:
+    - "ecmwf/eccodes: '-DENABLE_ECKIT_GEO=ON'"
+    - "ecmwf/metkit: '-DENABLE_GRIB2MARS=ON -DENABLE_MARS2GRIB=ON'"
   parallel: 64
   env:
     - MIR_CACHING=0
