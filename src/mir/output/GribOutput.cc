@@ -51,7 +51,6 @@
 #include "metkit/codes/api/CodesAPI.h"
 #include "metkit/grib2mars/api/Grib2Mars.h"
 #include "metkit/mars2grib/api/Mars2Grib.h"
-#include "metkit/mars2mars/api/Mars2Mars.h"
 #endif
 
 
@@ -578,7 +577,6 @@ size_t GribOutput::save_with_metkit(const param::MIRParametrisation& param, cont
     cfg.set("skipSection3", true);
 
     metkit::grib2mars::Grib2Mars grib2mars{cfg};
-    metkit::mars2mars::Mars2Mars mars2mars{cfg};
     metkit::mars2grib::Mars2Grib mars2grib{cfg};
 
     size_t total = 0;
@@ -590,18 +588,15 @@ size_t GribOutput::save_with_metkit(const param::MIRParametrisation& param, cont
         auto ch = metkit::codes::codesHandleFromGRIBHandle(input.gribHandle(field.handle(d)));
         ASSERT(ch);
 
-        const auto original = grib2mars.convert<eckit::LocalConfiguration>(*ch);
-        auto [mars, misc]   = mars2mars.convert(original.mars, original.misc);
-
-        auto grid = [&field]() {
-            repres::Representation::CustomSpec spec;
-            repres::RepresentationHandle(field.representation())->fillSpec(spec);
-            return spec.str();
-        }();
+        auto [mars, misc] = grib2mars.convert<eckit::LocalConfiguration>(*ch);
 
         mars.remove("area");
         mars.remove("rotation");
-        mars.set("grid", grid);
+        mars.set("grid", [&field]() {
+            repres::Representation::CustomSpec spec;
+            repres::RepresentationHandle(field.representation())->fillSpec(spec);
+            return spec.str();
+        }());
 
         const auto h = mars2grib.encode(field.values(d), mars, misc);
         ASSERT(h);
