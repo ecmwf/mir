@@ -40,8 +40,8 @@ MeshGeneratorParameters::MeshGeneratorParameters(const param::MIRParametrisation
     user.get("mesh-file-xy", fileXY_);
     user.get("mesh-file-xyz", fileXYZ_);
 
-    for (const std::string& k : {"triangulate", "force_include_north_pole", "force_include_south_pole"}) {
-        auto key   = "mesh-generator-" + k;
+    for (const auto* k : {"triangulate", "force_include_north_pole", "force_include_south_pole"}) {
+        auto key   = std::string("mesh-generator-") + k;
         auto value = false;
         std::replace(key.begin(), key.end(), '_', '-');
 

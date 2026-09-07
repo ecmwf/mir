@@ -303,7 +303,7 @@ CASE("Representation::extendBoundingBox") {
         std::vector<BoundingBox> _bbox{{90, 10, -10, 9}, {90, -350, -10, 9}, {-70, -10, -90, 10},
                                        {0, -350, 0, 9},  {60, -350, 20, 9},  {90, -10, 70, 10}};
 
-        for (const std::string& name : {"F16", "O16", "F21", "O21", "N16"}) {
+        for (const auto* name : {"F16", "O16", "F21", "O21", "N16"}) {
             repres::RepresentationHandle repres = Grid::lookup(name).representation();
 
             for (const auto& bbox : _bbox) {

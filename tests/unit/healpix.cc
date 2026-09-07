@@ -47,7 +47,7 @@ CASE("HEALPix") {
 
 
     SECTION("GRIB-based input") {
-        for (const std::string& in : {
+        for (const auto* in : {
                  "gridType=healpix,Nside=2,orderingConvention=ring.grib2",
                  "gridType=healpix,Nside=2,orderingConvention=nested.grib2",
              }) {
