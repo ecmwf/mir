@@ -7,6 +7,8 @@ build:
     - ecmwf/eckit@develop
     - ecmwf/atlas@develop
     - ecmwf/metkit@develop
+  dependency_cmake_options:
+    - "ecmwf/eccodes: '-DENABLE_ECKIT_GEO=ON'"
   parallel: 64
   env:
     - MIR_CACHING=0

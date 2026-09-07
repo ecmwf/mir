@@ -7,4 +7,6 @@ dependencies: |
   ecmwf/atlas
   ecmwf/metkit
 dependency_branch: develop
+dependency_cmake_options: |
+  ecmwf/eccodes: '-DENABLE_ECKIT_GEO=ON'
 parallelism_factor: 8
