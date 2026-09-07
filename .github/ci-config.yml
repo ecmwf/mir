@@ -1,7 +1,7 @@
 cmake_options: -DENABLE_BUILD_TOOLS=ON
-dependency_cmake_options:
-  - ecmwf/eccodes: '-DENABLE_ECKIT_GEO=ON'
-  - ecmwf/metkit: '-DENABLE_GRIB2MARS=ON -DENABLE_MARS2GRIB=ON'
+dependency_cmake_options: |
+  ecmwf/eccodes: "-DENABLE_ECKIT_GEO=ON"
+  ecmwf/metkit: "-DENABLE_GRIB2MARS=ON -DENABLE_MARS2GRIB=ON"
 dependencies: |
   ecmwf/ecbuild
   MathisRosenhauer/libaec@refs/tags/v1.1.4
