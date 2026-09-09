@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 1996- European Centre for Medium-Range Weather Forecasts (ECMWF)
+# SPDX-License-Identifier: Apache-2.0
+
 ecbuild_configure_file(mir-test.sh.in mir-test.sh @ONLY)
 
 file(GLOB_RECURSE test_files LIST_DIRECTORIES false *.test *.fail)
