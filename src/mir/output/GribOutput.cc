@@ -565,11 +565,8 @@ size_t GribOutput::save_with_metkit(const param::MIRParametrisation& param, cont
     const auto& field = ctx.field();
     const auto& input = ctx.input();
 
-    eckit::LocalConfiguration cfg;
-    cfg.set("skipSection3", true);
-
-    metkit::grib2mars::Grib2Mars grib2mars{cfg};
-    metkit::mars2grib::Mars2Grib mars2grib{cfg};
+    metkit::grib2mars::Grib2Mars grib2mars;
+    metkit::mars2grib::Mars2Grib mars2grib;
 
     size_t total = 0;
 
