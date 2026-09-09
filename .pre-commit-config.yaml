@@ -37,3 +37,7 @@ repos:
   - id: clang-format
     types_or: [c, c++]
     exclude: 'python/mir/src/_mir/_mir.cpp'
+- repo: https://github.com/fsfe/reuse-tool
+  rev: v6.2.0
+  hooks:
+  - id: reuse
