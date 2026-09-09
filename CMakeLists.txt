@@ -76,7 +76,7 @@ if(HAVE_TESTS)
 endif()
 
 
-ecbuild_add_resources(TARGET ${PROJECT_NAME}_top_files SOURCES AUTHORS README.md NOTICE LICENSE INSTALL COPYING)
+ecbuild_add_resources(TARGET ${PROJECT_NAME}_top_files SOURCES AUTHORS README.md NOTICE LICENSE INSTALL REUSE.toml LICENSES/Apache-2.0.txt)
 ecbuild_install_project(NAME ${PROJECT_NAME})
 
 ecbuild_print_summary()
