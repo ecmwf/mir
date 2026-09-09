@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 1996- European Centre for Medium-Range Weather Forecasts (ECMWF)
+# SPDX-License-Identifier: Apache-2.0
+
 find_program(MARS_SCRIPT NAMES mars false)
 
 ecbuild_configure_file(mir-test.sh.in mir-test.sh @ONLY)
