@@ -1,0 +1,44 @@
+# (C) Copyright 1996- ECMWF.
+#
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+#
+# In applying this licence, ECMWF does not waive the privileges and immunities
+# granted to it by virtue of its status as an intergovernmental organisation nor
+# does it submit to any jurisdiction.
+
+
+[workspace]
+resolver = "2"
+members = ["crates/mir-sys"]
+
+[workspace.package]
+edition = "2024"
+license = "Apache-2.0"
+repository = "https://github.com/ecmwf/mir"
+rust-version = "1.90"
+readme = "README.md"
+keywords = ["ecmwf", "weather", "meteorology", "interpolation", "regridding"]
+categories = ["science"]
+
+[workspace.dependencies]
+# Internal
+mir-sys = { path = "crates/mir-sys" }
+
+# Foundation crates
+eckit-sys = { git = "ssh://git@github.com/ecmwf/eckit.git", branch = "develop", default-features = false }
+# Pinned to match metkit-sys: a differing spec resolves to a second eccodes-sys,
+# and both declare `links = "eccodes_sys"`.
+eccodes-sys = { git = "ssh://git@github.com/ecmwf/rust-wrappers-playground.git", rev = "d6b582fd", default-features = false }
+atlas-sys = { git = "ssh://git@github.com/ecmwf/atlas.git", branch = "rust-bindings", default-features = false }
+metkit-sys = { git = "ssh://git@github.com/ecmwf/metkit.git", branch = "develop", default-features = false }
+
+# Build tools
+bindman = { git = "ssh://git@github.com/ecmwf/bindman.git", rev = "47edf68" }
+bindman-build = { git = "ssh://git@github.com/ecmwf/bindman.git", rev = "47edf68" }
+bindman-utils = { git = "ssh://git@github.com/ecmwf/bindman.git", rev = "47edf68" }
+
+# External
+cxx = "1.0"
+cxx-build = "1.0"
+thiserror = "2"
