@@ -1,7 +1,3 @@
-# SPDX-FileCopyrightText: 1996- European Centre for Medium-Range Weather Forecasts (ECMWF)
-# SPDX-License-Identifier: Apache-2.0
-
-
 cimport eckit_defs as eckit
 cimport mir_defs as mir
 from libcpp.string cimport string
