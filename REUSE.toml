@@ -39,6 +39,26 @@ precedence = "closest"
 SPDX-FileCopyrightText = "1996- European Centre for Medium-Range Weather Forecasts (ECMWF)"
 SPDX-License-Identifier = "Apache-2.0"
 
+# Cython sources -- although ADR-010 clause 1 asks every file that can carry a
+# comment to carry the SPDX header in the file itself, these four are a
+# deliberate exception and are covered here instead. The reason is that the
+# mandated SPDX-FileCopyrightText line is 90 characters, which is 2 above the
+# limit of 88 that cython-lint enforces by default. Keeping the header in the
+# files would mean raising --max-line-length for all Cython code purely to fit
+# a comment. Adjusting the linter setting for the sake of licensing metadata
+# was deemed unnecessary and risky, as it effectively results in a surprise
+# divergence with potential to cause confusion.
+#
+# This trade-off is accepted knowingly: the licence no longer travels inside
+# these four files if they are copied out of the repository on their own, but
+# this is considered unlikely to happen, as the files are not intended to be
+# used in isolation.
+[[annotations]]
+path = ["python/mir/src/_mir/**.pyx", "python/mir/src/_mir/**.pxd"]
+precedence = "closest"
+SPDX-FileCopyrightText = "1996- European Centre for Medium-Range Weather Forecasts (ECMWF)"
+SPDX-License-Identifier = "Apache-2.0"
+
 # Test fixtures and test data: GRIB and NetCDF messages, land-sea masks, grid
 # definitions, weight matrices, the .test case files, and the geopoints files,
 # which are recognised by the four-byte magic "#GEO" that a header would
