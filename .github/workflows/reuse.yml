@@ -4,9 +4,10 @@
 name: reuse
 
 on:
-  # Trigger the workflow on push to master or develop, except tag creation
+  # Trigger the workflow on push to main, master or develop, except tag creation
   push:
     branches:
+      - 'main'
       - 'master'
       - 'develop'
     tags-ignore:
