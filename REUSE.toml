@@ -1,0 +1,71 @@
+version = 1
+SPDX-PackageName = "mir"
+SPDX-PackageSupplier = "European Centre for Medium-Range Weather Forecasts (ECMWF) <software.support@ecmwf.int>"
+SPDX-PackageDownloadLocation = "https://github.com/ecmwf/mir"
+
+# This file covers the content that does not carry an SPDX header, either
+# because the format has no comment syntax, because a header would be read as
+# data, or because the file is meant to be maintained by the user. An in-file
+# header always takes precedence over an entry here, so a broad path below does
+# not override a file that states its own licensing.
+
+# ----------------------------------------------------------------------------
+# ECMWF-authored content
+# ----------------------------------------------------------------------------
+
+# The human-facing licence, notice and authorship files, which live outside
+# LICENSES/. AUTHORS is prose with no comment convention.
+[[annotations]]
+path = ["LICENSE", "NOTICE", "AUTHORS"]
+precedence = "closest"
+SPDX-FileCopyrightText = "1996- European Centre for Medium-Range Weather Forecasts (ECMWF)"
+SPDX-License-Identifier = "Apache-2.0"
+
+# Files read verbatim by the build, or with no comment syntax. VERSION is read
+# as a bare version string by setup.py and by ecbuild; mir.sublime-project is
+# JSON.
+[[annotations]]
+path = ["VERSION", "mir.sublime-project"]
+precedence = "closest"
+SPDX-FileCopyrightText = "1996- European Centre for Medium-Range Weather Forecasts (ECMWF)"
+SPDX-License-Identifier = "Apache-2.0"
+
+# Runtime configuration, installed to etc/mir and intended to be edited and
+# maintained by the user. An in-file header would sit above the user's own
+# edits in the deployed copy.
+[[annotations]]
+path = ["etc/mir/**.yaml"]
+precedence = "closest"
+SPDX-FileCopyrightText = "1996- European Centre for Medium-Range Weather Forecasts (ECMWF)"
+SPDX-License-Identifier = "Apache-2.0"
+
+# Cython sources -- although ADR-010 clause 1 asks every file that can carry a
+# comment to carry the SPDX header in the file itself, these four are a
+# deliberate exception and are covered here instead. The reason is that the
+# mandated SPDX-FileCopyrightText line is 90 characters, which is 2 above the
+# limit of 88 that cython-lint enforces by default. Keeping the header in the
+# files would mean raising --max-line-length for all Cython code purely to fit
+# a comment. Adjusting the linter setting for the sake of licensing metadata
+# was deemed unnecessary and risky, as it effectively results in a surprise
+# divergence with potential to cause confusion.
+#
+# This trade-off is accepted knowingly: the licence no longer travels inside
+# these four files if they are copied out of the repository on their own, but
+# this is considered unlikely to happen, as the files are not intended to be
+# used in isolation.
+[[annotations]]
+path = ["python/mir/src/_mir/**.pyx", "python/mir/src/_mir/**.pxd"]
+precedence = "closest"
+SPDX-FileCopyrightText = "1996- European Centre for Medium-Range Weather Forecasts (ECMWF)"
+SPDX-License-Identifier = "Apache-2.0"
+
+# Test fixtures and test data: GRIB and NetCDF messages, land-sea masks, grid
+# definitions, weight matrices, the .test case files, and the geopoints files,
+# which are recognised by the four-byte magic "#GEO" that a header would
+# destroy. The CMakeLists.txt and sources under tests/ carry their own headers
+# and are unaffected by this entry.
+[[annotations]]
+path = ["tests/**", "python/mir/tests/**.grib2"]
+precedence = "closest"
+SPDX-FileCopyrightText = "1996- European Centre for Medium-Range Weather Forecasts (ECMWF)"
+SPDX-License-Identifier = "Apache-2.0"

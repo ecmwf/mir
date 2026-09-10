@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 1996- European Centre for Medium-Range Weather Forecasts (ECMWF)
+# SPDX-License-Identifier: Apache-2.0
+
 
 # Setup cache directory
 set(MIR_CACHE_PATH "${CMAKE_CURRENT_BINARY_DIR}/cache")
