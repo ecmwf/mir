@@ -52,12 +52,20 @@ MIRStatistics::MIRStatistics() {
 
 MIRStatistics::MIRStatistics(eckit::Stream& s) {
     for (const auto& c : all_caches) {
-        caches_.insert({c, s});
+        caches_.insert({c, {}});
     }
 
     for (const auto& td : all_timings) {
-        s >> timings_[td.first];
+        timings_.insert({td.first, {}});
         descriptions_[td.first] = td.second;
+    }
+
+    for (auto& cache : caches_) {
+        cache.second = caching::InMemoryCacheStatistics(s);
+    }
+
+    for (auto& tim : timings_) {
+        s >> tim.second;
     }
 }
 

@@ -144,7 +144,18 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
 #endif
 
     // This may return EINVAL is the segment is too large 256MB
+    // Prefer huge pages when the system has them reserved (SHM_HUGETLB): fewer page-table
+    // entries and fewer page faults for the many processes attaching to this same segment.
+    // The kernel rounds shmsize up to the huge-page boundary itself; falls back transparently
+    // to regular pages if huge pages aren't available/reserved on this node.
+#ifdef SHM_HUGETLB
+    int shmid = eckit::Shmget::shmget(key, shmsize, IPC_CREAT | 0600 | SHM_HUGETLB);
+    if (shmid < 0) {
+        shmid = eckit::Shmget::shmget(key, shmsize, IPC_CREAT | 0600);
+    }
+#else
     int shmid = eckit::Shmget::shmget(key, shmsize, IPC_CREAT | 0600);
+#endif
     if (shmid < 0) {
         Log::warning()
             << msg.str()

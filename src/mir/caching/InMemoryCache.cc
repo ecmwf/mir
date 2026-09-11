@@ -92,7 +92,7 @@ void InMemoryCache<T>::footprint(const std::string& key, const InMemoryCacheUsag
 
 template <class T>
 void InMemoryCache<T>::reserve(size_t size, bool inSharedMemory) {
-    InMemoryCacheUsage usage(size, inSharedMemory);
+    InMemoryCacheUsage usage(inSharedMemory ? 0 : size, inSharedMemory ? size : 0);
     reserve(usage);
 }
 
