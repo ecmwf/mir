@@ -58,6 +58,8 @@ public:
 
     static std::string cacheLoader(cache_loader);
 
+    static int cacheSharedMemoryLoaderShmFlg();
+
     static const std::vector<std::string>& postProcessKeys();
 
 private:
