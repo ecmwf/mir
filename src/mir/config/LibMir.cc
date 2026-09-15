@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <set>
 
+#include "eckit/memory/Shmget.h"
 #include "eckit/config/Configuration.h"
 #include "eckit/config/Resource.h"
 #include "eckit/filesystem/PathName.h"
@@ -134,6 +135,23 @@ std::string LibMir::cacheLoader(cache_loader l) {
 
     ASSERT(0 <= l && l < cache_loader::ALL_CACHE_LOADERS);
     return loaders[l];
+}
+
+
+int LibMir::cacheSharedMemoryLoaderShmFlg() {
+    constexpr int shmflg = IPC_CREAT | 0600;
+
+#ifdef SHM_HUGETLB
+    // Prefer huge pages when the system has them reserved (SHM_HUGETLB): fewer page-table
+    // entries and fewer page faults for the many processes attaching to this same segment.
+    // The kernel rounds shmsize up to the huge-page boundary itself; fall back to regular
+    // pages if huge pages aren't available/reserved on this node.
+    static const bool hugetlb =
+        eckit::LibResource<bool, LibMir>("mir-shared-memory-loader-hugepages;$MIR_CACHE_SHM_HUGETLB", true);
+    return hugetlb ? (shmflg | SHM_HUGETLB) : shmflg;
+#else
+    return shmflg;
+#endif
 }
 
 
