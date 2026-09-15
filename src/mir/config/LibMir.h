@@ -64,6 +64,8 @@ public:
 
     static std::string cacheLoader(cache_loader);
 
+    static int cacheSharedMemoryLoaderShmFlg();
+
 private:
     LibMir();
 
