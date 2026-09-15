@@ -37,6 +37,7 @@
 #include "eckit/runtime/Main.h"
 
 #include "mir/caching/SharedMemoryKey.h"
+#include "mir/config/LibMir.h"
 #include "mir/method/WeightMatrix.h"
 #include "mir/util/Error.h"
 #include "mir/util/Exceptions.h"
@@ -155,7 +156,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 #endif
 
     // This may return EINVAL is the segment is too large 256MB
-    int shmid = eckit::Shmget::shmget(key, shmsize, IPC_CREAT | 0600);
+    int shmid = eckit::Shmget::shmget(key, shmsize, LibMir::cacheSharedMemoryLoaderShmFlg());
     if (shmid < 0) {
         Log::warning()
             << msg.str()

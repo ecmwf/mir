@@ -152,7 +152,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
 #endif
 
     // This may return EINVAL is the segment is too large 256MB
-    int shmid = eckit::Shmget::shmget(key, shmsize, IPC_CREAT | 0600);
+    int shmid = eckit::Shmget::shmget(key, shmsize, LibMir::cacheSharedMemoryLoaderShmFlg());
     if (shmid < 0) {
         Log::warning()
             << msg.str()
