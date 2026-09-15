@@ -594,7 +594,7 @@ size_t GribOutput::save_with_metkit(const param::MIRParametrisation& param, cont
         ASSERT(h);
 
         {
-            auto timing(ctx.statistics().saveTimer());
+            util::MIRStatistics::AutoTiming timing(saveTimer);
             out(h->messageData().data(), h->messageSize(), true);
         }
 
