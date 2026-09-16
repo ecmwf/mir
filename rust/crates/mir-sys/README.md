@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 1996- European Centre for Medium-Range Weather Forecasts (ECMWF)
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # mir-sys
 
 Rust bindings to ECMWF's [mir](https://github.com/ecmwf/mir) (Meteorological Interpolation and Regridding) C++ library.
