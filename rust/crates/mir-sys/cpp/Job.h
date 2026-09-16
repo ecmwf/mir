@@ -28,7 +28,8 @@ namespace mir_bridge {
  * The input is not: it is consumed by `next()`, which `execute_all` calls until
  * the stream is drained, and which the caller drives itself when using
  * `execute_one`. The bridge exposes no rewind, so a second pass needs a fresh
- * input.
+ * input. Inputs carrying a single message, such as `GribMemoryInput`, do not
+ * implement `next()` at all and have to go through `execute_one`.
  *
  * Derives from `mir::api::MIRJob` so it can be passed straight to mir, and so
  * that `set` and `clear` keep resolving key aliases (`gridname` becomes `grid`)
