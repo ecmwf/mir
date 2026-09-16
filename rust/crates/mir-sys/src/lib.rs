@@ -152,7 +152,8 @@ pub mod ffi {
         ) -> Result<()>;
 
         /// Drain the input, transforming every message, and return how many
-        /// were processed. Single-field inputs yield one.
+        /// were processed. Inputs that carry a single message, such as
+        /// `from_grib_memory`, do not support iteration: use `execute_one`.
         fn execute_all(
             self: &Job,
             input: Pin<&mut MIRInput>,
