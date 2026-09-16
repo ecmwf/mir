@@ -28,6 +28,7 @@ vendored = [
     "eccodes-sys/vendored",
     "eccodes-sys/product-grib",
     "eccodes-sys/geography",
+    "eccodes-sys/eckit-geo",
     "eccodes-sys/memfs",
     "eccodes-sys/eccodes-threads",
     "atlas-sys/vendored",
