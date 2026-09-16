@@ -20,6 +20,7 @@ set(TESTS
     grib_basic_angle
     grib_encoding
     grib_input
+    grib_rotated_ll
     grib_scanning_mode
     grid_box_method
     grids
@@ -53,6 +54,9 @@ foreach(_t ${TESTS})
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 endforeach()
+
+# the comparison is against ecCodes' own iterator, which ECCODES_ECKIT_GEO would otherwise make eckit::geo's
+set_property(TEST mir_tests_unit_grib_rotated_ll APPEND PROPERTY ENVIRONMENT ECCODES_ECKIT_GEO=0)
 
 if(mir_HAVE_METKIT)
     ecbuild_add_test(
