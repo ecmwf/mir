@@ -9,7 +9,7 @@ build:
     - ecmwf/eckit@develop
     - ecmwf/eccodes@develop
     - ecmwf/atlas@develop
-    - ecmwf/metkit@develop
+    - ecmwf/metkit@50r2-dev
   dependency_cmake_options:
     - "ecmwf/eccodes: '-DENABLE_ECKIT_GEO=ON'"
   parallel: 64
