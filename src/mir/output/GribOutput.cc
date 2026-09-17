@@ -579,8 +579,11 @@ size_t GribOutput::save_with_metkit(const param::MIRParametrisation& param, cont
 
         auto [mars, misc] = grib2mars.convert<eckit::LocalConfiguration>(*ch);
 
+        // Note: key removals are for temporary compatibility
         mars.remove("area");
         mars.remove("rotation");
+        mars.remove("truncation");
+
         mars.set("grid", [&field]() {
             repres::Representation::CustomSpec spec;
             repres::RepresentationHandle(field.representation())->fillSpec(spec);
