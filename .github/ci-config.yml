@@ -11,6 +11,6 @@ dependencies: |
   ecmwf/eckit
   ecmwf/eccodes
   ecmwf/atlas
-  ecmwf/metkit@50r2-dev
+  ecmwf/metkit
 dependency_branch: develop
 parallelism_factor: 8
