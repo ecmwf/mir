@@ -101,8 +101,17 @@ intensity.spectral-radiance: {}
 # quantity interpreted as accumulated in time (typical units: [<original unit> s])
 numerics.accumulated: {}
 
+# quantity interpreted as a maximum (in time) measure (typical units: [<original unit>])
+numerics.maximum: {}
+
 # quantity interpreted as temporal mean (typical units: [<original unit> s**-1])
 numerics.mean: {}
+
+# quantity interpreted as a minimum (in time) measure (typical units: [<original unit>])
+numerics.minimum: {}
+
+# quantity interpreted as a standard deviation (in time) measure (typical units: [<original unit>])
+numerics.standard-deviation: {}
 
 # quantity interpreted as temporal rate of change (typical units: [<original unit> s**-1])
 numerics.tendency: {}
