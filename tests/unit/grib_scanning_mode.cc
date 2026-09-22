@@ -6,10 +6,9 @@
 #include <string>
 
 #include "eckit/geo/order/Scan.h"
+#include "eckit/testing/Test.h"
 
 #include "mir/util/Grib.h"
-
-#include "eckit/testing/Test.h"
 
 
 namespace mir::tests::unit {

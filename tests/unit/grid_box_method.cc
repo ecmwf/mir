@@ -3,7 +3,6 @@
 
 
 #include "eckit/testing/Test.h"
-
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/param/SimpleParametrisation.h"

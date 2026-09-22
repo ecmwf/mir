@@ -2,13 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
+#include "mir/util/FormulaParser.h"
+
 #include <memory>
 
 #include "mir/util/FormulaBinop.h"
 #include "mir/util/FormulaFunction.h"
 #include "mir/util/FormulaIdent.h"
 #include "mir/util/FormulaNumber.h"
-#include "mir/util/FormulaParser.h"
 #include "mir/util/FormulaString.h"
 #include "mir/util/Translator.h"
 

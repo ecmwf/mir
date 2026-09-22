@@ -2,10 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
+#include "mir/output/GribMemoryOutput.h"
+
 #include <cstring>
 #include <ostream>
 
-#include "mir/output/GribMemoryOutput.h"
 #include "mir/util/Exceptions.h"
 
 

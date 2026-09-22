@@ -4,10 +4,9 @@
 
 #pragma once
 
-#include "mir/action/interpolate/Gridded2UnrotatedGrid.h"
-
 #include <memory>
 
+#include "mir/action/interpolate/Gridded2UnrotatedGrid.h"
 #include "mir/param/GridSpecParametrisation.h"
 
 

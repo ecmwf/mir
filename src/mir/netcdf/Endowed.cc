@@ -4,9 +4,9 @@
 
 #include "mir/netcdf/Endowed.h"
 
-#include <cstring>
-
 #include <netcdf.h>
+
+#include <cstring>
 
 #include "mir/netcdf/Attribute.h"
 #include "mir/netcdf/Exceptions.h"

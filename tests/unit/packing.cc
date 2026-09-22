@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
+#include "mir/grib/Packing.h"
+
 #include <map>
 #include <memory>
 #include <sstream>
@@ -9,7 +11,6 @@
 #include "eckit/testing/Test.h"
 
 #include "mir/api/MIRJob.h"
-#include "mir/grib/Packing.h"
 #include "mir/input/MIRInput.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"

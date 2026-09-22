@@ -7,7 +7,6 @@
 #include <sstream>
 
 #include "eckit/log/JSON.h"
-
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 

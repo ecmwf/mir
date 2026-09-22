@@ -3,9 +3,10 @@
 
 
 #include "mir/netcdf/NCFile.h"
-#include "mir/netcdf/Exceptions.h"
 
 #include <netcdf.h>
+
+#include "mir/netcdf/Exceptions.h"
 
 namespace mir::netcdf {
 

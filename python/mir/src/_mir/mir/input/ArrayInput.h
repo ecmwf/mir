@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include "Python.h"
-
 #include <memory>
 #include <vector>
+
+#include "Python.h"
 
 #include "mir/input/MIRInput.h"
 

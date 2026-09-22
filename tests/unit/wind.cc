@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
+#include "mir/util/Wind.h"
+
 #include <ostream>
 #include <vector>
 
@@ -13,7 +15,6 @@
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
-#include "mir/util/Wind.h"
 
 #define EXPECTV(a)                                \
     log << "\tEXPECT(" << #a << ")" << std::endl; \

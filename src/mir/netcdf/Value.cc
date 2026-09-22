@@ -3,12 +3,12 @@
 
 
 #include "mir/netcdf/Value.h"
-#include "mir/netcdf/ValueT.h"
+
+#include <netcdf.h>
 
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/Type.h"
-
-#include <netcdf.h>
+#include "mir/netcdf/ValueT.h"
 
 namespace mir::netcdf {
 

@@ -4,12 +4,11 @@
 
 #pragma once
 
-#include "mir/api/mir_config.h"
-
 #include <string>
 
 #include "eckit/filesystem/PathName.h"
 
+#include "mir/api/mir_config.h"
 #include "mir/input/MIRInput.h"
 #include "mir/netcdf/InputDataset.h"
 #include "mir/netcdf/NCFileCache.h"

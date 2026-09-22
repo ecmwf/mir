@@ -2,10 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
+#include "mir/netcdf/DataInputVariable.h"
+
 #include <numeric>
 
 #include "mir/netcdf/Attribute.h"
-#include "mir/netcdf/DataInputVariable.h"
 #include "mir/netcdf/DataOutputVariable.h"
 #include "mir/netcdf/Dataset.h"
 #include "mir/netcdf/Dimension.h"

@@ -5,7 +5,6 @@
 #pragma once
 
 #include "mir/method/knn/KNearestNeighbours.h"
-
 #include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
 
 

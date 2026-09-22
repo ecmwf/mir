@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
+#include "mir/api/MIRComplexJob.h"
+
 #include <ostream>
 #include <sstream>
 
@@ -11,7 +13,6 @@
 #include "mir/action/plan/ActionGraph.h"
 #include "mir/action/plan/Executor.h"
 #include "mir/action/plan/Job.h"
-#include "mir/api/MIRComplexJob.h"
 #include "mir/api/MIRJob.h"
 #include "mir/api/MIRWatcher.h"
 #include "mir/input/MIRInput.h"

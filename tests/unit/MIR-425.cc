@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
-#include "eckit/testing/Test.h"
-
 #include <memory>
+
+#include "eckit/testing/Test.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/action/interpolate/Gridded2RegularLL.h"

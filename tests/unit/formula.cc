@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
-#include "eckit/testing/Test.h"
+#include "mir/util/Formula.h"
 
 #include <algorithm>
 #include <cmath>
@@ -13,6 +13,7 @@
 #include <utility>
 #include <vector>
 
+#include "eckit/testing/Test.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/action/context/Context.h"
@@ -21,7 +22,6 @@
 #include "mir/input/MIRInput.h"
 #include "mir/output/RawOutput.h"
 #include "mir/param/SimpleParametrisation.h"
-#include "mir/util/Formula.h"
 #include "mir/util/FormulaParser.h"
 #include "mir/util/Log.h"
 

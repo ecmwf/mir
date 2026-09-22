@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "mir/action/plan/Action.h"
-
 #include <memory>
+
+#include "mir/action/plan/Action.h"
 
 
 namespace mir::stats {

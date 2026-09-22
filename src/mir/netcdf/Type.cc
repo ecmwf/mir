@@ -2,14 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
-#include <netcdf.h>
-
-#include <sstream>
-
 #include "mir/netcdf/Type.h"
+
+#include <netcdf.h>
 
 #include <algorithm>
 #include <ostream>
+#include <sstream>
 #include <vector>
 
 #include "mir/netcdf/Codec.h"

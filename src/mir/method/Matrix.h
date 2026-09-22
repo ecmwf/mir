@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "mir/method/MethodWeighted.h"
-
 #include "eckit/filesystem/PathName.h"
+
+#include "mir/method/MethodWeighted.h"
 
 
 namespace mir::method {

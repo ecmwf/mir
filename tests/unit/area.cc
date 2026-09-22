@@ -2,9 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
+#include "mir/key/Area.h"
+
 #include "eckit/testing/Test.h"
 
-#include "mir/key/Area.h"
 #include "mir/util/BoundingBox.h"
 
 

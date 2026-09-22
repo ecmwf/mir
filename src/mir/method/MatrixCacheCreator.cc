@@ -2,13 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
+#include "mir/method/MatrixCacheCreator.h"
+
 #include <sys/wait.h>
 #include <unistd.h>
 
 #include "eckit/config/Resource.h"
 #include "eckit/thread/AutoLock.h"
 
-#include "mir/method/MatrixCacheCreator.h"
 #include "mir/method/MethodWeighted.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
