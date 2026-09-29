@@ -10,8 +10,8 @@
 namespace mir_bridge {
 
 
-/// Static accessors for `mir::LibMir::instance`. Stateless; a type only
-/// because every bridge entry point has to be a member.
+/// Static accessors for `mir::LibMir::instance`, grouped under a type so Rust
+/// calls them as `LibMir::version()`.
 class LibMir final {
 public:
     static rust::String version();
