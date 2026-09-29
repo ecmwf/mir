@@ -45,7 +45,7 @@ public:
     void set_bool(rust::Str name, bool value);
     void set_f64_list(rust::Str name, rust::Slice<const double> values);
     void set_i64_list(rust::Str name, rust::Slice<const int64_t> values);
-    void set_str_list(rust::Str name, const rust::Vec<rust::String>& values);
+    void set_str_list(rust::Str name, rust::Slice<const rust::Str> values);
 
     void set_from_string(rust::Str args);
 

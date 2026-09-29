@@ -41,7 +41,7 @@ void Job::set_i64_list(rust::Str name, rust::Slice<const int64_t> values) {
 }
 
 
-void Job::set_str_list(rust::Str name, const rust::Vec<rust::String>& values) {
+void Job::set_str_list(rust::Str name, rust::Slice<const rust::Str> values) {
     std::vector<std::string> converted;
     converted.reserve(values.size());
     for (const auto& value : values) {
