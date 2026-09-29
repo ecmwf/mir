@@ -4,16 +4,12 @@
 
 #include "LibMir.h"
 
+#include "eckit/system/Library.h"
+
 #include "mir/config/LibMir.h"
 
 
 namespace mir_bridge {
-
-
-namespace {
-// Full 40-character hash, matching what the Python bindings report.
-constexpr unsigned int SHA1_LENGTH = 40;
-}  // namespace
 
 
 rust::String LibMir::version() {
@@ -22,7 +18,8 @@ rust::String LibMir::version() {
 
 
 rust::String LibMir::git_sha1() {
-    return rust::String(mir::LibMir::instance().gitsha1(SHA1_LENGTH));
+    const eckit::system::Library& lib = mir::LibMir::instance();
+    return rust::String(lib.gitsha1());
 }
 
 
