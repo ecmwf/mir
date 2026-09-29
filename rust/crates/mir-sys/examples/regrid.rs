@@ -18,7 +18,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         return Ok(());
     };
 
-    eckit_sys::init();
+    mir_sys::init();
 
     let mut job = Job::make();
     job.pin_mut().set_str("grid", "1/1")?;
