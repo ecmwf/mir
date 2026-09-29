@@ -5,6 +5,7 @@
 #include "MIRInput.h"
 
 #include <string>
+#include <utility>
 
 #include "eckit/filesystem/PathName.h"
 
@@ -14,6 +15,7 @@
 #include "mir/input/GridSpecInput.h"
 #include "mir/input/MultiDimensionalGribFileInput.h"
 #include "mir/input/RawInput.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir_bridge {
@@ -29,9 +31,12 @@ size_t MIRInput::dimensions() const {
 }
 
 
-std::unique_ptr<MIRInput> MIRInput::from_data_handle(eckit_bridge::DataHandleWrapper& handle) {
-    auto wrapper    = std::make_unique<MIRInput>();
-    wrapper->input_ = std::make_unique<mir::input::GribDataHandleInput>(handle.inner());
+std::unique_ptr<MIRInput> MIRInput::from_data_handle(std::unique_ptr<eckit_bridge::DataHandleWrapper> handle) {
+    ASSERT(handle);
+
+    auto wrapper     = std::make_unique<MIRInput>();
+    wrapper->handle_ = std::move(handle);
+    wrapper->input_  = std::make_unique<mir::input::GribDataHandleInput>(wrapper->handle_->inner());
     return wrapper;
 }
 

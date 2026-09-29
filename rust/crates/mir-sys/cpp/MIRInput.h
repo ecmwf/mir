@@ -25,11 +25,13 @@ namespace mir_bridge {
  * Owns a `mir::input::MIRInput`, which is a cursor over a stream of fields
  * rather than a single field, and is consumed as `next()` advances it.
  *
- * `RawInput` and `GribMemoryInput` read through memory they do not own, and
- * are `final` in mir, so that storage is held here instead, declared before
- * `input_` so it outlives it. Unused by the other factories.
+ * `RawInput`, `GribMemoryInput` and `GribDataHandleInput` read through memory
+ * or a handle they do not own, and are `final` in mir, so that storage is held
+ * here instead, declared before `input_` so it outlives it. Unused by the other
+ * factories.
  */
 class MIRInput final {
+    std::unique_ptr<eckit_bridge::DataHandleWrapper> handle_;
     std::vector<double> values_;
     std::vector<unsigned char> message_;
     Parametrisation metadata_;
@@ -45,8 +47,7 @@ public:
 
     // ============== Factories ==============
 
-    /// The handle must outlive the input.
-    static std::unique_ptr<MIRInput> from_data_handle(eckit_bridge::DataHandleWrapper& handle);
+    static std::unique_ptr<MIRInput> from_data_handle(std::unique_ptr<eckit_bridge::DataHandleWrapper> handle);
 
     static std::unique_ptr<MIRInput> from_grib_file(rust::Str path);
 

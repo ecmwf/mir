@@ -70,7 +70,7 @@ pub mod ffi {
         fn dimensions(self: &MIRInput) -> Result<usize>;
 
         #[Self = "MIRInput"]
-        fn from_data_handle(handle: Pin<&mut DataHandleWrapper>) -> Result<UniquePtr<MIRInput>>;
+        fn from_data_handle(handle: UniquePtr<DataHandleWrapper>) -> Result<UniquePtr<MIRInput>>;
 
         #[Self = "MIRInput"]
         fn from_grib_file(path: &str) -> Result<UniquePtr<MIRInput>>;
