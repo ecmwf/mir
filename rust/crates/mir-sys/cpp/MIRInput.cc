@@ -7,6 +7,7 @@
 #include <string>
 #include <utility>
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 
 #include "mir/input/GribDataHandleInput.h"
@@ -14,6 +15,7 @@
 #include "mir/input/GribMemoryInput.h"
 #include "mir/input/GridSpecInput.h"
 #include "mir/input/MultiDimensionalGribFileInput.h"
+#include "mir/input/MultiDimensionalInput.h"
 #include "mir/input/RawInput.h"
 #include "mir/util/Exceptions.h"
 
@@ -28,6 +30,19 @@ bool MIRInput::next() {
 
 size_t MIRInput::dimensions() const {
     return input_->dimensions();
+}
+
+
+void MIRInput::append(std::unique_ptr<MIRInput> component) {
+    ASSERT(component && component->input_);
+
+    auto* multi = dynamic_cast<mir::input::MultiDimensionalInput*>(input_.get());
+    if (multi == nullptr) {
+        throw eckit::UserError("MIRInput::append requires an input built by from_components");
+    }
+
+    multi->append(component->input_.release());
+    components_.push_back(std::move(component));
 }
 
 
@@ -60,6 +75,13 @@ std::unique_ptr<MIRInput> MIRInput::from_multi_dimensional_grib_file(rust::Str p
     auto wrapper    = std::make_unique<MIRInput>();
     wrapper->input_ = std::make_unique<mir::input::MultiDimensionalGribFileInput>(eckit::PathName(std::string(path)),
                                                                                   dimensions, skip);
+    return wrapper;
+}
+
+
+std::unique_ptr<MIRInput> MIRInput::from_components() {
+    auto wrapper    = std::make_unique<MIRInput>();
+    wrapper->input_ = std::make_unique<mir::input::MultiDimensionalInput>();
     return wrapper;
 }
 
