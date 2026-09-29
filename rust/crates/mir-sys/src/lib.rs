@@ -60,6 +60,11 @@ pub mod ffi {
         fn set_bool(self: Pin<&mut Parametrisation>, name: &str, value: bool) -> Result<()>;
         fn set_f64_list(self: Pin<&mut Parametrisation>, name: &str, values: &[f64]) -> Result<()>;
         fn set_i64_list(self: Pin<&mut Parametrisation>, name: &str, values: &[i64]) -> Result<()>;
+        fn set_str_list(self: Pin<&mut Parametrisation>, name: &str, values: &[&str])
+        -> Result<()>;
+
+        #[cxx_name = "clear_key"]
+        fn clear(self: Pin<&mut Parametrisation>, name: &str) -> Result<()>;
 
         fn to_json(self: &Parametrisation) -> Result<String>;
 
