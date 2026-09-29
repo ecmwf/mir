@@ -140,7 +140,7 @@ pub mod ffi {
         fn set_bool(self: Pin<&mut Job>, name: &str, value: bool) -> Result<()>;
         fn set_f64_list(self: Pin<&mut Job>, name: &str, values: &[f64]) -> Result<()>;
         fn set_i64_list(self: Pin<&mut Job>, name: &str, values: &[i64]) -> Result<()>;
-        fn set_str_list(self: Pin<&mut Job>, name: &str, values: &Vec<String>) -> Result<()>;
+        fn set_str_list(self: Pin<&mut Job>, name: &str, values: &[&str]) -> Result<()>;
 
         /// Parse `name=value` pairs the way the mir tool does; a bare `name`
         /// sets it to true.
