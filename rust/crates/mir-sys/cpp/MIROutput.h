@@ -20,7 +20,7 @@ namespace mir_bridge {
 
 
 // Defined on the Rust side, cxx generates the type.
-struct OutputBox;
+struct OutputCallback;
 
 
 /**
@@ -50,8 +50,8 @@ public:
 
     // ============== Constructors ==============
 
-    /// Encodes each field as GRIB and hands the message to `output`.
-    static std::unique_ptr<MIROutput> to_callback(rust::Box<OutputBox> output);
+    /// Encodes each field as GRIB and hands the message to `callback`.
+    static std::unique_ptr<MIROutput> to_callback(rust::Box<OutputCallback> callback);
 
     /// Appends to, or truncates, a GRIB file.
     static std::unique_ptr<MIROutput> to_grib_file(rust::Str path, bool append);

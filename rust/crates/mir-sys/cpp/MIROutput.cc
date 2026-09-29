@@ -27,10 +27,10 @@ namespace {
 
 /// GribOutput that hands each encoded message to a Rust closure.
 class CallbackOutput final : public mir::output::GribOutput {
-    rust::Box<OutputBox> rust_;
+    rust::Box<OutputCallback> callback_;
 
 public:
-    explicit CallbackOutput(rust::Box<OutputBox> output) : rust_(std::move(output)) {}
+    explicit CallbackOutput(rust::Box<OutputCallback> callback) : callback_(std::move(callback)) {}
 
     bool sameAs(const MIROutput& /*other*/) const override { return false; }
 
@@ -38,7 +38,7 @@ public:
 
 private:
     void out(const void* message, size_t length, bool /*interpolated*/) override {
-        invoke_output(*rust_, rust::Slice<const uint8_t>(static_cast<const uint8_t*>(message), length));
+        invoke_output(*callback_, rust::Slice<const uint8_t>(static_cast<const uint8_t*>(message), length));
     }
 };
 
@@ -76,9 +76,9 @@ rust::Slice<const uint8_t> MIROutput::message() const {
 }
 
 
-std::unique_ptr<MIROutput> MIROutput::to_callback(rust::Box<OutputBox> output) {
+std::unique_ptr<MIROutput> MIROutput::to_callback(rust::Box<OutputCallback> callback) {
     auto wrapper     = std::make_unique<MIROutput>();
-    wrapper->output_ = std::make_unique<CallbackOutput>(std::move(output));
+    wrapper->output_ = std::make_unique<CallbackOutput>(std::move(callback));
     return wrapper;
 }
 

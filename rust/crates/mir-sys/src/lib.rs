@@ -110,7 +110,7 @@ pub mod ffi {
         fn message(self: &MIROutput) -> Result<&[u8]>;
 
         #[Self = "MIROutput"]
-        fn to_callback(output: Box<OutputBox>) -> Result<UniquePtr<MIROutput>>;
+        fn to_callback(callback: Box<OutputCallback>) -> Result<UniquePtr<MIROutput>>;
 
         #[Self = "MIROutput"]
         fn to_grib_file(path: &str, append: bool) -> Result<UniquePtr<MIROutput>>;
@@ -168,9 +168,9 @@ pub mod ffi {
     }
 
     extern "Rust" {
-        type OutputBox;
+        type OutputCallback;
 
-        fn invoke_output(output: &mut OutputBox, data: &[u8]);
+        fn invoke_output(callback: &mut OutputCallback, data: &[u8]);
     }
 }
 
@@ -189,23 +189,25 @@ type OutputFn = Box<dyn FnMut(&[u8]) + Send>;
 
 /// Holds the closure a `to_callback` output hands each encoded message to.
 ///
-/// The C++ `CallbackOutput` carries this by `rust::Box<OutputBox>` and forwards
-/// every `out` call through `invoke_output`.
-pub struct OutputBox(OutputFn);
+/// The C++ `CallbackOutput` carries this by `rust::Box<OutputCallback>` and
+/// forwards every `out` call through `invoke_output`.
+pub struct OutputCallback(OutputFn);
 
-/// Wrap a closure for [`ffi::MIROutput::to_callback`].
-///
-/// The `'static` bound is what keeps this safe: the output owns the box and may
-/// outlive the call that created it, so the closure cannot borrow from its
-/// caller.
-pub fn make_output_box<F>(f: F) -> Box<OutputBox>
-where
-    F: FnMut(&[u8]) + Send + 'static,
-{
-    Box::new(OutputBox(Box::new(f)))
+impl OutputCallback {
+    /// Wrap a closure for [`ffi::MIROutput::to_callback`].
+    ///
+    /// The `'static` bound is what keeps this safe: the output owns the
+    /// callback and may outlive the call that created it, so the closure
+    /// cannot borrow from its caller.
+    pub fn new<F>(f: F) -> Box<Self>
+    where
+        F: FnMut(&[u8]) + Send + 'static,
+    {
+        Box::new(Self(Box::new(f)))
+    }
 }
 
 /// Called from C++ `CallbackOutput::out` to deliver one encoded message.
-fn invoke_output(output: &mut OutputBox, data: &[u8]) {
-    (output.0)(data);
+fn invoke_output(callback: &mut OutputCallback, data: &[u8]) {
+    (callback.0)(data);
 }
