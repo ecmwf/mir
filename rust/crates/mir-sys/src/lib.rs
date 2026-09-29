@@ -189,9 +189,10 @@ pub use cxx::{Exception, UniquePtr};
 pub use ffi::*;
 
 /// Initialise the eckit runtime mir runs on. Must be called before any other
-/// mir API; safe to call more than once.
+/// mir API; safe to call more than once, from any thread.
 pub fn init() {
-    eckit_sys::init();
+    static INIT: std::sync::Once = std::sync::Once::new();
+    INIT.call_once(eckit_sys::init);
 }
 
 // ==================== Output callback adapter ====================
