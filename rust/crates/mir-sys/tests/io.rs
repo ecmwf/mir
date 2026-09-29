@@ -1,7 +1,9 @@
 // SPDX-FileCopyrightText: 1996- European Centre for Medium-Range Weather Forecasts (ECMWF)
 // SPDX-License-Identifier: Apache-2.0
 
-use mir_sys::{Exception, Job, MIRInput, MIROutput, Parametrisation, UniquePtr};
+use std::sync::{Arc, Mutex};
+
+use mir_sys::{Exception, Job, MIRInput, MIROutput, OutputCallback, Parametrisation, UniquePtr};
 
 /// The reduced Gaussian N4 field of mir's `tests/unit/raw_memory.cc`: 32 x 42
 /// on the latitude north of the Equator, 32 x -42 south of it, 0 elsewhere.
@@ -80,6 +82,37 @@ fn gridspec_to_resizable() -> Result<(), Exception> {
         output.metadata()?.to_json()?,
         r#"{"grid":"{\"grid\":[3,3]}"}"#
     );
+
+    Ok(())
+}
+
+#[test]
+fn callback_receives_what_grib_memory_holds() -> Result<(), Exception> {
+    mir_sys::init();
+
+    let (values, meta) = reduced_gg_n4()?;
+
+    let mut job = Job::make();
+    job.pin_mut().set_f64_list("grid", &[2., 2.])?;
+    job.pin_mut().set_bool("caching", false)?;
+
+    let received = Arc::new(Mutex::new(Vec::<Vec<u8>>::new()));
+    let sink = Arc::clone(&received);
+    let mut input = MIRInput::from_raw(&values, &meta)?;
+    let mut output = MIROutput::to_callback(OutputCallback::new(move |message| {
+        sink.lock().expect("sink lock").push(message.to_vec());
+    }))?;
+    job.execute_one(input.pin_mut(), output.pin_mut())?;
+
+    let mut input = MIRInput::from_raw(&values, &meta)?;
+    let mut memory = MIROutput::to_grib_memory(1024 * 1024)?;
+    job.execute_one(input.pin_mut(), memory.pin_mut())?;
+
+    let received = received.lock().expect("received lock");
+    assert_eq!(received.len(), 1);
+    assert!(received[0].starts_with(b"GRIB"));
+    assert!(received[0].ends_with(b"7777"));
+    assert_eq!(received[0], memory.message()?);
 
     Ok(())
 }
