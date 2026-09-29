@@ -48,7 +48,7 @@ public:
     mir::output::MIROutput& inner() { return *output_; }
     const mir::output::MIROutput& inner() const { return *output_; }
 
-    // ============== Factories ==============
+    // ============== Constructors ==============
 
     /// Encodes each field as GRIB and hands the message to `output`.
     static std::unique_ptr<MIROutput> to_callback(rust::Box<OutputBox> output);

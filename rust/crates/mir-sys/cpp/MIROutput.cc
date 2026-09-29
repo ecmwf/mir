@@ -44,7 +44,7 @@ private:
 
 
 /// Downcast `output` or throw: the readback accessors only apply to the
-/// factory that produced the matching kind.
+/// constructor that produced the matching kind.
 template <class T>
 const T& as(const std::unique_ptr<mir::output::MIROutput>& output, const char* what) {
     const auto* cast = dynamic_cast<const T*>(output.get());
