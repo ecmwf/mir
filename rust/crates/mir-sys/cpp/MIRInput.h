@@ -28,9 +28,12 @@ namespace mir_bridge {
  * `RawInput`, `GribMemoryInput` and `GribDataHandleInput` read through memory
  * or a handle they do not own, and are `final` in mir, so that storage is held
  * here instead, declared before `input_` so it outlives it. Unused by the other
- * constructors.
+ * constructors. Likewise, `MultiDimensionalInput` takes over the inputs of
+ * appended components but not the storage they read, so the emptied component
+ * wrappers are kept here.
  */
 class MIRInput final {
+    std::vector<std::unique_ptr<MIRInput>> components_;
     std::unique_ptr<eckit_bridge::DataHandleWrapper> handle_;
     std::vector<double> values_;
     std::vector<unsigned char> message_;
@@ -41,6 +44,9 @@ public:
     bool next();
 
     size_t dimensions() const;
+
+    /// Only for an input built by `from_components`.
+    void append(std::unique_ptr<MIRInput> component);
 
     mir::input::MIRInput& inner() { return *input_; }
     const mir::input::MIRInput& inner() const { return *input_; }
@@ -55,6 +61,9 @@ public:
     static std::unique_ptr<MIRInput> from_grib_memory(rust::Slice<const uint8_t> message);
 
     static std::unique_ptr<MIRInput> from_multi_dimensional_grib_file(rust::Str path, size_t dimensions, size_t skip);
+
+    /// Empty until components are appended.
+    static std::unique_ptr<MIRInput> from_components();
 
     /// An artificial field described by a gridspec, with no data behind it.
     static std::unique_ptr<MIRInput> from_gridspec(rust::Str gridspec, bool gridded);

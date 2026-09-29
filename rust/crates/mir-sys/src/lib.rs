@@ -82,6 +82,9 @@ pub mod ffi {
         /// Fields carried per message: 1 for a scalar, 2 for a vector pair.
         fn dimensions(self: &MIRInput) -> Result<usize>;
 
+        /// Move `component` into an input built by `from_components`.
+        fn append(self: Pin<&mut MIRInput>, component: UniquePtr<MIRInput>) -> Result<()>;
+
         #[Self = "MIRInput"]
         fn from_data_handle(handle: UniquePtr<DataHandleWrapper>) -> Result<UniquePtr<MIRInput>>;
 
@@ -99,6 +102,12 @@ pub mod ffi {
             dimensions: usize,
             skip: usize,
         ) -> Result<UniquePtr<MIRInput>>;
+
+        /// An N-dimensional input built from appended components, as mir pairs
+        /// vector components for `uv2uv` and `vod2uv`. Each component must be
+        /// 1-dimensional, and all of them step together through `next`.
+        #[Self = "MIRInput"]
+        fn from_components() -> Result<UniquePtr<MIRInput>>;
 
         #[Self = "MIRInput"]
         fn from_gridspec(gridspec: &str, gridded: bool) -> Result<UniquePtr<MIRInput>>;
