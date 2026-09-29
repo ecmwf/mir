@@ -140,7 +140,8 @@ pub mod ffi {
         /// sets it to true.
         fn set_from_string(self: Pin<&mut Job>, args: &str) -> Result<()>;
 
-        fn clear_key(self: Pin<&mut Job>, name: &str) -> Result<()>;
+        #[cxx_name = "clear_key"]
+        fn clear(self: Pin<&mut Job>, name: &str) -> Result<()>;
 
         #[cxx_name = "to_json"]
         fn json_str(self: &Job) -> Result<String>;
