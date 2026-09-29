@@ -67,6 +67,10 @@ fn build_system() {
     use std::env;
     use std::path::PathBuf;
 
+    // Oldest release providing every mir API the glue in `cpp/` uses. The crate
+    // version tracks the vendored release instead.
+    const MIR_MIN_VERSION: &str = "1.28.2";
+
     let crate_dir =
         PathBuf::from(env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR not set"));
     let out_dir = PathBuf::from(env::var("OUT_DIR").expect("OUT_DIR not set"));
@@ -76,8 +80,7 @@ fn build_system() {
     let metkit_include =
         env::var("DEP_METKIT_SYS_INCLUDE").expect("DEP_METKIT_SYS_INCLUDE not set");
 
-    // Minimum supported system version; the crate version tracks the vendored release.
-    let (root, mir_include, lib_dir) = bindman_utils::cmake_find_package("mir", "1.28.2");
+    let (root, mir_include, lib_dir) = bindman_utils::cmake_find_package("mir", MIR_MIN_VERSION);
 
     generate_exceptions(&mir_include);
 
