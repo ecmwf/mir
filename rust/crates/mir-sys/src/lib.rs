@@ -17,8 +17,14 @@ include!(concat!(env!("OUT_DIR"), "/mir_exceptions.rs"));
 
 #[track_cpp_api(
     ("mir/api/MIRJob.h", class = "MIRJob"),
-    // Deliberately not wrapped: mir is transitioning away from these.
-    ignore = ["representationFrom", "mirToolCall"]
+    ignore = [
+        // Deliberately not wrapped: mir is transitioning away from these.
+        "representationFrom",
+        "mirToolCall",
+        // Wrapped as `to_json`.
+        "json",
+        "json_str",
+    ]
 )]
 #[cxx::bridge(namespace = "mir_bridge")]
 pub mod ffi {
@@ -143,8 +149,7 @@ pub mod ffi {
         #[cxx_name = "clear_key"]
         fn clear(self: Pin<&mut Job>, name: &str) -> Result<()>;
 
-        #[cxx_name = "to_json"]
-        fn json_str(self: &Job) -> Result<String>;
+        fn to_json(self: &Job) -> Result<String>;
 
         /// Transform the message the input is currently positioned on. Callers
         /// drive iteration themselves; see `execute_all`.
