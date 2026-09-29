@@ -9,6 +9,8 @@ Rust bindings to ECMWF's [mir](https://github.com/ecmwf/mir) (Meteorological Int
 
 This crate provides raw FFI bindings using [cxx](https://cxx.rs/).
 
+Call `mir_sys::init()` before any other mir API.
+
 ## Building
 
 You need:

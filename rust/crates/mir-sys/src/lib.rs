@@ -7,6 +7,8 @@
 //! [`Job`], and pushes them to a [`MIROutput`]. A job is a description
 //! rather than an action, so one job applies to any number of input/output
 //! pairings.
+//!
+//! Call [`init`] before anything else.
 
 use bindman::track_cpp_api;
 
@@ -174,6 +176,12 @@ pub mod ffi {
 
 pub use cxx::{Exception, UniquePtr};
 pub use ffi::*;
+
+/// Initialise the eckit runtime mir runs on. Must be called before any other
+/// mir API; safe to call more than once.
+pub fn init() {
+    eckit_sys::init();
+}
 
 // ==================== Output callback adapter ====================
 
