@@ -36,7 +36,7 @@ public:
     /// e.g. `{"area":[1,-1,-1,1],"grid":[2,2]}`.
     rust::String to_json() const;
 
-    // ============== Factories ==============
+    // ============== Constructors ==============
 
     static std::unique_ptr<Parametrisation> make();
 };

@@ -57,7 +57,7 @@ public:
 
     size_t execute_all(MIRInput& input, MIROutput& output) const;
 
-    // ============== Factories ==============
+    // ============== Constructors ==============
 
     static std::unique_ptr<Job> make();
 };

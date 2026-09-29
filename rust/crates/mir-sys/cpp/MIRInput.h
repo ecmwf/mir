@@ -28,7 +28,7 @@ namespace mir_bridge {
  * `RawInput`, `GribMemoryInput` and `GribDataHandleInput` read through memory
  * or a handle they do not own, and are `final` in mir, so that storage is held
  * here instead, declared before `input_` so it outlives it. Unused by the other
- * factories.
+ * constructors.
  */
 class MIRInput final {
     std::unique_ptr<eckit_bridge::DataHandleWrapper> handle_;
@@ -45,7 +45,7 @@ public:
     mir::input::MIRInput& inner() { return *input_; }
     const mir::input::MIRInput& inner() const { return *input_; }
 
-    // ============== Factories ==============
+    // ============== Constructors ==============
 
     static std::unique_ptr<MIRInput> from_data_handle(std::unique_ptr<eckit_bridge::DataHandleWrapper> handle);
 
