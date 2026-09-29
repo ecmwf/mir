@@ -64,9 +64,9 @@ rust::Slice<const double> MIROutput::values() const {
 }
 
 
-rust::String MIROutput::metadata_json() const {
-    as<mir::output::ResizableOutput>(output_, "metadata_json requires an output built by to_resizable");
-    return metadata_.to_json();
+const Parametrisation& MIROutput::metadata() const {
+    as<mir::output::ResizableOutput>(output_, "metadata requires an output built by to_resizable");
+    return metadata_;
 }
 
 

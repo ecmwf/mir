@@ -115,7 +115,7 @@ pub mod ffi {
 
         /// The grid the field was interpolated onto, for an output built by
         /// `to_resizable`.
-        fn metadata_json(self: &MIROutput) -> Result<String>;
+        fn metadata(self: &MIROutput) -> Result<&Parametrisation>;
 
         /// The encoded message, for an output built by `to_grib_memory`.
         fn message(self: &MIROutput) -> Result<&[u8]>;

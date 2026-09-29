@@ -40,7 +40,7 @@ class MIROutput final {
 public:
     rust::Slice<const double> values() const;
 
-    rust::String metadata_json() const;
+    const Parametrisation& metadata() const;
 
     /// Empty until a job has run.
     rust::Slice<const uint8_t> message() const;
@@ -61,7 +61,7 @@ public:
     static std::unique_ptr<MIROutput> to_grib_memory(size_t capacity);
 
     /// Collects values into an owned, growable buffer, read back through
-    /// `values` and `metadata_json`.
+    /// `values` and `metadata`.
     static std::unique_ptr<MIROutput> to_resizable();
 
     /// Runs the job but discards the result, for timing and validation.
