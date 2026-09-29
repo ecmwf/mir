@@ -27,6 +27,7 @@ vendored = [
     "eckit-sys/geo-codec-grids",
     "eccodes-sys/vendored",
     "eccodes-sys/product-grib",
+    "eccodes-sys/aec",
     "eccodes-sys/geography",
     "eccodes-sys/eckit-geo",
     "eccodes-sys/memfs",
