@@ -1,0 +1,234 @@
+// SPDX-FileCopyrightText: 1996- European Centre for Medium-Range Weather Forecasts (ECMWF)
+// SPDX-License-Identifier: Apache-2.0
+
+//! FFI bindings to ECMWF mir (Meteorological Interpolation and Regridding) library.
+//!
+//! mir pulls fields from a [`MIRInput`], transforms them according to a
+//! [`Job`], and pushes them to a [`MIROutput`]. A job is a description
+//! rather than an action, so one job applies to any number of input/output
+//! pairings.
+//!
+//! Call [`init`] before anything else.
+
+use bindman::track_cpp_api;
+
+// Auto-generated mir Error enum + From<cxx::Exception> impl
+include!(concat!(env!("OUT_DIR"), "/mir_exceptions.rs"));
+
+#[track_cpp_api(
+    ("mir/api/MIRJob.h", class = "MIRJob"),
+    ignore = [
+        // Deliberately not wrapped: mir is transitioning away from these.
+        "representationFrom",
+        "mirToolCall",
+        // Wrapped as `to_json`.
+        "json",
+        "json_str",
+    ]
+)]
+#[cxx::bridge(namespace = "mir_bridge")]
+pub mod ffi {
+    unsafe extern "C++" {
+        include!("MirBridge.h");
+
+        // Cross-crate ExternType from eckit-sys
+        #[namespace = "eckit_bridge"]
+        type DataHandleWrapper = eckit_sys::DataHandleWrapper;
+
+        // ==================== Library ====================
+
+        type LibMir;
+
+        #[Self = "LibMir"]
+        fn version() -> Result<String>;
+        #[Self = "LibMir"]
+        fn git_sha1() -> Result<String>;
+        #[Self = "LibMir"]
+        fn home_dir() -> Result<String>;
+        #[Self = "LibMir"]
+        fn cache_dir() -> Result<String>;
+        #[Self = "LibMir"]
+        fn caching() -> Result<bool>;
+
+        // ==================== Parametrisation ====================
+
+        type Parametrisation;
+
+        fn set_str(self: Pin<&mut Parametrisation>, name: &str, value: &str) -> Result<()>;
+        fn set_f64(self: Pin<&mut Parametrisation>, name: &str, value: f64) -> Result<()>;
+        fn set_i64(self: Pin<&mut Parametrisation>, name: &str, value: i64) -> Result<()>;
+        fn set_bool(self: Pin<&mut Parametrisation>, name: &str, value: bool) -> Result<()>;
+        fn set_f64_list(self: Pin<&mut Parametrisation>, name: &str, values: &[f64]) -> Result<()>;
+        fn set_i64_list(self: Pin<&mut Parametrisation>, name: &str, values: &[i64]) -> Result<()>;
+        fn set_str_list(self: Pin<&mut Parametrisation>, name: &str, values: &[&str])
+        -> Result<()>;
+
+        #[cxx_name = "clear_key"]
+        fn clear(self: Pin<&mut Parametrisation>, name: &str) -> Result<()>;
+
+        fn to_json(self: &Parametrisation) -> Result<String>;
+
+        #[Self = "Parametrisation"]
+        #[must_use]
+        fn make() -> UniquePtr<Parametrisation>;
+
+        // ==================== MIRInput ====================
+
+        type MIRInput;
+
+        /// Advance to the next message; false once the stream is exhausted.
+        fn next(self: Pin<&mut MIRInput>) -> Result<bool>;
+
+        /// Fields carried per message: 1 for a scalar, 2 for a vector pair.
+        fn dimensions(self: &MIRInput) -> Result<usize>;
+
+        /// Move `component` into an input built by `from_components`.
+        fn append(self: Pin<&mut MIRInput>, component: UniquePtr<MIRInput>) -> Result<()>;
+
+        #[Self = "MIRInput"]
+        fn from_data_handle(handle: UniquePtr<DataHandleWrapper>) -> Result<UniquePtr<MIRInput>>;
+
+        #[Self = "MIRInput"]
+        fn from_grib_file(path: &str) -> Result<UniquePtr<MIRInput>>;
+
+        #[Self = "MIRInput"]
+        fn from_grib_memory(message: &[u8]) -> Result<UniquePtr<MIRInput>>;
+
+        /// Consecutive messages read as one N-dimensional field, as mir pairs
+        /// components for the `vod2uv` and `uv2uv` job keys.
+        #[Self = "MIRInput"]
+        fn from_multi_dimensional_grib_file(
+            path: &str,
+            dimensions: usize,
+            skip: usize,
+        ) -> Result<UniquePtr<MIRInput>>;
+
+        /// An N-dimensional input built from appended components, as mir pairs
+        /// vector components for `uv2uv` and `vod2uv`. Each component must be
+        /// 1-dimensional, and all of them step together through `next`.
+        #[Self = "MIRInput"]
+        fn from_components() -> Result<UniquePtr<MIRInput>>;
+
+        #[Self = "MIRInput"]
+        fn from_gridspec(gridspec: &str, gridded: bool) -> Result<UniquePtr<MIRInput>>;
+
+        #[Self = "MIRInput"]
+        fn from_raw(values: &[f64], metadata: &Parametrisation) -> Result<UniquePtr<MIRInput>>;
+
+        // ==================== MIROutput ====================
+
+        type MIROutput;
+
+        /// Interpolated values, for an output built by `to_resizable`.
+        fn values(self: &MIROutput) -> Result<&[f64]>;
+
+        /// The grid the field was interpolated onto, for an output built by
+        /// `to_resizable`.
+        fn metadata(self: &MIROutput) -> Result<&Parametrisation>;
+
+        /// The encoded message, for an output built by `to_grib_memory`.
+        fn message(self: &MIROutput) -> Result<&[u8]>;
+
+        #[Self = "MIROutput"]
+        fn to_callback(callback: Box<OutputCallback>) -> Result<UniquePtr<MIROutput>>;
+
+        #[Self = "MIROutput"]
+        fn to_grib_file(path: &str, append: bool) -> Result<UniquePtr<MIROutput>>;
+
+        #[Self = "MIROutput"]
+        fn to_grib_memory(capacity: usize) -> Result<UniquePtr<MIROutput>>;
+
+        #[Self = "MIROutput"]
+        fn to_resizable() -> Result<UniquePtr<MIROutput>>;
+
+        #[Self = "MIROutput"]
+        fn to_empty() -> Result<UniquePtr<MIROutput>>;
+
+        // ==================== Job ====================
+
+        type Job;
+
+        fn set_str(self: Pin<&mut Job>, name: &str, value: &str) -> Result<()>;
+        fn set_f64(self: Pin<&mut Job>, name: &str, value: f64) -> Result<()>;
+        fn set_i64(self: Pin<&mut Job>, name: &str, value: i64) -> Result<()>;
+        fn set_bool(self: Pin<&mut Job>, name: &str, value: bool) -> Result<()>;
+        fn set_f64_list(self: Pin<&mut Job>, name: &str, values: &[f64]) -> Result<()>;
+        fn set_i64_list(self: Pin<&mut Job>, name: &str, values: &[i64]) -> Result<()>;
+        fn set_str_list(self: Pin<&mut Job>, name: &str, values: &[&str]) -> Result<()>;
+
+        /// Parse `name=value` pairs the way the mir tool does; a bare `name`
+        /// sets it to true.
+        fn set_from_string(self: Pin<&mut Job>, args: &str) -> Result<()>;
+
+        #[cxx_name = "clear_key"]
+        fn clear(self: Pin<&mut Job>, name: &str) -> Result<()>;
+
+        fn to_json(self: &Job) -> Result<String>;
+
+        /// Transform the message the input is currently positioned on. Callers
+        /// drive iteration themselves; see `execute_all`.
+        fn execute_one(
+            self: &Job,
+            input: Pin<&mut MIRInput>,
+            output: Pin<&mut MIROutput>,
+        ) -> Result<()>;
+
+        /// Drain the input, transforming every message, and return how many
+        /// were processed. Inputs that carry a single message, such as
+        /// `from_grib_memory`, do not support iteration: use `execute_one`.
+        fn execute_all(
+            self: &Job,
+            input: Pin<&mut MIRInput>,
+            output: Pin<&mut MIROutput>,
+        ) -> Result<usize>;
+
+        #[Self = "Job"]
+        #[must_use]
+        fn make() -> UniquePtr<Job>;
+    }
+
+    extern "Rust" {
+        type OutputCallback;
+
+        fn invoke_output(callback: &mut OutputCallback, data: &[u8]);
+    }
+}
+
+pub use cxx::{Exception, UniquePtr};
+pub use ffi::*;
+
+/// Initialise the eckit runtime mir runs on. Must be called before any other
+/// mir API; safe to call more than once, from any thread.
+pub fn init() {
+    static INIT: std::sync::Once = std::sync::Once::new();
+    INIT.call_once(eckit_sys::init);
+}
+
+// ==================== Output callback adapter ====================
+
+type OutputFn = Box<dyn FnMut(&[u8]) + Send>;
+
+/// Holds the closure a `to_callback` output hands each encoded message to.
+///
+/// The C++ `CallbackOutput` carries this by `rust::Box<OutputCallback>` and
+/// forwards every `out` call through `invoke_output`.
+pub struct OutputCallback(OutputFn);
+
+impl OutputCallback {
+    /// Wrap a closure for [`ffi::MIROutput::to_callback`].
+    ///
+    /// The `'static` bound is what keeps this safe: the output owns the
+    /// callback and may outlive the call that created it, so the closure
+    /// cannot borrow from its caller.
+    pub fn new<F>(f: F) -> Box<Self>
+    where
+        F: FnMut(&[u8]) + Send + 'static,
+    {
+        Box::new(Self(Box::new(f)))
+    }
+}
+
+/// Called from C++ `CallbackOutput::out` to deliver one encoded message.
+fn invoke_output(callback: &mut OutputCallback, data: &[u8]) {
+    (callback.0)(data);
+}
