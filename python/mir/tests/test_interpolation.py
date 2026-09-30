@@ -67,6 +67,26 @@ def test_interpolation(input_grid, output_grid, output_spec, output_shape):
     assert output.values().size == output.size == len(result)
 
 
+def test_array_input_gridspec_forms():
+    import numpy as np
+
+    # the same input grid, given as a string, a dict, a Grid, or its points (unstructured)
+    grid = mir.Grid(dict(grid="O32"))
+    lats, lons = grid.to_latlons()
+    values = np.random.default_rng(0).random(grid.shape)
+
+    job = mir.Job(grid="1/1", interpolation="nn")
+
+    def interpolate(gridspec):
+        output = mir.ArrayOutput()
+        job.execute(mir.ArrayInput(values, gridspec), output)
+        return output.values()
+
+    expected = interpolate(grid.spec_str)
+    for gridspec in (grid.spec, grid, mir.Grid(dict(latitudes=lats, longitudes=lons))):
+        assert np.array_equal(interpolate(gridspec), expected)
+
+
 @pytest.mark.parametrize(
     "input_gs, output_gs",
     [
