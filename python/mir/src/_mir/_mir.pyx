@@ -161,7 +161,9 @@ cdef class PyGribOutput(MIROutput):
 
 cdef class ArrayInput(MIRInput):
     def __cinit__(self, values, gridspec):
-        if isinstance(gridspec, dict):
+        if hasattr(gridspec, "spec_str"):  # e.g. mir.Grid
+            gridspec = gridspec.spec_str
+        elif isinstance(gridspec, dict):
             from yaml import dump
             gridspec = dump(gridspec, default_flow_style=True)
 
