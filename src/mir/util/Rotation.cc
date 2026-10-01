@@ -69,11 +69,10 @@ void Rotation::fillJob(api::MIRJob& job) const {
 
 
 void Rotation::fillSpec(eckit::spec::Custom& spec) const {
-    spec.set("projection",
-             new eckit::spec::Custom{
-                 {"projection", "rotation"},
-                 {"rotation", std::vector<double>{rotation_.south_pole().lat(), rotation_.south_pole().lon()}},
-             });
+    if (rotation_.rotated()) {
+        const auto& projection = dynamic_cast<const eckit::spec::Custom&>(rotation_.spec());
+        spec.set("projection", new eckit::spec::Custom(projection.container()));
+    }
 }
 
 
