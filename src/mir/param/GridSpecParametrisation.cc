@@ -90,12 +90,15 @@ void fill_grid(SimpleParametrisation& param, const eckit::geo::Grid& grid) {
         return;
     }
 
-    if (type == "FESOM" || type == "ICON" || type == "ORCA" || type == "unstructured_ll") {
-        param.set("gridType", type);
+    if (type == "FESOM" || type == "ICON" || type == "ORCA" || type == "unstructured_ll" || type == "regular_xy") {
+        // projected grids (regular_xy) are described by their coordinates
+        const auto by_coordinates = type == "unstructured_ll" || type == "regular_xy";
+
+        param.set("gridType", by_coordinates ? "unstructured_ll" : type);
         param.set("gridded", true);
         param.set("uid", grid.uid());
 
-        if (type == "unstructured_ll") {
+        if (by_coordinates) {
             auto [lats, lons] = grid.to_latlons();
             param.set("latitudes", lats);
             param.set("longitudes", lons);
@@ -138,6 +141,16 @@ void fill_area(SimpleParametrisation& param, const eckit::geo::Grid& grid) {
         return;
     }
 
+    if (type == "bounding_box_xy") {
+        // projected grids: bounding box in geographic coordinates
+        const auto& bbox = grid.boundingBox();
+        param.set("north", bbox.north());
+        param.set("west", bbox.west());
+        param.set("south", bbox.south());
+        param.set("east", bbox.east());
+        return;
+    }
+
     if (type == "none") {
         return;
     }
@@ -172,7 +185,7 @@ void fill_projection(SimpleParametrisation& param, const eckit::geo::Projection&
         return;
     }
 
-    if (type == "none" || type == "eqc") {
+    if (type == "none" || type == "eqc" || type == "proj") {
         return;
     }
 
