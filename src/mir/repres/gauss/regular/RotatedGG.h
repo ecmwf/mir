@@ -76,6 +76,7 @@ private:
     Iterator* iterator() const override;
 
     std::string intersectionOnCrop() const override { return "input-contains-output-check"; }
+    util::Domain geographicDomain() const override;
     const Gridded* croppedRepresentation(const util::BoundingBox&) const override;
 
     void makeName(std::ostream&) const override;

@@ -7,6 +7,7 @@
 #include <ostream>
 
 #include "mir/util/Atlas.h"
+#include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
 
 #include "eckit/spec/Custom.h"
@@ -68,6 +69,11 @@ atlas::Grid RotatedFromPL::atlasGrid() const {
 
 const Gridded* RotatedFromPL::croppedRepresentation(const util::BoundingBox& bbox) const {
     return new RotatedFromPL(N_, pls(), rotation_, bbox, angularPrecision_);
+}
+
+
+util::Domain RotatedFromPL::geographicDomain() const {
+    return rotation_.domain(domain());
 }
 
 

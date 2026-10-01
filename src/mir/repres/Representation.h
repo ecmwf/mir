@@ -124,6 +124,7 @@ public:
 
     // Domain operations
     virtual util::Domain domain() const;
+    virtual util::Domain geographicDomain() const;
     virtual const std::string& order() const;
     virtual const util::BoundingBox& boundingBox() const;
     virtual bool isGlobal() const;

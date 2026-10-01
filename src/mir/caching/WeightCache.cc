@@ -40,7 +40,7 @@ const char* WeightCacheTraits::name() {
 
 
 int WeightCacheTraits::version() {
-    return 18;
+    return 19;
 }
 
 

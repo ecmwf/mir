@@ -16,6 +16,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/BoundingBox.h"
+#include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 
@@ -82,13 +83,21 @@ bool Rotation::operator==(const Rotation& other) const {
 
 
 BoundingBox Rotation::boundingBox(const BoundingBox& bbox) const {
-    eckit::geo::projection::Rotation projection({south_pole_longitude().value(), south_pole_latitude().value()});
-
     auto after = eckit::geo::area::BoundingBox::make_from_projection(
-        {bbox.west().value(), bbox.south().value()}, {bbox.east().value(), bbox.north().value()}, projection);
+        {bbox.west().value(), bbox.south().value()}, {bbox.east().value(), bbox.north().value()}, rotation_);
     ASSERT(after);
 
     return {after->north(), after->west(), after->south(), after->east()};
+}
+
+
+Domain Rotation::domain(const Domain& dom) const {
+    if (dom.isGlobal()) {
+        return dom;
+    }
+
+    auto bbox = boundingBox(dom);
+    return {bbox.north(), bbox.west(), bbox.south(), bbox.east()};
 }
 
 
