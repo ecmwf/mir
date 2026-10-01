@@ -62,6 +62,7 @@ private:
     void fillSpec(CustomSpec&) const override;
 
     std::string intersectionOnCrop() const override { return "input-contains-output-check"; }
+    util::Domain geographicDomain() const override;
     const RotatedLL* croppedRepresentation(const util::BoundingBox&) const override;
 
     void makeName(std::ostream&) const override;

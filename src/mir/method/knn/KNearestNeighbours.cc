@@ -63,7 +63,7 @@ void KNearestNeighbours::assemble(util::MIRStatistics& /*unused*/, WeightMatrix&
     const size_t nbOutputPoints = out.numberOfPoints();
 
     const search::PointSearch sptree(parametrisation_, in);
-    const auto& inDomain = in.domain();
+    const auto& inDomain = in.geographicDomain();
     pick.distance(in);
 
     util::Point2ToPoint3 point3(in, poleDisplacement());
@@ -154,7 +154,7 @@ void KNearestNeighbours::print(std::ostream& out) const {
 
 
 int KNearestNeighbours::version() const {
-    return 1;
+    return 0;
 }
 
 

@@ -65,7 +65,7 @@ method::Cropping Gridded2GriddedInterpolation::cropping(context::Context& ctx) c
         crop.boundingBox(method_->getCropping());
     }
 
-    auto in_bbox = inputGlobal_ ? util::Domain{} : in->domain();
+    auto in_bbox = inputGlobal_ ? util::Domain{} : in->geographicDomain();
     if (!in_bbox.isGlobal()) {
         repres::RepresentationHandle out(outputRepresentation());
         auto out_bbox = outputGlobal_ ? util::Domain{} : outputBoundingBox();
