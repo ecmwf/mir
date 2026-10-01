@@ -152,5 +152,51 @@ GRIDS = [
 ]
 
 
+# regional grids: rotated (COSMO) and projected (swisslv95, requires PROJ)
+ROTATED_LL = dict(grid=[0.25, 0.25], area=[0.75, -2.5, -1, 0.25], rotation=[-43, 10])
+SWISSLV95 = dict(type="swisslv95", x=[2480000, 2840000, 20000], y=[1080000, 1300000, 20000])
+
+REGIONAL = dict(
+    regular_ll=dict(grid=[1, 1]),
+    reduced_gg=dict(grid="O96"),
+    icon=dict(grid="ICON-CH2"),
+    rotated_ll=ROTATED_LL,
+    swisslv95=SWISSLV95,
+)
+
+
+def _has_grid(spec) -> bool:
+    try:
+        return len(mir.Grid(spec)) > 0
+    except RuntimeError:
+        return False
+
+
+@pytest.mark.parametrize("interpolation", ["nn", "linear"])
+@pytest.mark.parametrize(
+    "input_grid, output_grid",
+    [(a, b) for a, b in product(REGIONAL, REGIONAL) if {a, b} & {"rotated_ll", "swisslv95"}],
+)
+def test_interpolation_rotated_and_projected(input_grid, output_grid, interpolation):
+    import numpy as np
+
+    if "swisslv95" in (input_grid, output_grid) and not _has_grid(SWISSLV95):
+        pytest.skip("swisslv95 requires PROJ")
+
+    grid = mir.Grid(REGIONAL[input_grid])
+    input = mir.ArrayInput(np.arange(len(grid), dtype=np.float64), grid)
+
+    output = mir.ArrayOutput()
+    mir.Job(grid=REGIONAL[output_grid], interpolation=interpolation).execute(input, output)
+
+    values = output.values()
+    assert 0 < output.size <= len(mir.Grid(REGIONAL[output_grid]))
+    assert not np.isnan(values).all()
+
+    # rotated and projected outputs are not cropped
+    if output_grid in ("rotated_ll", "swisslv95"):
+        assert output.size == len(mir.Grid(REGIONAL[output_grid]))
+
+
 if __name__ == "__main__":
     pytest.main([__file__])

@@ -1,0 +1,11 @@
+# input
+regular_ll.2-2.grib1
+# mir
+--grid={grid:5/5,rotation:[-40,20]} --interpolation=nn
+# grib_get
+gridType = rotated_ll
+Ni = 72
+Nj = 37
+numberOfDataPoints = 2664
+latitudeOfSouthernPoleInDegrees = -40
+longitudeOfSouthernPoleInDegrees = 20

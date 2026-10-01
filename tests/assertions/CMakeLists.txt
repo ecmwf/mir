@@ -26,7 +26,7 @@ if(MARS_SCRIPT)
             ARGS        ${_t}
             ENVIRONMENT ${_testEnvironment})
         if((_t MATCHES "[.]fail[.]") OR
-           (_t MATCHES "[.]proj[.]" AND NOT atlas_HAVE_PROJ))
+           (_t MATCHES "[.]proj[.]" AND NOT (atlas_HAVE_PROJ AND eckit_HAVE_PROJ)))
             set_tests_properties(${target} PROPERTIES WILL_FAIL TRUE)
         endif()
     endforeach()
