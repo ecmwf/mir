@@ -198,5 +198,32 @@ def test_interpolation_rotated_and_projected(input_grid, output_grid, interpolat
         assert output.size == len(mir.Grid(REGIONAL[output_grid]))
 
 
+@pytest.mark.skip(reason="ecCodes changing GRIB edition=1 to 2 loses a non-default missingValue (WIP)")
+@pytest.mark.parametrize(
+    "input_grid, output_grid, interpolation, size, missing",
+    [
+        ("swisslv95", dict(grid=[0.1, 0.1]), "linear", 960, 12),
+        ("swisslv95", dict(grid=[0.25, 0.25]), "grid-box-statistics", 152, 15),
+        ("rotated_ll", dict(grid=[0.1, 0.1]), "linear", 738, 19),
+    ],
+)
+def test_interpolation_rotated_and_projected_grib(input_grid, output_grid, interpolation, size, missing):
+    import numpy as np
+    from yaml import dump
+
+    # output with missing values introduced by the interpolation (input has none)
+    buffer = bytearray(1 << 20)
+    output = mir.GribMemoryOutput(buffer)
+    input = mir.GridSpecInput(dump(REGIONAL[input_grid], default_flow_style=True))
+    mir.Job(grid=output_grid, interpolation=interpolation).execute(input, output)
+
+    result = mir.ArrayOutput()
+    mir.Job().execute(mir.GribMemoryInput(bytes(buffer[: len(output)])), result)
+
+    values = result.values()
+    assert values.size == size
+    assert np.isnan(values).sum() == missing
+
+
 if __name__ == "__main__":
     pytest.main([__file__])

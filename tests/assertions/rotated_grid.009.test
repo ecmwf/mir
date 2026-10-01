@@ -1,0 +1,10 @@
+# input
+rotated_ll.3-3.grib1
+# mir
+--grid={grid:o32} --interpolation=linear --edition=2
+# grib_get
+edition = 2
+gridType = reduced_gg
+numberOfDataPoints = 798
+bitmapPresent = 1
+numberOfMissing = 244
