@@ -1,0 +1,10 @@
+# input
+/dev/null
+# mir
+--input={artificialInput:gridspec,gridspec:{type:swisslv95,x:[2480000,2840000,20000],y:[1080000,1300000,20000]}} --grid={grid:o320} --interpolation=linear
+# grib_get
+edition = 2
+gridType = reduced_gg
+numberOfDataPoints = 57
+bitmapPresent = 1
+numberOfMissing = 1
