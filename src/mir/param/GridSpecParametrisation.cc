@@ -5,6 +5,7 @@
 #include "mir/param/GridSpecParametrisation.h"
 
 #include <cmath>
+#include <map>
 #include <ostream>
 
 #include "eckit/geo/area/BoundingBox.h"
@@ -149,8 +150,26 @@ void fill_projection(SimpleParametrisation& param, const eckit::geo::Projection&
     const auto& type = projection.type();
 
     if (type == "rotation") {
-        static_cast<void>(param);
-        NOTIMP;
+        const auto& r = dynamic_cast<const eckit::geo::projection::Rotation&>(projection);
+        if (!r.rotated()) {
+            return;
+        }
+
+        std::string gridType;
+        ASSERT(param.get("gridType", gridType));
+
+        const std::map<std::string, std::string> rotated{
+            {"regular_ll", "rotated_ll"}, {"regular_gg", "rotated_gg"}, {"reduced_gg", "reduced_rotated_gg"}};
+        auto it = rotated.find(gridType);
+        if (it == rotated.end()) {
+            throw exception::UserError("GridSpecParametrisation: unsupported rotated grid type: '" + gridType + "'");
+        }
+
+        param.set("gridType", it->second);
+        param.set("south_pole_latitude", r.south_pole().lat());
+        param.set("south_pole_longitude", r.south_pole().lon());
+        param.set("south_pole_rotation_angle", r.angle());
+        return;
     }
 
     if (type == "none" || type == "eqc") {

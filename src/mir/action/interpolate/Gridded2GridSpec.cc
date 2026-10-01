@@ -9,14 +9,16 @@
 #include "eckit/geo/Grid.h"
 
 #include "mir/key/grid/Grid.h"
+#include "mir/method/Method.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 
 
 namespace mir::action::interpolate {
 
 
-Gridded2GridSpec::Gridded2GridSpec(const param::MIRParametrisation& param) : Gridded2UnrotatedGrid(param) {
+Gridded2GridSpec::Gridded2GridSpec(const param::MIRParametrisation& param) : Gridded2GriddedInterpolation(param) {
     // assign gridspec
     std::string gridspec;
     ASSERT(key::grid::Grid::get("grid", gridspec, param));
@@ -35,7 +37,7 @@ bool Gridded2GridSpec::sameAs(const Action& other) const {
 
 void Gridded2GridSpec::print(std::ostream& out) const {
     out << "Gridded2GridSpec[gridspec=" << param_->spec() << ",";
-    Gridded2UnrotatedGrid::print(out);
+    Gridded2GriddedInterpolation::print(out);
     out << "]";
 }
 
@@ -47,6 +49,12 @@ const char* Gridded2GridSpec::name() const {
 
 const repres::Representation* Gridded2GridSpec::outputRepresentation() const {
     return repres::RepresentationFactory::build(*param_);
+}
+
+
+util::BoundingBox Gridded2GridSpec::outputBoundingBox() const {
+    repres::RepresentationHandle out(outputRepresentation());
+    return method().hasCropping() ? method().getCropping() : out->geographicDomain();
 }
 
 
