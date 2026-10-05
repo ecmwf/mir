@@ -59,7 +59,7 @@ private:
 
     InMemoryCacheUsage footprint() const override;
     InMemoryCacheUsage capacity() const override;
-    InMemoryCacheUsage purge(const InMemoryCacheUsage&, bool force = false) override;
+    InMemoryCacheUsage purge(const InMemoryCacheUsage&, bool force) override;
 
     std::string name_;
     eckit::Resource<InMemoryCacheUsage> capacity_;
