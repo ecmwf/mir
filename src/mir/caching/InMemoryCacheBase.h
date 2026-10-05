@@ -41,9 +41,9 @@ protected:
     void checkTotalFootprint();
 
 private:
-    virtual InMemoryCacheUsage footprint() const                                    = 0;
-    virtual InMemoryCacheUsage capacity() const                                     = 0;
-    virtual InMemoryCacheUsage purge(const InMemoryCacheUsage&, bool force = false) = 0;
+    virtual InMemoryCacheUsage footprint() const                            = 0;
+    virtual InMemoryCacheUsage capacity() const                             = 0;
+    virtual InMemoryCacheUsage purge(const InMemoryCacheUsage&, bool force) = 0;
 };
 
 
