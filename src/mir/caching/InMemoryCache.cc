@@ -164,7 +164,8 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
         return *ptr;
     }
 
-    if (users_ == 0) {
+    // On a miss only, make room (unless the cache is in use elsewhere): a cache hit does not grow the footprint
+    if (users_ <= 1) {
         purge();
     }
 
@@ -180,7 +181,7 @@ template <class T>
 void InMemoryCache<T>::purge() {
     auto f = footprint();
     if (f > capacity_) {
-        purge(f - capacity_);
+        purge(f - capacity_, true);
     }
 }
 
@@ -217,9 +218,6 @@ void InMemoryCache<T>::stopUsing(InMemoryCacheStatistics& statistics) {
 
     ASSERT(users_);
     users_--;
-    if (users_ == 0) {
-        purge();
-    }
 
     checkTotalFootprint();
 
