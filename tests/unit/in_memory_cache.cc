@@ -65,6 +65,18 @@ CASE("InMemoryCache reserve purges entry larger than capacity") {
 }
 
 
+CASE("InMemoryCache reserve purges as many entries as needed") {
+    Cache cache("test", 25, 25, "$MIR_TEST_CACHE_CAPACITY");
+
+    use(cache, "a");
+    use(cache, "b");
+
+    cache.reserve(20, false);  // footprint + 20 - capacity = 15, more than one entry
+    EXPECT(!cached(cache, "a"));
+    EXPECT(!cached(cache, "b"));
+}
+
+
 }  // namespace mir::tests::unit
 
 
