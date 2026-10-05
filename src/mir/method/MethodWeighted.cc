@@ -52,8 +52,9 @@ namespace mir::method {
 
 static util::recursive_mutex MUTEX;
 
-constexpr size_t MIR_MATRIX_CACHE_MEMORY_FOOTPRINT = 512 * 1024 * 1024;  // capacity
-static caching::InMemoryCache<WeightMatrix> MATRIX_CACHE_MEMORY("mirMatrix", MIR_MATRIX_CACHE_MEMORY_FOOTPRINT, 0,
+constexpr size_t CAPACITY_MEMORY = 512 * 1024 * 1024;  // capacity
+constexpr size_t CAPACITY_SHARED = CAPACITY_MEMORY;
+static caching::InMemoryCache<WeightMatrix> MATRIX_CACHE_MEMORY("mirMatrix", CAPACITY_MEMORY, CAPACITY_SHARED,
                                                                 "$MIR_MATRIX_CACHE_MEMORY_FOOTPRINT");
 
 
