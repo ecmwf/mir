@@ -77,6 +77,20 @@ CASE("InMemoryCache reserve purges as many entries as needed") {
 }
 
 
+CASE("InMemoryCache purges least recently used entry") {
+    Cache cache("test", 15, 15, "$MIR_TEST_CACHE_CAPACITY");
+
+    use(cache, "a");
+    use(cache, "a");  // hit
+    use(cache, "b");  // insert, more recent than the hit
+    use(cache, "c");  // miss, purges one entry
+
+    EXPECT(!cached(cache, "a"));
+    EXPECT(cached(cache, "b"));
+    EXPECT(cached(cache, "c"));
+}
+
+
 }  // namespace mir::tests::unit
 
 
