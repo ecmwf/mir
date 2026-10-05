@@ -53,6 +53,11 @@ InMemoryCache<T>::~InMemoryCache() {
 
 
 template <class T>
+InMemoryCache<T>::Entry::Entry(T* ptr) :
+    ptr_(ptr), hits_(1), last_(utime()), insert_(last_), footprint_(size_t(1), size_t(0)) {}
+
+
+template <class T>
 T* InMemoryCache<T>::find(const std::string& key) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
