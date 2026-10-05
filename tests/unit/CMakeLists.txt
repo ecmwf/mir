@@ -19,6 +19,7 @@ set(TESTS
     grib_encoding
     grib_input
     grid_box_method
+    in_memory_cache
     increments
     input_MultiDimensionalInput
     interpolations
@@ -56,6 +57,21 @@ foreach(_t ${TESTS})
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
     get_test_property(mir_tests_unit_${_t} WORKING_DIRECTORY work_dir)
     message(STATUS "Working directory for ${_t}: ${work_dir}")
+endforeach()
+
+# in-memory cache capacities below the cache files footprint, per cache file loader (see cache.cc)
+foreach(_loader counted-file-io tmp-counted-shmem)
+    ecbuild_add_test(
+        TARGET            mir_tests_unit_cache_${_loader}
+        SOURCES           cache.cc
+        LIBS              mir
+        ENVIRONMENT       ${_testEnvironment}
+                          MIR_LEGENDRE_LOADER=${_loader}
+                          MIR_MATRIX_LOADER=${_loader}
+                          MIR_COEFFICIENT_CACHE=1
+                          MIR_MATRIX_CACHE_MEMORY_FOOTPRINT=1
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
 endforeach()
 
 if(ENABLE_BUILD_TOOLS)
