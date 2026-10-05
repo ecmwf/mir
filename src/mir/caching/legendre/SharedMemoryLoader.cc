@@ -115,9 +115,8 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
     trace::Timer timer("SharedMemoryLoader: loading '" + path.asString() + "'");
 
     std::string name = LibMir::cacheLoader(LibMir::cache_loader::LEGENDRE);
-    if (parametrisation.get("legendre-loader", name)) {
-        unload_ = name.substr(0, 4) == "tmp-";
-    }
+    parametrisation.get("legendre-loader", name);
+    unload_ = name.substr(0, 4) == "tmp-";
 
     eckit::PathName real = path.realName();
 
