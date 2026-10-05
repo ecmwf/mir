@@ -14,6 +14,7 @@ set(TESTS
     formula
     gaussian_grid
     healpix
+    in_memory_cache
     grib_basic_angle
     grib_encoding
     grib_input
@@ -50,6 +51,29 @@ foreach(_t ${TESTS})
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 endforeach()
+
+# in-memory cache capacities below the cache files footprint, per cache file loader (see cache.cc)
+foreach(_loader counted-file-io tmp-counted-shmem)
+    ecbuild_add_test(
+        TARGET            mir_tests_unit_cache_${_loader}
+        SOURCES           cache.cc
+        LIBS              mir
+        ENVIRONMENT       ${_testEnvironment}
+                          MIR_LEGENDRE_LOADER=${_loader}
+                          MIR_MATRIX_LOADER=${_loader}
+                          MIR_COEFFICIENT_CACHE=1
+                          MIR_MATRIX_CACHE_MEMORY_FOOTPRINT=1
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+endforeach()
+
+ecbuild_add_test(
+    TARGET            mir_tests_unit_legendre_shared_memory_loader
+    SOURCES           legendre_shared_memory_loader.cc
+    LIBS              mir
+    ENVIRONMENT       ${_testEnvironment} MIR_LEGENDRE_LOADER=tmp-shmem
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
 if(mir_HAVE_METKIT)
     # set(_t metkit_encoding)

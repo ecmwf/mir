@@ -53,6 +53,11 @@ InMemoryCache<T>::~InMemoryCache() {
 
 
 template <class T>
+InMemoryCache<T>::Entry::Entry(T* ptr) :
+    ptr_(ptr), hits_(1), last_(utime()), insert_(last_), footprint_(size_t(1), size_t(0)) {}
+
+
+template <class T>
 T* InMemoryCache<T>::find(const std::string& key) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
@@ -164,7 +169,8 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
         return *ptr;
     }
 
-    if (users_ == 0) {
+    // On a miss only, make room (unless the cache is in use elsewhere): a cache hit does not grow the footprint
+    if (users_ <= 1) {
         purge();
     }
 
@@ -180,7 +186,7 @@ template <class T>
 void InMemoryCache<T>::purge() {
     auto f = footprint();
     if (f > capacity_) {
-        purge(f - capacity_);
+        purge(f - capacity_, true);
     }
 }
 
@@ -217,9 +223,6 @@ void InMemoryCache<T>::stopUsing(InMemoryCacheStatistics& statistics) {
 
     ASSERT(users_);
     users_--;
-    if (users_ == 0) {
-        purge();
-    }
 
     checkTotalFootprint();
 
