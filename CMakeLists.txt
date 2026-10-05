@@ -32,7 +32,7 @@ endif()
 ecbuild_find_package(NAME eccodes VERSION 2.32 REQUIRED)
 ecbuild_find_package(NAME eckit   VERSION 1.28 REQUIRED)
 
-ecbuild_add_option(FEATURE ECKIT_GEO DEFAULT OFF DESCRIPTION "support for eckit::geo" REQUIRED_PACKAGES "eckit VERSION 1.28")
+ecbuild_add_option(FEATURE ECKIT_GEO DEFAULT OFF DESCRIPTION "support for eckit::geo" REQUIRED_PACKAGES "eckit VERSION 1.33")
 ecbuild_add_option(FEATURE ATLAS DEFAULT ON DESCRIPTION "support for Atlas" REQUIRED_PACKAGES "atlas VERSION 0.36")
 
 if(mir_HAVE_ECKIT_GEO AND NOT TARGET eckit_geo)

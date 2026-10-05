@@ -18,9 +18,8 @@
 
 #include "eckit/geo/Area.h"
 #include "eckit/geo/Grid.h"
-#include "eckit/geo/Order.h"
 #include "eckit/geo/Projection.h"
-#include "eckit/geo/Spec.h"
+#include "eckit/spec/Spec.h"
 
 #else
 
