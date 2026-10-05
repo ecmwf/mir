@@ -67,6 +67,14 @@ foreach(_loader counted-file-io tmp-counted-shmem)
     )
 endforeach()
 
+ecbuild_add_test(
+    TARGET            mir_tests_unit_legendre_shared_memory_loader
+    SOURCES           legendre_shared_memory_loader.cc
+    LIBS              mir
+    ENVIRONMENT       ${_testEnvironment} MIR_LEGENDRE_LOADER=tmp-shmem
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
 if(mir_HAVE_METKIT)
     # set(_t metkit_encoding)
     # ecbuild_add_test(TARGET mir_tests_unit_${_t}       SOURCES ${_t}.cc LIBS mir WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ENVIRONMENT ${_testEnvironment})
