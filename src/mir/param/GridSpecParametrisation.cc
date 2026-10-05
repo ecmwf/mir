@@ -15,11 +15,11 @@
 #include <ostream>
 
 #include "eckit/geo/area/BoundingBox.h"
-#include "eckit/geo/grid/HEALPix.h"
 #include "eckit/geo/grid/ORCA.h"
-#include "eckit/geo/grid/ReducedGaussian.h"
-#include "eckit/geo/grid/RegularGaussian.h"
-#include "eckit/geo/grid/RegularLL.h"
+#include "eckit/geo/grid/reduced/HEALPix.h"
+#include "eckit/geo/grid/reduced/ReducedGaussian.h"
+#include "eckit/geo/grid/regular/RegularGaussian.h"
+#include "eckit/geo/grid/regular/RegularLL.h"
 #include "eckit/geo/projection/Rotation.h"
 
 #include "mir/util/Exceptions.h"
@@ -42,7 +42,7 @@ struct ProjectionMapping : GridSpecParametrisation::Mapping {};
 
 struct MappingGridRegularLL : GridMapping {
     explicit MappingGridRegularLL(const eckit::geo::Grid& _grid) :
-        grid_(dynamic_cast<const eckit::geo::grid::RegularLL&>(_grid)) {}
+        grid_(dynamic_cast<const eckit::geo::grid::regular::RegularLL&>(_grid)) {}
 
     void fill(SimpleParametrisation& param) const override {
         param.set("gridType", "regular_ll");
@@ -56,13 +56,13 @@ struct MappingGridRegularLL : GridMapping {
         param.set("Nj", grid_.nlat());
     }
 
-    const eckit::geo::grid::RegularLL& grid_;
+    const eckit::geo::grid::regular::RegularLL& grid_;
 };
 
 
 struct MappingGridRegularGG : GridMapping {
     explicit MappingGridRegularGG(const eckit::geo::Grid& _grid) :
-        grid_(dynamic_cast<const eckit::geo::grid::RegularGaussian&>(_grid)) {}
+        grid_(dynamic_cast<const eckit::geo::grid::regular::RegularGaussian&>(_grid)) {}
 
     void fill(SimpleParametrisation& param) const override {
         param.set("gridType", "regular_gg");
@@ -70,13 +70,13 @@ struct MappingGridRegularGG : GridMapping {
         param.set("N", grid_.N());
     }
 
-    const eckit::geo::grid::RegularGaussian& grid_;
+    const eckit::geo::grid::regular::RegularGaussian& grid_;
 };
 
 
 struct MappingGridHEALPix : GridMapping {
     explicit MappingGridHEALPix(const eckit::geo::Grid& _grid) :
-        grid_(dynamic_cast<const eckit::geo::grid::HEALPix&>(_grid)) {}
+        grid_(dynamic_cast<const eckit::geo::grid::reduced::HEALPix&>(_grid)) {}
 
     void fill(SimpleParametrisation& param) const override {
         param.set("gridType", "healpix");
@@ -86,13 +86,13 @@ struct MappingGridHEALPix : GridMapping {
         param.set("longitudeOfFirstGridPointInDegrees", 45.);
     }
 
-    const eckit::geo::grid::HEALPix& grid_;
+    const eckit::geo::grid::reduced::HEALPix& grid_;
 };
 
 
 struct MappingGridReducedGG : GridMapping {
     explicit MappingGridReducedGG(const eckit::geo::Grid& _grid) :
-        grid_(dynamic_cast<const eckit::geo::grid::ReducedGaussian&>(_grid)) {}
+        grid_(dynamic_cast<const eckit::geo::grid::reduced::ReducedGaussian&>(_grid)) {}
 
     void fill(SimpleParametrisation& param) const override {
         param.set("gridType", "reduced_gg");
@@ -100,7 +100,7 @@ struct MappingGridReducedGG : GridMapping {
         param.set("N", grid_.N());
     }
 
-    const eckit::geo::grid::ReducedGaussian& grid_;
+    const eckit::geo::grid::reduced::ReducedGaussian& grid_;
 };
 
 
@@ -123,10 +123,10 @@ struct MappingAreaBoundingBox : AreaMapping {
         area(dynamic_cast<const eckit::geo::area::BoundingBox&>(_area)) {}
 
     void fill(SimpleParametrisation& param) const override {
-        param.set("north", area.north);
-        param.set("west", area.west);
-        param.set("south", area.south);
-        param.set("east", area.east);
+        param.set("north", area.north());
+        param.set("west", area.west());
+        param.set("south", area.south());
+        param.set("east", area.east());
     }
 
     const eckit::geo::area::BoundingBox& area;
@@ -271,7 +271,7 @@ bool GridSpecParametrisation::get(const std::string& name, std::vector<int>& val
 bool GridSpecParametrisation::get(const std::string& name, std::vector<long>& value) const {
     if (name == "pl") {
         if (grid_->type() == "reduced-gg") {
-            const auto& g = dynamic_cast<const eckit::geo::grid::ReducedGaussian&>(*grid_);
+            const auto& g = dynamic_cast<const eckit::geo::grid::reduced::ReducedGaussian&>(*grid_);
 
             value = g.pl();
             return true;
