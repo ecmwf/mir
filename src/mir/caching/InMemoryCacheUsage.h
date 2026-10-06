@@ -33,8 +33,9 @@ public:
 
 
     bool operator>(const InMemoryCacheUsage&) const;
+    bool operator<(const InMemoryCacheUsage&) const;
     bool operator!() const;
-    operator bool() const;
+    explicit operator bool() const;
     operator std::string() const;
 
     size_t memory() const;

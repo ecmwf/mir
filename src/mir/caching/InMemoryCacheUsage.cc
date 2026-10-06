@@ -83,15 +83,11 @@ InMemoryCacheUsage InMemoryCacheUsage::operator+(const InMemoryCacheUsage& other
 
 bool InMemoryCacheUsage::operator>(const InMemoryCacheUsage& other) const {
     // Warning, this is not a complete order, don't use to sort
-    if (memory_ > other.memory_) {
-        return true;
-    }
+    return (memory_ > other.memory_) || (shared_ > other.shared_);
+}
 
-    if (shared_ > other.shared_) {
-        return true;
-    }
-
-    return false;
+bool InMemoryCacheUsage::operator<(const InMemoryCacheUsage& other) const {
+    return other > *this;
 }
 
 bool InMemoryCacheUsage::operator!() const {

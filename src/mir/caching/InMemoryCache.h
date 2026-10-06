@@ -51,7 +51,7 @@ private:
 
     InMemoryCacheUsage footprint() const override;
     InMemoryCacheUsage capacity() const override;
-    InMemoryCacheUsage purge(const InMemoryCacheUsage&, bool force = false) override;
+    InMemoryCacheUsage purge(const InMemoryCacheUsage&, bool force) override;
 
     std::string name_;
     eckit::Resource<InMemoryCacheUsage> capacity_;
@@ -67,12 +67,7 @@ private:
         double insert_;
         InMemoryCacheUsage footprint_;
 
-        Entry(T* ptr) :
-            ptr_(ptr),
-            hits_(1),
-            last_(double(::time(nullptr))),
-            insert_(double(::time(nullptr))),
-            footprint_(size_t(1), size_t(0)) {}
+        explicit Entry(T* ptr);
     };
 
     std::map<std::string, Entry*> cache_;
