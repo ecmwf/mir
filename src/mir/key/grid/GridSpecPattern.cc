@@ -22,10 +22,7 @@ bool GridSpecPattern::matches(const std::string& name) const {
     // "^[{].*[}]$" only asks whether name looks like "{...}". Answering that with std::regex_match lets
     // libstdc++'s default matcher recurse once or twice per character of name, overflowing the stack for
     // long inline grid specs. The check itself needs no regex, so it runs first; the regex remains the fallback.
-    if (!name.empty() && name.front() == '{' && name.back() == '}') {
-        return true;
-    }
-    return GridPattern::matches(name);
+    return (!name.empty() && name.front() == '{' && name.back() == '}') || GridPattern::matches(name);
 }
 
 
