@@ -2,10 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
+#include "mir/action/plan/Action.h"
+
 #include <map>
 #include <sstream>
 
-#include "mir/action/plan/Action.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Exceptions.h"

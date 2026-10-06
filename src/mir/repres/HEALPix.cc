@@ -7,14 +7,15 @@
 #include <ostream>
 #include <regex>
 
+#include "atlas/interpolation/method/knn/GridBox.h"
+
 #include "eckit/geo/grid/reduced/HEALPix.h"
 #include "eckit/log/JSON.h"
+#include "eckit/spec/Custom.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/api/MIRJob.h"
 #include "mir/iterator/UnstructuredIterator.h"
-
-#include "eckit/spec/Custom.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/grid/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
@@ -24,8 +25,6 @@
 #include "mir/util/GridBox.h"
 #include "mir/util/MeshGeneratorParameters.h"
 #include "mir/util/Reorder.h"
-
-#include "atlas/interpolation/method/knn/GridBox.h"
 
 
 namespace mir::repres {

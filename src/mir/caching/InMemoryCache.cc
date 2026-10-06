@@ -2,10 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
+#include "mir/caching/InMemoryCache.h"
+
 #include <sys/time.h>
 #include <time.h>
 
-#include "mir/caching/InMemoryCache.h"
 #include "mir/caching/InMemoryCacheStatistics.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"

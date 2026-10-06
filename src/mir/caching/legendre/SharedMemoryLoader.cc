@@ -5,14 +5,13 @@
 #include "mir/caching/legendre/SharedMemoryLoader.h"
 
 #include <fcntl.h>
-#include <unistd.h>
-
 #include <sys/ipc.h>
 #include <sys/sem.h>
 #include <sys/shm.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/types.h>
+#include <unistd.h>
 
 #include <cerrno>
 #include <cstdio>

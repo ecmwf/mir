@@ -5,7 +5,6 @@
 #pragma once
 
 #include "mir/stats/Statistics.h"
-
 #include "mir/stats/detail/Counter.h"
 
 

@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include "mir/netcdf/Step.h"
-
 #include <map>
 #include <queue>
+
+#include "mir/netcdf/Step.h"
 
 
 namespace mir::netcdf {

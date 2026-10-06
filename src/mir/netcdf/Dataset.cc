@@ -4,12 +4,12 @@
 
 #include "mir/netcdf/Dataset.h"
 
+#include <netcdf.h>
+
 #include "mir/netcdf/Attribute.h"
 #include "mir/netcdf/Dimension.h"
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/Variable.h"
-
-#include <netcdf.h>
 
 namespace mir::netcdf {
 

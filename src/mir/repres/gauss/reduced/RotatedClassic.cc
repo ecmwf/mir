@@ -6,11 +6,11 @@
 
 #include <ostream>
 
+#include "eckit/spec/Custom.h"
+
 #include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
-
-#include "eckit/spec/Custom.h"
 
 
 namespace mir::repres::gauss::reduced {

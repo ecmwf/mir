@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
+#include "mir/compare/Field.h"
+
 #include <algorithm>
 #include <ostream>
 
@@ -10,7 +12,6 @@
 #include "eckit/option/SimpleOption.h"
 
 #include "mir/compare/BufrField.h"
-#include "mir/compare/Field.h"
 #include "mir/compare/FieldSet.h"
 #include "mir/compare/GribField.h"
 #include "mir/util/Exceptions.h"

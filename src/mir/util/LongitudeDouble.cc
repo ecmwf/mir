@@ -4,7 +4,6 @@
 
 #include "mir/util/LongitudeDouble.h"
 
-
 #include <ostream>
 
 #include "eckit/serialisation/Stream.h"

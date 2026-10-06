@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
+#include "mir/util/FormulaBinop.h"
+
 #include <cmath>
 #include <functional>
 #include <ostream>
@@ -10,7 +12,6 @@
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/util/Exceptions.h"
-#include "mir/util/FormulaBinop.h"
 #include "mir/util/Function.h"
 #include "mir/util/MIRStatistics.h"
 

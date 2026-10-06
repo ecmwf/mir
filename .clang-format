@@ -56,11 +56,16 @@ ForEachMacros:
   - foreach
   - Q_FOREACH
   - BOOST_FOREACH
+IncludeBlocks: Regroup
 IncludeCategories:
   - Regex: '^<.*\.h>'
     Priority: 1
   - Regex: '^<.*'
     Priority: 2
+  - Regex: '^"(eckit/|eccodes).*'
+    Priority: 4
+  - Regex: '^"mir/.*'
+    Priority: 5
   - Regex: '.*'
     Priority: 3
 IncludeIsMainRegex: '([-_](test|unittest))?$'

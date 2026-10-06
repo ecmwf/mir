@@ -4,9 +4,9 @@
 
 #include "mir/netcdf/InputMatrix.h"
 
-#include <ostream>
-
 #include <netcdf.h>
+
+#include <ostream>
 
 #include "mir/netcdf/Codec.h"
 #include "mir/netcdf/Exceptions.h"

@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "mir/method/knn/KNearestNeighbours.h"
-
 #include <memory>
+
+#include "mir/method/knn/KNearestNeighbours.h"
 
 
 namespace mir::method::knn {

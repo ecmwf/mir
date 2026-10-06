@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
-#include "eckit/io/DataHandle.h"
-
 #include "mir/output/GribStreamOutput.h"
+
+#include "eckit/io/DataHandle.h"
 
 
 namespace mir::output {

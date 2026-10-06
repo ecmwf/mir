@@ -7,7 +7,6 @@
 #include <vector>
 
 #include "eccodes.h"
-
 #include "eckit/geo/Grid.h"
 #include "eckit/geo/Point.h"
 #include "eckit/spec/Custom.h"

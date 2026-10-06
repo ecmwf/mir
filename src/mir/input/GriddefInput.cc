@@ -7,6 +7,7 @@
 #include <cctype>
 #include <fstream>
 #include <ostream>
+
 #include "eckit/filesystem/PathName.h"
 #include "eckit/serialisation/IfstreamStream.h"
 

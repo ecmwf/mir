@@ -38,11 +38,11 @@
 #include "mir/util/Types.h"
 
 #if mir_HAVE_METKIT
-#include "eckit/spec/Custom.h"
-
 #include "metkit/codes/api/CodesAPI.h"
 #include "metkit/grib2mars/api/Grib2Mars.h"
 #include "metkit/mars2grib/api/Mars2Grib.h"
+
+#include "eckit/spec/Custom.h"
 #endif
 
 

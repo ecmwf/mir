@@ -4,10 +4,10 @@
 
 #include "mir/netcdf/DummyMatrix.h"
 
+#include <ostream>
+
 #include "mir/netcdf/Type.h"
 #include "mir/netcdf/Variable.h"
-
-#include <ostream>
 
 namespace mir::netcdf {
 

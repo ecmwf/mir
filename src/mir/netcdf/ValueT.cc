@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
-#include <netcdf.h>
-
 #include "mir/netcdf/ValueT.h"
+
+#include <netcdf.h>
 
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/Type.h"

@@ -7,10 +7,10 @@
 #include <algorithm>
 #include <set>
 
-#include "eckit/memory/Shmget.h"
 #include "eckit/config/Configuration.h"
 #include "eckit/config/Resource.h"
 #include "eckit/filesystem/PathName.h"
+#include "eckit/memory/Shmget.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/api/mir_version.h"

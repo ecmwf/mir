@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
+#include "mir/util/Bitmap.h"
+
 #include <cstring>
 #include <fstream>
 #include <ostream>
@@ -10,7 +12,6 @@
 #include "eckit/io/StdFile.h"
 #include "eckit/utils/Tokenizer.h"
 
-#include "mir/util/Bitmap.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Translator.h"
 
