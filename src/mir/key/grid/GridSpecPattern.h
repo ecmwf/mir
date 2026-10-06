@@ -15,6 +15,7 @@ public:
     explicit GridSpecPattern(const std::string& pattern);
 
 private:
+    bool matches(const std::string& name) const override;
     void print(std::ostream&) const override;
     const Grid* make(const std::string& name) const override;
     std::string canonical(const std::string& name) const override;

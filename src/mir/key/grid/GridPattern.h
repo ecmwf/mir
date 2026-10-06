@@ -66,6 +66,7 @@ protected:
 
     // -- Methods
 
+    virtual bool matches(const std::string& name) const { return regex_.match(name); }
     virtual void print(std::ostream&) const                      = 0;
     virtual const Grid* make(const std::string&) const           = 0;
     virtual std::string canonical(const std::string& name) const = 0;

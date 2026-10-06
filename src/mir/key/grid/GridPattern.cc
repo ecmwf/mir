@@ -62,7 +62,7 @@ std::string GridPattern::match(const std::string& name) {
     bool conflicts = false;
     auto k         = m->cend();
     for (auto j = m->cbegin(); j != m->cend() && !conflicts; ++j) {
-        if (j->second->regex_.match(name)) {
+        if (j->second->matches(name)) {
             conflicts = k != m->cend();
             k         = j;
         }
@@ -86,7 +86,7 @@ const Grid* GridPattern::lookup(const std::string& name) {
 
     auto k = m->cend();
     for (auto j = m->cbegin(); j != m->cend(); ++j) {
-        if (j->second->regex_.match(name)) {
+        if (j->second->matches(name)) {
             Log::debug() << "GridPattern: '" << j->second->pattern_ << "' match" << std::endl;
 
             if (k != m->cend()) {
