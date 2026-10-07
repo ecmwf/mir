@@ -1,0 +1,8 @@
+# input
+ORCA.grib2
+# mir
+--grid=10/10
+# grib_get
+gridType=regular_ll
+Ni=36
+Nj=19
