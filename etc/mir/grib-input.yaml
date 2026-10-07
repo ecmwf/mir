@@ -25,17 +25,6 @@ md5GridSection=6ae0076681a2541abe053ab52fa60f30, centre:i=84/85, gridType=lamber
   - area-mode: mask
   - first_point_bottom_left: true
 
-# gridType=polar_stereographic does not support the default area method
-gridType=lambert/lambert_azimuthal_equal_area/mercator/polar_stereographic/polar_stereographic:
-  - area-mode: mask
-
-# gridType=space_view does not support the default interpolation method
-gridType=space_view:
-  - area-mode: mask
-  - interpolation: k-nearest
-  - nearest-method: longest-element-diagonal-and-nclosest
-  - reset-missing-values: true
-
 # Arakawa C-grid UM N96, T/V (centre=egrr)
 md5GridSection=026edb6c52792bc15957072536dbe7c2/2e0f685a14d8ad3615dbc7252d5ebbb9, centre:i=74, gridType=regular_ll, edition=2:
   - east: 359.0625

@@ -424,22 +424,25 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
     add_formula(plan, user, {"gridded", "raw"});
 
-    if (std::string intint; user.get("intermediate-interpolation", intint) && !intint.empty()) {
-        if (std::string intgrid; user.get("intgrid", intgrid) && !intgrid.empty()) {
-            auto* runtime = new param::RuntimeParametrisation{parametrisation_};
-            runtime->set("interpolation", intint);
-            runtime->set("grid", intgrid);
-            runtime->unset("rotation");
-
-            auto recombined = std::make_unique<param::CombinedParametrisation>(*runtime, field);
-            auto target     = target_gridded_from_parametrisation(*recombined, false);
-
-            plan.add("interpolate.grid2" + target, runtime);
-        }
-    }
-
     auto target = target_gridded_from_parametrisation(parametrisation_, rotation);
     if (!target.empty()) {
+
+        if (std::string intint; parametrisation_.get("intermediate-interpolation", intint) && !intint.empty()) {
+            if (std::string intgrid;
+                parametrisation_.get("intgrid", intgrid) && !intgrid.empty() && intgrid != "none") {
+
+                auto runtime = std::make_unique<param::RuntimeParametrisation>(parametrisation_);
+                runtime->set("interpolation", intint);
+                runtime->set("grid", intgrid);
+                runtime->unset("rotation");
+
+                param::CombinedParametrisation recombined(*runtime, field);
+                if (auto inttarget = target_gridded_from_parametrisation(recombined, false); !inttarget.empty()) {
+                    plan.add("interpolate.grid2" + inttarget, runtime.release());
+                }
+            }
+        }
+
         plan.add("interpolate.grid2" + target);
 
         if (vod2uv || uv2uv) {
