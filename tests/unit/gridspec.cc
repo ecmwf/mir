@@ -247,8 +247,8 @@ CASE("GridSpec representation round trip (points, and spec describing the same g
             repres::RepresentationHandle repres(repres::RepresentationFactory::build(param));
 
             auto [lats, lons] = grid->to_latlons();
-            repres->reorder(lats);
-            repres->reorder(lons);
+            repres->reorderToCanonical(lats);
+            repres->reorderToCanonical(lons);
 
             std::vector<double> repres_lats;
             std::vector<double> repres_lons;

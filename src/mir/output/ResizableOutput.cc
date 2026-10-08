@@ -28,8 +28,8 @@ size_t ResizableOutput::save(const param::MIRParametrisation& /*param*/, context
     field.validate();
 
     // save metadata
-    std::unique_ptr<const eckit::geo::Grid> grid(
-        eckit::geo::GridFactory::build(repres::RepresentationHandle(field.representation())->spec()));
+    repres::RepresentationHandle repres(field.representation());
+    std::unique_ptr<const eckit::geo::Grid> grid(eckit::geo::GridFactory::build(repres->spec()));
     ASSERT(grid);
 
     metadata_.set("grid", grid->spec_str());
@@ -41,6 +41,7 @@ size_t ResizableOutput::save(const param::MIRParametrisation& /*param*/, context
     ASSERT(field.dimensions() == 1);
     ASSERT(field.values(0).size() == grid->size());
     values_ = field.values(0);
+    repres->reorderFromCanonical(values_);
 
     return values_.size() * sizeof(double);
 }

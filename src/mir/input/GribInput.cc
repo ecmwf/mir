@@ -817,7 +817,7 @@ data::MIRField GribInput::field() const {
 
     data::MIRField field(cache_, missingValuesPresent != 0, missingValue);
 
-    field.representation()->reorder(values);  // to canonical ordering
+    field.representation()->reorderToCanonical(values);
     field.update(values, 0);
     field.validate();
 

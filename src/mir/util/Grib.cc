@@ -47,7 +47,7 @@ long grib_order_to_scanning_mode(const std::string& order) {
 }
 
 
-void grib_reorder(std::vector<double>& values, const std::string& order, size_t Ni, size_t Nj) {
+void grib_reorder_to_canonical(std::vector<double>& values, const std::string& order, size_t Ni, size_t Nj) {
     using mir::Log;
 
     auto scanningMode = grib_order_to_scanning_mode(order);
@@ -122,6 +122,12 @@ void grib_reorder(std::vector<double>& values, const std::string& order, size_t 
     os << "grib_reorder " << current << " not supported";
     Log::error() << os.str() << std::endl;
     throw mir::exception::SeriousBug(os.str());
+}
+
+
+void grib_reorder_from_canonical(std::vector<double>& values, const std::string& order, size_t Ni, size_t Nj) {
+    // row/column flips are their own inverse
+    grib_reorder_to_canonical(values, order, Ni, Nj);
 }
 
 
