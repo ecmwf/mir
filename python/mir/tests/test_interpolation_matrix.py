@@ -204,7 +204,6 @@ def test_interpolation_projected_outside(output_spec, size, missing):
     assert np.isnan(output.values()).sum() == missing
 
 
-@pytest.mark.skip(reason="ecCodes changing GRIB edition=1 to 2 loses a non-default missingValue (WIP)")
 @pytest.mark.parametrize(
     "input_grid, output_spec, interpolation, size, missing",
     [

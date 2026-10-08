@@ -30,14 +30,6 @@ if(MARS_SCRIPT)
             set_tests_properties(${target} PROPERTIES WILL_FAIL TRUE)
         endif()
     endforeach()
-
-    # ecCodes limitation: changing edition (GRIB1 to GRIB2) loses a non-default missingValue, so missing values
-    # introduced by the interpolation fail to encode (re-enable with the fix: edition conversion preserves transient keys)
-    set_tests_properties(
-        mir_tests_assertions_rotated_grid_009
-        mir_tests_assertions_swisslv95_005_proj
-        mir_tests_assertions_swisslv95_006_proj
-        PROPERTIES DISABLED TRUE)
 endif()
 
 foreach(_t
