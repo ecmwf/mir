@@ -185,6 +185,21 @@ CASE("GridSpec regional outputs keep their grid (not unstructured)") {
 }
 
 
+const std::vector<std::string> GRIDS{"grid: 10/10", "grid: 10/10, area: [60, -10, 30, 40]", "grid: F8"};
+const std::vector<std::string> ORDERS{"i+j-", "i+j+", "i-j-", "i-j+"};
+
+
+std::vector<std::string> gridspecs_with_orders() {
+    std::vector<std::string> gridspecs;
+    for (const auto& grid : GRIDS) {
+        for (const auto& order : ORDERS) {
+            gridspecs.emplace_back("{" + grid + ", order: " + order + "}");
+        }
+    }
+    return gridspecs;
+}
+
+
 bool same_points(const std::vector<double>& lats1, const std::vector<double>& lons1, const std::vector<double>& lats2,
                  const std::vector<double>& lons2) {
     constexpr double EPS = 1e-9;
@@ -209,18 +224,21 @@ bool same_points(const std::vector<double>& lats1, const std::vector<double>& lo
 
 
 CASE("GridSpec representation round trip (points, and spec describing the same grid)") {
-    const std::vector<std::string> gridspecs{
-        "{grid: 10/10}",
-        "{grid: [2, 2], area: [60, -10, 30, 40]}",
-        "{grid: F16}",
-        "{grid: F16, area: [60, -10, 30, 40]}",
-        "{grid: O16}",
-        "{grid: N32}",
-        "{pl: [20, 24, 24, 20]}",
-        "{grid: O16, area: [60, -10, 30, 40]}",
-        "{grid: H4}",
-        "{grid: H4, order: nested}",
-    };
+    auto gridspecs = gridspecs_with_orders();
+    gridspecs.insert(
+        gridspecs.end(),
+        {
+            "{grid: [2, 2], area: [60, -10, 30, 40]}",
+            R"({"area":[3.4,-6.8,-4.4,4.8],"grid":[0.2,0.2],"order":"i+j+","projection":{"south_pole":[10,-43],"type":"rotation"}})",
+            "{grid: F16}",
+            "{grid: F16, area: [60, -10, 30, 40]}",
+            "{grid: O16}",
+            "{grid: N32}",
+            "{pl: [20, 24, 24, 20]}",
+            "{grid: O16, area: [60, -10, 30, 40]}",
+            "{grid: H4}",
+            "{grid: H4, order: nested}",
+        });
 
     for (const auto& gridspec : gridspecs) {
         SECTION(gridspec) {
@@ -228,7 +246,9 @@ CASE("GridSpec representation round trip (points, and spec describing the same g
             param::GridSpecParametrisation param(gridspec);
             repres::RepresentationHandle repres(repres::RepresentationFactory::build(param));
 
-            const auto [lats, lons] = grid->to_latlons();
+            auto [lats, lons] = grid->to_latlons();
+            repres->reorder(lats);
+            repres->reorder(lons);
 
             std::vector<double> repres_lats;
             std::vector<double> repres_lons;
@@ -245,6 +265,44 @@ CASE("GridSpec representation round trip (points, and spec describing the same g
             const auto [spec_lats, spec_lons] = spec_grid->to_latlons();
             const auto [grid_lats, grid_lons] = grid->to_latlons();
             EXPECT(same_points(spec_lats, spec_lons, grid_lats, grid_lons));
+        }
+    }
+}
+
+
+CASE("GridSpec output values follow the output grid order") {
+    auto point_values = [](const eckit::geo::Grid& grid) {
+        const auto [lats, lons] = grid.to_latlons();
+        std::vector<double> values(lats.size());
+        for (size_t i = 0; i < values.size(); ++i) {
+            values[i] = lats[i] * 1000. + lons[i];
+        }
+        return values;
+    };
+
+    for (const auto& grid : GRIDS) {
+        param::GridSpecParametrisation canonical("{" + grid + "}");
+        auto values = point_values(canonical.grid());
+
+        for (const auto& order : ORDERS) {
+            const auto gridspec = "{" + grid + ", order: " + order + "}";
+
+            SECTION(gridspec) {
+                output::ArrayOutput output;
+                api::MIRJob job;
+                job.set("grid", gridspec);
+                job.set("interpolation", "nn");
+
+                for (std::unique_ptr<input::MIRInput> input(
+                         new input::RawInput(values.data(), values.size(), canonical));
+                     input->next();) {
+                    job.execute(*input, output);
+                }
+
+                std::unique_ptr<const eckit::geo::Grid> result(
+                    eckit::geo::GridFactory::make_from_string(output.gridspec()));
+                EXPECT(output.values() == point_values(*result));
+            }
         }
     }
 }
