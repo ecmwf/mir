@@ -192,6 +192,18 @@ def test_interpolation_projected_output(input_grid):
     assert mir.Grid(output.spec_str) == mir.Grid(REGIONAL["swisslv95"])
 
 
+# output points outside the projected input domain are missing (not projected onto its boundary)
+@pytest.mark.parametrize("output_spec, size, missing", [(dict(grid="O320"), 57, 1), (dict(grid=[0.1, 0.1]), 960, 12)])
+def test_interpolation_projected_outside(output_spec, size, missing):
+    if not _has_grid(INPUT["swisslv95"]):
+        pytest.skip("swisslv95 requires PROJ")
+
+    output = _interpolate(INPUT["swisslv95"], output_spec, "linear")
+
+    assert output.size == size
+    assert np.isnan(output.values()).sum() == missing
+
+
 @pytest.mark.skip(reason="ecCodes changing GRIB edition=1 to 2 loses a non-default missingValue (WIP)")
 @pytest.mark.parametrize(
     "input_grid, output_spec, interpolation, size, missing",
