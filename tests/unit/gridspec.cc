@@ -186,7 +186,7 @@ CASE("GridSpec regional outputs keep their grid (not unstructured)") {
 
 
 const std::vector<std::string> GRIDS{"grid: 10/10", "grid: 10/10, area: [60, -10, 30, 40]", "grid: F8"};
-const std::vector<std::string> ORDERS{"i+j-", "i+j+", "i-j-", "i-j+"};
+const std::vector<std::string> ORDERS{"i+j-", "i+j+", "i-j-", "i-j+", "j-i+", "j+i+", "j-i-", "j+i-"};
 
 
 std::vector<std::string> gridspecs_with_orders() {
