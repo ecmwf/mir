@@ -30,104 +30,106 @@ bool grib_call(int e, const char* call, bool NOT_FOUND_IS_OK) {
 }
 
 
+namespace {
+
+
+enum ScanningMode : long
+{
+    iScansNegatively       = 1 << 7,
+    jScansPositively       = 1 << 6,
+    jPointsAreConsecutive  = 1 << 5,
+    alternativeRowScanning = 1 << 4
+};
+
+
+// position in canonical order (scanningMode=0) of each value in the given order
+std::vector<size_t> grib_canonical_index(const std::string& order, size_t Ni, size_t Nj) {
+    const auto scanningMode = grib_order_to_scanning_mode(order);
+    if ((scanningMode & alternativeRowScanning) != 0) {
+        throw mir::exception::SeriousBug("grib_reorder: order '" + order + "' not supported");
+    }
+
+    ASSERT(Ni > 0);
+    ASSERT(Nj > 0);
+
+    const auto iNegative = (scanningMode & iScansNegatively) != 0;
+    const auto jPositive = (scanningMode & jScansPositively) != 0;
+
+    auto canonical = [=](size_t i, size_t j) {
+        return (jPositive ? Nj - 1 - j : j) * Ni + (iNegative ? Ni - 1 - i : i);
+    };
+
+    std::vector<size_t> index;
+    index.reserve(Ni * Nj);
+
+    if ((scanningMode & jPointsAreConsecutive) != 0) {
+        for (size_t i = 0; i < Ni; ++i) {
+            for (size_t j = 0; j < Nj; ++j) {
+                index.emplace_back(canonical(i, j));
+            }
+        }
+    }
+    else {
+        for (size_t j = 0; j < Nj; ++j) {
+            for (size_t i = 0; i < Ni; ++i) {
+                index.emplace_back(canonical(i, j));
+            }
+        }
+    }
+
+    return index;
+}
+
+
+}  // namespace
+
+
 long grib_order_to_scanning_mode(const std::string& order) {
     if (order.empty()) {
         throw mir::exception::SeriousBug("grib_order_to_scanning_mode: empty order");
     }
 
-    auto alternativeRowScanning = order.find("i+-") != std::string::npos || order.find("i-+") != std::string::npos;
-    auto jPointsAreConsecutive  = order.front() == 'j';
-    auto jScansPositively       = order.find("j+") != std::string::npos;
-    auto iScansNegatively       = order.find("i-") != std::string::npos;
-
-    return (alternativeRowScanning ? (1 << 4) : 0) |  //
-           (jPointsAreConsecutive ? (1 << 5) : 0) |   //
-           (jScansPositively ? (1 << 6) : 0) |        //
-           (iScansNegatively ? (1 << 7) : 0);
+    return ((order.find("i+-") != std::string::npos || order.find("i-+") != std::string::npos) ? alternativeRowScanning
+                                                                                               : 0) |
+           (order.front() == 'j' ? jPointsAreConsecutive : 0) |
+           (order.find("j+") != std::string::npos ? jScansPositively : 0) |
+           (order.find("i-") != std::string::npos ? iScansNegatively : 0);
 }
 
 
 void grib_reorder_to_canonical(std::vector<double>& values, const std::string& order, size_t Ni, size_t Nj) {
-    using mir::Log;
-
-    auto scanningMode = grib_order_to_scanning_mode(order);
-    if (scanningMode == 0) {
-        // order is already the expected (canonical)
+    if (grib_order_to_scanning_mode(order) == 0) {
         return;
     }
 
-    enum
-    {
-        iScansNegatively       = 1 << 7,
-        jScansPositively       = 1 << 6,
-        jPointsAreConsecutive  = 1 << 5,
-        alternativeRowScanning = 1 << 4
-    };
+    mir::Log::warning() << "grib_reorder: order '" << order << "' to canonical" << std::endl;
 
-    auto scanningModeAsString = [](long mode) {
-        std::ostringstream os;
-        os << "scanningMode=" << mode << " (0x" << std::hex << mode << std::dec << ")";
-        return os.str();
-    };
-
-    auto current(scanningModeAsString(scanningMode));
-    auto canonical(scanningModeAsString(0));
-
-    ASSERT(Ni > 0);
-    ASSERT(Nj > 0);
-    ASSERT(values.size() == Ni * Nj);
+    const auto index = grib_canonical_index(order, Ni, Nj);
+    ASSERT(values.size() == index.size());
 
     std::vector<double> out(values.size());
-
-    if (scanningMode == jScansPositively) {
-        Log::warning() << "LatLon::reorder " << current << " to " << canonical << std::endl;
-        size_t count = 0;
-        for (size_t j = Nj; j > 0; --j) {
-            for (size_t i = 0; i < Ni; ++i) {
-                out[count++] = values[(j - 1) * Ni + i];
-            }
-        }
-        ASSERT(count == out.size());
-        std::swap(values, out);
-        return;
+    for (size_t k = 0; k < index.size(); ++k) {
+        out[index[k]] = values[k];
     }
 
-    if (scanningMode == iScansNegatively) {
-        Log::warning() << "LatLon::reorder " << current << " to " << canonical << std::endl;
-        size_t count = 0;
-        for (size_t j = 0; j < Nj; ++j) {
-            for (size_t i = Ni; i > 0; --i) {
-                out[count++] = values[j * Ni + (i - 1)];
-            }
-        }
-        ASSERT(count == out.size());
-        std::swap(values, out);
-        return;
-    }
-
-    if (scanningMode == (iScansNegatively | jScansPositively)) {
-        Log::warning() << "LatLon::reorder " << current << " to " << canonical << std::endl;
-        size_t count = 0;
-        for (size_t j = Nj; j > 0; --j) {
-            for (size_t i = Ni; i > 0; --i) {
-                out[count++] = values[(j - 1) * Ni + (i - 1)];
-            }
-        }
-        ASSERT(count == out.size());
-        std::swap(values, out);
-        return;
-    }
-
-    std::ostringstream os;
-    os << "grib_reorder " << current << " not supported";
-    Log::error() << os.str() << std::endl;
-    throw mir::exception::SeriousBug(os.str());
+    values.swap(out);
 }
 
 
 void grib_reorder_from_canonical(std::vector<double>& values, const std::string& order, size_t Ni, size_t Nj) {
-    // row/column flips are their own inverse
-    grib_reorder_to_canonical(values, order, Ni, Nj);
+    if (grib_order_to_scanning_mode(order) == 0) {
+        return;
+    }
+
+    const auto index = grib_canonical_index(order, Ni, Nj);
+    ASSERT(values.size() == index.size());
+
+    std::vector<double> out(values.size());
+    for (size_t k = 0; k < index.size(); ++k) {
+        out[k] = values[index[k]];
+    }
+
+    values.swap(out);
 }
 
 
