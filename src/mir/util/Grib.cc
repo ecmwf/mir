@@ -11,6 +11,7 @@
 #include <utility>
 
 #include "eckit/config/Resource.h"
+#include "eckit/geo/order/Scan.h"
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -42,45 +43,6 @@ enum ScanningMode : long
 };
 
 
-// position in canonical order (scanningMode=0) of each value in the given order
-std::vector<size_t> grib_canonical_index(const std::string& order, size_t Ni, size_t Nj) {
-    const auto scanningMode = grib_order_to_scanning_mode(order);
-    if ((scanningMode & alternativeRowScanning) != 0) {
-        throw mir::exception::SeriousBug("grib_reorder: order '" + order + "' not supported");
-    }
-
-    ASSERT(Ni > 0);
-    ASSERT(Nj > 0);
-
-    const auto iNegative = (scanningMode & iScansNegatively) != 0;
-    const auto jPositive = (scanningMode & jScansPositively) != 0;
-
-    auto canonical = [=](size_t i, size_t j) {
-        return (jPositive ? Nj - 1 - j : j) * Ni + (iNegative ? Ni - 1 - i : i);
-    };
-
-    std::vector<size_t> index;
-    index.reserve(Ni * Nj);
-
-    if ((scanningMode & jPointsAreConsecutive) != 0) {
-        for (size_t i = 0; i < Ni; ++i) {
-            for (size_t j = 0; j < Nj; ++j) {
-                index.emplace_back(canonical(i, j));
-            }
-        }
-    }
-    else {
-        for (size_t j = 0; j < Nj; ++j) {
-            for (size_t i = 0; i < Ni; ++i) {
-                index.emplace_back(canonical(i, j));
-            }
-        }
-    }
-
-    return index;
-}
-
-
 }  // namespace
 
 
@@ -98,18 +60,18 @@ long grib_order_to_scanning_mode(const std::string& order) {
 
 
 void grib_reorder_to_canonical(std::vector<double>& values, const std::string& order, size_t Ni, size_t Nj) {
-    if (grib_order_to_scanning_mode(order) == 0) {
+    if (order == eckit::geo::order::Scan::order_default()) {
         return;
     }
 
     mir::Log::warning() << "grib_reorder: order '" << order << "' to canonical" << std::endl;
 
-    const auto index = grib_canonical_index(order, Ni, Nj);
-    ASSERT(values.size() == index.size());
+    const auto ren = eckit::geo::order::Scan{order}.reorder(eckit::geo::order::Scan::order_default(), Ni, Nj);
+    ASSERT(values.size() == ren.size());
 
     std::vector<double> out(values.size());
-    for (size_t k = 0; k < index.size(); ++k) {
-        out[index[k]] = values[k];
+    for (size_t k = 0; k < ren.size(); ++k) {
+        out[ren[k]] = values[k];
     }
 
     values.swap(out);
@@ -117,16 +79,16 @@ void grib_reorder_to_canonical(std::vector<double>& values, const std::string& o
 
 
 void grib_reorder_from_canonical(std::vector<double>& values, const std::string& order, size_t Ni, size_t Nj) {
-    if (grib_order_to_scanning_mode(order) == 0) {
+    if (order == eckit::geo::order::Scan::order_default()) {
         return;
     }
 
-    const auto index = grib_canonical_index(order, Ni, Nj);
-    ASSERT(values.size() == index.size());
+    const auto ren = eckit::geo::order::Scan{order}.reorder(eckit::geo::order::Scan::order_default(), Ni, Nj);
+    ASSERT(values.size() == ren.size());
 
     std::vector<double> out(values.size());
-    for (size_t k = 0; k < index.size(); ++k) {
-        out[k] = values[index[k]];
+    for (size_t k = 0; k < ren.size(); ++k) {
+        out[k] = values[ren[k]];
     }
 
     values.swap(out);
