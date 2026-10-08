@@ -2,13 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
-#include <algorithm>
-#include <cmath>
 #include <memory>
 #include <string>
 #include <vector>
 
 #include "eckit/geo/Grid.h"
+#include "eckit/geo/PointLonLat.h"
 #include "eckit/geo/area/BoundingBox.h"
 #include "eckit/geo/eckit_geo_config.h"
 #include "eckit/testing/Test.h"
@@ -202,19 +201,13 @@ std::vector<std::string> gridspecs_with_orders() {
 
 bool same_points(const std::vector<double>& lats1, const std::vector<double>& lons1, const std::vector<double>& lats2,
                  const std::vector<double>& lons2) {
-    constexpr double EPS = 1e-9;
-
-    auto same_lon = [](double a, double b) {
-        auto d = std::fmod(std::abs(a - b), 360.);
-        return std::min(d, 360. - d) < EPS;
-    };
-
     if (lats1.size() != lats2.size() || lons1.size() != lons2.size() || lats1.size() != lons1.size()) {
         return false;
     }
 
     for (size_t i = 0; i < lats1.size(); ++i) {
-        if (std::abs(lats1[i] - lats2[i]) > EPS || !same_lon(lons1[i], lons2[i])) {
+        if (!eckit::geo::points_equal(eckit::geo::PointLonLat{lons1[i], lats1[i]},
+                                      eckit::geo::PointLonLat{lons2[i], lats2[i]})) {
             return false;
         }
     }
