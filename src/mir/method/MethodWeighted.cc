@@ -202,6 +202,13 @@ MethodWeighted::CacheKeys MethodWeighted::getDiskAndMemoryCacheKeys(const repres
 }
 
 
+static void save_interpolation_matrix(const WeightMatrix& W, const std::string& path) {
+    if (eckit::PathName file(path); !path.empty() && !file.exists()) {
+        W.save(file);
+    }
+}
+
+
 // This returns a 'const' matrix so we ensure that we don't change it and break the in-memory cache
 const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repres::Representation& in,
                                               const repres::Representation& out) const {
@@ -224,6 +231,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
         log << "MethodWeighted::getMatrix cache key: " << memory_key << " " << timer.elapsedSeconds(here)
             << ", found in memory cache (" << mat << ")" << std::endl;
 
+        save_interpolation_matrix(mat, interpolationMatrix_);
         return mat;
     }
 
@@ -261,20 +269,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     log << "MethodWeighted::getMatrix create weights matrix: " << timer.elapsedSeconds(here) << std::endl;
     log << "MethodWeighted::getMatrix matrix W " << W << std::endl;
 
-    if (!interpolationMatrix_.empty()) {
-        log << "MethodWeighted::getMatrix link '" << cacheFile << "' to '" << interpolationMatrix_ << "'" << std::endl;
-        ASSERT(cacheFile.exists() && cacheFile != interpolationMatrix_);
-
-        eckit::PathName anotherFile(interpolationMatrix_);
-        if (anotherFile.exists()) {
-            log << "MethodWeighted::getMatrix another file '" << anotherFile << "' already exists, not writing"
-                << std::endl;
-        }
-        else {
-            eckit::PathName::link(cacheFile, anotherFile);
-        }
-        ASSERT(anotherFile.exists());
-    }
+    save_interpolation_matrix(W, interpolationMatrix_);
 
     // insert matrix in the in-memory cache and update memory footprint
 
