@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
+#include <algorithm>
+#include <cmath>
 #include <memory>
 #include <string>
 #include <vector>
@@ -17,6 +19,7 @@
 #include "mir/output/EmptyOutput.h"
 #include "mir/param/GridSpecParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 
 
@@ -139,6 +142,71 @@ CASE("GridSpec input/output") {
                 EXPECT(output.gridspec() == test_output.canonical);
                 EXPECT(output.size() == test_output.size);
             }
+        }
+    }
+}
+
+
+bool same_points(const std::vector<double>& lats1, const std::vector<double>& lons1, const std::vector<double>& lats2,
+                 const std::vector<double>& lons2) {
+    constexpr double EPS = 1e-9;
+
+    auto same_lon = [](double a, double b) {
+        auto d = std::fmod(std::abs(a - b), 360.);
+        return std::min(d, 360. - d) < EPS;
+    };
+
+    if (lats1.size() != lats2.size() || lons1.size() != lons2.size() || lats1.size() != lons1.size()) {
+        return false;
+    }
+
+    for (size_t i = 0; i < lats1.size(); ++i) {
+        if (std::abs(lats1[i] - lats2[i]) > EPS || !same_lon(lons1[i], lons2[i])) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
+CASE("GridSpec representation round trip (points, and spec describing the same grid)") {
+    const std::vector<std::string> gridspecs{
+        "{grid: 10/10}",
+        "{grid: [2, 2], area: [60, -10, 30, 40]}",
+        "{grid: F16}",
+        "{grid: F16, area: [60, -10, 30, 40]}",
+        "{grid: O16}",
+        "{grid: N32}",
+        "{pl: [20, 24, 24, 20]}",
+        "{grid: O16, area: [60, -10, 30, 40]}",
+        "{grid: H4}",
+        "{grid: H4, order: nested}",
+    };
+
+    for (const auto& gridspec : gridspecs) {
+        SECTION(gridspec) {
+            std::unique_ptr<const eckit::geo::Grid> grid(eckit::geo::GridFactory::make_from_string(gridspec));
+            param::GridSpecParametrisation param(gridspec);
+            repres::RepresentationHandle repres(repres::RepresentationFactory::build(param));
+
+            const auto [lats, lons] = grid->to_latlons();
+
+            std::vector<double> repres_lats;
+            std::vector<double> repres_lons;
+            for (std::unique_ptr<repres::Iterator> it(repres->iterator()); it->next();) {
+                repres_lats.push_back((*(*it))[0]);
+                repres_lons.push_back((*(*it))[1]);
+            }
+
+            EXPECT_EQUAL(repres->numberOfPoints(), grid->size());
+            EXPECT(same_points(repres_lats, repres_lons, lats, lons));
+
+            std::unique_ptr<const eckit::geo::Grid> spec_grid(
+                eckit::geo::GridFactory::make_from_string(repres->spec().str()));
+            const auto [spec_lats, spec_lons] = spec_grid->to_latlons();
+            const auto [grid_lats, grid_lons] = grid->to_latlons();
+            EXPECT(same_points(spec_lats, spec_lons, grid_lats, grid_lons));
         }
     }
 }
