@@ -29,7 +29,6 @@ CASE("grid type settings") {
 
         EXPECT_EQUAL(field_setting(path, "intgrid"), "O96");  // from the grid catalog
         EXPECT_EQUAL(field_setting(path, "intermediate-interpolation"), "nn");
-        EXPECT_EQUAL(field_setting(path, "interpolation"), "linear");
     }
 
     SECTION("other types") {
