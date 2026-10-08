@@ -17,7 +17,6 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/BoundingBox.h"
-#include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/MeshGeneratorParameters.h"
@@ -146,11 +145,7 @@ bool RegularXY::isPeriodicWestEast() const {
         points[i].assign(lons[i], lats[i]);
     }
 
-    const auto grid = atlas::UnstructuredGrid(std::move(points));
-    ASSERT(grid.size() == grid_->size());
-
-    const auto dom = domain();
-    return dom.isGlobal() ? grid : atlas::UnstructuredGrid(grid, dom);
+    return atlas::UnstructuredGrid(std::move(points));
 }
 
 
