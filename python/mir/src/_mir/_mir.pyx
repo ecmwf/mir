@@ -291,11 +291,11 @@ cdef class Job:
             assert hasattr(output, "write")
             out = PyGribOutput(output)
 
-        if not isinstance(in_, GribMemoryInput):
+        if isinstance(in_, (ArrayInput, GribMemoryInput, GriddefInput, GridSpecInput)):
+            self.j.execute(dereference(in_._input), dereference(out._output))
+        else:
             while in_._input.next():
                 self.j.execute(dereference(in_._input), dereference(out._output))
-        else:
-            self.j.execute(dereference(in_._input), dereference(out._output))
 
     # def execute(self, input, output):
     #     in_ = new mir.GribFileInput(eckit.PathName(input))
