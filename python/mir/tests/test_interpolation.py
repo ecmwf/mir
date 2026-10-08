@@ -87,6 +87,10 @@ def test_array_input_gridspec_forms():
         assert np.array_equal(interpolate(gridspec), expected)
 
 
+def test_array_output_empty():
+    assert mir.ArrayOutput().values().size == 0
+
+
 @pytest.mark.parametrize(
     "input_gs, output_gs",
     [
