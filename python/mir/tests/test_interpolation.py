@@ -87,6 +87,19 @@ def test_array_input_gridspec_forms():
         assert np.array_equal(interpolate(gridspec), expected)
 
 
+def test_input_reused():
+    import numpy as np
+
+    grid = mir.Grid(dict(grid="O32"))
+    values = np.arange(len(grid), dtype=np.float64)
+
+    for input in (mir.ArrayInput(values, grid), mir.GridSpecInput(grid.spec_str)):
+        for output_grid in (dict(grid=[1, 1]), dict(grid=[2, 2])):
+            output = mir.ArrayOutput()
+            mir.Job(grid=output_grid).execute(input, output)
+            assert output.size == len(mir.Grid(output_grid))
+
+
 def test_array_output_empty():
     assert mir.ArrayOutput().values().size == 0
 
