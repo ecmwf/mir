@@ -5,6 +5,7 @@ from cython.operator cimport dereference
 from libc.stdlib cimport free
 from libc.stdlib cimport malloc
 from libc.string cimport strdup
+from libcpp cimport bool as cbool
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 
@@ -260,6 +261,8 @@ cdef class Job:
         elif isinstance(value, str):
             value_str = value.encode()
             self.j.set(key_str, value_str)
+        elif isinstance(value, bool):
+            self.j.set(key_str, <cbool>value)
         elif isinstance(value, int):
             self.j.set(key_str, <int>value)
         elif isinstance(value, float):
