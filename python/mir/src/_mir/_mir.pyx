@@ -208,6 +208,9 @@ cdef class ArrayOutput(MIROutput):
         cdef tuple shape = tuple(shape_vec)
 
         assert dtype in (None, np.float32, np.float64)
+        if size == 0:
+            return np.empty(0, dtype=dtype)
+
         arr = np.array(<cnp.float64_t[:size]>data_ptr, dtype=dtype)  # copy
 
         cdef double miss = (<mir.ArrayOutput*> self._output).missingValue()
