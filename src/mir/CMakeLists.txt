@@ -516,6 +516,8 @@ list(APPEND mir_srcs
     repres/IrregularLatlon.h
     repres/Iterator.cc
     repres/Iterator.h
+    repres/RegularXY.cc
+    repres/RegularXY.h
     repres/Representation.cc
     repres/Representation.h
     repres/Spectral.cc
