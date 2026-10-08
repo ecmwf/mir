@@ -10,6 +10,7 @@
 
 #include "eckit/geo/Grid.h"
 #include "eckit/geo/area/BoundingBox.h"
+#include "eckit/geo/eckit_geo_config.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/api/MIRJob.h"
@@ -144,6 +145,43 @@ CASE("GridSpec input/output") {
             }
         }
     }
+}
+
+
+CASE("GridSpec regional outputs keep their grid (not unstructured)") {
+    param::GridSpecParametrisation meta("{grid: 10/10}");
+    std::vector<double> values(meta.grid().size(), 0.);
+
+    auto check = [&](const std::string& gridspec, const std::string& type) {
+        output::ArrayOutput output;
+        api::MIRJob job;
+        job.set("grid", gridspec);
+        job.set("interpolation", "nn");
+
+        for (std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
+             input->next();) {
+            job.execute(*input, output);
+        }
+
+        std::unique_ptr<const eckit::geo::Grid> expected(eckit::geo::GridFactory::make_from_string(gridspec));
+        std::unique_ptr<const eckit::geo::Grid> result(eckit::geo::GridFactory::make_from_string(output.gridspec()));
+        EXPECT(result->type() == type);
+        EXPECT(*result == *expected);
+        EXPECT(output.shape() == expected->shape());
+        EXPECT(output.size() == expected->size());
+    };
+
+    SECTION("rotated_ll") {
+        check(R"({"area":[3.36,-6.82,-4.42,4.8],"grid":[0.02,0.02],"order":"i+j+",)"
+              R"("projection":{"south_pole":[10,-43],"type":"rotation"}})",
+              "regular_ll");
+    }
+
+#if eckit_HAVE_PROJ
+    SECTION("regular_xy (swisslv95)") {
+        check("{type: swisslv95, x: [2480000, 2840000, 20000], y: [1080000, 1300000, 20000]}", "regular_xy");
+    }
+#endif
 }
 
 
