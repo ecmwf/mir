@@ -4,6 +4,8 @@
 
 #include "mir/key/style/ECMWFStyle.h"
 
+#include <algorithm>
+#include <iterator>
 #include <memory>
 #include <ostream>
 #include <string>
@@ -45,14 +47,14 @@ static const MIRStyleBuilder<ECMWFStyle> __style("ecmwf");
 static const MIRStyleBuilder<DeprecatedStyle> __deprecated_style("dissemination");
 
 
-bool option(const param::MIRParametrisation& param, const std::string& key, bool dfault) {
+static bool option(const param::MIRParametrisation& param, const std::string& key, bool dfault) {
     bool value = dfault;
     param.get(key, value);
     return value;
-};
+}
 
 
-bool same_points(const param::MIRParametrisation& user, const param::MIRParametrisation& field) {
+static bool same_points(const param::MIRParametrisation& user, const param::MIRParametrisation& field) {
     std::unique_ptr<const param::MIRParametrisation> same(new param::SameParametrisation(user, field, true));
 
     std::vector<double> rotation;
@@ -227,16 +229,38 @@ ECMWFStyle::ECMWFStyle(const param::MIRParametrisation& parametrisation) : MIRSt
         explicit StyleParametrisation(const eckit::PathName& path) {
             if (path.exists()) {
                 if (auto value = eckit::YAMLParser::decodeFile(path); value.isMap()) {
-                    util::ValueMap(value).set(*this);
+                    // empty options are unset
+                    util::ValueMap map(value);
+                    for (auto it = map.begin(); it != map.end();) {
+                        it = it->second.isNil() ? map.erase(it) : std::next(it);
+                    }
+
+                    map.set(*this);
                 }
             }
         }
     } static const style(LibMir::configFile(LibMir::config_file::STYLE));
 
-    std::string sh2grid;
-    style.get("sh2grid", sh2grid);
+    // from the parametrisation if set, otherwise from the style configuration (unset or empty: first choice)
+    auto style_option = [this](const std::string& key, const std::vector<std::string>& choices) {
+        std::string value;
+        if (!parametrisation_.get(key, value)) {
+            style.get(key, value);
+        }
 
-    sh2gridCompatible_ = (sh2grid == "compatible");
+        if (value.empty()) {
+            return choices.front();
+        }
+
+        if (std::find(choices.begin(), choices.end(), value) == choices.end()) {
+            throw exception::UserError("ECMWFStyle: option '" + key + "' invalid value '" + value +
+                                       "', choices are: " + eckit::StringTools::join(", ", choices));
+        }
+
+        return value;
+    };
+
+    sh2gridWindCompatible_ = style_option("sh2grid-wind", {"default", "compatible"}) == "compatible";
 }
 
 
@@ -284,14 +308,14 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     bool vod2uv   = option(user, "vod2uv", false);
     bool uv2uv    = option(user, "uv2uv", false) || uv_input;  // where "MIR knowledge of winds" is hardcoded
 
+    if (vod2uv && uv_input) {
+        throw exception::UserError("ECMWFStyle: option 'vod2uv' is incompatible with input U/V");
+    }
+
     if (vod2uv && uv2uv) {
         throw exception::UserError("ECMWFStyle: option 'vod2uv' is incompatible with option 'uv2uv'");
     }
 
-    if (vod2uv && uv_input) {
-        throw exception::UserError("ECMWFStyle: option 'vod2uv' is incompatible with input U/V");
-    }
-
     if (resol.resultIsSpectral()) {
         resol.prepare(plan);
     }
@@ -308,9 +332,9 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
         else {
             resol.prepare(plan);
 
-            // apply u = U / cos(theta) first, as the associated supporting grid is typically Gaussian
-            // hence avoiding bad conditioning at the poles
-            if (uv2uv) {
+            // apply u = U / cos(theta) first, as the intermediate grid is typically Gaussian, hence avoiding bad
+            // conditioning at the poles (compatible mode applies it after the interpolation)
+            if (uv2uv && !sh2gridWindCompatible_) {
                 plan.add("filter.adjust-winds-scale-cos-latitude");
             }
 
@@ -320,69 +344,14 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
             if (rotation || !user.get("grid", grid) || grid != resol.gridname()) {
                 plan.add("interpolate.grid2" + target);
             }
-        }
 
-        if (vod2uv || uv2uv) {
-            if (rotation) {
-                plan.add("filter.adjust-winds-directions");
-            }
-        }
-    }
-
-    add_formula(plan, user, {"gridded"});
-}
-
-
-void ECMWFStyle::sh2grid_compatible(action::ActionPlan& plan) const {
-    const auto& user = parametrisation_.userParametrisation();
-
-    add_formula(plan, user, {"spectral", "raw"});
-
-    resol::Resol resol(parametrisation_, false);
-
-    long uv       = 0;
-    bool uv_input = parametrisation_.fieldParametrisation().get("is_wind_component_uv", uv) && (uv != 0);
-
-    bool rotation = user.has("rotation");
-    bool vod2uv   = option(user, "vod2uv", false);
-    bool uv2uv    = option(user, "uv2uv", false) || uv_input;  // where "MIR knowledge of winds" is hardcoded
-
-    if (vod2uv && uv_input) {
-        throw exception::UserError("ECMWFStyle: option 'vod2uv' is incompatible with input U/V");
-    }
-
-    if (resol.resultIsSpectral()) {
-        resol.prepare(plan);
-    }
-
-    auto target = target_gridded_from_parametrisation(parametrisation_, false);
-    if (!target.empty()) {
-        if (resol.resultIsSpectral()) {
-
-            plan.add("transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-") + target);
-        }
-        else {
-
-            resol.prepare(plan);
-
-            // if the intermediate grid is the same as the target grid, the interpolation to the
-            // intermediate grid is not followed by an additional interpolation
-            std::string grid;
-            if (rotation || !user.get("grid", grid) || grid != resol.gridname()) {
-                plan.add("interpolate.grid2" + target);
-            }
-        }
-
-        if (vod2uv || uv2uv) {
-            ASSERT(vod2uv != uv2uv);
-
-            if (uv2uv) {
+            if (uv2uv && sh2gridWindCompatible_) {
                 plan.add("filter.adjust-winds-scale-cos-latitude");
             }
+        }
 
-            if (rotation) {
-                plan.add("filter.adjust-winds-directions");
-            }
+        if ((vod2uv || uv2uv) && rotation) {
+            plan.add("filter.adjust-winds-directions");
         }
     }
 
@@ -571,7 +540,7 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, output::MIROutput& output) co
 
     if (field_spectral) {
         if (user_wants_gridded > 0) {
-            sh2gridCompatible_ ? sh2grid_compatible(plan) : sh2grid(plan);
+            sh2grid(plan);
         }
         else {
             // "user wants spectral"
