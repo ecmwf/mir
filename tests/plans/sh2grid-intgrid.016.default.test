@@ -1,0 +1,6 @@
+# input
+param=t,level=1000
+# mir
+--grid=N48
+# plan
+ShTruncate[truncation=95]|ShToNamedGrid[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<scalar>,grid=N48]|Save[packing=simple,output=...]

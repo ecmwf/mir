@@ -1,0 +1,6 @@
+# input
+param=t,level=1000
+# mir
+--grid=5/5
+# plan
+ShTruncate[truncation=35]|ShToNamedGrid[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<scalar>,grid=F18]|Gridded2RegularLL[increments=Increments[west_east=5,south_north=5],bbox=BoundingBox[north=90,west=0,south=-90,east=355],interpolation=linear,method=FiniteElement[type=linear,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|Save[packing=simple,output=...]
