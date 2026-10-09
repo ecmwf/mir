@@ -291,6 +291,9 @@ ECMWFStyle::ECMWFStyle(const param::MIRParametrisation& parametrisation) : MIRSt
     };
 
     sh2gridWindCompatible_ = style_option("sh2grid-wind", {"default", "compatible"}) == "compatible";
+    sh2gridIntgrid_        = style_option("sh2grid-intgrid", {"regular-gg-from-target", "compatible"}) == "compatible"
+                                 ? "regular-gg-from-target-compatible"
+                                 : "regular-gg-from-target";
 }
 
 
@@ -347,7 +350,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     // inverse transform to the intermediate grid (if any), or the target grid
     const grid::Target target(parametrisation_);
     auto gridded = target_gridded_from_parametrisation(parametrisation_, false);
-    auto intgrid = intermediate_grid(parametrisation_, "automatic");
+    auto intgrid = intermediate_grid(parametrisation_, sh2gridIntgrid_);
 
     add_spectral_filters(
         plan, parametrisation_,
