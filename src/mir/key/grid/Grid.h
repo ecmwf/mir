@@ -53,7 +53,7 @@ public:
     virtual void parametrisation(const std::string& grid, param::SimpleParametrisation&) const;
     virtual size_t gaussianNumber() const;
     virtual std::string gridname() const;
-    virtual bool isGaussian() const;  // global, non-rotated Gaussian grid
+    virtual bool isGaussian() const;  // non-rotated Gaussian grid
 
     static size_t default_gaussian_number() { return 64; }
     static std::string canonical(const std::string& name, const param::MIRParametrisation&);  // empty if unknown

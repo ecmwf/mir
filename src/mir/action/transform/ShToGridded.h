@@ -64,7 +64,8 @@ protected:
     // None
 
     // -- Methods
-    // None
+
+    void crop(const util::BoundingBox& bbox) { cropping_.boundingBox(bbox); }
 
     // -- Overridden methods
 

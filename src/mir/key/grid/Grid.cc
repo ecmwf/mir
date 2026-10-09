@@ -16,6 +16,7 @@
 #include "eckit/geo/Projection.h"
 #include "eckit/geo/grid/reduced/ReducedGaussian.h"
 #include "eckit/geo/grid/regular/RegularGaussian.h"
+#include "eckit/geo/order/Scan.h"
 #include "eckit/parser/YAMLParser.h"
 #include "eckit/types/Fraction.h"
 #include "eckit/utils/StringTools.h"
@@ -328,7 +329,8 @@ public:
             N_ = gg->N();
         }
 
-        gaussian_ = N_ > 0 && grid->projection().is_default() && grid->boundingBox().global();
+        gaussian_ =
+            N_ > 0 && grid->projection().is_default() && grid->order() == eckit::geo::order::Scan::order_default();
     }
 
 private:
