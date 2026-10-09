@@ -36,6 +36,7 @@ set(TESTS
     job
     knn_weighting
     packing
+    plan
     raw_memory
     spectral_order
     statistics

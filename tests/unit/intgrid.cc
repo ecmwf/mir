@@ -84,6 +84,56 @@ private:
 };
 
 
+CASE("sh2grid: spectral truncation, from the inverse transform grid") {
+    const SpectralField field(1279);
+
+    param::SimpleParametrisation user;
+    user.set("grid", "O320");
+
+    SECTION("target grid") {
+        Plan plan(user, field);
+        EXPECT(plan.has("ShTruncate", {"truncation=639"}));
+    }
+
+    SECTION("intermediate grid") {
+        Plan coarser(user.set("intgrid", "F160"), field);
+        EXPECT(coarser.has("ShTruncate", {"truncation=319"}));
+        EXPECT(coarser.has("ShToNamedGrid", {"grid=F160"}));
+        EXPECT(coarser.has("Gridded2NamedGrid", {"grid=O320"}));
+
+        Plan finer(user.set("intgrid", "O640"), field);
+        EXPECT(!finer.has("ShTruncate"));
+        EXPECT(finer.has("ShToNamedGrid", {"grid=O640"}));
+    }
+
+    SECTION("spectral-order=cubic") {
+        Plan plan(user.set("spectral-order", "cubic"), field);
+        EXPECT(plan.has("ShTruncate", {"truncation=319"}));
+    }
+
+    SECTION("truncation=213") {
+        Plan plan(user.set("truncation", "213"), field);
+        EXPECT(plan.has("ShTruncate", {"truncation=213"}));
+    }
+
+    SECTION("truncation=none") {
+        Plan plan(user.set("truncation", "none"), field);
+        EXPECT(!plan.has("ShTruncate"));
+    }
+
+    SECTION("spectral output") {
+        param::SimpleParametrisation spectral;
+
+        Plan plan(spectral, field);
+        EXPECT(!plan.has("ShTruncate"));
+
+        Plan truncated(spectral.set("truncation", "639"), field);
+        EXPECT(truncated.has("ShTruncate", {"truncation=639"}));
+        EXPECT(!truncated.has("ShToNamedGrid"));
+    }
+}
+
+
 CASE("sh2grid: U/V input, wind scaling by cos(latitude) and intermediate grid") {
     const SpectralField field(1279, true);
 
