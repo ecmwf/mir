@@ -71,7 +71,7 @@ struct MIR : MIRTool {
         options_.push_back(new FactoryOption<key::truncation::TruncationFactory>(
             "truncation", "Describes the intermediate truncation which the transform is performed from"));
         options_.push_back(new FactoryOption<key::intgrid::IntgridFactory>(
-            "intgrid", "Describes the intermediate grid which the transform is performed to"));
+            "intgrid", "Intermediate grid, of the spectral transform or of the grid to grid interpolation"));
 
         options_.push_back(new SimpleOption<bool>(
             "vod2uv",
