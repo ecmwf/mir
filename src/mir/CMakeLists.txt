@@ -277,14 +277,14 @@ list(APPEND mir_srcs
     key/grid/GridPattern.cc
     key/grid/GridPattern.h
     key/grid/NamedGrid.h
-    key/intgrid/Automatic.cc
-    key/intgrid/Automatic.h
     key/intgrid/Intgrid.cc
     key/intgrid/Intgrid.h
     key/intgrid/NamedGrid.cc
     key/intgrid/NamedGrid.h
     key/intgrid/None.cc
     key/intgrid/None.h
+    key/intgrid/RegularGGFromTarget.cc
+    key/intgrid/RegularGGFromTarget.h
     key/intgrid/Source.cc
     key/intgrid/Source.h
     key/style/CustomParametrisation.cc

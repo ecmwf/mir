@@ -291,6 +291,9 @@ ECMWFStyle::ECMWFStyle(const param::MIRParametrisation& parametrisation) : MIRSt
     };
 
     sh2gridWindCompatible_ = style_option("sh2grid-wind", {"default", "compatible"}) == "compatible";
+    sh2gridIntgrid_        = style_option("sh2grid-intgrid", {"regular-gg-from-target", "compatible"}) == "compatible"
+                                 ? "regular-gg-from-target-compatible"
+                                 : "regular-gg-from-target";
 }
 
 
@@ -347,7 +350,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     // inverse transform to the intermediate grid (if any), or the target grid
     const grid::Target target(parametrisation_);
     auto gridded = target_gridded_from_parametrisation(parametrisation_, false);
-    auto intgrid = intermediate_grid(parametrisation_, "automatic");
+    auto intgrid = intermediate_grid(parametrisation_, sh2gridIntgrid_);
 
     add_spectral_filters(
         plan, parametrisation_,
@@ -419,13 +422,12 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
     add_formula(plan, user, {"gridded", "raw"});
 
-    auto target = target_gridded_from_parametrisation(parametrisation_, rotation);
-    if (!target.empty()) {
-
-        if (std::string intint; parametrisation_.get("intermediate-interpolation", intint) && !intint.empty()) {
-            if (std::string intgrid;
-                parametrisation_.get("intgrid", intgrid) && !intgrid.empty() && intgrid != "none") {
-
+    auto gridded = target_gridded_from_parametrisation(parametrisation_, rotation);
+    if (!gridded.empty()) {
+        std::string intgrid;
+        if (std::string intint;
+            parametrisation_.get("intermediate-interpolation", intint) && !intint.empty() && intint != "none") {
+            if (intgrid = intermediate_grid(parametrisation_, "none"); !intgrid.empty()) {
                 auto runtime = std::make_unique<param::RuntimeParametrisation>(parametrisation_);
                 runtime->set("interpolation", intint);
                 runtime->set("grid", intgrid);
@@ -438,7 +440,10 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
             }
         }
 
-        plan.add("interpolate.grid2" + target);
+        // interpolate to the target grid, unless it is the intermediate grid
+        if (const grid::Target target(parametrisation_); intgrid.empty() || target.rotated || target.grid != intgrid) {
+            plan.add("interpolate.grid2" + gridded);
+        }
 
         if (vod2uv || uv2uv) {
             ASSERT(vod2uv != uv2uv);

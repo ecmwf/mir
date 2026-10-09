@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "mir/key/style/MIRStyle.h"
 
 
@@ -68,6 +70,7 @@ private:
     // -- Members
 
     bool sh2gridWindCompatible_;
+    std::string sh2gridIntgrid_;
 
     // -- Methods
     // None

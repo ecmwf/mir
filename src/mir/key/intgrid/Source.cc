@@ -29,8 +29,8 @@ Source::Source(const param::MIRParametrisation& parametrisation) : Intgrid(param
                                 !truncation.empty() && std::all_of(truncation.begin(), truncation.end(), ::isdigit)) {
         T = std::stol(truncation);
     }
-    else {
-        ASSERT(parametrisation_.fieldParametrisation().get("truncation", T));
+    else if (!parametrisation_.fieldParametrisation().get("truncation", T)) {
+        throw exception::UserError("Intgrid: 'source' requires spectral input, or a numeric 'truncation'");
     }
     ASSERT(T > 0);
 

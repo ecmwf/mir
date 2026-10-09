@@ -1,0 +1,6 @@
+# input
+param=t,level=1000,resol=20
+# mir
+--grid={grid:O16,area:[60,-10,30,40]}
+# plan
+ShToGridSpec[type=local,cropping=BoundingBox[north=58.143,west=-10,south=30.4576,east=40],options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<scalar>,gridspec={"grid":"O16"}]|Save[packing=simple,output=...]
