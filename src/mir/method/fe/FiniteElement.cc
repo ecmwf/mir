@@ -312,7 +312,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
 
 
     // grid/mesh properties
-    const auto inDomain      = in.domain();
+    const auto inDomain      = in.geographicDomain();
     const auto& connectivity = inMesh.cells().node_connectivity();
     const auto& inNodes      = inMesh.nodes();
     const auto inCoords      = atlas::array::make_view<double, 2>(inNodes.field("xyz"));

@@ -1,0 +1,12 @@
+# input
+/dev/null
+# mir
+--input={artificialInput:gridspec,gridspec:{grid:ICON-CH2}} --grid={grid:0.5/0.5,area:[2,-4,-3,4],rotation:[-43,10]} --interpolation=nn
+# grib_get
+gridType = rotated_ll
+Ni = 17
+Nj = 11
+numberOfDataPoints = 187
+latitudeOfSouthernPoleInDegrees = -43
+longitudeOfSouthernPoleInDegrees = 10
+numberOfMissing = 0

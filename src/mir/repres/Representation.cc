@@ -199,6 +199,11 @@ util::Domain Representation::domain() const {
 }
 
 
+util::Domain Representation::geographicDomain() const {
+    return domain();
+}
+
+
 const std::string& Representation::order() const {
     std::ostringstream os;
     os << "Representation::order() not implemented for " << *this;
