@@ -61,6 +61,11 @@ bool contains(const std::string& action, const std::string& substring) {
 
 const std::string T1279 = "{artificialInput:constant,constant:0.,spectral:true,truncation:1279,gridType:sh}";
 
+// eORCA1_T, with the intermediate grid and interpolation from the grid catalog and grid-type.yaml
+const std::string ORCA =
+    "{artificialInput:constant,constant:0.,gridded:true,gridType:unstructured_grid,"
+    "uid:ba65665a9e68d1a8fa0352ecfcf8e496,intgrid:O96,intermediate-interpolation:nn}";
+
 
 CASE("spectral (T1279) to regular lat/lon (1/1)") {
     api::MIRJob job;
@@ -119,6 +124,40 @@ CASE("spectral (T1279), intermediate grid") {
         EXPECT_EQUAL(actions[0], "ShTruncate[truncation=179]");
         EXPECT(starts(actions[1], "ShToRegularLL["));
         EXPECT(starts(actions[2], "Save["));
+    }
+}
+
+
+CASE("gridded (eORCA1_T), intermediate interpolation") {
+    api::MIRJob job;
+
+    SECTION("intermediate grid O96 (nn), then target grid (linear)") {
+        auto actions = plan(ORCA, job.set("grid", std::vector<double>{1, 1}));
+        EXPECT_EQUAL(actions.size(), 3);
+        EXPECT(starts(actions[0], "Gridded2NamedGrid[grid=O96,interpolation=nn,"));
+        EXPECT(starts(actions[1], "Gridded2RegularLL[") && contains(actions[1], "interpolation=linear,"));
+        EXPECT(starts(actions[2], "Save["));
+    }
+
+    SECTION("target grid is the intermediate grid: one interpolation") {
+        auto actions = plan(ORCA, job.set("grid", "O96"));
+        EXPECT_EQUAL(actions.size(), 2);
+        EXPECT(starts(actions[0], "Gridded2NamedGrid[grid=O96,interpolation=nn,"));
+        EXPECT(starts(actions[1], "Save["));
+    }
+
+    SECTION("intgrid=none: no intermediate interpolation") {
+        auto actions = plan(ORCA, job.set("grid", std::vector<double>{1, 1}).set("intgrid", "none"));
+        EXPECT_EQUAL(actions.size(), 2);
+        EXPECT(starts(actions[0], "Gridded2RegularLL[") && contains(actions[0], "interpolation=linear,"));
+        EXPECT(starts(actions[1], "Save["));
+    }
+
+    SECTION("intermediate-interpolation=none: no intermediate interpolation") {
+        auto actions = plan(ORCA, job.set("grid", std::vector<double>{1, 1}).set("intermediate-interpolation", "none"));
+        EXPECT_EQUAL(actions.size(), 2);
+        EXPECT(starts(actions[0], "Gridded2RegularLL["));
+        EXPECT(starts(actions[1], "Save["));
     }
 }
 

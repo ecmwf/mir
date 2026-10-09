@@ -300,7 +300,83 @@ CASE("intgrid=none, named grids, source") {
     EXPECT_EQUAL(intgrid(user.set("intgrid", "F640"), field), "F640");
     EXPECT_EQUAL(intgrid(user.set("intgrid", "source"), field), "O1280");
 
+    EXPECT_THROWS_AS(intgrid(user.set("intgrid", "source"), GriddedField()), exception::UserError);
     EXPECT_THROWS_AS(intgrid(user.set("intgrid", "?"), field), exception::SeriousBug);
+}
+
+
+CASE("grid2grid: intermediate grid") {
+    const GriddedField field;
+
+    param::SimpleParametrisation user;
+    user.set("grid", std::vector<double>{1, 1});
+
+    SECTION("intgrid unset") {
+        Plan plan(user.set("intermediate-interpolation", "nn"), field);
+        EXPECT(plan.find("Gridded2RegularLL") == 0);
+        EXPECT(plan.find("Save") == 1);
+    }
+
+    SECTION("intgrid=none") {
+        Plan plan(user.set("intgrid", "none").set("intermediate-interpolation", "nn"), field);
+        EXPECT(plan.find("Gridded2RegularLL") == 0);
+        EXPECT(plan.find("Save") == 1);
+    }
+
+    SECTION("intgrid=O32, intermediate-interpolation unset, empty or none") {
+        user.set("intgrid", "O32");
+
+        Plan unset(user, field);
+        EXPECT(unset.find("Gridded2RegularLL") == 0);
+        EXPECT(unset.find("Save") == 1);
+
+        for (const std::string intint : {"", "none"}) {
+            Plan plan(user.set("intermediate-interpolation", intint), field);
+            EXPECT(plan.find("Gridded2RegularLL") == 0);
+            EXPECT(plan.find("Save") == 1);
+        }
+    }
+
+    SECTION("intgrid=O32, intermediate-interpolation=nn") {
+        Plan plan(user.set("intgrid", "O32").set("intermediate-interpolation", "nn"), field);
+        EXPECT(plan.find("Gridded2NamedGrid", {"grid=O32,interpolation=nn,"}) == 0);
+        EXPECT(plan.find("Gridded2RegularLL", {"interpolation=linear,"}) == 1);
+        EXPECT(plan.find("Save") == 2);
+    }
+
+    SECTION("intgrid=regular-gg-from-target, intermediate-interpolation=nn") {
+        user.set("intgrid", "regular-gg-from-target").set("intermediate-interpolation", "nn");
+
+        Plan plan(user, field);
+        EXPECT(plan.find("Gridded2NamedGrid", {"grid=F90,interpolation=nn,"}) == 0);
+        EXPECT(plan.find("Gridded2RegularLL") == 1);
+        EXPECT(plan.find("Save") == 2);
+
+        Plan direct(user.set("grid", "O320"), field);
+        EXPECT(direct.find("Gridded2NamedGrid", {"grid=O320,interpolation=linear,"}) == 0);
+        EXPECT(direct.find("Save") == 1);
+    }
+
+    SECTION("intgrid=O32, intermediate-interpolation=nn, target grid O32") {
+        user.set("grid", "O32").set("intgrid", "O32").set("intermediate-interpolation", "nn");
+
+        Plan plan(user, field);
+        EXPECT(plan.find("Gridded2NamedGrid", {"grid=O32,interpolation=nn,"}) == 0);
+        EXPECT(plan.find("Save") == 1);
+    }
+
+    SECTION("intgrid=O32, intermediate-interpolation=nn, target grid O32 rotated") {
+        user.set("grid", "O32").set("rotation", std::vector<double>{-40, 22});
+
+        Plan plan(user.set("intgrid", "O32").set("intermediate-interpolation", "nn"), field);
+        EXPECT(plan.find("Gridded2NamedGrid", {"grid=O32,interpolation=nn,"}) == 0);
+        EXPECT(plan.find("Gridded2RotatedNamedGrid", {"grid=O32,"}) == 1);
+    }
+
+    SECTION("intgrid=source, intermediate-interpolation=nn") {
+        user.set("intgrid", "source").set("intermediate-interpolation", "nn");
+        EXPECT_THROWS_AS(Plan plan(user, field), exception::UserError);
+    }
 }
 
 
