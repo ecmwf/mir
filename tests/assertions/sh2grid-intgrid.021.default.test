@@ -6,6 +6,6 @@ param=t,level=1000,resol=20
 gridType=reduced_gg
 gridName=O16
 numberOfValues=42
-values[1]=276.325
-values[21]=285.572
-values[41]=301.593
+values[0]=277.729
+values[2]=272.696
+values[3]=268.227

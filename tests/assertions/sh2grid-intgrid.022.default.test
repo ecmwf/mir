@@ -1,0 +1,11 @@
+# input
+param=t,level=1000
+# mir
+--grid={grid:O32,area:[60,-10,30,40]}
+# grib_get
+gridType=reduced_gg
+gridName=O32
+numberOfValues=123
+values[0]=277.708
+values[1]=277.274
+values[2]=276.568
