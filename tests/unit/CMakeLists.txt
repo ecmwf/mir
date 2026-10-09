@@ -31,6 +31,7 @@ set(TESTS
     input
     interpolations
     interpolationspec
+    intgrid
     iterator
     job
     knn_weighting
