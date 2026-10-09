@@ -13,6 +13,9 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/geo/Grid.h"
+#include "eckit/geo/Projection.h"
+#include "eckit/geo/grid/reduced/ReducedGaussian.h"
+#include "eckit/geo/grid/regular/RegularGaussian.h"
 #include "eckit/parser/YAMLParser.h"
 #include "eckit/types/Fraction.h"
 #include "eckit/utils/StringTools.h"
@@ -315,11 +318,26 @@ const TypedGridPattern<repres::regular::PolarStereographic> POLAR_STEREOGRAPHIC_
 // Grids by specification, inline (eckit::geo)
 class GridSpec final : public Grid {
 public:
-    explicit GridSpec(const std::string& key) : Grid(key, "gridspec") {}
+    explicit GridSpec(const std::string& key) : Grid(key, "gridspec") {
+        std::unique_ptr<const eckit::geo::Grid> grid(eckit::geo::GridFactory::make_from_string(key));
+
+        if (const auto* gg = dynamic_cast<const eckit::geo::grid::reduced::ReducedGaussian*>(grid.get())) {
+            N_ = gg->N();
+        }
+        else if (const auto* gg = dynamic_cast<const eckit::geo::grid::regular::RegularGaussian*>(grid.get())) {
+            N_ = gg->N();
+        }
+
+        gaussian_ = N_ > 0 && grid->projection().is_default() && grid->boundingBox().global();
+    }
 
 private:
+    size_t N_      = 0;
+    bool gaussian_ = false;
+
     void print(std::ostream& out) const override { out << "GridSpec[key=" << key_ << "]"; }
-    size_t gaussianNumber() const override { return default_gaussian_number(); }
+    size_t gaussianNumber() const override { return N_ > 0 ? N_ : default_gaussian_number(); }
+    bool isGaussian() const override { return gaussian_; }
 };
 
 
