@@ -16,6 +16,30 @@ GRIDSPECS = [
 ]
 
 
+# (gridspec, canonical spec, shape)
+CANONICAL = [
+    (dict(grid="o96"), dict(grid="O96"), (40320,)),
+    (dict(type="arakawa_c_um", n=96), dict(grid=[1.875, 1.25], order="i+j+", reference=[0.9375, 0.625]), (144, 192)),
+    (dict(grid="H2"), dict(grid="H2"), (48,)),
+    (dict(grid="H2", order="ring"), dict(grid="H2"), (48,)),
+    (dict(grid="H2r"), dict(grid="H2"), (48,)),
+    (dict(grid="hR2"), dict(grid="H2"), (48,)),
+    (dict(grid="H2", order="nested"), dict(grid="H2", order="nested"), (48,)),
+    (dict(grid="Hn2"), dict(grid="H2", order="nested"), (48,)),
+    (dict(grid="h2N"), dict(grid="H2", order="nested"), (48,)),
+]
+
+
+@pytest.mark.parametrize("gridspec, spec, shape", CANONICAL)
+def test_canonical_spec(gridspec, spec, shape):
+    import mir
+
+    grid = mir.Grid(gridspec)
+    assert grid.spec == spec
+    assert grid.shape == shape
+    assert mir.Grid(grid.spec) == grid
+
+
 def _gridspec_as_string(g):
     from yaml import dump
 

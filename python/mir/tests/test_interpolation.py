@@ -104,6 +104,35 @@ def test_array_output_empty():
     assert mir.ArrayOutput().values().size == 0
 
 
+# HEALPix ring <-> nested is a reordering of the same points, not an interpolation
+@pytest.mark.parametrize("order_a, order_b", list(product(("ring", "nested"), repeat=2)))
+def test_healpix_reorder(order_a, order_b):
+    import numpy as np
+
+    a = mir.Grid(dict(grid="H4", order=order_a))
+    b = mir.Grid(dict(grid="H4", order=order_b))
+    values = np.arange(len(a), dtype=np.float64)
+
+    output = mir.ArrayOutput()
+    mir.Job(grid=b.spec).execute(mir.ArrayInput(values, a), output)
+    assert output.spec == b.spec
+
+    result = output.values()
+    assert np.array_equal(np.sort(result), values)
+    assert np.array_equal(result, values) == (order_a == order_b)
+
+    # each output point carries the value of the same input point
+    lat_a, lon_a = (np.ravel(x) for x in a.to_latlons())
+    lat_b, lon_b = (np.ravel(x) for x in b.to_latlons())
+    index = result.astype(int)
+    assert lat_a[index] == pytest.approx(lat_b)
+    assert lon_a[index] == pytest.approx(lon_b)
+
+    back = mir.ArrayOutput()
+    mir.Job(grid=a.spec).execute(mir.ArrayInput(result, b), back)
+    assert np.array_equal(back.values(), values)
+
+
 @pytest.mark.parametrize(
     "input_gs, output_gs",
     [
