@@ -133,7 +133,8 @@ private:
 
     const std::string& order() const override { return scan_.order(); }
 
-    void reorder(MIRValuesVector& values) const override;
+    void reorderToCanonical(MIRValuesVector& values) const override;
+    void reorderFromCanonical(MIRValuesVector& values) const override;
 
     void validate(const MIRValuesVector&) const override;
 

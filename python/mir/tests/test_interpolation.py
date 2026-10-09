@@ -67,6 +67,72 @@ def test_interpolation(input_grid, output_grid, output_spec, output_shape):
     assert output.values().size == output.size == len(result)
 
 
+def test_array_input_gridspec_forms():
+    import numpy as np
+
+    # the same input grid, given as a string, a dict, a Grid, or its points (unstructured)
+    grid = mir.Grid(dict(grid="O32"))
+    lats, lons = grid.to_latlons()
+    values = np.random.default_rng(0).random(grid.shape)
+
+    job = mir.Job(grid="1/1", interpolation="nn")
+
+    def interpolate(gridspec):
+        output = mir.ArrayOutput()
+        job.execute(mir.ArrayInput(values, gridspec), output)
+        return output.values()
+
+    expected = interpolate(grid.spec_str)
+    for gridspec in (grid.spec, grid, mir.Grid(dict(latitudes=lats, longitudes=lons))):
+        assert np.array_equal(interpolate(gridspec), expected)
+
+
+def test_input_reused():
+    import numpy as np
+
+    grid = mir.Grid(dict(grid="O32"))
+    values = np.arange(len(grid), dtype=np.float64)
+
+    for input in (mir.ArrayInput(values, grid), mir.GridSpecInput(grid.spec_str)):
+        for output_grid in (dict(grid=[1, 1]), dict(grid=[2, 2])):
+            output = mir.ArrayOutput()
+            mir.Job(grid=output_grid).execute(input, output)
+            assert output.size == len(mir.Grid(output_grid))
+
+
+def test_array_output_empty():
+    assert mir.ArrayOutput().values().size == 0
+
+
+# HEALPix ring <-> nested is a reordering of the same points, not an interpolation
+@pytest.mark.parametrize("order_a, order_b", list(product(("ring", "nested"), repeat=2)))
+def test_healpix_reorder(order_a, order_b):
+    import numpy as np
+
+    a = mir.Grid(dict(grid="H4", order=order_a))
+    b = mir.Grid(dict(grid="H4", order=order_b))
+    values = np.arange(len(a), dtype=np.float64)
+
+    output = mir.ArrayOutput()
+    mir.Job(grid=b.spec).execute(mir.ArrayInput(values, a), output)
+    assert output.spec == b.spec
+
+    result = output.values()
+    assert np.array_equal(np.sort(result), values)
+    assert np.array_equal(result, values) == (order_a == order_b)
+
+    # each output point carries the value of the same input point
+    lat_a, lon_a = (np.ravel(x) for x in a.to_latlons())
+    lat_b, lon_b = (np.ravel(x) for x in b.to_latlons())
+    index = result.astype(int)
+    assert lat_a[index] == pytest.approx(lat_b)
+    assert lon_a[index] == pytest.approx(lon_b)
+
+    back = mir.ArrayOutput()
+    mir.Job(grid=a.spec).execute(mir.ArrayInput(result, b), back)
+    assert np.array_equal(back.values(), values)
+
+
 @pytest.mark.parametrize(
     "input_gs, output_gs",
     [

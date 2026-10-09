@@ -20,7 +20,8 @@ public:
 protected:
     // -- Overridden methods
 
-    void reorder(MIRValuesVector&) const override;
+    void reorderToCanonical(MIRValuesVector&) const override;
+    void reorderFromCanonical(MIRValuesVector&) const override;
 
     util::Domain domain() const override { return {}; }
 

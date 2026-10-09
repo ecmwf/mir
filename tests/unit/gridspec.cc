@@ -7,7 +7,9 @@
 #include <vector>
 
 #include "eckit/geo/Grid.h"
+#include "eckit/geo/PointLonLat.h"
 #include "eckit/geo/area/BoundingBox.h"
+#include "eckit/geo/eckit_geo_config.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/api/MIRJob.h"
@@ -17,6 +19,7 @@
 #include "mir/output/EmptyOutput.h"
 #include "mir/param/GridSpecParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 
 
@@ -138,6 +141,160 @@ CASE("GridSpec input/output") {
 
                 EXPECT(output.gridspec() == test_output.canonical);
                 EXPECT(output.size() == test_output.size);
+            }
+        }
+    }
+}
+
+
+CASE("GridSpec regional outputs keep their grid (not unstructured)") {
+    param::GridSpecParametrisation meta("{grid: 10/10}");
+    std::vector<double> values(meta.grid().size(), 0.);
+
+    auto check = [&](const std::string& gridspec, const std::string& type) {
+        output::ArrayOutput output;
+        api::MIRJob job;
+        job.set("grid", gridspec);
+        job.set("interpolation", "nn");
+
+        for (std::unique_ptr<input::MIRInput> input(new input::RawInput(values.data(), values.size(), meta));
+             input->next();) {
+            job.execute(*input, output);
+        }
+
+        std::unique_ptr<const eckit::geo::Grid> expected(eckit::geo::GridFactory::make_from_string(gridspec));
+        std::unique_ptr<const eckit::geo::Grid> result(eckit::geo::GridFactory::make_from_string(output.gridspec()));
+        EXPECT(result->type() == type);
+        EXPECT(*result == *expected);
+        EXPECT(output.shape() == expected->shape());
+        EXPECT(output.size() == expected->size());
+    };
+
+    SECTION("rotated_ll") {
+        check(R"({"area":[3.36,-6.82,-4.42,4.8],"grid":[0.02,0.02],"order":"i+j+",)"
+              R"("projection":{"south_pole":[10,-43],"type":"rotation"}})",
+              "regular_ll");
+    }
+
+#if eckit_HAVE_PROJ
+    SECTION("regular_xy (swisslv95)") {
+        check("{type: swisslv95, x: [2480000, 2840000, 20000], y: [1080000, 1300000, 20000]}", "regular_xy");
+    }
+#endif
+}
+
+
+const std::vector<std::string> GRIDS{"grid: 10/10", "grid: 10/10, area: [60, -10, 30, 40]", "grid: F8"};
+const std::vector<std::string> ORDERS{"i+j-", "i+j+", "i-j-", "i-j+", "j-i+", "j+i+", "j-i-", "j+i-"};
+
+
+std::vector<std::string> gridspecs_with_orders() {
+    std::vector<std::string> gridspecs;
+    for (const auto& grid : GRIDS) {
+        for (const auto& order : ORDERS) {
+            gridspecs.emplace_back("{" + grid + ", order: " + order + "}");
+        }
+    }
+    return gridspecs;
+}
+
+
+bool same_points(const std::vector<double>& lats1, const std::vector<double>& lons1, const std::vector<double>& lats2,
+                 const std::vector<double>& lons2) {
+    if (lats1.size() != lats2.size() || lons1.size() != lons2.size() || lats1.size() != lons1.size()) {
+        return false;
+    }
+
+    for (size_t i = 0; i < lats1.size(); ++i) {
+        if (!eckit::geo::points_equal(eckit::geo::PointLonLat{lons1[i], lats1[i]},
+                                      eckit::geo::PointLonLat{lons2[i], lats2[i]})) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
+CASE("GridSpec representation round trip (points, and spec describing the same grid)") {
+    auto gridspecs = gridspecs_with_orders();
+    gridspecs.insert(
+        gridspecs.end(),
+        {
+            "{grid: [2, 2], area: [60, -10, 30, 40]}",
+            R"({"area":[3.4,-6.8,-4.4,4.8],"grid":[0.2,0.2],"order":"i+j+","projection":{"south_pole":[10,-43],"type":"rotation"}})",
+            "{grid: F16}",
+            "{grid: F16, area: [60, -10, 30, 40]}",
+            "{grid: O16}",
+            "{grid: N32}",
+            "{pl: [20, 24, 24, 20]}",
+            "{grid: O16, area: [60, -10, 30, 40]}",
+            "{grid: H4}",
+            "{grid: H4, order: nested}",
+        });
+
+    for (const auto& gridspec : gridspecs) {
+        SECTION(gridspec) {
+            std::unique_ptr<const eckit::geo::Grid> grid(eckit::geo::GridFactory::make_from_string(gridspec));
+            param::GridSpecParametrisation param(gridspec);
+            repres::RepresentationHandle repres(repres::RepresentationFactory::build(param));
+
+            auto [lats, lons] = grid->to_latlons();
+            repres->reorderToCanonical(lats);
+            repres->reorderToCanonical(lons);
+
+            std::vector<double> repres_lats;
+            std::vector<double> repres_lons;
+            for (std::unique_ptr<repres::Iterator> it(repres->iterator()); it->next();) {
+                repres_lats.push_back((*(*it))[0]);
+                repres_lons.push_back((*(*it))[1]);
+            }
+
+            EXPECT_EQUAL(repres->numberOfPoints(), grid->size());
+            EXPECT(same_points(repres_lats, repres_lons, lats, lons));
+
+            std::unique_ptr<const eckit::geo::Grid> spec_grid(
+                eckit::geo::GridFactory::make_from_string(repres->spec().str()));
+            const auto [spec_lats, spec_lons] = spec_grid->to_latlons();
+            const auto [grid_lats, grid_lons] = grid->to_latlons();
+            EXPECT(same_points(spec_lats, spec_lons, grid_lats, grid_lons));
+        }
+    }
+}
+
+
+CASE("GridSpec output values follow the output grid order") {
+    auto point_values = [](const eckit::geo::Grid& grid) {
+        const auto [lats, lons] = grid.to_latlons();
+        std::vector<double> values(lats.size());
+        for (size_t i = 0; i < values.size(); ++i) {
+            values[i] = lats[i] * 1000. + lons[i];
+        }
+        return values;
+    };
+
+    for (const auto& grid : GRIDS) {
+        param::GridSpecParametrisation canonical("{" + grid + "}");
+        auto values = point_values(canonical.grid());
+
+        for (const auto& order : ORDERS) {
+            const auto gridspec = "{" + grid + ", order: " + order + "}";
+
+            SECTION(gridspec) {
+                output::ArrayOutput output;
+                api::MIRJob job;
+                job.set("grid", gridspec);
+                job.set("interpolation", "nn");
+
+                for (std::unique_ptr<input::MIRInput> input(
+                         new input::RawInput(values.data(), values.size(), canonical));
+                     input->next();) {
+                    job.execute(*input, output);
+                }
+
+                std::unique_ptr<const eckit::geo::Grid> result(
+                    eckit::geo::GridFactory::make_from_string(output.gridspec()));
+                EXPECT(output.values() == point_values(*result));
             }
         }
     }

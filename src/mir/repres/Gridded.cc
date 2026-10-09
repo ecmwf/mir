@@ -30,7 +30,12 @@ void Gridded::fillSpec(CustomSpec& spec) const {
 }
 
 
-void Gridded::reorder(MIRValuesVector& /*unused*/) const {
+void Gridded::reorderToCanonical(MIRValuesVector& /*unused*/) const {
+    // assume iterators do the right thing
+}
+
+
+void Gridded::reorderFromCanonical(MIRValuesVector& /*unused*/) const {
     // assume iterators do the right thing
 }
 

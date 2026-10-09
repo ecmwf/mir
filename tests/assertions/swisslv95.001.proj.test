@@ -1,0 +1,14 @@
+# input
+/dev/null
+# mir
+--input={artificialInput:gridspec,gridspec:{type:swisslv95,x:[2480000,2840000,20000],y:[1080000,1300000,20000]}} --grid={grid:0.25/0.25} --interpolation=nn
+# grib_get
+gridType = regular_ll
+Ni = 19
+Nj = 8
+numberOfDataPoints = 152
+latitudeOfFirstGridPointInDegrees = 47.75
+longitudeOfFirstGridPointInDegrees = 6
+latitudeOfLastGridPointInDegrees = 46
+longitudeOfLastGridPointInDegrees = 10.5
+numberOfMissing = 0

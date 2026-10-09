@@ -98,6 +98,11 @@ const RotatedLL* RotatedLL::croppedRepresentation(const util::BoundingBox& bbox)
 }
 
 
+util::Domain RotatedLL::geographicDomain() const {
+    return rotation_.domain(domain());
+}
+
+
 std::string RotatedLL::factory() const {
     return "rotated_ll";
 }

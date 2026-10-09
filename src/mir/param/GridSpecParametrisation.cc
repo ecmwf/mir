@@ -5,6 +5,7 @@
 #include "mir/param/GridSpecParametrisation.h"
 
 #include <cmath>
+#include <map>
 #include <ostream>
 
 #include "eckit/geo/area/BoundingBox.h"
@@ -89,12 +90,21 @@ void fill_grid(SimpleParametrisation& param, const eckit::geo::Grid& grid) {
         return;
     }
 
+    if (type == "regular_xy") {
+        param.set("gridType", "regular_xy");
+        param.set("gridded", true);
+        param.set("gridspec", grid.spec_str());
+        return;
+    }
+
     if (type == "FESOM" || type == "ICON" || type == "ORCA" || type == "unstructured_ll") {
-        param.set("gridType", type);
+        const auto by_coordinates = type == "unstructured_ll";
+
+        param.set("gridType", by_coordinates ? "unstructured_ll" : type);
         param.set("gridded", true);
         param.set("uid", grid.uid());
 
-        if (type == "unstructured_ll") {
+        if (by_coordinates) {
             auto [lats, lons] = grid.to_latlons();
             param.set("latitudes", lats);
             param.set("longitudes", lons);
@@ -137,6 +147,16 @@ void fill_area(SimpleParametrisation& param, const eckit::geo::Grid& grid) {
         return;
     }
 
+    if (type == "bounding_box_xy") {
+        // projected grids: bounding box in geographic coordinates
+        const auto& bbox = grid.boundingBox();
+        param.set("north", bbox.north());
+        param.set("west", bbox.west());
+        param.set("south", bbox.south());
+        param.set("east", bbox.east());
+        return;
+    }
+
     if (type == "none") {
         return;
     }
@@ -149,11 +169,29 @@ void fill_projection(SimpleParametrisation& param, const eckit::geo::Projection&
     const auto& type = projection.type();
 
     if (type == "rotation") {
-        static_cast<void>(param);
-        NOTIMP;
+        const auto& r = dynamic_cast<const eckit::geo::projection::Rotation&>(projection);
+        if (!r.rotated()) {
+            return;
+        }
+
+        std::string gridType;
+        ASSERT(param.get("gridType", gridType));
+
+        const std::map<std::string, std::string> rotated{
+            {"regular_ll", "rotated_ll"}, {"regular_gg", "rotated_gg"}, {"reduced_gg", "reduced_rotated_gg"}};
+        auto it = rotated.find(gridType);
+        if (it == rotated.end()) {
+            throw exception::UserError("GridSpecParametrisation: unsupported rotated grid type: '" + gridType + "'");
+        }
+
+        param.set("gridType", it->second);
+        param.set("south_pole_latitude", r.south_pole().lat());
+        param.set("south_pole_longitude", r.south_pole().lon());
+        param.set("south_pole_rotation_angle", r.angle());
+        return;
     }
 
-    if (type == "none" || type == "eqc") {
+    if (type == "none" || type == "eqc" || type == "proj") {
         return;
     }
 

@@ -1,0 +1,12 @@
+# input
+param=t,level=1000
+# mir
+$MIR_CONFIG_STYLE=~mir/etc/mir/style-compatible.yaml
+--grid=N48
+# grib_get
+gridType=reduced_gg
+gridName=N48
+numberOfValues=13280
+values[0]=253.467
+values[1]=253.512
+values[2]=253.582

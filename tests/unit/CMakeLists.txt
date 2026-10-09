@@ -24,16 +24,19 @@ set(TESTS
     grib_rotated_ll
     grib_scanning_mode
     grid_box_method
+    grid_type
     grids
     gridspec
     increments
     input
     interpolations
     interpolationspec
+    intgrid
     iterator
     job
     knn_weighting
     packing
+    plan
     raw_memory
     spectral_order
     statistics

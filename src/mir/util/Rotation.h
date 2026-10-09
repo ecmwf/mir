@@ -26,7 +26,8 @@ class MIRParametrisation;
 }
 namespace util {
 class BoundingBox;
-}
+class Domain;
+}  // namespace util
 }  // namespace mir
 
 
@@ -70,6 +71,7 @@ public:
 
     const eckit::geo::projection::Rotation& rotation() const { return rotation_; }
     BoundingBox boundingBox(const BoundingBox&) const;
+    Domain domain(const Domain&) const;
 
     Latitude south_pole_latitude() const { return rotation_.south_pole().lat(); }
     Longitude south_pole_longitude() const { return rotation_.south_pole().lon(); }

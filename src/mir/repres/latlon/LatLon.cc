@@ -70,8 +70,13 @@ LatLon::LatLon(const util::Increments& increments, const util::BoundingBox& bbox
 LatLon::~LatLon() = default;
 
 
-void LatLon::reorder(MIRValuesVector& values) const {
-    grib_reorder(values, order(), ni_, nj_);
+void LatLon::reorderToCanonical(MIRValuesVector& values) const {
+    grib_reorder_to_canonical(values, order(), ni_, nj_);
+}
+
+
+void LatLon::reorderFromCanonical(MIRValuesVector& values) const {
+    grib_reorder_from_canonical(values, order(), ni_, nj_);
 }
 
 

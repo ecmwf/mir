@@ -2,9 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
+#include "eckit/filesystem/TmpDir.h"
 #include "eckit/testing/Test.h"
 
+#include "mir/api/MIRJob.h"
+#include "mir/input/GridSpecInput.h"
 #include "mir/method/WeightMatrix.h"
+#include "mir/output/EmptyOutput.h"
 #include "mir/util/Exceptions.h"
 
 
@@ -87,6 +91,26 @@ CASE("WeightMatrix::validate") {
         catch (exception::InvalidWeightMatrix& e) {
             EXPECT(e.what() == what);
         }
+    }
+}
+
+
+CASE("interpolation-matrix, also from the in-memory cache") {
+    const eckit::TmpDir dir;
+
+    input::GridSpecInput input("{grid: H4n}");
+    output::EmptyOutput output;
+
+    for (const auto* name : {"a.mat", "b.mat"}) {
+        const auto path = dir / name;
+
+        api::MIRJob job;
+        job.set("grid", "O4");
+        job.set("interpolation", "nn");
+        job.set("interpolation-matrix", path.asString());
+        job.execute(input, output);
+
+        EXPECT(path.exists());
     }
 }
 

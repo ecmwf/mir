@@ -124,6 +124,7 @@ public:
 
     // Domain operations
     virtual util::Domain domain() const;
+    virtual util::Domain geographicDomain() const;
     virtual const std::string& order() const;
     virtual const util::BoundingBox& boundingBox() const;
     virtual bool isGlobal() const;
@@ -135,7 +136,8 @@ public:
 
     virtual void comparison(std::string&) const;
 
-    virtual void reorder(MIRValuesVector&) const;
+    virtual void reorderToCanonical(MIRValuesVector&) const;
+    virtual void reorderFromCanonical(MIRValuesVector&) const;
 
     virtual std::vector<util::GridBox> gridBoxes() const;
 
