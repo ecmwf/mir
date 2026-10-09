@@ -136,7 +136,8 @@ public:
 
     virtual void comparison(std::string&) const;
 
-    virtual void reorder(MIRValuesVector&) const;
+    virtual void reorderToCanonical(MIRValuesVector&) const;
+    virtual void reorderFromCanonical(MIRValuesVector&) const;
 
     virtual std::vector<util::GridBox> gridBoxes() const;
 

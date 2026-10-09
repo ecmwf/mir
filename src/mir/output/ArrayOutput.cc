@@ -33,8 +33,8 @@ size_t ArrayOutput::save(const param::MIRParametrisation&, context::Context& ctx
     field.validate();
 
     // save metadata
-    std::unique_ptr<const eckit::geo::Grid> grid(
-        eckit::geo::GridFactory::build(repres::RepresentationHandle(field.representation())->spec()));
+    repres::RepresentationHandle repres(field.representation());
+    std::unique_ptr<const eckit::geo::Grid> grid(eckit::geo::GridFactory::build(repres->spec()));
     ASSERT(grid);
 
     shape_    = grid->shape();
@@ -44,6 +44,7 @@ size_t ArrayOutput::save(const param::MIRParametrisation&, context::Context& ctx
     ASSERT(field.dimensions() == 1);
     ASSERT(field.values(0).size() == grid->size());
     values_ = field.values(0);
+    repres->reorderFromCanonical(values_);
 
     if (auto mv = field.missingValue();
         std::any_of(values_.begin(), values_.end(), [mv, mv_isnan = std::isnan(mv)](auto v) {

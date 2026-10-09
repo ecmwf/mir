@@ -135,6 +135,63 @@ def test_interpolation_rotated_grid_box_statistics(input_spec, output_spec, opti
     assert not np.isnan(output.values()).all()
 
 
+# regional grids (over Switzerland): rotated_ll, named unstructured (icon-ch2), projected (swisslv95), and a coarse
+# global grid
+REGIONAL = dict(
+    rotated_ll=dict(
+        area=[3.36, -6.82, -4.42, 4.8],
+        grid=[0.02, 0.02],
+        order="i+j+",
+        projection=dict(south_pole=[10, -43], type="rotation"),
+    ),
+    icon_ch2=dict(grid="icon-ch2"),
+    swisslv95=INPUT["swisslv95"],
+    regular_ll=dict(grid=[3, 3]),
+)
+
+# input/output pairs, with the input domain containing the output's
+REGIONAL_CASES = [
+    ("regular_ll", "rotated_ll"),
+    ("regular_ll", "icon_ch2"),
+    ("regular_ll", "swisslv95"),
+    ("icon_ch2", "rotated_ll"),
+    ("icon_ch2", "swisslv95"),
+    ("rotated_ll", "swisslv95"),
+]
+
+def _contains(a, b) -> bool:
+    north, west, south, east = a
+    lon = east - west >= 360 or (west <= b[1] and b[3] <= east)
+    return south <= b[2] and b[0] <= north and lon
+
+
+@pytest.mark.parametrize("input_grid, output_grid", REGIONAL_CASES)
+def test_interpolation_regional(input_grid, output_grid):
+    if "swisslv95" in (input_grid, output_grid) and not _has_grid(REGIONAL["swisslv95"]):
+        pytest.skip("swisslv95 requires PROJ")
+
+    grid = mir.Grid(REGIONAL[output_grid])
+    assert _contains(mir.Grid(REGIONAL[input_grid]).bounding_box(), grid.bounding_box())
+
+    output = _interpolate(REGIONAL[input_grid], REGIONAL[output_grid], "nn")
+
+    assert output.size == len(grid)
+    assert not np.isnan(output.values()).any()
+    assert mir.Grid(output.spec_str).bounding_box() == pytest.approx(grid.bounding_box())
+
+
+# projected output grids are kept as such (not described as unstructured_ll, by coordinates)
+@pytest.mark.parametrize("input_grid", ["swisslv95", "regular_ll"])
+def test_interpolation_projected_output(input_grid):
+    if not _has_grid(REGIONAL["swisslv95"]):
+        pytest.skip("swisslv95 requires PROJ")
+
+    output = _interpolate(REGIONAL[input_grid], REGIONAL["swisslv95"], "nn")
+
+    assert output.spec["type"] == "regular_xy"
+    assert mir.Grid(output.spec_str) == mir.Grid(REGIONAL["swisslv95"])
+
+
 @pytest.mark.skip(reason="ecCodes changing GRIB edition=1 to 2 loses a non-default missingValue (WIP)")
 @pytest.mark.parametrize(
     "input_grid, output_spec, interpolation, size, missing",

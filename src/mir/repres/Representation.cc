@@ -279,9 +279,16 @@ std::string Representation::factory() const {
 }
 
 
-void Representation::reorder(MIRValuesVector& /*unused*/) const {
+void Representation::reorderToCanonical(MIRValuesVector& /*unused*/) const {
     std::ostringstream os;
-    os << "Representation::reorder() not implemented for " << *this;
+    os << "Representation::reorderToCanonical() not implemented for " << *this;
+    throw exception::SeriousBug(os.str());
+}
+
+
+void Representation::reorderFromCanonical(MIRValuesVector& /*unused*/) const {
+    std::ostringstream os;
+    os << "Representation::reorderFromCanonical() not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 

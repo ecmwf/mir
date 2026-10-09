@@ -90,9 +90,15 @@ void fill_grid(SimpleParametrisation& param, const eckit::geo::Grid& grid) {
         return;
     }
 
-    if (type == "FESOM" || type == "ICON" || type == "ORCA" || type == "unstructured_ll" || type == "regular_xy") {
-        // projected grids (regular_xy) are described by their coordinates
-        const auto by_coordinates = type == "unstructured_ll" || type == "regular_xy";
+    if (type == "regular_xy") {
+        param.set("gridType", "regular_xy");
+        param.set("gridded", true);
+        param.set("gridspec", grid.spec_str());
+        return;
+    }
+
+    if (type == "FESOM" || type == "ICON" || type == "ORCA" || type == "unstructured_ll") {
+        const auto by_coordinates = type == "unstructured_ll";
 
         param.set("gridType", by_coordinates ? "unstructured_ll" : type);
         param.set("gridded", true);
