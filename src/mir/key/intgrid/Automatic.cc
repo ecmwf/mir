@@ -4,6 +4,8 @@
 
 #include "mir/key/intgrid/Automatic.h"
 
+#include "mir/key/grid/Grid.h"
+
 
 namespace mir::key::intgrid {
 
@@ -13,11 +15,11 @@ static const IntgridBuilder<Automatic> __intgrid2("auto");
 static const IntgridBuilder<Automatic> __intgrid3("AUTO");
 
 
-Automatic::Automatic(const param::MIRParametrisation& parametrisation, long targetGaussianN) :
-    Intgrid(parametrisation) {
+Automatic::Automatic(const param::MIRParametrisation& parametrisation) : Intgrid(parametrisation) {
 
     // without the target Gaussian N, don't provide an intermediate grid
-    gridname_ = targetGaussianN > 0 ? ("F" + std::to_string(targetGaussianN)) : "";
+    const auto N = grid::Target(parametrisation).gaussianNumber;
+    gridname_    = N > 0 ? ("F" + std::to_string(N)) : "";
 }
 
 

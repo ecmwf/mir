@@ -4,6 +4,8 @@
 
 #include "mir/key/style/ECMWFStyle.h"
 
+#include <algorithm>
+#include <iterator>
 #include <memory>
 #include <ostream>
 #include <string>
@@ -17,7 +19,8 @@
 #include "mir/config/LibMir.h"
 #include "mir/key/Area.h"
 #include "mir/key/grid/Grid.h"
-#include "mir/key/resol/Resol.h"
+#include "mir/key/intgrid/Intgrid.h"
+#include "mir/key/truncation/Truncation.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
@@ -45,14 +48,14 @@ static const MIRStyleBuilder<ECMWFStyle> __style("ecmwf");
 static const MIRStyleBuilder<DeprecatedStyle> __deprecated_style("dissemination");
 
 
-bool option(const param::MIRParametrisation& param, const std::string& key, bool dfault) {
+static bool option(const param::MIRParametrisation& param, const std::string& key, bool dfault) {
     bool value = dfault;
     param.get(key, value);
     return value;
-};
+}
 
 
-bool same_points(const param::MIRParametrisation& user, const param::MIRParametrisation& field) {
+static bool same_points(const param::MIRParametrisation& user, const param::MIRParametrisation& field) {
     std::unique_ptr<const param::MIRParametrisation> same(new param::SameParametrisation(user, field, true));
 
     std::vector<double> rotation;
@@ -102,14 +105,15 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
         return "";
     }
 
-    bool rotation = user.has("rotation");
-    bool forced   = field.has("spectral") || option(user, "filter", false) || [&]() {
+    const grid::Target target(param);
+
+    bool forced = field.has("spectral") || option(user, "filter", false) || [&]() {
         std::vector<double> dummy;
-        return checkRotation && rotation && !same->get("rotation", dummy);
+        return checkRotation && target.rotated && !same->get("rotation", dummy);
     }();
 
     auto check_rotated_regular_ll = [&]() {
-        if (rotation && user.has("area")) {
+        if (target.rotated && user.has("area")) {
             std::string area_mode;
             param.get("area-mode", area_mode);
 
@@ -119,72 +123,63 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
         }
     };
 
-    const std::string prefix(rotation ? "rotated-" : "");
+    const std::string prefix(target.rotated ? "rotated-" : "");
 
-
-    std::string grid;
-    if (user.has("grid") && grid::Grid::get("grid", grid, param)) {
-        const auto& g = grid::Grid::lookup(grid);
-
-        if (g.type() == "regular-ll") {
-            std::vector<double> grid_v;
-            if (forced || !field.has("gridded_regular_ll") || !same->get("grid", grid_v) || !same_points(user, field)) {
-                check_rotated_regular_ll();
-                return prefix + g.type();
-            }
-
-            return "";
+    if (target.type == "regular-ll") {
+        std::vector<double> grid_v;
+        if (forced || !field.has("gridded_regular_ll") || !same->get("grid", grid_v) || !same_points(user, field)) {
+            check_rotated_regular_ll();
+            return prefix + target.type;
         }
-
-        if (g.type() == "namedgrid") {
-            std::string field_grid;
-            field.get("grid", field_grid);
-            if (forced || grid != field_grid) {
-                return prefix + g.type();
-            }
-
-            return "";
-        }
-
-        return prefix + g.type();
+        return "";
     }
 
-    if (user.has("reduced")) {
+    if (target.type == "namedgrid") {
+        std::string field_grid;
+        field.get("grid", field_grid);
+        return forced || target.grid != field_grid ? prefix + target.type : "";
+    }
+
+    if (target.type == "reduced-gg") {
         long N = 0;
-        return forced || !same->get("reduced", N) ? prefix + "reduced-gg" : "";
+        return forced || !same->get("reduced", N) ? prefix + target.type : "";
     }
 
-    if (user.has("regular")) {
+    if (target.type == "regular-gg") {
         long N = 0;
-        return forced || !same->get("regular", N) ? prefix + "regular-gg" : "";
+        return forced || !same->get("regular", N) ? prefix + target.type : "";
     }
 
-    if (user.has("octahedral")) {
+    if (target.type == "octahedral-gg") {
         long N = 0;
-        return forced || !same->get("octahedral", N) ? prefix + "octahedral-gg" : "";
+        return forced || !same->get("octahedral", N) ? prefix + target.type : "";
     }
 
-    if (user.has("pl")) {
+    if (target.type == "reduced-gg-pl-given") {
         std::vector<long> pl;
-        return forced || !same->get("pl", pl) ? prefix + "reduced-gg-pl-given" : "";
+        return forced || !same->get("pl", pl) ? prefix + target.type : "";
     }
 
-    if (user.has("griddef")) {
-        if (rotation) {
+    if (target.type == "griddef") {
+        if (target.rotated) {
             throw exception::UserError("ECMWFStyle: option 'rotation' is incompatible with 'griddef'");
         }
-        return "griddef";
+        return target.type;
     }
 
-    if (user.has("latitudes") || user.has("longitudes")) {
+    if (target.type == "points") {
         if (user.has("latitudes") != user.has("longitudes")) {
             throw exception::UserError("ECMWFStyle: options 'latitudes' and 'longitudes' have to be provided together");
         }
-        if (rotation) {
+        if (target.rotated) {
             throw exception::UserError(
                 "ECMWFStyle: option 'rotation' is incompatible with 'latitudes' and 'longitudes'");
         }
-        return "points";
+        return target.type;
+    }
+
+    if (!target.type.empty()) {
+        return prefix + target.type;
     }
 
     if (user.has("area")) {
@@ -195,7 +190,7 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
         }
     }
 
-    if (rotation) {
+    if (target.rotated) {
         if (field.has("gridded_regular_ll") && !same_points(user, field)) {
             check_rotated_regular_ll();
             return prefix + "regular-ll";
@@ -204,6 +199,43 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
 
     Log::debug() << "ECMWFStyle: did not determine target from parametrisation" << std::endl;
     return "";
+}
+
+
+static std::string intermediate_grid(const param::MIRParametrisation& param, const std::string& dfault) {
+    std::string name;
+    if (!param.get("intgrid", name) || name.empty()) {
+        name = dfault;
+    }
+
+    std::unique_ptr<const intgrid::Intgrid> intermediate(intgrid::IntgridFactory::build(name, param));
+    return intermediate->gridname();
+}
+
+
+// spectral truncation (from the Gaussian number N of the inverse transform grid) and filters
+static void add_spectral_filters(action::ActionPlan& plan, const param::MIRParametrisation& param, long N) {
+    const auto& user = param.userParametrisation();
+
+    long inputTruncation = 0;
+    ASSERT(param.fieldParametrisation().get("truncation", inputTruncation) && inputTruncation > 0);
+
+    std::string name = "automatic";
+    user.get("truncation", name);
+
+    std::unique_ptr<const truncation::Truncation> rule(truncation::TruncationFactory::build(name, param, N));
+    if (long T = 0; rule->truncation(T, inputTruncation)) {
+        ASSERT(T > 0);
+        plan.add("filter.sh-truncate", "truncation", T);
+    }
+
+    if (user.has("cesaro")) {
+        plan.add("filter.sh-cesaro-summation-filter");
+    }
+
+    if (user.has("bandpass")) {
+        plan.add("filter.sh-bandpass");
+    }
 }
 
 
@@ -227,16 +259,38 @@ ECMWFStyle::ECMWFStyle(const param::MIRParametrisation& parametrisation) : MIRSt
         explicit StyleParametrisation(const eckit::PathName& path) {
             if (path.exists()) {
                 if (auto value = eckit::YAMLParser::decodeFile(path); value.isMap()) {
-                    util::ValueMap(value).set(*this);
+                    // empty options are unset
+                    util::ValueMap map(value);
+                    for (auto it = map.begin(); it != map.end();) {
+                        it = it->second.isNil() ? map.erase(it) : std::next(it);
+                    }
+
+                    map.set(*this);
                 }
             }
         }
     } static const style(LibMir::configFile(LibMir::config_file::STYLE));
 
-    std::string sh2grid;
-    style.get("sh2grid", sh2grid);
+    // from the parametrisation if set, otherwise from the style configuration (unset or empty: first choice)
+    auto style_option = [this](const std::string& key, const std::vector<std::string>& choices) {
+        std::string value;
+        if (!parametrisation_.get(key, value)) {
+            style.get(key, value);
+        }
 
-    sh2gridCompatible_ = (sh2grid == "compatible");
+        if (value.empty()) {
+            return choices.front();
+        }
+
+        if (std::find(choices.begin(), choices.end(), value) == choices.end()) {
+            throw exception::UserError("ECMWFStyle: option '" + key + "' invalid value '" + value +
+                                       "', choices are: " + eckit::StringTools::join(", ", choices));
+        }
+
+        return value;
+    };
+
+    sh2gridWindCompatible_ = style_option("sh2grid-wind", {"default", "compatible"}) == "compatible";
 }
 
 
@@ -275,114 +329,60 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
     add_formula(plan, user, {"spectral", "raw"});
 
-    resol::Resol resol(parametrisation_, false);
-
     long uv       = 0;
     bool uv_input = parametrisation_.fieldParametrisation().get("is_wind_component_uv", uv) && (uv != 0);
 
     bool rotation = user.has("rotation");
     bool vod2uv   = option(user, "vod2uv", false);
     bool uv2uv    = option(user, "uv2uv", false) || uv_input;  // where "MIR knowledge of winds" is hardcoded
+
+    if (vod2uv && uv_input) {
+        throw exception::UserError("ECMWFStyle: option 'vod2uv' is incompatible with input U/V");
+    }
 
     if (vod2uv && uv2uv) {
         throw exception::UserError("ECMWFStyle: option 'vod2uv' is incompatible with option 'uv2uv'");
     }
 
-    if (vod2uv && uv_input) {
-        throw exception::UserError("ECMWFStyle: option 'vod2uv' is incompatible with input U/V");
-    }
+    // inverse transform to the intermediate grid (if any), or the target grid
+    const grid::Target target(parametrisation_);
+    auto gridded = target_gridded_from_parametrisation(parametrisation_, false);
+    auto intgrid = intermediate_grid(parametrisation_, "automatic");
 
-    if (resol.resultIsSpectral()) {
-        resol.prepare(plan);
-    }
+    add_spectral_filters(
+        plan, parametrisation_,
+        intgrid.empty() ? target.gaussianNumber : static_cast<long>(grid::Grid::lookup(intgrid).gaussianNumber()));
 
-    auto target = target_gridded_from_parametrisation(parametrisation_, false);
-    if (!target.empty()) {
-        if (resol.resultIsSpectral()) {
-            plan.add("transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-") + target);
+    const std::string transform = "transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-");
+
+    if (!gridded.empty()) {
+        if (intgrid.empty()) {
+            plan.add(transform + gridded);
 
             if (uv2uv) {
                 plan.add("filter.adjust-winds-scale-cos-latitude");
             }
         }
         else {
-            resol.prepare(plan);
+            plan.add(transform + "namedgrid", "grid", intgrid);
 
-            // apply u = U / cos(theta) first, as the associated supporting grid is typically Gaussian
-            // hence avoiding bad conditioning at the poles
-            if (uv2uv) {
+            // apply u = U / cos(theta) first, as the intermediate grid is typically Gaussian, hence avoiding bad
+            // conditioning at the poles (compatible mode applies it after the interpolation)
+            if (uv2uv && !sh2gridWindCompatible_) {
                 plan.add("filter.adjust-winds-scale-cos-latitude");
             }
 
-            // if the intermediate grid is the same as the target grid, the interpolation to the
-            // intermediate grid is not followed by an additional interpolation
-            std::string grid;
-            if (rotation || !user.get("grid", grid) || grid != resol.gridname()) {
-                plan.add("interpolate.grid2" + target);
+            if (target.rotated || target.grid != intgrid) {
+                plan.add("interpolate.grid2" + gridded);
             }
-        }
 
-        if (vod2uv || uv2uv) {
-            if (rotation) {
-                plan.add("filter.adjust-winds-directions");
-            }
-        }
-    }
-
-    add_formula(plan, user, {"gridded"});
-}
-
-
-void ECMWFStyle::sh2grid_compatible(action::ActionPlan& plan) const {
-    const auto& user = parametrisation_.userParametrisation();
-
-    add_formula(plan, user, {"spectral", "raw"});
-
-    resol::Resol resol(parametrisation_, false);
-
-    long uv       = 0;
-    bool uv_input = parametrisation_.fieldParametrisation().get("is_wind_component_uv", uv) && (uv != 0);
-
-    bool rotation = user.has("rotation");
-    bool vod2uv   = option(user, "vod2uv", false);
-    bool uv2uv    = option(user, "uv2uv", false) || uv_input;  // where "MIR knowledge of winds" is hardcoded
-
-    if (vod2uv && uv_input) {
-        throw exception::UserError("ECMWFStyle: option 'vod2uv' is incompatible with input U/V");
-    }
-
-    if (resol.resultIsSpectral()) {
-        resol.prepare(plan);
-    }
-
-    auto target = target_gridded_from_parametrisation(parametrisation_, false);
-    if (!target.empty()) {
-        if (resol.resultIsSpectral()) {
-
-            plan.add("transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-") + target);
-        }
-        else {
-
-            resol.prepare(plan);
-
-            // if the intermediate grid is the same as the target grid, the interpolation to the
-            // intermediate grid is not followed by an additional interpolation
-            std::string grid;
-            if (rotation || !user.get("grid", grid) || grid != resol.gridname()) {
-                plan.add("interpolate.grid2" + target);
-            }
-        }
-
-        if (vod2uv || uv2uv) {
-            ASSERT(vod2uv != uv2uv);
-
-            if (uv2uv) {
+            if (uv2uv && sh2gridWindCompatible_) {
                 plan.add("filter.adjust-winds-scale-cos-latitude");
             }
+        }
 
-            if (rotation) {
-                plan.add("filter.adjust-winds-directions");
-            }
+        if ((vod2uv || uv2uv) && rotation) {
+            plan.add("filter.adjust-winds-directions");
         }
     }
 
@@ -393,12 +393,7 @@ void ECMWFStyle::sh2grid_compatible(action::ActionPlan& plan) const {
 void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
     const auto& user = parametrisation_.userParametrisation();
 
-    resol::Resol resol(parametrisation_, true);
-    Log::debug() << "ECMWFStyle: resol=" << resol << std::endl;
-
-    // the runtime parametrisation above is needed to satisfy this assertion
-    ASSERT(resol.resultIsSpectral());
-    resol.prepare(plan);
+    add_spectral_filters(plan, parametrisation_, grid::Target(parametrisation_).gaussianNumber);
 
     add_formula(plan, user, {"spectral", "raw"});
 
@@ -571,7 +566,7 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, output::MIROutput& output) co
 
     if (field_spectral) {
         if (user_wants_gridded > 0) {
-            sh2gridCompatible_ ? sh2grid_compatible(plan) : sh2grid(plan);
+            sh2grid(plan);
         }
         else {
             // "user wants spectral"

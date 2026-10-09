@@ -272,35 +272,11 @@ list(APPEND mir_srcs
     iterator/detail/RegularIterator.h
     key/Area.cc
     key/Area.h
-    key/grid/ClassicPattern.cc
-    key/grid/ClassicPattern.h
     key/grid/Grid.cc
     key/grid/Grid.h
     key/grid/GridPattern.cc
     key/grid/GridPattern.h
-    key/grid/GridSpec.cc
-    key/grid/GridSpec.h
-    key/grid/GridSpecPattern.cc
-    key/grid/GridSpecPattern.h
-    key/grid/NamedClassic.cc
-    key/grid/NamedClassic.h
-    key/grid/NamedFromFile.cc
-    key/grid/NamedFromFile.h
     key/grid/NamedGrid.h
-    key/grid/NamedOctahedral.cc
-    key/grid/NamedOctahedral.h
-    key/grid/NamedRegular.cc
-    key/grid/NamedRegular.h
-    key/grid/OctahedralPattern.cc
-    key/grid/OctahedralPattern.h
-    key/grid/RegularLL.cc
-    key/grid/RegularLL.h
-    key/grid/RegularLLPattern.cc
-    key/grid/RegularLLPattern.h
-    key/grid/RegularPattern.cc
-    key/grid/RegularPattern.h
-    key/grid/TypedGrid.cc
-    key/grid/TypedGrid.h
     key/intgrid/Automatic.cc
     key/intgrid/Automatic.h
     key/intgrid/Intgrid.cc
@@ -311,8 +287,6 @@ list(APPEND mir_srcs
     key/intgrid/None.h
     key/intgrid/Source.cc
     key/intgrid/Source.h
-    key/resol/Resol.cc
-    key/resol/Resol.h
     key/style/CustomParametrisation.cc
     key/style/CustomParametrisation.h
     key/style/CustomStyle.cc

@@ -49,7 +49,6 @@ protected:
     void prologue(action::ActionPlan&) const;
 
     void sh2grid(action::ActionPlan&) const;
-    void sh2grid_compatible(action::ActionPlan& plan) const;
     void sh2sh(action::ActionPlan&) const;
     void grid2grid(action::ActionPlan&) const;
 
@@ -68,7 +67,7 @@ protected:
 private:
     // -- Members
 
-    bool sh2gridCompatible_;
+    bool sh2gridWindCompatible_;
 
     // -- Methods
     // None

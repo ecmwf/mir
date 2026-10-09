@@ -31,10 +31,12 @@ set(TESTS
     input
     interpolations
     interpolationspec
+    intgrid
     iterator
     job
     knn_weighting
     packing
+    plan
     raw_memory
     spectral_order
     statistics

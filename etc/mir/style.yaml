@@ -1,1 +1,8 @@
 ---
+# Post-processing style options (style 'ecmwf'), unset or empty options select the default
+#
+# sh2grid-wind: spectral to gridded post-processing of winds
+#   default:    wind handling at the poles and inverse spectral transforms from U/V (MIR-690)
+#   compatible: as before MIR-690
+
+sh2grid-wind: default

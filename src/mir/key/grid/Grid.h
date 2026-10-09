@@ -53,8 +53,10 @@ public:
     virtual void parametrisation(const std::string& grid, param::SimpleParametrisation&) const;
     virtual size_t gaussianNumber() const;
     virtual std::string gridname() const;
+    virtual bool isGaussian() const;  // global, non-rotated Gaussian grid
 
     static size_t default_gaussian_number() { return 64; }
+    static std::string canonical(const std::string& name, const param::MIRParametrisation&);  // empty if unknown
     static bool get(const std::string& key, std::string& value, const param::MIRParametrisation&);
     static const Grid& lookup(const std::string& key);
 
@@ -130,6 +132,19 @@ private:
         p.print(s);
         return s;
     }
+};
+
+
+// Target grid, as set by the user
+struct Target {
+    explicit Target(const param::MIRParametrisation&);
+
+    std::string type;  // Grid::type(), "reduced-gg", "regular-gg", "octahedral-gg", "reduced-gg-pl-given", "griddef",
+                       // "points", or empty (not set)
+    std::string grid;  // canonical grid name, if set by 'grid'
+    bool gaussian       = false;
+    bool rotated        = false;
+    long gaussianNumber = 0;  // limited by the spectral input truncation, 0 if not applicable
 };
 
 
