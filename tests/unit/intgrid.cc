@@ -161,6 +161,28 @@ CASE("grid::Target") {
         EXPECT_EQUAL(pl.gaussianNumber, 0);
     }
 
+    SECTION("Gaussian grids, by gridspec") {
+        struct test_t {
+            std::string gridspec;
+            long N;
+        };
+
+        for (const auto& test : std::vector<test_t>{{"{grid: O32}", 32}, {"{grid: N48}", 48}, {"{grid: F16}", 16}}) {
+            auto t = make("grid", test.gridspec, none);
+            EXPECT_EQUAL(t.type, "gridspec");
+            EXPECT(t.gaussian && !t.rotated);
+            EXPECT_EQUAL(t.gaussianNumber, test.N);
+        }
+
+        // regional or rotated: not suitable for a direct inverse spectral transform, Gaussian number still applies
+        for (const std::string gridspec : {"{grid: O32, area: [60, -10, 30, 40]}",
+                                           "{grid: O32, projection: {type: rotation, south_pole: [-40, 22]}}"}) {
+            auto t = make("grid", gridspec, none);
+            EXPECT(!t.gaussian);
+            EXPECT_EQUAL(t.gaussianNumber, 32);
+        }
+    }
+
     SECTION("non-Gaussian grids") {
         auto ll = make("grid", std::vector<double>{1, 1}, none);
         EXPECT_EQUAL(ll.type, "regular-ll");
@@ -171,6 +193,13 @@ CASE("grid::Target") {
         EXPECT_EQUAL(healpix.type, "namedgrid");
         EXPECT(!healpix.gaussian);
         EXPECT_EQUAL(healpix.gaussianNumber, 64);
+
+        for (const std::string gridspec : {"{grid: 2/2}", "{grid: H8}"}) {
+            auto t = make("grid", gridspec, none);
+            EXPECT_EQUAL(t.type, "gridspec");
+            EXPECT(!t.gaussian);
+            EXPECT_EQUAL(t.gaussianNumber, N64);
+        }
 
         auto griddef = make("griddef", "griddef", none);
         EXPECT_EQUAL(griddef.type, "griddef");
@@ -188,6 +217,7 @@ CASE("grid::Target") {
     SECTION("limited by spectral input truncation") {
         EXPECT_EQUAL(make("grid", "O320", spectral).gaussianNumber, 320);
         EXPECT_EQUAL(make("grid", "O2560", spectral).gaussianNumber, 1280);
+        EXPECT_EQUAL(make("grid", "{grid: O2560}", spectral).gaussianNumber, 1280);
         EXPECT_EQUAL(make("pl", std::vector<long>{20, 24, 24, 20}, spectral).gaussianNumber, 1280);
         EXPECT_EQUAL(target(none, spectral).gaussianNumber, 1280);
     }
@@ -220,9 +250,17 @@ CASE("intgrid=regular-gg-from-target") {
         EXPECT_EQUAL(intgrid(user, field), "F320");
     }
 
+    SECTION("Gaussian target grids, by gridspec") {
+        EXPECT_EQUAL(from_target(field, "grid", "{grid: O320}"), "");
+        EXPECT_EQUAL(from_target(field, "grid", "{grid: F320, area: [60, -10, 30, 40]}"), "F320");
+        EXPECT_EQUAL(from_target(field, "grid", "{grid: O320, projection: {type: rotation, south_pole: [-40, 22]}}"),
+                     "F320");
+    }
+
     SECTION("non-Gaussian target grids") {
         EXPECT_EQUAL(from_target(field, "grid", std::vector<double>{1, 1}), "F90");
         EXPECT_EQUAL(from_target(field, "grid", "H32"), "F64");
+        EXPECT_EQUAL(from_target(field, "grid", "{grid: 2/2}"), "F64");
     }
 
     SECTION("gridded input") {
@@ -402,6 +440,16 @@ CASE("sh2grid: spectral to Gaussian grids, directly (default)") {
         EXPECT(!plan.interpolates());
     }
 
+    SECTION("gridspec") {
+        param::SimpleParametrisation user;
+        user.set("grid", "{grid: O320}");
+
+        Plan plan(user, field);
+        EXPECT(plan.has("ShTruncate", {"truncation=639"}));
+        EXPECT(plan.has("ShToGridSpec"));
+        EXPECT(!plan.interpolates());
+    }
+
     SECTION("source") {
         param::SimpleParametrisation user;
         user.set("grid", "source");
@@ -509,6 +557,19 @@ CASE("sh2grid: spectral to Gaussian grids, with intermediate grid") {
         EXPECT(plan.has("Gridded2RotatedNamedGrid", {"grid=O320"}));
     }
 
+    SECTION("gridspec, regional or rotated") {
+        for (const std::string gridspec : {"{grid: O320, area: [60, -10, 30, 40]}",
+                                           "{grid: O320, projection: {type: rotation, south_pole: [-40, 22]}}"}) {
+            param::SimpleParametrisation user;
+            user.set("grid", gridspec);
+
+            Plan plan(user, field);
+            EXPECT(plan.has("ShTruncate", {"truncation=639"}));
+            EXPECT(plan.has("ShToNamedGrid", {"grid=F320"}));
+            EXPECT(plan.has("Gridded2GridSpec"));
+        }
+    }
+
     SECTION("intgrid=regular-gg-from-target-compatible (and aliases)") {
         struct test_t {
             std::string key;
@@ -543,6 +604,16 @@ CASE("sh2grid: spectral to Gaussian grids, with intermediate grid") {
                 EXPECT(transform < interpolate);
             }
         }
+    }
+
+    SECTION("intgrid=regular-gg-from-target-compatible, gridspec") {
+        param::SimpleParametrisation user;
+        user.set("grid", "{grid: O320}").set("intgrid", "regular-gg-from-target-compatible");
+
+        Plan plan(user, field);
+        EXPECT(plan.has("ShTruncate", {"truncation=639"}));
+        EXPECT(plan.has("ShToNamedGrid", {"grid=F320"}));
+        EXPECT(plan.has("Gridded2GridSpec"));
     }
 
     SECTION("intgrid=regular-gg-from-target-compatible, F320 (the target grid)") {

@@ -88,6 +88,14 @@ CASE("spectral (T1279), intermediate grid") {
         EXPECT(starts(actions[2], "Save["));
     }
 
+    SECTION("Gaussian target grid, by gridspec: inverse transform directly") {
+        auto actions = plan(T1279, job.set("grid", "{grid:O320}"));
+        EXPECT_EQUAL(actions.size(), 3);
+        EXPECT_EQUAL(actions[0], "ShTruncate[truncation=639]");
+        EXPECT(starts(actions[1], "ShToGridSpec[") && contains(actions[1], R"(gridspec={"grid":"O320"})"));
+        EXPECT(starts(actions[2], "Save["));
+    }
+
     SECTION("rotated Gaussian target grid: intermediate grid") {
         auto actions = plan(T1279, job.set("grid", "O320").set("rotation", std::vector<double>{-40, 22}));
         EXPECT_EQUAL(actions.size(), 4);
