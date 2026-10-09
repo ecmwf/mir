@@ -1,5 +1,6 @@
 cimport eckit_defs as eckit
 cimport mir_defs as mir
+from libcpp cimport bool
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 
@@ -7,6 +8,7 @@ from libcpp.vector cimport vector
 cdef extern from "mir/api/MIRJob.h" namespace "mir::api":
     cdef cppclass MIRJob:
         MIRJob& set(string, string)
+        MIRJob& set(string, bool)
         MIRJob& set(string, int)
         MIRJob& set(string, double)
         MIRJob& set(string, double, double)

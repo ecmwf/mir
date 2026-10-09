@@ -5,6 +5,7 @@ from cython.operator cimport dereference
 from libc.stdlib cimport free
 from libc.stdlib cimport malloc
 from libc.string cimport strdup
+from libcpp cimport bool as cbool
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 
@@ -207,6 +208,9 @@ cdef class ArrayOutput(MIROutput):
         cdef tuple shape = tuple(shape_vec)
 
         assert dtype in (None, np.float32, np.float64)
+        if size == 0:
+            return np.empty(0, dtype=dtype)
+
         arr = np.array(<cnp.float64_t[:size]>data_ptr, dtype=dtype)  # copy
 
         cdef double miss = (<mir.ArrayOutput*> self._output).missingValue()
@@ -260,6 +264,8 @@ cdef class Job:
         elif isinstance(value, str):
             value_str = value.encode()
             self.j.set(key_str, value_str)
+        elif isinstance(value, bool):
+            self.j.set(key_str, <cbool>value)
         elif isinstance(value, int):
             self.j.set(key_str, <int>value)
         elif isinstance(value, float):
@@ -285,11 +291,11 @@ cdef class Job:
             assert hasattr(output, "write")
             out = PyGribOutput(output)
 
-        if not isinstance(in_, GribMemoryInput):
+        if isinstance(in_, (ArrayInput, GribMemoryInput, GriddefInput, GridSpecInput)):
+            self.j.execute(dereference(in_._input), dereference(out._output))
+        else:
             while in_._input.next():
                 self.j.execute(dereference(in_._input), dereference(out._output))
-        else:
-            self.j.execute(dereference(in_._input), dereference(out._output))
 
     # def execute(self, input, output):
     #     in_ = new mir.GribFileInput(eckit.PathName(input))

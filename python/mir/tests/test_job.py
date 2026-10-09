@@ -23,11 +23,11 @@ def test_key():
 def test_value_bool():
     j = Job(key=True)
     assert j.json == Job(key=True).json
-    assert j.json == '{"key":1}'
+    assert j.json == '{"key":true}'
 
     j.set("key", False)
     assert j.json == Job(key=False).json
-    assert j.json == '{"key":0}'
+    assert j.json == '{"key":false}'
 
 
 def test_value_dict():
