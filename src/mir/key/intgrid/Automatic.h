@@ -17,7 +17,7 @@ public:
 
     // -- Constructors
 
-    Automatic(const param::MIRParametrisation& parametrisation, long targetGaussianN);
+    explicit Automatic(const param::MIRParametrisation&);
 
     // -- Destructor
     // None

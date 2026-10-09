@@ -4,6 +4,7 @@
 
 #include "mir/key/grid/Grid.h"
 
+#include <algorithm>
 #include <map>
 #include <memory>
 #include <ostream>
@@ -20,6 +21,7 @@
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/grid/NamedGrid.h"
 #include "mir/key/intgrid/Source.h"
+#include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/gauss/reduced/ReducedClassic.h"
 #include "mir/repres/gauss/reduced/ReducedOctahedral.h"
@@ -35,6 +37,7 @@
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
 #include "mir/util/Regex.h"
+#include "mir/util/SpectralOrder.h"
 #include "mir/util/Translator.h"
 #include "mir/util/ValueMap.h"
 
@@ -67,6 +70,7 @@ private:
 
     void print(std::ostream& out) const override { out << "NamedGaussian[key=" << key_ << ",N=" << N_ << "]"; }
     size_t gaussianNumber() const override { return N_; }
+    bool isGaussian() const override { return true; }
 
     const repres::Representation* representation() const override { return new GLOBAL(N_); }
     const repres::Representation* representation(const util::Rotation& rotation) const override {
@@ -440,6 +444,11 @@ size_t Grid::gaussianNumber() const {
 }
 
 
+bool Grid::isGaussian() const {
+    return false;
+}
+
+
 std::string Grid::gridname() const {
     std::ostringstream os;
     os << "Grid::gridname() not implemented for " << *this;
@@ -447,32 +456,83 @@ std::string Grid::gridname() const {
 }
 
 
-bool Grid::get(const std::string& key, std::string& value, const param::MIRParametrisation& param) {
+Target::Target(const param::MIRParametrisation& param) {
+    const auto& user = param.userParametrisation();
+    rotated          = user.has("rotation");
+
+    long N = 0;
+    if (user.has("grid") && Grid::get("grid", grid, param)) {
+        const auto& g = Grid::lookup(grid);
+        type          = g.type();
+        gaussian      = g.isGaussian();
+        N             = static_cast<long>(g.gaussianNumber());
+    }
+    else if (user.get("reduced", N)) {
+        type     = "reduced-gg";
+        gaussian = true;
+    }
+    else if (user.get("regular", N)) {
+        type     = "regular-gg";
+        gaussian = true;
+    }
+    else if (user.get("octahedral", N)) {
+        type     = "octahedral-gg";
+        gaussian = true;
+    }
+    else if (user.has("pl")) {
+        type     = "reduced-gg-pl-given";
+        gaussian = true;
+    }
+    else if (user.has("griddef")) {
+        type = "griddef";
+        N    = static_cast<long>(Grid::default_gaussian_number());
+    }
+    else if (user.has("latitudes") || user.has("longitudes")) {
+        type = "points";
+        N    = static_cast<long>(Grid::default_gaussian_number());
+    }
+
+    // limited by the spectral input truncation
+    if (bool spectral = false; param.fieldParametrisation().get("spectral", spectral) && spectral) {
+        long T = 0;
+        ASSERT(param.fieldParametrisation().get("truncation", T) && T > 0);
+
+        std::unique_ptr<util::SpectralOrder> order(util::SpectralOrderFactory::build("cubic"));
+        auto Ninput = order->getGaussianNumberFromTruncation(T);
+        N           = N > 0 ? std::min(N, Ninput) : Ninput;
+    }
+
+    ASSERT(N >= 0);
+    gaussianNumber = N;
+}
+
+
+std::string Grid::canonical(const std::string& name, const param::MIRParametrisation& param) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     read_configuration_files();
 
-    std::string grid;
-    if (!param.get(key, grid)) {
+    if (m->find(name) != m->end()) {
+        return name;
+    }
+
+    // grid name from the spectral truncation
+    if (SOURCE.match(name)) {
+        return param.fieldParametrisation().has("truncation") ? intgrid::Source(param).gridname() : "";
+    }
+
+    return GridPattern::match(name);
+}
+
+
+bool Grid::get(const std::string& key, std::string& value, const param::MIRParametrisation& param) {
+    std::string name;
+    if (!param.get(key, name)) {
         return false;
     }
 
-    // Check for specific key matches
-    auto find = m->find(grid);
-    if (find != m->end()) {
-        value = find->first;
-        return true;
-    }
-
-    // Check for grid names from spectral truncation ("source" is a special case)
-    if (SOURCE.match(grid)) {
-        value = param.fieldParametrisation().has("truncation") ? intgrid::Source(param, 0 /*unused*/).gridname() : "";
-        return !value.empty();
-    }
-
-    // Check for pattern matchings
-    value = GridPattern::match(grid);
+    value = canonical(name, param);
     return !value.empty();
 }
 
@@ -486,16 +546,8 @@ const Grid& Grid::lookup(const std::string& key) {
     Log::debug() << "Grid: looking for '" << key << "'" << std::endl;
 
     // Look for specific key matches
-    auto j = m->find(key);
-    if (j != m->end()) {
+    if (auto j = m->find(key); j != m->end()) {
         return *(j->second);
-    }
-
-    // Look for grid names from spectral truncation ("source" is a special case)
-    if (SOURCE.match(key)) {
-        NOTIMP;
-        // value = param.fieldParametrisation().has("truncation") ? intgrid::Source(param, 0 /*unused*/).gridname() :
-        // ""; return !value.empty();
     }
 
     // Look for pattern matchings

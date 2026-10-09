@@ -287,8 +287,6 @@ list(APPEND mir_srcs
     key/intgrid/None.h
     key/intgrid/Source.cc
     key/intgrid/Source.h
-    key/resol/Resol.cc
-    key/resol/Resol.h
     key/style/CustomParametrisation.cc
     key/style/CustomParametrisation.h
     key/style/CustomStyle.cc
