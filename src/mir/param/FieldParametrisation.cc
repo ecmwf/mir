@@ -6,22 +6,69 @@
 
 #include <sstream>
 
+#include "eckit/geo/Grid.h"
+#include "eckit/spec/Spec.h"
+#include "eckit/utils/StringTools.h"
+
+#include "mir/config/LibMir.h"
+#include "mir/grib/Config.h"
 #include "mir/param/Rules.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Exceptions.h"
-#include "mir/util/Log.h"
+// #include "mir/util/Log.h"
 
 
 namespace mir::param {
 
 
-static const MIRParametrisation* find_param_rules(const param::MIRParametrisation& param) {
-    static const Rules rules;
-    return rules.find(param);
-}
+namespace detail {
 
 
-FieldParametrisation::FieldParametrisation() : param_(nullptr) {}
+static const SimpleParametrisation EMPTY;
+
+
+class FieldInfo {
+public:
+    FieldInfo() = default;
+
+    explicit FieldInfo(const MIRParametrisation& field) {
+        static const Rules param_rules;
+        if (const auto* rules = param_rules.find(field); rules != nullptr) {
+            param_ = rules;
+        }
+
+        if (std::string type; field.get("gridType", type) && !type.empty()) {
+            static const grib::Config grid_type_rules(LibMir::configFile(LibMir::config_file::GRID_TYPE), true);
+
+            if (std::string uid; field.get("uid", uid) && eckit::geo::GridSpecByUID::instance().exists(uid)) {
+                catalog_.reset(eckit::geo::GridSpecByUID::instance().get(uid).spec());
+                ASSERT(catalog_);
+
+                type = eckit::StringTools::lower(catalog_->get_string("type", type));
+            }
+
+            SimpleParametrisation id;
+            id.set("type", type);
+            gridType_ = &grid_type_rules.find(id);
+        }
+    }
+
+    template <class T>
+    bool get(const std::string& name, T& value) const {
+        return (catalog_ && catalog_->get(name, value)) || gridType_->get(name, value) || param_->get(name, value);
+    }
+
+private:
+    std::unique_ptr<const eckit::spec::Spec> catalog_;
+    const MIRParametrisation* gridType_ = &EMPTY;
+    const MIRParametrisation* param_    = &EMPTY;
+};
+
+
+}  // namespace detail
+
+
+FieldParametrisation::FieldParametrisation() = default;
 
 
 FieldParametrisation::~FieldParametrisation() = default;
@@ -123,24 +170,19 @@ bool FieldParametrisation::get(const std::string& name, std::vector<std::string>
 
 void FieldParametrisation::reset() {
     // Reset cached values
-    param_ = nullptr;
+    info_.reset();
 }
 
 
 template <class T>
 bool FieldParametrisation::_get(const std::string& name, T& value) const {
-    static const SimpleParametrisation empty;
-    static const std::string PARAM_ID("paramId");
-
-    ASSERT(name != PARAM_ID);
-
-    // return paramId-specific setting (classification)
-    if (param_ == nullptr && (param_ = find_param_rules(*this)) == nullptr) {
-        param_ = &empty;
-        ASSERT(param_ != nullptr);
+    if (!info_) {
+        // empty while finding (finding queries this parametrisation)
+        info_ = std::make_unique<detail::FieldInfo>();
+        info_ = std::make_unique<detail::FieldInfo>(*this);
     }
 
-    return param_->get(name, value);
+    return info_->get(name, value);
 }
 
 

@@ -24,6 +24,7 @@ set(TESTS
     grib_rotated_ll
     grib_scanning_mode
     grid_box_method
+    grid_type
     grids
     gridspec
     increments
