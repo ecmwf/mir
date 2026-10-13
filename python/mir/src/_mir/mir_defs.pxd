@@ -7,11 +7,11 @@ from libcpp.vector cimport vector
 
 cdef extern from "mir/api/MIRJob.h" namespace "mir::api":
     cdef cppclass MIRJob:
-        MIRJob& set(string, string)
-        MIRJob& set(string, bool)
-        MIRJob& set(string, int)
-        MIRJob& set(string, double)
-        MIRJob& set(string, double, double)
+        MIRJob& set(string, string) except +
+        MIRJob& set(string, bool) except +
+        MIRJob& set(string, int) except +
+        MIRJob& set(string, double) except +
+        MIRJob& set(string, double, double) except +
         void execute(MIRInput, MIROutput) except +
         string json_str() const
 
@@ -112,9 +112,35 @@ cdef extern from "mir/output/ArrayOutput.h" namespace "mir::output":
 
 cdef extern from "mir/method/Method.h" namespace "mir::method":
     cdef cppclass Method:
-        string json_str() const
+        string json_str() except +
+        string json_str(bool) except +
         string type() const
 
     cdef cppclass MethodFactory:
         @staticmethod
         const Method* make_from_string(const string&) except +
+
+
+cdef extern from "mir/action/plan/Action.h" namespace "mir::action":
+    cdef cppclass Action:
+        string json_str() except +
+        string json_str(bool) except +
+
+    cdef cppclass ActionFactory:
+        @staticmethod
+        const Action* make_from_string(const string&) except +
+
+
+cdef extern from * namespace "mir::python":
+    """
+    #include "mir/action/plan/Action.h"
+    #include "mir/method/Method.h"
+    namespace mir::python {
+    using method::Method;
+    using action::Action;
+    inline bool method_equal(const Method& a, const Method& b) { return a == b; }
+    inline bool action_equal(const Action& a, const Action& b) { return a == b; }
+    }
+    """
+    bool method_equal(const Method&, const Method&) except +
+    bool action_equal(const Action&, const Action&) except +
