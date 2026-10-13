@@ -27,40 +27,25 @@ public:
     // -- Methods
 
     const eckit::geo::Grid& grid() const;
-    const eckit::spec::Spec& spec() const { return spec_; }
+    const eckit::spec::Spec& spec() const;
 
 private:
     // -- Members
 
     std::unique_ptr<const eckit::geo::Grid> grid_;
-    const eckit::spec::Spec& spec_;
 
     mutable SimpleParametrisation cache_;
     mutable util::recursive_mutex mutex_;  // to protect the cache
 
     // -- Methods
 
-    template <typename T>
-    void _set(const std::string& name, const T& value) const {
-        util::lock_guard<util::recursive_mutex> lock(mutex_);
-
-        cache_.set(name, value);
-    }
+    /// If the value is known, computing (and caching) it on first request
+    bool cached(const std::string& name) const;
 
     template <typename T>
     bool _get(const std::string& name, T& value) const {
         util::lock_guard<util::recursive_mutex> lock(mutex_);
-
-        if (cache_.get(name, value)) {
-            return true;
-        }
-
-        if (spec_.get(name, value)) {
-            cache_.set(name, value);
-            return true;
-        }
-
-        return false;
+        return cached(name) && cache_.get(name, value);
     }
 
     // -- Overridden methods

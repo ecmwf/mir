@@ -188,7 +188,7 @@ def test_interpolation_projected_output(input_grid):
 
     output = _interpolate(REGIONAL[input_grid], REGIONAL["swisslv95"], "nn")
 
-    assert output.spec["type"] == "regular_xy"
+    assert mir.Grid(output.spec_str).type == "regular_xy"
     assert mir.Grid(output.spec_str) == mir.Grid(REGIONAL["swisslv95"])
 
 
