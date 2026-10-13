@@ -67,7 +67,7 @@ void FailMethod::print(std::ostream& out) const {
 
 
 void FailMethod::json(eckit::JSON& out) const {
-    out << type();
+    out << "type" << type();
 }
 
 
