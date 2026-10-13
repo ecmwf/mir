@@ -14,6 +14,7 @@
 #include "mir/action/plan/Job.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
+#include "mir/param/SpecParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -108,12 +109,59 @@ MIRJob& MIRJob::clear(const std::string& name) {
     const auto& rName = resolveAliases(name);
     Log::debug() << "MIRJob: clear '" << rName << "'" << std::endl;
     SimpleParametrisation::clear(rName);
+
+    // the interpolation options (by spec) go with it
+    if (rName == "interpolation") {
+        for (const auto& option : interpolationOptions_) {
+            SimpleParametrisation::clear(option);
+        }
+        interpolationOptions_.clear();
+    }
+    interpolationOptions_.erase(rName);
+
+    return *this;
+}
+
+
+void MIRJob::checkNotInterpolationOption(const std::string& name) const {
+    if (interpolationOptions_.count(name) != 0) {
+        throw exception::UserError("MIRJob: '" + name +
+                                   "' is set by the interpolation spec (interpolation options are set one way, by spec "
+                                   "or by option)");
+    }
+}
+
+
+MIRJob& MIRJob::setInterpolation(const std::string& value) {
+    clear("interpolation");
+
+    const auto spec = param::SpecParametrisation::parse(value, "interpolation");
+    for (const auto& [key, _] : spec) {
+        if (const std::string k = key; k != "interpolation" && has(k)) {
+            throw exception::UserError(
+                "MIRJob: '" + k +
+                "' is set by option and by the interpolation spec (interpolation options are set "
+                "one way, by spec or by option)");
+        }
+    }
+
+    Log::debug() << "MIRJob: set 'interpolation'='" << value << "'" << std::endl;
+    spec.set(static_cast<SimpleParametrisation&>(*this));  // (bypassing MIRJob::set)
+
+    for (const auto& [key, _] : spec) {
+        if (const std::string k = key; k != "interpolation") {
+            interpolationOptions_.insert(k);
+        }
+    }
+
     return *this;
 }
 
 
 template <class T>
 MIRJob& MIRJob::_setScalar(const std::string& name, const T& value) {
+    checkNotInterpolationOption(name);
+
     Log::debug() << "MIRJob: set '" << name << "'='" << value << "'" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
@@ -122,6 +170,8 @@ MIRJob& MIRJob::_setScalar(const std::string& name, const T& value) {
 
 template <class T>
 MIRJob& MIRJob::_setVector(const std::string& name, const T& value, size_t outputCount) {
+    checkNotInterpolationOption(name);
+
     auto& out = Log::debug();
 
     out << "MIRJob: set '" << name << "'='";
@@ -142,14 +192,13 @@ MIRJob& MIRJob::_setVector(const std::string& name, const T& value, size_t outpu
 
 
 MIRJob& MIRJob::set(const std::string& name, const std::string& value) {
-    _setScalar(resolveAliases(name), resolveAliases(name, value));
-    return *this;
+    const auto& rName = resolveAliases(name);
+    return rName == "interpolation" ? setInterpolation(value) : _setScalar(rName, resolveAliases(name, value));
 }
 
 
 MIRJob& MIRJob::set(const std::string& name, const char* value) {
-    _setScalar(resolveAliases(name), resolveAliases(name, value));
-    return *this;
+    return set(name, std::string(value));
 }
 
 
