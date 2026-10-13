@@ -38,6 +38,7 @@ set(TESTS
     packing
     plan
     raw_memory
+    space_view
     spectral_order
     statistics
     style
