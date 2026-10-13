@@ -58,6 +58,7 @@ private:
 
     void execute(context::Context&) const override;
     bool sameAs(const Action&) const override;
+    void json(eckit::JSON&) const override;
     const char* name() const override;
 
     // -- Class members

@@ -10,6 +10,7 @@ set(TESTS
     PGEN-492
     PGEN-558
     action_graph
+    actionspec
     area
     atlas
     bounding_box

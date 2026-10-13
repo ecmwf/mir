@@ -7,6 +7,7 @@
 #include <ostream>
 #include <sstream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/action/context/Context.h"
@@ -30,6 +31,12 @@ static caching::InMemoryCache<caching::AreaCacheEntry> cache("mirArea", CAPACITY
 
 void AreaMasker::print(std::ostream& out) const {
     out << "AreaMasker[bbox=" << boundingBox() << "]";
+}
+
+
+void AreaMasker::json(eckit::JSON& j) const {
+    j << "type" << "mask.area";
+    Area::json(j);
 }
 
 
