@@ -12,7 +12,7 @@ rust-version.workspace = true
 readme.workspace = true
 keywords.workspace = true
 categories.workspace = true
-description = "C++ bindings to ECMWF mir (Meteorological Interpolation and Regridding) library using cxx"
+description = "C++ bindings to ECMWF mir (Meteorological Interpolation and Regridding) package"
 links = "mir_sys"
 build = "build.rs"
 

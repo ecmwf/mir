@@ -5,7 +5,7 @@ SPDX-License-Identifier: Apache-2.0
 
 # mir-sys
 
-Rust bindings to ECMWF's [mir](https://github.com/ecmwf/mir) (Meteorological Interpolation and Regridding) C++ library.
+Rust bindings to ECMWF's [mir](https://github.com/ecmwf/mir) (Meteorological Interpolation and Regridding) C++ package.
 
 This crate provides raw FFI bindings using [cxx](https://cxx.rs/).
 
