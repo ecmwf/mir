@@ -189,6 +189,43 @@ def test_interpolation_n96_o96_grib(input_filename, input_gs, output_gs, monkeyp
     assert output.spec == mir.Grid(output_gs).spec
 
 
+@pytest.mark.parametrize(
+    "gridspec, output_spec, output_shape",
+    [
+        (
+            # rotated, the area not on the grid
+            '{"area":[3.36,-6.82,-4.42,4.8],"grid":[0.5,0.5],"order":"i+j+",'
+            '"projection":{"south_pole":[10,-43],"type":"rotation"}}',
+            dict(
+                area=[3.08, -6.82, -4.42, 4.68],
+                grid=[0.5, 0.5],
+                order="i+j+",
+                projection=dict(south_pole=[10, -43], type="rotation"),
+                reference=[0.18, 0.08],
+            ),
+            (16, 24),
+        ),
+        (
+            # Lambert conformal conic (AROME France)
+            '{"false":[921962.126,-885517.26],"projection":{"figure":"grib1","lat_0":45.8,"lat_1":45.8,"lon_0":2,'
+            '"reverse":true,"type":"lcc"},"x":[0,1845000,2500],"y":[0,-1770000,-2500]}',
+            dict(area=[53.5, -11.5, 37.5, 15.5], grid=[0.5, 0.5]),
+            (33, 55),
+        ),
+    ],
+)
+def test_interpolation_gridspec(gridspec, output_spec, output_shape):
+    import numpy as np
+
+    values = np.arange(len(mir.Grid(gridspec)), dtype=np.float64)
+    output = mir.ArrayOutput()
+    mir.Job(grid=dict(grid=[0.5, 0.5]), interpolation="nn").execute(mir.ArrayInput(values, gridspec), output)
+
+    assert output.spec == output_spec
+    assert output.shape == output_shape
+    assert np.isin(output.values(), values).all()
+
+
 GRIDS = [
     "1/1",
     dict(grid=[2, 2]),
