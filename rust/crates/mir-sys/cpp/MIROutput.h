@@ -38,6 +38,7 @@ class MIROutput final {
     std::unique_ptr<mir::output::MIROutput> output_;
 
 public:
+    /// In the output grid's scanning order.
     rust::Slice<const double> values() const;
 
     const Parametrisation& metadata() const;

@@ -119,7 +119,8 @@ pub mod ffi {
 
         type MIROutput;
 
-        /// Interpolated values, for an output built by `to_resizable`.
+        /// Interpolated values in the output grid's scanning order, for an
+        /// output built by `to_resizable`.
         fn values(self: &MIROutput) -> Result<&[f64]>;
 
         /// The grid the field was interpolated onto, for an output built by
