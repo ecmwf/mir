@@ -25,7 +25,7 @@ eckit-sys = { git = "ssh://git@github.com/ecmwf/eckit.git", branch = "develop", 
 # and both declare `links = "eccodes_sys"`.
 eccodes-sys = { git = "ssh://git@github.com/ecmwf/rust-wrappers-playground.git", rev = "1c0e477", default-features = false }
 atlas-sys = { git = "ssh://git@github.com/ecmwf/atlas.git", branch = "rust-bindings", default-features = false }
-metkit-sys = { git = "ssh://git@github.com/ecmwf/metkit.git", branch = "pre-publish", default-features = false }
+metkit-sys = { git = "ssh://git@github.com/ecmwf/metkit.git", rev = "fa8e791", default-features = false }
 
 # Build tools
 bindman = { git = "ssh://git@github.com/ecmwf/bindman.git", rev = "47edf68" }
