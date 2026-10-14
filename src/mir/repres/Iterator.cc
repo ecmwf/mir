@@ -39,7 +39,7 @@ Iterator& Iterator::next() {
     valid_ = next(lat_, lon_);
 
     if (valid_) {
-        auto p = rotation_.fwd(eckit::geo::PointLonLat{lon_.value(), lat_.value()});
+        auto p = rotation_.inv(eckit::geo::PointLonLat{lon_.value(), lat_.value()});
 
         // notice the order
         point_[0] = p.lat();
