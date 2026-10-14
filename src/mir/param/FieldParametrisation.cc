@@ -41,7 +41,7 @@ public:
             static const grib::Config grid_type_rules(LibMir::configFile(LibMir::config_file::GRID_TYPE), true);
 
             if (std::string uid; field.get("uid", uid) && eckit::geo::GridSpecByUID::instance().exists(uid)) {
-                catalog_.reset(eckit::geo::GridSpecByUID::instance().get(uid).spec());
+                catalog_.reset(eckit::geo::GridSpecByUID::instance().get_spec(uid));
                 ASSERT(catalog_);
 
                 type = eckit::StringTools::lower(catalog_->get_string("type", type));
