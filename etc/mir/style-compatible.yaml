@@ -1,3 +1,5 @@
 ---
+# Post-processing style options (style 'ecmwf'), compatible with previous behaviour (see style.yaml)
 
-sh2grid: compatible
+sh2grid-wind: compatible
+sh2grid-intgrid: compatible

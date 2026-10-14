@@ -58,7 +58,7 @@ data::MIRField RawInput::field() const {
     const auto* here = values_;
     for (size_t which = 0; which < dimensions(); ++which, here += count_) {
         MIRValuesVector values(here, here + count_);
-        repres->reorder(values);  // to canonical ordering
+        repres->reorderToCanonical(values);
 
         field.update(values, which);
     }

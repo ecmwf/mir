@@ -10,6 +10,7 @@
 #include "mir/api/MIRJob.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
 
 // define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
 
@@ -33,6 +34,40 @@ CASE("Representation::fillJob(MIRJob&)") {
         EXPECT(job.get("grid", grid));
         EXPECT(grid == R"({"grid":")" + test + R"("})");
     }
+}
+
+
+CASE("MIRJob: interpolation, by name or by spec") {
+    // by name, its options set separately
+    api::MIRJob a;
+    a.set("interpolation", "k-nearest");
+    a.set("nclosest", 8L);
+
+    // by spec, setting its options
+    api::MIRJob b;
+    b.set("interpolation", "{type: k-nearest, nclosest: 8}");
+
+    for (const auto* job : {&a, &b}) {
+        std::string interpolation;
+        long nclosest = 0;
+        EXPECT(job->get("interpolation", interpolation) && interpolation == "k-nearest");
+        EXPECT(job->get("nclosest", nclosest) && nclosest == 8);
+    }
+
+    // interpolation options are set one way, by spec or by option
+    EXPECT_THROWS_AS(b.set("nclosest", 4L), exception::UserError);
+    EXPECT_THROWS_AS(a.set("interpolation", "{type: k-nearest, nclosest: 4}"), exception::UserError);
+
+    // another interpolation replaces the options of the previous spec
+    b.set("interpolation", "linear");
+    EXPECT_NOT(b.has("nclosest"));
+    b.set("nclosest", 4L);
+
+    b.clear("nclosest");
+    b.set("interpolation", "{type: k-nearest, nclosest: 8}");
+    b.clear("interpolation");
+    EXPECT_NOT(b.has("interpolation"));
+    EXPECT_NOT(b.has("nclosest"));
 }
 
 

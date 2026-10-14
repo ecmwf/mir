@@ -1,0 +1,12 @@
+# input
+param=t,level=1000
+# mir
+$MIR_CONFIG_STYLE=~mir/etc/mir/style-compatible.yaml
+--grid={grid:O32,area:[60,-10,30,40]}
+# grib_get
+gridType=reduced_gg
+gridName=O32
+numberOfValues=123
+values[0]=277.64
+values[1]=277.334
+values[2]=276.404

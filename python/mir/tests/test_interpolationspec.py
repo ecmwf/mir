@@ -2,8 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
+import json
+
 import pytest
-from yaml import safe_load
 
 import mir
 
@@ -72,9 +73,12 @@ def test_grid_box_average():
 def test_statistics(type, stat):
     i = mir.Interpolation(interpolation=type, interpolation_statistics=stat)
     assert i.type == type
-    assert (
-        i.json
-        == f'{{"type":"{type}","non-linear":["missing-if-heaviest-missing"],"interpolation-statistics":"{stat}"}}'
+
+    # the type alone, with its defaults (maximum)
+    assert i.json == (
+        type
+        if stat == "maximum"
+        else f'{{"type":"{type}","non-linear":["missing-if-heaviest-missing"],"interpolation-statistics":"{stat}"}}'
     )
 
 
@@ -99,33 +103,23 @@ def test_spec_as_str(type):
     assert not type or interpolation.type == type
 
 
-@pytest.mark.parametrize(
-    "type",
-    (
-        # "linear",
-        "nearest-neighbour",
-        # "grid-box-average"
-    ),
-)
+def job_interpolation(job):
+    """The interpolation set on the job (type and options, as settings)"""
+    return mir.Interpolation(json.loads(job.json))
+
+
+@pytest.mark.parametrize("type", ["nearest-neighbour"])
 def test_job_set_interpolationspec(type):
-    interpolation = mir.Interpolation(interpolation=type)
-    j = mir.Job()
-    j.set("interpolation", interpolation.spec)
-    payload = safe_load(safe_load(j.json)["interpolation"])
-    assert payload == interpolation.spec
-
-    # nclosest (default 4) is only relevant for nearest-neighbour
-    interpolation = mir.Interpolation(interpolation=type, nclosest=4)
-    j = mir.Job()
-    j.set("interpolation", interpolation.spec)
-    payload = safe_load(safe_load(j.json)["interpolation"])
-    assert payload == interpolation.spec
-
-    interpolation = mir.Interpolation(interpolation=type, nclosest=5)
-    j = mir.Job()
-    j.set("interpolation", interpolation.spec)
-    payload = safe_load(safe_load(j.json)["interpolation"])
-    assert payload == interpolation.spec
+    for interpolation in (
+        mir.Interpolation(interpolation=type),
+        mir.Interpolation(interpolation=type, nclosest=4),  # nclosest (default 4)
+        mir.Interpolation(interpolation=type, nclosest=5),
+    ):
+        # as spec, or as object
+        for value in (interpolation.spec, interpolation):
+            j = mir.Job()
+            j.set("interpolation", value)
+            assert job_interpolation(j) == interpolation
 
 
 @pytest.mark.parametrize(
@@ -141,8 +135,7 @@ def test_job_set_interpolationspec_statistics(type, stat):
     interpolation = mir.Interpolation(interpolation=type, interpolation_statistics=stat)
     j = mir.Job()
     j.set("interpolation", interpolation.spec)
-    payload = safe_load(safe_load(j.json)["interpolation"])
-    assert payload == interpolation.spec
+    assert job_interpolation(j) == interpolation
 
 
 if __name__ == "__main__":

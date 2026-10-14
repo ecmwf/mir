@@ -7,6 +7,9 @@
 #include <map>
 #include <memory>
 #include <sstream>
+#include <vector>
+
+#include "eckit/log/JSON.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/key/Area.h"
@@ -99,6 +102,12 @@ void Area::apply(const repres::Representation& repres, util::BoundingBox& bbox, 
 
     // Set resulting bounding box
     bbox = util::BoundingBox(n, w, s, e);
+}
+
+
+void Area::json(eckit::JSON& j) const {
+    j << "area"
+      << std::vector<double>{bbox_.north().value(), bbox_.west().value(), bbox_.south().value(), bbox_.east().value()};
 }
 
 

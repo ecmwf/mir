@@ -4,7 +4,13 @@
 
 #include "mir/action/transform/ShToGridSpec.h"
 
+#include <memory>
 #include <ostream>
+
+#include "eckit/geo/Grid.h"
+#include "eckit/geo/Projection.h"
+#include "eckit/geo/grid/reduced/ReducedGaussian.h"
+#include "eckit/geo/grid/regular/RegularGaussian.h"
 
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
@@ -22,8 +28,25 @@ ShToGridSpec<Invtrans>::ShToGridSpec(const param::MIRParametrisation& param) : S
     std::string gridspec;
     ASSERT(key::grid::Grid::get("grid", gridspec, param));
 
+    std::unique_ptr<const eckit::geo::Grid> grid(eckit::geo::GridFactory::make_from_string(gridspec));
+
+    // regional (non-rotated) Gaussian grids: inverse transform to the global grid, cropped
+    if (const auto& bbox = grid->boundingBox(); !bbox.global() && grid->projection().is_default()) {
+        using eckit::geo::grid::reduced::ReducedGaussian;
+        using eckit::geo::grid::regular::RegularGaussian;
+
+        if (const auto* gg = dynamic_cast<const ReducedGaussian*>(grid.get()); gg != nullptr) {
+            crop({bbox.north(), bbox.west(), bbox.south(), bbox.east()});
+            grid = std::make_unique<ReducedGaussian>(gg->pl());
+        }
+        else if (const auto* gg = dynamic_cast<const RegularGaussian*>(grid.get()); gg != nullptr) {
+            crop({bbox.north(), bbox.west(), bbox.south(), bbox.east()});
+            grid = std::make_unique<RegularGaussian>(gg->N());
+        }
+    }
+
     // assign compatible parametrisation
-    param_ = std::make_unique<param::GridSpecParametrisation>(eckit::geo::GridFactory::make_from_string(gridspec));
+    param_ = std::make_unique<param::GridSpecParametrisation>(grid.release());
     ASSERT(param_);
 }
 

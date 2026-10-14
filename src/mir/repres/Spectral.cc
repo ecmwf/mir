@@ -10,7 +10,12 @@
 namespace mir::repres {
 
 
-void Spectral::reorder(MIRValuesVector&) const {
+void Spectral::reorderToCanonical(MIRValuesVector&) const {
+    // do nothing
+}
+
+
+void Spectral::reorderFromCanonical(MIRValuesVector&) const {
     // do nothing
 }
 

@@ -388,6 +388,19 @@ void TSettings<int>::get(const std::string& /*name*/, long& value) const {
 }
 
 
+// integers as reals (e.g. from YAML or JSON)
+template <>
+void TSettings<long>::get(const std::string& /*name*/, double& value) const {
+    value = static_cast<double>(value_);
+}
+
+
+template <>
+void TSettings<int>::get(const std::string& /*name*/, double& value) const {
+    value = static_cast<double>(value_);
+}
+
+
 template <>
 void TSettings<double>::get(const std::string& /*name*/, double& value) const {
     value = value_;

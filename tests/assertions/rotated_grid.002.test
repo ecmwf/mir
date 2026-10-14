@@ -1,0 +1,13 @@
+# input
+regular_ll.2-2.grib1
+# mir
+--grid={grid:5/5,rotation:[-90,360]} --interpolation=nn
+# grib_get
+gridType = regular_ll
+Ni = 72
+Nj = 37
+numberOfDataPoints = 2664
+latitudeOfFirstGridPointInDegrees = 90
+longitudeOfFirstGridPointInDegrees = 0
+latitudeOfLastGridPointInDegrees = -90
+longitudeOfLastGridPointInDegrees = 355

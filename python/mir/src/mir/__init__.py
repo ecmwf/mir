@@ -8,6 +8,11 @@ findlibs.load("mir")
 
 from eckit.geo import Grid
 from mir._mir import *
+from mir._mir_action import Action
+from mir._mir_interpolation import Interpolation
+
+from mir import action  # isort: skip
+from mir import interpolation  # isort: skip
 
 __lib_version__ = version()
 __git_sha1__ = git_sha1()

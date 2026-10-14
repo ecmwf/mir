@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <ostream>
 
+#include "eckit/geo/area/BoundingBox.h"
 #include "eckit/log/JSON.h"
 #include "eckit/spec/Custom.h"
 #include "eckit/types/FloatCompare.h"
@@ -21,9 +22,12 @@
 namespace mir::util {
 
 
-static double get(const param::MIRParametrisation& param, const char* key) {
-    double value = 0.;
-    ASSERT(param.get(key, value));
+static eckit::geo::area::BoundingBox GLOBAL;
+
+
+static double get(const param::MIRParametrisation& param, const char* key, double dfault) {
+    double value = dfault;
+    param.get(key, value);
     return value;
 }
 
@@ -48,7 +52,8 @@ BoundingBox::BoundingBox(const Latitude& north, const Longitude& west, const Lat
 
 
 BoundingBox::BoundingBox(const param::MIRParametrisation& param) :
-    BoundingBox(get(param, "north"), get(param, "west"), get(param, "south"), get(param, "east")) {}
+    BoundingBox(get(param, "north", GLOBAL.north()), get(param, "west", GLOBAL.west()),
+                get(param, "south", GLOBAL.south()), get(param, "east", GLOBAL.east())) {}
 
 
 BoundingBox::BoundingBox(const BoundingBox&) = default;

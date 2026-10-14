@@ -48,8 +48,7 @@ IntgridFactory::~IntgridFactory() {
 }
 
 
-Intgrid* IntgridFactory::build(const std::string& name, const param::MIRParametrisation& parametrisation,
-                               long targetGaussianN) {
+Intgrid* IntgridFactory::build(const std::string& name, const param::MIRParametrisation& parametrisation) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
@@ -58,15 +57,12 @@ Intgrid* IntgridFactory::build(const std::string& name, const param::MIRParametr
 
     auto j = m->find(name);
     if (j != m->end()) {
-        return j->second->make(parametrisation, targetGaussianN);
+        return j->second->make(parametrisation);
     }
 
-    // Look for NamedGrid pattern matching
-    std::string intgrid;
-    if (grid::Grid::get("intgrid", intgrid, parametrisation)) {
-        if (grid::Grid::lookup(intgrid).type() == "namedgrid") {
-            return new intgrid::NamedGrid(intgrid, parametrisation);
-        }
+    if (auto grid = grid::Grid::canonical(name, parametrisation);
+        !grid.empty() && grid::Grid::lookup(grid).type() == "namedgrid") {
+        return new intgrid::NamedGrid(grid, parametrisation);
     }
 
     list(Log::error() << "IntgridFactory: unknown '" << name << "', choices are: ");

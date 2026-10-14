@@ -11,6 +11,7 @@
 
 #include "mir/repres/gauss/GaussianIterator.h"
 #include "mir/util/Atlas.h"
+#include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
 
 
@@ -46,6 +47,11 @@ Iterator* RotatedGG::iterator() const {
 
 const Gridded* RotatedGG::croppedRepresentation(const util::BoundingBox& bbox) const {
     return new RotatedGG(N_, rotation_, bbox, angularPrecision_);
+}
+
+
+util::Domain RotatedGG::geographicDomain() const {
+    return rotation_.domain(domain());
 }
 
 

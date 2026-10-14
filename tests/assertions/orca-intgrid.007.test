@@ -1,0 +1,8 @@
+# input
+ORCA.grib2
+# mir
+--grid=O96
+# grib_get
+gridType=reduced_gg
+gridName=O96
+numberOfValues=40320

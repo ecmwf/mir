@@ -67,7 +67,8 @@ protected:
     // -- Overridden methods
 
     void fillSpec(CustomSpec&) const override;
-    void reorder(MIRValuesVector&) const override;
+    void reorderToCanonical(MIRValuesVector&) const override;
+    void reorderFromCanonical(MIRValuesVector&) const override;
 
     util::Domain domain() const override;
     const util::BoundingBox& boundingBox() const override;

@@ -1,0 +1,9 @@
+# input
+/dev/null
+# mir
+--input={artificialInput:gridspec,gridspec:{grid:1/1,area:[6,-12,-6,12],rotation:[-43,10]}} --grid={grid:ICON-CH2} --interpolation=nn
+# grib_get
+gridType = unstructured_grid
+numberOfDataPoints = 283876
+uuidOfHGrid = bbbd5a09855499243c7a4aa4c8762920
+numberOfMissing = 0

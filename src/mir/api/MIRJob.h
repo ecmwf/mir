@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <set>
 #include <string>
 
 #include "eckit/config/Configured.h"
@@ -51,6 +52,8 @@ public:
     void execute(input::MIRInput&, output::MIROutput&) const;
     void execute(input::MIRInput&, output::MIROutput&, util::MIRStatistics&) const;
 
+    /// interpolation is a method name, or a spec {type: name, option: value, ...} setting its options (which can then
+    /// only be set this way)
     MIRJob& set(const std::string& name, const std::string& value) override;
     MIRJob& set(const std::string& name, const char* value) override;
     MIRJob& set(const std::string& name, float value) override;
@@ -112,9 +115,14 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    /// Options set by the interpolation spec
+    std::set<std::string> interpolationOptions_;
 
     // -- Methods
+
+    MIRJob& setInterpolation(const std::string&);
+    void checkNotInterpolationOption(const std::string&) const;
 
     template <class T>
     MIRJob& _setScalar(const std::string& name, const T& value);

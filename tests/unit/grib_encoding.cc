@@ -9,10 +9,13 @@
 #include "eckit/testing/Test.h"
 
 #include "mir/action/area/AreaCropper.h"
+#include "mir/api/MIRJob.h"
 #include "mir/api/mir_config.h"
 #include "mir/data/MIRField.h"
+#include "mir/input/GribFileInput.h"
 #include "mir/input/GribMemoryInput.h"
 #include "mir/key/grid/Grid.h"
+#include "mir/output/GribMemoryOutput.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
@@ -611,6 +614,39 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
         }
     }
 }
+
+
+// ecCodes: changing GRIB edition=1 to 2 loses a non-default missingValue, so missing values
+// introduced by the interpolation fail to encode (re-enable when fixed)
+#if 0
+CASE("GRIB edition=1 to 2 encoding with introduced missing values") {
+    input::GribFileInput in("rotated_ll.3-3.grib1");
+
+    std::vector<char> buffer(1 << 20);
+    output::GribMemoryOutput out(buffer.data(), buffer.size());
+
+    api::MIRJob job;
+    job.set("grid", "5/5").set("interpolation", "linear").set("edition", 2);
+
+    ASSERT(in.next());
+    job.execute(in, out);
+
+    std::unique_ptr<codes_handle, decltype(&codes_handle_delete)> h(
+        codes_handle_new_from_message(nullptr, buffer.data(), out.length()), &codes_handle_delete);
+    ASSERT(h);
+
+    long edition         = 0;
+    long bitmapPresent   = 0;
+    long numberOfMissing = 0;
+    GRIB_CALL(codes_get_long(h.get(), "edition", &edition));
+    GRIB_CALL(codes_get_long(h.get(), "bitmapPresent", &bitmapPresent));
+    GRIB_CALL(codes_get_long(h.get(), "numberOfMissing", &numberOfMissing));
+
+    EXPECT_EQUAL(edition, 2);
+    EXPECT_EQUAL(bitmapPresent, 1);
+    EXPECT(numberOfMissing > 0);
+}
+#endif
 
 
 }  // namespace mir::tests::unit

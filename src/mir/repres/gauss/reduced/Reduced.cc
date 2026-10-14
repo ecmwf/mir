@@ -60,7 +60,7 @@ Reduced::Reduced(const param::MIRParametrisation& parametrisation) : Gaussian(pa
 
     // if pl isn't global (from file!) insert leading/trailing 0's
     const auto& lats = latitudes();
-    if (n < lats.front() || s > lats.back()) {
+    if (pl.size() != N_ * 2 && (n < lats.front() || s > lats.back())) {
         size_t k  = 0;
         size_t nj = 0;
         for (Latitude lat : lats) {

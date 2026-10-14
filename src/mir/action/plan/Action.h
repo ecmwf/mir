@@ -5,8 +5,13 @@
 #pragma once
 
 #include <iosfwd>
+#include <memory>
 #include <string>
 
+
+namespace eckit {
+class JSON;
+}
 
 namespace mir {
 namespace context {
@@ -71,6 +76,10 @@ public:
 
     virtual util::BoundingBox outputBoundingBox() const;
 
+    /// Spec (see ActionFactory::make_from_string), as a known action name if built from it alone
+    void json(eckit::JSON&, bool lookupKnownActions) const;
+    std::string json_str(bool lookupKnownActions = true) const;
+
     // -- Overridden methods
     // None
 
@@ -89,6 +98,9 @@ protected:
     virtual void print(std::ostream&) const = 0;
     const param::MIRParametrisation& parametrisation() const { return parametrisation_; }
 
+    /// Spec {type: name, ...}, as ActionFactory::make_from_string (not supported by default)
+    virtual void json(eckit::JSON&) const;
+
     // -- Overridden methods
     // None
 
@@ -103,10 +115,15 @@ private:
 
     const param::MIRParametrisation& parametrisation_;
 
+    /// Parametrisation, if built from a spec (see ActionFactory::make_from_string)
+    std::unique_ptr<const param::MIRParametrisation> spec_;
+
     // -- Methods
 
     // call perform() for the public interface
     virtual void execute(context::Context&) const = 0;
+
+    bool getKnownName(std::string&) const;
 
     // -- Overridden methods
     // None
@@ -123,6 +140,12 @@ private:
         p.print(s);
         return s;
     }
+
+    /// The same action, as sameAs (all actions, a spec being optional)
+    friend bool operator==(const Action& a, const Action& b) { return a.sameAs(b) && b.sameAs(a); }
+    friend bool operator!=(const Action& a, const Action& b) { return !(a == b); }
+
+    friend class ActionFactory;
 };
 
 
@@ -144,6 +167,9 @@ public:
 
     static Action* build(const std::string&, const param::MIRParametrisation&, bool exact = true);
     static void list(std::ostream&);
+
+    /// Action from a spec: a name, or {type: name, a_b: value, ...} (as Action::json_str), owning its parametrisation
+    [[nodiscard]] static Action* make_from_string(const std::string&);
 };
 
 

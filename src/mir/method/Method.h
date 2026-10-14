@@ -5,6 +5,7 @@
 #pragma once
 
 #include <iosfwd>
+#include <memory>
 #include <string>
 
 
@@ -58,6 +59,7 @@ public:
     virtual bool hasCropping() const                     = 0;
     virtual const util::BoundingBox& getCropping() const = 0;
 
+    /// Spec (see MethodFactory::make_from_string), as a known method name if built from it alone
     void json(eckit::JSON&, bool lookupKnownMethods) const;
 
     std::string json_str(bool lookupKnownMethods = true) const;
@@ -69,7 +71,16 @@ protected:
     virtual void json(eckit::JSON&) const   = 0;
 
 private:
+    /// Parametrisation, if built from a spec (see MethodFactory::make_from_string)
+    std::unique_ptr<const param::MIRParametrisation> spec_;
+
     bool getKnownName(std::string&) const;
+
+    friend class MethodFactory;
+
+    /// The same spec (sameAs is for optimising plans, false for data-dependent methods)
+    friend bool operator==(const Method& a, const Method& b) { return a.json_str(false) == b.json_str(false); }
+    friend bool operator!=(const Method& a, const Method& b) { return !(a == b); }
 
     friend std::ostream& operator<<(std::ostream& s, const Method& m) {
         m.print(s);
@@ -101,6 +112,7 @@ public:
     static void list(std::ostream&);
     static Method* build(const std::string&, const param::MIRParametrisation&);
 
+    /// Method from a spec: a name, or {type: name, a_b: value, ...} (as Method::json_str), owning its parametrisation
     [[nodiscard]] static Method* make_from_string(const std::string&);
 };
 

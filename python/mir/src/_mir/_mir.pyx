@@ -5,6 +5,7 @@ from cython.operator cimport dereference
 from libc.stdlib cimport free
 from libc.stdlib cimport malloc
 from libc.string cimport strdup
+from libcpp cimport bool as cbool
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 
@@ -161,7 +162,9 @@ cdef class PyGribOutput(MIROutput):
 
 cdef class ArrayInput(MIRInput):
     def __cinit__(self, values, gridspec):
-        if isinstance(gridspec, dict):
+        if hasattr(gridspec, "spec_str"):  # e.g. mir.Grid
+            gridspec = gridspec.spec_str
+        elif isinstance(gridspec, dict):
             from yaml import dump
             gridspec = dump(gridspec, default_flow_style=True)
 
@@ -205,6 +208,9 @@ cdef class ArrayOutput(MIROutput):
         cdef tuple shape = tuple(shape_vec)
 
         assert dtype in (None, np.float32, np.float64)
+        if size == 0:
+            return np.empty(0, dtype=dtype)
+
         arr = np.array(<cnp.float64_t[:size]>data_ptr, dtype=dtype)  # copy
 
         cdef double miss = (<mir.ArrayOutput*> self._output).missingValue()
@@ -237,6 +243,27 @@ cdef class Job:
         assert isinstance(key, str)
         key_str = key.replace("_", "-")
 
+        from eckit.geo import Grid
+        from mir._mir_interpolation import Interpolation
+
+        # interpolation types (and options), otherwise as given (other mir methods)
+        if key_str == "interpolation" and not isinstance(value, Interpolation):
+            try:
+                value = Interpolation(value)
+            except (TypeError, ValueError):
+                pass
+
+        # objects, as their spec (a name, or a mapping as YAML)
+        if isinstance(value, Grid):
+            return self.set(key, value.spec)
+
+        if isinstance(value, Interpolation):
+            from mir._spec import to_yaml
+            spec = value.spec
+            value_str = (to_yaml(spec) if isinstance(spec, dict) else spec).encode()
+            self.j.set(key_str, value_str)
+            return self
+
         if (
             isinstance(value, dict)
             and key_str == "grid"
@@ -245,9 +272,9 @@ cdef class Job:
             # flatten a nested grid key
             self.set(key, value["grid"])
         elif isinstance(value, dict) and key_str in ("grid", "interpolation"):
-            # spec-like values encoded as YAML strings
-            from yaml import dump
-            value_str = dump(value, default_flow_style=True).strip().encode()
+            # specs, as YAML
+            from mir._spec import to_yaml
+            value_str = to_yaml(value).encode()
             self.j.set(key_str, value_str)
         elif isinstance(value, dict):
             for k, v in value.items():
@@ -258,6 +285,8 @@ cdef class Job:
         elif isinstance(value, str):
             value_str = value.encode()
             self.j.set(key_str, value_str)
+        elif isinstance(value, bool):
+            self.j.set(key_str, <cbool>value)
         elif isinstance(value, int):
             self.j.set(key_str, <int>value)
         elif isinstance(value, float):
@@ -283,11 +312,11 @@ cdef class Job:
             assert hasattr(output, "write")
             out = PyGribOutput(output)
 
-        if not isinstance(in_, GribMemoryInput):
+        if isinstance(in_, (ArrayInput, GribMemoryInput, GriddefInput, GridSpecInput)):
+            self.j.execute(dereference(in_._input), dereference(out._output))
+        else:
             while in_._input.next():
                 self.j.execute(dereference(in_._input), dereference(out._output))
-        else:
-            self.j.execute(dereference(in_._input), dereference(out._output))
 
     # def execute(self, input, output):
     #     in_ = new mir.GribFileInput(eckit.PathName(input))
@@ -306,55 +335,3 @@ cdef class Job:
         return self.json
 
     __repr__ = __str__
-
-
-cdef class Interpolation:
-    cdef const mir.Method* _method
-
-    def __cinit__(self, spec = None, **kwargs):
-        # convert arguments to spec: dict without None/blank string values
-        if kwargs:
-            assert not spec
-            spec = kwargs
-
-        if spec is None:
-            spec = dict()
-        elif isinstance(spec, str):
-            spec = dict(interpolation=spec) if spec.strip() else dict()
-        elif not isinstance(spec, dict):
-            raise TypeError(f"Interpolation: unsupported spec type: {type(spec)}")
-
-        spec = {k.replace("_", "-"): v
-                for k, v in spec.items()
-                if v is not None and not (isinstance(v, str) and not v.strip())}
-
-        try:
-            from yaml import dump
-
-            s = dump(spec, default_flow_style=True).strip() if spec else ""
-            self._method = mir.MethodFactory.make_from_string(s)
-
-        except RuntimeError as e:
-            # opportunity to do something interesting
-            raise
-
-    def __eq__(self, other) -> bool:
-        if not isinstance(other, Interpolation):
-            return NotImplemented
-        return self.json == other.json
-
-    @property
-    def spec(self) -> dict:
-        from yaml import safe_load
-        return safe_load(self.json)
-
-    @property
-    def type(self) -> str:
-        return self._method.type()
-
-    @property
-    def json(self) -> str:
-        return self._method.json_str()
-
-    def __dealloc__(self):
-        del self._method

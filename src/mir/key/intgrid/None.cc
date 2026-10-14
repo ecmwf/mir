@@ -12,7 +12,7 @@ static const IntgridBuilder<None> __intgrid1("none");
 static const IntgridBuilder<None> __intgrid2("NONE");
 
 
-None::None(const param::MIRParametrisation& parametrisation, long /*unused*/) : Intgrid(parametrisation) {}
+None::None(const param::MIRParametrisation& parametrisation) : Intgrid(parametrisation) {}
 
 
 const std::string& None::gridname() const {

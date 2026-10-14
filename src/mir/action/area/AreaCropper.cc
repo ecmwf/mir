@@ -8,6 +8,7 @@
 #include <ostream>
 #include <sstream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/action/context/Context.h"
@@ -31,6 +32,12 @@ static caching::InMemoryCache<caching::AreaCacheEntry> cache("mirArea", CAPACITY
 
 void AreaCropper::print(std::ostream& out) const {
     out << "AreaCropper[bbox=" << boundingBox() << "]";
+}
+
+
+void AreaCropper::json(eckit::JSON& j) const {
+    j << "type" << "crop.area";
+    Area::json(j);
 }
 
 

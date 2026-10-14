@@ -57,6 +57,7 @@ private:
     void execute(context::Context&) const override;
     void print(std::ostream&) const override;
     bool sameAs(const Action&) const override;
+    void json(eckit::JSON&) const override;
     const char* name() const override;
     bool isCropAction() const override;
     bool canCrop() const override;

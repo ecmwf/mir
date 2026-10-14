@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
+import json
+
 import pytest
 
 from mir import Job
@@ -23,11 +25,11 @@ def test_key():
 def test_value_bool():
     j = Job(key=True)
     assert j.json == Job(key=True).json
-    assert j.json == '{"key":1}'
+    assert j.json == '{"key":true}'
 
     j.set("key", False)
     assert j.json == Job(key=False).json
-    assert j.json == '{"key":0}'
+    assert j.json == '{"key":false}'
 
 
 def test_value_dict():
@@ -50,9 +52,12 @@ def test_value_dict_set_grid_and_interpolation_yaml():
     j.set("grid", dict(grid="H16", order="nested"))
     assert j.json == '{"grid":"{grid: H16, order: nested}"}'
 
+    # the interpolation spec sets the interpolation (type) and its options (as the complete spec)
     j = Job()
     j.set("interpolation", dict(type="nearest-neighbour", nclosest=5))
-    assert j.json == '{"interpolation":"{nclosest: 5, type: nearest-neighbour}"}'
+    settings = json.loads(j.json)
+    assert settings["interpolation"] == "nearest-neighbour"
+    assert settings["nclosest"] == 5
 
 
 def test_value_str():

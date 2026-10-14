@@ -1,0 +1,11 @@
+# input
+param=t,level=1000,resol=20
+# mir
+--grid=O16 --intgrid=O32
+# grib_get
+gridType=reduced_gg
+gridName=O16
+numberOfValues=1600
+values[1]=252.78
+values[800]=298.595
+values[1599]=254.927

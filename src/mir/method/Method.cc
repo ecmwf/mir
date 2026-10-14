@@ -5,22 +5,18 @@
 #include "mir/method/Method.h"
 
 #include <map>
-#include <regex>
+#include <memory>
 #include <sstream>
+#include <utility>
 
 #include "eckit/log/JSON.h"
-#include "eckit/parser/YAMLParser.h"
-#include "eckit/utils/MD5.h"
-#include "eckit/utils/StringTools.h"
 
 #include "mir/api/mir_config.h"
-#include "mir/param/CombinedParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/param/SimpleParametrisation.h"
+#include "mir/param/SpecParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
-#include "mir/util/ValueMap.h"
 
 
 extern "C" {
@@ -42,26 +38,13 @@ Method::Method(const param::MIRParametrisation& params) : parametrisation_(param
 
 
 bool Method::getKnownName(std::string& name) const {
-    const static std::map<eckit::Hash::digest_t, std::string> KNOWN_METHODS{
-        {"052f0588fc55cdccb2b07212eba810c5", "linear"},
-        {"321490e25ba1e17d44118b3d167834bc", "bilinear"},
-        {"c942366c09cd3b86530029d7c714bebf", "nearest-neighbour"},
-        {"ef991e74a612a0ccca7bab42e88487b4", "grid-box-average"},
-    };
+    // methods built from their name alone, by spec
+    static const auto KNOWN = param::SpecParametrisation::knownSpecs<MethodFactory>(
+        {"linear", "bilinear", "nearest-neighbour", "k-nearest", "grid-box-average", "grid-box-statistics",
+         "healpix-resample", "healpix-statistics", "voronoi-statistics", "structured-bilinear", "structured-bicubic",
+         "structured-biquasicubic"});
 
-    const auto method_str = [](const Method& m) {
-        std::ostringstream s;
-        eckit::JSON j(s);
-
-        j.startObject();
-        m.json(j);
-        j.endObject();
-
-        return s.str();
-    }(*this);
-
-    const auto d = (eckit::MD5() << method_str).digest();
-    if (const auto i = KNOWN_METHODS.find(d); i != KNOWN_METHODS.end()) {
+    if (const auto i = KNOWN.find(json_str(false)); i != KNOWN.end()) {
         name = i->second;
         return true;
     }
@@ -154,38 +137,16 @@ Method* MethodFactory::build(const std::string& name, const param::MIRParametris
 
 
 Method* MethodFactory::make_from_string(const std::string& str) {
-    // spec {type: x, b_c=y, ...} maps to (interpolation=value, b-c=y, ...)
+    // the method owns its parametrisation
     const std::string NAME("interpolation");
-
-    param::SimpleParametrisation user;
-    if (auto trimmed = eckit::StringTools::trim(str); !trimmed.empty() && trimmed[0] == '{') {
-        util::ValueMap map(eckit::YAMLParser::decodeString(str));
-
-        for (bool modified = true; modified;) {
-            modified = false;
-
-            for (const auto& [k, v] : map) {
-                if (auto s = k.as<std::string>(), t = s == "type" ? NAME : std::regex_replace(s, std::regex("_"), "-");
-                    t != s) {
-                    map[t] = v;
-                    map.erase(s);
-                    modified = true;
-                    break;
-                }
-            }
-        }
-
-        map.set(user);
-    }
-    else if (!str.empty()) {
-        user.set(NAME, str);
-    }
+    std::unique_ptr<const param::MIRParametrisation> param(new param::SpecParametrisation(str, NAME));
 
     std::string name;
-    param::CombinedParametrisation param(user);
-    ASSERT(static_cast<const param::MIRParametrisation&>(param).get(NAME, name));
+    ASSERT(param->get(NAME, name));
 
-    return build(name, param);
+    auto* method  = build(name, *param);
+    method->spec_ = std::move(param);
+    return method;
 }
 
 

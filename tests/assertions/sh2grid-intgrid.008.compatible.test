@@ -1,0 +1,12 @@
+# input
+param=vo_d,level=1000,resol=20
+# mir
+$MIR_CONFIG_STYLE=~mir/etc/mir/style-compatible.yaml
+--vod2uv --grid=O16
+# grib_get
+gridType=reduced_gg
+gridName=O16
+numberOfValues=1600
+values[0]=0.583977
+values[1]=1.72167
+values[2]=3.07421

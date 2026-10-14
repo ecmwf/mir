@@ -7,10 +7,10 @@
 #include <algorithm>
 #include <set>
 
-#include "eckit/memory/Shmget.h"
 #include "eckit/config/Configuration.h"
 #include "eckit/config/Resource.h"
 #include "eckit/filesystem/PathName.h"
+#include "eckit/memory/Shmget.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/api/mir_version.h"
@@ -72,6 +72,7 @@ eckit::PathName LibMir::configFile(config_file c) {
         {r("mir-config-classes;$MIR_CONFIG_CLASSES", "~mir/etc/mir/classes.yaml")},
         {r("mir-config-grib-input;$MIR_CONFIG_GRIB_INPUT", "~mir/etc/mir/grib-input.yaml")},
         {r("mir-config-grib-output;$MIR_CONFIG_GRIB_OUTPUT", "~mir/etc/mir/grib-output.yaml")},
+        {r("mir-config-grid-type;$MIR_CONFIG_GRID_TYPE", "~mir/etc/mir/grid-type.yaml")},
         {r("mir-config-grids;$MIR_CONFIG_GRIDS", "~mir/etc/mir/grids.yaml")},
         {r("mir-config-limiter;$MIR_CONFIG_LIMITER", "~mir/etc/mir/limiter.yaml")},
         {r("mir-config-lsm;$MIR_CONFIG_LSM", "~mir/etc/mir/lsm.yaml")},

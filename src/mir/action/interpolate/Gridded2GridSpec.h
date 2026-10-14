@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "mir/action/interpolate/Gridded2UnrotatedGrid.h"
+#include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
 
 #include <memory>
 
@@ -14,7 +14,7 @@
 namespace mir::action::interpolate {
 
 
-class Gridded2GridSpec : public Gridded2UnrotatedGrid {
+class Gridded2GridSpec : public Gridded2GriddedInterpolation {
 public:
     explicit Gridded2GridSpec(const param::MIRParametrisation&);
 
@@ -25,6 +25,7 @@ private:
     void print(std::ostream&) const override;
     const char* name() const override;
     const repres::Representation* outputRepresentation() const override;
+    util::BoundingBox outputBoundingBox() const override;
 };
 
 

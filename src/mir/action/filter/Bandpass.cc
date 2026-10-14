@@ -5,6 +5,9 @@
 #include "mir/action/filter/Bandpass.h"
 
 #include <ostream>
+#include <vector>
+
+#include "eckit/log/JSON.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
@@ -28,6 +31,13 @@ Bandpass::Bandpass(const param::MIRParametrisation& param) : Action(param) {
     maxN_ = static_cast<size_t>(b[3]);
     ASSERT(minM_ <= maxM_ && maxM_ <= truncation_);
     ASSERT(minN_ <= maxN_ && maxN_ <= truncation_);
+}
+
+
+void Bandpass::json(eckit::JSON& j) const {
+    j << "type" << "filter.sh-bandpass";
+    j << "bandpass" << std::vector<long>{long(minM_), long(maxM_), long(minN_), long(maxN_)};
+    j << "truncation" << truncation_;
 }
 
 

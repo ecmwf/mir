@@ -1,0 +1,8 @@
+# input
+ORCA.grib2
+# mir
+--grid=eorca1
+# grib_get
+gridType=unstructured_grid
+uuidOfHGrid=ba65665a9e68d1a8fa0352ecfcf8e496
+numberOfDataPoints=120184

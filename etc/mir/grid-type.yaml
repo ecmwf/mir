@@ -1,0 +1,14 @@
+---
+# yamllint disable rule:line-length
+
+type=lambert/lambert_azimuthal_equal_area/mercator/polar_stereographic:
+  - area-mode: mask
+
+type=space_view:
+  - area-mode: mask
+  - interpolation: k-nearest
+  - nearest-method: longest-element-diagonal-and-nclosest
+  - reset-missing-values: true
+
+type=orca:
+  - intermediate-interpolation: nn

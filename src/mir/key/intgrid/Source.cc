@@ -20,7 +20,7 @@ static const IntgridBuilder<Source> __intgrid1("source");
 static const IntgridBuilder<Source> __intgrid2("SOURCE");
 
 
-Source::Source(const param::MIRParametrisation& parametrisation, long /*unused*/) : Intgrid(parametrisation) {
+Source::Source(const param::MIRParametrisation& parametrisation) : Intgrid(parametrisation) {
     std::unique_ptr<util::SpectralOrder> spectralOrder(util::SpectralOrderFactory::build("cubic"));
     ASSERT(spectralOrder);
 
@@ -29,8 +29,8 @@ Source::Source(const param::MIRParametrisation& parametrisation, long /*unused*/
                                 !truncation.empty() && std::all_of(truncation.begin(), truncation.end(), ::isdigit)) {
         T = std::stol(truncation);
     }
-    else {
-        ASSERT(parametrisation_.fieldParametrisation().get("truncation", T));
+    else if (!parametrisation_.fieldParametrisation().get("truncation", T)) {
+        throw exception::UserError("Intgrid: 'source' requires spectral input, or a numeric 'truncation'");
     }
     ASSERT(T > 0);
 

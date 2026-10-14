@@ -50,6 +50,35 @@ target_include_directories(_mir PRIVATE ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINA
 target_link_libraries(_mir PRIVATE mir Python3::NumPy)
 target_compile_definitions(_mir PRIVATE NPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION)
 
+# ---- mir._mir_interpolation, mir._mir_action ----
+foreach(_module _mir_interpolation _mir_action)
+    set(_module_cpp ${CMAKE_CURRENT_BINARY_DIR}/${_module}.cpp)
+
+    add_custom_command(
+        OUTPUT ${_module_cpp}
+        COMMAND
+            ${Python3_EXECUTABLE} -m cython
+            ${_cython_flags}
+            -I ${_src}
+            ${_src}/${_module}.pyx
+            -o ${_module_cpp}
+        DEPENDS
+            ${_src}/${_module}.pyx
+            ${_src}/mir_defs.pxd
+            ${_src}/eckit_defs.pxd
+            ${_src}/std_defs.pxd
+        COMMENT "Cythonizing ${_module}.pyx"
+        VERBATIM
+    )
+
+    Python3_add_library(${_module} MODULE WITH_SOABI ${_module_cpp})
+
+    target_include_directories(${_module} PRIVATE ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src ${_src})
+    target_link_libraries(${_module} PRIVATE mir)
+
+    install(TARGETS ${_module} DESTINATION ${PYTHONEXT_INSTALL_DIR}/mir COMPONENT python)
+endforeach()
+
 install(TARGETS _mir          DESTINATION ${PYTHONEXT_INSTALL_DIR}/mir COMPONENT python)
 install(DIRECTORY mir/src/mir/ DESTINATION ${PYTHONEXT_INSTALL_DIR}/mir COMPONENT python FILES_MATCHING PATTERN "*.py")
 

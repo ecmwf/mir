@@ -211,7 +211,7 @@ void ProxyMethod::print(std::ostream& out) const {
 
 
 void ProxyMethod::json(eckit::JSON& out) const {
-    out << type_;
+    out << "type" << type();
     out << "interpolation-matrix-free" << options_.getBool("matrix_free");
 }
 

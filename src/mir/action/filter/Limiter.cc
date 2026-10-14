@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
@@ -21,23 +23,30 @@ namespace mir::action::filter {
 static const ActionBuilder<Limiter> __action("filter.limiter");
 
 
-Limiter::Limiter(const param::MIRParametrisation& param) : Action(param) {
-    static const grib::Config config(LibMir::configFile(LibMir::config_file::LIMITER), false);
-    const auto& limits = config.find(param);
+Limiter::Limiter(const param::MIRParametrisation& param) : Action(param), minimum_(-1.e30), maximum_(1.e30) {
+    // as given, or as configured (by parameter, only if needed), or unlimited
+    if (!param.has("limiter-minimum") || !param.has("limiter-maximum")) {
+        static const grib::Config config(LibMir::configFile(LibMir::config_file::LIMITER), false);
+        const auto& limits = config.find(param);
 
-    auto get = [](const param::MIRParametrisation& param, const std::string& key, double dfault) -> double {
-        auto value = dfault;
-        param.get(key, value);
-        return value;
-    };
+        limits.get("minimum", minimum_);
+        limits.get("maximum", maximum_);
+    }
 
-    minimum_ = get(param, "limiter-minimum", get(limits, "minimum", -1.e30));
-    maximum_ = get(param, "limiter-maximum", get(limits, "maximum", 1.e30));
+    param.get("limiter-minimum", minimum_);
+    param.get("limiter-maximum", maximum_);
 
     if (minimum_ > maximum_) {
         throw exception::UserError("Limiter: minimum (" + std::to_string(minimum_) +
                                    ") cannot be greater than maximum (" + std::to_string(maximum_) + ")");
     }
+}
+
+
+void Limiter::json(eckit::JSON& j) const {
+    j << "type" << "filter.limiter";
+    j << "limiter-minimum" << minimum_;
+    j << "limiter-maximum" << maximum_;
 }
 
 

@@ -3,9 +3,14 @@
 
 
 #include <map>
+#include <memory>
 #include <sstream>
+#include <utility>
+
+#include "eckit/log/JSON.h"
 
 #include "mir/action/plan/Action.h"
+#include "mir/param/SpecParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Exceptions.h"
@@ -71,6 +76,50 @@ bool Action::getGriddedTargetName(std::string&) const {
 
 util::BoundingBox Action::outputBoundingBox() const {
     NOTIMP;
+}
+
+
+void Action::json(eckit::JSON&) const {
+    throw exception::UserError(std::string("Action: spec not supported by ") + name());
+}
+
+
+bool Action::getKnownName(std::string& name) const {
+    // actions built from their name alone, by spec
+    static const auto KNOWN = param::SpecParametrisation::knownSpecs<ActionFactory>(
+        {"filter.scalar-gradient", "filter.scalar-laplacian", "filter.uv-gradient", "filter.uv-divergence",
+         "filter.uv-vorticity"});
+
+    if (const auto i = KNOWN.find(json_str(false)); i != KNOWN.end()) {
+        name = i->second;
+        return true;
+    }
+
+    return false;
+}
+
+
+void Action::json(eckit::JSON& j, bool lookupKnownActions) const {
+    if (std::string name; lookupKnownActions && getKnownName(name)) {
+        j << name;
+        return;
+    }
+
+    j.startObject();
+    json(j);
+    j.endObject();
+}
+
+
+std::string Action::json_str(bool lookupKnownActions) const {
+    if (std::string name; lookupKnownActions && getKnownName(name)) {
+        return name;
+    }
+
+    std::ostringstream s;
+    eckit::JSON j(s);
+    json(j, false);
+    return s.str();
 }
 
 
@@ -149,6 +198,22 @@ Action* ActionFactory::build(const std::string& name, const param::MIRParametris
     }
 
     return j->second->make(params);
+}
+
+
+Action* ActionFactory::make_from_string(const std::string& str) {
+    // the action owns its parametrisation
+    const std::string NAME("action");
+    std::unique_ptr<const param::MIRParametrisation> param(new param::SpecParametrisation(str, NAME));
+
+    std::string name;
+    if (!param->get(NAME, name)) {
+        throw exception::UserError("ActionFactory: spec 'type' expected, from '" + str + "'");
+    }
+
+    auto* action  = build(name, *param);
+    action->spec_ = std::move(param);
+    return action;
 }
 
 

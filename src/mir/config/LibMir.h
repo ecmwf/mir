@@ -36,6 +36,7 @@ public:
         CLASSES,
         GRIB_INPUT,
         GRIB_OUTPUT,
+        GRID_TYPE,
         GRIDS,
         LIMITER,
         LSM,

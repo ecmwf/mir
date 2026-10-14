@@ -71,28 +71,34 @@ SpaceViewInternal::SpaceViewInternal(const param::MIRParametrisation& param) {
     Nx_ = get<long>(param, "Nx");
     ASSERT(1 < Nx_);
 
-    auto ip = get<bool>(param, "iScansPositively");
-    auto xp = get<double, long>(param, "XpInGridLengths");
+    // as the eccodes iterator: x increasing, y decreasing, (xp, yp) the sub-satellite point [grid lengths] relative to
+    // the sector origin (Xo, Yo) and to the scanning
+    auto xp = get<double>(param, "XpInGridLengths") - get<double, long>(param, "Xo");
+    if (!get<bool>(param, "iScansPositively")) {
+        xp = double(Nx_ - 1) - xp;
+    }
+
     auto dx = get<double, long>(param, "dx");
     ASSERT(dx > 0);
 
     auto rx = 2. * std::asin(1. / Nr) / dx * h;  // (height factor is PROJ-specific)
-
-    (ip ? xa_ : xb_) = rx * (-xp);
-    (ip ? xb_ : xa_) = rx * (-xp + double(Nx_ - 1));
+    xa_     = rx * (-xp);
+    xb_     = rx * (double(Nx_ - 1) - xp);
 
     Ny_ = get<long>(param, "Ny");
     ASSERT(1 < Ny_);
 
-    auto jp = get<bool>(param, "jScansPositively");
-    auto yp = get<double, long>(param, "YpInGridLengths");
+    auto yp = get<double>(param, "YpInGridLengths") - get<double, long>(param, "Yo");
+    if (!get<bool>(param, "jScansPositively")) {
+        yp = double(Ny_ - 1) - yp;
+    }
+
     auto dy = get<double, long>(param, "dy");
     ASSERT(dy > 0);
 
-    auto ry = 2. * std::asin(1. / Nr) / dy * h;  // (height factor is PROJ-specific)
-
-    (jp ? ya_ : yb_) = ry * (-yp);
-    (jp ? yb_ : ya_) = ry * (-yp + double(Ny_ - 1));
+    auto ry = 2. * std::asin(1. / Nr) / dy * h * b / a;  // (height factor is PROJ-specific)
+    ya_     = ry * (double(Ny_ - 1) - yp);
+    yb_     = ry * (-yp);
 
 
     // longest element diagonal, a multiple of a reference central element diagonal (avoiding distortion)

@@ -1,0 +1,11 @@
+# input
+ORCA.grib2
+# mir
+--grid=10/10 --intgrid=none
+# plan
+Gridded2RegularLL[increments=Increments[west_east=10,south_north=10],bbox=BoundingBox[north=90,west=0,south=-90,east=350],interpolation=linear,method=FiniteElement[type=linear,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|Save[output=...]
+Gridded2RegularLL[increments=Increments[west_east=10,south_north=10],bbox=BoundingBox[north=90,west=0,south=-90,east=350],interpolation=linear,method=FiniteElement[type=linear,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|Save[output=...]
+Gridded2RegularLL[increments=Increments[west_east=10,south_north=10],bbox=BoundingBox[north=90,west=0,south=-90,east=350],interpolation=linear,method=FiniteElement[type=linear,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|Save[output=...]
+Gridded2RegularLL[increments=Increments[west_east=10,south_north=10],bbox=BoundingBox[north=90,west=0,south=-90,east=350],interpolation=linear,method=FiniteElement[type=linear,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|Save[output=...]
+Gridded2RegularLL[increments=Increments[west_east=10,south_north=10],bbox=BoundingBox[north=90,west=0,south=-90,east=350],interpolation=linear,method=FiniteElement[type=linear,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|Save[output=...]
+Gridded2RegularLL[increments=Increments[west_east=10,south_north=10],bbox=BoundingBox[north=90,west=0,south=-90,east=350],interpolation=linear,method=FiniteElement[type=linear,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,validateMesh=0,projectionFail=missing-value]]|Save[output=...]

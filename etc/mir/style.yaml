@@ -1,1 +1,13 @@
 ---
+# Post-processing style options (style 'ecmwf'), unset or empty options select the default
+#
+# sh2grid-wind: spectral to gridded post-processing of winds
+#   default:    wind handling at the poles and inverse spectral transforms from U/V (MIR-690)
+#   compatible: as before MIR-690
+#
+# sh2grid-intgrid: spectral to gridded post-processing, intermediate grid (unless option 'intgrid' is set)
+#   regular-gg-from-target: regular Gaussian grid from the target grid, none for non-rotated Gaussian target grids
+#   compatible:             regular Gaussian grid from the target grid
+
+sh2grid-wind: default
+sh2grid-intgrid: regular-gg-from-target

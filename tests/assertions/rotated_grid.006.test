@@ -1,0 +1,12 @@
+# input
+rotated_ll.3-3.grib1
+# mir
+--grid={grid:o32} --interpolation=nn
+# grib_get
+gridType = reduced_gg
+N = 32
+numberOfDataPoints = 798
+latitudeOfFirstGridPointInDegrees = 39
+longitudeOfFirstGridPointInDegrees = -206.078
+latitudeOfLastGridPointInDegrees = -18.157
+longitudeOfLastGridPointInDegrees = -93.922

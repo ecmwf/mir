@@ -1,0 +1,8 @@
+# input
+param=u_v,level=1000,resol=20
+# mir
+$MIR_CONFIG_STYLE=~mir/etc/mir/style-compatible.yaml
+--grid=O16
+# plan
+ShToNamedGrid[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<scalar>,grid=F16]|Gridded2NamedGrid[grid=O16,interpolation=linear,method=FiniteElement[type=linear,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=1e-06,validateMesh=0,projectionFail=missing-value]]|AdjustWindsScaleCosLatitude[]|Save[packing=simple,output=...]
+ShToNamedGrid[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<scalar>,grid=F16]|Gridded2NamedGrid[grid=O16,interpolation=linear,method=FiniteElement[type=linear,nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=1e-06,validateMesh=0,projectionFail=missing-value]]|AdjustWindsScaleCosLatitude[]|Save[packing=simple,output=...]

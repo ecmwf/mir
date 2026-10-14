@@ -7,7 +7,9 @@
 #include <limits>
 #include <memory>
 #include <ostream>
+#include <string>
 
+#include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/action/context/Context.h"
@@ -116,6 +118,7 @@ private:
 struct ScalarGradient final : NablaOperation {
     using NablaOperation::NablaOperation;
     static const char* name() { return "ScalarGradient"; }
+    static const char* type() { return "scalar-gradient"; }
     void operator()(data::MIRField& field) const override {
         auto a = readField(field, 1);
         auto b = createField(2);
@@ -132,6 +135,7 @@ struct ScalarGradient final : NablaOperation {
 struct ScalarLaplacian final : NablaOperation {
     using NablaOperation::NablaOperation;
     static const char* name() { return "ScalarLaplacian"; }
+    static const char* type() { return "scalar-laplacian"; }
     void operator()(data::MIRField& field) const override {
         auto a = readField(field, 1);
         auto b = createField(1);
@@ -145,6 +149,7 @@ struct ScalarLaplacian final : NablaOperation {
 struct UVGradient final : NablaOperation {
     using NablaOperation::NablaOperation;
     static const char* name() { return "UVGradient"; }
+    static const char* type() { return "uv-gradient"; }
     void operator()(data::MIRField& field) const override {
         auto a = readField(field, 2);
         auto b = createField(4);
@@ -163,6 +168,7 @@ struct UVGradient final : NablaOperation {
 struct UVDivergence final : NablaOperation {
     using NablaOperation::NablaOperation;
     static const char* name() { return "UVDivergence"; }
+    static const char* type() { return "uv-divergence"; }
     void operator()(data::MIRField& field) const override {
         auto a = readField(field, 2);
         auto b = createField(1);
@@ -176,6 +182,7 @@ struct UVDivergence final : NablaOperation {
 struct UVVorticity final : NablaOperation {
     using NablaOperation::NablaOperation;
     static const char* name() { return "UVVorticity"; }
+    static const char* type() { return "uv-vorticity"; }
     void operator()(data::MIRField& field) const override {
         auto a = readField(field, 2);
         auto b = createField(1);
@@ -187,9 +194,19 @@ struct UVVorticity final : NablaOperation {
 
 
 template <typename T>
+void NablaFilterFVMT<T>::json(eckit::JSON& j) const {
+    j << "type" << (std::string("filter.") + T::type());
+    if (polesMissingValues_) {
+        j << "nabla-poles-missing-values" << polesMissingValues_;
+    }
+}
+
+
+template <typename T>
 bool NablaFilterFVMT<T>::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const NablaFilterFVMT<T>*>(&other);
-    return (o != nullptr) && meshGeneratorParams_.sameAs(o->meshGeneratorParams_);
+    return (o != nullptr) && polesMissingValues_ == o->polesMissingValues_ &&
+           meshGeneratorParams_.sameAs(o->meshGeneratorParams_);
 }
 
 

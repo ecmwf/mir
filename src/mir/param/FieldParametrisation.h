@@ -4,7 +4,14 @@
 
 #pragma once
 
+#include <memory>
+
 #include "mir/param/MIRParametrisation.h"
+
+
+namespace mir::param::detail {
+class FieldInfo;
+}
 
 
 namespace mir::param {
@@ -76,7 +83,7 @@ protected:
 private:
     // -- Members
 
-    mutable MIRParametrisation const* param_;
+    mutable std::unique_ptr<const detail::FieldInfo> info_;
 
     // -- Methods
 

@@ -1,0 +1,12 @@
+# input
+param=t,level=1000,resol=20
+# mir
+$MIR_CONFIG_STYLE=~mir/etc/mir/style-compatible.yaml
+--grid=source
+# grib_get
+gridType=reduced_gg
+gridName=O21
+numberOfValues=2520
+values[3]=250.519
+values[7]=247.642
+values[11]=245.574

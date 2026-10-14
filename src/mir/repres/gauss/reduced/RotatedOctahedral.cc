@@ -7,6 +7,7 @@
 #include <ostream>
 
 #include "mir/util/Atlas.h"
+#include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 
@@ -64,6 +65,11 @@ atlas::Grid RotatedOctahedral::atlasGrid() const {
 
 const Gridded* RotatedOctahedral::croppedRepresentation(const util::BoundingBox& bbox) const {
     return new RotatedOctahedral(N_, rotation_, bbox, angularPrecision_);
+}
+
+
+util::Domain RotatedOctahedral::geographicDomain() const {
+    return rotation_.domain(domain());
 }
 
 

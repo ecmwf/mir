@@ -24,6 +24,7 @@ public:
     using eckit::ValueMap::ValueMap;
     using eckit::ValueMap::operator=;
 
+    ValueMap() = default;
     explicit ValueMap(const eckit::Value&);
 
     void set(eckit::Configured&) const;

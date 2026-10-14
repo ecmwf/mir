@@ -4,7 +4,6 @@
 
 # Setup cache directory
 set(MIR_CACHE_PATH "${CMAKE_CURRENT_BINARY_DIR}/cache")
-file(REMOVE_RECURSE "${MIR_CACHE_PATH}")
 file(COPY cache DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 
 # Set testing environment
