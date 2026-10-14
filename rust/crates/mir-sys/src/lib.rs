@@ -148,6 +148,10 @@ pub mod ffi {
 
         type Job;
 
+        /// `interpolation` takes a method name, or a spec such as
+        /// `{type: k-nearest, nclosest: 8}` that also sets the method's
+        /// options. Options set by spec cannot then be set on their own, and
+        /// go when the interpolation is cleared or replaced.
         fn set_str(self: Pin<&mut Job>, name: &str, value: &str) -> Result<()>;
         fn set_f64(self: Pin<&mut Job>, name: &str, value: f64) -> Result<()>;
         fn set_i64(self: Pin<&mut Job>, name: &str, value: i64) -> Result<()>;
