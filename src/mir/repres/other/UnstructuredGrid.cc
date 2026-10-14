@@ -453,7 +453,7 @@ Representation* RepresentationBuilder<other::UnstructuredGrid>::make(const param
     // specially-named grids
 #if mir_HAVE_ECKIT_CODEC
     if (std::string uid; param.get("uid", uid) && eckit::geo::GridSpecByUID::instance().exists(uid)) {
-        std::unique_ptr<eckit::spec::Spec> spec(eckit::geo::GridSpecByUID::instance().get(uid).spec());
+        std::unique_ptr<eckit::spec::Spec> spec(eckit::geo::GridSpecByUID::instance().get_spec(uid));
         ASSERT(spec);
 
         auto type = spec->get_string("type");
