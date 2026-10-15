@@ -20,7 +20,6 @@
 #include <ios>
 #include <sstream>
 #include <string>
-#include <vector>
 
 // #include "eckit/config/Resource.h"
 #include "eckit/io/StdFile.h"
@@ -51,39 +50,6 @@ struct SHMInfo {
 };
 
 }  // namespace
-
-
-class Unloader {
-
-    std::vector<eckit::PathName> paths_;
-
-    Unloader() = default;
-
-public:
-    /// This ensures unloader is destructed in correct order with other static objects (like Log)
-    static Unloader& instance() {
-        static Unloader unloader;
-        return unloader;
-    }
-
-    void add(const eckit::PathName& path) { paths_.push_back(path); }
-
-    Unloader(const Unloader&)            = delete;
-    Unloader(Unloader&&)                 = delete;
-    Unloader& operator=(const Unloader&) = delete;
-    Unloader& operator=(Unloader&&)      = delete;
-
-    ~Unloader() {
-        for (auto& path : paths_) {
-            try {
-                SharedMemoryLoader::unloadSharedMemory(path);
-            }
-            catch (std::exception& e) {
-                Log::error() << e.what() << std::endl;
-            }
-        }
-    }
-};
 
 
 #if 0
@@ -178,7 +144,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
             }
         }
         else {
-            trace::Timer("SharedMemoryLoader: loading into shared memory");
+            trace::Timer load("SharedMemoryLoader: loading into shared memory");
 
             eckit::AutoStdFile file(real);
             ASSERT(std::fread(address_, 1, size_, file) == size_);
@@ -192,11 +158,6 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
     catch (...) {
         Shmget::shmdt(address_);
         throw;
-    }
-
-    // Make sure memory is unloaded on exit
-    if (unload_) {
-        Unloader::instance().add(path);
     }
 
     // eckit::StdPipe f("ipcs", "r");

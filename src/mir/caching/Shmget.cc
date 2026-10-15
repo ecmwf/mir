@@ -79,7 +79,14 @@ int Shmget::shmget(key_t key, size_t size) {
 
 
 int Shmget::shmget(key_t key, size_t size, int shmflg) {
-    return eckit::Shmget::shmget(key, size, shmflg);
+    int shmid = eckit::Shmget::shmget(key, size, shmflg);
+#ifdef SHM_HUGETLB
+    if (shmid < 0 && (shmflg & SHM_HUGETLB) != 0) {
+        // no huge pages reserved on this node, fall back to regular pages
+        shmid = eckit::Shmget::shmget(key, size, shmflg & ~SHM_HUGETLB);
+    }
+#endif
+    return shmid;
 }
 
 

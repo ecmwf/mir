@@ -26,7 +26,7 @@ public:
     /// Get or create (0600) a segment, on huge pages unless disabled ($MIR_CACHE_SHM_HUGETLB)
     static int shmget(key_t, size_t size);
 
-    /// Get a segment
+    /// Get a segment, on regular pages if huge pages (SHM_HUGETLB) aren't reserved
     static int shmget(key_t, size_t size, int shmflg);
 
     /// Attach a segment

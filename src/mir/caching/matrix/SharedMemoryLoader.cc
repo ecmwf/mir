@@ -19,7 +19,6 @@
 #include <ios>
 #include <sstream>
 #include <string>
-#include <vector>
 
 // #include "eckit/config/Resource.h"
 #include "eckit/maths/Functions.h"
@@ -52,39 +51,6 @@ struct SHMInfoNotPadded {
 using SHMInfo = eckit::Padded<SHMInfoNotPadded, 1280>;  // aligned to 64 bytes
 
 }  // namespace
-
-
-class Unloader {
-
-    std::vector<eckit::PathName> paths_;
-
-    Unloader() = default;
-
-public:
-    /// This ensures unloader is destructed in correct order with other static objects (like Log)
-    static Unloader& instance() {
-        static Unloader unloader;
-        return unloader;
-    }
-
-    void add(const eckit::PathName& path) { paths_.push_back(path); }
-
-    Unloader(const Unloader&)            = delete;
-    Unloader(Unloader&&)                 = delete;
-    Unloader& operator=(const Unloader&) = delete;
-    Unloader& operator=(Unloader&&)      = delete;
-
-    ~Unloader() {
-        for (auto& path : paths_) {
-            try {
-                SharedMemoryLoader::unloadSharedMemory(path);
-            }
-            catch (std::exception& e) {
-                Log::error() << e.what() << std::endl;
-            }
-        }
-    }
-};
 
 
 #if 0
@@ -182,6 +148,8 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
             }
         }
         else {
+            trace::Timer load("SharedMemoryLoader: loading into shared memory");
+
             method::WeightMatrix w(path);
             w.dump(addr + sizeof(SHMInfo), size());
 
@@ -194,11 +162,6 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
     catch (...) {
         Shmget::shmdt(address_);
         throw;
-    }
-
-    // Make sure memory is unloaded on exit
-    if (unload_) {
-        Unloader::instance().add(path);
     }
 
     // eckit::StdPipe f("ipcs", "r");
