@@ -5,6 +5,6 @@ param=t,level=1000
 # grib_get
 gridType=regular_ll
 numberOfValues=2664
-values[1]=254.127
+values[72]=255.168
 values[1332]=299.686
 values[2663]=254.443

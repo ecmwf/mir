@@ -15,6 +15,6 @@ jobs:
   python-wrapper-wheel:
     name: Python Wrapper Wheel
     uses: ecmwf/reusable-workflows/.github/workflows/python-wrapper-wheel.yml@main
-    with: 
+    with:
       wheel_directory: python/mirlib
     secrets: inherit

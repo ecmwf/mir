@@ -3,10 +3,9 @@
 
 
 #include "eckit/filesystem/PathName.h"
-#include "eckit/memory/Shmget.h"
 #include "eckit/testing/Test.h"
 
-#include "mir/caching/SharedMemoryKey.h"
+#include "mir/caching/Shmget.h"
 #include "mir/caching/legendre/SharedMemoryLoader.h"
 #include "mir/param/SimpleParametrisation.h"
 
@@ -23,7 +22,7 @@ CASE("SharedMemoryLoader unloads, for loader tmp-* from environment") {
         caching::legendre::SharedMemoryLoader loader(param, path);
     }
 
-    EXPECT(eckit::Shmget::shmget(caching::shared_memory_key(path.realName()), 0, 0600) < 0);
+    EXPECT(caching::Shmget::shmget(caching::Shmget::calculate_key(path.realName()), 0, 0600) < 0);
 }
 
 

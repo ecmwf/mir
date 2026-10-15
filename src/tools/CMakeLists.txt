@@ -46,7 +46,7 @@ if(mir_HAVE_ECKIT_CODEC)
         foreach(tool IN ITEMS
             mir-nc-to-codec
             mir-scrip-to-weight-matrix)
-            ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir eckit_codec NetCDF::NetCDF_CXX ${mir_INSTALL_TOOLS})
+            ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir eckit_codec NetCDF::NetCDF_CXX NetCDF::NetCDF_C ${mir_INSTALL_TOOLS})
         endforeach()
     endif()
 endif()
