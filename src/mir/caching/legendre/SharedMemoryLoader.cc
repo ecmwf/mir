@@ -24,11 +24,10 @@
 
 // #include "eckit/config/Resource.h"
 #include "eckit/io/StdFile.h"
-#include "eckit/memory/Shmget.h"
 // #include "eckit/os/SemLocker.h"
 #include "eckit/runtime/Main.h"
 
-#include "mir/caching/SharedMemoryKey.h"
+#include "mir/caching/Shmget.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Error.h"
@@ -92,7 +91,7 @@ class GlobalSemaphore {
 public:
     GlobalSemaphore(eckit::PathName path) : path_(path) {
         Log::debug() << "Semaphore for " << path << std::endl;
-        SYSCALL(semaphore_ = ::semget(shared_memory_key(path), 1, IPC_CREAT | 0600));
+        SYSCALL(semaphore_ = ::semget(Shmget::calculate_key(path), 1, IPC_CREAT | 0600));
     }
 
     eckit::PathName path_;
@@ -126,7 +125,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
     //    GlobalSemaphore gsem(real.dirName());
     //    static const int max_wait_lock = eckit::Resource<int>("$MIR_SEMLOCK_RETRIES", 60);
     //    eckit::SemLocker locker(gsem.semaphore_, gsem.path_, max_wait_lock);
-    const auto key = shared_memory_key(real);
+    const auto key = Shmget::calculate_key(real);
 
     long page_size = ::sysconf(_SC_PAGESIZE);
     ASSERT(page_size > 0);
@@ -135,15 +134,12 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
     msg << ", size: " << shmsize << " (" << Log::Bytes(shmsize) << "), key: 0x" << std::hex << key << std::dec
         << ", page size: " << Log::Bytes(page_size) << ", pages: " << Log::Pretty(shmsize / size_t(page_size));
 
-#ifdef IPC_INFO
-    // Only on Linux?
-    struct shminfo shm_info;
-    SYSCALL(::shmctl(0, IPC_INFO, reinterpret_cast<shmid_ds*>(&shm_info)));
-    msg << ", maximum shared memory segment size: " << Log::Bytes((shm_info.shmmax >> 10) * 1024);
-#endif
+    if (const auto max = Shmget::max_size(); max > 0) {
+        msg << ", maximum shared memory segment size: " << Log::Bytes(max);
+    }
 
     // This may return EINVAL is the segment is too large 256MB
-    int shmid = eckit::Shmget::shmget(key, shmsize, LibMir::cacheSharedMemoryLoaderShmFlg());
+    const int shmid = Shmget::shmget(key, shmsize);
     if (shmid < 0) {
         Log::warning()
             << msg.str()
@@ -154,27 +150,8 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
     }
     msg << ", shmid=" << shmid;
 
-#ifdef SHM_PAGESIZE
-    {
-
-        // Log::debug() << "SharedMemoryLoader: attempting to use 64K pages"  << std::endl;
-
-        /* Use 64K pages to back the shared memory region */
-        size_t shm_size;
-        struct shmid_ds shm_buf = {0};
-        psize_t psize_64k;
-        psize_64k = 64 * 1024;
-
-        shm_buf.shm_pagesize = psize_64k;
-        if (::shmctl(shmid, SHM_PAGESIZE, &shm_buf)) {
-            // Log::warning() << "SharedMemoryLoader: ::shmctl(SHM_PAGESIZE) failed, " << util::Error() << std::endl;
-        }
-    }
-
-#endif
-
     // Attach shared memory
-    address_ = eckit::Shmget::shmat(shmid, nullptr, 0);
+    address_ = Shmget::shmat(shmid, nullptr, 0);
     if (address_ == (void*)-1) {
         Log::warning() << msg.str() << ", shmat: failed to attach shared memory, " << util::Error() << std::endl;
         throw exception::FailedSystemCall(msg.str());
@@ -213,7 +190,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
         }
     }
     catch (...) {
-        eckit::Shmget::shmdt(address_);
+        Shmget::shmdt(address_);
         throw;
     }
 
@@ -233,7 +210,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
 
 SharedMemoryLoader::~SharedMemoryLoader() {
     if (address_ != nullptr) {
-        SYSCALL(eckit::Shmget::shmdt(address_));
+        SYSCALL(Shmget::shmdt(address_));
     }
     if (unload_) {
         unloadSharedMemory(path_);
@@ -250,17 +227,16 @@ void SharedMemoryLoader::loadSharedMemory(const eckit::PathName& path) {
 void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
     Log::debug() << "SharedMemoryLoader: unloading '" << path << "'" << std::endl;
 
-    const auto key = shared_memory_key(path.realName());
+    const auto key = Shmget::calculate_key(path.realName());
 
-    int shmid = eckit::Shmget::shmget(key, 0, 0600);
+    int shmid = Shmget::shmget(key, 0, 0600);
     if (shmid < 0) {
         Log::warning() << "SharedMemoryLoader: shmget: path='" << path << "', "
                        << (errno == ENOENT ? "already unloaded" : "failed to acquire shared memory") << std::endl;
         return;
     }
 
-    // FIXME: add to eckit::Shmget interface
-    if (::shmctl(shmid, IPC_RMID, nullptr) < 0) {
+    if (Shmget::shmctl(shmid, IPC_RMID, nullptr) < 0) {
         Log::warning() << "SharedMemoryLoader: ::shmctl: cannot delete '" << path << "'" << std::endl;
     }
 

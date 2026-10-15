@@ -168,8 +168,8 @@ list(APPEND mir_srcs
     caching/InMemoryCacheStatistics.h
     caching/InMemoryCacheUsage.cc
     caching/InMemoryCacheUsage.h
-    caching/SharedMemoryKey.cc
-    caching/SharedMemoryKey.h
+    caching/Shmget.cc
+    caching/Shmget.h
     caching/WeightCache.cc
     caching/WeightCache.h
     caching/matrix/FileLoader.cc
@@ -932,7 +932,7 @@ endif()
 
 if (HAS_SYS_STAT_ST_CTIMESPEC)
     set_source_files_properties(
-        caching/SharedMemoryKey.cc
+        caching/Shmget.cc
         PROPERTIES
         COMPILE_DEFINITIONS HAS_SYS_STAT_ST_CTIMESPEC)
 endif()
