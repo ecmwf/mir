@@ -1,0 +1,24 @@
+{
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 21,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "cacheVariables": {
+        "ENABLE_BUILD_TOOLS": "ON",
+        "ENABLE_TESTS": "ON"
+      },
+      "name": "ci"
+    },
+    {
+      "cacheVariables": {
+        "ENABLE_PYTHON": "ON"
+      },
+      "inherits": "ci",
+      "name": "python"
+    }
+  ],
+  "version": 3
+}

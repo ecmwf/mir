@@ -9,8 +9,8 @@
 #include <ostream>
 #include <sstream>
 
-#include "eckit/types/FloatCompare.h"
 #include "eckit/spec/Custom.h"
+#include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
 #include "eckit/utils/MD5.h"
 

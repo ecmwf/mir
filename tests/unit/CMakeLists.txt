@@ -39,7 +39,6 @@ set(TESTS
     packing
     plan
     raw_memory
-    space_view
     spectral_order
     statistics
     style
@@ -49,6 +48,10 @@ set(TESTS
 
 if(mir_HAVE_NETCDF)
     list(APPEND TESTS interpolation_netcdf)
+endif()
+
+if(atlas_HAVE_PROJ)
+    list(APPEND TESTS space_view)
 endif()
 
 foreach(_t ${TESTS})
