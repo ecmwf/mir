@@ -104,6 +104,10 @@ fn build_system() {
 
     bindman_utils::link_cpp_stdlib();
 
+    // Rpaths for this crate's own test binaries; consumers emit their own.
+    println!("cargo:rustc-link-arg=-Wl,-rpath,{}", lib_dir.display());
+    bindman_utils::emit_rpaths();
+
     println!("cargo:root={}", root.display());
     println!("cargo:include={}", mir_include.display());
 
