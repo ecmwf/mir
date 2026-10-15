@@ -220,7 +220,11 @@ fn build_vendored() {
         ))
         .arg("-DENABLE_TESTS=OFF")
         .arg("-DBUILD_TESTING=OFF")
-        .arg("-DENABLE_BUILD_TOOLS=OFF");
+        .arg("-DENABLE_BUILD_TOOLS=OFF")
+        .arg(format!(
+            "-DENABLE_MIR_DOWNLOAD_MASKS={}",
+            bindman_utils::on_off(cfg!(feature = "download-masks"))
+        ));
 
     #[cfg(target_os = "macos")]
     cmd.arg("-DCMAKE_INSTALL_NAME_DIR=@rpath");
