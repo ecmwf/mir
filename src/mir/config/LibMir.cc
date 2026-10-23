@@ -115,7 +115,7 @@ int LibMir::cacheSharedMemoryLoaderShmFlg() {
     // The kernel rounds shmsize up to the huge-page boundary itself; fall back to regular
     // pages if huge pages aren't available/reserved on this node.
     static const bool hugetlb =
-        eckit::LibResource<bool, LibMir>("mir-shared-memory-loader-hugepages;$MIR_CACHE_SHM_HUGETLB", true);
+        eckit::LibResource<bool, LibMir>("mir-shared-memory-loader-hugepages;$MIR_CACHE_SHM_HUGETLB", false);
     return hugetlb ? (shmflg | SHM_HUGETLB) : shmflg;
 #else
     return shmflg;
