@@ -16,6 +16,7 @@
 #include <ostream>
 #include <vector>
 
+#include "eckit/geo/PointLonLat.h"
 #include "eckit/geo/area/BoundingBox.h"
 #include "eckit/spec/Custom.h"
 #include "eckit/types/FloatCompare.h"
@@ -90,10 +91,11 @@ bool Rotation::operator==(const Rotation& other) const {
 
 
 BoundingBox Rotation::boundingBox(const BoundingBox& bbox) const {
-    eckit::geo::projection::Rotation projection({south_pole_longitude().value(), south_pole_latitude().value()});
+    const eckit::geo::projection::Rotation projection({south_pole_longitude().value(), south_pole_latitude().value()});
+    const eckit::geo::PointLonLat min{bbox.west().value(), bbox.south().value()};
+    const eckit::geo::PointLonLat max{bbox.east().value(), bbox.north().value()};
 
-    auto after = eckit::geo::area::BoundingBox::make_from_projection(
-        {bbox.west().value(), bbox.south().value()}, {bbox.east().value(), bbox.north().value()}, projection);
+    auto after = eckit::geo::area::BoundingBox::make_from_projection(min, max, projection);
     ASSERT(after);
 
     return {after->north(), after->west(), after->south(), after->east()};

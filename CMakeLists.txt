@@ -30,7 +30,7 @@ if(NOT TARGET OpenMP::OpenMP_CXX)
     set(mir_HAVE_OMP 0)
 endif()
 
-ecbuild_find_package(NAME eckit   VERSION 2.1 REQUIRED)
+ecbuild_find_package(NAME eckit   VERSION 2.5 REQUIRED)
 ecbuild_find_package(NAME eccodes VERSION 2.47 REQUIRED)
 ecbuild_find_package(NAME atlas   VERSION 0.46 REQUIRED)
 
