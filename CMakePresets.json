@@ -8,6 +8,7 @@
     {
       "cacheVariables": {
         "ENABLE_BUILD_TOOLS": "ON",
+        "ENABLE_NETCDF": "OFF",
         "ENABLE_TESTS": "ON"
       },
       "name": "ci"
