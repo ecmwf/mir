@@ -3,10 +3,9 @@ build:
     - ninja
   dependencies:
     - ecmwf/ecbuild@develop
-    - ecmwf/eccodes@develop
     - ecmwf/eckit@develop
+    - ecmwf/eccodes@develop
     - ecmwf/atlas@develop
-    - ecmwf/metkit@develop
   parallel: 64
   env:
     - MIR_CACHING=0
