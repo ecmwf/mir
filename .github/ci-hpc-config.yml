@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 1996- European Centre for Medium-Range Weather Forecasts (ECMWF)
+# SPDX-License-Identifier: Apache-2.0
+
 build:
   modules:
     - ninja
@@ -6,6 +9,8 @@ build:
     - ecmwf/eckit@develop
     - ecmwf/eccodes@develop
     - ecmwf/atlas@develop
+  dependency_cmake_options:
+    - "ecmwf/eccodes: '-DENABLE_ECKIT_GEO=ON'"
   parallel: 64
   env:
     - MIR_CACHING=0

@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: 1996- European Centre for Medium-Range Weather Forecasts (ECMWF)
+# SPDX-License-Identifier: Apache-2.0
+
+name: reuse
+
+on:
+  # Trigger the workflow on push to main, master or develop, except tag creation
+  push:
+    branches:
+      - 'main'
+      - 'master'
+      - 'develop'
+    tags-ignore:
+      - '**'
+
+  # Trigger the workflow on pull request
+  pull_request: ~
+
+  # Trigger the workflow manually
+  workflow_dispatch: ~
+
+jobs:
+  # Check that every file declares its copyright and licence (ADR-010)
+  reuse:
+    name: reuse
+    runs-on: ubuntu-latest
+    steps:
+      # Third-party actions are pinned to an immutable commit SHA, per the
+      # Codex audit guidance; the tag in the comment locates the release.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: fsfe/reuse-action@676e2d560c9a403aa252096d99fcab3e1132b0f5 # v6.0.0
