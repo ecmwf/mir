@@ -118,14 +118,14 @@ CASE("interpolationSpec") {
 
 
     SECTION("Method spec, known names") {
-        for (const auto& [spec, known] : std::vector<std::pair<std::string, std::string>>{
+        for (const auto& spec_known : std::vector<std::pair<std::string, std::string>>{
                  {L, "linear"},
                  {"{type: structured-bilinear}", "structured-bilinear"},
                  {"{type: structured-bicubic, interpolation_matrix_free: true}", "structured-bicubic"},
                  {"{type: structured-biquasicubic, interpolation-matrix-free: true}", "structured-biquasicubic"},
              }) {
-            std::unique_ptr<const method::Method> m(method::MethodFactory::make_from_string(spec));
-            EXPECT_EQUAL(m->json_str(), known);
+            std::unique_ptr<const method::Method> m(method::MethodFactory::make_from_string(spec_known.first));
+            EXPECT_EQUAL(m->json_str(), spec_known.second);
         }
 
         // not known (a different option)
