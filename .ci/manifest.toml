@@ -31,21 +31,11 @@ package = "eckit"
 ref = "develop"
 compiler-inputs = ["cxx-compiler"]
 
-# mir needs eckit_geo in eccodes and metkit's GRIB2MARS/MARS2GRIB, so its legs
-# are limited to where those builds exist.
-[[deps]]
-repo = "ecmwf/eccodes"
-package = "eccodes"
-ref = "develop"
-compiler-inputs = ["cxx-compiler"]
-options = "eckit-geo"
-
 [[deps]]
 repo = "ecmwf/metkit"
 package = "metkit"
 ref = "develop"
 compiler-inputs = ["cxx-compiler"]
-options = "eckit-geo"
 
 [[deps]]
 repo = "ecmwf/atlas"
