@@ -19,6 +19,14 @@ if(MARS_SCRIPT)
     file(GLOB_RECURSE test_files LIST_DIRECTORIES false *.test)
 
     foreach(_t ${test_files})
+        # without bundled land-sea masks, tests using them would download them at runtime
+        if(NOT HAVE_MIR_DOWNLOAD_MASKS)
+            file(READ "${_t}" _content)
+            if(_content MATCHES "nearest-lsm|--lsm")
+                continue()
+            endif()
+        endif()
+
         target_from_path("${_t}" target)
         ecbuild_add_test(
             TARGET      ${target}
