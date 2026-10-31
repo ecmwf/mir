@@ -12,6 +12,7 @@ name = "mir"
 repo = "ecmwf/mir"
 visibility = "public"
 compiler-inputs = ["cxx-compiler"]
+allow-stale-deps = true
 
 [[deps]]
 repo = "ecmwf/ecbuild"
