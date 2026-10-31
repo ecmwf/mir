@@ -17,7 +17,10 @@ links = "mir_sys"
 build = "build.rs"
 
 [features]
-default = ["vendored"]
+default = ["vendored", "download-masks"]
+
+# Download land-sea masks during the vendored build (ENABLE_MIR_DOWNLOAD_MASKS)
+download-masks = []
 
 # Build strategy (mutually exclusive)
 vendored = [
