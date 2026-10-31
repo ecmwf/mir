@@ -12,6 +12,7 @@ name = "mir"
 repo = "ecmwf/mir"
 visibility = "public"
 compiler-inputs = ["cxx-compiler"]
+allow-stale-deps = true
 
 [[deps]]
 repo = "ecmwf/ecbuild"
@@ -49,7 +50,7 @@ triggers = ["upstream-change", "rebuild-request"]
 [matrix.build.defaults]
 job-script = "./.ci/runner/build.sh.j2"
 build-type = "RelWithDebInfo"
-runs-on = "arc-runner-very-large"
+runs-on = "arc-runner-large"
 cxx-compiler = "g++-13"
 c-compiler = "gcc-13"
 container = "eccr.ecmwf.int/public-ci-images/ubuntu24.04-gcc13-gfortran13"
