@@ -57,6 +57,11 @@ CMake locates the libraries through `CMAKE_PREFIX_PATH`.
 
 `vendored` is enabled by default.
 
+### Vendored build options
+
+- `download-masks` - Download the land-sea mask files during the vendored build
+  (`ENABLE_MIR_DOWNLOAD_MASKS`). Enabled by default; no effect with `system`.
+
 ## License
 
 Apache-2.0
