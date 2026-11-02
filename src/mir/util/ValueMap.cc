@@ -35,8 +35,8 @@ template <typename Config>
 void set_value(Config& config, const std::string& k, const eckit::Value& v) {
     if (v.isList()) {
         // lists of numbers or strings (as vectors)
-        const eckit::ValueList list(v);
-        auto all = [&list](auto pred) { return std::all_of(list.begin(), list.end(), pred); };
+        const auto list = v.as<eckit::ValueList>();
+        auto all        = [&list](auto pred) { return std::all_of(list.begin(), list.end(), pred); };
 
         if (all([](const eckit::Value& x) { return x.isNumber(); })) {
             config.set(k, std::vector<long>(list.begin(), list.end()));
