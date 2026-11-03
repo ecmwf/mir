@@ -23,6 +23,10 @@ public:
     static std::string cacheDir();
 
     static bool caching();
+
+    /// If a missing cache file is an error, not created, for provisioned caches ($MIR_THROW_ON_CACHE_MISS)
+    static bool cacheThrowOnMiss();
+
     static const std::string& lsmNamed();
 
     static const std::string& gribSampleName();
