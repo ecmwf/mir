@@ -15,8 +15,7 @@ namespace mir::caching {
 AreaCropperCache::AreaCropperCache() :
     eckit::CacheManager<AreaCropperCacheTraits>(
         "Cropper",  // dummy -- would be used in load() / save() static functions
-        LibMir::cacheDir(), eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false),
-        eckit::Resource<size_t>("$MIR_AREA_CACHE_SIZE", 0)) {}
+        LibMir::cacheDir(), LibMir::cacheThrowOnMiss(), eckit::Resource<size_t>("$MIR_AREA_CACHE_SIZE", 0)) {}
 
 
 const char* AreaCropperCacheTraits::name() {
