@@ -1,0 +1,6 @@
+# input (values 0, 2, 4, ..., 82)
+gridType=unstructured_grid.grib2
+# mir
+--input={griddef:$tests_plans_dir/gridType=unstructured_grid.pts} --grid={grid:30/30} --interpolation=restructure
+# plan
+Gridded2GridSpec[gridspec={"grid":[30,30]},interpolation=restructure,method=Restructure[nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,nearestMethod=NClosestOrNearest[nclosest=4,distanceTolerance=1]]]|Save[output=...]
