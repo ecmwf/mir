@@ -41,8 +41,8 @@ bool Method::getKnownName(std::string& name) const {
     // methods built from their name alone, by spec
     static const auto KNOWN = param::SpecParametrisation::knownSpecs<MethodFactory>(
         {"linear", "bilinear", "nearest-neighbour", "k-nearest", "grid-box-average", "grid-box-statistics",
-         "healpix-resample", "healpix-statistics", "voronoi-statistics", "structured-bilinear", "structured-bicubic",
-         "structured-biquasicubic"});
+         "healpix-resample", "healpix-statistics", "restructure", "voronoi-statistics", "structured-bilinear",
+         "structured-bicubic", "structured-biquasicubic"});
 
     if (const auto i = KNOWN.find(json_str(false)); i != KNOWN.end()) {
         name = i->second;
