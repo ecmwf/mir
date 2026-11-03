@@ -6,13 +6,19 @@
 
 #include <algorithm>
 #include <set>
+#include <sstream>
+#include <vector>
 
+#include "eckit/cache/DiskCache.h"
+#include "eckit/cache/Roots.h"
 #include "eckit/config/Configuration.h"
 #include "eckit/config/Resource.h"
 #include "eckit/filesystem/PathName.h"
+#include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/api/mir_version.h"
+#include "mir/caching/InMemoryCacheBase.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 
@@ -30,6 +36,86 @@ std::string LibMir::cacheDir() {
     static std::string mirCachePath =
         eckit::PathName(eckit::LibResource<eckit::PathName, LibMir>("mir-cache-path;$MIR_CACHE_PATH", "/tmp/cache"));
     return mirCachePath;
+}
+
+
+namespace {
+
+
+/// Cache paths, as the caches use them (read in order, written in the first writable)
+eckit::cache::Roots cache_roots() {
+    return eckit::cache::Roots{LibMir::cacheDir()};
+}
+
+
+}  // namespace
+
+
+std::string LibMir::cacheInfo() {
+    const auto roots    = cache_roots();
+    const auto writable = roots.writable_paths();
+
+    std::ostringstream out;
+    eckit::JSON j(out);
+
+    j.startObject();
+
+    j << "memory";
+    caching::InMemoryCacheBase::json(j);
+
+    j << "disk";
+    j.startObject();
+
+    j << "control";
+    j.startObject();
+    j << "caching" << caching();
+    j << "throw_on_miss" << cacheThrowOnMiss();
+    j << "paths";
+    j.startObject();
+    j << "readable";
+    j.startList();
+    for (const auto& p : roots.readable_paths()) {
+        j << p.asString();
+    }
+    j.endList();
+    j << "writable";
+    j.startList();
+    for (const auto& p : writable) {
+        j << p.asString();
+    }
+    j.endList();
+    j.endObject();
+    j.endObject();
+
+    // cache files, where they are written (the first writable path), by directory
+    if (!writable.empty() && (writable.front() / "mir").exists()) {
+        std::vector<eckit::PathName> files;
+        std::vector<eckit::PathName> dirs;
+        (writable.front() / "mir").children(files, dirs);
+
+        for (const auto& d : dirs) {
+            j << d.baseName();
+            j.startObject();
+            j << "size" << eckit::cache::DiskCache::size(d);
+            j.endObject();
+        }
+    }
+    j.endObject();
+
+    j.endObject();
+    return out.str();
+}
+
+
+void LibMir::purgeCache() {
+    caching::InMemoryCacheBase::purgeAll();
+}
+
+
+void LibMir::removeCacheDir() {
+    if (const auto writable = cache_roots().writable_paths(); !writable.empty()) {
+        eckit::cache::DiskCache::remove(writable.front() / "mir");
+    }
 }
 
 
