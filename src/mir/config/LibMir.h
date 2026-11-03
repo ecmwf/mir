@@ -22,6 +22,18 @@ public:
     static std::string homeUrl();
     static std::string cacheDir();
 
+    /**
+     * Caching state (JSON, sizes in bytes): memory, in-process by cache (footprint and capacity); disk, its control
+     * (caching, throw on miss, paths) and cache files size by directory (where written), as eckit::geo's
+     */
+    static std::string cacheInfo();
+
+    /// Release the in-process caches not in use; cache files are kept
+    static void purgeCache();
+
+    /// Remove the cache files (the mir directory of the first writable cache path), if any
+    static void removeCacheDir();
+
     static bool caching();
 
     /// If a missing cache file is an error, not created, for provisioned caches ($MIR_THROW_ON_CACHE_MISS)

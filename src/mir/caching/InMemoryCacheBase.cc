@@ -4,7 +4,12 @@
 
 #include "mir/caching/InMemoryCacheBase.h"
 
+#include <map>
+#include <set>
+#include <utility>
+
 #include "eckit/config/Resource.h"
+#include "eckit/log/JSON.h"
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -53,6 +58,47 @@ InMemoryCacheUsage InMemoryCacheBase::totalFootprint() {
 
     return result;
 }
+
+void InMemoryCacheBase::json(eckit::JSON& j) {
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
+
+    std::map<std::string, std::pair<InMemoryCacheUsage, InMemoryCacheUsage>> caches;
+    for (const auto& c : *m) {
+        auto& [footprint, capacity] = caches[c->name()];
+        footprint += c->footprint();
+        capacity += c->capacity();
+    }
+
+    auto usage = [&j](const InMemoryCacheUsage& u) {
+        j.startObject();
+        j << "process" << u.memory() << "shared" << u.shared();
+        j.endObject();
+    };
+
+    j.startObject();
+    for (const auto& [name, fc] : caches) {
+        j << name;
+        j.startObject();
+        j << "footprint";
+        usage(fc.first);
+        j << "capacity";
+        usage(fc.second);
+        j.endObject();
+    }
+    j.endObject();
+}
+
+
+void InMemoryCacheBase::purgeAll() {
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
+
+    for (const auto& c : *m) {
+        c->purge(c->footprint(), false);
+    }
+}
+
 
 void InMemoryCacheBase::checkTotalFootprint() {
     util::call_once(once, init);
