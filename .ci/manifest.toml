@@ -15,21 +15,9 @@ compiler-inputs = ["cxx-compiler"]
 allow-stale-deps = true
 
 [[deps]]
-repo = "ecmwf/ecbuild"
-package = "ecbuild"
-ref = "develop"
-compiler-inputs = []
-
-[[deps]]
 repo = "ecmwf/stack-dependencies"
-package = ["netcdf", "netcdf_cxx4"]
+package = "netcdf_cxx4"
 ref = "master"
-compiler-inputs = ["cxx-compiler"]
-
-[[deps]]
-repo = "ecmwf/eckit"
-package = "eckit"
-ref = "develop"
 compiler-inputs = ["cxx-compiler"]
 
 [[deps]]
