@@ -13,10 +13,9 @@ namespace mir::caching {
 
 
 AreaMaskerCache::AreaMaskerCache() :
-    eckit::CacheManager<AreaMaskerCacheTraits>(
-        "Masker",  // dummy -- would be used in load() / save() static functions
-        LibMir::cacheDir(), eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false),
-        eckit::Resource<size_t>("$MIR_AREA_CACHE_SIZE", 0)) {}
+    eckit::CacheManager<AreaMaskerCacheTraits>("Masker",  // dummy -- would be used in load() / save() static functions
+                                               LibMir::cacheDir(), LibMir::cacheThrowOnMiss(),
+                                               eckit::Resource<size_t>("$MIR_AREA_CACHE_SIZE", 0)) {}
 
 
 const char* AreaMaskerCacheTraits::name() {

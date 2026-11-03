@@ -46,6 +46,12 @@ bool LibMir::caching() {
 }
 
 
+bool LibMir::cacheThrowOnMiss() {
+    static const bool yes = eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false);
+    return yes;
+}
+
+
 const std::string& LibMir::lsmNamed() {
     static const std::string mirLsmNamed =
         eckit::LibResource<std::string, LibMir>("mir-lsm-named;$MIR_LSM_NAMED", "1km.climate.v020");
