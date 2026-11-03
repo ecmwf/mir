@@ -50,8 +50,27 @@ def home() -> str:
     return mir.LibMir.homeDir()
 
 
-def cache() -> str:
-    return mir.LibMir.cacheDir()
+def cache():
+    """Caching state, as of now (sizes in bytes): memory, in-process by cache
+    (footprint, capacity); disk, its control (caching, throw on miss, paths) and cache
+    files size by directory; shown as indented text (sizes in binary units), as
+    eckit.geo.cache"""
+    import json
+
+    from eckit.geo import CacheInfo
+
+    return CacheInfo(json.loads(mir.LibMir.cacheInfo()))
+
+
+def cache_purge() -> None:
+    """Release the in-process caches not in use; cache files are kept"""
+    mir.LibMir.purgeCache()
+
+
+def cache_rmdir() -> None:
+    """Remove the cache files (the mir directory of the first writable cache path), if
+    any"""
+    mir.LibMir.removeCacheDir()
 
 
 def version() -> str:
