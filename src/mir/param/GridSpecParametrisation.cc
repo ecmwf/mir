@@ -277,15 +277,15 @@ bool GridSpecParametrisation::cached(const std::string& name) const {
         return set(grid.uid());
     }
 
-    if (name == "gridspec" && (gridType == "unstructured_grid" || gridType == "regular_xy")) {
-        return set(grid.spec_str());
-    }
-
     if ((name == "latitudes" || name == "longitudes") && gridType == "unstructured_ll") {
         auto [lats, lons] = grid.to_latlons();
         cache_.set("latitudes", lats);
         cache_.set("longitudes", lons);
         return true;
+    }
+
+    if (name == "gridspec") {
+        return set(grid.spec_str());
     }
 
     return false;
