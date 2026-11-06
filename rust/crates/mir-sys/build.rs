@@ -104,6 +104,10 @@ fn build_system() {
 
     bindman_utils::link_cpp_stdlib();
 
+    // Rpaths for this crate's own test binaries; consumers emit their own.
+    println!("cargo:rustc-link-arg=-Wl,-rpath,{}", lib_dir.display());
+    bindman_utils::emit_rpaths();
+
     println!("cargo:root={}", root.display());
     println!("cargo:include={}", mir_include.display());
 
@@ -216,7 +220,11 @@ fn build_vendored() {
         ))
         .arg("-DENABLE_TESTS=OFF")
         .arg("-DBUILD_TESTING=OFF")
-        .arg("-DENABLE_BUILD_TOOLS=OFF");
+        .arg("-DENABLE_BUILD_TOOLS=OFF")
+        .arg(format!(
+            "-DENABLE_MIR_DOWNLOAD_MASKS={}",
+            bindman_utils::on_off(cfg!(feature = "download-masks"))
+        ));
 
     #[cfg(target_os = "macos")]
     cmd.arg("-DCMAKE_INSTALL_NAME_DIR=@rpath");

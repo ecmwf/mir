@@ -30,6 +30,7 @@ include!(concat!(env!("OUT_DIR"), "/mir_exceptions.rs"));
 pub mod ffi {
     unsafe extern "C++" {
         include!("MirBridge.h");
+        include!("mir_exceptions.h");
 
         // Cross-crate ExternType from eckit-sys
         #[namespace = "eckit_bridge"]
