@@ -41,7 +41,7 @@ repos:
   hooks:
   - id: reuse
 - repo: https://github.com/ecmwf/ci-infrastructure
-  rev: 58415a3f064f14200ef23ad5a5b9288bc4ab49f6
+  rev: 82d9bb0981ec1b76b3800f3770a3698a96e81db6
   hooks:
   - id: check-ci-approval
   - id: check-ci-result
