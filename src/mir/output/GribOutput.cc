@@ -8,7 +8,6 @@
 #include <ostream>
 #include <sstream>
 
-#include "eckit/config/LocalConfiguration.h"
 #include "eckit/config/Resource.h"
 
 #include "mir/action/context/Context.h"
@@ -16,7 +15,6 @@
 #include "mir/action/io/Save.h"
 #include "mir/action/io/Set.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/api/mir_config.h"
 #include "mir/compat/GribCompatibility.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
@@ -36,14 +34,6 @@
 #include "mir/util/Mutex.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
-
-#if mir_HAVE_METKIT
-#include "eckit/spec/Custom.h"
-
-#include "metkit/codes/api/CodesAPI.h"
-#include "metkit/grib2mars/api/Grib2Mars.h"
-#include "metkit/mars2grib/api/Mars2Grib.h"
-#endif
 
 
 namespace mir::output {
@@ -191,10 +181,6 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
     const auto& input = ctx.input();
 
     field.validate();
-
-    if (do_save_with_metkit(param)) {
-        return save_with_metkit(param, ctx);
-    }
 
     size_t total = 0;
 
@@ -516,36 +502,6 @@ size_t GribOutput::set(const param::MIRParametrisation& param, context::Context&
 void GribOutput::fill(grib_handle* /*unused*/, grib_info& /*unused*/) const {}
 
 
-bool GribOutput::do_save_with_metkit(const param::MIRParametrisation& param) {
-#if mir_HAVE_METKIT
-    enum tristate_t
-    {
-        UNDEFINED = 0,
-        FALSE,
-        TRUE,
-    };
-
-    if (static auto use =
-            []() {
-                static const std::string str("$MIR_GRIB_OUTPUT_METKIT");
-                const long a = eckit::LibResource<long, LibMir>(str, 0);
-                const long b = eckit::LibResource<long, LibMir>(str, 1);
-                return a != b ? UNDEFINED : a == 0 ? FALSE : TRUE;
-            }();
-        use != UNDEFINED) {
-        return use != FALSE;
-    }
-
-    long isECMWFPostGRIB2MigrationMessage = 0;
-    param.fieldParametrisation().get("isECMWFPostGRIB2MigrationMessage", isECMWFPostGRIB2MigrationMessage);
-
-    return isECMWFPostGRIB2MigrationMessage != 0;
-#else
-    return false;
-#endif
-}
-
-
 const grib::Config& GribOutput::config() {
     static const grib::Config cfg(LibMir::configFile(LibMir::config_file::GRIB_OUTPUT), true);
     return cfg;
@@ -557,62 +513,6 @@ param::MIRParametrisation* GribOutput::make_parametrised_config(const param::MIR
                                                    config().find(param));
     ASSERT(ptr != nullptr);
     return ptr;
-}
-
-
-size_t GribOutput::save_with_metkit(const param::MIRParametrisation& param, context::Context& ctx) {
-#if mir_HAVE_METKIT
-    const auto& field = ctx.field();
-    const auto& input = ctx.input();
-
-    metkit::grib2mars::Grib2Mars grib2mars;
-    metkit::mars2grib::Mars2Grib mars2grib;
-
-    size_t total = 0;
-
-    util::MIRStatistics::Timing saveTimer;
-    auto timer(ctx.statistics().gribEncodingTimer());
-
-    for (size_t d = 0; d < field.dimensions(); ++d, ++saved_) {
-        auto ch = metkit::codes::codesHandleFromGRIBHandle(input.gribHandle(field.handle(d)));
-        ASSERT(ch);
-
-        auto [mars, misc] = grib2mars.convert<eckit::LocalConfiguration>(*ch);
-
-        // Note: key removals are for temporary compatibility
-        mars.remove("area");
-        mars.remove("rotation");
-        mars.remove("truncation");
-
-        mars.set("grid", [&field]() {
-            repres::Representation::CustomSpec spec;
-            repres::RepresentationHandle(field.representation())->fillSpec(spec);
-            return spec.str();
-        }());
-
-        const auto h = mars2grib.encode(field.values(d), mars, misc);
-        ASSERT(h);
-
-        {
-            util::MIRStatistics::AutoTiming timing(saveTimer);
-            out(h->messageData().data(), h->messageSize(), true);
-        }
-
-        total += h->messageSize();
-
-        if (grib_check_is_message_valid()) {
-            if (const auto valid = h->getLong("isMessageValid"); valid != 1) {
-                throw exception::WriteError("GribOutput: invalid GRIB message");
-            }
-        }
-    }
-
-    ctx.statistics().gribEncodingTiming() -= saveTimer;
-
-    return total;
-#else
-    NOTIMP;
-#endif
 }
 
 

@@ -33,10 +33,11 @@ ref = "develop"
 compiler-inputs = ["cxx-compiler"]
 
 [[deps]]
-repo = "ecmwf/metkit"
-package = "metkit"
+repo = "ecmwf/eccodes"
+package = "eccodes"
 ref = "develop"
 compiler-inputs = ["cxx-compiler"]
+options = "eckit-geo"
 
 [[deps]]
 repo = "ecmwf/atlas"

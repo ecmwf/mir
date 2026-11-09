@@ -918,10 +918,6 @@ ecbuild_add_library(
     PUBLIC_INCLUDES    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/src>
     SOURCES            ${mir_srcs})
 
-if(mir_HAVE_METKIT)
-    target_link_libraries(mir PRIVATE metkit)
-endif()
-
 if(mir_HAVE_NETCDF)
     target_link_libraries(mir PRIVATE NetCDF::NetCDF_C)
 endif()

@@ -28,16 +28,12 @@ ecbuild_find_package(NAME eckit   VERSION 2.1 REQUIRED)
 ecbuild_find_package(NAME eccodes VERSION 2.48 REQUIRED)
 ecbuild_find_package(NAME atlas   VERSION 0.46 REQUIRED)
 
-ecbuild_add_option(FEATURE METKIT DEFAULT ON REQUIRED_PACKAGES "metkit VERSION 1.18.3")
-
 if(NOT TARGET eckit_geo)
     MESSAGE(FATAL_ERROR "mir: eckit feature ECKIT_GEO is required")
 endif()
 
-if(TARGET metkit)
-    if(NOT metkit_HAVE_GRIB2MARS OR NOT metkit_HAVE_MARS2GRIB)
-        MESSAGE(FATAL_ERROR "mir: metkit features GRIB2MARS and MARS2GRIB are required")
-    endif()
+if(NOT eccodes_HAVE_ECKIT_GEO)
+    MESSAGE(FATAL_ERROR "mir: eccodes feature ECKIT_GEO is required")
 endif()
 
 #TODO ensure eccodes has required features

@@ -87,30 +87,6 @@ ecbuild_add_test(
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-if(mir_HAVE_METKIT)
-    ecbuild_add_test(
-        TARGET            mir_tests_unit_metkit
-        SOURCES           metkit.cc
-        LIBS              mir
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        ENVIRONMENT       ${_testEnvironment}
-    )
-    ecbuild_add_test(
-        TARGET            mir_tests_unit_metkit_env_0
-        SOURCES           metkit.cc
-        LIBS              mir
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        ENVIRONMENT       ${_testEnvironment} MIR_GRIB_OUTPUT_METKIT=0
-    )
-    ecbuild_add_test(
-        TARGET            mir_tests_unit_metkit_env_1
-        SOURCES           metkit.cc
-        LIBS              mir
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        ENVIRONMENT       ${_testEnvironment} MIR_GRIB_OUTPUT_METKIT=1
-    )
-endif()
-
 if(ENABLE_BUILD_TOOLS)
     ecbuild_configure_file(grib_fail_decode.sh.in grib_fail_decode.sh)
 

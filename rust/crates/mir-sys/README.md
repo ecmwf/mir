@@ -27,8 +27,8 @@ cargo build
 ```
 
 That is all. By default the build compiles mir and everything it needs (eckit,
-ecCodes, atlas, metkit) from source, so the first build downloads a lot and
-takes a while; later builds reuse it. When the crate is inside a mir checkout it
+ecCodes, atlas) from source, so the first build downloads a lot and takes a
+while; later builds reuse it. When the crate is inside a mir checkout it
 builds that checkout, so local C++ changes are picked up.
 
 Run the tests and the example:
@@ -52,7 +52,7 @@ CMake locates the libraries through `CMAKE_PREFIX_PATH`.
 
 ### Build strategy (mutually exclusive)
 
-- `vendored` - Build mir and its dependencies (eckit, metkit, ecCodes, atlas) from source.
+- `vendored` - Build mir and its dependencies (eckit, ecCodes, atlas) from source.
 - `system` - Link against system-installed mir.
 
 `vendored` is enabled by default.

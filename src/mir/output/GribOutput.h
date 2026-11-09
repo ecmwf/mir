@@ -39,8 +39,6 @@ public:
     static const grib::Config& config();
     static param::MIRParametrisation* make_parametrised_config(const param::MIRParametrisation&);
 
-    static bool do_save_with_metkit(const param::MIRParametrisation&);
-
 protected:
     // -- Methods
 
@@ -55,8 +53,6 @@ private:
     // -- Methods
 
     virtual void out(const void* message, size_t length, bool interpolated) = 0;
-
-    size_t save_with_metkit(const param::MIRParametrisation&, context::Context&);
 
     // -- Overridden methods
 
