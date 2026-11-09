@@ -33,15 +33,11 @@ vendored = [
     "eccodes-sys/memfs",
     "eccodes-sys/eccodes-threads",
     "atlas-sys/vendored",
-    "metkit-sys/vendored",
-    "metkit-sys/grib",
-    "metkit-sys/mars2grib",
 ]
 system = [
     "eckit-sys/system",
     "eccodes-sys/system",
     "atlas-sys/system",
-    "metkit-sys/system",
 ]
 
 [dependencies]
@@ -49,7 +45,6 @@ cxx.workspace = true
 eckit-sys = { workspace = true, default-features = false }
 eccodes-sys = { workspace = true, default-features = false }
 atlas-sys = { workspace = true, default-features = false }
-metkit-sys = { workspace = true, default-features = false }
 bindman.workspace = true
 
 [build-dependencies]
