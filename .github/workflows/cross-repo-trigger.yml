@@ -113,7 +113,7 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 jobs:
   resolve:
-    if: (contains(fromJSON(inputs.from-jobs), 'metkit/build') || contains(fromJSON(inputs.from-jobs), 'eccodes/build') || contains(fromJSON(inputs.from-jobs), 'ecbuild/build') || contains(fromJSON(inputs.from-jobs), 'stack-deps/build') || contains(fromJSON(inputs.from-jobs), 'eckit/build') || contains(fromJSON(inputs.from-jobs), 'atlas/build') || contains(fromJSON(inputs.from-jobs), 'fckit/build') || inputs.rebuild-request) && !inputs.resolved
+    if: (contains(fromJSON(inputs.from-jobs), 'atlas/build') || contains(fromJSON(inputs.from-jobs), 'eckit/build') || contains(fromJSON(inputs.from-jobs), 'ecbuild/build') || contains(fromJSON(inputs.from-jobs), 'stack-deps/build') || contains(fromJSON(inputs.from-jobs), 'fckit/build') || inputs.rebuild-request) && !inputs.resolved
     runs-on: ubuntu-latest
     outputs:
       ref: ${{ steps.r.outputs.own-sha }}
@@ -150,7 +150,7 @@ jobs:
   mir__build:
     needs:
     - resolve
-    if: ${{ !failure() && !cancelled() && (contains(fromJSON(inputs.from-jobs), 'metkit/build') || contains(fromJSON(inputs.from-jobs), 'eccodes/build') || contains(fromJSON(inputs.from-jobs), 'ecbuild/build') || contains(fromJSON(inputs.from-jobs), 'stack-deps/build') || contains(fromJSON(inputs.from-jobs), 'eckit/build') || contains(fromJSON(inputs.from-jobs), 'atlas/build') || contains(fromJSON(inputs.from-jobs), 'fckit/build') || inputs.rebuild-request) }}
+    if: ${{ !failure() && !cancelled() && (contains(fromJSON(inputs.from-jobs), 'atlas/build') || contains(fromJSON(inputs.from-jobs), 'eckit/build') || contains(fromJSON(inputs.from-jobs), 'ecbuild/build') || contains(fromJSON(inputs.from-jobs), 'stack-deps/build') || contains(fromJSON(inputs.from-jobs), 'fckit/build') || inputs.rebuild-request) }}
     name: mir/build (${{ matrix._resolved['job-name'] }})
     runs-on: ${{ matrix['runs-on'] }}
     container:
