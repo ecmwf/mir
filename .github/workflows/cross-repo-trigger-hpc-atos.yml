@@ -113,7 +113,7 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 jobs:
   resolve:
-    if: (contains(fromJSON(inputs.from-jobs), 'atlas/build-hpc') || contains(fromJSON(inputs.from-jobs), 'eckit/build-hpc') || contains(fromJSON(inputs.from-jobs), 'ecbuild/build-hpc') || contains(fromJSON(inputs.from-jobs), 'stack-deps/build-hpc') || contains(fromJSON(inputs.from-jobs), 'fckit/build-hpc') || inputs.rebuild-request) && !inputs.resolved
+    if: (contains(fromJSON(inputs.from-jobs), 'eccodes/build-hpc') || contains(fromJSON(inputs.from-jobs), 'ecbuild/build-hpc') || contains(fromJSON(inputs.from-jobs), 'stack-deps/build-hpc') || contains(fromJSON(inputs.from-jobs), 'eckit/build-hpc') || contains(fromJSON(inputs.from-jobs), 'atlas/build-hpc') || contains(fromJSON(inputs.from-jobs), 'fckit/build-hpc') || inputs.rebuild-request) && !inputs.resolved
     runs-on: ubuntu-latest
     outputs:
       ref: ${{ steps.r.outputs.own-sha }}
@@ -150,7 +150,7 @@ jobs:
   mir__build_hpc:
     needs:
     - resolve
-    if: ${{ !failure() && !cancelled() && (contains(fromJSON(inputs.from-jobs), 'atlas/build-hpc') || contains(fromJSON(inputs.from-jobs), 'eckit/build-hpc') || contains(fromJSON(inputs.from-jobs), 'ecbuild/build-hpc') || contains(fromJSON(inputs.from-jobs), 'stack-deps/build-hpc') || contains(fromJSON(inputs.from-jobs), 'fckit/build-hpc') || inputs.rebuild-request) }}
+    if: ${{ !failure() && !cancelled() && (contains(fromJSON(inputs.from-jobs), 'eccodes/build-hpc') || contains(fromJSON(inputs.from-jobs), 'ecbuild/build-hpc') || contains(fromJSON(inputs.from-jobs), 'stack-deps/build-hpc') || contains(fromJSON(inputs.from-jobs), 'eckit/build-hpc') || contains(fromJSON(inputs.from-jobs), 'atlas/build-hpc') || contains(fromJSON(inputs.from-jobs), 'fckit/build-hpc') || inputs.rebuild-request) }}
     name: mir/build-hpc (${{ matrix._resolved['job-name'] }})
     runs-on: ${{ matrix['runs-on'] }}
     container:
