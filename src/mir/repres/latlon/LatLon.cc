@@ -33,7 +33,11 @@ LatLon::LatLon(const param::MIRParametrisation& parametrisation) :
     reference_(bbox_.south(), bbox_.west()),
     ni_(0),
     nj_(0),
-    scan_(parametrisation) {
+    order_([&parametrisation]() {
+        std::string order;  // (empty for the default)
+        parametrisation.get("order", order);
+        return grib_order(order);
+    }()) {
     correctBoundingBox(bbox_, ni_, nj_, increments_, reference_);
     ASSERT(ni_ != 0);
     ASSERT(nj_ != 0);
@@ -59,8 +63,8 @@ LatLon::LatLon(const param::MIRParametrisation& parametrisation) :
 
 
 LatLon::LatLon(const util::Increments& increments, const util::BoundingBox& bbox, const PointLatLon& reference,
-               const std::string& scan) :
-    Gridded(bbox), increments_(increments), reference_(reference), ni_(0), nj_(0), scan_(scan) {
+               const std::string& order) :
+    Gridded(bbox), increments_(increments), reference_(reference), ni_(0), nj_(0), order_(grib_order(order)) {
     correctBoundingBox(bbox_, ni_, nj_, increments_, reference_);
     ASSERT(ni_ != 0);
     ASSERT(nj_ != 0);
@@ -103,14 +107,14 @@ void LatLon::fillGrib(grib_info& info) const {
 
     increments_.fillGrib(info);
     bbox_.fillGrib(info);
-    scan_.fillGrib(info);
+    grib_fill_scanning_mode(info, order_);
 }
 
 
 void LatLon::fillSpec(CustomSpec& spec) const {
     Gridded::fillSpec(spec);
     increments_.fillSpec(spec);
-    scan_.fillSpec(spec);
+    spec.set("order", order_);
 }
 
 

@@ -10,6 +10,7 @@
 
 #include "mir/api/MIRJob.h"
 #include "mir/api/mir_config.h"
+#include "mir/param/MIRParametrisation.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
@@ -21,7 +22,11 @@ namespace mir::repres::gauss::regular {
 
 
 Regular::Regular(const param::MIRParametrisation& parametrisation) :
-    Gaussian(parametrisation), k_(0), Ni_(0), Nj_(0), scan_(parametrisation) {
+    Gaussian(parametrisation), k_(0), Ni_(0), Nj_(0), order_([&parametrisation]() {
+        std::string order;  // (empty for the default)
+        parametrisation.get("order", order);
+        return grib_order(order);
+    }()) {
     // adjust latitudes, longitudes and re-set bounding box
     Latitude n = bbox_.north();
     Latitude s = bbox_.south();
@@ -40,8 +45,8 @@ Regular::Regular(const param::MIRParametrisation& parametrisation) :
 }
 
 
-Regular::Regular(size_t N, const util::BoundingBox& bbox, double angularPrecision, const std::string& scan) :
-    Gaussian(N, bbox, angularPrecision), k_(0), Ni_(0), Nj_(0), scan_(scan) {
+Regular::Regular(size_t N, const util::BoundingBox& bbox, double angularPrecision, const std::string& order) :
+    Gaussian(N, bbox, angularPrecision), k_(0), Ni_(0), Nj_(0), order_(grib_order(order)) {
 
     // adjust latitudes, longitudes and re-set bounding box
     Latitude n = bbox.north();
@@ -70,7 +75,7 @@ void Regular::fillGrib(grib_info& info) const {
     info.grid.Nj                           = static_cast<long>(Nj_);
 
     bbox_.fillGrib(info);
-    scan_.fillGrib(info);
+    grib_fill_scanning_mode(info, order_);
 }
 
 
@@ -79,7 +84,7 @@ void Regular::fillSpec(CustomSpec& spec) const {
 
     spec.set("grid", "F" + std::to_string(N_));
 
-    scan_.fillSpec(spec);
+    spec.set("order", order_);
 }
 
 

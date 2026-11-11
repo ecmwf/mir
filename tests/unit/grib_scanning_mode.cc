@@ -5,8 +5,6 @@
 #include <map>
 #include <string>
 
-#include "eckit/geo/order/Scan.h"
-
 #include "mir/util/Grib.h"
 
 #include "eckit/testing/Test.h"
@@ -15,9 +13,7 @@
 namespace mir::tests::unit {
 
 
-CASE("GRIB scanningMode <-> eckit::geo::order::Scan") {
-    using eckit::geo::order::Scan;
-
+CASE("GRIB scanningMode <-> order") {
     static const std::map<std::string, long> modes{
         {"i+j+", 64},    //
         {"i+j-", 0},     //
@@ -39,15 +35,18 @@ CASE("GRIB scanningMode <-> eckit::geo::order::Scan") {
 
     for (const auto& [order, scanning_mode] : modes) {
         EXPECT(grib_order_to_scanning_mode(order) == scanning_mode);
-
-        const Scan scan(order);
-        EXPECT(scan.is_scan_i_then_j() == (order.front() == 'i'));
-        EXPECT(scan.is_scan_i_positive() == (order.find("i+") != std::string::npos));
-        EXPECT(scan.is_scan_j_positive() == (order.find("j+") != std::string::npos));
-
-        bool alternating = order.find("+-") != std::string::npos || order.find("-+") != std::string::npos;
-        EXPECT(scan.is_scan_alternating() == alternating);
+        EXPECT(grib_order(order) == order);
     }
+
+    // the default (scanningMode=0), also of the empty order
+    EXPECT(grib_order_default() == "i+j-");
+    EXPECT(grib_order("") == grib_order_default());
+
+    // unknown orders
+    for (const std::string order : {"", "i+j", "j-", "i+i-", "i+j-+"}) {
+        EXPECT_THROWS(grib_order_to_scanning_mode(order));
+    }
+    EXPECT_THROWS(grib_order("i+-"));
 }
 
 

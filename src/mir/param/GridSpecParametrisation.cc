@@ -243,7 +243,7 @@ bool GridSpecParametrisation::cached(const std::string& name) const {
     }
 
     if (const auto* g = dynamic_cast<const ReducedGaussian*>(&grid); g != nullptr) {
-        if (name == "N" || name == (g->octahedral() ? "octahedral" : "reduced")) {
+        if (name == "N" || name == (g->is_reduced_octahedral() ? "octahedral" : "reduced")) {
             return set(static_cast<long>(g->N()));
         }
     }
