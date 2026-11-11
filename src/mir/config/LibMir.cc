@@ -53,7 +53,7 @@ eckit::cache::Roots cache_roots() {
 
 std::string LibMir::cacheInfo() {
     const auto roots    = cache_roots();
-    const auto writable = roots.writable_paths();
+    const auto writable = roots.writablePaths();
 
     std::ostringstream out;
     eckit::JSON j(out);
@@ -74,7 +74,7 @@ std::string LibMir::cacheInfo() {
     j.startObject();
     j << "readable";
     j.startList();
-    for (const auto& p : roots.readable_paths()) {
+    for (const auto& p : roots.readablePaths()) {
         j << p.asString();
     }
     j.endList();
@@ -113,7 +113,7 @@ void LibMir::purgeCache() {
 
 
 void LibMir::removeCacheDir() {
-    if (const auto writable = cache_roots().writable_paths(); !writable.empty()) {
+    if (const auto writable = cache_roots().writablePaths(); !writable.empty()) {
         eckit::cache::DiskCache::remove(writable.front() / "mir");
     }
 }
