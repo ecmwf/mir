@@ -11,7 +11,7 @@
 #include <utility>
 
 #include "eckit/config/Resource.h"
-#include "eckit/geo/order/Scan.h"
+#include "eckit/geo/order/RegularScan.h"
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -46,10 +46,25 @@ enum ScanningMode : long
 }  // namespace
 
 
+const std::string& grib_order_default() {
+    static const std::string order{"i+j-"};
+    return order;
+}
+
+
+std::string grib_order(const std::string& order) {
+    auto checked = order.empty() ? grib_order_default() : order;
+    grib_order_to_scanning_mode(checked);
+    return checked;
+}
+
+
 long grib_order_to_scanning_mode(const std::string& order) {
     if (order.empty()) {
-        throw mir::exception::SeriousBug("grib_order_to_scanning_mode: empty order");
+        throw mir::exception::UserError("grib_order_to_scanning_mode: empty order");
     }
+
+    const eckit::geo::order::RegularScan checked(order);  // throws if unknown
 
     return ((order.find("i+-") != std::string::npos || order.find("i-+") != std::string::npos) ? alternativeRowScanning
                                                                                                : 0) |
@@ -59,14 +74,31 @@ long grib_order_to_scanning_mode(const std::string& order) {
 }
 
 
+void grib_fill_scanning_mode(grib_info& info, const std::string& order) {
+    const auto mode = grib_order_to_scanning_mode(order);
+
+    info.grid.iScansNegatively = (mode & iScansNegatively) != 0 ? 1 : 0;
+    if (info.grid.iScansNegatively != 0) {
+        std::swap(info.grid.longitudeOfFirstGridPointInDegrees, info.grid.longitudeOfLastGridPointInDegrees);
+    }
+
+    info.grid.jScansPositively = (mode & jScansPositively) != 0 ? 1 : 0;
+    if (info.grid.jScansPositively != 0) {
+        std::swap(info.grid.latitudeOfFirstGridPointInDegrees, info.grid.latitudeOfLastGridPointInDegrees);
+    }
+
+    info.extra_set("scanningMode", mode);
+}
+
+
 void grib_reorder_to_canonical(std::vector<double>& values, const std::string& order, size_t Ni, size_t Nj) {
-    if (order == eckit::geo::order::Scan::order_default()) {
+    if (order == grib_order_default()) {
         return;
     }
 
     mir::Log::warning() << "grib_reorder: order '" << order << "' to canonical" << std::endl;
 
-    const auto ren = eckit::geo::order::Scan{order}.reorder(eckit::geo::order::Scan::order_default(), Ni, Nj);
+    const auto ren = eckit::geo::order::RegularScan{order}.reorder(grib_order_default(), Ni, Nj);
     ASSERT(values.size() == ren.size());
 
     std::vector<double> out(values.size());
@@ -79,11 +111,11 @@ void grib_reorder_to_canonical(std::vector<double>& values, const std::string& o
 
 
 void grib_reorder_from_canonical(std::vector<double>& values, const std::string& order, size_t Ni, size_t Nj) {
-    if (order == eckit::geo::order::Scan::order_default()) {
+    if (order == grib_order_default()) {
         return;
     }
 
-    const auto ren = eckit::geo::order::Scan{order}.reorder(eckit::geo::order::Scan::order_default(), Ni, Nj);
+    const auto ren = eckit::geo::order::RegularScan{order}.reorder(grib_order_default(), Ni, Nj);
     ASSERT(values.size() == ren.size());
 
     std::vector<double> out(values.size());

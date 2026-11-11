@@ -5,7 +5,6 @@
 #pragma once
 
 #include "mir/repres/gauss/Gaussian.h"
-#include "mir/util/ScanningMode.h"
 
 
 namespace mir::repres::gauss::regular {
@@ -20,7 +19,7 @@ public:
 
     explicit Regular(const param::MIRParametrisation&);
     explicit Regular(size_t N, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0,
-                     const std::string& = util::ScanningMode::default_scanning_mode());
+                     const std::string& order = {});
 
     // -- Destructor
 
@@ -53,7 +52,7 @@ protected:
     size_t k_;
     size_t Ni_;
     size_t Nj_;
-    util::ScanningMode scan_;
+    std::string order_;
 
     // -- Methods
 
@@ -93,7 +92,7 @@ private:
 
     // from Representation
     size_t frame(MIRValuesVector&, size_t size, double missingValue) const override;
-    const std::string& order() const override { return scan_.order(); }
+    const std::string& order() const override { return order_; }
     void reorderToCanonical(MIRValuesVector&) const override;
     void reorderFromCanonical(MIRValuesVector&) const override;
     size_t numberOfPoints() const override;
