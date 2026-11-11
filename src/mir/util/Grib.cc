@@ -64,13 +64,12 @@ long grib_order_to_scanning_mode(const std::string& order) {
         throw mir::exception::UserError("grib_order_to_scanning_mode: empty order");
     }
 
-    const eckit::geo::order::RegularScan checked(order);  // throws if unknown
+    const eckit::geo::order::RegularScan scan(order);  // throws if unknown
 
-    return ((order.find("i+-") != std::string::npos || order.find("i-+") != std::string::npos) ? alternativeRowScanning
-                                                                                               : 0) |
-           (order.front() == 'j' ? jPointsAreConsecutive : 0) |
-           (order.find("j+") != std::string::npos ? jScansPositively : 0) |
-           (order.find("i-") != std::string::npos ? iScansNegatively : 0);
+    // alternating rows, or columns (if j is consecutive)
+    return (scan.is_scan_alternating() ? alternativeRowScanning : 0) |
+           (scan.is_scan_i_then_j() ? 0 : jPointsAreConsecutive) | (scan.is_scan_j_positive() ? jScansPositively : 0) |
+           (scan.is_scan_i_positive() ? 0 : iScansNegatively);
 }
 
 
