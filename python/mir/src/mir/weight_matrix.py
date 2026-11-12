@@ -52,6 +52,23 @@ def _to_spec_str(spec) -> str:
         raise TypeError("Expected grid to be a spec string, dict, or mir.Grid-compatible value") from e
 
 
+def _select_indices(matrix: csr_array, in_indices, out_indices, atol: float) -> csr_array:
+    m = matrix.copy()
+    m.data[np.abs(m.data) <= atol] = 0
+    m.eliminate_zeros()
+
+    keep = np.ones(m.shape[0], dtype=bool)
+    if len(out_indices):
+        keep[:] = False
+        keep[out_indices] = True
+    if len(in_indices):
+        keep &= np.diff(m[:, in_indices].indptr) > 0
+
+    m.data[np.repeat(~keep, np.diff(m.indptr))] = 0
+    m.eliminate_zeros()
+    return m
+
+
 def _path_with_supported_suffix(path, *, where: str) -> tuple[Path, str]:
     p = Path(path)
     suffix = p.suffix.lower()
@@ -180,6 +197,24 @@ class WeightMatrix:
                 raise FileNotFoundError(f"from_regrid: matrix file '{mat_path}' not found.")
 
             return cls.from_mat(mat_path)
+
+    @classmethod
+    def from_feature_regrid(
+        cls,
+        in_grid,
+        out_grid,
+        in_indices=(),
+        out_indices=(),
+        kwargs=None,
+        atol=1e-12,
+        **job_kwargs,
+    ) -> "WeightMatrix":
+        """As from_regrid, keeping only rows in out_indices with weights on in_indices.
+
+        Empty indices do not filter. Weights with |w| <= atol are dropped, and the shape is kept.
+        """
+        wm = cls.from_regrid(in_grid, out_grid, kwargs, **job_kwargs)
+        return cls(_select_indices(wm.to_csr(), in_indices, out_indices, atol))
 
     @classmethod
     def from_mat(cls, path) -> "WeightMatrix":

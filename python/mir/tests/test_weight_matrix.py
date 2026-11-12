@@ -5,6 +5,7 @@
 import numpy as np
 import pytest
 from mir.weight_matrix import WeightMatrix
+from mir.weight_matrix import _select_indices
 from scipy import sparse
 
 import mir
@@ -149,6 +150,62 @@ def test_from_regrid_and_persist(tmp_path, input_grid, output_grid):
 
     assert isinstance(wm, WeightMatrix)
     assert out.exists()
+
+
+@pytest.mark.parametrize(
+    "in_features, out_features, rows",
+    [
+        ([], [], [0, 1, 2]),
+        ([], [0, 2], [0, 2]),
+        ([2], [], [0]),
+        ([1, 3], [0, 1], [1]),
+        ([0], [1, 2], []),
+    ],
+)
+def test_select_indices(simple, in_features, out_features, rows):
+    expected = np.zeros(simple.shape)
+    expected[rows] = simple.toarray()[rows]
+
+    result = _select_indices(simple, in_features, out_features, atol=0)
+    assert result.shape == simple.shape
+    np.testing.assert_array_equal(result.toarray(), expected)
+
+
+def test_select_indices_drops_approximately_zero_weights():
+    m = sparse.csr_array([[1.0, 1e-15], [0.0, 1e-15]])
+
+    np.testing.assert_array_equal(_select_indices(m, [], [], atol=1e-12).toarray(), [[1, 0], [0, 0]])
+    assert _select_indices(m, [1], [], atol=1e-12).nnz == 0
+
+
+def test_from_feature_regrid():
+    regrid = dict(in_grid="H4n", out_grid="O4", interpolation="linear")
+    nonzero = np.abs(WeightMatrix.from_regrid(**regrid).to_csr().toarray()) > 1e-12
+
+    in_features = list(range(0, nonzero.shape[1], 3))
+    out_features = list(range(0, nonzero.shape[0], 2))
+    wm = WeightMatrix.from_feature_regrid(**regrid, in_indices=in_features, out_indices=out_features)
+
+    rows, cols = (np.unique(i) for i in wm.to_csr().nonzero())
+
+    expected_rows = [i for i in out_features if nonzero[i, in_features].any()]
+    assert wm.shape == nonzero.shape
+    assert len(expected_rows) > 0
+    np.testing.assert_array_equal(rows, expected_rows)
+    np.testing.assert_array_equal(cols, np.flatnonzero(nonzero[expected_rows].any(axis=0)))
+
+
+def test_from_feature_regrid_in_indices_only():
+    regrid = dict(in_grid="H4n", out_grid="O4", interpolation="linear")
+    full = WeightMatrix.from_regrid(**regrid).to_csr()
+    assert np.all(np.abs(full.data) > 1e-12)
+
+    # with no stored (near-)zeros, surviving columns include all in_indices with stored weights
+    in_indices = np.unique(full.indices)[::3].tolist()
+    wm = WeightMatrix.from_feature_regrid(**regrid, in_indices=in_indices)
+
+    cols = np.unique(wm.to_csr().nonzero()[1])
+    assert set(in_indices) <= set(cols)
 
 
 def test_from_regrid_invalid_grid_type_raises():
