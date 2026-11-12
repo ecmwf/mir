@@ -18,6 +18,7 @@
 #include "eckit/geo/grid/regular/RegularGaussian.h"
 #include "eckit/geo/order/Scan.h"
 #include "eckit/parser/YAMLParser.h"
+#include "eckit/spec/Custom.h"
 #include "eckit/types/Fraction.h"
 #include "eckit/utils/StringTools.h"
 
@@ -542,7 +543,18 @@ std::string Grid::canonical(const std::string& name, const param::MIRParametrisa
         return param.fieldParametrisation().has("truncation") ? intgrid::Source(param).gridname() : "";
     }
 
-    return GridPattern::match(name);
+    if (auto match = GridPattern::match(name); !match.empty()) {
+        return match;
+    }
+
+    // other grids by name (eckit::geo, e.g. CS-LFR-56), as their spec, so they are not ignored
+    if (eckit::geo::GridSpecByName::instance().matches(name)) {
+        const eckit::spec::Custom spec{{"grid", name}};
+        std::unique_ptr<const eckit::geo::Grid> grid(eckit::geo::GridFactory::build(spec));
+        return grid->spec_str();
+    }
+
+    return {};
 }
 
 

@@ -51,6 +51,8 @@ std::string grib_grid_type(const Grid& grid) {
         {"unstructured_ll", {"unstructured_ll", ""}},
         {"sh", {"sh", "rotated_sh"}},
         {"regular_xy", {"regular_xy", ""}},
+        {"cubed_sphere", {"cubed_sphere", ""}},
+        {"cubed_sphere_lfric", {"cubed_sphere", ""}},
     };
 
     auto it = types.find(grid.type());

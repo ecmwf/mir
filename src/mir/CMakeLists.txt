@@ -486,6 +486,8 @@ list(APPEND mir_srcs
     param/SimpleParametrisation.h
     param/SpecParametrisation.cc
     param/SpecParametrisation.h
+    repres/CubedSphere.cc
+    repres/CubedSphere.h
     repres/Gridded.cc
     repres/Gridded.h
     repres/HEALPix.cc
