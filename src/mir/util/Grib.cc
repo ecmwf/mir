@@ -67,8 +67,9 @@ long grib_order_to_scanning_mode(const std::string& order) {
     const eckit::geo::order::RegularScan scan(order);  // throws if unknown
 
     // alternating rows, or columns (if j is consecutive)
-    return (scan.is_scan_alternating() ? alternativeRowScanning : 0) |
-           (scan.is_scan_i_then_j() ? 0 : jPointsAreConsecutive) | (scan.is_scan_j_positive() ? jScansPositively : 0) |
+    return (scan.is_scan_alternating() ? alternativeRowScanning : 0) |  //
+           (scan.is_scan_i_then_j() ? 0 : jPointsAreConsecutive) |      //
+           (scan.is_scan_j_positive() ? jScansPositively : 0) |         //
            (scan.is_scan_i_positive() ? 0 : iScansNegatively);
 }
 
