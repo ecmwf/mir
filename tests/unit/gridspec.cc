@@ -13,6 +13,7 @@
 #include "eckit/testing/Test.h"
 
 #include "mir/api/MIRJob.h"
+#include "mir/input/GribFileInput.h"
 #include "mir/input/MIRInput.h"
 #include "mir/input/RawInput.h"
 #include "mir/output/ArrayOutput.h"
@@ -231,6 +232,8 @@ CASE("GridSpec representation round trip (points, and spec describing the same g
             "{grid: O16, area: [60, -10, 30, 40]}",
             "{grid: H4}",
             "{grid: H4, order: nested}",
+            "{type: reduced_ll, pl: [4, 8, 12, 8, 4]}",
+            "{type: reduced_ll, pl: [8, 12, 8], area: [45, 0, -45, 360]}",
         });
 
     for (const auto& gridspec : gridspecs) {
@@ -255,6 +258,8 @@ CASE("GridSpec representation round trip (points, and spec describing the same g
 
             std::unique_ptr<const eckit::geo::Grid> spec_grid(
                 eckit::geo::GridFactory::make_from_string(repres->spec().str()));
+            EXPECT_EQUAL(spec_grid->type(), grid->type());
+
             const auto [spec_lats, spec_lons] = spec_grid->to_latlons();
             const auto [grid_lats, grid_lons] = grid->to_latlons();
             EXPECT(same_points(spec_lats, spec_lons, grid_lats, grid_lons));
@@ -333,6 +338,118 @@ CASE("GridSpec different routings") {
         EXPECT(grid->spec_str() == expected_gs);
         EXPECT(grid->shape() == expected_shape);
         EXPECT(param.spec().str() == expected_gs);
+    }
+}
+
+
+CASE("GridSpec of reduced Gaussian grids, the pl rows in the grid") {
+    auto check = [](const repres::Representation& repres, const std::string& grid, bool pl) {
+        size_t count = 0;
+        for (std::unique_ptr<repres::Iterator> it(repres.iterator()); it->next();) {
+            ++count;
+        }
+
+        EXPECT_EQUAL(repres.numberOfPoints(), repres.grid().size());
+        EXPECT_EQUAL(count, repres.grid().size());
+
+        const auto spec = repres.grid().spec_str();
+        EXPECT(spec.find("\"grid\":\"" + grid + "\"") != std::string::npos);
+        const bool has_pl = spec.find("\"pl\"") != std::string::npos;
+        EXPECT_EQUAL(has_pl, pl);
+    };
+
+
+    SECTION("regional, as from GRIB (pl of the rows in the area, zero elsewhere)") {
+        // MIR-587
+        input::GribFileInput input("../data/MIR-587.grib2");
+        ASSERT(input.next());
+
+        const input::MIRInput& in = input;
+        repres::RepresentationHandle repres(repres::RepresentationFactory::build(in.parametrisation()));
+
+        EXPECT_EQUAL(repres->numberOfPoints(), 3436);
+        check(*repres, "O640", false);
+    }
+
+
+    SECTION("global, of a pl neither octahedral nor classical") {
+        param::SimpleParametrisation param;
+        param.set("gridType", "reduced_gg");
+        param.set("N", 2L);
+        param.set("pl", std::vector<long>{12, 16, 16, 12});
+        param.set("north", 90.);
+        param.set("west", 0.);
+        param.set("south", -90.);
+        param.set("east", 360.);
+
+        repres::RepresentationHandle repres(repres::RepresentationFactory::build(param));
+
+        EXPECT_EQUAL(repres->numberOfPoints(), 56);
+        check(*repres, "N2", true);
+    }
+}
+
+
+CASE("GridSpec of irregular lat/lon grids (eckit::geo irregular_ll)") {
+    struct test_t {
+        std::vector<double> latitudes;
+        std::vector<double> longitudes;
+        std::string order;
+    };
+
+    const std::vector<test_t> all_values{
+        test_t{{60., 50., 45., 30.}, {-10., 0., 15.}, ""},
+        test_t{{30., 45., 50., 60.}, {-10., 0., 15.}, "i+j+"},
+        test_t{{60., 50., 45., 30.}, {15., 0., -10.}, "i-j-"},
+    };
+    for (const auto& t : all_values) {
+        param::SimpleParametrisation param;
+        param.set("gridded", true);
+        param.set("gridType", "irregular_latlon");
+        param.set("latitudes", t.latitudes);
+        param.set("longitudes", t.longitudes);
+
+        repres::RepresentationHandle repres(repres::RepresentationFactory::build(param));
+
+        const auto& grid = repres->grid();
+        EXPECT_EQUAL(grid.type(), "irregular_ll");
+        EXPECT_EQUAL(repres->numberOfPoints(), t.latitudes.size() * t.longitudes.size());
+
+        const auto spec  = grid.spec_str();
+        const bool order = spec.find("\"order\":\"" + t.order + "\"") != std::string::npos;
+        EXPECT(order == !t.order.empty());
+
+        // the points as stored, in the directions given
+        size_t n = 0;
+        for (std::unique_ptr<repres::Iterator> it(repres->iterator()); it->next(); ++n) {
+            const auto& p = it->pointUnrotated();
+            EXPECT_EQUAL(it->index(), n);
+            EXPECT_EQUAL(p.lat().value(), t.latitudes[n / t.longitudes.size()]);
+            EXPECT_EQUAL(p.lon().value(), t.longitudes[n % t.longitudes.size()]);
+        }
+        EXPECT_EQUAL(n, repres->numberOfPoints());
+
+        // the same grid, by its spec
+        std::unique_ptr<const eckit::geo::Grid> same(eckit::geo::GridFactory::make_from_string(spec));
+        EXPECT(*same == grid);
+
+        // an interpolation from it
+        const size_t size = repres->numberOfPoints();
+        std::vector<double> values(size);
+        for (size_t i = 0; i < size; ++i) {
+            values[i] = static_cast<double>(i);
+        }
+
+        input::RawInput input(values.data(), values.size(), param);
+        output::ArrayOutput output;
+
+        api::MIRJob job;
+        job.set("grid", std::vector<double>{5., 5.});
+        job.set("area", std::vector<double>{55., -5., 35., 10.});
+        job.set("interpolation", "nn");
+        job.execute(input, output);
+
+        EXPECT_EQUAL(output.size(), 5 * 4);
     }
 }
 

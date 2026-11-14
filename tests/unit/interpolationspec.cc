@@ -190,6 +190,10 @@ CASE("Interpolation spec, by example (linear, k-nn)") {
              {"linear", "finite-element-validate-mesh: true", "finite_element_validate_mesh: true"},
              {"k-nearest", "nclosest: 8, nearest-method: distance-and-nclosest, distance: 100000",
               "nclosest: 8, nearest_method: distance-and-nclosest, distance: 100000"},
+             {"k-nearest", "distance-weighting: cressman, distance: 1000, cressman-model-extension-power: 2",
+              "distance_weighting: cressman, distance: 1000, cressman_model_extension_power: 2"},
+             {"k-nearest", "nearest-method: distance, distance-weighting: cressman, distance: 1000",
+              "nearest_method: distance, distance_weighting: cressman, distance: 1000"},
          }) {
         // bare name: the method with its defaults, its spec is the name
         auto simple = make(test.type);
