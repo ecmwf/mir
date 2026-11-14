@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <set>
 #include <sstream>
-#include <vector>
 
 #include "eckit/cache/DiskCache.h"
 #include "eckit/cache/Roots.h"
