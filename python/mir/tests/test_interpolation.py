@@ -207,7 +207,7 @@ def test_interpolation_n96_o96_grib(input_filename, input_gs, output_gs, monkeyp
         ),
         (
             # Lambert conformal conic (AROME France)
-            '{"false":[921962.126,-885517.26],"projection":{"figure":"grib1","lat_0":45.8,"lat_1":45.8,"lon_0":2,'
+            '{"false_xy":[921962.126,-885517.26],"projection":{"figure":"grib1","lat_0":45.8,"lat_1":45.8,"lon_0":2,'
             '"reverse":true,"type":"lcc"},"x":[0,1845000,2500],"y":[0,-1770000,-2500]}',
             dict(area=[53.5, -11.5, 37.5, 15.5], grid=[0.5, 0.5]),
             (33, 55),
