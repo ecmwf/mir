@@ -1,0 +1,16 @@
+# MIR-673
+# input
+gridType=polar_stereographic.grib2
+# post-process
+--grid=gridType=polar_stereographic
+# action-plan
+[{"type":"copy"}]
+# grid-plan
+[{"false_xy":[3757838.788,4230050.142],"order":"i+j+","projection":{"lat_0":90,"lat_ts":90.000003,"lon_0":-30.000001,"reverse":true,"type":"stere"},"x":[0,7170000,2500],"y":[0,7170000,2500]},{"false_xy":[3757838.788,4230050.142],"order":"i+j+","projection":{"lat_0":90,"lat_ts":90.000003,"lon_0":-30.000001,"reverse":true,"type":"stere"},"x":[0,7170000,2500],"y":[0,7170000,2500]}]
+# grib_get
+gridType=polar_stereographic
+edition=2
+Ni=2869
+Nj=2869
+Dx=2500000
+Dy=2500000

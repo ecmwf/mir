@@ -1,0 +1,9 @@
+# MIR-510
+# input
+gridType=reduced_gg,gridName=O32,shortName=msl.grib1
+# post-process
+--grid=o64
+# action-plan
+[{"type":"interpolate.grid2namedgrid","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":"O64"},{"type":"save"}]
+# grid-plan
+[{"grid":"O32"},{"grid":"O64"},{"grid":"O64"}]

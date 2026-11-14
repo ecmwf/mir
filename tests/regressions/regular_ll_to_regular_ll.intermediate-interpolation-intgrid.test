@@ -1,0 +1,11 @@
+# input
+regular_ll.2-2.grib2
+# post-process
+--intermediate-interpolation=nn --intgrid=O80 --interpolation=nn --grid=1/1
+# action-plan
+[{"type":"interpolate.grid2namedgrid","interpolation":"nn","distance-weighting":"inverse-distance-weighting-squared","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":"O80"},{"type":"interpolate.grid2regular-ll","interpolation":"nn","distance-weighting":"inverse-distance-weighting-squared","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":[1,1],"area":[90,0,-90,359]},{"type":"save"}]
+# grid-plan
+[{"grid":[2,2]},{"grid":"O80"},{"grid":[1,1]},{"grid":[1,1]}]
+# grib_get
+Ni=360
+Nj=181

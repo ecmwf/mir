@@ -1,0 +1,9 @@
+# MIR-643
+# input
+regular_ll.2-2.grib2
+# post-process
+--grid=h16n --interpolation=nn
+# action-plan
+[{"type":"interpolate.grid2namedgrid","interpolation":"nn","distance-weighting":"inverse-distance-weighting-squared","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":"HN16"},{"type":"save"}]
+# grid-plan
+[{"grid":[2,2]},{"grid":"H16","order":"nested"},{"grid":"H16","order":"nested"}]

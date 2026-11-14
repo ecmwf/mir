@@ -1,0 +1,7 @@
+# MIR-479
+# input
+param=2t,levtype=sfc
+# post-process
+--grid=9/9 --interpolation=fail
+# grib_get
+gridType=regular_ll

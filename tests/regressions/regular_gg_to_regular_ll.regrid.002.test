@@ -1,0 +1,16 @@
+# MIR-255
+# input
+gridType=regular_gg,gridName=F80,shortName=msl,global=0.001.grib1
+# post-process
+--grid=1/1
+# action-plan
+[{"type":"interpolate.grid2regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":[1,1],"area":[90,0,-90,359]},{"type":"save"}]
+# grid-plan
+[{"area":[68.9712395389358,-59.625,20.747558233616,59.625],"grid":"F80"},{"area":[68,-59,21,59],"grid":[1,1]},{"area":[68,-59,21,59],"grid":[1,1]}]
+# grib_get
+Ni=119
+Nj=48
+latitudeOfFirstGridPointInDegrees=68
+longitudeOfFirstGridPointInDegrees=-59
+latitudeOfLastGridPointInDegrees=21
+longitudeOfLastGridPointInDegrees=59

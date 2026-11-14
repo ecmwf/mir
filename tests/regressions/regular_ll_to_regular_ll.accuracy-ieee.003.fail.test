@@ -1,0 +1,7 @@
+# MIR-482
+# input
+tiny-2x2.grib
+# post-process
+--accuracy=24 --packing=ieee
+# grib_get
+packingType=grid_ieee

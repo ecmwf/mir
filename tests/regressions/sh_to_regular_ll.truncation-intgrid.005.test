@@ -1,0 +1,9 @@
+# MIR-216
+# input
+param=t,level=1000
+# post-process
+--truncation=auto --intgrid=none --grid=0.8/0.8
+# action-plan
+[{"type":"filter.sh-truncate","truncation":223},{"type":"transform.sh-scalar-to-regular-ll","atlas-trans-flt":false,"atlas-trans-type":"local","invtrans":"scalar","grid":[0.8,0.8],"area":[90,0,-90,360]},{"type":"save","packing":"simple"}]
+# grid-plan
+[{"grid":"T1279"},{"grid":"T223"},{"grid":[0.8,0.8],"reference":[0,0.4]},{"grid":[0.8,0.8],"reference":[0,0.4]}]

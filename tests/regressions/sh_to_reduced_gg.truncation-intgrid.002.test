@@ -1,0 +1,9 @@
+# MIR-219
+# input
+param=t,level=1000
+# post-process
+--truncation=auto --intgrid=auto --grid=N80 --dont-compress-plan
+# action-plan
+[{"type":"filter.sh-truncate","truncation":159},{"type":"transform.sh-scalar-to-namedgrid","atlas-trans-flt":false,"atlas-trans-type":"local","invtrans":"scalar","grid":"F80"},{"type":"interpolate.grid2namedgrid","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":"N80"},{"type":"save","packing":"simple"}]
+# grid-plan
+[{"grid":"T1279"},{"grid":"T159"},{"grid":"F80"},{"grid":"N80"},{"grid":"N80"}]

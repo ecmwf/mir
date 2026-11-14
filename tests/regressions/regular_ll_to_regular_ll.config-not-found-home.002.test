@@ -1,0 +1,13 @@
+# MIR-349
+# input
+regular_ll.2-2.grib1
+# post-process
+$MIR_ABORT_IF_CONFIGURATION_NOT_FOUND=false
+$MIR_HOME=/bad
+--grid=9/9
+# action-plan
+[{"type":"interpolate.grid2regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":[9,9],"area":[90,0,-90,351]},{"type":"save"}]
+# grid-plan
+[{"grid":[2,2]},{"grid":[9,9]},{"grid":[9,9]}]
+# grib_get
+gridType=regular_ll

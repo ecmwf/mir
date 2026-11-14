@@ -80,6 +80,14 @@ foreach(_loader counted-file-io tmp-counted-shmem)
 endforeach()
 
 ecbuild_add_test(
+    TARGET            mir_tests_unit_healpix_order
+    SOURCES           healpix_order.cc
+    LIBS              mir
+    ENVIRONMENT       ${_testEnvironment}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../data
+)
+
+ecbuild_add_test(
     TARGET            mir_tests_unit_legendre_shared_memory_loader
     SOURCES           legendre_shared_memory_loader.cc
     LIBS              mir

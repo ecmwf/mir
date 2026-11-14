@@ -1,8 +1,0 @@
-# input (d-angle-degree-asymmetric)
-stream=wave,param=mwd
-# mir
---grid=O32
-# grib_get
-numberOfValues = 5144
-N = 32
-Nj = 64

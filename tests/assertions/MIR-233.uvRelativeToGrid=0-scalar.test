@@ -1,6 +1,0 @@
-# input
-regular_ll.2-2.grib1
-# mir
---grid=3/3 --rotation=-30.0/-10.0
-# grib_get
-uvRelativeToGrid = 0

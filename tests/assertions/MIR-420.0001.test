@@ -1,6 +1,0 @@
-# input
-ICON.shortName=lsm.grib2
-# mir
---input="{latitudes:$tests_assertions_dir/ICON.shortName=CLAT.grib2,longitudes:$tests_assertions_dir/ICON.shortName=CLON.grib2}" --area=20/0/0/20
-# grib_get
-numberOfValues=189

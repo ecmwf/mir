@@ -1,0 +1,9 @@
+# MIR-647
+# input
+gridType=healpix,Nside=2,orderingConvention=ring.grib2
+# post-process
+--grid=H2 --interpolation=nn
+# action-plan
+[{"type":"copy"}]
+# grid-plan
+[{"grid":"H2"},{"grid":"H2"}]

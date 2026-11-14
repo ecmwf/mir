@@ -1,0 +1,11 @@
+# MIR-332
+# input
+regular_ll.2-2.grib1
+# post-process
+--edition=2
+# action-plan
+[{"type":"set","edition":2}]
+# grid-plan
+[{"grid":[2,2]},{"grid":[2,2]}]
+# grib_get
+edition=2

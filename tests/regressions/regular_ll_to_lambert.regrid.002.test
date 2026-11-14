@@ -1,0 +1,15 @@
+# MIR-474
+# input
+regular_ll.2-2.grib2
+# post-process
+--grid=gridType=lambert\;grid=2500./2500.\;writeLaDInDegrees=1\;writeLonPositive=1\;LaDInDegrees=45.8\;LoVInDegrees=2.\;latitudeOfFirstGridPointInDegrees=37.333\;longitudeOfFirstGridPointInDegrees=-8.354\;Ni=1000\;Nj=950\;gaussianNumber=1280
+# action-plan
+[{"type":"interpolate.grid2typedgrid","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":"gridType=lambert;grid=2500./2500.;writeLaDInDegrees=1;writeLonPositive=1;LaDInDegrees=45.8;LoVInDegrees=2.;latitudeOfFirstGridPointInDegrees=37.333;longitudeOfFirstGridPointInDegrees=-8.354;Ni=1000;Nj=950;gaussianNumber=1280"},{"type":"save"}]
+# grid-plan
+[{"grid":[2,2]},{"projection":{"lat_0":45.8,"lat_1":45.8,"lon_0":2,"reverse":true,"type":"lcc"},"x":[-922506.40123332,1574993.59876668,2500],"y":[-885004.889085306,-3257504.88908531,-2500]},{"projection":{"lat_0":45.8,"lat_1":45.8,"lon_0":2,"reverse":true,"type":"lcc"},"x":[-922506.40123332,1574993.59876668,2500],"y":[-885004.889085306,-3257504.88908531,-2500]}]
+# grib_get
+gridType=lambert
+LaDInDegrees=45.8
+LoVInDegrees=2
+Ni=1000
+Nj=950

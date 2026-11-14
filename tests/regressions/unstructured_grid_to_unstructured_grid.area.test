@@ -1,0 +1,11 @@
+# MIR-420
+# input
+ICON.shortName=lsm.grib2
+# post-process
+--input="{latitudes:$tests_data_dir/ICON.shortName=CLAT.grib2,longitudes:$tests_data_dir/ICON.shortName=CLON.grib2}" --area=20/0/0/20
+# action-plan
+[{"type":"crop.area","area":[20,0,0,20]},{"type":"save"}]
+# grid-plan
+[{"type":"unstructured_ll","uid":"ec79ff04be5cde71f86b29f271f4fe84"},{"type":"unstructured_ll","uid":"0e675d28d342ce5b3fec4a70f621ee8b"},{"type":"unstructured_ll","uid":"0e675d28d342ce5b3fec4a70f621ee8b"}]
+# grib_get
+numberOfValues=189

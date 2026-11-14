@@ -1,0 +1,12 @@
+# MIR-512
+# input
+packingType=grid_simple.grib2
+# post-process
+--accuracy=16 --packing=av
+# action-plan
+[{"type":"copy"}]
+# grid-plan
+[{"area":[1,0,0,1],"grid":[1,1]},{"area":[1,0,0,1],"grid":[1,1]}]
+# grib_get
+packingType=grid_simple
+bitsPerValue=16

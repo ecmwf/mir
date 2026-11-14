@@ -1,8 +1,0 @@
-# input
-param=2t,levtype=sfc
-# mir
---area=48.3/5.2/45.2/11 --grid=F1280 --interpolation=nearest-lsm
-# grib_get
-N = 1280
-Ni = 83
-Nj = 44

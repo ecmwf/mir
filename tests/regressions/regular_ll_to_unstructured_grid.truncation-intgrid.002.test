@@ -1,0 +1,9 @@
+# MIR-634
+# input
+regular_ll.2-2.grib2
+# post-process
+--truncation=none --intgrid=none --latitudes=1/2/3 --longitudes=4/5/6
+# action-plan
+[{"type":"interpolate.grid2points","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"uid":"50da13748603a71b2a148ab7b8ee9dc2"},{"type":"save"}]
+# grid-plan
+[{"grid":[2,2]},{"type":"unstructured_ll","uid":"50da13748603a71b2a148ab7b8ee9dc2"},{"type":"unstructured_ll","uid":"50da13748603a71b2a148ab7b8ee9dc2"}]

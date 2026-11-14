@@ -1,0 +1,17 @@
+# MIR-255
+# input
+gridType=regular_gg,gridName=F640,shortName=msl,global=0.grib1
+# post-process
+--grid=1/1
+# action-plan
+[{"type":"interpolate.grid2regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":[1,1],"area":[90,0,-90,359]},{"type":"save"}]
+# grid-plan
+[{"area":[75.1346965469112,-64.96875,15.1112834749574,64.96875],"grid":"F640"},{"area":[75,-64,16,64],"grid":[1,1]},{"area":[75,-64,16,64],"grid":[1,1]}]
+# grib_get
+Ni=129
+Nj=60
+latitudeOfFirstGridPointInDegrees=75
+longitudeOfFirstGridPointInDegrees=-64
+latitudeOfLastGridPointInDegrees=16
+longitudeOfLastGridPointInDegrees=64
+min=0

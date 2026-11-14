@@ -1,6 +1,0 @@
-# input
-param=vo_d,level=1000
-# mir
---vod2uv
-# plan
-ShVodToUV[type=local]|Save[output=...]

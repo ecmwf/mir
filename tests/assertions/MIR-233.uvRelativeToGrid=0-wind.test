@@ -1,6 +1,0 @@
-# input
-param=vo_d,level=500
-# mir
---grid=3/3 --vod2uv
-# grib_get
-uvRelativeToGrid = 0

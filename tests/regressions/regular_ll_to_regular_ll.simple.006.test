@@ -1,0 +1,12 @@
+# MIR-692
+# input
+gridType=regular_ll,param=t,levtype=ml,level=1,grid=9-9.grib2
+# post-process
+--packing=simple
+# action-plan
+[{"type":"set","packing":"simple"}]
+# grid-plan
+[{"grid":[9,9]},{"grid":[9,9]}]
+# grib_get
+numberOfCodedValues=840
+numberOfValues=840

@@ -1,0 +1,17 @@
+# MIR-553
+# input
+MIR-553.grib2
+# post-process
+--area=66.6/-24.4/63.4/-13.6
+# action-plan
+[{"type":"mask.area","area":[66.6,-24.4,63.4,-13.6]},{"type":"save"}]
+# grid-plan
+[{"false_xy":[1818500.021,-2287499.955],"projection":{"figure":{"a":6378137,"b":6356752.314},"lat_0":52,"lon_0":10,"reverse":true,"type":"laea"},"x":[0,4995000,5000],"y":[0,-4745000,-5000]},{"false_xy":[1818500.021,-2287499.955],"projection":{"figure":{"a":6378137,"b":6356752.314},"lat_0":52,"lon_0":10,"reverse":true,"type":"laea"},"x":[0,4995000,5000],"y":[0,-4745000,-5000]},{"false_xy":[1818500.021,-2287499.955],"projection":{"figure":{"a":6378137,"b":6356752.314},"lat_0":52,"lon_0":10,"reverse":true,"type":"laea"},"x":[0,4995000,5000],"y":[0,-4745000,-5000]}]
+# grib_get
+#Ni=122 # prone to compiler/platform dependant results
+#Nj=105 # ...
+#latitudeOfFirstGridPointInDegrees=65.7618    # ...
+#longitudeOfFirstGridPointInDegrees=-27.7661  # ...
+scanningMode=0
+iScansPositively=1
+jScansPositively=0

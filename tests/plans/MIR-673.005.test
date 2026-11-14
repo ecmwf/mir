@@ -1,6 +1,0 @@
-# input
-gridType=polar_stereographic.grib1
-# mir
---grid=gridType=polar_stereographic
-# plan
-Copy[]

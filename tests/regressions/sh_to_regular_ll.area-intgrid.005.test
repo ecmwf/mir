@@ -1,0 +1,15 @@
+# MIR-298
+# input
+param=t,level=1000,resol=20
+# post-process
+--grid=0.5/0.5 --area=90/-350/-10/9 --intgrid=source
+# action-plan
+[{"type":"transform.sh-scalar-to-namedgrid","atlas-trans-flt":false,"atlas-trans-type":"local","cropping":[90,0,-10.5875,360],"invtrans":"scalar","grid":"O21"},{"type":"interpolate.grid2regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"cropping":[90,-350,-10,9],"grid":[0.5,0.5],"area":[90,0,-90,359.5]},{"type":"save","packing":"simple"}]
+# grid-plan
+[{"grid":"T20"},{"area":[90,0,-10.5874943784246,360],"grid":"O21"},{"area":[90,10,-10,369],"grid":[0.5,0.5]},{"area":[90,10,-10,369],"grid":[0.5,0.5]}]
+# grib_get
+gridType=regular_ll
+latitudeOfFirstGridPointInDegrees=90
+longitudeOfFirstGridPointInDegrees=-350
+latitudeOfLastGridPointInDegrees=-10
+longitudeOfLastGridPointInDegrees=9

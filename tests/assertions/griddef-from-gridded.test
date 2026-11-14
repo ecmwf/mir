@@ -1,5 +1,0 @@
-# input
-param=2t,levtype=sfc
-# mir
---griddef=$tests_assertions_dir/weather-params.pts
-# grib_get (output is GEOPOINTS)

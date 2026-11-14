@@ -1,0 +1,15 @@
+# MIR-643
+# input
+gridType=healpix,Nside=32,orderingConvention=nested.grib2
+# post-process
+--grid=1/1 --interpolation=nn
+# action-plan
+[{"type":"interpolate.grid2regular-ll","interpolation":"nn","distance-weighting":"inverse-distance-weighting-squared","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":[1,1],"area":[90,0,-90,359]},{"type":"save"}]
+# grid-plan
+[{"grid":"H32","order":"nested"},{"grid":[1,1]},{"grid":[1,1]}]
+# grib_get
+gridType=regular_ll
+Ni=360
+Nj=181
+packingType=grid_ccsds
+edition=2

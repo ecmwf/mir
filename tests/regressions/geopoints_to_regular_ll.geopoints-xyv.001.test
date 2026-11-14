@@ -1,0 +1,9 @@
+# input (Geopoints NCOLS Multi-column format; This format allows any number of parameters to be stored in a geopoints file. The #COLUMNS section is used to understand the columns, as they can be put in any order. The following column names are reserved and are treated specially: longitude, level, date, time, stnid. A column with a different name will be treated as a value column. The data should all be numeric, apart from stnid, which is stored as a string)
+geopoints-format-ncols.gpt
+# post-process
+--output=geopoints-xyv
+# action-plan
+[{"type":"set","packing":"ccsds","edition":2}]
+# grid-plan
+[{"type":"unstructured_ll","uid":"79e70468bd4679f2510371c1a9b4df10"},{"type":"unstructured_ll","uid":"79e70468bd4679f2510371c1a9b4df10"}]
+# grib_get (output is GEOPOINTS)

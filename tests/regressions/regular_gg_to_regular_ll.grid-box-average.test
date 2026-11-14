@@ -1,0 +1,16 @@
+# input
+MPY-400.grib1
+# post-process
+--grid=1.5/1.5 --interpolation=grid-box-average
+# action-plan
+[{"type":"interpolate.grid2regular-ll","interpolation":"grid-box-average","lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":[1.5,1.5],"area":[90,0,-90,358.5]},{"type":"save"}]
+# grid-plan
+[{"area":[26.1408367776387,0,-26.1408367776387,360],"grid":"F60"},{"area":[25.5,0,-25.5,360],"grid":[1.5,1.5]},{"area":[25.5,0,-25.5,360],"grid":[1.5,1.5]}]
+# grib_get
+gridType=regular_ll
+Ni=240
+Nj=35
+latitudeOfFirstGridPointInDegrees=25.5
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=-25.5
+longitudeOfLastGridPointInDegrees=358.5

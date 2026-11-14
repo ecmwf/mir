@@ -1,0 +1,9 @@
+# MIR-178
+# input
+param=t,level=1000
+# post-process
+--truncation=none --intgrid=none --grid=1/1 --area=10/0/0/10
+# action-plan
+[{"type":"transform.sh-scalar-to-regular-ll","atlas-trans-flt":false,"atlas-trans-type":"local","cropping":[10,0,0,10],"invtrans":"scalar","grid":[1,1],"area":[10,0,0,10]},{"type":"save","packing":"simple"}]
+# grid-plan
+[{"grid":"T1279"},{"area":[10,0,0,10],"grid":[1,1]},{"area":[10,0,0,10],"grid":[1,1]}]
