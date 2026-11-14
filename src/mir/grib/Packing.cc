@@ -56,6 +56,7 @@ Packing::Packing(const std::string& name, const param::MIRParametrisation& param
     param.get("edition", edition_ = field.get("edition", edition) ? 0 : 2);
 
     defineEdition_ = edition_ > 0 && edition_ != edition;
+    user_edition_  = user.has("edition");
 }
 
 
@@ -98,6 +99,14 @@ bool Packing::printParametrisation(std::ostream& out) const {
     }
 
     return !sep.empty();
+}
+
+
+void Packing::fillEdition(grib_info& info) const {
+    // the edition, if requested (even if as the input's)
+    if (user_edition_ && edition_ != 0) {
+        info.packing.editionNumber = edition_;
+    }
 }
 
 

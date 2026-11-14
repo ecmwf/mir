@@ -11,7 +11,7 @@
 #include "eckit/serialisation/IfstreamStream.h"
 
 #include "mir/data/MIRField.h"
-#include "mir/repres/other/UnstructuredGrid.h"
+#include "mir/repres/UnstructuredGrid.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 
@@ -83,7 +83,7 @@ const param::MIRParametrisation& GriddefInput::parametrisation(size_t which) con
 
 
 data::MIRField GriddefInput::field() const {
-    return {new repres::other::UnstructuredGrid{latitudes_, longitudes_}};
+    return {new repres::UnstructuredGrid{latitudes_, longitudes_}};
 }
 
 

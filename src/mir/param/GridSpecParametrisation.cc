@@ -47,6 +47,7 @@ std::string grib_grid_type(const Grid& grid) {
         {"regular_ll", {"regular_ll", "rotated_ll"}},
         {"regular_gg", {"regular_gg", "rotated_gg"}},
         {"reduced_gg", {"reduced_gg", "reduced_rotated_gg"}},
+        {"reduced_ll", {"reduced_ll", ""}},
         {"HEALPix", {"healpix", ""}},
         {"unstructured_ll", {"unstructured_ll", ""}},
         {"sh", {"sh", "rotated_sh"}},
@@ -284,7 +285,7 @@ bool GridSpecParametrisation::cached(const std::string& name) const {
         return true;
     }
 
-    if (name == "gridspec") {
+    if (name == "gridSpec") {
         return set(grid.spec_str());
     }
 

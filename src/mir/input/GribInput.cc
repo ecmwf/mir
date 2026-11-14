@@ -295,20 +295,22 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         {"proj", "projTargetString"},
         {"projSource", "projSourceString"},
 
+
         {"order", "orderingConvention", is("gridType", "healpix")},
 
         // This will be just called for has()
         {
             "gridded",
             "Nx",
-            _or(_or(_or(is("gridType", "polar_stereographic"), is("gridType", "lambert_azimuthal_equal_area")),
-                    is("gridType", "lambert")),
-                is("gridType", "space_view")),
+            _or(_or(_or(_or(is("gridType", "polar_stereographic"), is("gridType", "lambert_azimuthal_equal_area")),
+                        is("gridType", "lambert")),
+                    is("gridType", "space_view")),
+                is("gridType", "albers")),
         },
         {
             "gridded",
             "Ni",
-            is("gridType", "triangular_grid"),
+            _or(is("gridType", "triangular_grid"), is("gridType", "transverse_mercator")),
         },
         {
             "gridded",
@@ -712,13 +714,6 @@ data::MIRField GribInput::field() const {
         }
     }
 
-    long earthIsOblate = 0;
-    if (GRIB_GET(codes_get_long(grib_, "earthIsOblate", &earthIsOblate))) {
-        if (earthIsOblate != 0) {
-            wrongly_encoded_grib("GribInput: only spherical earth supported (earthIsOblate != 0)");
-        }
-    }
-
     size_t values_size = 0;
     GRIB_CALL(codes_get_size(grib_, "values", &values_size));
 
@@ -1039,6 +1034,24 @@ bool GribInput::get(const std::string& name, std::string& value) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_ != nullptr);
+
+    // gridSpec (ecCodes, by eckit::geo), if the grid is supported
+    if (name == "gridSpec") {
+        size_t length = 0;
+        if (codes_get_length(grib_, "gridSpec", &length) != CODES_SUCCESS) {
+            return false;
+        }
+
+        std::string spec(length, '\0');
+        if (codes_get_string(grib_, "gridSpec", spec.data(), &length) != CODES_SUCCESS) {
+            return false;
+        }
+
+        spec.resize(std::strlen(spec.c_str()));
+        value = spec;
+        return !value.empty();
+    }
+
     const auto* key = get_key(name, grib_);
 
     ASSERT(key != nullptr);
