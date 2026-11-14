@@ -16,7 +16,6 @@
 #include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/method/knn/pick/NClosestOrNearest.h"
 #include "mir/method/knn/pick/Pick.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
