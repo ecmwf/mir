@@ -63,11 +63,16 @@ void InMemoryCacheBase::json(eckit::JSON& j) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-    std::map<std::string, std::pair<InMemoryCacheUsage, InMemoryCacheUsage>> caches;
+    struct usage_t {
+        InMemoryCacheUsage footprint;
+        InMemoryCacheUsage capacity;
+    };
+
+    std::map<std::string, usage_t> caches;
     for (const auto& c : *m) {
-        auto& [footprint, capacity] = caches[c->name()];
-        footprint += c->footprint();
-        capacity += c->capacity();
+        auto& cache = caches[c->name()];
+        cache.footprint += c->footprint();
+        cache.capacity += c->capacity();
     }
 
     auto usage = [&j](const InMemoryCacheUsage& u) {
@@ -77,13 +82,13 @@ void InMemoryCacheBase::json(eckit::JSON& j) {
     };
 
     j.startObject();
-    for (const auto& [name, fc] : caches) {
-        j << name;
+    for (const auto& cache : caches) {
+        j << cache.first;
         j.startObject();
         j << "footprint";
-        usage(fc.first);
+        usage(cache.second.footprint);
         j << "capacity";
-        usage(fc.second);
+        usage(cache.second.capacity);
         j.endObject();
     }
     j.endObject();
