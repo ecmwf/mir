@@ -12,6 +12,7 @@
 #include "eckit/memory/Counted.h"
 
 #include "mir/util/IndexMapping.h"
+#include "mir/util/Mutex.h"
 #include "mir/util/Types.h"
 
 
@@ -92,7 +93,10 @@ public:
 
     void fillJob(api::MIRJob&) const;
 
-    virtual const eckit::spec::Spec& spec() const;
+    /// The grid (eckit::geo), by default built from fillSpec
+    virtual const eckit::geo::Grid& grid() const;
+
+    const Spec& spec() const;
 
     virtual const std::string& uniqueName() const;
     virtual bool sameAs(const Representation&) const;
@@ -180,6 +184,7 @@ private:
     // -- Members
 
     mutable std::unique_ptr<const eckit::geo::Grid> grid_;
+    mutable util::recursive_mutex gridMutex_;
 
     // -- Methods
     // None

@@ -34,9 +34,6 @@
 #include "mir/repres/gauss/regular/RegularGG.h"
 #include "mir/repres/gauss/regular/RotatedGG.h"
 #include "mir/repres/latlon/RegularLL.h"
-#include "mir/repres/regular/Lambert.h"
-#include "mir/repres/regular/LambertAzimuthalEqualArea.h"
-#include "mir/repres/regular/PolarStereographic.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
@@ -195,7 +192,6 @@ const RegularLLPattern REGULAR_LL_PATTERN("^" fp "/" fp "$");
 
 
 // Grids by type and key=value pairs (gridType=...;key=value;...)
-template <typename REPRES>
 class TypedGrid final : public Grid {
 public:
     TypedGrid(const std::string& key, const std::set<std::string>& requiredKeys,
@@ -263,12 +259,11 @@ private:
 
     const repres::Representation* representation(const param::MIRParametrisation& param) const override {
         checkRequiredKeys(param);
-        return new REPRES(param);
+        return repres::RepresentationFactory::build(param);
     }
 };
 
 
-template <typename REPRES>
 class TypedGridPattern final : public GridPattern {
 public:
     TypedGridPattern(const std::string& pattern, const std::set<std::string>& requiredKeys,
@@ -286,33 +281,34 @@ private:
     }
 
     const Grid* make(const std::string& name) const override {
-        return new TypedGrid<REPRES>(name, requiredKeys_, optionalKeys_);
+        return new TypedGrid(name, requiredKeys_, optionalKeys_);
     }
 
     std::string canonical(const std::string& name) const override { return name; }  // FIXME not implemented
 };
 
 
-const TypedGridPattern<repres::regular::Lambert> LAMBERT_PATTERN(
-    "^gridType=lambert;.*$",
-    {"LaDInDegrees", "LoVInDegrees", "Ni", "Nj", "grid", "latitudeOfFirstGridPointInDegrees",
-     "longitudeOfFirstGridPointInDegrees"},
-    {"Latin1InDegrees", "Latin2InDegrees", "writeLaDInDegrees", "writeLonPositive", "gaussianNumber", "shapeOfTheEarth",
-     "radius", "earthMajorAxis", "earthMinorAxis"});
+const TypedGridPattern LAMBERT_PATTERN("^gridType=lambert;.*$",
+                                       {"LaDInDegrees", "LoVInDegrees", "Ni", "Nj", "grid",
+                                        "latitudeOfFirstGridPointInDegrees", "longitudeOfFirstGridPointInDegrees"},
+                                       {"Latin1InDegrees", "Latin2InDegrees", "writeLaDInDegrees", "writeLonPositive",
+                                        "gaussianNumber", "shapeOfTheEarth", "radius", "earthMajorAxis",
+                                        "earthMinorAxis"});
 
 
-const TypedGridPattern<repres::regular::LambertAzimuthalEqualArea> LAMBERT_AZIMUTHAL_EQUAL_AREA_PATTERN(
-    "^gridType=lambert_azimuthal_equal_area;.*$",
-    {"standardParallelInDegrees", "centralLongitudeInDegrees", "Ni", "Nj", "grid", "latitudeOfFirstGridPointInDegrees",
-     "longitudeOfFirstGridPointInDegrees"},
-    {"gaussianNumber", "shapeOfTheEarth", "radius", "earthMajorAxis", "earthMinorAxis"});
+const TypedGridPattern LAMBERT_AZIMUTHAL_EQUAL_AREA_PATTERN("^gridType=lambert_azimuthal_equal_area;.*$",
+                                                            {"standardParallelInDegrees", "centralLongitudeInDegrees",
+                                                             "Ni", "Nj", "grid", "latitudeOfFirstGridPointInDegrees",
+                                                             "longitudeOfFirstGridPointInDegrees"},
+                                                            {"gaussianNumber", "shapeOfTheEarth", "radius",
+                                                             "earthMajorAxis", "earthMinorAxis"});
 
 
-const TypedGridPattern<repres::regular::PolarStereographic> POLAR_STEREOGRAPHIC_PATTERN(
+const TypedGridPattern POLAR_STEREOGRAPHIC_PATTERN(
     "^gridType=polar_stereographic;.*$",
-    {"proj", "LaDInDegrees", "orientationOfTheGridInDegrees", "southPoleOnProjectionPlane", "Ni", "Nj", "grid",
+    {"LaDInDegrees", "orientationOfTheGridInDegrees", "southPoleOnProjectionPlane", "Ni", "Nj", "grid",
      "latitudeOfFirstGridPointInDegrees", "longitudeOfFirstGridPointInDegrees"},
-    {"gaussianNumber", "shapeOfTheEarth", "radius", "earthMajorAxis", "earthMinorAxis", "iScansNegatively",
+    {"proj", "gaussianNumber", "shapeOfTheEarth", "radius", "earthMajorAxis", "earthMinorAxis", "iScansNegatively",
      "jScansPositively"});
 
 

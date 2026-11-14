@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
-#include "mir/repres/other/None.h"
+#include "mir/repres/None.h"
 
 #include <ostream>
 
 
-namespace mir::repres::other {
+namespace mir::repres {
 
 
 None::None() = default;
@@ -27,4 +27,4 @@ void None::print(std::ostream& out) const {
 static const RepresentationBuilder<None> builder("none");
 
 
-}  // namespace mir::repres::other
+}  // namespace mir::repres

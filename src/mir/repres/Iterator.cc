@@ -16,7 +16,9 @@ namespace repres {
 
 
 Iterator::Iterator(const util::Rotation& rotation) :
-    rotation_({rotation.south_pole_longitude().value(), rotation.south_pole_latitude().value()}), valid_(true) {}
+    rotation_({rotation.south_pole_longitude().value(), rotation.south_pole_latitude().value()},
+              rotation.south_pole_rotation_angle()),
+    valid_(true) {}
 
 
 Iterator::~Iterator() = default;

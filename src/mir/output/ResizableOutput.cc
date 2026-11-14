@@ -4,7 +4,6 @@
 
 #include "mir/output/ResizableOutput.h"
 
-#include <memory>
 #include <ostream>
 
 #include "eckit/geo/Grid.h"
@@ -29,17 +28,14 @@ size_t ResizableOutput::save(const param::MIRParametrisation& /*param*/, context
 
     // save metadata
     repres::RepresentationHandle repres(field.representation());
-    std::unique_ptr<const eckit::geo::Grid> grid(eckit::geo::GridFactory::build(repres->spec()));
-    ASSERT(grid);
-
-    metadata_.set("grid", grid->spec_str());
+    metadata_.set("grid", repres->spec().str());
     if (field.hasMissing()) {
         metadata_.set("missing_value", field.missingValue());
     }
 
     // save data
     ASSERT(field.dimensions() == 1);
-    ASSERT(field.values(0).size() == grid->size());
+    ASSERT(field.values(0).size() == repres->grid().size());
     values_ = field.values(0);
     repres->reorderFromCanonical(values_);
 

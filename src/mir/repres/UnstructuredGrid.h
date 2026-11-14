@@ -14,7 +14,7 @@ class PathName;
 }
 
 
-namespace mir::repres::other {
+namespace mir::repres {
 
 
 class UnstructuredGrid : public Gridded {
@@ -112,4 +112,4 @@ private:
 };
 
 
-}  // namespace mir::repres::other
+}  // namespace mir::repres

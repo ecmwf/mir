@@ -4,11 +4,12 @@
 
 #pragma once
 
+#include <iosfwd>
 #include <memory>
-#include <utility>
 #include <vector>
 
 #include "mir/repres/Gridded.h"
+#include "mir/util/Types.h"
 
 
 namespace eckit::geo {
@@ -19,58 +20,60 @@ class Grid;
 namespace mir::repres {
 
 
-/// Regular grid in projected coordinates (eg. swisslv95), points in geographic coordinates
-class RegularXY final : public Gridded {
+/// Regular grid in projected coordinates (eckit::geo regular_xy): by its gridSpec (eg. of GRIB), or by the keys of a
+/// typed grid; the Earth's figure is as encoded (GRIB) or given, otherwise as the gridSpec (typed grids: the default)
+class RegularXY : public Gridded {
 public:
-    // -- Types
-
-    using points_type = std::pair<std::vector<double>, std::vector<double>>;
-
     // -- Constructors
 
-    explicit RegularXY(const param::MIRParametrisation&);
+    /// By the gridSpec, or by the keys of a typed grid and its projection spec (eckit::geo, without the figure)
+    explicit RegularXY(const param::MIRParametrisation&, std::unique_ptr<CustomSpec> projection = nullptr);
 
     // -- Destructor
 
     ~RegularXY() override;
 
-private:
-    // -- Constructors
-
-    explicit RegularXY(const eckit::geo::Grid*);
-
-    // -- Members
-
-    std::unique_ptr<const eckit::geo::Grid> grid_;
-
-    mutable points_type points_;
-
+protected:
     // -- Methods
 
-    const points_type& to_latlons() const;
+    bool firstPointBottomLeft() const { return firstPointBottomLeft_; }
+
+    /// Geographic coordinates (lon, lat) of grid coordinates (x, y)
+    Point2 lonlat(double x, double y) const;
+
+    /// First point (lon, lat) of the scanning, or bottom-left if specified
+    Point2 firstPoint() const;
+
+    /// The encoding edition, as specified or (if not) set to the representation's
+    long gribEdition(grib_info&) const;
 
     // -- Overridden methods
 
+    const eckit::geo::Grid& grid() const override;
+
     bool sameAs(const Representation&) const override;
-    void makeName(std::ostream&) const override;
-
-    void fillGrib(grib_info&) const override;
-    void fillMeshGen(util::MeshGeneratorParameters&) const override;
-    void fillSpec(CustomSpec&) const override;
-
-    void json(eckit::JSON&) const override;
-    void print(std::ostream&) const override;
-
-    void validate(const MIRValuesVector&) const override;
-    size_t numberOfPoints() const override;
-
-    Iterator* iterator() const override;
-
     bool includesNorthPole() const override;
     bool includesSouthPole() const override;
     bool isPeriodicWestEast() const override;
 
+    void fillGrib(grib_info&) const override;
+    void fillMeshGen(util::MeshGeneratorParameters&) const override;
+
+    void validate(const MIRValuesVector&) const override;
+    void makeName(std::ostream&) const override;
+    void print(std::ostream&) const override;
+
     ::atlas::Grid atlasGrid() const override;
+    Iterator* iterator() const override;
+    size_t numberOfPoints() const override;
+
+private:
+    // -- Members
+
+    std::unique_ptr<const eckit::geo::Grid> grid_;
+    Point2 false_;
+    long edition_;
+    bool firstPointBottomLeft_ = false;
 };
 
 

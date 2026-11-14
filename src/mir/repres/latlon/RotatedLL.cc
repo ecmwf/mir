@@ -9,7 +9,7 @@
 #include "eckit/spec/Custom.h"
 
 #include "mir/api/mir_config.h"
-#include "mir/repres/Iterator.h"
+#include "mir/iterator/GridIterator.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
@@ -28,26 +28,7 @@ RotatedLL::RotatedLL(const util::Increments& increments, const util::Rotation& r
 RotatedLL::~RotatedLL() = default;
 
 Iterator* RotatedLL::iterator() const {
-
-    class RotatedLLIterator : protected LatLonIterator, public Iterator {
-        void print(std::ostream& out) const override {
-            out << "RotatedLLIterator[";
-            Iterator::print(out);
-            out << ",";
-            LatLonIterator::print(out);
-            out << "]";
-        }
-        bool next(Latitude& lat, Longitude& lon) override { return LatLonIterator::next(lat, lon); }
-
-        size_t index() const override { return count_; }
-
-    public:
-        RotatedLLIterator(size_t ni, size_t nj, Latitude north, Longitude west, const util::Increments& increments,
-                          const util::Rotation& rotation) :
-            LatLonIterator(ni, nj, north, west, increments), Iterator(rotation) {}
-    };
-
-    return new RotatedLLIterator(ni_, nj_, bbox_.north(), bbox_.west(), increments_, rotation_);
+    return new iterator::GridIterator(grid(), true);
 }
 
 void RotatedLL::print(std::ostream& out) const {

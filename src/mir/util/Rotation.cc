@@ -70,8 +70,7 @@ void Rotation::fillJob(api::MIRJob& job) const {
 
 void Rotation::fillSpec(eckit::spec::Custom& spec) const {
     if (rotation_.rotated()) {
-        const auto& projection = dynamic_cast<const eckit::spec::Custom&>(rotation_.spec());
-        spec.set("projection", new eckit::spec::Custom(projection.container()));
+        rotation_.fill_grid_spec(spec);
     }
 }
 
