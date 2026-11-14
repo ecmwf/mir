@@ -114,10 +114,4 @@ if(ENABLE_BUILD_TOOLS)
             ENVIRONMENT       ${_testEnvironment}
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
     endforeach()
-
-    if(NOT eccodes_HAVE_AEC)
-        set_tests_properties(
-	        mir_tests_unit_grib_decode_gridName=F1280.area=55_65_0_145.grib2
-            PROPERTIES WILL_FAIL TRUE)
-    endif()
 endif()
