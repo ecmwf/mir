@@ -22,6 +22,7 @@ private:
     std::unique_ptr<param::GridSpecParametrisation> param_;
 
     bool sameAs(const Action&) const override;
+    void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
     const char* name() const override;
     const repres::Representation* outputRepresentation() const override;

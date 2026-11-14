@@ -53,6 +53,7 @@ private:
     void print(std::ostream&) const override;
 
     bool sameAs(const Action&) const override;
+    void json(eckit::JSON&) const override;
     void execute(context::Context&) const override;
     const char* name() const override;
 

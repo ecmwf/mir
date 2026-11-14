@@ -101,6 +101,24 @@ void MethodWeighted::json(eckit::JSON& j) const {
     param::DefaultParametrisation::instance().json(j, "pole-displacement-in-degree", poleDisplacement_);
     param::DefaultParametrisation::instance().json(j, "prune-epsilon", pruneEpsilon_);
     param::DefaultParametrisation::instance().json(j, "lsm-weight-adjustment", lsmWeightAdjustment_);
+
+    // as compared (see lsm::LandSeaMasks::sameLandSeaMasks)
+    if (bool lsm = false; parametrisation_.get("lsm", lsm) && lsm) {
+        j << "lsm" << lsm;
+    }
+
+    if (param::DefaultParametrisation::json_complete()) {
+        j << "solver";
+        solver_->json(j);
+
+        if (!reorderRows_.empty()) {
+            j << "reorder-rows" << reorderRows_;
+        }
+
+        if (!reorderCols_.empty()) {
+            j << "reorder-cols" << reorderCols_;
+        }
+    }
 }
 
 

@@ -9,6 +9,10 @@
 #include <vector>
 
 
+namespace eckit {
+class JSON;
+}
+
 namespace mir {
 namespace context {
 class Context;
@@ -68,6 +72,15 @@ public:
     ActionNode* add(const Action&, api::MIRWatcher*);
 
     void dump(std::ostream&, size_t depth) const;
+
+    /// Actions (specs), as a JSON tree [[action, [...]], ...]
+    void json(eckit::JSON&) const;
+
+    /// Grids (specs) after executing, as a JSON tree [[grid, [...]], ...] (see recordGrids)
+    void json_grids(eckit::JSON&) const;
+
+    /// Record the grids after executing each node
+    void recordGrids();
 
     void notifyFailure(std::exception&, const Action&, api::MIRWatcher*, bool& rethrow) const;
 

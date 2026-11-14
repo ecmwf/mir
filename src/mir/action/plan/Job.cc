@@ -67,6 +67,14 @@ void Job::execute(util::MIRStatistics& statistics) const {
 }
 
 
+std::string Job::executeGridPlan(util::MIRStatistics& statistics) const {
+    ASSERT(plan_);
+
+    context::Context ctx(input_, statistics);
+    return plan_->executeGridPlan(ctx);
+}
+
+
 const ActionPlan& Job::plan() const {
     return *plan_;
 }

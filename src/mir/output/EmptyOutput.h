@@ -71,6 +71,7 @@ private:
     bool sameAs(const MIROutput&) const override;
     bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const override;
     bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const override;
+    void jsonParametrisation(eckit::JSON&, const param::MIRParametrisation&) const override;
     void print(std::ostream&) const override;
 
     // -- Class members

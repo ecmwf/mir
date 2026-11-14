@@ -55,6 +55,7 @@ protected:
 
     // From Gridded2GriddedInterpolation
     bool sameAs(const Action&) const override;
+    void json(eckit::JSON&) const override;
 
     // -- Class members
     // None

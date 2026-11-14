@@ -8,6 +8,8 @@
 #include <memory>
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
@@ -21,6 +23,17 @@ namespace mir::action {
 
 bool CheckerBoard::sameAs(const Action& /*unused*/) const {
     return false;
+}
+
+
+void CheckerBoard::json(eckit::JSON& j) const {
+    // as used by execute
+    if (bool normalize = false; parametrisation().get("0-1", normalize)) {
+        j << "0-1" << normalize;
+    }
+    if (std::vector<size_t> frequencies; parametrisation().get("frequencies", frequencies)) {
+        j << "frequencies" << frequencies;
+    }
 }
 
 void CheckerBoard::print(std::ostream& out) const {

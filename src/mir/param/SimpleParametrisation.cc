@@ -477,6 +477,12 @@ void TSettings<std::vector<long>>::get(const std::string& /*name*/, std::vector<
 
 
 template <>
+void TSettings<std::vector<long>>::get(const std::string& /*name*/, std::vector<double>& value) const {
+    value.assign(value_.begin(), value_.end());
+}
+
+
+template <>
 void TSettings<std::vector<double>>::get(const std::string& /*name*/, std::vector<double>& value) const {
     value = value_;
 }

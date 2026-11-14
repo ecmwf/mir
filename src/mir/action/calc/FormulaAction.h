@@ -68,6 +68,8 @@ protected:
 private:
     // -- Members
 
+    std::string formulaStr_;
+    std::string metadataStr_;
     std::unique_ptr<util::Formula> formula_;
     std::map<std::string, long> metadata_;
 
@@ -78,6 +80,7 @@ private:
 
     void execute(context::Context&) const override;
     bool sameAs(const Action&) const override;
+    void json(eckit::JSON&) const override;
     const char* name() const override;
 
     // -- Class members

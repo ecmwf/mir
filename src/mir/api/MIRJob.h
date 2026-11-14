@@ -52,6 +52,13 @@ public:
     void execute(input::MIRInput&, output::MIROutput&) const;
     void execute(input::MIRInput&, output::MIROutput&, util::MIRStatistics&) const;
 
+    /// Actions (specs) for the input, as a JSON list (independent of dryrun and dump options)
+    std::string action_plan_json(input::MIRInput&) const;
+
+    /// Grids (specs) of the input and after each action, executing to no output, as a JSON list (independent of
+    /// dryrun and dump options)
+    std::string grid_plan_json(input::MIRInput&) const;
+
     /// interpolation is a method name, or a spec {type: name, option: value, ...} setting its options (which can then
     /// only be set this way)
     MIRJob& set(const std::string& name, const std::string& value) override;

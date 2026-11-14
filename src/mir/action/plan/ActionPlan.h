@@ -4,9 +4,14 @@
 
 #pragma once
 
+#include <memory>
 #include <string>
 #include <vector>
 
+
+namespace eckit {
+class JSON;
+}
 
 namespace mir {
 namespace action {
@@ -17,6 +22,9 @@ class Context;
 }
 namespace param {
 class MIRParametrisation;
+}
+namespace repres {
+class RepresentationHandle;
 }
 }  // namespace mir
 
@@ -29,6 +37,7 @@ private:
     // -- Types
 
     using container_t = std::vector<Action*>;
+    using grids_t     = std::vector<std::unique_ptr<repres::RepresentationHandle>>;
 
 public:
     // -- Exceptions
@@ -65,6 +74,13 @@ public:
     void add(const std::string& name, param::MIRParametrisation*);
 
     void execute(context::Context&) const;
+
+    /// Execute (not dryrun), returning the grids (specs) of the input and after each action, as a JSON list
+    std::string executeGridPlan(context::Context&) const;
+
+    /// Actions (specs), as a JSON list
+    void json(eckit::JSON&) const;
+    std::string json_str() const;
     void dump(std::ostream&) const;
     void custom(std::ostream&) const;
     void compress();
@@ -120,9 +136,13 @@ private:
 
     const std::string dumpPlanFile_;
     const std::string dumpStatisticsFile_;
+    const std::string dumpActionPlanFile_;
+    const std::string dumpGridPlanFile_;
 
     // -- Methods
-    // None
+
+    /// Execute (not dryrun), recording the grids of the input and after each action (if asked)
+    grids_t run(context::Context&, bool recordGrids) const;
 
     // -- Overridden methods
     // None

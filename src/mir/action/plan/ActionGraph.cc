@@ -6,6 +6,8 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/action/plan/Action.h"
 #include "mir/action/plan/ActionNode.h"
@@ -73,6 +75,31 @@ ActionNode* ActionGraph::add(const Action& action, api::MIRWatcher* watcher) {
 void ActionGraph::dump(std::ostream& out, size_t depth) const {
     for (const auto& j : *this) {
         j->dump(out, depth);
+    }
+}
+
+
+void ActionGraph::json(eckit::JSON& j) const {
+    j.startList();
+    for (const auto& node : *this) {
+        node->json(j);
+    }
+    j.endList();
+}
+
+
+void ActionGraph::json_grids(eckit::JSON& j) const {
+    j.startList();
+    for (const auto& node : *this) {
+        node->json_grids(j);
+    }
+    j.endList();
+}
+
+
+void ActionGraph::recordGrids() {
+    for (auto& node : *this) {
+        node->recordGrids();
     }
 }
 

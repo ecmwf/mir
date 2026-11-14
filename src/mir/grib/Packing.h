@@ -11,6 +11,10 @@
 struct grib_info;
 struct grib_handle;
 
+namespace eckit {
+class JSON;
+}
+
 namespace mir {
 namespace param {
 class MIRParametrisation;
@@ -59,6 +63,7 @@ public:
     bool sameAs(const Packing*) const;
     bool printParametrisation(std::ostream&) const;
     void fillEdition(grib_info&) const;
+    void json(eckit::JSON&) const;
     bool empty() const;
 
     // -- Overridden methods

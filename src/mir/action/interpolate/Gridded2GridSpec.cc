@@ -7,6 +7,7 @@
 #include <ostream>
 
 #include "eckit/geo/Grid.h"
+#include "eckit/log/JSON.h"
 
 #include "mir/key/grid/Grid.h"
 #include "mir/method/Method.h"
@@ -32,6 +33,13 @@ Gridded2GridSpec::Gridded2GridSpec(const param::MIRParametrisation& param) : Gri
 bool Gridded2GridSpec::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const Gridded2GridSpec*>(&other);
     return (o != nullptr) && (param_->spec() == o->param_->spec()) && Gridded2GriddedInterpolation::sameAs(other);
+}
+
+
+void Gridded2GridSpec::json(eckit::JSON& j) const {
+    Gridded2GriddedInterpolation::json(j);
+    j << "grid";
+    param_->spec().json(j);
 }
 
 

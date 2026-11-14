@@ -6,6 +6,8 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/gauss/reduced/RotatedOctahedral.h"
 #include "mir/util/Exceptions.h"
@@ -24,6 +26,12 @@ Gridded2RotatedOctahedralGG::Gridded2RotatedOctahedralGG(const param::MIRParamet
 bool Gridded2RotatedOctahedralGG::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const Gridded2RotatedOctahedralGG*>(&other);
     return (o != nullptr) && (N_ == o->N_) && Gridded2RotatedGrid::sameAs(other);
+}
+
+
+void Gridded2RotatedOctahedralGG::json(eckit::JSON& j) const {
+    Gridded2RotatedGrid::json(j);
+    j << "octahedral" << N_;
 }
 
 

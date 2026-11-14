@@ -6,6 +6,8 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
 #include "mir/param/MIRParametrisation.h"
@@ -31,6 +33,15 @@ template <class Invtrans>
 bool ShToRotatedReducedGG<Invtrans>::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const ShToRotatedReducedGG*>(&other);
     return (o != nullptr) && (N_ == o->N_) && (rotation_ == o->rotation_) && ShToGridded::sameAs(other);
+}
+
+
+template <class Invtrans>
+void ShToRotatedReducedGG<Invtrans>::json(eckit::JSON& j) const {
+    ShToGridded::json(j);
+    Invtrans::json(j);
+    j << "reduced" << N_;
+    j << "rotation" << spec_value(rotation_);
 }
 
 

@@ -6,6 +6,8 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
 #include "mir/param/MIRParametrisation.h"
@@ -25,7 +27,15 @@ ShToOctahedralGG<Invtrans>::ShToOctahedralGG(const param::MIRParametrisation& pa
 template <class Invtrans>
 bool ShToOctahedralGG<Invtrans>::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const ShToOctahedralGG*>(&other);
-    return (o != nullptr) && (N_ == o->N_);
+    return (o != nullptr) && (N_ == o->N_) && ShToGridded::sameAs(other);
+}
+
+
+template <class Invtrans>
+void ShToOctahedralGG<Invtrans>::json(eckit::JSON& j) const {
+    ShToGridded::json(j);
+    Invtrans::json(j);
+    j << "octahedral" << N_;
 }
 
 

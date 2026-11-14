@@ -6,6 +6,8 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/key/grid/Grid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
@@ -23,6 +25,12 @@ Gridded2NamedGrid::Gridded2NamedGrid(const param::MIRParametrisation& param) : G
 bool Gridded2NamedGrid::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const Gridded2NamedGrid*>(&other);
     return (o != nullptr) && (grid_ == o->grid_) && Gridded2GriddedInterpolation::sameAs(other);
+}
+
+
+void Gridded2NamedGrid::json(eckit::JSON& j) const {
+    Gridded2GriddedInterpolation::json(j);
+    j << "grid" << grid_;
 }
 
 

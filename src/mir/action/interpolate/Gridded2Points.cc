@@ -6,6 +6,9 @@
 
 #include <ostream>
 
+#include "eckit/geo/grid/Unstructured.h"
+#include "eckit/log/JSON.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/UnstructuredGrid.h"
 #include "mir/util/Exceptions.h"
@@ -26,6 +29,13 @@ bool Gridded2Points::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const Gridded2Points*>(&other);
     return (o != nullptr) && (latitudes_ == o->latitudes_) && (longitudes_ == o->longitudes_) &&
            Gridded2GriddedInterpolation::sameAs(other);
+}
+
+
+void Gridded2Points::json(eckit::JSON& j) const {
+    Gridded2GriddedInterpolation::json(j);
+    // the points, by their (unstructured) grid uid
+    j << "uid" << eckit::geo::grid::Unstructured::uid_from_latlons(latitudes_, longitudes_);
 }
 
 

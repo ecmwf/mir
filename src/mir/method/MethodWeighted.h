@@ -83,7 +83,7 @@ protected:
     void addNonLinearTreatment(const nonlinear::NonLinear*);
     void setSolver(const solver::Solver*);
     void setReorderRows(const std::string& name) { reorderRows_ = name; }
-    void setReorderCols(const std::string& name) { reorderRows_ = name; }
+    void setReorderCols(const std::string& name) { reorderCols_ = name; }
     double poleDisplacement() const { return poleDisplacement_; }
 
     // -- Overridden methods

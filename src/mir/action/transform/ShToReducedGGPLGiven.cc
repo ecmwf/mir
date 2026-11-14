@@ -6,6 +6,8 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
 #include "mir/param/MIRParametrisation.h"
@@ -25,7 +27,15 @@ ShToReducedGGPLGiven<Invtrans>::ShToReducedGGPLGiven(const param::MIRParametrisa
 template <class Invtrans>
 bool ShToReducedGGPLGiven<Invtrans>::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const ShToReducedGGPLGiven*>(&other);
-    return (o != nullptr) && (pl_ == o->pl_);
+    return (o != nullptr) && (pl_ == o->pl_) && ShToGridded::sameAs(other);
+}
+
+
+template <class Invtrans>
+void ShToReducedGGPLGiven<Invtrans>::json(eckit::JSON& j) const {
+    ShToGridded::json(j);
+    Invtrans::json(j);
+    j << "pl" << pl_;
 }
 
 

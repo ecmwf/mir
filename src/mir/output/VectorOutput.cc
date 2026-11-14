@@ -8,6 +8,8 @@
 #include <sstream>
 #include <typeinfo>  // bad_cast exception
 
+#include "eckit/log/JSON.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/VectorInput.h"
@@ -120,6 +122,11 @@ bool VectorOutput::sameParametrisation(const param::MIRParametrisation& param1,
 
 bool VectorOutput::printParametrisation(std::ostream& out, const param::MIRParametrisation& param) const {
     return component1_.printParametrisation(out, param);
+}
+
+
+void VectorOutput::jsonParametrisation(eckit::JSON& j, const param::MIRParametrisation& param) const {
+    component1_.jsonParametrisation(j, param);
 }
 
 

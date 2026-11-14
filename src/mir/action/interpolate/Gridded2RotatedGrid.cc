@@ -6,6 +6,8 @@
 
 #include <vector>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/method/Method.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
@@ -34,6 +36,12 @@ const util::Rotation& Gridded2RotatedGrid::rotation() const {
 bool Gridded2RotatedGrid::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const Gridded2RotatedGrid*>(&other);
     return (o != nullptr) && (rotation_ == o->rotation_) && Gridded2GriddedInterpolation::sameAs(other);
+}
+
+
+void Gridded2RotatedGrid::json(eckit::JSON& j) const {
+    Gridded2GriddedInterpolation::json(j);
+    j << "rotation" << spec_value(rotation_);
 }
 
 

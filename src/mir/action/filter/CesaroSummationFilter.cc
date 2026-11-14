@@ -8,6 +8,8 @@
 #include <ostream>
 #include <vector>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
@@ -30,6 +32,12 @@ CesaroSummationFilter::CesaroSummationFilter(const param::MIRParametrisation& pa
 bool CesaroSummationFilter::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const CesaroSummationFilter*>(&other);
     return (o != nullptr) && (k_ == o->k_) && (Tmin_ == o->Tmin_);
+}
+
+
+void CesaroSummationFilter::json(eckit::JSON& j) const {
+    j << "cesaro-k" << k_;
+    j << "cesaro-truncation" << Tmin_;
 }
 
 

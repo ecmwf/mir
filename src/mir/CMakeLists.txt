@@ -141,6 +141,7 @@ list(APPEND mir_srcs
     action/plan/ActionPlan.cc
     action/plan/ActionPlan.h
     action/plan/Executor.cc
+    action/plan/Dump.h
     action/plan/Executor.h
     action/plan/Job.cc
     action/plan/Job.h

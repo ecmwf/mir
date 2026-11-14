@@ -9,6 +9,7 @@
 #include <sstream>
 
 #include "eckit/config/Resource.h"
+#include "eckit/log/JSON.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/action/io/Copy.h"
@@ -115,6 +116,17 @@ bool GribOutput::printParametrisation(std::ostream& out, const param::MIRParamet
     }
 
     return ok;
+}
+
+
+void GribOutput::jsonParametrisation(eckit::JSON& j, const param::MIRParametrisation& param) const {
+    std::unique_ptr<grib::Packing> pack(grib::Packing::build(param));
+    ASSERT(pack);
+    pack->json(j);
+
+    if (std::string compatibility; param.userParametrisation().get("compatibility", compatibility)) {
+        j << "compatibility" << compatibility;
+    }
 }
 
 

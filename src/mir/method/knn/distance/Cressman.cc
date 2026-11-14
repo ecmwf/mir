@@ -57,17 +57,27 @@ void Cressman::operator()(size_t ip, const Point3& point,
 
 bool Cressman::sameAs(const DistanceWeighting& other) const {
     const auto* o = dynamic_cast<const Cressman*>(&other);
-    return (o != nullptr) && eckit::types::is_approximately_equal(r_, o->r_);
+    return (o != nullptr) && eckit::types::is_approximately_equal(r_, o->r_) &&
+           eckit::types::is_approximately_equal(power_, o->power_);
 }
 
 
 void Cressman::json(eckit::JSON& j) const {
     j << type() << "cressman";
+    param::DefaultParametrisation::instance().json(j, "distance", r_);
+
+    if (!eckit::types::is_approximately_equal(power_, 1.)) {
+        j << "cressman-model-extension-power" << power_;
+    }
 }
 
 
 void Cressman::print(std::ostream& out) const {
-    out << "Cressman[radius=" << r_ << "]";
+    out << "Cressman[radius=" << r_;
+    if (!eckit::types::is_approximately_equal(power_, 1.)) {
+        out << ",power=" << power_;
+    }
+    out << "]";
 }
 
 

@@ -7,6 +7,8 @@
 #include <memory>
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/grib/Config.h"
 #include "mir/output/GribOutput.h"
 #include "mir/param/MIRParametrisation.h"
@@ -106,6 +108,25 @@ void Packing::fillEdition(grib_info& info) const {
     // the edition, if requested (even if as the input's)
     if (user_edition_ && edition_ != 0) {
         info.packing.editionNumber = edition_;
+    }
+}
+
+
+void Packing::json(eckit::JSON& j) const {
+    if (definePacking_) {
+        j << "packing" << packing_;
+    }
+
+    if (defineEdition_) {
+        j << "edition" << edition_;
+    }
+
+    if (defineBitsPerValue_) {
+        j << "accuracy" << bitsPerValue_;
+    }
+
+    if (definePrecision_) {
+        j << "precision" << precision_;
     }
 }
 
