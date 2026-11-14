@@ -43,5 +43,6 @@ else()
 endif()
 
 
+add_subdirectory(actions)
 add_subdirectory(regressions)
 add_subdirectory(unit)
