@@ -56,6 +56,7 @@ protected:
 
     // From Gridded2RotatedGrid
     bool sameAs(const Action&) const override;
+    void json(eckit::JSON&) const override;
 
     // -- Class members
     // None

@@ -6,15 +6,21 @@
 #include <sstream>
 
 #include "eckit/config/Resource.h"
+#include "eckit/log/JSON.h"
+#include "eckit/spec/Spec.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/action/plan/ActionGraph.h"
+#include "mir/action/plan/Dump.h"
 #include "mir/action/plan/Executor.h"
 #include "mir/action/plan/Job.h"
 #include "mir/api/MIRComplexJob.h"
 #include "mir/api/MIRJob.h"
 #include "mir/api/MIRWatcher.h"
+#include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Trace.h"
@@ -64,6 +70,22 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
         graph.add(j->plan(), watchers_[i++]);
     }
 
+    // dump options, as the first job's (as the executor)
+    const auto& param = jobs_.front()->parametrisation().userParametrisation();
+
+    std::string dumpActionPlanFile;
+    if (param.get("dump-action-plan-file", dumpActionPlanFile)) {
+        action::append_line(dumpActionPlanFile, [&graph](std::ostream& out) {
+            eckit::JSON j(out);
+            graph.json(j);
+        });
+    }
+
+    std::string dumpGridPlanFile;
+    if (param.get("dump-grid-plan-file", dumpGridPlanFile)) {
+        graph.recordGrids();
+    }
+
     std::unique_ptr<trace::Timer> timer(printActionGraph ? new trace::Timer("MIRComplexJob::execute") : nullptr);
 
     if (printActionGraph) {
@@ -75,9 +97,24 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
 
     context::Context ctx(*input_, statistics);
 
+    std::unique_ptr<repres::RepresentationHandle> input;
+    if (!dumpGridPlanFile.empty()) {
+        input = std::make_unique<repres::RepresentationHandle>(ctx.field().representation());
+    }
+
     const auto& executor = action::Executor::lookup(jobs_.front()->parametrisation());
     graph.execute(ctx, executor);
     executor.wait();
+
+    if (input) {
+        action::append_line(dumpGridPlanFile, [&input, &graph](std::ostream& out) {
+            eckit::JSON j(out);
+            j.startList();
+            (*input)->spec().json(j);
+            graph.json_grids(j);
+            j.endList();
+        });
+    }
 
     if (printActionGraph) {
         Log::info() << "<<<<<<<<<<<<" << std::endl;

@@ -7,6 +7,8 @@
 #include <ostream>
 #include <vector>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/key/Area.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/latlon/RotatedLL.h"
@@ -46,6 +48,13 @@ Gridded2RotatedLL::Gridded2RotatedLL(const param::MIRParametrisation& param) :
 bool Gridded2RotatedLL::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const Gridded2RotatedLL*>(&other);
     return (o != nullptr) && (increments_ == o->increments_) && (bbox_ == o->bbox_) && Gridded2RotatedGrid::sameAs(*o);
+}
+
+
+void Gridded2RotatedLL::json(eckit::JSON& j) const {
+    Gridded2RotatedGrid::json(j);
+    j << "grid" << spec_value(increments_);
+    j << "area" << spec_value(bbox_);
 }
 
 

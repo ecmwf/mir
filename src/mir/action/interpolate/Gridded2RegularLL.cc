@@ -7,6 +7,8 @@
 #include <ostream>
 #include <vector>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/key/Area.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/latlon/RegularLL.h"
@@ -47,6 +49,13 @@ bool Gridded2RegularLL::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const Gridded2RegularLL*>(&other);
     return (o != nullptr) && (increments_ == o->increments_) && (bbox_ == o->bbox_) &&
            Gridded2GriddedInterpolation::sameAs(*o);
+}
+
+
+void Gridded2RegularLL::json(eckit::JSON& j) const {
+    Gridded2GriddedInterpolation::json(j);
+    j << "grid" << spec_value(increments_);
+    j << "area" << spec_value(bbox_);
 }
 
 

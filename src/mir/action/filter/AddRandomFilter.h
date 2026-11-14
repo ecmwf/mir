@@ -53,6 +53,7 @@ public:
 private:
     // -- Members
 
+    std::string addRandom_;
     std::unique_ptr<stats::Distribution> distribution_;
 
     // -- Methods
@@ -62,6 +63,7 @@ private:
 
     // From Action
     bool sameAs(const Action&) const override;
+    void json(eckit::JSON&) const override;
     const char* name() const override;
     void print(std::ostream&) const override;
     void execute(context::Context&) const override;

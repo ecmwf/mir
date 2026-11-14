@@ -35,7 +35,6 @@ Bandpass::Bandpass(const param::MIRParametrisation& param) : Action(param) {
 
 
 void Bandpass::json(eckit::JSON& j) const {
-    j << "type" << "filter.sh-bandpass";
     j << "bandpass" << std::vector<long>{long(minM_), long(maxM_), long(minN_), long(maxN_)};
     j << "truncation" << truncation_;
 }

@@ -368,6 +368,10 @@ struct MIR : MIRTool {
                 new SimpleOption<std::string>("dump-plan-file", "Write plan to file (before plan execution)"));
             options_.push_back(new SimpleOption<std::string>("dump-statistics-file",
                                                              "Write statistics to file (after plan execution)"));
+            options_.push_back(new SimpleOption<std::string>(
+                "dump-action-plan-file", "Write plan actions to file, as a JSON list (before plan execution)"));
+            options_.push_back(new SimpleOption<std::string>(
+                "dump-grid-plan-file", "Write plan grids to file, as a JSON list (after plan execution, not dryrun)"));
             options_.push_back(new SimpleOption<bool>("dont-compress-plan", "Don't compress plan"));
             options_.push_back(new FactoryOption<output::MIROutputFactory>("format", "Output format"));
             options_.push_back(

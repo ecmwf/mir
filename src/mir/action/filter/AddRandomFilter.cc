@@ -6,6 +6,8 @@
 
 #include <limits>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
@@ -17,16 +19,19 @@ namespace mir::action::filter {
 
 
 AddRandomFilter::AddRandomFilter(const param::MIRParametrisation& param) : Action(param) {
-    std::string addRandom;
-    param.get("add-random", addRandom);
-
-    distribution_.reset(stats::DistributionFactory::build(addRandom));
+    param.get("add-random", addRandom_);
+    distribution_.reset(stats::DistributionFactory::build(addRandom_));
     ASSERT(distribution_);
 }
 
 
 bool AddRandomFilter::sameAs(const Action& /*unused*/) const {
     return false;
+}
+
+
+void AddRandomFilter::json(eckit::JSON& j) const {
+    j << "add-random" << addRandom_;
 }
 
 

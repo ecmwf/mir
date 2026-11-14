@@ -106,8 +106,7 @@ void Area::apply(const repres::Representation& repres, util::BoundingBox& bbox, 
 
 
 void Area::json(eckit::JSON& j) const {
-    j << "area"
-      << std::vector<double>{bbox_.north().value(), bbox_.west().value(), bbox_.south().value(), bbox_.east().value()};
+    j << "area" << spec_value(bbox_);
 }
 
 

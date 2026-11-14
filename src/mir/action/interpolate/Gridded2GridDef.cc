@@ -7,6 +7,7 @@
 #include <ostream>
 
 #include "eckit/filesystem/PathName.h"
+#include "eckit/log/JSON.h"
 
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/UnstructuredGrid.h"
@@ -24,6 +25,12 @@ Gridded2GridDef::Gridded2GridDef(const param::MIRParametrisation& param) : Gridd
 bool Gridded2GridDef::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const Gridded2GridDef*>(&other);
     return (o != nullptr) && (griddef_ == o->griddef_) && Gridded2GriddedInterpolation::sameAs(other);
+}
+
+
+void Gridded2GridDef::json(eckit::JSON& j) const {
+    Gridded2GriddedInterpolation::json(j);
+    j << "griddef" << griddef_;
 }
 
 

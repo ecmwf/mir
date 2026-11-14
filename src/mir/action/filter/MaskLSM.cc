@@ -6,6 +6,8 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/lsm/Mask.h"
@@ -37,7 +39,12 @@ bool MaskLSM::Value::get(const param::MIRParametrisation& param, const std::stri
 
 
 MaskLSM::MaskLSM(const param::MIRParametrisation& param, const std::string& key) :
-    Action(param), value_(Value::get(param, key)) {}
+    Action(param), key_(key), value_(Value::get(param, key)) {}
+
+
+void MaskLSM::json(eckit::JSON& j) const {
+    j << key_ << value();
+}
 
 
 void MaskLSM::print(std::ostream& out) const {

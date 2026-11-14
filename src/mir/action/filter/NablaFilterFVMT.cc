@@ -195,7 +195,6 @@ struct UVVorticity final : NablaOperation {
 
 template <typename T>
 void NablaFilterFVMT<T>::json(eckit::JSON& j) const {
-    j << "type" << (std::string("filter.") + T::type());
     if (polesMissingValues_) {
         j << "nabla-poles-missing-values" << polesMissingValues_;
     }

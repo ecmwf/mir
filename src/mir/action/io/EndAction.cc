@@ -6,6 +6,9 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+#include "eckit/utils/StringTools.h"
+
 #include "mir/output/MIROutput.h"
 
 
@@ -23,6 +26,12 @@ bool EndAction::sameAs(const Action& other) const {
 }
 
 
+std::string EndAction::type() const {
+    // not built by ActionFactory, so not by spec either
+    return eckit::StringTools::lower(name());
+}
+
+
 bool EndAction::isEndAction() const {
     return true;
 }
@@ -34,6 +43,11 @@ void EndAction::print(std::ostream& out) const {
         out << ",";
     }
     out << "output=" << output() << "]";
+}
+
+
+void EndAction::json(eckit::JSON& j) const {
+    output().jsonParametrisation(j, parametrisation());
 }
 
 

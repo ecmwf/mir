@@ -6,6 +6,8 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
@@ -26,6 +28,11 @@ FrameFilter::FrameFilter(const param::MIRParametrisation& param) : Action(param)
 bool FrameFilter::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const FrameFilter*>(&other);
     return (o != nullptr) && (size_ == o->size_);
+}
+
+
+void FrameFilter::json(eckit::JSON& j) const {
+    j << "frame" << size_;
 }
 
 
