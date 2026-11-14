@@ -489,8 +489,8 @@ Representation* RepresentationBuilder<other::UnstructuredGrid>::make(const param
     // other grids by specification (eckit::geo), by their points
     if (std::string gridspec; param.get("gridspec", gridspec)) {
         std::unique_ptr<const eckit::geo::Grid> grid(eckit::geo::GridFactory::make_from_string(gridspec));
-        const auto [lats, lons] = grid->to_latlons();
-        return new other::UnstructuredGrid(lats, lons);
+        const auto latlons = grid->to_latlons();
+        return new other::UnstructuredGrid(latlons.first, latlons.second);
     }
 
     return new other::UnstructuredGrid(param);
