@@ -316,14 +316,7 @@ cdef class Job:
         return self
 
     def execute(self, input, output):
-        cdef MIRInput in_
         cdef MIROutput out
-
-        if isinstance(input, MIRInput):
-            in_ = input
-        else:
-            assert hasattr(input, "read")
-            in_ = PyGribInput(input)
 
         if isinstance(output, MIROutput):
             out = output
@@ -331,11 +324,42 @@ cdef class Job:
             assert hasattr(output, "write")
             out = PyGribOutput(output)
 
-        if isinstance(in_, (ArrayInput, GribMemoryInput, GriddefInput, GridSpecInput)):
-            self.j.execute(dereference(in_._input), dereference(out._output))
+        self._each(input, "execute", out)
+
+    def action_plan_json(self, input) -> list:
+        """Actions (specs) for each input message, as JSON lists (consuming the input,
+        as execute)"""
+        return self._each(input, "action_plan_json")
+
+    def grid_plan_json(self, input) -> list:
+        """Grids (specs) of each input message and after each action, as JSON lists
+        (executing to no output, and consuming the input, as execute)"""
+        return self._each(input, "grid_plan_json")
+
+    cdef list _each(self, input, str what, MIROutput out=None):
+        """For the input once (single input), or for each message (consuming it)"""
+        cdef MIRInput in_
+
+        if isinstance(input, MIRInput):
+            in_ = input
         else:
-            while in_._input.next():
-                self.j.execute(dereference(in_._input), dereference(out._output))
+            assert hasattr(input, "read")
+            in_ = PyGribInput(input)
+
+        if isinstance(in_, (ArrayInput, GribMemoryInput, GriddefInput, GridSpecInput)):
+            return [self._one(in_, what, out)]
+
+        results = []
+        while in_._input.next():
+            results.append(self._one(in_, what, out))
+        return results
+
+    cdef object _one(self, MIRInput in_, str what, MIROutput out):
+        if what == "action_plan_json":
+            return self.j.action_plan_json(dereference(in_._input))
+        if what == "grid_plan_json":
+            return self.j.grid_plan_json(dereference(in_._input))
+        self.j.execute(dereference(in_._input), dereference(out._output))
 
     # def execute(self, input, output):
     #     in_ = new mir.GribFileInput(eckit.PathName(input))

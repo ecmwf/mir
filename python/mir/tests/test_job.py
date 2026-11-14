@@ -3,10 +3,14 @@
 
 
 import json
+from pathlib import Path
 
 import pytest
 
+import mir
 from mir import Job
+
+TEST_DIR = Path(__file__).parent
 
 
 def test_key():
@@ -92,6 +96,24 @@ def test_value_float():
     j.set("key", -1e9)
     assert j.json == Job(key=-1e9).json
     assert j.json == '{"key":-1e+09}'
+
+
+
+def test_plan_json():
+    path = str(TEST_DIR / "o96.grib2")
+    job = Job(grid=[2, 2], accuracy=12, dryrun=True, dump_grid_plan_file="/dev/null")  # dryrun, dump: not affecting
+
+    # one plan per message (consuming the input)
+    (actions,) = map(json.loads, job.action_plan_json(mir.GribFileInput(path)))
+    assert actions[0]["type"] == "interpolate.grid2regular-ll"
+    assert actions[0]["grid"] == [2, 2]
+    assert actions[-1] == dict(type="save", accuracy=12)
+
+    # the input grid, and after each action
+    (grids,) = map(json.loads, job.grid_plan_json(mir.GribFileInput(path)))
+    assert len(grids) == len(actions) + 1
+    assert grids[0] == dict(grid="O96")
+    assert grids[-1] == grids[1]
 
 
 if __name__ == "__main__":
