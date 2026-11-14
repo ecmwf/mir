@@ -39,6 +39,8 @@ set(TESTS
     packing
     plan
     raw_memory
+    regular_xy
+    space_view
     spectral_order
     statistics
     style
@@ -50,9 +52,6 @@ if(mir_HAVE_NETCDF)
     list(APPEND TESTS interpolation_netcdf)
 endif()
 
-if(atlas_HAVE_PROJ)
-    list(APPEND TESTS space_view)
-endif()
 
 foreach(_t ${TESTS})
     ecbuild_add_test(

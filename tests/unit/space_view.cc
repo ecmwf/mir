@@ -22,8 +22,8 @@
 namespace mir::tests::unit {
 
 
-CASE("space_view: as the eccodes iterator") {
-    // sectors of GRIB2 space_view (Nr=6.6107, dx=3622), points as the eccodes iterator (first, second and last)
+CASE("space_view: points") {
+    // sectors of GRIB2 space_view (Nr=6.6107, dx=3622), points as the scanning (first, second and last)
     using keys_t   = std::vector<std::pair<std::string, long>>;
     using points_t = std::vector<std::pair<double, double>>;  // (lat, lon)
 
@@ -34,7 +34,7 @@ CASE("space_view: as the eccodes iterator") {
              {{{"shapeOfTheEarth", 6}},
               {{4.223693723, 350.299524805}, {4.223622147, 350.327193534}, {3.815601110, 350.719698129}}},
              {{{"shapeOfTheEarth", 6}, {"iScansNegatively", 1}, {"jScansPositively", 1}},
-              {{-3.815601110, 9.280301871}, {-3.815663064, 9.307903835}, {-4.223693723, 9.700475195}}},
+              {{-4.223693724, 9.700475199}, {-4.223622148, 9.672806469}, {-3.815601111, 9.280301874}}},
              {{{"shapeOfTheEarth", 5},
                {"longitudeOfSubSatellitePoint", -75000000},
                {"Ny", 12},
