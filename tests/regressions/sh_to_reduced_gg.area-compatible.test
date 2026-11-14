@@ -1,0 +1,16 @@
+# input
+param=t,level=1000,resol=20
+# post-process
+$MIR_CONFIG_STYLE=~mir/etc/mir/style-compatible.yaml
+--grid=O16 --area=60/-10/30/40
+# action-plan
+[{"type":"transform.sh-scalar-to-namedgrid","atlas-trans-flt":false,"atlas-trans-type":"local","cropping":[63.6786,-11.25,24.9199,45],"invtrans":"scalar","grid":"F16"},{"type":"interpolate.grid2namedgrid","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"cropping":[60,-10,30,40],"grid":"O16"},{"type":"save","packing":"simple"}]
+# grid-plan
+[{"grid":"T20"},{"area":[63.6786355610969,-11.25,24.9199286299486,45],"grid":"F16"},{"area":[58.1429540492033,-9,30.4575539611521,38.5714285714286],"grid":"O16"},{"area":[58.1429540492033,-9,30.4575539611521,38.5714285714286],"grid":"O16"}]
+# grib_get
+gridType=reduced_gg
+gridName=O16
+numberOfValues=42
+values[0]=277.63
+values[2]=272.683
+values[3]=268.287

@@ -1,0 +1,12 @@
+# MIR-513
+# input
+param=t,level=1000,resol=20
+# post-process
+--grid=9/9
+# action-plan
+[{"type":"filter.sh-truncate","truncation":19},{"type":"transform.sh-scalar-to-namedgrid","atlas-trans-flt":false,"atlas-trans-type":"local","invtrans":"scalar","grid":"F10"},{"type":"interpolate.grid2regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":[9,9],"area":[90,0,-90,351]},{"type":"save","packing":"simple"}]
+# grid-plan
+[{"grid":"T20"},{"grid":"T19"},{"grid":"F10"},{"grid":[9,9]},{"grid":[9,9]}]
+# grib_get
+packingType=grid_simple
+edition=1

@@ -1,0 +1,15 @@
+# input
+param=t,level=1000,resol=20
+# post-process
+--grid=N32
+# action-plan
+[{"type":"transform.sh-scalar-to-namedgrid","atlas-trans-flt":false,"atlas-trans-type":"local","invtrans":"scalar","grid":"N32"},{"type":"save","packing":"simple"}]
+# grid-plan
+[{"grid":"T20"},{"grid":"N32"},{"grid":"N32"}]
+# grib_get
+gridType=reduced_gg
+gridName=N32
+numberOfValues=6114
+values[0]=250.61
+values[1]=250.414
+values[2]=250.088

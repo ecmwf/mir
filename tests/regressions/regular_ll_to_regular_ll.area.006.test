@@ -1,0 +1,8 @@
+# MIR-361
+# input
+MIR-340.grib
+# post-process (dry run, as execution fails: Assertion failed: nj == nj_)
+--area=50/-21/24.8/6
+--dryrun
+# action-plan
+[{"type":"crop.area","area":[50,-21,24.8,6]},{"type":"save"}]

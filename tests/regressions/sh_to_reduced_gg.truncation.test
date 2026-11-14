@@ -1,0 +1,15 @@
+# input
+param=t,level=1000
+# post-process
+--grid=O32 --truncation=213
+# action-plan
+[{"type":"filter.sh-truncate","truncation":213},{"type":"transform.sh-scalar-to-namedgrid","atlas-trans-flt":false,"atlas-trans-type":"local","invtrans":"scalar","grid":"O32"},{"type":"save","packing":"simple"}]
+# grid-plan
+[{"grid":"T1279"},{"grid":"T213"},{"grid":"O32"},{"grid":"O32"}]
+# grib_get
+gridType=reduced_gg
+gridName=O32
+numberOfValues=5248
+values[0]=254.269
+values[1]=253.718
+values[2]=253.935

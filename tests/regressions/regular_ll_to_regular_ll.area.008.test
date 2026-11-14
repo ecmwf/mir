@@ -1,0 +1,9 @@
+# MIR-361
+# input
+MIR-360.grib
+# post-process
+--area=85/-80.5/25.5/40
+# action-plan
+[{"type":"crop.area","area":[85,-80.5,25.5,40]},{"type":"save"}]
+# grid-plan
+[{"grid":[1,1],"reference":[0.5,0.5]},{"area":[84.5,-80.5,25.5,39.5],"grid":[1,1],"reference":[0.5,0.5]},{"area":[84.5,-80.5,25.5,39.5],"grid":[1,1],"reference":[0.5,0.5]}]

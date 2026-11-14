@@ -1,0 +1,9 @@
+# input (Geopoints XYV Compact format)
+geopoints-format-xyv.gpt
+# post-process
+--output=geopoints-xyv
+# action-plan
+[{"type":"set","packing":"ccsds","edition":2}]
+# grid-plan
+[{"type":"unstructured_ll","uid":"b001b0802298e807edf743226ba27447"},{"type":"unstructured_ll","uid":"b001b0802298e807edf743226ba27447"}]
+# grib_get (output is GEOPOINTS)

@@ -1,0 +1,12 @@
+# input
+param=2t,levtype=sfc
+# post-process
+--area=48.3/5.2/45.2/11 --grid=F1280 --interpolation=nearest-lsm
+# action-plan
+[{"type":"interpolate.grid2namedgrid","interpolation":"nearest-lsm","distance-weighting-with-lsm":"nearest-lsm-with-lowest-index","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nclosest","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"cropping":[48.3,5.2,45.2,11],"grid":"F1280"},{"type":"save"}]
+# grid-plan
+[{"grid":"O1280"},{"area":[48.2601042237856,5.203125,45.2372572464908,10.96875],"grid":"F1280"},{"area":[48.2601042237856,5.203125,45.2372572464908,10.96875],"grid":"F1280"}]
+# grib_get
+N = 1280
+Ni = 83
+Nj = 44

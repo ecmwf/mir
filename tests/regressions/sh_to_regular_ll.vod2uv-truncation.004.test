@@ -1,0 +1,9 @@
+# MIR-178
+# input
+param=vo_d,level=1000
+# post-process
+--vod2uv --truncation=none --intgrid=none --grid=1/1 --area=10/0/0/10
+# action-plan
+[{"type":"transform.sh-vod-to-uv-regular-ll","atlas-trans-flt":false,"atlas-trans-type":"local","cropping":[10,0,0,10],"invtrans":"vod2uv","grid":[1,1],"area":[10,0,0,10]},{"type":"save","packing":"simple"}]
+# grid-plan
+[{"grid":"T1279"},{"area":[10,0,0,10],"grid":[1,1]},{"area":[10,0,0,10],"grid":[1,1]}]

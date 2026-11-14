@@ -1,0 +1,9 @@
+# MIR-240
+# input
+param=t,level=1000
+# post-process
+--bitmap=$tests_data_dir/GAUSS400_EU_GL
+# action-plan
+[{"type":"copy"}]
+# grid-plan
+[{"grid":"T1279"},{"grid":"T1279"}]

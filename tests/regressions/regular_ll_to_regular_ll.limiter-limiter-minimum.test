@@ -1,0 +1,12 @@
+# MIR-704
+# input
+param=q,grid=1_1,area=small.grib2
+# post-process
+$MIR_ABORT_IF_CONFIGURATION_NOT_FOUND=0
+--limiter --limiter-minimum=0.0001 --limiter-maximum=0.001
+# action-plan
+[{"type":"filter.limiter","limiter-minimum":0.0001,"limiter-maximum":0.001},{"type":"save"}]
+# grid-plan
+[{"area":[30,0,-30,30],"grid":[1,1]},{"area":[30,0,-30,30],"grid":[1,1]},{"area":[30,0,-30,30],"grid":[1,1]}]
+# grib_get
+values[0]=0.0010003

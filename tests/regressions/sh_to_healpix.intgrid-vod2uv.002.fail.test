@@ -1,0 +1,14 @@
+# MIR-632
+# input
+param=vo_d,level=1,levtype=ml,resol=20.grib2
+# post-process
+--grid=H36 --intgrid=none --vod2uv
+# action-plan
+[{"type":"transform.sh-vod-to-uv-namedgrid","atlas-trans-flt":false,"atlas-trans-type":"local","invtrans":"vod2uv","grid":"H36"},{"type":"save","packing":"simple"}]
+# grib_get
+gridType=healpix
+gridName=H36
+Nside=36
+numberOfDataPoints=15552
+shortName=u
+longitudeOfFirstGridPointInDegrees=45

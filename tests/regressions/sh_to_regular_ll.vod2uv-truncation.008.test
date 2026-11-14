@@ -1,0 +1,9 @@
+# MIR-219
+# input
+param=vo_d,level=1000
+# post-process
+--vod2uv --truncation=auto --intgrid=auto --grid=1/1 --dont-compress-plan
+# action-plan
+[{"type":"filter.sh-truncate","truncation":179},{"type":"transform.sh-vod-to-uv-namedgrid","atlas-trans-flt":false,"atlas-trans-type":"local","invtrans":"vod2uv","grid":"F90"},{"type":"interpolate.grid2regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":1e-06,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":[1,1],"area":[90,0,-90,359]},{"type":"save","packing":"simple"}]
+# grid-plan
+[{"grid":"T1279"},{"grid":"T179"},{"grid":"F90"},{"grid":[1,1]},{"grid":[1,1]}]

@@ -1,7 +1,0 @@
-# input
-param=2t,levtype=sfc
-# mir
---area=90/-60/25/60 --grid=O1280
-# grib_get
-Nj = 924
-N = 1280

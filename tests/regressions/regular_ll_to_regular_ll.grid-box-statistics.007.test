@@ -1,0 +1,11 @@
+# input
+regular_ll.2-2.grib2
+# post-process
+--grid=1/1 --interpolation=grid-box-statistics --interpolation-statistics=maximum
+# action-plan
+[{"type":"interpolate.grid2regular-ll","interpolation":"grid-box-statistics","interpolation-statistics":"maximum","lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"statistics","statistics":{"type":"maximum"}},"grid":[1,1],"area":[90,0,-90,359]},{"type":"save"}]
+# grid-plan
+[{"grid":[2,2]},{"grid":[1,1]},{"grid":[1,1]}]
+# grib_get
+Ni=360
+Nj=181

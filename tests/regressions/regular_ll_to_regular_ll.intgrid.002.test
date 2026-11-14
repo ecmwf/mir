@@ -1,0 +1,13 @@
+# MIR-686
+# input
+regular_ll.2-2.grib2
+# post-process
+--intgrid=o21 --grid=source
+# action-plan
+[{"type":"copy"}]
+# grid-plan
+[{"grid":[2,2]},{"grid":[2,2]}]
+# grib_get
+gridType=regular_ll
+iDirectionIncrementInDegrees=2
+jDirectionIncrementInDegrees=2

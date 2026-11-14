@@ -1,0 +1,8 @@
+# input
+regular_ll.2-2.grib1
+# post-process
+--grid=3/3 --dont-compress-plan --interpolation=nearest-lsm --distance-weighting-with-lsm=nearest-lsm
+# action-plan
+[{"type":"interpolate.grid2regular-ll","interpolation":"nearest-lsm","distance-weighting-with-lsm":"nearest-lsm","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nclosest","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":[3,3],"area":[90,0,-90,357]},{"type":"save"}]
+# grid-plan
+[{"grid":[2,2]},{"grid":[3,3]},{"grid":[3,3]}]

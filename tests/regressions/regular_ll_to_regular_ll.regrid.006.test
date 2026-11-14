@@ -1,0 +1,9 @@
+# MIR-361
+# input
+regular_ll.2-4.grib1
+# post-process
+--grid=2/2
+# action-plan
+[{"type":"interpolate.grid2regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":[2,2],"area":[90,0,-90,358]},{"type":"save"}]
+# grid-plan
+[{"grid":[2,4]},{"grid":[2,2]},{"grid":[2,2]}]

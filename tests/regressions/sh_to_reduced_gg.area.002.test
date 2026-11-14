@@ -1,0 +1,15 @@
+# input
+param=t,level=1000,resol=20
+# post-process
+--grid=O16 --area=60/-10/30/40
+# action-plan
+[{"type":"transform.sh-scalar-to-namedgrid","atlas-trans-flt":false,"atlas-trans-type":"local","cropping":[60,-10,30,40],"invtrans":"scalar","grid":"O16"},{"type":"save","packing":"simple"}]
+# grid-plan
+[{"grid":"T20"},{"area":[58.1429540492033,-9,30.4575539611521,38.5714285714286],"grid":"O16"},{"area":[58.1429540492033,-9,30.4575539611521,38.5714285714286],"grid":"O16"}]
+# grib_get
+gridType=reduced_gg
+gridName=O16
+numberOfValues=42
+values[0]=277.729
+values[2]=272.696
+values[3]=268.227

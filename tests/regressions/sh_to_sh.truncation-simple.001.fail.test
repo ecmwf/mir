@@ -1,0 +1,7 @@
+# MIR-513
+# input
+packingType=spectral_complex.grib1
+# post-process
+--truncation=21 --packing=simple
+# grib_get
+FAIL

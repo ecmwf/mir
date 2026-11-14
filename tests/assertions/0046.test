@@ -1,6 +1,0 @@
-# input
-gridType=regular_gg,gridName=F32,shortName=msl.grib1
-# mir
---grid=O32 --interpolation=nn
-# grib_get
-gridName=O32

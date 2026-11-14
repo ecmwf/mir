@@ -1,0 +1,7 @@
+# MIR-692
+# input
+gridType=sh,param=t,levtype=ml,level=1,packing=simple.grib2.ERROR
+# post-process
+--packing=simple
+# grib_get
+FAIL

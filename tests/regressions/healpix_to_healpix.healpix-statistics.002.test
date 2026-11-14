@@ -1,0 +1,15 @@
+# MIR-708
+# input
+gridType=healpix,Nside=2,orderingConvention=nested.grib2
+# post-process
+--grid=h1 --interpolation=healpix-statistics
+# action-plan
+[{"type":"interpolate.grid2namedgrid","interpolation":"healpix-statistics","interpolation-statistics":"maximum","lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"statistics","statistics":{"type":"maximum"}},"grid":"H1"},{"type":"save"}]
+# grid-plan
+[{"grid":"H2","order":"nested"},{"grid":"H1"},{"grid":"H1"}]
+# grib_get
+gridType=healpix
+orderingConvention=ring
+Nside=1
+numberOfDataPoints=12
+longitudeOfFirstGridPointInDegrees=45

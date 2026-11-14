@@ -1,0 +1,8 @@
+# MIR-487
+# input
+stream=wave,param=2dfd,direction=1,frequency=1
+# post-process (dry run, as execution fails: Assertion failed: h)
+--packing=ieee --grid=1/1
+--dryrun
+# action-plan
+[{"type":"interpolate.grid2regular-ll","interpolation":"nearest-neighbour","distance-weighting":"inverse-distance-weighting-squared","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":[1,1],"area":[90,0,-90,359]},{"type":"save","packing":"ieee","precision":1}]

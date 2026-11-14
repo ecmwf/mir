@@ -1,0 +1,11 @@
+# MIR-346
+# input
+param=vo/d,level=1000,resol=20
+# post-process
+--vod2uv --accuracy=24
+# action-plan
+[{"type":"transform.sh-vod-to-UV","atlas-trans-type":"local"},{"type":"save","accuracy":24}]
+# grid-plan
+[{"grid":"T20"},{"grid":"T20"},{"grid":"T20"}]
+# grib_get
+bitsPerValue=24

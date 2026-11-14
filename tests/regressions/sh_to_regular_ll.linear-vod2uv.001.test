@@ -1,0 +1,11 @@
+# MIR-592
+# input
+param=vo_d,level=1000,resol=20
+# post-process
+--grid=3/3 --interpolation=linear --vod2uv
+# action-plan
+[{"type":"transform.sh-vod-to-uv-namedgrid","atlas-trans-flt":false,"atlas-trans-type":"local","invtrans":"vod2uv","grid":"F21"},{"type":"interpolate.grid2regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":1e-06,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":[3,3],"area":[90,0,-90,357]},{"type":"save","packing":"simple"}]
+# grid-plan
+[{"grid":"T20"},{"grid":"F21"},{"grid":[3,3]},{"grid":[3,3]}]
+# grib_get (placeholder until values can be checked)
+numberOfPoints=7320

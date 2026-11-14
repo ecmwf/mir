@@ -1,0 +1,16 @@
+# MIR-572
+# input
+gridType=lambert,missingValuesPresent=1.grib2
+# post-process
+--area-mode=mask --area=90/-30/60/0
+# action-plan
+[{"type":"mask.area","area":[90,-30,60,0]},{"type":"save"}]
+# grid-plan
+[{"false_xy":[-552217.004,1031959.078],"order":"i+j+","projection":{"lat_0":80,"lat_1":80,"lon_0":326,"reverse":true,"type":"lcc"},"x":[0,1970000,2500],"y":[0,2470000,2500]},{"false_xy":[-552217.004,1031959.078],"order":"i+j+","projection":{"lat_0":80,"lat_1":80,"lon_0":326,"reverse":true,"type":"lcc"},"x":[0,1970000,2500],"y":[0,2470000,2500]},{"false_xy":[-552217.004,1031959.078],"order":"i+j+","projection":{"lat_0":80,"lat_1":80,"lon_0":326,"reverse":true,"type":"lcc"},"x":[0,1970000,2500],"y":[0,2470000,2500]}]
+# grib_get
+latitudeOfFirstGridPointInDegrees=70.135
+longitudeOfFirstGridPointInDegrees=340.592
+numberOfDataPoints=780321
+numberOfValues=5315
+numberOfMissing=775006
+values[0]=9999

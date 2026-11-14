@@ -1,0 +1,15 @@
+# MIR-298
+# input
+param=t,level=1000,resol=20
+# post-process
+--grid=1/1 --area=90/10/-10/9 --intgrid=none
+# action-plan
+[{"type":"transform.sh-scalar-to-regular-ll","atlas-trans-flt":false,"atlas-trans-type":"local","cropping":[90,10,-10,369],"invtrans":"scalar","grid":[1,1],"area":[90,10,-10,369]},{"type":"save","packing":"simple"}]
+# grid-plan
+[{"grid":"T20"},{"area":[90,10,-10,370],"grid":[1,1]},{"area":[90,10,-10,370],"grid":[1,1]}]
+# grib_get
+gridType=regular_ll
+latitudeOfFirstGridPointInDegrees=90
+longitudeOfFirstGridPointInDegrees=10
+latitudeOfLastGridPointInDegrees=-10
+longitudeOfLastGridPointInDegrees=369

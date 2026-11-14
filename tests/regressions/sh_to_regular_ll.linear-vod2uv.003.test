@@ -1,0 +1,21 @@
+# MIR-592
+# input
+param=vo_d,level=1000,resol=20
+# post-process
+--grid=3/3 --interpolation=linear --vod2uv --intgrid=none
+# action-plan
+[{"type":"transform.sh-vod-to-uv-regular-ll","atlas-trans-flt":false,"atlas-trans-type":"local","invtrans":"vod2uv","grid":[3,3],"area":[90,0,-90,360]},{"type":"save","packing":"simple"}]
+# grid-plan
+[{"grid":"T20"},{"grid":[3,3]},{"grid":[3,3]}]
+# grib_get
+numberOfPoints=7320
+values[0]=2.89689
+values[1]=3.44181
+values[2]=3.97794
+values[3]=4.50235
+values[4]=5.01505
+values[5]=5.51407
+values[6]=5.99747
+values[7]=6.46427
+values[8]=6.91446
+values[9]=7.34513

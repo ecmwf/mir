@@ -1,0 +1,14 @@
+# MIR-632
+# input
+param=vo_d,level=1000,resol=20
+# post-process (fails because input is GRIB1)
+--grid=H36 --vod2uv
+# action-plan
+[{"type":"transform.sh-vod-to-uv-namedgrid","atlas-trans-flt":false,"atlas-trans-type":"local","invtrans":"vod2uv","grid":"F21"},{"type":"interpolate.grid2namedgrid","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":1e-06,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":"H36"},{"type":"save","packing":"simple"}]
+# grib_get
+gridType=healpix
+gridName=H36
+Nside=36
+numberOfDataPoints=15552
+shortName=u
+longitudeOfFirstGridPointInDegrees=45

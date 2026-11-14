@@ -1,6 +1,0 @@
-# input
-gridType=healpix,Nside=32,orderingConvention=ring.grib2
-# mir
---packing=ccsds
-# plan
-Copy[]

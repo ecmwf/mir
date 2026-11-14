@@ -1,0 +1,11 @@
+# MIR-298
+# input
+param=t,level=1000,resol=20
+# post-process
+--grid=1/1 --area=-70/-10/-90/10 --rotation=-40/22
+# action-plan
+[{"type":"transform.sh-scalar-to-namedgrid","atlas-trans-flt":false,"atlas-trans-type":"local","cropping":[-19.0575,12.8571,-40.2319,25.7143],"invtrans":"scalar","grid":"F21"},{"type":"interpolate.grid2rotated-regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"cropping":[-70,-10,-90,10],"rotation":[-40,22],"grid":[1,1],"area":[90,0,-90,359]},{"type":"save","packing":"simple"}]
+# grid-plan
+[{"grid":"T20"},{"area":[-19.0574542580027,12.8571428571429,-40.2319412854046,25.7142857142857],"grid":"F21"},{"area":[-70,-10,-90,10],"grid":[1,1],"projection":{"south_pole":[22,-40],"type":"rotation"}},{"area":[-70,-10,-90,10],"grid":[1,1],"projection":{"south_pole":[22,-40],"type":"rotation"}}]
+# grib_get
+gridType=rotated_ll

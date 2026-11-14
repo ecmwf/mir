@@ -1,0 +1,22 @@
+# input
+ORCA.grib2
+# post-process
+--grid=eorca1
+# action-plan
+[{"type":"copy"}]
+[{"type":"interpolate.grid2namedgrid","interpolation":"nn","distance-weighting":"inverse-distance-weighting-squared","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":"O96"},{"type":"interpolate.grid2namedgrid","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":"eORCA1_T"},{"type":"save"}]
+[{"type":"interpolate.grid2namedgrid","interpolation":"nn","distance-weighting":"inverse-distance-weighting-squared","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":"O96"},{"type":"interpolate.grid2namedgrid","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":"eORCA1_T"},{"type":"save"}]
+[{"type":"copy"}]
+[{"type":"interpolate.grid2namedgrid","interpolation":"nn","distance-weighting":"inverse-distance-weighting-squared","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":"O96"},{"type":"interpolate.grid2namedgrid","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":"eORCA1_T"},{"type":"save"}]
+[{"type":"interpolate.grid2namedgrid","interpolation":"nn","distance-weighting":"inverse-distance-weighting-squared","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":"O96"},{"type":"interpolate.grid2namedgrid","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":"eORCA1_T"},{"type":"save"}]
+# grid-plan
+[{"grid":"eORCA1_T"},{"grid":"eORCA1_T"}]
+[{"grid":"eORCA1_U"},{"grid":"O96"},{"grid":"eORCA1_T"},{"grid":"eORCA1_T"}]
+[{"grid":"eORCA1_V"},{"grid":"O96"},{"grid":"eORCA1_T"},{"grid":"eORCA1_T"}]
+[{"grid":"eORCA1_T","uid":"16076978a048410747dd7c9876677b28"},{"grid":"eORCA1_T","uid":"16076978a048410747dd7c9876677b28"}]
+[{"grid":"eORCA1_U","uid":"7378487847e050559b82d0792374a705"},{"grid":"O96"},{"grid":"eORCA1_T"},{"grid":"eORCA1_T"}]
+[{"grid":"eORCA1_V","uid":"d9622b55f3120eafb3dbaf5c742bc56c"},{"grid":"O96"},{"grid":"eORCA1_T"},{"grid":"eORCA1_T"}]
+# grib_get
+gridType=unstructured_grid
+uuidOfHGrid=ba65665a9e68d1a8fa0352ecfcf8e496
+numberOfDataPoints=120184

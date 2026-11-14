@@ -36,14 +36,12 @@ function(target_from_path path out_var)
     set(${out_var} "${result}" PARENT_SCOPE)
 endfunction()
 
-# ecCodes really doesn't build tools, so disabling testing is required
 if(eccodes_HAVE_BUILD_TOOLS)
-    add_subdirectory(assertions)
     add_subdirectory(tool)
 else()
-    message(WARNING "${PROJECT_NAME}: assertions/ and tool/ tests require ecCodes option BUILD_TOOLS, tests disabled")
+    message(WARNING "${PROJECT_NAME}: tool/ tests require ecCodes option BUILD_TOOLS, tests disabled")
 endif()
 
 
-add_subdirectory(plans)
+add_subdirectory(regressions)
 add_subdirectory(unit)

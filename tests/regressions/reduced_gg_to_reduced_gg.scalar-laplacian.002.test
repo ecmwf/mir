@@ -1,0 +1,10 @@
+# MIR-459
+# input
+date=20200308,level=1000,grid=O80,param=z
+# post-process
+--nabla=scalar-laplacian
+# action-plan
+["filter.scalar-laplacian",{"type":"save"}]
+# grid-plan
+[{"grid":"O80"},{"grid":"O80"},{"grid":"O80"}]
+# grib_get

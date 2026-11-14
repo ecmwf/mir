@@ -1,0 +1,10 @@
+# input
+param=z,level=1,levtype=ml,resol=20.grib2
+# post-process
+--truncation=19
+# action-plan
+[{"type":"filter.sh-truncate","truncation":19},{"type":"save"}]
+# grid-plan
+[{"grid":"T20"},{"grid":"T19"},{"grid":"T19"}]
+# grib_get
+J=19

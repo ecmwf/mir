@@ -1,0 +1,16 @@
+# MIR-632
+# input
+gridType=healpix,Nside=32,orderingConvention=ring.grib2
+# post-process
+--packing=ccsds
+# action-plan
+[{"type":"copy"}]
+# grid-plan
+[{"grid":"H32"},{"grid":"H32"}]
+# grib_get
+gridType=healpix
+gridName=H32
+Nside=32
+numberOfDataPoints=12288
+packingType=grid_ccsds
+longitudeOfFirstGridPointInDegrees=45

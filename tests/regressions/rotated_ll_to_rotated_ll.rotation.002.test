@@ -1,0 +1,8 @@
+# MIR-361
+# input
+rotated_ll.3-3.grib1
+# post-process (dry run, as execution fails: UserError: Intersect: input does not contain output:)
+--rotation=10/10
+--dryrun
+# action-plan
+[{"type":"interpolate.grid2rotated-regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"rotation":[10,10],"grid":[3,3],"area":[90,0,-90,357]},{"type":"save"}]
