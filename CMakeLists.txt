@@ -36,10 +36,9 @@ if(NOT eccodes_HAVE_ECKIT_GEO)
     MESSAGE(FATAL_ERROR "mir: eccodes feature ECKIT_GEO is required")
 endif()
 
-#TODO ensure eccodes has required features
-#if(NOT eccodes_HAVE_AEC)
-#    MESSAGE(FATAL_ERROR "mir: eccodes feature AEC is required")
-#endif()
+if(NOT eccodes_HAVE_AEC)
+    MESSAGE(FATAL_ERROR "mir: eccodes feature AEC is required")
+endif()
 
 #TODO ensure atlas has required features
 #if(NOT atlas_HAVE_TESSELATION)
