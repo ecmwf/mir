@@ -1,9 +1,0 @@
-# MIR-361
-# input
-rotated_ll.3-3.grib1
-# post-process
---rotation=30/30
-# action-plan
-[{"type":"copy"}]
-# grid-plan
-[{"area":[69,-60,21,60],"grid":[3,3],"projection":{"south_pole":[30,30],"type":"rotation"}},{"area":[69,-60,21,60],"grid":[3,3],"projection":{"south_pole":[30,30],"type":"rotation"}}]

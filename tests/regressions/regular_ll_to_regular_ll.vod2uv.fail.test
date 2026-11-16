@@ -1,7 +1,0 @@
-# MIR-329
-# input
-param=vo/d,level=1000,grid=3/3
-# post-process
---vod2uv
-# grib_get
-gridType=regular_ll

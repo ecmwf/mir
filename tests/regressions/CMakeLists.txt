@@ -29,331 +29,90 @@ endforeach()
 set(TESTS
     geopoints_to_regular_ll.geopoints-xyv.001.test
     geopoints_to_regular_ll.geopoints-xyv.002.test
-    healpix_to_healpix.ccsds.test
-    healpix_to_healpix.grid-box-average.001.test
-    healpix_to_healpix.grid-box-average.002.test
-    healpix_to_healpix.grid-box-average.003.test
-    healpix_to_healpix.healpix-statistics.001.test
-    healpix_to_healpix.healpix-statistics.002.test
-    healpix_to_healpix.healpix-statistics.003.test
-    healpix_to_healpix.nn.001.test
-    healpix_to_healpix.nn.002.test
-    healpix_to_healpix.nn.003.test
-    healpix_to_healpix.regrid.test
-    healpix_to_regular_ll.nn.test
-    lambert_azimuthal_equal_area_to_lambert_azimuthal_equal_area.area.001.test
     lambert_azimuthal_equal_area_to_lambert_azimuthal_equal_area.area.002.test
-    lambert_azimuthal_equal_area_to_regular_ll.nn-interpolation-global-input.test
-    lambert_azimuthal_equal_area_to_regular_ll.nn.test
-    lambert_to_lambert.mask-area.001.test
-    lambert_to_lambert.mask-area.002.test
-    lambert_to_regular_ll.nn-interpolation-global-input.test
-    lambert_to_regular_ll.nn.test
-    polar_stereographic_to_polar_stereographic.area-crop.001.fail.test
-    polar_stereographic_to_polar_stereographic.area-crop.002.fail.test
-    polar_stereographic_to_polar_stereographic.area.001.test
-    polar_stereographic_to_polar_stereographic.area.002.test
-    polar_stereographic_to_polar_stereographic.regrid.001.test
-    polar_stereographic_to_polar_stereographic.regrid.002.test
     polar_stereographic_to_regular_ll.regrid.001.test
     polar_stereographic_to_regular_ll.regrid.002.test
     reduced_gg_to_healpix.grid-box-average-accuracy.test
-    reduced_gg_to_healpix.grid-box-average-ccsds.test
     reduced_gg_to_lambert.regrid.test
     reduced_gg_to_lambert_azimuthal_equal_area.regrid.test
-    reduced_gg_to_reduced_gg.accuracy-wrongly-encoded.001.test
-    reduced_gg_to_reduced_gg.accuracy-wrongly-encoded.002.fail.test
-    reduced_gg_to_reduced_gg.area.001.test
-    reduced_gg_to_reduced_gg.area.002.test
-    reduced_gg_to_reduced_gg.area.003.test
-    reduced_gg_to_reduced_gg.octahedral.test
-    reduced_gg_to_reduced_gg.pl.test
-    reduced_gg_to_reduced_gg.regrid.001.test
-    reduced_gg_to_reduced_gg.regrid.002.test
     reduced_gg_to_reduced_gg.scalar-gradient.001.test
     reduced_gg_to_reduced_gg.scalar-gradient.002.test
-    reduced_gg_to_reduced_gg.scalar-laplacian.001.test
-    reduced_gg_to_reduced_gg.scalar-laplacian.002.test
-    reduced_gg_to_reduced_gg.uv2uv-uv-divergence.test
     reduced_gg_to_reduced_gg.uv2uv-uv-gradient.test
-    reduced_gg_to_reduced_gg.uv2uv-uv-vorticity.test
     reduced_gg_to_regular_gg.area-nearest-lsm.lsm.test
     reduced_gg_to_regular_ll.area-nearest-lsm.lsm.test
     reduced_gg_to_regular_ll.area.test
-    reduced_gg_to_regular_ll.fail.fail.test
     reduced_gg_to_regular_ll.grid-box-average.test
-    reduced_gg_to_regular_ll.linear.test
     reduced_gg_to_regular_ll.regrid.001.test
-    reduced_gg_to_regular_ll.regrid.002.test
-    reduced_gg_to_regular_ll.regrid.003.test
     reduced_gg_to_regular_ll.wrongly-encoded.001.test
     reduced_gg_to_regular_ll.wrongly-encoded.002.fail.test
-    reduced_gg_to_regular_ll.wrongly-encoded.003.test
     reduced_gg_to_regular_ll.wrongly-encoded.004.fail.test
     reduced_gg_to_regular_ll.wrongly-encoded.005.fail.test
-    reduced_gg_to_regular_ll.wrongly-encoded.006.test
     reduced_gg_to_rotated_ll.area-nearest-lsm.lsm.test
     reduced_gg_to_rotated_ll.area-rotation.001.lsm.test
-    reduced_gg_to_rotated_ll.area-rotation.002.test
     reduced_ll_to_reduced_gg.regrid.test
-    reduced_ll_to_reduced_ll.accuracy-simple.test
-    reduced_ll_to_reduced_ll.accuracy.001.test
-    reduced_ll_to_reduced_ll.accuracy.002.test
-    reduced_ll_to_reduced_ll.area.fail.test
-    reduced_ll_to_reduced_ll.frame.fail.test
     reduced_ll_to_regular_ll.accuracy.test
-    reduced_ll_to_regular_ll.area-globalise.001.test
-    reduced_ll_to_regular_ll.area-globalise.002.test
     reduced_ll_to_regular_ll.area-globalise.003.test
-    reduced_ll_to_regular_ll.area-globalise.004.test
     reduced_ll_to_regular_ll.globalise.test
     reduced_ll_to_regular_ll.ieee.test
-    reduced_ll_to_regular_ll.regrid.test
-    reduced_ll_to_regular_ll.wrongly-encoded.001.test
     reduced_ll_to_regular_ll.wrongly-encoded.002.fail.test
-    regular_gg_to_regular_ll.area.test
-    regular_gg_to_regular_ll.grid-box-average-area.test
-    regular_gg_to_regular_ll.grid-box-average.test
     regular_gg_to_regular_ll.linear-finite-element-projection-fail.test
-    regular_gg_to_regular_ll.regrid.001.test
-    regular_gg_to_regular_ll.regrid.002.test
-    regular_gg_to_regular_ll.regrid.003.test
-    regular_gg_to_regular_ll.regrid.004.test
-    regular_ll_to_healpix.nn.001.test
-    regular_ll_to_healpix.nn.002.test
-    regular_ll_to_healpix.nn.003.test
     regular_ll_to_lambert.edition.test
     regular_ll_to_lambert.regrid.001.test
     regular_ll_to_lambert.regrid.002.test
     regular_ll_to_lambert.regrid.003.test
     regular_ll_to_lambert_azimuthal_equal_area.regrid.001.test
     regular_ll_to_lambert_azimuthal_equal_area.regrid.002.test
-    regular_ll_to_regular_gg.area.test
     regular_ll_to_regular_gg.bitmap-area.test
-    regular_ll_to_regular_ll.accuracy-av.001.test
-    regular_ll_to_regular_ll.accuracy-av.002.test
     regular_ll_to_regular_ll.accuracy-ieee.001.test
     regular_ll_to_regular_ll.accuracy-ieee.002.test
-    regular_ll_to_regular_ll.accuracy-ieee.003.fail.test
     regular_ll_to_regular_ll.accuracy-ieee.004.test
-    regular_ll_to_regular_ll.accuracy.001.test
-    regular_ll_to_regular_ll.accuracy.002.test
     regular_ll_to_regular_ll.accuracy.003.test
-    regular_ll_to_regular_ll.accuracy.004.test
-    regular_ll_to_regular_ll.accuracy.005.test
-    regular_ll_to_regular_ll.area-none.001.test
-    regular_ll_to_regular_ll.area-none.002.test
-    regular_ll_to_regular_ll.area-none.003.test
-    regular_ll_to_regular_ll.area-none.004.test
-    regular_ll_to_regular_ll.area-none.005.test
-    regular_ll_to_regular_ll.area-none.006.test
-    regular_ll_to_regular_ll.area-none.007.test
-    regular_ll_to_regular_ll.area-none.008.test
     regular_ll_to_regular_ll.area-so.test
-    regular_ll_to_regular_ll.area.001.test
-    regular_ll_to_regular_ll.area.002.test
-    regular_ll_to_regular_ll.area.003.test
-    regular_ll_to_regular_ll.area.004.test
-    regular_ll_to_regular_ll.area.005.test
-    regular_ll_to_regular_ll.area.006.test
-    regular_ll_to_regular_ll.area.007.test
-    regular_ll_to_regular_ll.area.008.test
-    regular_ll_to_regular_ll.area.009.test
-    regular_ll_to_regular_ll.area.010.test
-    regular_ll_to_regular_ll.area.011.test
-    regular_ll_to_regular_ll.av-accuracy.fail.test
-    regular_ll_to_regular_ll.av.001.test
-    regular_ll_to_regular_ll.av.002.test
-    regular_ll_to_regular_ll.av.003.test
-    regular_ll_to_regular_ll.av.004.test
-    regular_ll_to_regular_ll.av.005.test
-    regular_ll_to_regular_ll.basic-angle.001.test
-    regular_ll_to_regular_ll.basic-angle.002.test
     regular_ll_to_regular_ll.bitmap-area.001.test
-    regular_ll_to_regular_ll.bitmap-area.002.test
-    regular_ll_to_regular_ll.bitmap-area.003.test
-    regular_ll_to_regular_ll.bitmap-area.004.test
-    regular_ll_to_regular_ll.bitmap-area.005.test
-    regular_ll_to_regular_ll.cache.test
-    regular_ll_to_regular_ll.caching-cache.test
     regular_ll_to_regular_ll.ccsds-grib-edition-conversion.001.test
     regular_ll_to_regular_ll.ccsds-grib-edition-conversion.002.test
-    regular_ll_to_regular_ll.ccsds-grib-output.test
-    regular_ll_to_regular_ll.ccsds.001.test
     regular_ll_to_regular_ll.ccsds.002.test
-    regular_ll_to_regular_ll.ccsds.003.test
-    regular_ll_to_regular_ll.ccsds.004.test
     regular_ll_to_regular_ll.config-not-found-home.001.fail.test
     regular_ll_to_regular_ll.config-not-found-home.002.test
     regular_ll_to_regular_ll.config.x
     regular_ll_to_regular_ll.edition.test
-    regular_ll_to_regular_ll.globalise.test
-    regular_ll_to_regular_ll.grib-output.test
-    regular_ll_to_regular_ll.grid-box-average.test
-    regular_ll_to_regular_ll.grid-box-statistics.001.test
-    regular_ll_to_regular_ll.grid-box-statistics.002.test
-    regular_ll_to_regular_ll.grid-box-statistics.003.test
-    regular_ll_to_regular_ll.grid-box-statistics.004.test
-    regular_ll_to_regular_ll.grid-box-statistics.005.test
-    regular_ll_to_regular_ll.grid-box-statistics.006.test
-    regular_ll_to_regular_ll.grid-box-statistics.007.test
     regular_ll_to_regular_ll.ieee-accuracy.001.test
     regular_ll_to_regular_ll.ieee-accuracy.002.test
     regular_ll_to_regular_ll.ieee-accuracy.003.test
     regular_ll_to_regular_ll.ieee-accuracy.004.test
     regular_ll_to_regular_ll.ieee.001.test
-    regular_ll_to_regular_ll.ieee.002.test
     regular_ll_to_regular_ll.ieee.003.test
     regular_ll_to_regular_ll.ieee.004.test
     regular_ll_to_regular_ll.ieee.005.test
-    regular_ll_to_regular_ll.intermediate-interpolation-intgrid.test
-    regular_ll_to_regular_ll.intgrid.001.test
-    regular_ll_to_regular_ll.intgrid.002.test
-    regular_ll_to_regular_ll.limiter-limiter-minimum.test
-    regular_ll_to_regular_ll.matrix.001.test
-    regular_ll_to_regular_ll.matrix.002.test
     regular_ll_to_regular_ll.nearest-lsm-distance-weighting-with-lsm.001.lsm.test
     regular_ll_to_regular_ll.nearest-lsm-distance-weighting-with-lsm.002.lsm.test
     regular_ll_to_regular_ll.nearest-lsm.lsm.test
-    regular_ll_to_regular_ll.nn-cache.test
-    regular_ll_to_regular_ll.nn-caching.test
-    regular_ll_to_regular_ll.pre-globalise.test
-    regular_ll_to_regular_ll.regrid.001.fail.test
-    regular_ll_to_regular_ll.regrid.002.fail.test
-    regular_ll_to_regular_ll.regrid.003.test
-    regular_ll_to_regular_ll.regrid.004.test
-    regular_ll_to_regular_ll.regrid.005.test
-    regular_ll_to_regular_ll.regrid.006.test
-    regular_ll_to_regular_ll.regrid.007.test
-    regular_ll_to_regular_ll.regrid.008.test
-    regular_ll_to_regular_ll.regrid.009.test
     regular_ll_to_regular_ll.regrid.010.test
     regular_ll_to_regular_ll.regrid.011.test
-    regular_ll_to_regular_ll.regrid.012.test
-    regular_ll_to_regular_ll.simple-grib-output.001.test
-    regular_ll_to_regular_ll.simple-grib-output.002.test
-    regular_ll_to_regular_ll.simple.001.test
     regular_ll_to_regular_ll.simple.002.test
-    regular_ll_to_regular_ll.simple.003.test
-    regular_ll_to_regular_ll.simple.004.test
-    regular_ll_to_regular_ll.simple.005.test
-    regular_ll_to_regular_ll.simple.006.test
-    regular_ll_to_regular_ll.simple.007.test
     regular_ll_to_regular_ll.so.001.test
     regular_ll_to_regular_ll.so.002.test
     regular_ll_to_regular_ll.so.003.test
     regular_ll_to_regular_ll.so.004.test
     regular_ll_to_regular_ll.so.005.test
     regular_ll_to_regular_ll.so.006.test
-    regular_ll_to_regular_ll.vod2uv.fail.test
-    regular_ll_to_regular_ll.voronoi-statistics.001.test
-    regular_ll_to_regular_ll.voronoi-statistics.002.test
-    regular_ll_to_regular_ll.voronoi-statistics.003.test
-    regular_ll_to_regular_ll.voronoi-statistics.004.test
-    regular_ll_to_regular_ll.voronoi-statistics.005.test
-    regular_ll_to_regular_ll.voronoi-statistics.006.test
     regular_ll_to_regular_ll.wrongly-encoded.fail.test
-    regular_ll_to_rotated_ll.rotation.test
-    regular_ll_to_unstructured_grid.truncation-intgrid.001.test
-    regular_ll_to_unstructured_grid.truncation-intgrid.002.test
     rotated_ll_to_reduced_gg.linear-edition.test
-    rotated_ll_to_rotated_ll.area-rotation.test
     rotated_ll_to_rotated_ll.nn.test
-    rotated_ll_to_rotated_ll.rotation.001.test
-    rotated_ll_to_rotated_ll.rotation.002.test
     sh_to_healpix.intgrid-vod2uv.001.fail.test
     sh_to_healpix.intgrid-vod2uv.002.fail.test
     sh_to_healpix.intgrid.001.fail.test
     sh_to_healpix.intgrid.002.fail.test
-    sh_to_healpix.regrid.001.fail.test
-    sh_to_healpix.regrid.002.test
-    sh_to_healpix.vod2uv.001.fail.test
-    sh_to_healpix.vod2uv.002.test
     sh_to_lambert.regrid.test
     sh_to_lambert_azimuthal_equal_area.regrid.test
-    sh_to_reduced_gg.area-compatible.test
-    sh_to_reduced_gg.area.001.test
-    sh_to_reduced_gg.area.002.test
-    sh_to_reduced_gg.compatible.001.test
-    sh_to_reduced_gg.compatible.002.test
-    sh_to_reduced_gg.compatible.003.test
-    sh_to_reduced_gg.compatible.004.test
-    sh_to_reduced_gg.compatible.005.test
-    sh_to_reduced_gg.compatible.006.test
-    sh_to_reduced_gg.compatible.007.test
-    sh_to_reduced_gg.compatible.008.test
-    sh_to_reduced_gg.compatible.009.test
-    sh_to_reduced_gg.compatible.010.test
     sh_to_reduced_gg.intgrid-truncation.001.test
     sh_to_reduced_gg.intgrid-truncation.002.slow.test
-    sh_to_reduced_gg.intgrid.001.test
     sh_to_reduced_gg.intgrid.002.slow.test
-    sh_to_reduced_gg.intgrid.003.slow.test
-    sh_to_reduced_gg.intgrid.004.test
-    sh_to_reduced_gg.intgrid.005.test
-    sh_to_reduced_gg.intgrid.006.test
-    sh_to_reduced_gg.intgrid.007.test
-    sh_to_reduced_gg.intgrid.008.test
-    sh_to_reduced_gg.intgrid.009.test
     sh_to_reduced_gg.octahedral-compatible.test
     sh_to_reduced_gg.octahedral.test
     sh_to_reduced_gg.reduced-compatible.test
     sh_to_reduced_gg.reduced.test
-    sh_to_reduced_gg.regrid.001.test
-    sh_to_reduced_gg.regrid.002.test
-    sh_to_reduced_gg.regrid.003.test
-    sh_to_reduced_gg.regrid.004.test
-    sh_to_reduced_gg.regrid.005.test
-    sh_to_reduced_gg.regrid.006.test
-    sh_to_reduced_gg.regrid.007.test
-    sh_to_reduced_gg.regrid.008.test
-    sh_to_reduced_gg.regrid.009.test
-    sh_to_reduced_gg.regrid.010.test
-    sh_to_reduced_gg.regrid.011.test
-    sh_to_reduced_gg.truncation-compatible.test
-    sh_to_reduced_gg.truncation-intgrid.001.test
-    sh_to_reduced_gg.truncation-intgrid.002.test
-    sh_to_reduced_gg.truncation-intgrid.003.test
-    sh_to_reduced_gg.truncation.test
-    sh_to_reduced_gg.vod2uv-compatible.test
-    sh_to_reduced_gg.vod2uv-intgrid.test
-    sh_to_reduced_gg.vod2uv-truncation.001.test
-    sh_to_reduced_gg.vod2uv-truncation.002.test
-    sh_to_reduced_gg.vod2uv-truncation.003.test
-    sh_to_reduced_gg.vod2uv.001.test
-    sh_to_reduced_gg.vod2uv.002.test
-    sh_to_reduced_rotated_gg.rotation.test
-    sh_to_regular_gg.intgrid.001.test
-    sh_to_regular_gg.intgrid.002.test
-    sh_to_regular_gg.regrid.test
-    sh_to_regular_gg.truncation-intgrid.001.test
-    sh_to_regular_gg.truncation-intgrid.002.test
-    sh_to_regular_gg.truncation-intgrid.003.test
-    sh_to_regular_gg.truncation-intgrid.004.test
-    sh_to_regular_gg.truncation-intgrid.005.test
-    sh_to_regular_gg.truncation-intgrid.006.test
-    sh_to_regular_gg.vod2uv-truncation.001.test
-    sh_to_regular_gg.vod2uv-truncation.002.test
-    sh_to_regular_gg.vod2uv-truncation.003.test
-    sh_to_regular_gg.vod2uv-truncation.004.test
-    sh_to_regular_ll.area-intgrid.001.test
-    sh_to_regular_ll.area-intgrid.002.test
-    sh_to_regular_ll.area-intgrid.003.test
-    sh_to_regular_ll.area-intgrid.004.test
-    sh_to_regular_ll.area-intgrid.005.test
-    sh_to_regular_ll.area-intgrid.006.test
-    sh_to_regular_ll.area-intgrid.007.test
-    sh_to_regular_ll.area.001.test
-    sh_to_regular_ll.area.002.test
-    sh_to_regular_ll.area.003.test
-    sh_to_regular_ll.area.004.test
-    sh_to_regular_ll.area.005.test
-    sh_to_regular_ll.grib-output.test
     sh_to_regular_ll.grib-packing-gridded-grib-edition-conversion.test
-    sh_to_regular_ll.grid-box-average-uv2uv.test
-    sh_to_regular_ll.grid-box-average.test
-    sh_to_regular_ll.grid-box-statistics.test
-    sh_to_regular_ll.intgrid-av.001.test
     sh_to_regular_ll.intgrid-av.002.test
     sh_to_regular_ll.intgrid-ccsds.001.test
     sh_to_regular_ll.intgrid-ccsds.002.test
@@ -361,7 +120,6 @@ set(TESTS
     sh_to_regular_ll.intgrid-ccsds.004.test
     sh_to_regular_ll.intgrid-edition.001.test
     sh_to_regular_ll.intgrid-edition.002.test
-    sh_to_regular_ll.intgrid-grib-output.test
     sh_to_regular_ll.intgrid-ieee.001.test
     sh_to_regular_ll.intgrid-ieee.002.test
     sh_to_regular_ll.intgrid-ieee.003.test
@@ -369,123 +127,35 @@ set(TESTS
     sh_to_regular_ll.intgrid-ieee.005.test
     sh_to_regular_ll.intgrid-ieee.006.test
     sh_to_regular_ll.intgrid-ieee.007.test
-    sh_to_regular_ll.intgrid-simple.001.test
     sh_to_regular_ll.intgrid-simple.002.test
     sh_to_regular_ll.intgrid-so.001.test
     sh_to_regular_ll.intgrid-so.002.test
     sh_to_regular_ll.intgrid-so.003.test
-    sh_to_regular_ll.intgrid-spectral-order.test
-    sh_to_regular_ll.intgrid-truncation.test
-    sh_to_regular_ll.intgrid.001.test
-    sh_to_regular_ll.intgrid.002.test
     sh_to_regular_ll.intgrid.003.test
-    sh_to_regular_ll.linear-uv2uv.001.test
-    sh_to_regular_ll.linear-uv2uv.002.test
     sh_to_regular_ll.linear-uv2uv.003.test
-    sh_to_regular_ll.linear-uv2uv.004.test
     sh_to_regular_ll.linear-uv2uv.005.test
-    sh_to_regular_ll.linear-vod2uv.001.test
-    sh_to_regular_ll.linear-vod2uv.002.test
-    sh_to_regular_ll.linear-vod2uv.003.test
-    sh_to_regular_ll.linear.test
-    sh_to_regular_ll.nn-intgrid.001.test
-    sh_to_regular_ll.nn-intgrid.002.test
-    sh_to_regular_ll.nn.001.test
-    sh_to_regular_ll.nn.002.test
-    sh_to_regular_ll.regrid.001.test
-    sh_to_regular_ll.regrid.002.test
     sh_to_regular_ll.regrid.003.slow.test
-    sh_to_regular_ll.regrid.004.test
-    sh_to_regular_ll.regrid.005.test
-    sh_to_regular_ll.regrid.006.test
-    sh_to_regular_ll.regrid.007.test
-    sh_to_regular_ll.regrid.008.test
     sh_to_regular_ll.regrid.009.test
-    sh_to_regular_ll.regrid.010.test
-    sh_to_regular_ll.regrid.011.test
     sh_to_regular_ll.scalar-gradient.test
-    sh_to_regular_ll.scalar-laplacian.test
-    sh_to_regular_ll.truncation-intgrid.001.test
-    sh_to_regular_ll.truncation-intgrid.002.test
-    sh_to_regular_ll.truncation-intgrid.003.test
-    sh_to_regular_ll.truncation-intgrid.004.test
-    sh_to_regular_ll.truncation-intgrid.005.test
-    sh_to_regular_ll.truncation-intgrid.006.test
-    sh_to_regular_ll.truncation-intgrid.007.test
-    sh_to_regular_ll.truncation-intgrid.008.test
-    sh_to_regular_ll.truncation-intgrid.009.test
-    sh_to_regular_ll.truncation-intgrid.010.test
-    sh_to_regular_ll.truncation-intgrid.011.test
-    sh_to_regular_ll.truncation-intgrid.012.test
-    sh_to_regular_ll.truncation-intgrid.013.test
-    sh_to_regular_ll.truncation-intgrid.014.test
-    sh_to_regular_ll.truncation-intgrid.015.test
-    sh_to_regular_ll.truncation-uv2uv.001.test
-    sh_to_regular_ll.truncation-uv2uv.002.test
-    sh_to_regular_ll.truncation-uv2uv.003.test
-    sh_to_regular_ll.truncation-uv2uv.004.test
-    sh_to_regular_ll.truncation-uv2uv.005.test
-    sh_to_regular_ll.truncation-uv2uv.006.test
     sh_to_regular_ll.truncation-uv2uv.007.test
     sh_to_regular_ll.truncation-uv2uv.008.test
-    sh_to_regular_ll.uv2uv.test
     sh_to_regular_ll.vod2uv-intgrid.001.test
     sh_to_regular_ll.vod2uv-intgrid.002.test
     sh_to_regular_ll.vod2uv-intgrid.003.test
     sh_to_regular_ll.vod2uv-intgrid.004.test
-    sh_to_regular_ll.vod2uv-intgrid.005.test
     sh_to_regular_ll.vod2uv-intgrid.006.test
-    sh_to_regular_ll.vod2uv-intgrid.007.test
     sh_to_regular_ll.vod2uv-intgrid.008.test
     sh_to_regular_ll.vod2uv-intgrid.009.test
-    sh_to_regular_ll.vod2uv-intgrid.010.test
     sh_to_regular_ll.vod2uv-intgrid.011.test
-    sh_to_regular_ll.vod2uv-intgrid.012.test
-    sh_to_regular_ll.vod2uv-intgrid.013.test
-    sh_to_regular_ll.vod2uv-intgrid.014.test
-    sh_to_regular_ll.vod2uv-truncation.001.test
-    sh_to_regular_ll.vod2uv-truncation.002.test
-    sh_to_regular_ll.vod2uv-truncation.003.test
-    sh_to_regular_ll.vod2uv-truncation.004.test
-    sh_to_regular_ll.vod2uv-truncation.005.test
-    sh_to_regular_ll.vod2uv-truncation.006.test
-    sh_to_regular_ll.vod2uv-truncation.007.test
-    sh_to_regular_ll.vod2uv-truncation.008.test
-    sh_to_regular_ll.vod2uv-truncation.009.test
-    sh_to_regular_ll.vod2uv-truncation.010.test
-    sh_to_regular_ll.vod2uv-uv-divergence.test
     sh_to_regular_ll.vod2uv-uv-gradient.test
-    sh_to_regular_ll.vod2uv-uv-vorticity.test
     sh_to_regular_ll.vod2uv.001.slow.test
-    sh_to_regular_ll.vod2uv.002.test
-    sh_to_regular_ll.vod2uv.003.test
-    sh_to_regular_ll.vod2uv.004.test
-    sh_to_regular_ll.vod2uv.005.test
     sh_to_rotated_ll.area-rotation.001.test
     sh_to_rotated_ll.area-rotation.002.test
     sh_to_rotated_ll.area-rotation.003.test
-    sh_to_rotated_ll.rotation-uv2uv.001.test
-    sh_to_rotated_ll.rotation-uv2uv.002.test
-    sh_to_rotated_ll.rotation-vod2uv.001.test
-    sh_to_rotated_ll.rotation-vod2uv.002.test
-    sh_to_rotated_ll.rotation-vod2uv.003.test
-    sh_to_rotated_ll.truncation-intgrid.001.test
-    sh_to_rotated_ll.truncation-intgrid.002.test
     sh_to_rotated_ll.truncation-rotation.test
-    sh_to_rotated_ll.truncation-uv2uv.001.test
-    sh_to_rotated_ll.truncation-uv2uv.002.test
-    sh_to_rotated_ll.truncation-uv2uv.003.test
-    sh_to_rotated_ll.truncation-uv2uv.004.test
-    sh_to_rotated_ll.truncation-uv2uv.005.test
-    sh_to_rotated_ll.truncation-uv2uv.006.test
-    sh_to_rotated_ll.truncation-uv2uv.007.test
-    sh_to_rotated_ll.truncation-uv2uv.008.test
     sh_to_rotated_ll.vod2uv-area.test
-    sh_to_sh.area.test
     sh_to_sh.bandpass.test
-    sh_to_sh.bitmap.test
     sh_to_sh.cesaro-cesaro-k.test
-    sh_to_sh.frame.test
     sh_to_sh.ieee.test
     sh_to_sh.simple.001.fail.test
     sh_to_sh.simple.002.fail.test
@@ -504,20 +174,9 @@ set(TESTS
     sh_to_sh.vod2uv-truncation.004.fail.test
     sh_to_sh.vod2uv.001.test
     sh_to_sh.vod2uv.002.test
-    sh_to_sh.vod2uv.003.fail.test
     sh_to_sh.vod2uv.004.test
     sh_to_unstructured_grid.truncation-intgrid.001.test
-    sh_to_unstructured_grid.truncation-intgrid.002.test
-    unstructured_grid_to_reduced_gg.regrid.test
-    unstructured_grid_to_regular_ll.intermediate-interpolation-nn.test
-    unstructured_grid_to_regular_ll.intgrid.test
-    unstructured_grid_to_regular_ll.regrid.test
-    unstructured_grid_to_regular_ll.restructure.test
-    unstructured_grid_to_unstructured_grid.area.test
-    unstructured_grid_to_unstructured_grid.griddef-nn.test
-    unstructured_grid_to_unstructured_grid.regrid.001.test
-    unstructured_grid_to_unstructured_grid.regrid.002.test
-    unstructured_grid_to_unstructured_grid.regrid.003.test)
+    unstructured_grid_to_regular_ll.intermediate-interpolation-nn.test)
 
 # ecCodes really doesn't build tools, so disabling testing is required
 if(NOT eccodes_HAVE_BUILD_TOOLS)

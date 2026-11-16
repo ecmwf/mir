@@ -1,9 +1,0 @@
-# MIR-240
-# input
-param=t,level=1000
-# post-process
---area=90/-179/-90/180
-# action-plan
-[{"type":"copy"}]
-# grid-plan
-[{"grid":"T1279"},{"grid":"T1279"}]

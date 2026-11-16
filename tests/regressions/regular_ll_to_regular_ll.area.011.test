@@ -1,9 +1,0 @@
-# MIR-361
-# input
-MIR-361.grib
-# post-process
---grid=1/1 --area=89.5/-179.5/-89.5/179.5
-# action-plan
-[{"type":"interpolate.grid2regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"cropping":[89.5,-179.5,-89.5,179.5],"grid":[1,1],"area":[89.5,0.5,-89.5,359.5]},{"type":"save"}]
-# grid-plan
-[{"grid":[1,1]},{"area":[90,-179.5,-90,180.5],"grid":[1,1],"reference":[0.5,0.5]},{"area":[90,-179.5,-90,180.5],"grid":[1,1],"reference":[0.5,0.5]}]

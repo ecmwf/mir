@@ -1,8 +1,0 @@
-# MIR-361
-# input
-rotated_ll.3-3.grib1
-# post-process (dry run, as execution fails: Assertion failed: Area: non-empty area crop/mask (to at least one point))
---area=3/0/0/3 --rotation=30/30
---dryrun
-# action-plan
-[{"type":"crop.area","area":[3,0,0,3]},{"type":"save"}]

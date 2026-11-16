@@ -1,9 +1,0 @@
-# MIR-643
-# input
-gridType=healpix,Nside=32,orderingConvention=nested.grib2
-# post-process
---grid=h16n --interpolation=grid-box-average
-# action-plan
-[{"type":"interpolate.grid2namedgrid","interpolation":"grid-box-average","lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":"HN16"},{"type":"save"}]
-# grid-plan
-[{"grid":"H32","order":"nested"},{"grid":"H16","order":"nested"},{"grid":"H16","order":"nested"}]

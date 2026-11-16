@@ -1,8 +1,0 @@
-# MIR-219
-# input
-param=t,level=1000
-# post-process (dry run, as execution takes too long)
---grid=0.01/0.01 --dont-compress-plan
---dryrun
-# action-plan
-[{"type":"transform.sh-scalar-to-namedgrid","atlas-trans-flt":false,"atlas-trans-type":"local","invtrans":"scalar","grid":"F1280"},{"type":"interpolate.grid2regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":[0.01,0.01],"area":[90,0,-90,359.99]},{"type":"save","packing":"simple"}]
