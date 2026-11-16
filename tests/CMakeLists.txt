@@ -43,6 +43,10 @@ else()
 endif()
 
 
-add_subdirectory(actions)
+add_subdirectory(action)
+add_subdirectory(api)
+add_subdirectory(interpolation)
 add_subdirectory(regressions)
+add_subdirectory(repres)
+add_subdirectory(stats)
 add_subdirectory(unit)

@@ -4,53 +4,22 @@
 set(TESTS
 #    MIR-333
 #    MIR-356
-    MIR-425
-    MIR-536
-    PGEN-412
-    PGEN-492
-    PGEN-558
-    action_graph
-    actionspec
     area
     atlas
     bounding_box
-    earthkit-geo
     formula
-    gaussian_grid
-    healpix
     in_memory_cache
     grib_basic_angle
     grib_encoding
-    grib_input
     grib_rotated_ll
     grib_scanning_mode
-    grid_box_method
-    grid_type
-    grids
-    gridspec
     increments
-    input
-    interpolations
-    interpolationspec
     intgrid
-    iterator
-    job
-    knn_weighting
     packing
-    plan
-    raw_memory
-    regular_xy
-    space_view
     spectral_order
-    statistics
     style
     vector-space
-    weight_matrix
     wind)
-
-if(mir_HAVE_NETCDF)
-    list(APPEND TESTS interpolation_netcdf)
-endif()
 
 
 foreach(_t ${TESTS})
@@ -77,14 +46,6 @@ foreach(_loader counted-file-io tmp-counted-shmem)
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 endforeach()
-
-ecbuild_add_test(
-    TARGET            mir_tests_unit_healpix_order
-    SOURCES           healpix_order.cc
-    LIBS              mir
-    ENVIRONMENT       ${_testEnvironment}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../data
-)
 
 ecbuild_add_test(
     TARGET            mir_tests_unit_legendre_shared_memory_loader
