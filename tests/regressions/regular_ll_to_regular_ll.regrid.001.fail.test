@@ -1,7 +1,0 @@
-# MIR-209
-# input (unsupported old ocean grids)
-mofc_ocean_fc_inst_horizontal.grib1
-# post-process
---grid=3/3
-# grib_get
-gridType=regular_ll

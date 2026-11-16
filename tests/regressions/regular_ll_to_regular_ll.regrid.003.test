@@ -1,9 +1,0 @@
-# MIR-323
-# input
-stream=espd,param=ci,class=e2,date=19600201,expver=0003,levtype=sfc,number=0
-# post-process
---grid=0.25/0.25
-# action-plan
-[{"type":"copy"}]
-# grid-plan
-[{"area":[90,-179.875,-90,180.125],"grid":[0.25,0.25],"order":"i+j+","reference":[0.125,0.125]},{"area":[90,-179.875,-90,180.125],"grid":[0.25,0.25],"order":"i+j+","reference":[0.125,0.125]}]

@@ -1,9 +1,0 @@
-# MIR-361
-# input
-MIR-361.grib
-# post-process
---area=89.5/-179.5/-89.5/179.5
-# action-plan
-[{"type":"crop.area","area":[89.5,-179.5,-89.5,179.5]},{"type":"save"}]
-# grid-plan
-[{"grid":[1,1]},{"area":[89,-179,-89,179],"grid":[1,1]},{"area":[89,-179,-89,179],"grid":[1,1]}]

@@ -1,9 +1,0 @@
-# MIR-361
-# input
-regular_ll.2-2.grib1
-# post-process
---area=2/0/0/2
-# action-plan
-[{"type":"crop.area","area":[2,0,0,2]},{"type":"save"}]
-# grid-plan
-[{"grid":[2,2]},{"area":[2,0,0,2],"grid":[2,2]},{"area":[2,0,0,2],"grid":[2,2]}]

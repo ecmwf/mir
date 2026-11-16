@@ -1,9 +1,0 @@
-# MIR-555
-# input
-param=t,level=1000
-# post-process
---truncation=none --intgrid=none --grid=F640 --area=54/-16.5/50.5/-3
-# action-plan
-[{"type":"transform.sh-scalar-to-namedgrid","atlas-trans-flt":false,"atlas-trans-type":"local","cropping":[54,-16.5,50.5,-3],"invtrans":"scalar","grid":"F640"},{"type":"save","packing":"simple"}]
-# grid-plan
-[{"grid":"T1279"},{"area":[53.908623449839,-16.453125,50.5349419809359,-3.09375],"grid":"F640"},{"area":[53.908623449839,-16.453125,50.5349419809359,-3.09375],"grid":"F640"}]

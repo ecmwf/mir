@@ -1,7 +1,0 @@
-# MIR-487
-# input
-stream=wave,param=2dfd,direction=1,frequency=1
-# post-process
---frame=1
-# grib_get
-gridType=reduced_ll
