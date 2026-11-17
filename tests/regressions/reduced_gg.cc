@@ -436,7 +436,7 @@ CASE("to regular_ll: nn") {
         EXPECT_EQUAL(get(h, "numberOfDataPoints"), "27648");
         EXPECT_EQUAL(get(h, "gridType"), "regular_ll");
         EXPECT_EQUAL(get(h, "latitudeOfFirstGridPointInDegrees"), "-89.375");
-        EXPECT_EQUAL(get(h, "longitudeOfFirstGridPointInDegrees"), "0.937");
+        EXPECT_EQUAL(get(h, "longitudeOfFirstGridPointInDegrees"), "0.9375");
     }
 
     SECTION("002") {
@@ -449,7 +449,7 @@ CASE("to regular_ll: nn") {
         EXPECT_EQUAL(get(h, "numberOfDataPoints"), "27840");
         EXPECT_EQUAL(get(h, "gridType"), "regular_ll");
         EXPECT_EQUAL(get(h, "latitudeOfFirstGridPointInDegrees"), "-90");
-        EXPECT_EQUAL(get(h, "longitudeOfFirstGridPointInDegrees"), "0.937");
+        EXPECT_EQUAL(get(h, "longitudeOfFirstGridPointInDegrees"), "0.9375");
     }
 }
 
