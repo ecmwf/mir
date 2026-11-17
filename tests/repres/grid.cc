@@ -70,7 +70,6 @@ CASE("Grid: by name, pattern or specification") {
 
 CASE("Grid: representations") {
     const util::Rotation rotation(-40., 22.);
-    param::SimpleParametrisation empty;
 
 
     SECTION("named Gaussian grids") {
@@ -82,12 +81,6 @@ CASE("Grid: representations") {
 
         RepresentationHandle rotated(grid.representation(rotation));
         EXPECT_EQUAL(rotated->numberOfPoints(), repres->numberOfPoints());
-
-        // by name only
-        EXPECT_THROWS_AS(grid.representation(empty), exception::SeriousBug);
-
-        param::SimpleParametrisation param;
-        EXPECT_THROWS_AS(grid.parametrisation("O32", param), exception::SeriousBug);
     }
 
 
@@ -135,6 +128,10 @@ CASE("Grid: canonical names, lookup and list") {
         for (const auto& test : tests) {
             EXPECT_EQUAL(Grid::canonical(test.name, user), test.canonical);
         }
+
+        // typed grids, replaced by gridspecs (an unknown grid otherwise)
+        EXPECT_THROWS_AS(Grid::canonical("gridType=lambert;Ni=20;Nj=15", user), exception::UserError);
+        EXPECT_EQUAL(Grid::canonical("gridType=polar_stereographic", user), "");
     }
 
 

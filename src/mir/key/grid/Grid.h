@@ -7,10 +7,11 @@
 #include <iosfwd>
 #include <string>
 
-#include "mir/param/SimpleParametrisation.h"
-
 
 namespace mir {
+namespace param {
+class MIRParametrisation;
+}
 namespace repres {
 class Representation;
 }
@@ -48,9 +49,7 @@ public:
 
     virtual const repres::Representation* representation() const;
     virtual const repres::Representation* representation(const util::Rotation&) const;
-    virtual const repres::Representation* representation(const param::MIRParametrisation&) const;
 
-    virtual void parametrisation(const std::string& grid, param::SimpleParametrisation&) const;
     virtual size_t gaussianNumber() const;
     virtual std::string gridname() const;
     virtual bool isGaussian() const;  // non-rotated Gaussian grid
@@ -75,15 +74,6 @@ public:
     // None
 
 protected:
-    // -- Types
-
-    enum grid_t
-    {
-        named_t,
-        typed_t,
-        regular_ll_t
-    };
-
     // -- Constructors
 
     Grid(const std::string& key, const std::string& type);

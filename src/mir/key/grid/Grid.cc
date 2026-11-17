@@ -8,7 +8,6 @@
 #include <map>
 #include <memory>
 #include <ostream>
-#include <set>
 #include <sstream>
 
 #include "eckit/filesystem/PathName.h"
@@ -162,127 +161,6 @@ const RegularLLPattern REGULAR_LL_PATTERN("^" fp "/" fp "$");
 #undef fp
 
 
-// Grids by type and key=value pairs (gridType=...;key=value;...)
-class TypedGrid final : public Grid {
-public:
-    TypedGrid(const std::string& key, const std::set<std::string>& requiredKeys,
-              const std::set<std::string>& optionalKeys) :
-        Grid(key, "typedgrid"), requiredKeys_(requiredKeys), optionalKeys_(optionalKeys) {
-        requiredKeys_.insert("gridType");
-    }
-
-private:
-    std::set<std::string> requiredKeys_;
-    std::set<std::string> optionalKeys_;
-
-    void checkRequiredKeys(const param::MIRParametrisation& param) const {
-        std::string missingKeys;
-
-        const auto* sep = "";
-        for (const auto& key : requiredKeys_) {
-            if (!param.has(key)) {
-                missingKeys += sep + key;
-                sep = ", ";
-            }
-        }
-
-        if (!missingKeys.empty()) {
-            std::ostringstream msg;
-            msg << *this << ": required keys are missing: " << missingKeys;
-            Log::error() << msg.str() << std::endl;
-            throw exception::UserError(msg.str());
-        }
-    }
-
-    void print(std::ostream& out) const override {
-        out << "TypedGrid[key=" << key_ << ",requiredKeys=[" << eckit::StringTools::join(",", requiredKeys_)
-            << "],optionalKeys=[" << eckit::StringTools::join(",", optionalKeys_) << "]]";
-    }
-
-    void parametrisation(const std::string& grid, param::SimpleParametrisation& param) const override {
-        // set a new parametrisation containing only required or optional keys
-        param::SimpleParametrisation p;
-        for (auto& kv_str : eckit::StringTools::split(";", grid)) {
-            if (auto it = kv_str.find("="); it != std::string::npos) {
-                if (auto k = kv_str.substr(0, it), v = kv_str.substr(it + 1); !k.empty() && !v.empty()) {
-                    if (requiredKeys_.count(k) != 0 || optionalKeys_.count(k) != 0) {
-                        p.set(k, v);
-                        continue;
-                    }
-                }
-            }
-
-            throw exception::UserError("TypedGrid: invalid key=value pair, got '" + kv_str + "'");
-        }
-
-        // check for missing keys, set return parametrisation
-        checkRequiredKeys(p);
-        param.swap(p);
-    }
-
-    size_t gaussianNumber() const override {
-        param::SimpleParametrisation param;
-        parametrisation(key_, param);
-
-        long N = 0;
-        return param.get("gaussianNumber", N) && N > 0 ? static_cast<size_t>(N) : default_gaussian_number();
-    }
-
-    const repres::Representation* representation(const param::MIRParametrisation& param) const override {
-        checkRequiredKeys(param);
-        return repres::RepresentationFactory::build(param);
-    }
-};
-
-
-class TypedGridPattern final : public GridPattern {
-public:
-    TypedGridPattern(const std::string& pattern, const std::set<std::string>& requiredKeys,
-                     const std::set<std::string>& optionalKeys) :
-        GridPattern(pattern), requiredKeys_(requiredKeys), optionalKeys_(optionalKeys) {}
-
-private:
-    const std::set<std::string> requiredKeys_;
-    const std::set<std::string> optionalKeys_;
-
-    void print(std::ostream& out) const override {
-        out << "TypedGridPattern[pattern=" << pattern_ << ",requiredKeys=["
-            << eckit::StringTools::join(",", requiredKeys_) << "],optionalKeys=["
-            << eckit::StringTools::join(",", optionalKeys_) << "]]";
-    }
-
-    const Grid* make(const std::string& name) const override {
-        return new TypedGrid(name, requiredKeys_, optionalKeys_);
-    }
-
-    std::string canonical(const std::string& name) const override { return name; }  // FIXME not implemented
-};
-
-
-const TypedGridPattern LAMBERT_PATTERN("^gridType=lambert;.*$",
-                                       {"LaDInDegrees", "LoVInDegrees", "Ni", "Nj", "grid",
-                                        "latitudeOfFirstGridPointInDegrees", "longitudeOfFirstGridPointInDegrees"},
-                                       {"Latin1InDegrees", "Latin2InDegrees", "writeLaDInDegrees", "writeLonPositive",
-                                        "gaussianNumber", "shapeOfTheEarth", "radius", "earthMajorAxis",
-                                        "earthMinorAxis"});
-
-
-const TypedGridPattern LAMBERT_AZIMUTHAL_EQUAL_AREA_PATTERN("^gridType=lambert_azimuthal_equal_area;.*$",
-                                                            {"standardParallelInDegrees", "centralLongitudeInDegrees",
-                                                             "Ni", "Nj", "grid", "latitudeOfFirstGridPointInDegrees",
-                                                             "longitudeOfFirstGridPointInDegrees"},
-                                                            {"gaussianNumber", "shapeOfTheEarth", "radius",
-                                                             "earthMajorAxis", "earthMinorAxis"});
-
-
-const TypedGridPattern POLAR_STEREOGRAPHIC_PATTERN(
-    "^gridType=polar_stereographic;.*$",
-    {"LaDInDegrees", "orientationOfTheGridInDegrees", "southPoleOnProjectionPlane", "Ni", "Nj", "grid",
-     "latitudeOfFirstGridPointInDegrees", "longitudeOfFirstGridPointInDegrees"},
-    {"proj", "gaussianNumber", "shapeOfTheEarth", "radius", "earthMajorAxis", "earthMinorAxis", "iScansNegatively",
-     "jScansPositively"});
-
-
 // Grids by specification, inline (eckit::geo)
 class GridSpec final : public Grid {
 public:
@@ -382,20 +260,6 @@ const repres::Representation* Grid::representation(const util::Rotation& /*unuse
 }
 
 
-const repres::Representation* Grid::representation(const param::MIRParametrisation& /*unused*/) const {
-    std::ostringstream os;
-    os << "Grid::representation(MIRParametrisation&) not implemented for " << *this;
-    throw exception::SeriousBug(os.str());
-}
-
-
-void Grid::parametrisation(const std::string& /*unused*/, param::SimpleParametrisation& /*unused*/) const {
-    std::ostringstream os;
-    os << "Grid::parametrisation() not implemented for " << *this;
-    throw exception::SeriousBug(os.str());
-}
-
-
 size_t Grid::gaussianNumber() const {
     std::ostringstream os;
     os << "Grid::gaussianNumber() not implemented for " << *this;
@@ -472,6 +336,12 @@ std::string Grid::canonical(const std::string& name, const param::MIRParametrisa
 
     if (m->find(name) != m->end()) {
         return name;
+    }
+
+    // typed grids (as before, gridType=...;key=value;...), not any other unknown grid
+    if (name.rfind("gridType=", 0) == 0 && name.find(';') != std::string::npos) {
+        throw exception::UserError(
+            "Grid: '" + name + "', typed grids are gridspecs (eg. {projection: {type: lcc, ...}, x: [...], y: [...]})");
     }
 
     // grid name from the spectral truncation
