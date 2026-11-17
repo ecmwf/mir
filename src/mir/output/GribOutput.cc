@@ -369,6 +369,17 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
         }
 
 
+        // ecCodes sets the keys before converting to a higher edition, failing on the keys of that edition only
+        std::unique_ptr<codes_handle, decltype(&codes_handle_delete)> converted(nullptr, &codes_handle_delete);
+        if (long edition = 0; info.packing.editionNumber > 0 &&
+                              codes_get_long(h, "edition", &edition) == CODES_SUCCESS &&
+                              edition < info.packing.editionNumber) {
+            converted.reset(codes_handle_clone(h));
+            ASSERT(converted);
+            GRIB_CALL(codes_set_long(converted.get(), "edition", info.packing.editionNumber));
+            h = converted.get();
+        }
+
         const auto& values = field.values(i);
         int flags          = 0;
         int err            = 0;
