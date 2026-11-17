@@ -82,7 +82,7 @@ long set_edition(grib_info& info, long dfault) {
 
 
 Figure* make_figure(const param::MIRParametrisation& param) {
-    // as encoded [m] (GRIB), or as given (typed grids), if given
+    // as encoded [m] (GRIB, by either key), if encoded
     auto get = [&param](const std::string& key, double& value) {
         return param.get(key + "InMetres", value) || param.get(key, value);
     };
