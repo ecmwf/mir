@@ -152,26 +152,26 @@ CASE("interpolate.grid2gridspec, errors") {
 }
 
 
+// projected grids (eckit::geo regular_xy), as GRIB lambert_azimuthal_equal_area, polar_stereographic and lambert
 const std::string LAEA =
-    "gridType=lambert_azimuthal_equal_area;grid=100000/100000;standardParallelInDegrees=52;"
-    "centralLongitudeInDegrees=10;latitudeOfFirstGridPointInDegrees=66.982143;"
-    "longitudeOfFirstGridPointInDegrees=-35.034024;Ni=40;Nj=38";
+    R"({"projection":{"lat_0":52,"lon_0":10,"reverse":true,"type":"laea"},)"
+    R"("x":[-1810621.83647687,2089378.16352313,100000],"y":[2283408.83487739,-1416591.16512261,-100000]})";
 
 const std::string POLAR_STEREOGRAPHIC =
-    "gridType=polar_stereographic;LaDInDegrees=60;orientationOfTheGridInDegrees=0;southPoleOnProjectionPlane=0;"
-    "grid=100000/100000;latitudeOfFirstGridPointInDegrees=60;longitudeOfFirstGridPointInDegrees=-45;Ni=20;Nj=20";
+    R"({"projection":{"lat_0":90,"lat_ts":60,"reverse":true,"type":"stere"},)"
+    R"("x":[-2252569.61519619,-352569.615196194,100000],"y":[-2252569.61519619,-4152569.61519619,-100000]})";
 
 const std::string LAMBERT =
-    "gridType=lambert;LaDInDegrees=50;LoVInDegrees=10;Latin1InDegrees=50;Latin2InDegrees=50;grid=100000/100000;"
-    "latitudeOfFirstGridPointInDegrees=40;longitudeOfFirstGridPointInDegrees=-10;Ni=20;Nj=15";
+    R"({"projection":{"lat_0":50,"lat_1":50,"lon_0":10,"reverse":true,"type":"lcc"},)"
+    R"("x":[-1707818.21687531,192181.783124688,100000],"y":[-887705.800790069,-2287705.80079007,-100000]})";
 
 
 std::string spec(const std::string& grid, const std::string& options = "") {
-    return "{type: interpolate.grid2typedgrid, grid: '" + grid + "'" + options + "}";
+    return "{type: interpolate.grid2gridspec, grid: " + grid + options + "}";
 }
 
 
-CASE("interpolate.grid2typedgrid") {
+CASE("interpolate.grid2gridspec, projected grids") {
     struct test_t {
         std::string name;
         std::string grid;
@@ -196,56 +196,26 @@ CASE("interpolate.grid2typedgrid") {
 
             // the grid corners are on the bounding box, contained only within (projection) rounding
             EXPECT(a->outputBoundingBox() == out.representation()->boundingBox());
+
+            check_values(*a);
+            check_values(*make_checked(spec(test.grid, ", interpolation: nn")), "{grid: O16}", 3.5);
         }
     }
 }
 
 
-CASE("interpolate.grid2typedgrid, values") {
-    const std::vector<std::string> grids{LAEA, POLAR_STEREOGRAPHIC, LAMBERT};
-    for (const auto& grid : grids) {
-        SECTION(grid.substr(0, grid.find(';'))) {
-            check_values(*make_checked(spec(grid)));
-            check_values(*make_checked(spec(grid, ", interpolation: nn")), "{grid: O16}", 3.5);
-        }
-    }
-}
-
-
-CASE("interpolate.grid2typedgrid, properties") {
-    auto a = make(spec(LAEA));
-
-    EXPECT(a->isRegridAction());
-    EXPECT(!a->canCrop());
-
-    std::string name;
-
-    EXPECT(!a->getGriddedTargetName(name));
-
-    EXPECT_EQUAL(a->type(), "interpolate.grid2typedgrid");
-    EXPECT_EQUAL(std::string(a->name()), "Gridded2TypedGrid");
-    EXPECT(a->json_str().find(R"("grid":")" + LAEA + '"') != std::string::npos);
-
-    std::ostringstream print;
-    print << *a;
-
-    EXPECT(print.str().find("Gridded2TypedGrid[grid=") == 0);
-    EXPECT(print.str().find("interpolation=linear") != std::string::npos);
-}
-
-
-CASE("interpolate.grid2typedgrid, comparison") {
+CASE("interpolate.grid2gridspec, projected grids comparison") {
     auto a = make(spec(POLAR_STEREOGRAPHIC));
 
     EXPECT(*a == *make(spec(POLAR_STEREOGRAPHIC, ", interpolation: linear")));
 
-    // the same keys, in a different order
-    EXPECT(*a == *make(spec("gridType=polar_stereographic;Ni=20;Nj=20;LaDInDegrees=60;orientationOfTheGridInDegrees=0;"
-                            "southPoleOnProjectionPlane=0;grid=100000/100000;latitudeOfFirstGridPointInDegrees=60;"
-                            "longitudeOfFirstGridPointInDegrees=-45")));
+    // the same spec, in a different order
+    EXPECT(*a == *make(spec(R"({"y":[-2252569.61519619,-4152569.61519619,-100000],)"
+                            R"("x":[-2252569.61519619,-352569.615196194,100000],)"
+                            R"("projection":{"type":"stere","reverse":true,"lat_ts":60,"lat_0":90}})")));
 
     auto other = POLAR_STEREOGRAPHIC;
-    other.replace(other.find("Nj=20"), 5, "Nj=21");
+    other.replace(other.find("-4152569.61519619"), 17, "-4252569.61519619");
 
     EXPECT(*a != *make(spec(other)));
 
@@ -255,12 +225,9 @@ CASE("interpolate.grid2typedgrid, comparison") {
 }
 
 
-CASE("interpolate.grid2typedgrid, errors") {
-    EXPECT_THROWS(make("interpolate.grid2typedgrid"));           // grid is required
-    EXPECT_THROWS(make(spec("gridType=unknown;Ni=20;Nj=20")));   // unknown type
-    EXPECT_THROWS(make(spec(LAEA.substr(0, LAEA.rfind(';')))));  // required key missing
-    EXPECT_THROWS(make(spec(LAEA + ";unknown=1")));              // unknown key
-    EXPECT_THROWS(make(spec(LAEA + ";Ni")));                     // not key=value
+CASE("interpolate.grid2gridspec, projected grids errors") {
+    EXPECT_THROWS(make(spec(R"({"projection":{"type":"unknown"},"x":[0,1,1],"y":[0,1,1]})")));  // unknown projection
+    EXPECT_THROWS(make(spec(R"({"projection":{"type":"laea","lat_0":52},"x":[0,1,1]})")));      // y missing
 }
 
 

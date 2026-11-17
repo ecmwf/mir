@@ -2,11 +2,11 @@
 # input
 regular_ll.2-2.grib1
 # post-process
---edition=1 --grid=gridType=lambert\;grid=2500./2500.\;writeLaDInDegrees=0\;LaDInDegrees=45.8\;LoVInDegrees=2.\;latitudeOfFirstGridPointInDegrees=37.333\;longitudeOfFirstGridPointInDegrees=-8.354\;Ni=1000\;Nj=950\;gaussianNumber=1280\;radius=6367470
+--edition=1 --grid={projection:{type:lcc,figure:iau1965,lat_0:45.8,lat_1:45.8,lon_0:2,reverse:true},x:[-924611.06357397,1572888.93642603,2500],y:[-883721.22342102,-3256221.22342102,-2500]}
 # action-plan
-[{"type":"interpolate.grid2typedgrid","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":"gridType=lambert;grid=2500./2500.;writeLaDInDegrees=0;LaDInDegrees=45.8;LoVInDegrees=2.;latitudeOfFirstGridPointInDegrees=37.333;longitudeOfFirstGridPointInDegrees=-8.354;Ni=1000;Nj=950;gaussianNumber=1280;radius=6367470"},{"type":"save"}]
+[{"type":"interpolate.grid2gridspec","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":{"projection":{"figure":"iau1965","lat_0":45.8,"lat_1":45.8,"lon_0":2,"reverse":true,"type":"lcc"},"x":[-924611.06357397,1572888.93642603,2500],"y":[-883721.22342102,-3256221.22342102,-2500]}},{"type":"save"}]
 # grid-plan
-[{"grid":[2,2]},{"projection":{"lat_0":45.8,"lat_1":45.8,"lon_0":2,"reverse":true,"type":"lcc"},"x":[-921962.126092333,1575537.87390767,2500],"y":[-884482.739688687,-3256982.73968869,-2500]},{"projection":{"lat_0":45.8,"lat_1":45.8,"lon_0":2,"reverse":true,"type":"lcc"},"x":[-921962.126092333,1575537.87390767,2500],"y":[-884482.739688687,-3256982.73968869,-2500]}]
+[{"grid":[2,2]},{"projection":{"figure":"iau1965","lat_0":45.8,"lat_1":45.8,"lon_0":2,"reverse":true,"type":"lcc"},"x":[-924611.06357397,1572888.93642603,2500],"y":[-883721.22342102,-3256221.22342102,-2500]},{"projection":{"figure":"iau1965","lat_0":45.8,"lat_1":45.8,"lon_0":2,"reverse":true,"type":"lcc"},"x":[-924611.06357397,1572888.93642603,2500],"y":[-883721.22342102,-3256221.22342102,-2500]}]
 # grib_get
 gridType=lambert
 LaDInDegrees=45.8
@@ -14,3 +14,5 @@ LoVInDegrees=2
 Ni=1000
 Nj=950
 longitudeOfFirstGridPointInDegrees=-8.354
+edition=1
+earthIsOblate=1
