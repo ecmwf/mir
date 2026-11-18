@@ -59,7 +59,7 @@ public:
 
     virtual double scalar() const {
         std::ostringstream oss;
-        oss << "Cannot get field from " << *this;
+        oss << "Cannot get scalar from " << *this;
         throw exception::SeriousBug(oss.str());
     }
 

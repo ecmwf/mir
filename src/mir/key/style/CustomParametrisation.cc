@@ -57,6 +57,11 @@ static void fill(std::vector<T>& value, const std::vector<std::string>& params) 
 }
 
 
+static void fill(std::vector<std::string>& value, const std::vector<std::string>& params) {
+    value = params;
+}
+
+
 template <class T>
 bool CustomParametrisation::_get(const std::string& name, T& value) const {
     Log::debug() << *this << " get('" << name << "')" << std::endl;
