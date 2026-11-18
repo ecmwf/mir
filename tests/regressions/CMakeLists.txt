@@ -29,7 +29,7 @@ endforeach()
 set(TESTS
     geopoints_to_regular_ll.geopoints-xyv.001.test
     geopoints_to_regular_ll.geopoints-xyv.002.test
-    lambert_azimuthal_equal_area_to_lambert_azimuthal_equal_area.area.002.test
+    lambert_azimuthal_equal_area_to_lambert_azimuthal_equal_area.area.test
     polar_stereographic_to_regular_ll.regrid.001.test
     polar_stereographic_to_regular_ll.regrid.002.test
     reduced_gg_to_healpix.grid-box-average-accuracy.test
@@ -40,21 +40,21 @@ set(TESTS
     reduced_gg_to_reduced_gg.uv2uv-uv-gradient.test
     reduced_gg_to_regular_gg.area-nearest-lsm.lsm.test
     reduced_gg_to_regular_ll.area-nearest-lsm.lsm.test
-    reduced_gg_to_regular_ll.area.test
+    reduced_gg_to_regular_ll.area.001.test
     reduced_gg_to_regular_ll.grid-box-average.test
     reduced_gg_to_regular_ll.regrid.001.test
     reduced_gg_to_regular_ll.wrongly-encoded.001.test
     reduced_gg_to_regular_ll.wrongly-encoded.002.fail.test
+    reduced_gg_to_regular_ll.wrongly-encoded.003.fail.test
     reduced_gg_to_regular_ll.wrongly-encoded.004.fail.test
-    reduced_gg_to_regular_ll.wrongly-encoded.005.fail.test
     reduced_gg_to_rotated_ll.area-nearest-lsm.lsm.test
-    reduced_gg_to_rotated_ll.area-rotation.001.lsm.test
+    reduced_gg_to_rotated_ll.area-rotation.lsm.test
     reduced_ll_to_reduced_gg.regrid.test
     reduced_ll_to_regular_ll.accuracy.test
-    reduced_ll_to_regular_ll.area-globalise.003.test
+    reduced_ll_to_regular_ll.area-globalise.test
     reduced_ll_to_regular_ll.globalise.test
     reduced_ll_to_regular_ll.ieee.test
-    reduced_ll_to_regular_ll.wrongly-encoded.002.fail.test
+    reduced_ll_to_regular_ll.wrongly-encoded.fail.test
     regular_gg_to_regular_ll.linear-finite-element-projection-fail.test
     regular_ll_to_lambert.edition.test
     regular_ll_to_lambert.regrid.001.test
@@ -65,13 +65,13 @@ set(TESTS
     regular_ll_to_regular_gg.bitmap-area.test
     regular_ll_to_regular_ll.accuracy-ieee.001.test
     regular_ll_to_regular_ll.accuracy-ieee.002.test
-    regular_ll_to_regular_ll.accuracy-ieee.004.test
-    regular_ll_to_regular_ll.accuracy.003.test
+    regular_ll_to_regular_ll.accuracy-ieee.003.test
+    regular_ll_to_regular_ll.accuracy.test
     regular_ll_to_regular_ll.area-so.test
-    regular_ll_to_regular_ll.bitmap-area.001.test
+    regular_ll_to_regular_ll.bitmap-area.test
     regular_ll_to_regular_ll.ccsds-grib-edition-conversion.001.test
     regular_ll_to_regular_ll.ccsds-grib-edition-conversion.002.test
-    regular_ll_to_regular_ll.ccsds.002.test
+    regular_ll_to_regular_ll.ccsds.test
     regular_ll_to_regular_ll.config-not-found-home.001.fail.test
     regular_ll_to_regular_ll.config-not-found-home.002.test
     regular_ll_to_regular_ll.config.x
@@ -81,15 +81,15 @@ set(TESTS
     regular_ll_to_regular_ll.ieee-accuracy.003.test
     regular_ll_to_regular_ll.ieee-accuracy.004.test
     regular_ll_to_regular_ll.ieee.001.test
+    regular_ll_to_regular_ll.ieee.002.test
     regular_ll_to_regular_ll.ieee.003.test
     regular_ll_to_regular_ll.ieee.004.test
-    regular_ll_to_regular_ll.ieee.005.test
     regular_ll_to_regular_ll.nearest-lsm-distance-weighting-with-lsm.001.lsm.test
     regular_ll_to_regular_ll.nearest-lsm-distance-weighting-with-lsm.002.lsm.test
     regular_ll_to_regular_ll.nearest-lsm.lsm.test
-    regular_ll_to_regular_ll.regrid.010.test
-    regular_ll_to_regular_ll.regrid.011.test
-    regular_ll_to_regular_ll.simple.002.test
+    regular_ll_to_regular_ll.regrid.001.test
+    regular_ll_to_regular_ll.regrid.002.test
+    regular_ll_to_regular_ll.simple.test
     regular_ll_to_regular_ll.so.001.test
     regular_ll_to_regular_ll.so.002.test
     regular_ll_to_regular_ll.so.003.test
@@ -107,13 +107,13 @@ set(TESTS
     sh_to_lambert_azimuthal_equal_area.regrid.test
     sh_to_reduced_gg.intgrid-truncation.001.test
     sh_to_reduced_gg.intgrid-truncation.002.slow.test
-    sh_to_reduced_gg.intgrid.002.slow.test
+    sh_to_reduced_gg.intgrid.slow.test
     sh_to_reduced_gg.octahedral-compatible.test
     sh_to_reduced_gg.octahedral.test
     sh_to_reduced_gg.reduced-compatible.test
     sh_to_reduced_gg.reduced.test
     sh_to_regular_ll.grib-packing-gridded-grib-edition-conversion.test
-    sh_to_regular_ll.intgrid-av.002.test
+    sh_to_regular_ll.intgrid-av.test
     sh_to_regular_ll.intgrid-ccsds.001.test
     sh_to_regular_ll.intgrid-ccsds.002.test
     sh_to_regular_ll.intgrid-ccsds.003.test
@@ -127,28 +127,28 @@ set(TESTS
     sh_to_regular_ll.intgrid-ieee.005.test
     sh_to_regular_ll.intgrid-ieee.006.test
     sh_to_regular_ll.intgrid-ieee.007.test
-    sh_to_regular_ll.intgrid-simple.002.test
+    sh_to_regular_ll.intgrid-simple.test
     sh_to_regular_ll.intgrid-so.001.test
     sh_to_regular_ll.intgrid-so.002.test
     sh_to_regular_ll.intgrid-so.003.test
-    sh_to_regular_ll.intgrid.003.test
-    sh_to_regular_ll.linear-uv2uv.003.test
-    sh_to_regular_ll.linear-uv2uv.005.test
-    sh_to_regular_ll.regrid.003.slow.test
-    sh_to_regular_ll.regrid.009.test
+    sh_to_regular_ll.intgrid.test
+    sh_to_regular_ll.linear-uv2uv.001.test
+    sh_to_regular_ll.linear-uv2uv.002.test
+    sh_to_regular_ll.regrid.001.slow.test
+    sh_to_regular_ll.regrid.004.test
     sh_to_regular_ll.scalar-gradient.test
-    sh_to_regular_ll.truncation-uv2uv.007.test
-    sh_to_regular_ll.truncation-uv2uv.008.test
+    sh_to_regular_ll.truncation-uv2uv.001.test
+    sh_to_regular_ll.truncation-uv2uv.002.test
     sh_to_regular_ll.vod2uv-intgrid.001.test
     sh_to_regular_ll.vod2uv-intgrid.002.test
     sh_to_regular_ll.vod2uv-intgrid.003.test
     sh_to_regular_ll.vod2uv-intgrid.004.test
+    sh_to_regular_ll.vod2uv-intgrid.005.test
     sh_to_regular_ll.vod2uv-intgrid.006.test
+    sh_to_regular_ll.vod2uv-intgrid.007.test
     sh_to_regular_ll.vod2uv-intgrid.008.test
-    sh_to_regular_ll.vod2uv-intgrid.009.test
-    sh_to_regular_ll.vod2uv-intgrid.011.test
     sh_to_regular_ll.vod2uv-uv-gradient.test
-    sh_to_regular_ll.vod2uv.001.slow.test
+    sh_to_regular_ll.vod2uv.slow.test
     sh_to_rotated_ll.area-rotation.001.test
     sh_to_rotated_ll.area-rotation.002.test
     sh_to_rotated_ll.area-rotation.003.test
@@ -174,8 +174,8 @@ set(TESTS
     sh_to_sh.vod2uv-truncation.004.fail.test
     sh_to_sh.vod2uv.001.test
     sh_to_sh.vod2uv.002.test
-    sh_to_sh.vod2uv.004.test
-    sh_to_unstructured_grid.truncation-intgrid.001.test
+    sh_to_sh.vod2uv.003.test
+    sh_to_unstructured_grid.truncation-intgrid.test
     unstructured_grid_to_regular_ll.intermediate-interpolation-nn.test)
 
 # ecCodes really doesn't build tools, so disabling testing is required
