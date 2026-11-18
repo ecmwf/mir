@@ -86,6 +86,7 @@ bool ClimateFilter::sameAs(const DistanceWeighting& other) const {
 
 void ClimateFilter::json(eckit::JSON& j) const {
     j << type() << "climate-filter";
+    param::DefaultParametrisation::instance().json(j, "distance", 2. * halfDelta_);
     j << "climate-filter-delta" << delta_;
 }
 

@@ -54,7 +54,8 @@ void Statistics::print(std::ostream& out) const {
 
 
 bool Statistics::sameAs(const Solver& /*unused*/) const {
-    return false; /* data-dependant */
+    // data-dependent, so never the same (see Method::sameAs)
+    return false;
 }
 
 

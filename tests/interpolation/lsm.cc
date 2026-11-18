@@ -257,17 +257,32 @@ CASE("land-sea masks: from a file") {
         const param::CombinedParametrisation param(param_user);
         param_user.set("lsm-value-threshold-output", 0.);
 
-        // (a representation not used before: the masks cache key does not consider the threshold)
-        auto other = representation("{grid: [45, 45]}");
-
         const auto& in  = Mask::lookupInput(param, *H2);
-        const auto& out = Mask::lookupOutput(param, *other);
+        const auto& out = Mask::lookupOutput(param, *ll);
         EXPECT_EQUAL(count_true(in.mask()), 24);
-        EXPECT_EQUAL(count_true(out.mask()), other->numberOfPoints());
+        EXPECT_EQUAL(count_true(out.mask()), ll->numberOfPoints());
 
         param_user.set("lsm-file-input", LSM_FILE_NOT_GLOBAL);
         param_user.set("lsm-file", "unused");
         EXPECT_THROWS_AS(Mask::lookupInput(param, *ll), exception::UserError);
+    }
+
+
+    SECTION("the threshold, in the cache key") {
+        param::SimpleParametrisation param_user;
+        set_file_lsm(param_user);
+        const param::CombinedParametrisation param(param_user);
+
+        EXPECT_EQUAL(count_true(Mask::lookupInput(param, *H2).mask()), 24);
+
+        param_user.set("lsm-value-threshold", 10.5);
+        EXPECT_EQUAL(count_true(Mask::lookupInput(param, *H2).mask()), 38);
+
+        param_user.set("lsm-value-threshold-input", 40.5);
+        EXPECT_EQUAL(count_true(Mask::lookupInput(param, *H2).mask()), 8);
+
+        const auto& file = LSMSelection::lookup("file");
+        EXPECT(file.cacheKey(param, *H2, "input") != file.cacheKey(param, *H2, "output"));
     }
 
 

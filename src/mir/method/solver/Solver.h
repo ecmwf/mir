@@ -39,9 +39,11 @@ public:
     virtual void solve(const DenseMatrix& A, const WeightMatrix& W, DenseMatrix& B,
                        const double& missingValue) const = 0;
 
+    /// The same solver (see Method::sameAs), never for a data-dependent solver
     virtual bool sameAs(const Solver&) const = 0;
-    virtual void hash(eckit::MD5&) const     = 0;
-    virtual void json(eckit::JSON&) const    = 0;
+
+    virtual void hash(eckit::MD5&) const  = 0;
+    virtual void json(eckit::JSON&) const = 0;
 
 private:
     virtual void print(std::ostream&) const = 0;

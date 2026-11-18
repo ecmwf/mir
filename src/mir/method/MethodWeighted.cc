@@ -162,9 +162,10 @@ bool MethodWeighted::sameAs(const Method& other) const {
 
     const auto* o = dynamic_cast<const MethodWeighted*>(&other);
     return (o != nullptr) && (lsmWeightAdjustment_ == o->lsmWeightAdjustment_) && (pruneEpsilon_ == o->pruneEpsilon_) &&
-           Latitude(poleDisplacement_) == Latitude(o->poleDisplacement_) &&
-           (sameNonLinearities(nonLinear_, o->nonLinear_)) && solver().sameAs(o->solver()) &&
-           lsm::LandSeaMasks::sameLandSeaMasks(parametrisation_, o->parametrisation_) && cropping_.sameAs(o->cropping_);
+           Latitude(poleDisplacement_) == Latitude(o->poleDisplacement_) && reorderRows_ == o->reorderRows_ &&
+           reorderCols_ == o->reorderCols_ && (sameNonLinearities(nonLinear_, o->nonLinear_)) &&
+           solver().sameAs(o->solver()) && lsm::LandSeaMasks::sameLandSeaMasks(parametrisation_, o->parametrisation_) &&
+           cropping_.sameAs(o->cropping_);
 }
 
 
@@ -619,6 +620,8 @@ void MethodWeighted::hash(eckit::MD5& md5) const {
     md5 << pruneEpsilon_;
     md5 << poleDisplacement_;
     md5 << lsmWeightAdjustment_;
+    md5 << reorderRows_;
+    md5 << reorderCols_;
 
     for (const auto& n : nonLinear_) {
         n->hash(md5);

@@ -102,6 +102,13 @@ CASE("neighbour picking methods") {
         picker.param.set("nclosest", 4L);
         EXPECT(payloads(picker.pick("nearest-neighbour-with-lowest-index", 0., 5.)) == Indices({3}));
         EXPECT(payloads(picker.pick("nearest-neighbour-with-lowest-index", 0., 6.)) == Indices({4}));
+
+        // comparison, by nclosest
+        P a(PickFactory::build("nearest-neighbour-with-lowest-index", picker.param));
+        EXPECT(a->sameAs(*P(PickFactory::build("nearest-neighbour-with-lowest-index", picker.param))));
+
+        picker.param.set("nclosest", 1L);
+        EXPECT_NOT(a->sameAs(*P(PickFactory::build("nearest-neighbour-with-lowest-index", picker.param))));
     }
 
 
@@ -168,6 +175,24 @@ CASE("neighbour picking methods") {
         EXPECT(std::is_sorted(sorted.begin(), sorted.end(), [&p](const auto& a, const auto& b) {
             return Point3::distance2(a.point(), p) < Point3::distance2(b.point(), p);
         }));
+
+        // comparison, by nclosest and distance
+        P x(PickFactory::build("sample", picker.param));
+        EXPECT(x->sameAs(*P(PickFactory::build("sample", picker.param))));
+
+        picker.param.set("nclosest", 2L);
+        EXPECT_NOT(x->sameAs(*P(PickFactory::build("sample", picker.param))));
+        picker.param.set("nclosest", 3L);
+
+        // comparison, by the sample
+        P a(PickFactory::build("sorted-sample", picker.param));
+        P b(PickFactory::build("sorted-sample", picker.param));
+        P s(PickFactory::build("sample", picker.param));
+        EXPECT(a->sameAs(*b));
+        EXPECT_NOT(a->sameAs(*s));
+
+        picker.param.set("distance", 2. * RADIUS_NEIGHBOURS);
+        EXPECT_NOT(a->sameAs(*P(PickFactory::build("sorted-sample", picker.param))));
     }
 
 
@@ -263,13 +288,10 @@ CASE("neighbour picking methods, as method options") {
         str << *m;
         EXPECT(str.str().find("nearestMethod=") != std::string::npos);
 
-        if (name != "sorted-sample") {
-            EXPECT(m->sameAs(*make(spec)));
-        }
+        EXPECT(m->sameAs(*make(spec)));
 
-        // (nearest-neighbour-with-lowest-index compares by type only)
         auto other = make("{type: k-nearest, nearest-method: " + name + ", nclosest: 2, distance: 2000}");
-        EXPECT(m->sameAs(*other) == (name == "nearest-neighbour-with-lowest-index"));
+        EXPECT_NOT(m->sameAs(*other));
 
         // the hash differs by neighbour picking method
         eckit::MD5 h;
@@ -329,6 +351,17 @@ CASE("k-nearest neighbours methods") {
         auto minimum =
             interpolate(*make("{type: k-nearest-statistics, interpolation-statistics: minimum}"), input, *out);
         EXPECT(minimum.values(0) == MIRValuesVector({0., 1., 3., 4.}));
+
+        auto m = make("k-nearest-statistics");
+        EXPECT_NOT(m->sameAs(*make("{type: k-nearest-statistics, nclosest: 2}")));
+        EXPECT_NOT(m->sameAs(*make("k-nearest")));
+
+        // the statistics, in the spec
+        auto n = make("{type: k-nearest-statistics, interpolation-statistics: minimum}");
+        EXPECT(n->json_str().find(R"("interpolation-statistics":"minimum")") != std::string::npos);
+        EXPECT(*make(n->json_str()) == *n);
+        EXPECT(*m != *n);
+        EXPECT_NOT(m->sameAs(*n));
     }
 
 
