@@ -8,7 +8,6 @@
 #include <vector>
 
 #include "eckit/container/sptree/SPValue.h"
-#include "eckit/geometry/Point3.h"
 
 #include "mir/util/Types.h"
 
