@@ -16,6 +16,7 @@
 #include "mir/repres/HEALPix.h"
 #include "mir/stats/Field.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Reorder.h"
 #include "mir/util/Trace.h"
 
 
@@ -38,7 +39,7 @@ void HEALPixMethod::assemble(util::MIRStatistics& /*ignored*/, WeightMatrix& W, 
     auto nested_reorder = [](const repres::Representation& r) {
         if (auto const* h = dynamic_cast<repres::HEALPix const*>(&r); h != nullptr) {
             using Order = eckit::geo::order::HEALPix;
-            return Order(Order::NESTED).reorder(h->order(), h->Nside());
+            return util::reorder_healpix(h->Nside(), Order::NESTED, h->order());
         }
 
         throw exception::SeriousBug("HEALPixMethod: representation must be HEALPix");

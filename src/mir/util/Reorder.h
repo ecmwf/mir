@@ -85,4 +85,8 @@ private:
 };
 
 
+/// HEALPix renumbering, of a resolution (Nside), from an order to another (see eckit::geo::Grid::reorder)
+std::vector<size_t> reorder_healpix(size_t Nside, const std::string& from, const std::string& to);
+
+
 }  // namespace mir::util
