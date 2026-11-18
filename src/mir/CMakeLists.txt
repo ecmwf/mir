@@ -895,7 +895,7 @@ ecbuild_add_library(
     INSTALL_HEADERS    LISTED
     HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/mir
     TEMPLATES          caching/InMemoryCache.cc
-    PUBLIC_LIBS        atlas eckit_linalg eckit_geometry eckit_option eckit eckit_geo eccodes
+    PUBLIC_LIBS        atlas eckit_linalg eckit_option eckit eckit_geo eccodes
     PUBLIC_INCLUDES    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/src>
     SOURCES            ${mir_srcs})
 
