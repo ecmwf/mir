@@ -37,20 +37,20 @@ double GridBox::diagonal() const {
 }
 
 
-Point2 GridBox::centre() const {
-    return {0.5 * (north_ + south_), 0.5 * (west_ + east_)};
+PointLonLat GridBox::centre() const {
+    return {0.5 * (west_ + east_), 0.5 * (north_ + south_)};
 }
 
 
-bool GridBox::contains(const Point2& p) const {
-    if (!eckit::types::is_approximately_lesser_or_equal(south_, p[0]) ||
-        !eckit::types::is_approximately_lesser_or_equal(p[0], north_)) {
+bool GridBox::contains(const PointLonLat& p) const {
+    if (!eckit::types::is_approximately_lesser_or_equal(south_, p.lat()) ||
+        !eckit::types::is_approximately_lesser_or_equal(p.lat(), north_)) {
         return false;
     }
 
     // at the poles, every longitude is the same point
-    return eckit::types::is_approximately_equal(std::abs(p[0]), 90.) ||
-           eckit::types::is_approximately_lesser_or_equal(LongitudeDouble(p[1]).normalise(west_).value(), east_);
+    return eckit::types::is_approximately_equal(std::abs(p.lat()), 90.) ||
+           eckit::types::is_approximately_lesser_or_equal(LongitudeDouble(p.lon()).normalise(west_).value(), east_);
 }
 
 

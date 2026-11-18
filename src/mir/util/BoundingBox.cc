@@ -115,9 +115,8 @@ bool BoundingBox::contains(const PointLatLon& p) const {
 }
 
 
-bool BoundingBox::contains(const Point2& p) const {
-    // notice the order
-    return contains(p[0], p[1]);
+bool BoundingBox::contains(const PointLonLat& p) const {
+    return contains(p.lat(), p.lon());
 }
 
 

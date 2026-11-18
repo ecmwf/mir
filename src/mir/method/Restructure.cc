@@ -24,7 +24,7 @@
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
-#include "mir/util/Point2ToPoint3.h"
+#include "mir/util/LonLatToPoint3.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
@@ -52,7 +52,7 @@ void Restructure::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, con
     const auto Nr = out.numberOfPoints();
 
     // search the output (target) points, for every input point
-    const util::Point2ToPoint3 point3(out, poleDisplacement());
+    const util::LonLatToPoint3 point3(out, poleDisplacement());
     const search::PointSearch tree(parametrisation_, out);
     const auto& outDomain = out.geographicDomain();
 
@@ -61,7 +61,8 @@ void Restructure::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, con
         PolePoints(const search::PointSearch& kdtree, double lat, bool skip) : is_assigned(skip) {
             if (!skip) {
                 std::vector<search::PointSearch::PointValueType> closest;
-                kdtree.closestWithinRadius(repres::Iterator::point_3D({lat, 0.}), eckit::geo::PointXYZ::EPS, closest);
+                kdtree.closestWithinRadius(repres::Iterator::point_3D(PointLonLat{0., lat}), eckit::geo::PointXYZ::EPS,
+                                           closest);
                 for (const auto& c : closest) {
                     insert(c.payload());
                 }

@@ -49,25 +49,33 @@ struct MIRTriangulate : MIRTool {
 };
 
 
+// points as map keys (PointXY doesn't order)
+struct LessXY {
+    bool operator()(const PointXY& p, const PointXY& q) const {
+        return p.X() < q.X() || (p.X() == q.X() && p.Y() < q.Y());
+    }
+};
+
+
 class Segment {
-    std::deque<Point2> points_;
-    Point2 inside_;
+    std::deque<PointXY> points_;
+    PointXY inside_;
 
 public:
     // Segment() {}
 
-    explicit Segment(const Point2& start, const Point2& end, const Point2& inside) : inside_(inside) {
+    explicit Segment(const PointXY& start, const PointXY& end, const PointXY& inside) : inside_(inside) {
         points_.push_back(start);
         points_.push_back(end);
     }
 
-    const Point2& start() const { return points_.front(); }
-    const Point2& end() const { return points_.back(); }
+    const PointXY& start() const { return points_.front(); }
+    const PointXY& end() const { return points_.back(); }
 
-    bool inside(const Point2& pt) const {
+    bool inside(const PointXY& pt) const {
         bool in  = false;
-        double y = pt.y();
-        double x = pt.x();
+        double y = pt.Y();
+        double x = pt.X();
 
         auto i = points_.begin();
         auto j = i + 1;
@@ -76,24 +84,24 @@ public:
             const auto& p1 = *i;
             const auto& p2 = *j;
 
-            if (y <= std::min(p1.y(), p2.y())) {
+            if (y <= std::min(p1.Y(), p2.Y())) {
                 continue;
             }
 
-            if (y > std::max(p1.y(), p2.y())) {
+            if (y > std::max(p1.Y(), p2.Y())) {
                 continue;
             }
 
-            if (x > std::max(p1.x(), p2.x())) {
+            if (x > std::max(p1.X(), p2.X())) {
                 continue;
             }
 
-            if (p1.y() == p2.y()) {
+            if (p1.Y() == p2.Y()) {
                 continue;
             }
 
-            double xints = (y - p1.y()) * (p2.x() - p1.x()) / (p2.y() - p1.y()) + p1.x();
-            if ((p2.x() == p1.x()) || (x <= xints)) {
+            double xints = (y - p1.Y()) * (p2.X() - p1.X()) / (p2.Y() - p1.Y()) + p1.X();
+            if ((p2.X() == p1.X()) || (x <= xints)) {
                 in = !in;
             }
         }
@@ -111,7 +119,7 @@ public:
         for (; j != points_.end(); ++i, ++j) {
             const auto& p1 = *i;
             const auto& p2 = *j;
-            order += (p2.x() - p1.x()) * (p2.y() + p1.y());
+            order += (p2.X() - p1.X()) * (p2.Y() + p1.Y());
         }
 
         bool swapped = inside(inside_);
@@ -119,7 +127,10 @@ public:
         return swapped ? (order > 0) : (order < 0);
     }
 
-    bool operator<(const Segment& other) const { return points_ < other.points_; }
+    bool operator<(const Segment& other) const {
+        return std::lexicographical_compare(points_.begin(), points_.end(), other.points_.begin(), other.points_.end(),
+                                            LessXY{});
+    }
 
     bool operator==(const Segment& other) const { return points_ == other.points_; }
 
@@ -161,8 +172,8 @@ public:
         json.startList();
         for (auto q : points_) {
             json.startList();
-            json << q.x();
-            json << q.y();
+            json << q.X();
+            json << q.Y();
             json.endList();
         }
         json.endList();
@@ -171,14 +182,14 @@ public:
     }
 };
 
-static std::map<Segment, Point2> cache;
+static std::map<Segment, PointXY> cache;
 
-static Point2 middle(const Point2& p1, const Point2& p2) {
-    return Point2::middle(p1, p2);
+static PointXY middle(const PointXY& p1, const PointXY& p2) {
+    return PointXY::middle(p1, p2);
     // Segment s(p1, p2);
     // auto j = cache.find(s);
     // if (j == cache.end()) {
-    //     auto q = Point2::middle(p1, p2);
+    //     auto q = PointXY::middle(p1, p2);
     //     cache[Segment(p1, p2)] = q;
     //     cache[Segment(p2, p1)] = q;
     //     j = cache.find(s);
@@ -186,7 +197,7 @@ static Point2 middle(const Point2& p1, const Point2& p2) {
     // return j->second;
 }
 
-static bool connect(const Point2& q, Segment& line, const std::map<Point2, std::set<Segment> >& ends,
+static bool connect(const PointXY& q, Segment& line, const std::map<PointXY, std::set<Segment>, LessXY>& ends,
                     std::set<Segment>& segments) {
 
     auto j = ends.find(q);
@@ -207,17 +218,17 @@ static bool connect(const Point2& q, Segment& line, const std::map<Point2, std::
 }
 
 #if 0
-static void p(int n, Point2 p0, double val0, Point2 p1, double val1,
-              Point2 p2, double val2) {
+static void p(int n, PointXY p0, double val0, PointXY p1, double val1,
+              PointXY p2, double val2) {
 
 
     Log::info() << n << " " << val0 << " " << val1 << " " << val2 << std::endl;
     return;
     Log::info() << "                    [" << n << "]" << std::endl;
 
-    if (p0.y() > p1.y() && p0.y() > p2.y()) {
+    if (p0.Y() > p1.Y() && p0.Y() > p2.Y()) {
         Log::info() << "            " << p0 << " (" << val0 << ")" << std::endl;
-        if (p1.x() < p2.x()) {
+        if (p1.X() < p2.X()) {
             Log::info() << p1 << " (" << val1 << ") --- " << p2 << " (" << val2 << ")" << std::endl;
         }
         else {
@@ -227,8 +238,8 @@ static void p(int n, Point2 p0, double val0, Point2 p1, double val1,
     }
 
 
-    if (p0.y() > p1.y() && p0.y() == p2.y()) {
-        if (p0.x() < p2.x()) {
+    if (p0.Y() > p1.Y() && p0.Y() == p2.Y()) {
+        if (p0.X() < p2.X()) {
             Log::info() << p0 << " (" << val0 << ") --- " << p2 << " (" << val2 << ")" << std::endl;
         }
         else {
@@ -239,7 +250,7 @@ static void p(int n, Point2 p0, double val0, Point2 p1, double val1,
         return;
     }
 
-    Log::info() << "+++ " << p0.y() << "  " << p1.y() << " " << p2.y() << std::endl;
+    Log::info() << "+++ " << p0.Y() << "  " << p1.Y() << " " << p2.Y() << std::endl;
 
     NOTIMP;
 }
@@ -291,10 +302,10 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
             const auto coord         = atlas::array::make_view<double, 2>(mesh.nodes().lonlat());
 
 
-            Point2 pa;
-            Point2 pb;
+            PointXY pa;
+            PointXY pb;
 
-            std::map<Point2, std::set<Segment> > ends;
+            std::map<PointXY, std::set<Segment>, LessXY> ends;
 
             std::set<Segment> segments;
 
@@ -320,19 +331,19 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
 
 
                 auto row0 = row(0);
-                Point2 p0(coord(row0, LLCOORDS::LON), coord(row0, LLCOORDS::LAT));
+                PointXY p0(coord(row0, atlas::LON), coord(row0, atlas::LAT));
                 // double val0 = values[row0];
 
                 auto row1 = row(1);
-                Point2 p1(coord(row1, LLCOORDS::LON), coord(row1, LLCOORDS::LAT));
+                PointXY p1(coord(row1, atlas::LON), coord(row1, atlas::LAT));
                 // double val1 = values[row1];
 
                 auto row2 = row(2);
-                Point2 p2(coord(row2, LLCOORDS::LON), coord(row2, LLCOORDS::LAT));
+                PointXY p2(coord(row2, atlas::LON), coord(row2, atlas::LAT));
                 // double val2 = values[row2];
                 // p(n, p0, val0, p1, val1, p2, val2);
 
-                Point2 inside;
+                PointXY inside;
 
                 switch (n) {
 

@@ -32,7 +32,7 @@ using Indices   = std::set<size_t>;
 
 
 PointXYZ point3(double lat, double lon) {
-    return repres::Iterator::point_3D({lat, lon});
+    return repres::Iterator::point_3D(PointLonLat{lon, lat});
 }
 
 

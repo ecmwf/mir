@@ -76,7 +76,7 @@ void GridIterator::print(std::ostream& out) const {
 }
 
 
-bool GridIterator::next(Latitude& lat, Longitude& lon) {
+bool GridIterator::next(PointLonLat& point) {
     if (!first_ && it_) {
         ++it_;
     }
@@ -84,9 +84,8 @@ bool GridIterator::next(Latitude& lat, Longitude& lon) {
 
     // points not on the Earth (eg. space view) are skipped
     for (; it_; ++it_) {
-        if (const auto p = std::get<eckit::geo::PointLonLat>(*it_); std::isfinite(p.lat()) && std::isfinite(p.lon())) {
-            lat = p.lat();
-            lon = p.lon();
+        if (const auto p = std::get<PointLonLat>(*it_); std::isfinite(p.lat()) && std::isfinite(p.lon())) {
+            point = p;
             return true;
         }
     }

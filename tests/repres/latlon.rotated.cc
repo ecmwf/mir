@@ -60,7 +60,7 @@ CASE("RotatedLL") {
         const auto& p = it->pointUnrotated();
         EXPECT(same(p.lat().value(), 10.));
         EXPECT(same(p.lon().value(), -10.));
-        EXPECT_NOT(same((*(*it))[0], 10.));
+        EXPECT_NOT(same(it->pointRotated().lat(), 10.));
     }
 
     SECTION("cropped, and its geographic domain") {

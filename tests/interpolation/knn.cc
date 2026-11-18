@@ -47,7 +47,7 @@ constexpr double RADIUS_NEIGHBOURS = 1.2e6;
 
 
 PointXYZ point3(double lat, double lon) {
-    return repres::Iterator::point_3D({lat, lon});
+    return repres::Iterator::point_3D(PointLonLat{lon, lat});
 }
 
 
