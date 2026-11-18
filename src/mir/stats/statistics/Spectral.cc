@@ -72,13 +72,15 @@ void Spectral::execute(const data::MIRField& field) {
     // Note: ECC-551 has been resolved, method implemented below
     mean_ = values[0];
 
+    // zonal coefficients (m = 0, n = 1 to J), real
     double var = 0;
-    for (size_t i = 2; i < 2 * J; i += 2) {
+    for (size_t i = 2; i <= 2 * J; i += 2) {
         var += values[i] * values[i];
     }
 
+    // other coefficients (m > 0), complex
     constexpr double TWO = 2.;
-    for (size_t i = 2 * J; i < values.size(); i += 2) {
+    for (size_t i = 2 * (J + 1); i < values.size(); i += 2) {
         var += TWO * values[i] * values[i] + TWO * values[i + 1] * values[i + 1];
     }
 
