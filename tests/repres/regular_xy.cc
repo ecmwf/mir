@@ -12,7 +12,6 @@
 #include "eckit/testing/Test.h"
 
 #include "mir/api/MIRJob.h"
-#include "mir/data/MIRField.h"
 #include "mir/input/GribMemoryInput.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/output/ArrayOutput.h"
@@ -21,121 +20,11 @@
 #include "mir/util/BoundingBox.h"
 #include "mir/util/MeshGeneratorParameters.h"
 
+#include "regular_xy.h"
 #include "repres.h"
 
 
 namespace mir::repres::tests {
-
-
-// a key and its value (long if integral)
-struct kv_t {
-    std::string key;
-    double value;
-};
-
-
-// a point (latitude, longitude)
-struct point_t {
-    double lat;
-    double lon;
-};
-
-
-using keys_t   = std::vector<kv_t>;
-using points_t = std::vector<point_t>;
-
-
-keys_t operator+(keys_t a, const keys_t& b) {
-    a.insert(a.end(), b.begin(), b.end());
-    return a;
-}
-
-
-/// GRIB2 message of a gridType (by sample) and its keys, of n values (the point index), or (n = 0) of a single value
-/// for Nx * Ny points
-std::string message(const std::string& gridType, const keys_t& keys, long n = 0) {
-    std::unique_ptr<codes_handle, decltype(&codes_handle_delete)> h(
-        codes_grib_handle_new_from_samples(nullptr, "GRIB2"), &codes_handle_delete);
-    ASSERT(h);
-
-    GRIB_CALL(codes_set_string(h.get(), "gridType", gridType.c_str(), nullptr));
-
-    for (const auto& kv : keys) {
-        if (kv.value == std::round(kv.value)) {
-            GRIB_CALL(codes_set_long(h.get(), kv.key.c_str(), static_cast<long>(kv.value)));
-        }
-        else {
-            GRIB_CALL(codes_set_double(h.get(), kv.key.c_str(), kv.value));
-        }
-    }
-
-    std::vector<double> v(n > 0 ? static_cast<size_t>(n) : 1, 1.);
-    for (size_t i = 0; n > 0 && i < v.size(); ++i) {
-        v[i] = static_cast<double>(i);
-    }
-
-    if (n == 0) {
-        long nx = 0;
-        long ny = 0;
-        GRIB_CALL(codes_get_long(h.get(), "Nx", &nx));
-        GRIB_CALL(codes_get_long(h.get(), "Ny", &ny));
-        n = nx * ny;
-    }
-
-    // as grib_filter: values before the number of points
-
-    GRIB_CALL(codes_set_double_array(h.get(), "values", v.data(), v.size()));
-    GRIB_CALL(codes_set_long(h.get(), "numberOfDataPoints", n));
-    GRIB_CALL(codes_set_long(h.get(), "numberOfValues", n));
-
-    const void* msg = nullptr;
-    size_t length   = 0;
-    GRIB_CALL(codes_get_message(h.get(), &msg, &length));
-
-    return {static_cast<const char*>(msg), length};
-}
-
-
-RepresentationHandle representation(const std::string& msg) {
-    input::GribMemoryInput input(msg.data(), msg.size());
-    const input::MIRInput& in = input;
-    return in.field().representation();
-}
-
-
-points_t points(const Representation& repres) {
-    points_t visited;
-    for (std::unique_ptr<Iterator> it(repres.iterator()); it->next();) {
-        const auto& p = it->pointUnrotated();
-        visited.push_back({p.lat().value(), p.lon().value()});
-    }
-    return visited;
-}
-
-
-/// Representation of a typed grid (gridType=...;key=value;...)
-RepresentationHandle typed(const std::string& grid) {
-    const auto& g = key::grid::Grid::lookup(grid);
-
-    param::SimpleParametrisation param;
-    g.parametrisation(grid, param);
-
-    return g.representation(param);
-}
-
-
-const std::string LAEA =
-    "gridType=lambert_azimuthal_equal_area;grid=100000/100000;standardParallelInDegrees=52;"
-    "centralLongitudeInDegrees=10;latitudeOfFirstGridPointInDegrees=66.982143;"
-    "longitudeOfFirstGridPointInDegrees=-35.034024;Ni=40;Nj=38";
-
-const std::string POLAR_STEREOGRAPHIC =
-    "gridType=polar_stereographic;LaDInDegrees=60;orientationOfTheGridInDegrees=0;southPoleOnProjectionPlane=0;"
-    "grid=100000/100000;latitudeOfFirstGridPointInDegrees=60;longitudeOfFirstGridPointInDegrees=-45;Ni=20;Nj=20";
-
-const std::string LAMBERT =
-    "gridType=lambert;LaDInDegrees=50;LoVInDegrees=10;Latin1InDegrees=50;Latin2InDegrees=50;grid=100000/100000;"
-    "latitudeOfFirstGridPointInDegrees=40;longitudeOfFirstGridPointInDegrees=-10;Ni=20;Nj=15";
 
 
 CASE("projected grids (GRIB) by their gridSpec: points as PROJ") {
@@ -259,62 +148,6 @@ CASE("projected grids (GRIB) by their gridSpec: points as PROJ") {
         long bits = 0;
         GRIB_CALL(codes_get_long(h.get(), "bitsPerValue", &bits));
         EXPECT_EQUAL(bits, 12);
-    }
-}
-
-
-CASE("space_view (GRIB): points as the scanning, element diagonal") {
-    // sectors of GRIB2 space_view (Nr=6.6107, dx=3622), points as the scanning (first, second and last)
-    const keys_t sector{{"Nx", 16},      {"Ny", 16},   {"dx", 3622}, {"dy", 3622},   {"Xp", 1856000},
-                        {"Yp", 1856000}, {"Xo", 1500}, {"Yo", 1700}, {"Nr", 6610700}};
-
-    struct test_t {
-        std::string name;
-        keys_t keys;
-        points_t points;
-    };
-
-    const std::vector<test_t> tests{
-        {"shapeOfTheEarth=6",
-         {{"shapeOfTheEarth", 6}},
-         {{4.223693723, 350.299524805}, {4.223622147, 350.327193534}, {3.815601110, 350.719698129}}},
-        {"shapeOfTheEarth=6, iScansNegatively, jScansPositively",
-         {{"shapeOfTheEarth", 6}, {"iScansNegatively", 1}, {"jScansPositively", 1}},
-         {{-4.223693724, 9.700475199}, {-4.223622148, 9.672806469}, {-3.815601111, 9.280301874}}},
-        {"shapeOfTheEarth=5, sub-satellite point",
-         {{"shapeOfTheEarth", 5},
-          {"longitudeOfSubSatellitePoint", -75000000},
-          {"Ny", 12},
-          {"dy", 3610},
-          {"Xo", 2400},
-          {"Yo", 1200}},
-         {{18.425011761, 300.905565350}, {18.425558651, 300.936080607}, {18.106822780, 301.327135202}}},
-    };
-
-    for (const auto& test : tests) {
-        SECTION(test.name) {
-            RepresentationHandle repres(representation(message("space_view", sector + test.keys)));
-
-            const auto visited = points(*repres);
-            EXPECT_EQUAL(visited.size(), repres->numberOfPoints());
-
-            const std::vector<point_t> cases{visited.front(), visited[1], visited.back()};
-            for (size_t i = 0; i < cases.size(); ++i) {
-                const auto& p = cases[i];
-                const auto& q = test.points[i];
-
-                // longitudes are fractions (mir::Longitude), which approximate (to about 1e-5 degrees)
-                EXPECT(std::abs(p.lat - q.lat) < 1e-6);
-                EXPECT(std::abs(std::remainder(p.lon - q.lon, 360.)) < 1e-5);
-            }
-
-            double d = 0.;
-            EXPECT(repres->getLongestElementDiagonal(d));
-            EXPECT(d > 0.);
-
-            grib_info info;
-            EXPECT_THROWS_AS(repres->fillGrib(info), exception::FunctionalityNotSupported);
-        }
     }
 }
 

@@ -103,6 +103,11 @@ inline bool contains(const std::string& str, const std::string& sub) {
 }
 
 
+inline size_t numberOfPoints(const std::string& grid) {
+    return representation("{grid: " + grid + "}")->numberOfPoints();
+}
+
+
 /// Check the output representation, against one by its gridSpec
 inline void check_representation(const std::string& spec, const std::string& gridspec) {
     auto out = perform(*make(spec), sh(coefficients()));

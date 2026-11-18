@@ -2,13 +2,40 @@
 # SPDX-License-Identifier: Apache-2.0
 
 set(TESTS
-    grib_input
-    grib_output
     input
+    input.artificial
+    input.empty
+    input.geopoints
+    input.grib
+    input.griddef
+    input.multi-dimensional
+    input.multi-stream
+    input.vector
     job
     output
-    parametrisation
+    output.empty
+    output.geopoints
+    output.gmsh
+    output.grib
+    output.griddef
+    output.multi-dimensional
+    output.png
+    output.values
+    output.vector
+    parametrisation.cached
+    parametrisation.combined
+    parametrisation.configuration-wrapper
+    parametrisation.default
+    parametrisation.gridspec
+    parametrisation.runtime
+    parametrisation.same
+    parametrisation.simple
+    parametrisation.spec
     raw_memory)
+
+if(mir_HAVE_NETCDF)
+    list(APPEND TESTS input.netcdf)
+endif()
 
 foreach(_t ${TESTS})
     string(REGEX REPLACE "[.-]" "_" _name ${_t})
