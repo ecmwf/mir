@@ -7,7 +7,8 @@
 #   # post-process    options (lines starting with '$' set the environment)
 #   # action-plan     reference, as --dump-action-plan-file (data directory as $tests_data_dir)
 #   # grid-plan       reference, as --dump-grid-plan-file
-#   # grib_get        assertions, key=value of the output (values[N]=value for the N-th value)
+#   # grib_get        assertions, key=value of the output (values[N]=value for the N-th value), of the first message;
+#   # grib_get count=N  of the N-th message (other text after the header is a comment)
 #
 # MIR_TESTS_DRYRUN (quick check, if set and not 0): by dry run, the action plan only (tests expected to fail aren't checked)
 
@@ -30,6 +31,7 @@ pwd
 rm -f {action-plan,grid-plan}.${t}{,.reference} data.{in,out}.$t
 
 section=
+message=
 input=
 env=
 options=
@@ -38,9 +40,11 @@ while IFS= read n
 do
     [[ -n "$n" ]] || continue
 
-    if [[ "$n" =~ ^#\ (input|post-process|action-plan|grid-plan|grib_get)(\ .*)?$ ]]
+    if [[ "$n" =~ ^#\ (input|post-process|action-plan|grid-plan|grib_get)(\ (.*))?$ ]]
     then
         section=${BASH_REMATCH[1]}
+        message=count=1
+        [[ ! "${BASH_REMATCH[3]}" =~ ^(count=[1-9][0-9]*)(\ |$) ]] || message=${BASH_REMATCH[1]}
         continue
     fi
 
@@ -51,7 +55,7 @@ do
         post-process)  if [[ $n =~ ^\$ ]]; then env="$env ${n/?}"; else options="$options $n"; fi ;;
         action-plan)   echo "$n" >> action-plan.${t}.reference ;;
         grid-plan)     echo "$n" >> grid-plan.${t}.reference ;;
-        grib_get)      assertions+=("$n") ;;
+        grib_get)      assertions+=("$message $n") ;;
         *)             echo "line outside of a section: $n"; exit 1 ;;
     esac
 done < $1
@@ -89,6 +93,12 @@ env $env $mir $dumps $options $(pwd)/data.in.$t $(pwd)/data.out.$t
 
 checks=0
 
+trim() {
+    local s="$1"
+    s="${s#"${s%%[![:space:]]*}"}"
+    echo "${s%"${s##*[![:space:]]}"}"
+}
+
 if [[ -r action-plan.${t}.reference ]]
 then
     sed "s|${tests_data_dir}|\$tests_data_dir|g" action-plan.$t > action-plan.$t.data
@@ -104,17 +114,25 @@ fi
 
 for a in ${assertions[@]+"${assertions[@]}"}
 do
-    set $(echo $a | tr '=' ' ')
-    if [[ $1 =~ values\[([0-9]+)\] ]]
+    message=${a%% *}
+    a=${a#* }
+    key=$(trim "${a%%=*}")
+    value=$(trim "${a#*=}")
+    if [[ $key =~ values\[([0-9]+)\] ]]
     then
-        g=$($grib_get -wcount=1 -i ${BASH_REMATCH[1]} data.out.$t)
+        g=$($grib_get -w $message -i ${BASH_REMATCH[1]} data.out.$t)
         g="$(echo $g | tr -d '[:space:]')"
     else
-        g=$($grib_get -wcount=1 -p $1 data.out.$t)
+        g=$($grib_get -w $message -p $key data.out.$t)
     fi
-    if [ "$g" != "$2" ]  # compares strings not floats
+    if [[ -z "$g" ]]
     then
-        echo "$1: expected [$2], got [$g]" 1>&2
+        echo "$key: no output message $message" 1>&2
+        exit 1
+    fi
+    if [[ "$g" != "$value" ]]  # compares strings not floats
+    then
+        echo "$key ($message): expected [$value], got [$g]" 1>&2
         exit 1
     fi
     checks=1
