@@ -102,7 +102,7 @@ CASE("Action spec, round trip") {
         "{type: interpolate.grid2reduced-gg, reduced: 32}",
         "{type: interpolate.grid2regular-gg, regular: 32}",
         "{type: interpolate.grid2reduced-gg-pl-given, pl: [20, 24, 24, 20]}",
-        "{type: interpolate.grid2griddef, griddef: /dev/null}",
+        "{type: interpolate.grid2gridspec, grid: {type: unstructured_ll, latitudes: [10, 20], longitudes: [0, 10]}}",
         "{type: interpolate.grid2gridspec, grid: {grid: [1, 1], area: [60, -10, 30, 40]}}",
         "{type: transform.sh-scalar-to-gridspec, grid: {grid: O32}}",
         "{type: interpolate.grid2rotated-regular-ll, grid: [1, 1], rotation: [-40, 22]}",

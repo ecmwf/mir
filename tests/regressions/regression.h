@@ -90,6 +90,24 @@ inline std::string contents(const eckit::PathName& path) {
 }
 
 
+/// Unstructured gridspec of the points of a file (in the test data), "latitude longitude" per line
+inline std::string unstructured(const eckit::PathName& path) {
+    std::ifstream in(path.asString());
+    ASSERT(in);
+
+    std::string lat;
+    std::string lon;
+    std::string lats;
+    std::string lons;
+    while (in >> lat >> lon) {
+        lats += (lats.empty() ? "" : ",") + lat;
+        lons += (lons.empty() ? "" : ",") + lon;
+    }
+
+    return "{type:unstructured_ll,latitudes:[" + lats + "],longitudes:[" + lons + "]}";
+}
+
+
 /// Post-processing an artificial input (as the mir tool with --input) to GRIB, checking the action and grid plans
 /// (as --dump-action-plan-file and --dump-grid-plan-file), the output message
 inline handle_t run(const std::string& input, const options_t& options, const std::string& actionPlan,

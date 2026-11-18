@@ -13,6 +13,11 @@
 namespace mir::action::tests {
 
 
+// few points, as transforming to unstructured grids is slow
+const std::string UNSTRUCTURED =
+    "{type: unstructured_ll, latitudes: [89.5, 60, 30, 0, -45, -89.5], longitudes: [0, 45, 90, 180, 270, 359.5]}";
+
+
 CASE("transform.sh-scalar-to-gridspec") {
     struct test_t {
         std::string grid;
@@ -30,6 +35,12 @@ CASE("transform.sh-scalar-to-gridspec") {
             check_scalar(spec, test.numberOfPoints, 2);
             check_representation(spec, test.grid);
         }
+    }
+
+    SECTION("unstructured") {
+        const auto spec = "{type: transform.sh-scalar-to-gridspec, grid: " + UNSTRUCTURED + "}";
+        check_scalar(spec, 6);
+        check_scalar(spec, 6, 2);
     }
 
     // regional Gaussian grids: transform to the global grid, then crop
@@ -62,6 +73,8 @@ CASE("transform.sh-vod-to-uv-gridspec") {
     check_vod_to_uv("{type: transform.sh-vod-to-uv-gridspec, grid: {grid: O16}}", 1600);
     check_vod_to_uv("{type: transform.sh-vod-to-uv-gridspec, grid: {grid: F16}}", 2048, 2);
     check_vod_to_uv("{type: transform.sh-vod-to-uv-gridspec, grid: {grid: O16, rotation: [-40, 22]}}", 1600);
+    check_vod_to_uv("{type: transform.sh-vod-to-uv-gridspec, grid: " + UNSTRUCTURED + "}", 6);
+    check_vod_to_uv("{type: transform.sh-vod-to-uv-gridspec, grid: " + UNSTRUCTURED + "}", 6, 2);
 }
 
 
@@ -84,6 +97,12 @@ CASE("transform.sh-*-to-gridspec, properties") {
     EXPECT(*a != *make("{type: transform.sh-scalar-to-gridspec, grid: {grid: O16, area: [60, -10, 30, 40]}}"));
     EXPECT(*a != *make("{type: transform.sh-scalar-to-gridspec, grid: {grid: O16, rotation: [-40, 22]}}"));
     EXPECT(*a != *make("{type: transform.sh-scalar-to-namedgrid, grid: O16}"));
+
+    auto c = make("{type: transform.sh-scalar-to-gridspec, grid: " + unstructured("weather-params.pts") + "}");
+
+    EXPECT(*c == *make("{type: transform.sh-scalar-to-gridspec, grid: " + unstructured("weather-params.pts") + "}"));
+    EXPECT(*c != *make("{type: transform.sh-scalar-to-gridspec, grid: " + unstructured("ICON.pts") + "}"));
+    EXPECT(*c != *make("{type: interpolate.grid2gridspec, grid: " + unstructured("weather-params.pts") + "}"));
 }
 
 

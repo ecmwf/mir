@@ -108,7 +108,8 @@ CASE("interpolate.grid2points, comparison") {
     EXPECT(*a != *make("{type: interpolate.grid2points, latitudes: [50, 61], longitudes: [0, 0]}"));
     EXPECT(*a != *make("{type: interpolate.grid2points, latitudes: [50, 60], longitudes: [0, 1]}"));
     EXPECT(*a != *make("{type: interpolate.grid2points, latitudes: [50, 60], longitudes: [0, 0], interpolation: nn}"));
-    EXPECT(*a != *make("{type: interpolate.grid2griddef, griddef: tour.pts}"));
+    EXPECT(*a != *make("{type: interpolate.grid2gridspec, grid: {type: unstructured_ll, latitudes: [50, 60], "
+                       "longitudes: [0, 0]}}"));
 }
 
 

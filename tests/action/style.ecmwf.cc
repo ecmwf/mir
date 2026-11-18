@@ -156,8 +156,9 @@ CASE("ecmwf style, gridded input, target grid") {
         EXPECT(types(O32, job) == V({"interpolate.grid2rotated-reduced-gg-pl-given", "save"}));
     }
 
-    SECTION("griddef") {
-        EXPECT(types(O32, job.set("griddef", "tour.pts")) == V({"interpolate.grid2griddef", "save"}));
+    SECTION("unstructured grid") {
+        job.set("grid", "{type: unstructured_ll, latitudes: [10, 20], longitudes: [0, 10]}");
+        EXPECT(types(O32, job) == V({"interpolate.grid2gridspec", "save"}));
     }
 
     SECTION("points") {
@@ -175,9 +176,9 @@ CASE("ecmwf style, gridded input, target grid") {
 CASE("ecmwf style, gridded input, target grid errors") {
     api::MIRJob job;
 
-    SECTION("griddef, rotated") {
-        job.set("griddef", "tour.pts").set("rotation", std::vector<double>{-40, 22});
-        EXPECT_THROWS(types(O32, job));
+    SECTION("unstructured grid, rotated") {
+        job.set("grid", "{type: unstructured_ll, latitudes: [10, 20], longitudes: [0, 10]}");
+        EXPECT_THROWS(types(O32, job.set("rotation", std::vector<double>{-40, 22})));
     }
 
     SECTION("points, without longitudes") {

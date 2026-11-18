@@ -7,7 +7,6 @@ set(TESTS
     input.empty
     input.geopoints
     input.grib
-    input.griddef
     input.multi-dimensional
     input.multi-stream
     input.vector
@@ -17,7 +16,6 @@ set(TESTS
     output.geopoints
     output.gmsh
     output.grib
-    output.griddef
     output.multi-dimensional
     output.png
     output.values
