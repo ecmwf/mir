@@ -61,7 +61,7 @@ Distribution* DistributionFactory::build(const std::string& name) {
     ASSERT(braces == std::string::npos || name.back() == '}');
 
     auto key  = name.substr(0, braces);
-    auto yaml = name.substr(braces);
+    auto yaml = braces == std::string::npos ? std::string() : name.substr(braces);
 
     Log::debug() << "DistributionFactory: looking for '" << key << "'" << std::endl;
 

@@ -94,6 +94,31 @@ CASE("MethodT (statistics by point, over fields)") {
     }
 
 
+    SECTION("variance and standard deviation (by point)") {
+        // point i has values i, 2 i and 3 i (variance i^2)
+        auto method = build("central-moments", 12);
+        for (size_t k = 1; k <= 3; ++k) {
+            MIRValuesVector values(12);
+            for (size_t i = 0; i < values.size(); ++i) {
+                values[i] = static_cast<double>(i * k);
+            }
+            method->execute(make_field(GRID, values));
+        }
+
+        auto out = make_field(GRID, MIRValuesVector(12, 0.));
+
+        method->variance(out);
+        for (size_t i = 0; i < 12; ++i) {
+            EXPECT(approx(out.values(0)[i], static_cast<double>(i * i)));
+        }
+
+        method->stddev(out);
+        for (size_t i = 0; i < 12; ++i) {
+            EXPECT(approx(out.values(0)[i], static_cast<double>(i)));
+        }
+    }
+
+
     SECTION("angles") {
         struct test_t {
             std::string name;

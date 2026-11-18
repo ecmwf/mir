@@ -198,6 +198,7 @@ CASE("sum") {
     param::SimpleParametrisation param;
     EXPECT(approx(build("sum", param, {2., 4., 4., 4., 5., 5., 7., 9.})->value(), 40.));
     EXPECT(approx(build("sum", param, {-1.5})->value(), -1.5));
+    EXPECT(approx(build("sum", param, {1., MISSING, 2.}, true)->value(), 3.));
     EXPECT_EQUAL(json(*build("sum", param, {1., 2.})), "{\"type\":\"sum\",\"value\":3}");
     EXPECT_EQUAL(to_string(*build("sum", param, {1., 2.})), "Sum[]");
 }

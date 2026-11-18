@@ -37,6 +37,8 @@ void GridBoxIntegral::execute(const data::MIRField& field) {
     ASSERT(values.size() == rep->numberOfPoints());
     ASSERT(values.size() == boxes.size());
 
+    Counter::reset(field);
+
     integral_ = 0.;
     for (size_t i = 0; i < values.size(); ++i) {
         auto value = values[i];

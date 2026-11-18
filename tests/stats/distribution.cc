@@ -55,7 +55,7 @@ CASE("distributions (values range)") {
              {"uniform-real-distribution{a:1,b:2}", 1., 2., "uniform-real-distribution{a:1.000000,b:2.000000}"},
              {"uniform-real-distribution{}", 0., 1., "uniform-real-distribution{a:0.000000,b:1.000000}"},
              {"piecewise-constant-distribution{intervals:[0,1,2],densities:[0,1]}", 1., 2.,
-              "piecewise-constant-distribution{densities:[0.000000,1.000000]"},
+              "piecewise-constant-distribution{densities:[0.000000,1.000000],intervals:[0.000000,1.000000,2.000000]}"},
              // (densities are normalised)
              {"piecewise-linear-distribution{intervals:[0,1,2],densities:[0,0,1]}", 1., 2.,
               "piecewise-linear-distribution{densities:[0.000000,0.000000,2.000000]"},
@@ -96,25 +96,11 @@ CASE("distributions (values range)") {
 
 CASE("distributions (arguments)") {
     SECTION("default arguments") {
-        auto str = to_string(*build("normal-distribution{}"));
-        EXPECT(contains(str, "mean:0.000000"));
-        EXPECT(contains(str, "stddev:1.000000"));
-
-        str = to_string(*build("gamma-distribution{}"));
-        EXPECT(contains(str, "alpha:1.000000"));
-        EXPECT(contains(str, "beta:1.000000"));
-
-        str = to_string(*build("fisher-f-distribution{}"));
-        EXPECT(contains(str, "m:1.000000"));
-        EXPECT(contains(str, "n:1.000000"));
-
-        str = to_string(*build("lognormal-distribution{}"));
-        EXPECT(contains(str, "m:0.000000"));
-        EXPECT(contains(str, "s:1.000000"));
-
-        str = to_string(*build("negative-binomial-distribution{}"));
-        EXPECT(contains(str, "k:1"));
-        EXPECT(contains(str, "p:0.500000"));
+        EXPECT(contains(to_string(*build("normal-distribution{}")), "{mean:0.000000,stddev:1.000000}"));
+        EXPECT(contains(to_string(*build("gamma-distribution{}")), "{alpha:1.000000,beta:1.000000}"));
+        EXPECT(contains(to_string(*build("fisher-f-distribution{}")), "{m:1.000000,n:1.000000}"));
+        EXPECT(contains(to_string(*build("lognormal-distribution{}")), "{m:0.000000,s:1.000000}"));
+        EXPECT(contains(to_string(*build("negative-binomial-distribution{}")), "{k:1,p:0.500000}"));
 
         EXPECT(contains(to_string(*build("chi-squared-distribution{}")), "{n:1.000000}"));
         EXPECT(contains(to_string(*build("exponential-distribution{}")), "{lambda:1.000000}"));
@@ -190,6 +176,12 @@ CASE("DistributionFactory") {
     }
 
     EXPECT_THROWS_AS(build("unknown-distribution{}"), eckit::SeriousBug);
+    EXPECT_THROWS_AS(build("unknown-distribution"), eckit::SeriousBug);
+
+    // arguments are optional
+    std::unique_ptr<Distribution> normal(build("normal-distribution"));
+    EXPECT(normal);
+    EXPECT(contains(to_string(*normal), "normal-distribution{"));
 
     // arguments are in braces
     EXPECT_THROWS_AS(build("normal-distribution{mean:1"), eckit::AssertionFailed);

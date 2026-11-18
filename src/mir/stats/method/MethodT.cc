@@ -74,7 +74,7 @@ void MethodT<STATS>::variance(data::MIRField& field) const {
 
     for (auto& s : *this) {
         auto stat = s.variance();
-        *v        = std::isnan(stat) == 0 ? stat : missingValue;
+        *(v++)    = std::isnan(stat) == 0 ? stat : missingValue;
     }
 
     field.update(statistics, 0, true);
@@ -93,7 +93,7 @@ void MethodT<STATS>::stddev(data::MIRField& field) const {
 
     for (auto& s : *this) {
         auto stat = s.standardDeviation();
-        *v        = std::isnan(stat) == 0 ? stat : missingValue;
+        *(v++)    = std::isnan(stat) == 0 ? stat : missingValue;
     }
 
     field.update(statistics, 0, true);
