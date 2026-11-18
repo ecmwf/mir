@@ -98,6 +98,11 @@ CASE("ReducedLL") {
         EXPECT_NOT(b.getBool("force_include_south_pole"));
     }
 
+    SECTION("factory, json") {
+        EXPECT_EQUAL(global->factory(), "reduced_ll");
+        EXPECT(to_json(*global).rfind(R"({"type":"reduced_ll","pl":[4,8,12,8,4],"bbox":)", 0) == 0);
+    }
+
     SECTION("not supported") {
         grib_info info;
         EXPECT_THROWS_AS(global->fillGrib(info), eckit::NotImplemented);

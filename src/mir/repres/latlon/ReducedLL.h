@@ -57,6 +57,8 @@ protected:
     bool includesSouthPole() const override;
 
     void print(std::ostream&) const override;
+    std::string factory() const override;
+    void json(eckit::JSON&) const override;
 
     // -- Class members
     // None

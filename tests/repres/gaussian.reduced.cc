@@ -12,6 +12,7 @@
 #include "eckit/utils/RLE.h"
 
 #include "mir/api/MIRJob.h"
+#include "mir/data/MIRField.h"
 #include "mir/input/GridSpecInput.h"
 #include "mir/output/EmptyOutput.h"
 #include "mir/repres/gauss/Gaussian.h"
@@ -166,6 +167,73 @@ CASE("Reduced octahedral Gaussian grid: cropped across the date line (PGEN-558)"
             output::EmptyOutput output;
             std::unique_ptr<input::MIRInput> input(new input::GridSpecInput(gridspec, true));
             EXPECT_NO_THROW(job.execute(*input, output));
+        }
+    }
+}
+
+
+CASE("Reduced Gaussian grids: globalise (to the global grid, the values in place)") {
+    // the pl of O8, as given
+    std::string pl;
+    for (long j = 0; j < 16; ++j) {
+        pl += (j == 0 ? "" : ", ") + std::to_string(20 + 4 * (j < 8 ? j : 15 - j));
+    }
+
+    struct test_t {
+        std::string grid;
+        std::string area;
+    };
+
+    for (const auto& test : std::vector<test_t>{
+             {"grid: N16", "area: [60, -10, 30, 40]"},
+             {"grid: O16", "area: [60, -10, 30, 40]"},
+             {"pl: [" + pl + "]", "area: [60, -10, 30, 40]"},
+             {"grid: O16, rotation: [-40, 22]", "area: [20, -20, -20, 20]"},
+             {"grid: N16, rotation: [-40, 22]", "area: [20, 350, -20, 380]"},
+         }) {
+        SECTION(test.grid + ", " + test.area) {
+            RepresentationHandle regional(make("{" + test.grid + ", " + test.area + "}"));
+            RepresentationHandle expected(make("{" + test.grid + "}"));
+            EXPECT_NOT(regional->isGlobal());
+
+            // values by point
+            auto value = [](const PointLatLon& p) {
+                return p.lat().value() * 1000. + p.lon().normalise(Longitude::GREENWICH).value();
+            };
+
+            const auto n = regional->numberOfPoints();
+            MIRValuesVector values(n);
+            for (std::unique_ptr<Iterator> it(regional->iterator()); it->next();) {
+                values.at(it->index()) = value(it->pointUnrotated());
+            }
+
+            data::MIRField field(regional, false, 9999.);
+            field.update(values, 0);
+
+            RepresentationHandle global(regional->globalise(field));
+            ASSERT(global);
+
+            EXPECT(global->isGlobal());
+            EXPECT(global->sameAs(*expected));
+            EXPECT(field.hasMissing());
+
+            // the values in place, missing values elsewhere
+            const auto& v = field.values(0);
+            EXPECT_EQUAL(v.size(), expected->numberOfPoints());
+
+            size_t count = 0;
+            for (std::unique_ptr<Iterator> it(global->iterator()); it->next();) {
+                if (const auto x = v.at(it->index()); x != 9999.) {
+                    EXPECT(same(x, value(it->pointUnrotated()), 1e-6));
+                    ++count;
+                }
+            }
+            EXPECT_EQUAL(count, n);
+
+            // already global
+            data::MIRField again(global, true, 9999.);
+            again.update(field.direct(0), 0);
+            EXPECT(global->globalise(again) == nullptr);
         }
     }
 }
