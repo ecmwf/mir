@@ -58,10 +58,9 @@ CASE("to lambert_azimuthal_equal_area: regrid") {
     auto h = run(
         "{artificialInput:gridspec,gridSpec:{grid:[2,2]}}",
         {{"grid",
-          "gridType=lambert_azimuthal_equal_area;latitudeOfFirstGridPointInDegrees=66.982143;"
-          "longitudeOfFirstGridPointInDegrees=-35.034024;grid=5000./"
-          "5000.;Ni=1000;Nj=950;standardParallelInDegrees=52.;centralLongitudeInDegrees=10."}},
-        R"([{"type":"interpolate.grid2typedgrid","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":"gridType=lambert_azimuthal_equal_area;latitudeOfFirstGridPointInDegrees=66.982143;longitudeOfFirstGridPointInDegrees=-35.034024;grid=5000./5000.;Ni=1000;Nj=950;standardParallelInDegrees=52.;centralLongitudeInDegrees=10."},{"type":"save","packing":"ccsds","edition":2}])",
+          "{projection: {type: laea, lat_0: 52, lon_0: 10, reverse: true}, "
+          "x: [-1810621.83647687, 3184378.16352313, 5000], y: [2283408.83487739, -2461591.16512261, -5000]}"}},
+        R"([{"type":"interpolate.grid2gridspec","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":{"projection":{"lat_0":52,"lon_0":10,"reverse":true,"type":"laea"},"x":[-1810621.83647687,3184378.16352313,5000],"y":[2283408.83487739,-2461591.16512261,-5000]}},{"type":"save","packing":"ccsds","edition":2}])",
         R"([{"grid":[2,2]},{"projection":{"lat_0":52,"lon_0":10,"reverse":true,"type":"laea"},"x":[-1810621.83647687,3184378.16352313,5000],"y":[2283408.83487739,-2461591.16512261,-5000]},{"projection":{"lat_0":52,"lon_0":10,"reverse":true,"type":"laea"},"x":[-1810621.83647687,3184378.16352313,5000],"y":[2283408.83487739,-2461591.16512261,-5000]}])");
 
     EXPECT_EQUAL(get(h, "gridType"), "lambert_azimuthal_equal_area");

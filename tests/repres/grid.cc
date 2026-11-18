@@ -44,12 +44,9 @@ CASE("Grid: by name, pattern or specification") {
         {"{grid: F32}", "gridspec", true, 32},
         {"{grid: O32, rotation: [-40, 22]}", "gridspec", false, 32},
         {"{grid: [1, 1]}", "gridspec", false, Grid::default_gaussian_number()},
-        {"gridType=lambert;LaDInDegrees=50;LoVInDegrees=10;grid=100000/100000;latitudeOfFirstGridPointInDegrees=40;"
-         "longitudeOfFirstGridPointInDegrees=-10;Ni=20;Nj=15",
-         "typedgrid", false, Grid::default_gaussian_number()},
-        {"gridType=lambert;LaDInDegrees=50;LoVInDegrees=10;grid=100000/100000;latitudeOfFirstGridPointInDegrees=40;"
-         "longitudeOfFirstGridPointInDegrees=-10;Ni=20;Nj=15;gaussianNumber=128",
-         "typedgrid", false, 128},
+        {"{projection: {type: lcc, lat_0: 50, lat_1: 50, lon_0: 10, reverse: true}, x: [-1707818.21687531, "
+         "192181.783124688, 100000], y: [-887705.800790069, -2287705.80079007, -100000]}",
+         "gridspec", false, Grid::default_gaussian_number()},
     };
 
     for (const auto& test : tests) {
@@ -73,7 +70,6 @@ CASE("Grid: by name, pattern or specification") {
 
 CASE("Grid: representations") {
     const util::Rotation rotation(-40., 22.);
-    param::SimpleParametrisation empty;
 
 
     SECTION("named Gaussian grids") {
@@ -85,12 +81,6 @@ CASE("Grid: representations") {
 
         RepresentationHandle rotated(grid.representation(rotation));
         EXPECT_EQUAL(rotated->numberOfPoints(), repres->numberOfPoints());
-
-        // by name only
-        EXPECT_THROWS_AS(grid.representation(empty), exception::SeriousBug);
-
-        param::SimpleParametrisation param;
-        EXPECT_THROWS_AS(grid.parametrisation("O32", param), exception::SeriousBug);
     }
 
 
@@ -111,27 +101,6 @@ CASE("Grid: representations") {
     SECTION("grids by specification (as gridSpec, not as representation)") {
         const auto& grid = Grid::lookup("{grid: O32}");
         EXPECT_THROWS_AS(grid.representation(), exception::SeriousBug);
-    }
-
-
-    SECTION("typed grids (by parametrisation)") {
-        const std::string key =
-            "gridType=lambert;LaDInDegrees=50;LoVInDegrees=10;grid=100000/100000;"
-            "latitudeOfFirstGridPointInDegrees=40;longitudeOfFirstGridPointInDegrees=-10;Ni=20;Nj=15";
-        const auto& grid = Grid::lookup(key);
-
-        param::SimpleParametrisation param;
-        grid.parametrisation(key, param);
-
-        std::string gridType;
-        EXPECT(param.get("gridType", gridType));
-        EXPECT_EQUAL(gridType, "lambert");
-
-        RepresentationHandle repres(grid.representation(param));
-        EXPECT_EQUAL(repres->numberOfPoints(), 20 * 15);
-
-        EXPECT_THROWS_AS(grid.representation(), exception::SeriousBug);
-        EXPECT_THROWS_AS(grid.representation(empty), exception::UserError);
     }
 }
 
@@ -159,6 +128,10 @@ CASE("Grid: canonical names, lookup and list") {
         for (const auto& test : tests) {
             EXPECT_EQUAL(Grid::canonical(test.name, user), test.canonical);
         }
+
+        // typed grids, replaced by gridspecs (an unknown grid otherwise)
+        EXPECT_THROWS_AS(Grid::canonical("gridType=lambert;Ni=20;Nj=15", user), exception::UserError);
+        EXPECT_EQUAL(Grid::canonical("gridType=polar_stereographic", user), "");
     }
 
 
