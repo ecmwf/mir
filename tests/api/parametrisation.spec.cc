@@ -3,6 +3,7 @@
 
 
 #include <string>
+#include <vector>
 
 #include "eckit/testing/Test.h"
 
@@ -28,6 +29,19 @@ CASE("SpecParametrisation") {
         param::SpecParametrisation::parse("{type: k-nearest, nclosest: 8, distance_tolerance: 2}", "interpolation")
             .set(spec);
         EXPECT_EQUAL(to_string(spec), R"({"distance-tolerance":2,"interpolation":"k-nearest","nclosest":8})");
+
+        // nested specs (as JSON strings), the values as they are
+        SimpleParametrisation nested;
+        param::SpecParametrisation::parse("{type: x, grid: {latitudes: [37.742114, 0.1]}}", "key").set(nested);
+
+        std::string grid;
+        EXPECT(nested.get("grid", grid));
+
+        SimpleParametrisation values;
+        param::SpecParametrisation::parse(grid, "key").set(values);
+
+        std::vector<double> latitudes;
+        EXPECT(values.get("latitudes", latitudes) && latitudes == std::vector<double>({37.742114, 0.1}));
     }
 
 
