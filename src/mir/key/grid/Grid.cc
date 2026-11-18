@@ -17,11 +17,9 @@
 #include "eckit/geo/grid/reduced/ReducedGaussian.h"
 #include "eckit/geo/grid/regular/RegularGaussian.h"
 #include "eckit/geo/order/Scan.h"
-#include "eckit/parser/YAMLParser.h"
 #include "eckit/types/Fraction.h"
 #include "eckit/utils/StringTools.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/grid/NamedGrid.h"
 #include "mir/key/intgrid/Source.h"
@@ -40,7 +38,6 @@
 #include "mir/util/Regex.h"
 #include "mir/util/SpectralOrder.h"
 #include "mir/util/Translator.h"
-#include "mir/util/ValueMap.h"
 
 
 namespace mir::key::grid {
@@ -109,32 +106,6 @@ const NamedGaussianPattern<repres::gauss::reduced::ReducedOctahedral, repres::ga
 
 const NamedGaussianPattern<repres::gauss::regular::RegularGG, repres::gauss::regular::RotatedGG> REGULAR_PATTERN(
     "^[fF][1-9][0-9]*$", 'F');
-
-
-// Named grids from the configuration file (grids.yaml)
-class NamedFromFile final : public NamedGrid, public param::SimpleParametrisation {
-public:
-    explicit NamedFromFile(const std::string& name) : NamedGrid(name) {}
-
-private:
-    void print(std::ostream& out) const override {
-        out << "NamedFromFile[key=" << key_ << ",parametrisation=";
-        SimpleParametrisation::print(out);
-        out << "]";
-    }
-
-    size_t gaussianNumber() const override {
-        long N = 0;
-        return SimpleParametrisation::get("gaussianNumber", N) && N > 0 ? static_cast<size_t>(N)
-                                                                        : default_gaussian_number();
-    }
-
-    const repres::Representation* representation() const override {
-        return repres::RepresentationFactory::build(*this);
-    }
-
-    const repres::Representation* representation(const util::Rotation&) const override { NOTIMP; }
-};
 
 
 // Regular latitude/longitude grids, by increments (west-east/south-north)
@@ -367,34 +338,6 @@ const GridSpecPattern GRIDSPEC_PATTERN("^[{].*[}]$");
 }  // namespace
 
 
-static void read_configuration_files() {
-    static bool files_read = false;
-    if (files_read) {
-        return;
-    }
-    files_read = true;
-
-    // Read config file, attaching new Grid's grids to parametrisations
-    const auto path = LibMir::configFile(LibMir::config_file::GRIDS);
-    if (path.exists()) {
-        Log::debug() << "Grid: reading from '" << path << "'" << std::endl;
-
-        util::ValueMap grids(eckit::YAMLParser::decodeFile(path));
-        for (const auto& g : grids) {
-
-            // This registers a new Grid (don't delete pointer)
-            auto* ng = new NamedFromFile(g.first);
-            ASSERT(ng);
-
-            util::ValueMap map(g.second);
-            map.set(*ng);
-
-            Log::debug() << static_cast<const Grid&>(*ng) << std::endl;
-        }
-    }
-}
-
-
 Grid::Grid(const std::string& key, const std::string& type) : key_(key), type_(type) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(local_mutex);
@@ -527,8 +470,6 @@ std::string Grid::canonical(const std::string& name, const param::MIRParametrisa
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-    read_configuration_files();
-
     if (m->find(name) != m->end()) {
         return name;
     }
@@ -538,7 +479,11 @@ std::string Grid::canonical(const std::string& name, const param::MIRParametrisa
         return param.fieldParametrisation().has("truncation") ? intgrid::Source(param).gridname() : "";
     }
 
-    return GridPattern::match(name);
+    if (auto match = GridPattern::match(name); !match.empty()) {
+        return match;
+    }
+
+    return eckit::geo::GridSpecByName::has_name(name) ? name : "";
 }
 
 
@@ -557,8 +502,6 @@ const Grid& Grid::lookup(const std::string& key) {
     util::call_once(once, init);
     util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
-    read_configuration_files();
-
     Log::debug() << "Grid: looking for '" << key << "'" << std::endl;
 
     // Look for specific key matches
@@ -573,6 +516,12 @@ const Grid& Grid::lookup(const std::string& key) {
         const auto* gp = GridPattern::lookup(match);
         ASSERT(gp != nullptr);
         return *gp;
+    }
+
+    // Look for eckit::geo grid names
+    // This adds the new Grid to the map
+    if (eckit::geo::GridSpecByName::has_name(key)) {
+        return *(new GridSpec(key));
     }
 
     list(Log::error() << "Grid: unknown '" << key << "', choices are:\n");

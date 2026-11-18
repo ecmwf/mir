@@ -47,6 +47,9 @@ protected:
     /// The encoding edition, as specified or (if not) set to the representation's
     long gribEdition(grib_info&) const;
 
+    /// GRIB encoding as gridType=lambert_azimuthal_equal_area
+    void fillGribLambertAzimuthalEqualArea(grib_info&, double standardParallel, double centralLongitude) const;
+
     // -- Overridden methods
 
     const eckit::geo::Grid& grid() const override;

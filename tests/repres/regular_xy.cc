@@ -411,22 +411,44 @@ CASE("RegularXY: by PROJ string, or by gridSpec only") {
 }
 
 
-CASE("RegularXY: named grids (grids.yaml)") {
-    // NOTE: the "-proj" named grids (by PROJ string) cannot be built, lacking the projection keys (see report)
-    const auto& grid = key::grid::Grid::lookup("LAEA-EFAS-5km");
-    EXPECT_EQUAL(grid.gaussianNumber(), 1280);
-    EXPECT_EQUAL(grid.gridname(), "LAEA-EFAS-5km");
+CASE("RegularXY: named grids (eckit::geo)") {
+    struct test_t {
+        std::string name;
+        long nx;
+        long ny;
+        point_t first;
+        long shapeOfTheEarth;
+    };
 
-    RepresentationHandle repres(grid.representation());
-    EXPECT_EQUAL(repres->numberOfPoints(), 1000 * 950);
+    for (const auto& test : std::vector<test_t>{
+             {"LAEA-EFAS-5km", 1000, 950, {66.982143, -35.034024}, 4},
+             {"SMUFF-OPERA-2km", 1900, 2200, {67.035186732680, -39.535385563614}, 5},
+         }) {
+        SECTION(test.name) {
+            const auto& grid = key::grid::Grid::lookup(test.name);
+            EXPECT_EQUAL(grid.type(), "gridspec");
+            EXPECT_NOT(grid.isGaussian());
 
-    grib_info info;
-    repres->fillGrib(info);
-    EXPECT_EQUAL(info.grid.grid_type, CODES_UTIL_GRID_SPEC_LAMBERT_AZIMUTHAL_EQUAL_AREA);
-    EXPECT_EQUAL(info.grid.Ni, 1000);
-    EXPECT_EQUAL(info.grid.Nj, 950);
-    EXPECT(same(info.grid.latitudeOfFirstGridPointInDegrees, 66.982143, 1e-6));
-    EXPECT_EQUAL(extra_long(info, "shapeOfTheEarth"), 6);
+            param::SimpleParametrisation param;
+            param.set("grid", test.name);
+
+            std::string canonical;
+            EXPECT(key::grid::Grid::get("grid", canonical, param));
+            EXPECT_EQUAL(canonical, test.name);
+
+            RepresentationHandle repres(make(test.name));
+            EXPECT_EQUAL(repres->numberOfPoints(), test.nx * test.ny);
+
+            grib_info info;
+            repres->fillGrib(info);
+            EXPECT_EQUAL(info.grid.grid_type, CODES_UTIL_GRID_SPEC_LAMBERT_AZIMUTHAL_EQUAL_AREA);
+            EXPECT_EQUAL(info.grid.Ni, test.nx);
+            EXPECT_EQUAL(info.grid.Nj, test.ny);
+            EXPECT(same(info.grid.latitudeOfFirstGridPointInDegrees, test.first.lat, 1e-6));
+            EXPECT(same(info.grid.longitudeOfFirstGridPointInDegrees, test.first.lon, 1e-6));
+            EXPECT_EQUAL(extra_long(info, "shapeOfTheEarth"), test.shapeOfTheEarth);
+        }
+    }
 }
 
 

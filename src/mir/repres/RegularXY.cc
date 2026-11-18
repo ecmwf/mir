@@ -326,6 +326,28 @@ void RegularXY::fillGrib(grib_info& info) const {
 }
 
 
+void RegularXY::fillGribLambertAzimuthalEqualArea(grib_info& info, double standardParallel,
+                                                  double centralLongitude) const {
+    info.grid.grid_type        = CODES_UTIL_GRID_SPEC_LAMBERT_AZIMUTHAL_EQUAL_AREA;
+    info.packing.editionNumber = 2;
+
+    const auto first = firstPoint();
+
+    info.grid.Ni = static_cast<long>(grid().nx());
+    info.grid.Nj = static_cast<long>(grid().ny());
+
+    info.grid.latitudeOfFirstGridPointInDegrees  = first[LLCOORDS::LAT];
+    info.grid.longitudeOfFirstGridPointInDegrees = first[LLCOORDS::LON];
+
+    info.extra_set("DxInMetres", std::abs(grid().dx()));
+    info.extra_set("DyInMetres", std::abs(grid().dy()));
+    info.extra_set("standardParallelInDegrees", standardParallel);
+    info.extra_set("centralLongitudeInDegrees", centralLongitude);
+
+    RegularXY::fillGrib(info);
+}
+
+
 bool RegularXY::includesNorthPole() const {
     return bbox_.north() == Latitude::NORTH_POLE;
 }
@@ -481,23 +503,7 @@ private:
     }
 
     void fillGrib(grib_info& info) const override {
-        info.grid.grid_type        = CODES_UTIL_GRID_SPEC_LAMBERT_AZIMUTHAL_EQUAL_AREA;
-        info.packing.editionNumber = 2;
-
-        const auto first = firstPoint();
-
-        info.grid.Ni = static_cast<long>(grid().nx());
-        info.grid.Nj = static_cast<long>(grid().ny());
-
-        info.grid.latitudeOfFirstGridPointInDegrees  = first[LLCOORDS::LAT];
-        info.grid.longitudeOfFirstGridPointInDegrees = first[LLCOORDS::LON];
-
-        info.extra_set("DxInMetres", std::abs(grid().dx()));
-        info.extra_set("DyInMetres", std::abs(grid().dy()));
-        info.extra_set("standardParallelInDegrees", standardParallel_);
-        info.extra_set("centralLongitudeInDegrees", centralLongitude_);
-
-        RegularXY::fillGrib(info);
+        fillGribLambertAzimuthalEqualArea(info, standardParallel_, centralLongitude_);
     }
 };
 
@@ -560,7 +566,7 @@ class RegularXYDecodedOnly : public RegularXY {
 public:
     using RegularXY::RegularXY;
 
-private:
+protected:
     void fillGrib(grib_info& /*unused*/) const override {
         throw exception::FunctionalityNotSupported("RegularXY: GRIB encoding of " + spec().str());
     }
@@ -592,6 +598,23 @@ private:
 };
 
 
+/// Grids by gridSpec only (eg. eckit::geo grid names), GRIB encoding of the Lambert azimuthal equal area projection
+class RegularXYBySpec final : public RegularXYDecodedOnly {
+public:
+    using RegularXYDecodedOnly::RegularXYDecodedOnly;
+
+private:
+    void fillGrib(grib_info& info) const override {
+        if (const auto& p = grid().projection().spec(); p.get_string("type", "") == "laea") {
+            fillGribLambertAzimuthalEqualArea(info, p.get_double("lat_0", 0.), p.get_double("lon_0", 0.));
+            return;
+        }
+
+        RegularXYDecodedOnly::fillGrib(info);
+    }
+};
+
+
 const RepresentationBuilder<Lambert> LAMBERT("lambert");
 const RepresentationBuilder<LambertAzimuthalEqualArea> LAMBERT_AZIMUTHAL_EQUAL_AREA("lambert_azimuthal_equal_area");
 const RepresentationBuilder<PolarStereographic> POLAR_STEREOGRAPHIC("polar_stereographic");
@@ -599,7 +622,7 @@ const RepresentationBuilder<RegularXYDecodedOnly> ALBERS("albers");
 const RepresentationBuilder<RegularXYDecodedOnly> MERCATOR("mercator");
 const RepresentationBuilder<RegularXYDecodedOnly> TRANSVERSE_MERCATOR("transverse_mercator");
 const RepresentationBuilder<SpaceView> SPACE_VIEW("space_view");
-const RepresentationBuilder<RegularXYDecodedOnly> REGULAR_XY("regular_xy");
+const RepresentationBuilder<RegularXYBySpec> REGULAR_XY("regular_xy");
 
 
 }  // namespace
