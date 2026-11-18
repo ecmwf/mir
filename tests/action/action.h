@@ -5,6 +5,7 @@
 #pragma once
 
 #include <cmath>
+#include <fstream>
 #include <functional>
 #include <memory>
 #include <sstream>
@@ -18,6 +19,7 @@
 #include "mir/param/GridSpecParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Types.h"
 
@@ -141,6 +143,24 @@ inline std::string custom_str(const action::Action& action) {
     std::ostringstream out;
     action.custom(out);
     return out.str();
+}
+
+
+/// Unstructured gridspec of the points of a file (in the test data), "latitude longitude" per line
+inline std::string unstructured(const std::string& path) {
+    std::ifstream in(path);
+    ASSERT(in);
+
+    std::string lat;
+    std::string lon;
+    std::string lats;
+    std::string lons;
+    while (in >> lat >> lon) {
+        lats += (lats.empty() ? "" : ",") + lat;
+        lons += (lons.empty() ? "" : ",") + lon;
+    }
+
+    return "{type: unstructured_ll, latitudes: [" + lats + "], longitudes: [" + lons + "]}";
 }
 
 

@@ -27,16 +27,15 @@ CASE("to rotated_ll: nn") {
 }
 
 
-CASE("to unstructured_grid: random-griddef") {
+CASE("to unstructured_grid: random") {
     // MIR-679
     auto h = run(
-        "{artificialInput:constant,constant:0.,gridded:True,gridType:unstructured_grid,griddef:../data/"
-        "weather-params.pts}",
+        "{artificialInput:gridspec,gridSpec:" + unstructured("../data/weather-params.pts") + "}",
         {{"add-random", "uniform-int-distribution{a:1,b:3}"},
-         {"griddef", "../data/ICON.griddef"},
+         {"grid", unstructured("../data/ICON.pts")},
          {"interpolation", "nn"}},
-        R"([{"type":"interpolate.grid2griddef","interpolation":"nn","distance-weighting":"inverse-distance-weighting-squared","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"griddef":"../data/ICON.griddef"},{"type":"filter.add-random","add-random":"uniform-int-distribution{a:1,b:3}"},{"type":"save","packing":"ccsds","edition":2}])",
-        R"([{"type":"unstructured_ll","uid":"68e1e3f684c3d81978edc929aa6473e9"},{"type":"unstructured_ll","uid":"ec79ff04be5cde71f86b29f271f4fe84"},{"type":"unstructured_ll","uid":"ec79ff04be5cde71f86b29f271f4fe84"},{"type":"unstructured_ll","uid":"ec79ff04be5cde71f86b29f271f4fe84"}])");
+        R"([{"type":"interpolate.grid2gridspec","interpolation":"nn","distance-weighting":"inverse-distance-weighting-squared","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":{"type":"unstructured_ll","uid":"9e7802ba96d2d647b36fa216bf0e28fd"}},{"type":"filter.add-random","add-random":"uniform-int-distribution{a:1,b:3}"},{"type":"save","packing":"ccsds","edition":2}])",
+        R"([{"type":"unstructured_ll","uid":"68e1e3f684c3d81978edc929aa6473e9"},{"type":"unstructured_ll","uid":"9e7802ba96d2d647b36fa216bf0e28fd"},{"type":"unstructured_ll","uid":"9e7802ba96d2d647b36fa216bf0e28fd"},{"type":"unstructured_ll","uid":"9e7802ba96d2d647b36fa216bf0e28fd"}])");
 
     EXPECT_EQUAL(get(h, "gridType"), "unstructured_grid");
     EXPECT_EQUAL(get(h, "numberOfDataPoints"), "20480");

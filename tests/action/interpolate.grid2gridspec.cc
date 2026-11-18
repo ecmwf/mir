@@ -231,6 +231,92 @@ CASE("interpolate.grid2gridspec, projected grids errors") {
 }
 
 
+// unstructured grids (eckit::geo unstructured_ll): a tour of the Azores, and a global set of points (with the poles)
+const std::string TOUR   = unstructured("tour.pts");
+const std::string GLOBAL = unstructured("gridType=unstructured_grid.pts");
+
+
+CASE("interpolate.grid2gridspec, unstructured grids") {
+    struct test_t {
+        std::string name;
+        std::string grid;
+        size_t numberOfPoints;
+        double latitude;  // of the first point
+        double longitude;
+    };
+
+    const std::vector<test_t> tests{
+        test_t{"tour", TOUR, 34, 37.742114, -25.664350},
+        test_t{"global", GLOBAL, 42, 90., 0.},
+    };
+    for (const auto& test : tests) {
+        SECTION(test.name) {
+            auto out = perform(spec(test.grid), field("{grid: O16}", LATITUDE, 2));
+
+            EXPECT_EQUAL(out.dimensions(), 2);
+            EXPECT_EQUAL(out.values(0).size(), test.numberOfPoints);
+            EXPECT_EQUAL(out.representation()->numberOfPoints(), test.numberOfPoints);
+            EXPECT(out.representation()->uniqueName().find("unstructured-" + std::to_string(test.numberOfPoints)) == 0);
+
+            std::unique_ptr<repres::Iterator> it(out.representation()->iterator());
+
+            EXPECT(it->next());
+            EXPECT(same(it->pointUnrotated().lat().value(), test.latitude));
+            EXPECT(same(it->pointUnrotated().lon().value(), test.longitude));
+        }
+    }
+}
+
+
+CASE("interpolate.grid2gridspec, unstructured grids values") {
+    check_values(*make_checked(spec(TOUR)));
+    check_values(*make_checked(spec(GLOBAL)));  // the poles are outside of the O16 latitudes
+    check_values(*make_checked(spec(TOUR, ", interpolation: nn")), "{grid: O16}", 3.);
+}
+
+
+CASE("interpolate.grid2gridspec, unstructured grids missing values") {
+    auto out = perform(spec(GLOBAL), field("{grid: O16}", MISSING_NORTH, 1, 9999.));
+
+    EXPECT(out.hasMissing());
+    EXPECT_EQUAL(count_missing(out), 12);  // points at 60N and 90N
+}
+
+
+CASE("interpolate.grid2gridspec, unstructured grids cropping") {
+    auto a = make_mutable(spec(TOUR));
+
+    EXPECT(!a->canCrop());
+    EXPECT(a->outputBoundingBox() == util::BoundingBox(90, 0, -90, 360));
+
+    EXPECT(a->mergeWithNext(*make("{type: crop.area, area: [40, -32, 36, -24]}")));
+    EXPECT(a->canCrop());
+    EXPECT(a->outputBoundingBox() == util::BoundingBox(40, -32, 36, -24));
+
+    auto out = perform(*a, field("{grid: O16}", LATITUDE));
+
+    EXPECT_EQUAL(out.values(0).size(), 34);
+    EXPECT(contained(out, a->outputBoundingBox()));
+}
+
+
+CASE("interpolate.grid2gridspec, unstructured grids comparison") {
+    auto a = make(spec(TOUR));
+
+    EXPECT(*a == *make(spec(TOUR, ", interpolation: linear")));
+    EXPECT(*a != *make(spec(GLOBAL)));
+    EXPECT(*a != *make(spec(TOUR, ", interpolation: nn")));
+}
+
+
+CASE("interpolate.grid2gridspec, unstructured grids errors") {
+    auto in = field("{grid: O16}");
+
+    EXPECT_THROWS(perform(spec("{type: unstructured_ll, latitudes: [1, 2], longitudes: [1]}"), in));
+    EXPECT_THROWS(perform(spec("{type: unstructured_ll, latitudes: [], longitudes: []}"), in));
+}
+
+
 }  // namespace mir::action::tests
 
 

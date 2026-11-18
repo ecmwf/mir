@@ -23,7 +23,6 @@ set(TESTS
     filter.sh-truncate
     filter.statistics
     filter.unstructured
-    interpolate.grid2griddef
     interpolate.grid2gridspec
     interpolate.grid2namedgrid
     interpolate.grid2octahedral-gg
@@ -51,7 +50,6 @@ set(TESTS
     set.metadata
     style.custom
     style.ecmwf
-    transform.sh-to-griddef
     transform.sh-to-gridspec
     transform.sh-to-namedgrid
     transform.sh-to-octahedral-gg

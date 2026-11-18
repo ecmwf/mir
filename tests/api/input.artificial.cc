@@ -129,19 +129,18 @@ CASE("ArtificialInput") {
     }
 
 
-    SECTION("unstructured grid, by griddef") {
-        auto in = build("/dev/null",
-                        "{artificialInput: constant, constant: 1, gridded: true, gridType: unstructured_grid, griddef: "
-                        "tour.pts}");
+    SECTION("unstructured grid, by gridSpec") {
+        input_t in(new input::GridSpecInput("{type: unstructured_ll, latitudes: [10, 20, 30], longitudes: [1, 2, 3]}"));
         EXPECT(in->next());
+        EXPECT_NOT(in->next());
+        EXPECT_EQUAL(in->dimensions(), 1);
 
-        long n = 0;
-        EXPECT(in->parametrisation().get("numberOfDataPoints", n) && n == 34);
+        bool gridded = false;
+        EXPECT(in->parametrisation().get("gridded", gridded) && gridded);
 
-        std::vector<double> latitudes;
-        EXPECT(in->parametrisation().get("latitudes", latitudes) && latitudes.size() == 34);
-
-        EXPECT_EQUAL(in->field().values(0).size(), 34);
+        repres::RepresentationHandle repres(in->field().representation());
+        EXPECT_EQUAL(repres->numberOfPoints(), 3);
+        EXPECT_EQUAL(in->field().values(0).size(), 3);
     }
 
 

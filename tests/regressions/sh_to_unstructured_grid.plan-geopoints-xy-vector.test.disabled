@@ -1,5 +1,0 @@
-# input
-param=vo/d,level=1000,resol=20
-# post-process
---plan=sh-vod-to-uv-griddef(griddef=tour.pts) --output=geopoints-xy-vector --vod2uv
-# grib_get (output is GEOPOINTS)

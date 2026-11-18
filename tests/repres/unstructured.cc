@@ -7,7 +7,6 @@
 #include <string>
 #include <vector>
 
-#include "eckit/filesystem/TmpFile.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/param/SimpleParametrisation.h"
@@ -156,12 +155,12 @@ CASE("UnstructuredGrid: by parametrisation, by gridSpec, by file") {
     }
 
 
-    SECTION("file (griddef)") {
-        eckit::TmpFile path;
-        UnstructuredGrid::save(path, LATITUDES, LONGITUDES, true);
+    SECTION("gridSpec: unstructured, by uid (the coordinates kept by eckit::geo)") {
+        RepresentationHandle points(new UnstructuredGrid(LATITUDES, LONGITUDES));
+        RepresentationHandle repres(make("{uid: " + points->grid().uid() + "}"));
 
-        RepresentationHandle repres(new UnstructuredGrid(path));
-        EXPECT(repres->sameAs(*RepresentationHandle(new UnstructuredGrid(LATITUDES, LONGITUDES))));
+        EXPECT_EQUAL(repres->numberOfPoints(), LATITUDES.size());
+        EXPECT(repres->sameAs(*points));
     }
 }
 
