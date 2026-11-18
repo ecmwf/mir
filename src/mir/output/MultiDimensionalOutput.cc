@@ -132,7 +132,7 @@ bool MultiDimensionalOutput::sameAs(const MIROutput& other) const {
     }
 
     for (auto d1 = dimensions_.begin(), d2 = o->dimensions_.begin(); d1 != dimensions_.end(); ++d1, ++d2) {
-        if ((*d1)->sameAs(*(*d2))) {
+        if (!(*d1)->sameAs(*(*d2))) {
             return false;
         }
     }
@@ -179,7 +179,7 @@ void MultiDimensionalOutput::print(std::ostream& out) const {
 
     const auto* sep = "";
     for (const auto& d : dimensions_) {
-        out << sep << d;
+        out << sep << *d;
         sep = ",";
     }
 

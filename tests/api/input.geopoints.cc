@@ -94,6 +94,12 @@ CASE("GeoPointsFileInput") {
         input::GeoPointsFileInput second(path, 1);
         EXPECT_EQUAL(second.values().size(), 1);
         EXPECT_EQUAL(second.values().front(), 9.);
+
+        // the selected field only
+        MIRInput& in = second;
+        EXPECT_EQUAL(in.dimensions(), 1);
+        EXPECT(in.next());
+        EXPECT_NOT(in.next());
     }
 
 
@@ -103,7 +109,7 @@ CASE("GeoPointsFileInput") {
         write_file(path, "#NOTHING\n");
 
         EXPECT_THROWS_AS(input::GeoPointsFileInput{path}, exception::SeriousBug);
-        EXPECT_THROWS(input::GeoPointsFileInput{"does-not-exist.gpt"});
+        EXPECT_THROWS_AS(input::GeoPointsFileInput{"does-not-exist.gpt"}, exception::CantOpenFile);
     }
 }
 

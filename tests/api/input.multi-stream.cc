@@ -47,6 +47,36 @@ CASE("MultiStreamInput") {
     EXPECT_NOT(in->sameAs(*another));
 
     EXPECT(to_string(*in).find("MultiStreamInput[GribFileInput[") == 0);
+
+
+    SECTION("next, the streams in turn") {
+        auto count = [](const std::string& path) {
+            input::GribFileInput file(path);
+            size_t n = 0;
+            for (MIRInput& i = file; i.next();) {
+                ++n;
+            }
+            return n;
+        };
+
+        input::GribFileInput c("tiny-2x2.grib");
+        input::GribFileInput d("tiny-3x3.grib");
+
+        auto* streams = new input::MultiStreamInput;
+        input_t both(streams);
+        streams->append(&c);
+        streams->append(&d);
+
+        std::vector<size_t> sizes;
+        while (both->next()) {
+            sizes.push_back(both->field().values(0).size());
+        }
+
+        std::vector<size_t> expected(count("tiny-2x2.grib"), 4);
+        expected.insert(expected.end(), count("tiny-3x3.grib"), 9);
+        EXPECT(!expected.empty());
+        EXPECT(sizes == expected);
+    }
 }
 
 

@@ -33,7 +33,7 @@ static constexpr double missingValueDefault   = 999.;
 GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
     path_(path),
     next_(0),
-    footprint_(size_t(eckit::PathName(path).size())),
+    footprint_(0),
     missingValue_(missingValueGeoPoints),
     which_(which),
     hasMissing_(false) {  // For now, this should overestimate the memory footprint
@@ -42,6 +42,8 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
     if (!in) {
         throw exception::CantOpenFile(path_);
     }
+
+    footprint_ = size_t(eckit::PathName(path_).size());
 
     auto magic   = static_cast<char>(in.peek());
     size_t count = (magic == '#' ? readText(in) : readBinary(in));
@@ -64,9 +66,8 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
         throw exception::SeriousBug(oss.str());
     }
 
-    // set dimensions
-    dimensions_ = count;
-    ASSERT(dimensions_);
+    // a single field (selected by which, if several)
+    dimensions_ = 1;
 
     util::check_duplicate_points("GeoPointsFileInput from " + path, latitudes_, longitudes_);
 }

@@ -143,6 +143,20 @@ CASE("ArtificialInput") {
 
         EXPECT_EQUAL(in->field().values(0).size(), 34);
     }
+
+
+    SECTION("unstructured grid, by latitudes and longitudes files") {
+        auto in =
+            build("/dev/null",
+                  "{artificialInput: constant, constant: 1, gridded: true, gridType: unstructured_grid, latitudes: "
+                  "ICON.shortName=CLAT.grib2, longitudes: ICON.shortName=CLON.grib2}");
+        EXPECT(in->next());
+
+        std::vector<double> latitudes;
+        EXPECT(in->parametrisation().get("latitudes", latitudes) && latitudes.size() == 20480);
+
+        EXPECT_EQUAL(in->field().values(0).size(), 20480);
+    }
 }
 
 
