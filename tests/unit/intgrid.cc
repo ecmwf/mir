@@ -98,16 +98,13 @@ CASE("grid::Target") {
         EXPECT(!healpix.gaussian);
         EXPECT_EQUAL(healpix.gaussianNumber, 64);
 
-        for (const std::string gridspec : {"{grid: 2/2}", "{grid: H8}"}) {
+        for (const std::string gridspec :
+             {"{grid: 2/2}", "{grid: H8}", "{type: unstructured_ll, latitudes: [1, 2], longitudes: [3, 4]}"}) {
             auto t = make("grid", gridspec, none);
             EXPECT_EQUAL(t.type, "gridspec");
             EXPECT(!t.gaussian);
             EXPECT_EQUAL(t.gaussianNumber, N64);
         }
-
-        auto griddef = make("griddef", "griddef", none);
-        EXPECT_EQUAL(griddef.type, "griddef");
-        EXPECT_EQUAL(griddef.gaussianNumber, N64);
     }
 
     SECTION("rotated") {

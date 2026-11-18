@@ -9,11 +9,6 @@
 #include "mir/repres/Gridded.h"
 
 
-namespace eckit {
-class PathName;
-}
-
-
 namespace mir::repres {
 
 
@@ -24,7 +19,6 @@ public:
 
     // -- Constructors
 
-    explicit UnstructuredGrid(const eckit::PathName&);
     explicit UnstructuredGrid(const param::MIRParametrisation&);
     UnstructuredGrid(const std::vector<double>& latitudes, const std::vector<double>& longitudes,
                      const util::BoundingBox& = util::BoundingBox());
@@ -40,9 +34,7 @@ public:
     // None
 
     // -- Methods
-
-    static void save(const eckit::PathName&, const std::vector<double>& latitudes,
-                     const std::vector<double>& longitudes, bool binary);
+    // None
 
     // -- Overridden methods
     // None

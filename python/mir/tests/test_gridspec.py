@@ -72,3 +72,17 @@ def test_mir(tmp_path, GSa, Na, GSb, Nb):
     assert Nb == len(mir.Grid(GSb))
 
     mat.unlink()
+
+
+def test_unstructured():
+    import mir
+
+    grid = dict(type="unstructured_ll", latitudes=[0.0, 1.0, 2.0], longitudes=[10.0, 20.0, 30.0])
+    assert len(mir.Grid(grid)) == 3
+
+    job = mir.Job()
+    job.set("grid", _gridspec_as_string(grid))
+    job.execute(mir.GridSpecInput("{grid: O16}"), mir.EmptyOutput())
+
+    with pytest.raises(Exception):
+        mir.Grid(dict(type="unstructured_ll", latitudes=[1.0], longitudes=[2.0, 3.0]))

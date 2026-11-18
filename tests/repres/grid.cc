@@ -218,8 +218,6 @@ CASE("Grid: target (by user and field parametrisations)") {
         {"octahedral", N("octahedral"), 0, "octahedral-gg", "", true, false, 32},
         {"pl", [](param::SimpleParametrisation& user) { user.set("pl", std::vector<long>{20, 24, 24, 20}); }, 0,
          "reduced-gg-pl-given", "", true, false, 0},
-        {"griddef", [](param::SimpleParametrisation& user) { user.set("griddef", "file.griddef"); }, 0, "griddef", "",
-         false, false, 64},
         {"latitudes", [](param::SimpleParametrisation& user) { user.set("latitudes", std::vector<double>{1., 2.}); }, 0,
          "points", "", false, false, 64},
         {"grid, from spectral (limited by the truncation)", grid("O32"), 21, "namedgrid", "O32", true, false, 22},

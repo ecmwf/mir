@@ -119,9 +119,7 @@ MIROutput* MIROutputFactory::build(const std::string& path, const param::MIRPara
     util::lock_guard<util::recursive_mutex> lock(*fmt_mutex);
 
     const auto& user   = parametrisation.userParametrisation();
-    std::string format = user.has("griddef") || user.has("latitudes") || user.has("longitudes")
-                             ? "geopoints"
-                             : "extension";  // maybe "grib"??
+    std::string format = user.has("latitudes") || user.has("longitudes") ? "geopoints" : "extension";
 
     user.get("format", format);
 

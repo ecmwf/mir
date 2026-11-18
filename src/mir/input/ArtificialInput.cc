@@ -9,7 +9,6 @@
 #include <sstream>
 
 #include "mir/data/MIRField.h"
-#include "mir/input/GriddefInput.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Exceptions.h"
@@ -94,10 +93,6 @@ void ArtificialInput::setAuxiliaryInformation(const util::ValueMap& map) {
 
         values = field.values(0);
     };
-
-    if (std::string path; parametrisation_.get("griddef", path)) {
-        GriddefInput::load(path, latitudes_, longitudes_);
-    }
 
     if (std::string lats, lons; parametrisation_.get("latitudes", lats) && parametrisation_.get("longitudes", lons)) {
         load(lats, latitudes_);
