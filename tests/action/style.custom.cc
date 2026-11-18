@@ -113,6 +113,9 @@ CASE("custom style, parametrisation") {
     EXPECT(parametrisation.get("list", vf) && vf == std::vector<float>({1, 2, 3}));
     EXPECT(parametrisation.get("list", vd) && vd == std::vector<double>({1, 2, 3}));
 
+    std::vector<std::string> vs;
+    EXPECT(parametrisation.get("text", vs) && vs == std::vector<std::string>({"a", "b"}));
+
     // one value expected
     EXPECT_THROWS(parametrisation.get("text", l));
 
