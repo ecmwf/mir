@@ -1,6 +1,0 @@
-# input
-MIR-340.grib
-# mir
---area=50/-21/25/6
-# plan
-AreaCropper[bbox=BoundingBox[north=50,west=-21,south=25,east=6]]|Save[output=...]

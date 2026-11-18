@@ -1,6 +1,0 @@
-# input
-stream=wave,param=swh,special
-# mir
---intgrid=none
-# grib_get
-missingValuesPresent = 1

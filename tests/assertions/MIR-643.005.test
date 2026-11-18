@@ -1,9 +1,0 @@
-# input
-regular_ll.2-2.grib2
-# mir
---grid=hn16 --interpolation=nn
-# grib_get
-gridType=healpix
-orderingConvention=nested
-Nside=16
-edition=2

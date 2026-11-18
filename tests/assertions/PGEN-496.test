@@ -1,5 +1,0 @@
-# input
-regular_ll.2-2.grib1
-# mir (resol=av => intgrid=source truncation=none)
---grid=2/2 --truncation=none
-# grib_get

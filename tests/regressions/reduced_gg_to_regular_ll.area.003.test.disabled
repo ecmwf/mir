@@ -1,0 +1,6 @@
+# MIR-251
+# input
+param=2t,levtype=sfc
+# post-process
+--grid=0.003474259/0.003496601747573 --area=34.6548026/113.04894614/34.2911562/113.7472724
+# grib_get

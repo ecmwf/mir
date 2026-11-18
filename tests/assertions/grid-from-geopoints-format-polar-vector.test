@@ -1,5 +1,0 @@
-# input (Geopoints POLAR_VECTOR; This format allows two parameters to be stored as the speed and direction of a two-dimensional vector, the direction being specified in degrees where zero is due South and angles increase clockwise)
-geopoints-format-polar-vector.gpt
-# mir
---output=geopoints-xyv
-# grib_get (output is GEOPOINTS)

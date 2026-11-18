@@ -1,6 +1,0 @@
-# input
-param=2t,levtype=sfc,grid=N256
-# mir
---area=90/0/-90/359.9
-# grib_get
-numberOfValues=348528

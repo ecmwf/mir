@@ -1,7 +1,0 @@
-# input
-param=2t,levtype=sfc
-# mir
---area=90/0/-90/360 --grid=N400 --rotation=-30.0/-10.0
-# grib_get
-latitudeOfSouthernPoleInDegrees=-30
-longitudeOfSouthernPoleInDegrees=-10

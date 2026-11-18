@@ -1,0 +1,6 @@
+# MIR-250
+# input
+param=t,level=1000
+# post-process
+--grid=0.123456789/0.123456789
+# grib_get

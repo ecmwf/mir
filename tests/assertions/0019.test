@@ -1,6 +1,0 @@
-# input
-param=2t,levtype=sfc
-# mir
---plan=grid2regular-ll(grid=[2,2]);grid2namedgrid(grid=O80);grid2rotated-regular-ll(grid=[2,2],rotation=[-90,0])
-# grib_get
-numberOfValues=16380

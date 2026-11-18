@@ -1,0 +1,18 @@
+# input
+gridType=regular_ll,param=t,levtype=ml,level=1,grid=9-9.grib2
+# post-process
+--bitmap=$tests_data_dir/GAUSS400_EU_GL --area=90/-60/25/60 --grid=0.1/0.1
+# action-plan
+[{"type":"interpolate.grid2regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"cropping":[90,-60,25,60],"grid":[0.1,0.1],"area":[90,0,-90,359.9]},{"type":"filter.bitmap","bitmap":"$tests_data_dir/GAUSS400_EU_GL"},{"type":"save"}]
+# grid-plan
+[{"grid":[9,9]},{"area":[90,-60,25,60],"grid":[0.1,0.1]},{"area":[90,-60,25,60],"grid":[0.1,0.1]},{"area":[90,-60,25,60],"grid":[0.1,0.1]}]
+# grib_get
+Ni = 1201
+Nj = 651
+iDirectionIncrementInDegrees = 0.1
+jDirectionIncrementInDegrees = 0.1
+longitudeOfFirstGridPointInDegrees = 300
+longitudeOfLastGridPointInDegrees = 60
+latitudeOfFirstGridPointInDegrees = 90
+latitudeOfLastGridPointInDegrees = 25
+numberOfMissingValues = 700444

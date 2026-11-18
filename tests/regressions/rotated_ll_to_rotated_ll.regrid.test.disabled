@@ -1,0 +1,6 @@
+# input
+rotated_ll.3-3.grib1
+# post-process
+--grid=3/3
+# grib_get
+gridType=regular_ll

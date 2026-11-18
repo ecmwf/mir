@@ -1,0 +1,11 @@
+# input
+param=vo_d,level=1000,resol=20
+# post-process
+--vod2uv
+# action-plan
+[{"type":"transform.sh-vod-to-UV","atlas-trans-type":"local"},{"type":"save"}]
+# grid-plan
+[{"grid":"T20"},{"grid":"T20"},{"grid":"T20"}]
+# grib_get
+paramId=131
+packingType=spectral_complex

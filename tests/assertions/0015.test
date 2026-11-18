@@ -1,9 +1,0 @@
-# input
-param=2t,levtype=sfc
-# mir
---grid=1.5/1.5 --area=50/109.5/20/150
-# grib_get
-latitudeOfFirstGridPointInDegrees=50
-longitudeOfFirstGridPointInDegrees=109.5
-latitudeOfLastGridPointInDegrees=20
-longitudeOfLastGridPointInDegrees=150

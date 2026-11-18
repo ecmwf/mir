@@ -4,59 +4,29 @@
 set(TESTS
 #    MIR-333
 #    MIR-356
-    MIR-425
-    MIR-536
-    PGEN-412
-    PGEN-492
-    PGEN-558
-    action_graph
-    actionspec
     area
     atlas
     bounding_box
-    earthkit-geo
     formula
-    gaussian_grid
-    healpix
     in_memory_cache
     grib_basic_angle
     grib_encoding
-    grib_input
     grib_rotated_ll
     grib_scanning_mode
-    grid_box_method
-    grid_type
-    grids
-    gridspec
     increments
-    input
-    interpolations
-    interpolationspec
     intgrid
-    iterator
-    job
-    knn_weighting
+    intgrid.sh2grid
     packing
-    plan
-    raw_memory
     spectral_order
-    statistics
     style
     vector-space
-    weight_matrix
     wind)
 
-if(mir_HAVE_NETCDF)
-    list(APPEND TESTS interpolation_netcdf)
-endif()
-
-if(atlas_HAVE_PROJ)
-    list(APPEND TESTS space_view)
-endif()
 
 foreach(_t ${TESTS})
+    string(REGEX REPLACE "[.-]" "_" _name ${_t})
     ecbuild_add_test(
-        TARGET            mir_tests_unit_${_t}
+        TARGET            mir_tests_unit_${_name}
         SOURCES           ${_t}.cc
         LIBS              mir
         ENVIRONMENT       ${_testEnvironment}

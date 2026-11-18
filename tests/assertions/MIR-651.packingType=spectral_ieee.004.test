@@ -1,9 +1,0 @@
-# input
-packingType=spectral_ieee.grib2
-# mir
---grid=1/1 --intgrid=none --packing=ieee
-# grib_get
-packingType=grid_ieee
-edition=2
-accuracy=32
-precision=1

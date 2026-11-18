@@ -1,0 +1,14 @@
+# MIR-513
+# input
+tiny-2x2.grib
+# post-process
+--area=0/0/0/1 --packing=so
+# action-plan
+[{"type":"crop.area","area":[0,0,0,1]},{"type":"save","packing":"second-order"}]
+[{"type":"crop.area","area":[0,0,0,1]},{"type":"save","packing":"second-order"}]
+# grid-plan
+[{"area":[1,0,0,1],"grid":[1,1]},{"area":[0,0,0,1],"grid":[1,0]},{"area":[0,0,0,1],"grid":[1,0]}]
+[{"area":[1,0,0,1],"grid":[1,1]},{"area":[0,0,0,1],"grid":[1,0]},{"area":[0,0,0,1],"grid":[1,0]}]
+# grib_get (output (#points = 2) is in packingType=grid_simple because grid_second_order is not supported for #points < 4)
+packingType=grid_simple
+numberOfDataPoints=2

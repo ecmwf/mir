@@ -1,0 +1,14 @@
+# MIR-482
+# input
+tiny-2x2.grib
+# post-process
+--accuracy=64 --packing=ieee
+# action-plan
+[{"type":"set","packing":"ieee","accuracy":64,"precision":2}]
+[{"type":"set","packing":"ieee","accuracy":64,"precision":2}]
+# grid-plan
+[{"area":[1,0,0,1],"grid":[1,1]},{"area":[1,0,0,1],"grid":[1,1]}]
+[{"area":[1,0,0,1],"grid":[1,1]},{"area":[1,0,0,1],"grid":[1,1]}]
+# grib_get
+packingType=grid_ieee
+precision=2

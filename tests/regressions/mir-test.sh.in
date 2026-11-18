@@ -1,0 +1,127 @@
+#!/usr/bin/env bash
+# SPDX-FileCopyrightText: 1996- European Centre for Medium-Range Weather Forecasts (ECMWF)
+# SPDX-License-Identifier: Apache-2.0
+
+# Test sections (each header with optional text), other lines starting with '#' are comments:
+#   # input           input (file, as is or in the data directory)
+#   # post-process    options (lines starting with '$' set the environment)
+#   # action-plan     reference, as --dump-action-plan-file (data directory as $tests_data_dir)
+#   # grid-plan       reference, as --dump-grid-plan-file
+#   # grib_get        assertions, key=value of the output (values[N]=value for the N-th value)
+#
+# MIR_TESTS_DRYRUN (quick check, if set and not 0): by dry run, the action plan only (tests expected to fail aren't checked)
+
+set -eaux
+
+echo "======> $1"
+
+test_file=$1
+
+# work files, by the (unique) test name
+t=$(basename $1)
+
+mir="$<TARGET_FILE:mir-tool>"
+grib_get="$<TARGET_FILE:grib_get>"
+diff="@DIFF_TOOL@"
+
+tests_data_dir="@MIR_TESTS_DATA_DIR@"
+
+pwd
+rm -f {action-plan,grid-plan}.${t}{,.reference} data.{in,out}.$t
+
+section=
+input=
+env=
+options=
+assertions=()
+while IFS= read n
+do
+    [[ -n "$n" ]] || continue
+
+    if [[ "$n" =~ ^#\ (input|post-process|action-plan|grid-plan|grib_get)(\ .*)?$ ]]
+    then
+        section=${BASH_REMATCH[1]}
+        continue
+    fi
+
+    [[ ! "$n" =~ ^# ]] || continue
+
+    case $section in
+        input)         input="$n" ;;
+        post-process)  if [[ $n =~ ^\$ ]]; then env="$env ${n/?}"; else options="$options $n"; fi ;;
+        action-plan)   echo "$n" >> action-plan.${t}.reference ;;
+        grid-plan)     echo "$n" >> grid-plan.${t}.reference ;;
+        grib_get)      assertions+=("$n") ;;
+        *)             echo "line outside of a section: $n"; exit 1 ;;
+    esac
+done < $1
+
+# input
+m="$input"
+[[ -e "$m" ]] || m="${tests_data_dir}/$(echo $input | tr '/' '_')"
+[[ -e "$m" ]] || { echo "input not found: $input"; exit 1; }
+ln -sf "$m" data.in.$t
+
+# dry run: the action plan only
+dryrun=0
+if [[ -n "${MIR_TESTS_DRYRUN:-}" && "${MIR_TESTS_DRYRUN}" != 0 ]]
+then
+    if [[ "$test_file" =~ [.]fail[.] ]]
+    then
+        echo "dry run: expected to fail (by execution), not checked" 1>&2
+        exit 1
+    fi
+    dryrun=1
+    rm -f grid-plan.${t}.reference
+    assertions=()
+fi
+
+# post-process, dumping the plans to compare
+dumps=
+[[ ! -r action-plan.${t}.reference ]] || dumps="$dumps --dump-action-plan-file=action-plan.$t"
+[[ ! -r grid-plan.${t}.reference ]] || dumps="$dumps --dump-grid-plan-file=grid-plan.$t"
+[[ $dryrun -eq 0 ]] || dumps="$dumps --dryrun"
+
+eval options=\"$options\"
+env $env $mir $dumps $options $(pwd)/data.in.$t $(pwd)/data.out.$t
+# For some reason set -e does not trigger
+[[ $? -eq 0 ]] || exit 1
+
+checks=0
+
+if [[ -r action-plan.${t}.reference ]]
+then
+    sed "s|${tests_data_dir}|\$tests_data_dir|g" action-plan.$t > action-plan.$t.data
+    $diff action-plan.$t.data action-plan.${t}.reference
+    checks=1
+fi
+
+if [[ -r grid-plan.${t}.reference ]]
+then
+    $diff grid-plan.$t grid-plan.${t}.reference
+    checks=1
+fi
+
+for a in ${assertions[@]+"${assertions[@]}"}
+do
+    set $(echo $a | tr '=' ' ')
+    if [[ $1 =~ values\[([0-9]+)\] ]]
+    then
+        g=$($grib_get -wcount=1 -i ${BASH_REMATCH[1]} data.out.$t)
+        g="$(echo $g | tr -d '[:space:]')"
+    else
+        g=$($grib_get -wcount=1 -p $1 data.out.$t)
+    fi
+    if [ "$g" != "$2" ]  # compares strings not floats
+    then
+        echo "$1: expected [$2], got [$g]" 1>&2
+        exit 1
+    fi
+    checks=1
+done
+
+if [[ $checks -ne 1 ]]
+then
+    echo "No assertions defined"
+    exit 1
+fi

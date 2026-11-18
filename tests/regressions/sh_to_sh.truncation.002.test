@@ -1,0 +1,9 @@
+# MIR-363
+# input
+param=t,level=1000,resol=20
+# post-process
+--truncation=21
+# action-plan
+[{"type":"filter.sh-truncate","truncation":21},{"type":"save"}]
+# grid-plan
+[{"grid":"T20"},{"grid":"T21"},{"grid":"T21"}]

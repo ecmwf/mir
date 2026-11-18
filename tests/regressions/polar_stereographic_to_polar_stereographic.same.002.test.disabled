@@ -1,0 +1,5 @@
+# MIR-673
+# input
+gridType=polar_stereographic.grib1
+# post-process
+--same=data.in.MIR-673.010.proj.test
