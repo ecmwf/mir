@@ -15,6 +15,7 @@ set(TESTS
     grib_scanning_mode
     increments
     intgrid
+    intgrid.sh2grid
     packing
     spectral_order
     style
@@ -23,8 +24,9 @@ set(TESTS
 
 
 foreach(_t ${TESTS})
+    string(REGEX REPLACE "[.-]" "_" _name ${_t})
     ecbuild_add_test(
-        TARGET            mir_tests_unit_${_t}
+        TARGET            mir_tests_unit_${_name}
         SOURCES           ${_t}.cc
         LIBS              mir
         ENVIRONMENT       ${_testEnvironment}
