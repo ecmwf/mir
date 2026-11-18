@@ -1,6 +1,6 @@
 # MIR-513
 # input
-packingType=grid_second_order.grib2
+packingType=grid_simple.grib2
 # post-process
 --packing=ieee
 # action-plan
