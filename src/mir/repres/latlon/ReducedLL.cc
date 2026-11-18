@@ -9,6 +9,7 @@
 #include <ostream>
 #include <sstream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/spec/Custom.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
@@ -46,6 +47,19 @@ ReducedLL::~ReducedLL() = default;
 
 void ReducedLL::print(std::ostream& out) const {
     out << "ReducedLL[bbox=" << bbox_ << "]";
+}
+
+std::string ReducedLL::factory() const {
+    return "reduced_ll";
+}
+
+void ReducedLL::json(eckit::JSON& s) const {
+    s.startObject();
+    s << "type"
+      << "reduced_ll";
+    s << "pl" << pl_;
+    s << "bbox" << bbox_;
+    s.endObject();
 }
 
 void ReducedLL::makeName(std::ostream& out) const {

@@ -4,8 +4,10 @@
 
 #include "mir/repres/Representation.h"
 
+#include <algorithm>
 #include <memory>
 #include <sstream>
+#include <vector>
 
 #include "eckit/geo/Grid.h"
 #include "eckit/spec/Custom.h"
@@ -308,61 +310,50 @@ Iterator* Representation::iterator() const {
 
 
 const Representation* Representation::globalise(data::MIRField& field) const {
-    const util::Domain dom = domain();
-
-    if (dom.isGlobal()) {
+    if (domain().isGlobal()) {
         return nullptr;
     }
 
-    // TODO: cache me
+    // this representation's points (as the values), then the points of a global grid outside its domain (missing),
+    // geographic (rotated, if so)
+    const auto n = numberOfPoints();
+
+    std::vector<double> latitudes(n);
+    std::vector<double> longitudes(n);
+    for (const std::unique_ptr<Iterator> it(iterator()); it->next();) {
+        const auto& p = it->pointRotated();
+        ASSERT(it->index() < n);
+        latitudes[it->index()]  = p[0];
+        longitudes[it->index()] = p[1];
+    }
+
+    const auto dom = geographicDomain();
 
     RepresentationHandle octahedral(key::grid::Grid::lookup("O320").representation());
-    size_t size = octahedral->numberOfPoints() + numberOfPoints();
-
-    std::vector<double> latitudes;
-    latitudes.resize(size);
-    std::vector<double> longitudes;
-    longitudes.resize(size);
-
-    std::unique_ptr<Iterator> it(octahedral->iterator());
-    while (it->next()) {
-        const auto& p = it->pointUnrotated();
-        latitudes.push_back(p.lat().value());
-        longitudes.push_back(p.lon().value());
-    }
-
-    size_t extra = 0;
-    while (it->next()) {
-        const auto& p = it->pointUnrotated();
-        if (!dom.contains(p)) {
-            latitudes.push_back(p.lat().value());
-            longitudes.push_back(p.lon().value());
-            extra++;
+    for (const std::unique_ptr<Iterator> it(octahedral->iterator()); it->next();) {
+        const auto& p = it->pointRotated();
+        if (!dom.contains(PointLatLon{p[0], p[1]})) {
+            latitudes.push_back(p[0]);
+            longitudes.push_back(p[1]);
         }
     }
 
-    if (extra == 0) {
+    const auto size = latitudes.size();
+    if (size == n) {
         return nullptr;
     }
 
-
-    double missingValue = field.missingValue();
-    size                = latitudes.size();
-
     for (size_t i = 0; i < field.dimensions(); i++) {
-        MIRValuesVector newvalues(size, missingValue);
         const MIRValuesVector& values = field.direct(i);
-        ASSERT(values.size() < size);
+        ASSERT(values.size() == n);
 
-        for (size_t j = 0; j < values.size(); ++j) {
-            newvalues[j] = values[j];
-        }
+        MIRValuesVector newvalues(size, field.missingValue());
+        std::copy(values.begin(), values.end(), newvalues.begin());
 
         field.update(newvalues, i);
     }
 
     field.hasMissing(true);
-
 
     return new UnstructuredGrid(latitudes, longitudes);
 }

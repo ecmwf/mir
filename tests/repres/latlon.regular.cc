@@ -195,11 +195,21 @@ CASE("RegularLL: crop, extend, frame") {
         EXPECT(polar.north() == Latitude::NORTH_POLE);
         EXPECT(polar.south() == Latitude::SOUTH_POLE);
 
-        // shifted grid
-        RepresentationHandle shifted(new RegularLL(Increments{1, 1}, {89.5, 0.5, -89.5, 359.5}, {0.5, 0.5}));
+        // shifted grid, by the reference (South/West) point
+        RepresentationHandle shifted(new RegularLL(Increments{1, 1}, {89.5, 0.5, -89.5, 359.5}, {-89.5, 0.5}));
         const auto e = shifted->extendBoundingBox(bbox);
         EXPECT(e.contains(bbox));
         EXPECT(e == BoundingBox(10.5, 20.5, -10.5, 30.5));
+
+        // shifted grid, without latitudes between the bounding box and the poles
+        const BoundingBox towards(89.9, 0.5, -89.9, 10.2);
+        const auto t = shifted->extendBoundingBox(towards);
+        EXPECT(t.contains(towards));
+        EXPECT(t == BoundingBox(89.9, 0.5, -89.9, 10.5));
+
+        RepresentationHandle cropped(shifted->croppedRepresentation(t));
+        EXPECT(cropped->boundingBox() == BoundingBox(89.5, 0.5, -89.5, 10.5));
+        EXPECT_EQUAL(cropped->numberOfPoints(), 11 * 180);
     }
 
 

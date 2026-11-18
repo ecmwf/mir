@@ -99,6 +99,7 @@ private:
 
     // from Representation
     size_t frame(MIRValuesVector& values, size_t size, double missingValue) const override;
+    const Representation* globalise(data::MIRField&) const override;
     size_t numberOfPoints() const override;
     bool getLongestElementDiagonal(double&) const override;
     std::string factory() const override;

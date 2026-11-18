@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <functional>
 #include <limits>
 #include <memory>
 #include <numeric>
@@ -19,6 +20,7 @@
 #include "eckit/types/Fraction.h"
 
 #include "mir/api/MIRJob.h"
+#include "mir/data/MIRField.h"
 #include "mir/iterator/GridIterator.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Atlas.h"
@@ -27,6 +29,7 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/GridBox.h"
+#include "mir/util/LongitudeDouble.h"
 
 
 namespace mir::repres::gauss::reduced {
@@ -534,6 +537,70 @@ util::BoundingBox Reduced::extendBoundingBox(const util::BoundingBox& bbox) cons
 bool Reduced::isPeriodicWestEast() const {
     eckit::Fraction inc = getSmallestIncrement();
     return bbox_.east() - bbox_.west() + inc >= Longitude::GLOBE;
+}
+
+
+const Representation* Reduced::globalise(data::MIRField& field) const {
+    ASSERT(field.representation() == this);
+
+    if (isGlobal()) {
+        return nullptr;
+    }
+
+    // the global index of each point, by Gaussian latitude (row) and longitude (column) in the grid coordinates
+    const auto& pl   = pls();
+    const auto& lats = latitudes();
+    ASSERT(lats.size() == pl.size());
+
+    std::vector<size_t> first(pl.size() + 1, 0);
+    for (size_t j = 0; j < pl.size(); ++j) {
+        ASSERT(pl[j] > 0);
+        first[j + 1] = first[j] + static_cast<size_t>(pl[j]);
+    }
+
+    const auto n = numberOfPoints();
+    std::vector<size_t> index(n);
+
+    for (const std::unique_ptr<Iterator> it(iterator()); it->next();) {
+        // (unrotated: in the grid coordinates)
+        const auto& p   = it->pointUnrotated();
+        const auto plat = p.lat().value();
+        const auto plon = p.lon().value();
+
+        // the nearest latitude (in decreasing order)
+        auto lat = std::lower_bound(lats.begin(), lats.end(), plat, std::greater<>());
+        if (lat == lats.end() || (lat != lats.begin() && std::abs(*(lat - 1) - plat) < std::abs(*lat - plat))) {
+            --lat;
+        }
+        const auto j = static_cast<size_t>(lat - lats.begin());
+
+        const auto Ni = pl[j];
+        const auto i  = std::lround(LongitudeDouble(plon).normalise(0.).value() * static_cast<double>(Ni) / 360.) % Ni;
+
+        ASSERT(it->index() < n);
+        index[it->index()] = first[j] + static_cast<size_t>(i);
+    }
+
+    // the values in place, missing values elsewhere
+    for (size_t d = 0; d < field.dimensions(); ++d) {
+        const MIRValuesVector& values = field.direct(d);
+        ASSERT(values.size() == n);
+
+        MIRValuesVector newvalues(first.back(), field.missingValue());
+        for (size_t k = 0; k < n; ++k) {
+            newvalues[index[k]] = values[k];
+        }
+
+        field.update(newvalues, d);
+    }
+
+    field.hasMissing(true);
+
+    // the global grid (of the same N, pl and rotation, if any)
+    const auto* global = croppedRepresentation(util::BoundingBox());
+    ASSERT(global->numberOfPoints() == first.back());
+
+    return global;
 }
 
 

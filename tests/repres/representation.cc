@@ -14,7 +14,6 @@
 #include "mir/api/MIRJob.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/SimpleParametrisation.h"
-#include "mir/repres/latlon/ReducedLL.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Domain.h"
@@ -200,7 +199,7 @@ CASE("Representation: common behaviour, by gridSpec") {
         {"{grid: O8, rotation: [-40, 22]}", true, true, CONTAINS},
         {"{grid: N16}", true, true, INTERSECTS},
         {"{pl: [20, 24, 24, 20]}", true, true, INTERSECTS},
-        {"{type: reduced_ll, pl: [4, 8, 12, 8, 4]}", true, true, "none"},  // NOTE: ReducedLL has no JSON (see report)
+        {"{type: reduced_ll, pl: [4, 8, 12, 8, 4]}", true, true, "none"},
         {"{grid: H4}", true, true, "none"},
         {"{grid: H4, order: nested}", true, true, "none"},
     };
@@ -234,9 +233,7 @@ CASE("Representation: common behaviour, by gridSpec") {
             EXPECT(r.uniqueName() != other->uniqueName());
 
             EXPECT(!to_string(r).empty());
-            if (dynamic_cast<const latlon::ReducedLL*>(&r) == nullptr) {
-                EXPECT(!to_json(r).empty());
-            }
+            EXPECT(!to_json(r).empty());
 
             // a job, to the same grid
             api::MIRJob job;
