@@ -129,8 +129,8 @@ private:
 struct Target {
     explicit Target(const param::MIRParametrisation&);
 
-    std::string type;  // Grid::type(), "reduced-gg", "regular-gg", "octahedral-gg", "reduced-gg-pl-given", "griddef",
-                       // "points", or empty (not set)
+    std::string type;  // Grid::type(), "reduced-gg", "regular-gg", "octahedral-gg", "reduced-gg-pl-given", "points",
+                       // or empty (not set)
     std::string grid;  // canonical grid name, if set by 'grid'
     bool gaussian       = false;
     bool rotated        = false;

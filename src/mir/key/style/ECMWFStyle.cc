@@ -160,13 +160,6 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
         return forced || !same->get("pl", pl) ? prefix + target.type : "";
     }
 
-    if (target.type == "griddef") {
-        if (target.rotated) {
-            throw exception::UserError("ECMWFStyle: option 'rotation' is incompatible with 'griddef'");
-        }
-        return target.type;
-    }
-
     if (target.type == "points") {
         if (user.has("latitudes") != user.has("longitudes")) {
             throw exception::UserError("ECMWFStyle: options 'latitudes' and 'longitudes' have to be provided together");
@@ -542,10 +535,6 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, output::MIROutput& output) co
     }
 
     if (user.has("pl")) {
-        user_wants_gridded++;
-    }
-
-    if (user.has("griddef")) {
         user_wants_gridded++;
     }
 

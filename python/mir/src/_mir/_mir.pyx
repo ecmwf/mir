@@ -136,14 +136,6 @@ cdef class GridSpecInput(MIRInput):
         del self._input
 
 
-cdef class GriddefInput(MIRInput):
-    def __cinit__(self, string path):
-        self._input = new mir.GriddefInput(eckit.PathName(path))
-
-    def __dealloc__(self):
-        del self._input
-
-
 cdef class EmptyOutput(MIROutput):
     def __cinit__(self):
         self._output = new mir.EmptyOutput()
@@ -346,7 +338,7 @@ cdef class Job:
             assert hasattr(input, "read")
             in_ = PyGribInput(input)
 
-        if isinstance(in_, (ArrayInput, GribMemoryInput, GriddefInput, GridSpecInput)):
+        if isinstance(in_, (ArrayInput, GribMemoryInput, GridSpecInput)):
             return [self._one(in_, what, out)]
 
         results = []

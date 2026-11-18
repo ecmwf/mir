@@ -12,7 +12,6 @@
 #include <string>
 #include <utility>
 
-#include "eckit/filesystem/PathName.h"
 #include "eckit/geo/Grid.h"
 #include "eckit/parser/YAMLParser.h"
 #include "eckit/types/FloatCompare.h"
@@ -20,10 +19,8 @@
 
 #include "mir/api/MIRJob.h"
 #include "mir/api/mir_config.h"
-#include "mir/input/GriddefInput.h"
 #include "mir/iterator/GridIterator.h"
 #include "mir/iterator/UnstructuredIterator.h"
-#include "mir/output/GriddefOutput.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Atlas.h"
@@ -513,20 +510,6 @@ UnstructuredGrid::UnstructuredGrid(const param::MIRParametrisation& parametrisat
     }
 
     util::check_duplicate_points("UnstructuredGrid from MIRParametrisation", latitudes_, longitudes_, parametrisation);
-}
-
-
-UnstructuredGrid::UnstructuredGrid(const eckit::PathName& path) {
-    input::GriddefInput::load(path, latitudes_, longitudes_);
-    util::check_duplicate_points("UnstructuredGrid from " + path.asString(), latitudes_, longitudes_);
-}
-
-
-void UnstructuredGrid::save(const eckit::PathName& path, const std::vector<double>& latitudes,
-                            const std::vector<double>& longitudes, bool binary) {
-    util::check_duplicate_points("UnstructuredGrid::save to " + path.asString(), latitudes, longitudes);
-    ASSERT(binary);
-    output::GriddefOutput::save(path, latitudes, longitudes);
 }
 
 

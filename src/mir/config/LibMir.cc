@@ -211,8 +211,8 @@ std::string LibMir::cacheLoader(cache_loader l) {
 
 const std::vector<std::string>& LibMir::postProcessKeys() {
     static const std::vector<std::string> defaults{
-        "accuracy", "bitmap",  "checkerboard", "compatibility", "edition", "filter",  "format",  "formula",
-        "frame",    "griddef", "latitudes",    "longitudes",    "nabla",   "packing", "pattern", "vod2uv",
+        "accuracy", "bitmap",    "checkerboard", "compatibility", "edition", "filter",  "format", "formula",
+        "frame",    "latitudes", "longitudes",   "nabla",         "packing", "pattern", "vod2uv",
     };
 
     static const auto& keys = instance().configuration().getStringVector("post-process", defaults);

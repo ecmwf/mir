@@ -70,8 +70,6 @@ list(APPEND mir_srcs
     action/filter/StatisticsFilter.h
     action/filter/UnstructuredFilter.cc
     action/filter/UnstructuredFilter.h
-    action/interpolate/Gridded2GridDef.cc
-    action/interpolate/Gridded2GridDef.h
     action/interpolate/Gridded2GridSpec.cc
     action/interpolate/Gridded2GridSpec.h
     action/interpolate/Gridded2GriddedInterpolation.cc
@@ -251,8 +249,6 @@ list(APPEND mir_srcs
     input/GribStreamInput.h
     input/GridSpecInput.cc
     input/GridSpecInput.h
-    input/GriddefInput.cc
-    input/GriddefInput.h
     input/MIRInput.cc
     input/MIRInput.h
     input/MultiDimensionalGribFileInput.cc
@@ -449,8 +445,6 @@ list(APPEND mir_srcs
     output/GribOutput.h
     output/GribStreamOutput.cc
     output/GribStreamOutput.h
-    output/GriddefOutput.cc
-    output/GriddefOutput.h
     output/MIROutput.cc
     output/MIROutput.h
     output/MultiDimensionalOutput.cc
@@ -691,8 +685,6 @@ list(APPEND mir_srcs
     action/transform/InvtransScalar.h
     action/transform/InvtransVodTouv.cc
     action/transform/InvtransVodTouv.h
-    action/transform/ShToGridDef.cc
-    action/transform/ShToGridDef.h
     action/transform/ShToGridSpec.cc
     action/transform/ShToGridSpec.h
     action/transform/ShToGridded.cc

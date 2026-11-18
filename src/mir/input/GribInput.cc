@@ -25,7 +25,6 @@
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/grib/Config.h"
-#include "mir/input/GriddefInput.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/CheckDuplicatePoints.h"
 #include "mir/util/Exceptions.h"
@@ -1180,73 +1179,50 @@ bool GribInput::handle(grib_handle* h) {
 void GribInput::setAuxiliaryInformation(const util::ValueMap& map) {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
-    auto griddef    = map.find("griddef") != map.end();
-    auto latitudes  = map.find("latitudes") != map.end();
-    auto longitudes = map.find("longitudes") != map.end();
+    const auto latitudes  = map.find("latitudes");
+    const auto longitudes = map.find("longitudes");
 
-    if (latitudes != longitudes) {
+    if ((latitudes == map.end()) != (longitudes == map.end())) {
         throw exception::UserError("GribInput: 'latitudes'/'longitudes' must be used together");
     }
 
-    if (latitudes && griddef) {
-        throw exception::UserError("GribInput: 'latitudes'/'longitudes' cannot be used with 'griddef'");
+    if (latitudes == map.end()) {
+        return;
     }
 
-    if (latitudes) {
-        auto load = [](const std::string& path, std::vector<double>& values) {
-            Log::debug() << "Loading auxilary file '" << path << "'" << std::endl;
-            eckit::AutoStdFile f(path);
+    // not by GribFileInput, as these files are of unstructured grids too (a loop)
+    auto load = [](const std::string& path, std::vector<double>& values) {
+        Log::debug() << "GribInput: loading '" << path << "'" << std::endl;
 
-            grib_handle* h = nullptr;
+        eckit::AutoStdFile f(path);
 
-            // We cannot use GribFileInput to read these files, because lat/lon files are also
-            // has grid_type = triangular_grid, and we will create a loop
+        int e = 0;
+        std::unique_ptr<codes_handle, decltype(&codes_handle_delete)> h(codes_grib_handle_new_from_file(nullptr, f, &e),
+                                                                        &codes_handle_delete);
+        grib_call(e, path.c_str());
 
-            try {
-                int e = 0;
-                h     = codes_grib_handle_new_from_file(nullptr, f, &e);
-                grib_call(e, path.c_str());
+        size_t values_size = 0;
+        GRIB_CALL(codes_get_size(h.get(), "values", &values_size));
 
-                size_t values_size = 0;
-                GRIB_CALL(codes_get_size(h, "values", &values_size));
+        size_t size = values_size;
+        values.resize(values_size);
+        GRIB_CALL(codes_get_double_array(h.get(), "values", values.data(), &size));
 
-                size_t size = values_size;
-                values.resize(values_size);
-                GRIB_CALL(codes_get_double_array(h, "values", values.data(), &size));
+        if (values_size != size) {
+            wrongly_encoded_grib("GribInput: inconsistent encoding of 'values' size (" + std::to_string(values_size) +
+                                     ") and array length (" + std::to_string(size) + ")",
+                                 true);
+        }
 
-                if (values_size != size) {
-                    wrongly_encoded_grib("GribInput: inconsistent encoding of 'values' size (" +
-                                             std::to_string(values_size) + ") and array length (" +
-                                             std::to_string(size) + ")",
-                                         true);
-                }
+        long missingValuesPresent = 0;
+        GRIB_CALL(codes_get_long(h.get(), "missingValuesPresent", &missingValuesPresent));
+        ASSERT(!missingValuesPresent);
+    };
 
-                long missingValuesPresent = 0;
-                GRIB_CALL(codes_get_long(h, "missingValuesPresent", &missingValuesPresent));
-                ASSERT(!missingValuesPresent);
+    load(latitudes->second, latitudes_);
+    load(longitudes->second, longitudes_);
 
-                codes_handle_delete(h);
-            }
-            catch (...) {
-                codes_handle_delete(h);
-                throw;
-            }
-        };
-
-        load(map.at("latitudes"), latitudes_);
-        load(map.at("longitudes"), longitudes_);
-
-        util::check_duplicate_points("GribInput: auxilary latitudes/longitudes", latitudes_, longitudes_);
-    }
-
-    if (griddef) {
-        std::string path = map.at("griddef");
-        Log::debug() << "Loading auxilary file '" << path << "'" << std::endl;
-
-        GriddefInput::load(path, latitudes_, longitudes_);
-
-        util::check_duplicate_points("GribInput: " + path, latitudes_, longitudes_);
-    }
+    util::check_duplicate_points("GribInput: latitudes/longitudes", latitudes_, longitudes_);
 }
 
 
