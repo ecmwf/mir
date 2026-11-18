@@ -6,6 +6,8 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/gauss/regular/RegularGG.h"
 #include "mir/util/Exceptions.h"
@@ -23,6 +25,12 @@ Gridded2RegularGG::Gridded2RegularGG(const param::MIRParametrisation& param) : G
 bool Gridded2RegularGG::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const Gridded2RegularGG*>(&other);
     return (o != nullptr) && (N_ == o->N_) && Gridded2GriddedInterpolation::sameAs(other);
+}
+
+
+void Gridded2RegularGG::json(eckit::JSON& j) const {
+    Gridded2GriddedInterpolation::json(j);
+    j << "regular" << N_;
 }
 
 

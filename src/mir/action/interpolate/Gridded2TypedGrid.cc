@@ -6,6 +6,8 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/key/grid/Grid.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
@@ -29,6 +31,12 @@ bool Gridded2TypedGrid::sameAs(const Action& other) const {
     // all useful information for building Representation
     return (o != nullptr) && gridParams_.matchAll(o->gridParams_) && o->gridParams_.matchAll(gridParams_) &&
            Gridded2GriddedInterpolation::sameAs(other);
+}
+
+
+void Gridded2TypedGrid::json(eckit::JSON& j) const {
+    Gridded2GriddedInterpolation::json(j);
+    j << "grid" << grid_;
 }
 
 

@@ -11,6 +11,7 @@
 #include "eckit/geo/Projection.h"
 #include "eckit/geo/grid/reduced/ReducedGaussian.h"
 #include "eckit/geo/grid/regular/RegularGaussian.h"
+#include "eckit/log/JSON.h"
 
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
@@ -55,6 +56,15 @@ template <class Invtrans>
 bool ShToGridSpec<Invtrans>::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const ShToGridSpec*>(&other);
     return (o != nullptr) && (param_->spec() == o->param_->spec()) && ShToGridded::sameAs(other);
+}
+
+
+template <class Invtrans>
+void ShToGridSpec<Invtrans>::json(eckit::JSON& j) const {
+    ShToGridded::json(j);
+    Invtrans::json(j);
+    j << "grid";
+    param_->spec().json(j);
 }
 
 

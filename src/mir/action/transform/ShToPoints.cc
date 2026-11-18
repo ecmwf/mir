@@ -6,6 +6,9 @@
 
 #include <ostream>
 
+#include "eckit/geo/grid/Unstructured.h"
+#include "eckit/log/JSON.h"
+
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
 #include "mir/param/MIRParametrisation.h"
@@ -28,7 +31,17 @@ ShToPoints<Invtrans>::ShToPoints(const param::MIRParametrisation& param) : ShToG
 template <class Invtrans>
 bool ShToPoints<Invtrans>::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const ShToPoints*>(&other);
-    return (o != nullptr) && (latitudes_ == o->latitudes_) && (longitudes_ == o->longitudes_);
+    return (o != nullptr) && (latitudes_ == o->latitudes_) && (longitudes_ == o->longitudes_) &&
+           ShToGridded::sameAs(other);
+}
+
+
+template <class Invtrans>
+void ShToPoints<Invtrans>::json(eckit::JSON& j) const {
+    ShToGridded::json(j);
+    Invtrans::json(j);
+    // the points, by their (unstructured) grid uid
+    j << "uid" << eckit::geo::grid::Unstructured::uid_from_latlons(latitudes_, longitudes_);
 }
 
 

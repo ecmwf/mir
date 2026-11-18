@@ -5,6 +5,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 
 
 namespace mir {
@@ -54,6 +55,9 @@ public:
     // -- Methods
 
     void execute(util::MIRStatistics&) const;
+
+    /// Execute (not dryrun), returning the grids (specs) of the input and after each action, as a JSON list
+    std::string executeGridPlan(util::MIRStatistics&) const;
 
     const ActionPlan& plan() const;
 

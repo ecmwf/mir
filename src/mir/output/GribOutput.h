@@ -62,6 +62,7 @@ private:
     size_t set(const param::MIRParametrisation&, context::Context&) override;
     bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const override;
     bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const override;
+    void jsonParametrisation(eckit::JSON&, const param::MIRParametrisation&) const override;
     void prepare(const param::MIRParametrisation&, action::ActionPlan&, MIROutput&) override;
 };
 

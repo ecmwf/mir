@@ -11,9 +11,11 @@
 #include "eckit/utils/SafeCasts.h"
 #include "eckit/utils/Tokenizer.h"
 
+#include "mir/action/plan/ActionPlan.h"
 #include "mir/action/plan/Job.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
+#include "mir/output/EmptyOutput.h"
 #include "mir/param/SpecParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
@@ -30,12 +32,30 @@ MIRJob::MIRJob() = default;
 MIRJob::~MIRJob() = default;
 
 
-void MIRJob::execute(input::MIRInput& input, output::MIROutput& output, util::MIRStatistics& statistics) const {
-
+namespace {
+bool compress(const MIRJob& job) {
     bool dont_compress = false;
-    get("dont-compress-plan", dont_compress);
+    job.get("dont-compress-plan", dont_compress);
+    return !dont_compress;
+}
+}  // namespace
 
-    action::Job(*this, input, output, !dont_compress).execute(statistics);
+
+void MIRJob::execute(input::MIRInput& input, output::MIROutput& output, util::MIRStatistics& statistics) const {
+    action::Job(*this, input, output, compress(*this)).execute(statistics);
+}
+
+
+std::string MIRJob::action_plan_json(input::MIRInput& input) const {
+    output::EmptyOutput output;
+    return action::Job(*this, input, output, compress(*this)).plan().json_str();
+}
+
+
+std::string MIRJob::grid_plan_json(input::MIRInput& input) const {
+    output::EmptyOutput output;
+    util::MIRStatistics statistics;
+    return action::Job(*this, input, output, compress(*this)).executeGridPlan(statistics);
 }
 
 

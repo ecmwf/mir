@@ -51,6 +51,7 @@ private:
     // -- Overridden methods
 
     bool sameAs(const Action&) const override;
+    void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
 
     void custom(std::ostream&) const override;

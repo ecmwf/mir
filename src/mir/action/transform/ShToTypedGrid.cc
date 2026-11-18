@@ -6,6 +6,8 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
 #include "mir/key/grid/Grid.h"
@@ -25,7 +27,15 @@ ShToTypedGrid<Invtrans>::ShToTypedGrid(const param::MIRParametrisation& param) :
 template <class Invtrans>
 bool ShToTypedGrid<Invtrans>::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const ShToTypedGrid*>(&other);
-    return (o != nullptr) && (grid_ == o->grid_);
+    return (o != nullptr) && (grid_ == o->grid_) && ShToGridded::sameAs(other);
+}
+
+
+template <class Invtrans>
+void ShToTypedGrid<Invtrans>::json(eckit::JSON& j) const {
+    ShToGridded::json(j);
+    Invtrans::json(j);
+    j << "grid" << grid_;
 }
 
 

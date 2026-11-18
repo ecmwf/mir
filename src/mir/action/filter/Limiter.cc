@@ -44,7 +44,6 @@ Limiter::Limiter(const param::MIRParametrisation& param) : Action(param), minimu
 
 
 void Limiter::json(eckit::JSON& j) const {
-    j << "type" << "filter.limiter";
     j << "limiter-minimum" << minimum_;
     j << "limiter-maximum" << maximum_;
 }

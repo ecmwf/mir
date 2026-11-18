@@ -8,6 +8,8 @@
 #include <sstream>
 #include <typeinfo>  // bad_cast exception
 
+#include "eckit/log/JSON.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/MultiDimensionalInput.h"
@@ -154,6 +156,12 @@ bool MultiDimensionalOutput::sameParametrisation(const param::MIRParametrisation
 bool MultiDimensionalOutput::printParametrisation(std::ostream& out, const param::MIRParametrisation& param) const {
     ASSERT(!dimensions_.empty());
     return dimensions_[0]->printParametrisation(out, param);
+}
+
+
+void MultiDimensionalOutput::jsonParametrisation(eckit::JSON& j, const param::MIRParametrisation& param) const {
+    ASSERT(!dimensions_.empty());
+    dimensions_[0]->jsonParametrisation(j, param);
 }
 
 

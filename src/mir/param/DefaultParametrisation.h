@@ -30,6 +30,22 @@ public:
         return instance;
     }
 
+    /// While in scope (in its thread), specs are complete: with the values equal to the defaults, and the internal
+    /// values (written if json_complete)
+    class JSONComplete {
+    public:
+        JSONComplete() : previous_(complete()) { complete() = true; }
+        ~JSONComplete() { complete() = previous_; }
+
+        JSONComplete(const JSONComplete&)            = delete;
+        JSONComplete& operator=(const JSONComplete&) = delete;
+
+    private:
+        const bool previous_;
+    };
+
+    static bool json_complete() { return complete(); }
+
     template <typename T>
     T get_value(const std::string& name, const MIRParametrisation& param) const {
         T value{};
@@ -49,7 +65,10 @@ public:
     void json(eckit::JSON& j, const std::string& name, const T& value) const {
         T default_value{};
 
-        if constexpr (std::is_floating_point_v<std::remove_cv_t<T>>) {
+        if (complete()) {
+            j << name << value;
+        }
+        else if constexpr (std::is_floating_point_v<std::remove_cv_t<T>>) {
             if (!get(name, default_value) || !eckit::types::is_approximately_equal(value, default_value)) {
                 j << name << value;
             }
@@ -62,6 +81,12 @@ public:
         else if (!get(name, default_value) || value != default_value) {
             j << name << value;
         }
+    }
+
+private:
+    static bool& complete() {
+        thread_local bool complete = false;
+        return complete;
     }
 };
 

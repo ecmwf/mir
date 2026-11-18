@@ -6,6 +6,8 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
@@ -23,6 +25,11 @@ SelectField::SelectField(const param::MIRParametrisation& param) : Action(param)
 bool SelectField::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const SelectField*>(&other);
     return (o != nullptr) && (which_ == o->which_);
+}
+
+
+void SelectField::json(eckit::JSON& j) const {
+    j << "which" << which_;
 }
 
 

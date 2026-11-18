@@ -13,6 +13,8 @@ cdef extern from "mir/api/MIRJob.h" namespace "mir::api":
         MIRJob& set(string, double) except +
         MIRJob& set(string, double, double) except +
         void execute(MIRInput, MIROutput) except +
+        string action_plan_json(MIRInput) except +
+        string grid_plan_json(MIRInput) except +
         string json_str() const
 
 

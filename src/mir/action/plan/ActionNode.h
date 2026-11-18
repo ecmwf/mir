@@ -5,9 +5,14 @@
 #pragma once
 
 #include <iosfwd>
+#include <memory>
 
 #include "mir/action/plan/ActionGraph.h"
 
+
+namespace eckit {
+class JSON;
+}
 
 namespace mir {
 namespace api {
@@ -15,6 +20,9 @@ class MIRWatcher;
 }
 namespace action {
 class Action;
+}
+namespace repres {
+class RepresentationHandle;
 }
 }  // namespace mir
 
@@ -56,6 +64,15 @@ public:
 
     void dump(std::ostream&, size_t depth) const;
 
+    /// Action (spec) and the following, as a JSON list [action, [nodes...]]
+    void json(eckit::JSON&) const;
+
+    /// Grid (spec) after executing, and the following, as a JSON list [grid, [nodes...]] (see recordGrids)
+    void json_grids(eckit::JSON&) const;
+
+    /// Record the grid after executing, and the following
+    void recordGrids();
+
     void notifyFailure(std::exception&, const Action&, api::MIRWatcher*, bool& rethrow) const;
 
     // -- Overridden methods
@@ -90,6 +107,10 @@ private:
     const Action& action_;
     ActionGraph graph_;
     api::MIRWatcher* watcher_;  // Just a reference, do not own
+
+    /// Grid after executing, if recording (a node executes once per graph execution, so no locking)
+    mutable std::unique_ptr<repres::RepresentationHandle> representation_;
+    bool recordGrid_ = false;
 
     // -- Methods
     // None

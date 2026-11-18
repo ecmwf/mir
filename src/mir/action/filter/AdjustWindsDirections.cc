@@ -7,6 +7,8 @@
 #include <ostream>
 #include <vector>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/data/CartesianVector2DField.h"
 #include "mir/data/MIRField.h"
@@ -29,6 +31,11 @@ AdjustWindsDirections::AdjustWindsDirections(const param::MIRParametrisation& pa
 bool AdjustWindsDirections::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const AdjustWindsDirections*>(&other);
     return (o != nullptr) && (rotation_ == o->rotation_);
+}
+
+
+void AdjustWindsDirections::json(eckit::JSON& j) const {
+    j << "rotation" << spec_value(rotation_);
 }
 
 

@@ -6,6 +6,8 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
@@ -27,6 +29,11 @@ ShTruncate::ShTruncate(const param::MIRParametrisation& param) : Action(param), 
 bool ShTruncate::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const ShTruncate*>(&other);
     return (o != nullptr) && (truncation_ == o->truncation_);
+}
+
+
+void ShTruncate::json(eckit::JSON& j) const {
+    j << "truncation" << truncation_;
 }
 
 

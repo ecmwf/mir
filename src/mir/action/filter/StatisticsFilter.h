@@ -54,6 +54,7 @@ public:
 private:
     // -- Members
 
+    std::string names_;
     std::vector<std::unique_ptr<stats::Statistics>> statistics_;
     size_t precision_;
 
@@ -64,6 +65,7 @@ private:
 
     // From Action
     bool sameAs(const Action&) const override;
+    void json(eckit::JSON&) const override;
     const char* name() const override;
     void print(std::ostream&) const override;
     void execute(context::Context&) const override;
