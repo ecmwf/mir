@@ -507,8 +507,7 @@ public:
         const auto a  = lonlat(-dx / 2., dy / 2.);
         const auto b  = lonlat(dx / 2., -dy / 2.);
 
-        longestElementDiagonal_ =
-            20. * util::Earth::distance(::atlas::PointLonLat(a[0], a[1]), ::atlas::PointLonLat(b[0], b[1]));
+        longestElementDiagonal_ = 20. * util::Earth::distance(PointLonLat{a[0], a[1]}, PointLonLat{b[0], b[1]});
         ASSERT(0. < longestElementDiagonal_);
     }
 

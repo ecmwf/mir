@@ -8,9 +8,9 @@
 #include <cmath>
 #include <ostream>
 
+#include "eckit/geo/area/BoundingBox.h"
 #include "eckit/types/FloatCompare.h"
 
-#include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Latitude.h"
 #include "mir/util/LongitudeDouble.h"
@@ -27,12 +27,13 @@ GridBox::GridBox(double north, double west, double south, double east) :
 
 
 double GridBox::area() const {
-    return Earth::area({west_, north_}, {east_, south_});
+    static const Earth EARTH;
+    return EARTH.area(eckit::geo::area::BoundingBox{north_, west_, south_, east_});
 }
 
 
 double GridBox::diagonal() const {
-    return Earth::distance({west_, north_}, {east_, south_});
+    return Earth::distance(PointLonLat{west_, north_}, PointLonLat{east_, south_});
 }
 
 

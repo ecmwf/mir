@@ -26,7 +26,7 @@ class Tree {
     Tree& operator=(const Tree&) = delete;
 
 public:
-    using Point          = Point3;
+    using Point          = PointXYZ;
     using Payload        = size_t;
     using PointValueType = eckit::SPValue<Tree>;
 

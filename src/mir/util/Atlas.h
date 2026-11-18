@@ -39,16 +39,6 @@
 #include "atlas/trans/LegendreCacheCreator.h"
 #include "atlas/trans/Trans.h"
 #include "atlas/util/Config.h"
-#include "atlas/util/Earth.h"
 #include "atlas/util/GaussianLatitudes.h"
 #include "atlas/util/Point.h"
 #include "atlas/util/Rotation.h"
-
-
-namespace mir::util {
-
-
-using atlas::util::Earth;
-
-
-}  // namespace mir::util

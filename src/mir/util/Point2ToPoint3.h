@@ -19,14 +19,14 @@ namespace mir::util {
 
 struct Point2ToPoint3 final {
     Point2ToPoint3(const repres::Representation&, double poleDisplacement);
-    Point3 operator()(const Point2&) const;
+    PointXYZ operator()(const Point2&) const;
 
 private:
     struct Calculate {
         Calculate()          = default;
         virtual ~Calculate() = default;
 
-        virtual Point3 make_point3(const Point2&) const = 0;
+        virtual PointXYZ make_point3(const Point2&) const = 0;
 
         Calculate(const Calculate&) = delete;
         Calculate(Calculate&&)      = delete;
@@ -36,12 +36,12 @@ private:
     };
 
     struct Point3Simple final : Calculate {
-        Point3 make_point3(const Point2&) const override;
+        PointXYZ make_point3(const Point2&) const override;
     };
 
     struct Point3Displaced final : Calculate {
         explicit Point3Displaced(double poleDisplacement);
-        Point3 make_point3(const Point2&) const override;
+        PointXYZ make_point3(const Point2&) const override;
         const double eps_;
     };
 

@@ -7,7 +7,6 @@
 #include <cmath>
 
 #include "mir/util/Angles.h"
-#include "mir/util/Atlas.h"
 #include "mir/util/Log.h"
 
 #include "action.h"
