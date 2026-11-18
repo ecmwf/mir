@@ -159,16 +159,20 @@ CASE("distance weighting methods") {
 
 
     SECTION("cressman") {
-        // (power 2, the default power 1 is covered in the bugs report)
         param.set("distance", 3.);
+
+        auto c = [](double d2, double power) { return std::pow((9. - d2) / (9. + d2), power); };
+        EXPECT(same_weights(weights("cressman", origin), ip, normalise({{1, c(1., 1.)}, {2, c(4., 1.)}, {3, 0.}})));
+
         param.set("cressman-model-extension-power", 2.);
+        EXPECT(same_weights(weights("cressman", origin), ip, normalise({{1, c(1., 2.)}, {2, c(4., 2.)}, {3, 0.}})));
 
-        auto c = [](double d2) { return std::pow((d2 - 9.) / (d2 + 9.), 2); };
-        EXPECT(same_weights(weights("cressman", origin), ip, normalise({{1, c(1.)}, {2, c(4.)}, {3, 0.}})));
+        param.set("cressman-model-extension-power", 1.5);
+        EXPECT(same_weights(weights("cressman", origin), ip, normalise({{1, c(1., 1.5)}, {2, c(4., 1.5)}, {3, 0.}})));
 
-        // no neighbours within distance
+        // no neighbours within distance: the nearest neighbour
         param.set("distance", 0.5);
-        EXPECT(weights("cressman", origin).empty());
+        EXPECT(same_weights(weights("cressman", origin), ip, {{1, 1.}}));
 
         param.set("cressman-model-extension-power", 0.5);
         EXPECT_THROWS(weights("cressman", origin));

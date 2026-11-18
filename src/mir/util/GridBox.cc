@@ -5,6 +5,7 @@
 #include "mir/util/GridBox.h"
 
 #include <algorithm>
+#include <cmath>
 #include <ostream>
 
 #include "eckit/types/FloatCompare.h"
@@ -41,8 +42,13 @@ Point2 GridBox::centre() const {
 
 
 bool GridBox::contains(const Point2& p) const {
-    return eckit::types::is_approximately_lesser_or_equal(south_, p[0]) &&
-           eckit::types::is_approximately_lesser_or_equal(p[0], north_) &&
+    if (!eckit::types::is_approximately_lesser_or_equal(south_, p[0]) ||
+        !eckit::types::is_approximately_lesser_or_equal(p[0], north_)) {
+        return false;
+    }
+
+    // at the poles, every longitude is the same point
+    return eckit::types::is_approximately_equal(std::abs(p[0]), 90.) ||
            eckit::types::is_approximately_lesser_or_equal(LongitudeDouble(p[1]).normalise(west_).value(), east_);
 }
 
