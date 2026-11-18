@@ -8,7 +8,6 @@
 #include <vector>
 
 #include "eckit/container/sptree/SPValue.h"
-#include "eckit/geometry/Point3.h"
 
 #include "mir/util/Types.h"
 
@@ -26,7 +25,7 @@ class Tree {
     Tree& operator=(const Tree&) = delete;
 
 public:
-    using Point          = Point3;
+    using Point          = PointXYZ;
     using Payload        = size_t;
     using PointValueType = eckit::SPValue<Tree>;
 

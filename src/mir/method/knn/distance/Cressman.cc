@@ -27,7 +27,7 @@ Cressman::Cressman(const param::MIRParametrisation& param) :
 }
 
 
-void Cressman::operator()(size_t ip, const Point3& point,
+void Cressman::operator()(size_t ip, const PointXYZ& point,
                           const std::vector<search::PointSearch::PointValueType>& neighbours,
                           std::vector<WeightMatrix::Triplet>& triplets) const {
     const size_t nbPoints = neighbours.size();
@@ -40,7 +40,7 @@ void Cressman::operator()(size_t ip, const Point3& point,
     std::vector<double> weights(nbPoints);
     double sum = 0.;
     for (size_t j = 0; j < nbPoints; ++j) {
-        auto d2    = Point3::distance2(point, neighbours[j].point());
+        auto d2    = PointXYZ::distance2(point, neighbours[j].point());
         weights[j] = d2 < r2_ ? std::pow((r2_ - d2) / (r2_ + d2), power_) : 0.;
         sum += weights[j];
     }

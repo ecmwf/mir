@@ -651,6 +651,8 @@ list(APPEND mir_srcs
     util/LatitudeIncrement.h
     util/Log.cc
     util/Log.h
+    util/LonLatToPoint3.cc
+    util/LonLatToPoint3.h
     util/LongitudeDouble.cc
     util/LongitudeDouble.h
     util/LongitudeFraction.cc
@@ -663,8 +665,6 @@ list(APPEND mir_srcs
     util/Mutex.h
     util/PlanParser.cc
     util/PlanParser.h
-    util/Point2ToPoint3.cc
-    util/Point2ToPoint3.h
     util/PointLatLonT.h
     util/Regex.cc
     util/Regex.h
@@ -895,7 +895,7 @@ ecbuild_add_library(
     INSTALL_HEADERS    LISTED
     HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/mir
     TEMPLATES          caching/InMemoryCache.cc
-    PUBLIC_LIBS        atlas eckit_linalg eckit_geometry eckit_option eckit eckit_geo eccodes
+    PUBLIC_LIBS        atlas eckit_linalg eckit_option eckit eckit_geo eccodes
     PUBLIC_INCLUDES    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/src>
     SOURCES            ${mir_srcs})
 

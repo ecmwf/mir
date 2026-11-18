@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <initializer_list>
 #include <iosfwd>
 
 #include "eckit/geo/projection/Rotation.h"
@@ -14,7 +15,7 @@
 namespace mir::repres {
 
 
-class Iterator : protected PointLatLon {
+class Iterator {
 public:
     // -- Constructors
 
@@ -25,7 +26,7 @@ public:
 
     // -- Destructor
 
-    ~Iterator() override;
+    virtual ~Iterator();
 
     // -- Convertors
 
@@ -36,32 +37,38 @@ public:
     void operator=(const Iterator&) = delete;
     void operator=(Iterator&&)      = delete;
 
-    inline const Point2& operator*() const { return pointRotated(); }
+    inline const PointLonLat& operator*() const { return pointRotated(); }
 
     // -- Methods
 
-    static Point3 point_3D(const Point2&);
+    static PointXYZ point_3D(const PointLonLat&);
 
-    const Point2& pointRotated() const;
+    /// A braced list doesn't name its order (latitude/longitude or longitude/latitude), so the point is explicit
+    static PointXYZ point_3D(std::initializer_list<double>) = delete;
+
+    const PointLonLat& pointRotated() const;
     const PointLatLon& pointUnrotated() const;
-    Point3 point3D() const;
+    PointXYZ point3D() const;
 
     Iterator& next();
     virtual size_t index() const = 0;
 
 protected:
-    // -- Members
-
-    Point2 point_;
-    eckit::geo::projection::Rotation rotation_;
-    bool valid_;
-
     // -- Methods
 
-    void print(std::ostream&) const override = 0;
-    virtual bool next(Latitude&, Longitude&) = 0;
+    virtual void print(std::ostream&) const = 0;
+
+    /// The next point (of the grid frame, unrotated), false if none
+    virtual bool next(PointLonLat&) = 0;
 
 private:
+    // -- Members
+
+    PointLatLon unrotated_;
+    PointLonLat rotated_;
+    eckit::geo::projection::Rotation rotation_;
+    bool valid_ = true;
+
     // -- Friends
 
     friend std::ostream& operator<<(std::ostream& s, const Iterator& p) {

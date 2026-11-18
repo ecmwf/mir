@@ -271,7 +271,7 @@ CASE("Representation: common behaviour, by gridSpec") {
                 }
 
                 if (test.global) {
-                    EXPECT(same(area / util::Earth::area(), 1., 1e-6));
+                    EXPECT(same(area / util::Earth{}.area(), 1., 1e-6));
                 }
             }
 

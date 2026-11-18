@@ -22,7 +22,7 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/GridBox.h"
 #include "mir/util/Log.h"
-#include "mir/util/Point2ToPoint3.h"
+#include "mir/util/LonLatToPoint3.h"
 #include "mir/util/Trace.h"
 
 
@@ -83,7 +83,7 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
 
     const GridBoxes outBoxes(out);
 
-    util::Point2ToPoint3 point3(in, poleDisplacement());
+    util::LonLatToPoint3 point3(in, poleDisplacement());
 
     size_t nbFailures = 0;
     std::forward_list<std::pair<size_t, PointLatLon>> failures;
@@ -100,14 +100,6 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
         trace::ProgressTimer progress("Containing", outBoxes.size(), boxes);
 
         const auto R = outBoxes.getLongestGridBoxDiagonal();
-
-        auto point_2D = [](const Point3& point) -> Point2 {
-            atlas::PointLonLat pll;
-            util::Earth::convertCartesianToSpherical(point, pll);
-
-            // notice the order
-            return {pll[1], pll[0]};
-        };
 
         for (size_t i = 0; i < outBoxes.size(); ++i) {
             if (++progress) {
@@ -126,7 +118,7 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
             // calculate grid box contains
             std::vector<size_t> js;
             for (auto& c : closest) {
-                if (box.contains(point_2D(c.point()))) {
+                if (box.contains(util::Earth::_convertCartesianToSpherical(c.point()))) {
                     js.emplace_back(c.payload());
                 }
             }
@@ -142,8 +134,7 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
             }
             else {
                 ++nbFailures;
-                const auto c = box.centre();
-                failures.emplace_front(i, PointLatLon{c[0], c[1]});
+                failures.emplace_front(i, PointLatLon{box.centre()});
             }
         }
         log << "Contained " << Log::Pretty(weights_triplets.size(), points) << " in "
