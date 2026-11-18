@@ -27,8 +27,8 @@ endforeach()
 # - .slow. (ctest label slow), .fail. expected to fail
 # - .x: with the configuration files in config/
 set(TESTS
-    geopoints_to_regular_ll.geopoints-xyv.001.test
-    geopoints_to_regular_ll.geopoints-xyv.002.test
+    geopoints_to_geopoints.xyv.001.test
+    geopoints_to_geopoints.xyv.002.test
     lambert_azimuthal_equal_area_to_lambert_azimuthal_equal_area.area.test
     polar_stereographic_to_regular_ll.regrid.001.test
     polar_stereographic_to_regular_ll.regrid.002.test
@@ -175,7 +175,9 @@ set(TESTS
     sh_to_sh.vod2uv.001.test
     sh_to_sh.vod2uv.002.test
     sh_to_sh.vod2uv.003.test
+    sh_to_unstructured_grid.regrid.test
     sh_to_unstructured_grid.truncation-intgrid.test
+    sh_to_unstructured_grid.vod2uv.test
     unstructured_grid_to_regular_ll.intermediate-interpolation-nn.test)
 
 # ecCodes really doesn't build tools, so disabling testing is required
