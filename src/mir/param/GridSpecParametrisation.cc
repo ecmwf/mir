@@ -13,7 +13,6 @@
 #include "eckit/geo/grid/Reduced.h"
 #include "eckit/geo/grid/reduced/HEALPix.h"
 #include "eckit/geo/grid/reduced/ReducedGaussian.h"
-#include "eckit/geo/grid/reduced/ReducedLonLat.h"
 #include "eckit/geo/grid/regular/RegularGaussian.h"
 #include "eckit/geo/projection/Rotation.h"
 
@@ -30,7 +29,6 @@ using eckit::geo::Grid;
 using eckit::geo::grid::Reduced;
 using eckit::geo::grid::reduced::HEALPix;
 using eckit::geo::grid::reduced::ReducedGaussian;
-using eckit::geo::grid::reduced::ReducedLonLat;
 using eckit::geo::grid::regular::RegularGaussian;
 using eckit::geo::projection::Rotation;
 
@@ -211,14 +209,8 @@ bool GridSpecParametrisation::cached(const std::string& name) const {
         return true;
     }
 
-    if (name == "pl") {
-        if (const auto* g = dynamic_cast<const ReducedGaussian*>(&grid); g != nullptr) {
-            return set(g->pl());
-        }
-
-        if (const auto* g = dynamic_cast<const ReducedLonLat*>(&grid); g != nullptr) {
-            return set(g->pl());
-        }
+    if (name == "pl" && reduced != nullptr) {
+        return set(grid.pl());
     }
 
     // HEALPix
