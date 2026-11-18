@@ -44,15 +44,14 @@ data::MIRField MultiStreamInput::field() const {
 
 
 bool MultiStreamInput::next() {
-    if (!streams_.empty()) {
-        streams_.pop_front();
+    // the streams in turn, each until exhausted
+    for (; !streams_.empty(); streams_.pop_front()) {
+        if (streams_.front()->next()) {
+            return true;
+        }
     }
 
-    if (streams_.empty()) {
-        return false;
-    }
-
-    return streams_.front()->next() || next();
+    return false;
 }
 
 

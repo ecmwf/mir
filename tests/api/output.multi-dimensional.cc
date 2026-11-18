@@ -97,7 +97,18 @@ CASE("MultiDimensionalOutput") {
         EXPECT_NOT(base.sameAs(shorter));
         EXPECT_NOT(base.sameAs(*out1));
 
-        EXPECT(to_string(base).find("MultiDimensionalOutput[") == 0);
+        // the same (and different) outputs by dimension
+        output::MultiDimensionalOutput empty1;
+        output::MultiDimensionalOutput empty2;
+        for (auto* m : {&empty1, &empty2}) {
+            m->appendDimensionalOutput(new output::EmptyOutput);
+            m->appendDimensionalOutput(new output::EmptyOutput);
+        }
+        const MIROutput& e1 = empty1;
+        EXPECT(e1.sameAs(empty2));
+        EXPECT_NOT(base.sameAs(e1));
+
+        EXPECT_EQUAL(to_string(base), "MultiDimensionalOutput[ValuesOutput[],ValuesOutput[]]");
     }
 }
 

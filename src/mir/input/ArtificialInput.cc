@@ -102,6 +102,10 @@ void ArtificialInput::setAuxiliaryInformation(const util::ValueMap& map) {
     if (std::string lats, lons; parametrisation_.get("latitudes", lats) && parametrisation_.get("longitudes", lons)) {
         load(lats, latitudes_);
         load(lons, longitudes_);
+
+        // the paths would otherwise hide the coordinates (of the same keys)
+        parametrisation_.clear("latitudes").clear("longitudes");
+        parametrisation_.set("latitudes-path", lats).set("longitudes-path", lons);
     }
 
     ASSERT(latitudes_.size() == longitudes_.size());

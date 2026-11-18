@@ -84,6 +84,7 @@ bool GribAllFileInput::next() {
             // Log::info() << *(*j) << std::endl;
             ASSERT(j->next());
         }
+        count_++;
         return true;
     }
     return false;
