@@ -6,6 +6,8 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/method/knn/pick/Pick.h"
 #include "mir/method/solver/Statistics.h"
 #include "mir/param/MIRParametrisation.h"
@@ -17,14 +19,13 @@ namespace mir::method::knn {
 
 
 KNearestStatistics::KNearestStatistics(const param::MIRParametrisation& param) :
-    KNearestNeighbours(param), distanceWeighting_(param) {
+    KNearestNeighbours(param), distanceWeighting_(param), interpolationStatistics_("maximum") {
     std::string method = "nclosest-or-nearest";
     param.get("nearest-method", method);
     pick_.reset(pick::PickFactory::build(method, param));
 
-    std::string stats = "maximum";
-    param.get("interpolation-statistics", stats);
-    setSolver(new solver::Statistics(param, stats::FieldFactory::build(stats, param)));
+    param.get("interpolation-statistics", interpolationStatistics_);
+    setSolver(new solver::Statistics(param, stats::FieldFactory::build(interpolationStatistics_, param)));
 }
 
 
@@ -35,7 +36,14 @@ const char* KNearestStatistics::type() const {
 
 bool KNearestStatistics::sameAs(const Method& other) const {
     const auto* o = dynamic_cast<const KNearestStatistics*>(&other);
-    return (o != nullptr) && KNearestStatistics::sameAs(other);
+    return (o != nullptr) && interpolationStatistics_ == o->interpolationStatistics_ &&
+           KNearestNeighbours::sameAs(other);
+}
+
+
+void KNearestStatistics::json(eckit::JSON& j) const {
+    KNearestNeighbours::json(j);
+    j << "interpolation-statistics" << interpolationStatistics_;
 }
 
 

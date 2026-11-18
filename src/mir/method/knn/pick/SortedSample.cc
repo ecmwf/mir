@@ -33,7 +33,7 @@ size_t SortedSample::n() const {
 
 bool SortedSample::sameAs(const Pick& other) const {
     const auto* o = dynamic_cast<const SortedSample*>(&other);
-    return (o != nullptr) && sample_.sameAs(*o);
+    return (o != nullptr) && sample_.sameAs(o->sample_);
 }
 
 

@@ -26,8 +26,9 @@ double power_from_key(const param::MIRParametrisation& param, const std::string&
 }  // namespace
 
 
-InverseDistanceWeighting::InverseDistanceWeighting(const param::MIRParametrisation& /*param*/, double power) :
-    power_(power) {
+InverseDistanceWeighting::InverseDistanceWeighting(const param::MIRParametrisation& /*param*/, double power,
+                                                   const std::string& name) :
+    power_(power), name_(name) {
     // half power is used to avoid the Point3::distance extra srqt
     halfPower_ = power_ * 0.5;
     ASSERT(halfPower_ >= 0.);
@@ -75,8 +76,7 @@ bool InverseDistanceWeighting::sameAs(const DistanceWeighting& other) const {
 
 
 void InverseDistanceWeighting::json(eckit::JSON& j) const {
-    j << type() << "inverse-distance-weighting";
-    j << "inverse-distance-weighting-power" << power_;
+    j << type() << name_;
 }
 
 
@@ -93,18 +93,28 @@ void InverseDistanceWeighting::hash(eckit::MD5& h) const {
 
 
 struct IDWClassic final : InverseDistanceWeighting {
-    explicit IDWClassic(const param::MIRParametrisation& param) : InverseDistanceWeighting(param, 1.) {}
+    explicit IDWClassic(const param::MIRParametrisation& param) :
+        InverseDistanceWeighting(param, 1., "inverse-distance-weighting") {}
 };
 
 
 struct IDWReciprocal final : InverseDistanceWeighting {
-    explicit IDWReciprocal(const param::MIRParametrisation& param) : InverseDistanceWeighting(param, 2.) {}
+    explicit IDWReciprocal(const param::MIRParametrisation& param) :
+        InverseDistanceWeighting(param, 2., "reciprocal") {}
 };
 
 
 struct IDWShepard final : InverseDistanceWeighting {
     explicit IDWShepard(const param::MIRParametrisation& param) :
-        InverseDistanceWeighting(param, power_from_key(param, "distance-weighting-shepard-power")) {}
+        InverseDistanceWeighting(param, power_from_key(param, KEY), "shepard") {}
+
+private:
+    static constexpr const char* KEY = "distance-weighting-shepard-power";
+
+    void json(eckit::JSON& j) const override {
+        InverseDistanceWeighting::json(j);
+        j << KEY << power();
+    }
 };
 
 

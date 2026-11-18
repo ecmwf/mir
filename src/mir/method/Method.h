@@ -45,10 +45,14 @@ public:
     void operator=(const Method&) = delete;
     void operator=(Method&&)      = delete;
 
-    virtual const char* type() const         = 0;
-    virtual void hash(eckit::MD5&) const     = 0;
+    virtual const char* type() const     = 0;
+    virtual void hash(eckit::MD5&) const = 0;
+
+    /// The same method, so that plans share its results (see ActionGraph); a data-dependent method (solving by
+    /// statistics, see solver::Statistics) is never the same, not even as itself, and compares by spec (operator==)
     virtual bool sameAs(const Method&) const = 0;
-    virtual int version() const              = 0;
+
+    virtual int version() const = 0;
 
     virtual void execute(context::Context&, const repres::Representation& in,
                          const repres::Representation& out) const = 0;

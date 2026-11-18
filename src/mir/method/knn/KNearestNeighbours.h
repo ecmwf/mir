@@ -38,9 +38,9 @@ protected:
                   const repres::Representation& out) const override;
 
     bool sameAs(const Method&) const override = 0;
+    void json(eckit::JSON&) const override;
 
 private:
-    void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
 
     const char* type() const override = 0;

@@ -5,6 +5,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 
 #include "mir/method/knn/KNearestNeighbours.h"
 #include "mir/method/knn/distance/NoDistanceWeighting.h"
@@ -19,11 +20,13 @@ struct KNearestStatistics final : KNearestNeighbours {
 private:
     const char* type() const override;
     bool sameAs(const Method&) const override;
+    void json(eckit::JSON&) const override;
     const pick::Pick& pick() const override;
     const distance::DistanceWeighting& distanceWeighting() const override;
 
     std::unique_ptr<const pick::Pick> pick_;
     distance::NoDistanceWeighting distanceWeighting_;
+    std::string interpolationStatistics_;
 };
 
 
