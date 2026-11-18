@@ -15,7 +15,8 @@ namespace mir::method::knn::distance {
 struct InverseDistanceWeighting : DistanceWeighting {
 protected:
     InverseDistanceWeighting(const param::MIRParametrisation&, double power, const std::string& name);
-    void operator()(size_t ip, const Point3& point, const std::vector<search::PointSearch::PointValueType>& neighbours,
+    void operator()(size_t ip, const PointXYZ& point,
+                    const std::vector<search::PointSearch::PointValueType>& neighbours,
                     std::vector<WeightMatrix::Triplet>& triplets) const override;
 
     void json(eckit::JSON& j) const override;

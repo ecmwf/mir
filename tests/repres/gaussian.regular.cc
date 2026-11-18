@@ -140,7 +140,8 @@ CASE("Regular Gaussian grid: globalise (the points, then a global grid's points 
         std::unique_ptr<Iterator> b(global->iterator());
         for (size_t k = 0; k < n; ++k) {
             ASSERT(a->next() && b->next());
-            EXPECT(Point3::distance(a->point3D(), b->point3D()) < 1.);  // (metres, the unstructured grid approximately)
+            EXPECT(PointXYZ::distance(a->point3D(), b->point3D()) <
+                   1.);  // (metres, the unstructured grid approximately)
         }
     }
 

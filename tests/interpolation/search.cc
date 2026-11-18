@@ -31,7 +31,7 @@ using Neighbors = std::vector<PointSearch::PointValueType>;
 using Indices   = std::set<size_t>;
 
 
-Point3 point3(double lat, double lon) {
+PointXYZ point3(double lat, double lon) {
     return repres::Iterator::point_3D({lat, lon});
 }
 

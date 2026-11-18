@@ -52,7 +52,7 @@ Iterator& Iterator::next() {
 }
 
 
-Point3 Iterator::point_3D(const Point2& point) {
+PointXYZ Iterator::point_3D(const Point2& point) {
     static const eckit::geo::projection::LonLatToXYZ to_xyz;
 
     // notice the order
@@ -62,7 +62,7 @@ Point3 Iterator::point_3D(const Point2& point) {
 }
 
 
-Point3 Iterator::point3D() const {
+PointXYZ Iterator::point3D() const {
     ASSERT(valid_);
     return point_3D(point_);
 }

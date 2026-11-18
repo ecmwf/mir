@@ -208,8 +208,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
                 // search neighbour points to P (start of j-th row)
                 t = timer.elapsed();
 
-                Point3 P;
-                util::Earth::convertSphericalToCartesian({lon[0], lat[j]}, P);
+                const auto P = util::Earth::_convertSphericalToCartesian(PointLonLat{lon[0], lat[j]});
 
                 std::vector<search::PointSearch::PointValueType> closest;
                 tree.closestWithinRadius(P, distance, closest);
@@ -230,7 +229,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
 
                     double sum = 0.;
                     for (size_t w = 0; w < Nw; ++w) {
-                        auto r = Point3::distance(P, closest[w].point());
+                        auto r = PointXYZ::distance(P, closest[w].point());
                         auto h = r < halfDelta - delta ? 1.
                                  : halfDelta + delta < r
                                      ? 0.

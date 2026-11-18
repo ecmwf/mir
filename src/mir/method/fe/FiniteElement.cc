@@ -349,7 +349,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
 
                 // 3D projection, trying elements closest to p
                 const auto p = point3(*(*it));
-                auto closest = eTree->findInSphere(p, R);
+                auto closest = eTree->findInSphere(element_tree_t::Point{p.X(), p.Y(), p.Z()}, R);
 
                 atlas::interpolation::method::Ray ray(p.data());
 

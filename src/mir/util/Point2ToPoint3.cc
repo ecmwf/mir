@@ -18,7 +18,7 @@ Point2ToPoint3::Point2ToPoint3(const repres::Representation& rep, double poleDis
                    : new Point3Simple) {}
 
 
-Point3 Point2ToPoint3::operator()(const Point2& p2) const {
+PointXYZ Point2ToPoint3::operator()(const Point2& p2) const {
     return calculate_->make_point3(p2);
 }
 
@@ -28,7 +28,7 @@ Point2ToPoint3::Point3Displaced::Point3Displaced(double poleDisplacement) : eps_
 }
 
 
-Point3 Point2ToPoint3::Point3Displaced::make_point3(const Point2& p2) const {
+PointXYZ Point2ToPoint3::Point3Displaced::make_point3(const Point2& p2) const {
     const Point2 p2d{Latitude::NORTH_POLE <= p2[0] + eps_   ? p2[0] - eps_
                      : Latitude::SOUTH_POLE >= p2[0] - eps_ ? p2[0] + eps_
                                                             : p2[0],
@@ -37,7 +37,7 @@ Point3 Point2ToPoint3::Point3Displaced::make_point3(const Point2& p2) const {
 }
 
 
-Point3 Point2ToPoint3::Point3Simple::make_point3(const Point2& p2) const {
+PointXYZ Point2ToPoint3::Point3Simple::make_point3(const Point2& p2) const {
     return repres::Iterator::point_3D(p2);
 }
 

@@ -40,11 +40,11 @@ public:
 
     // -- Methods
 
-    static Point3 point_3D(const Point2&);
+    static PointXYZ point_3D(const Point2&);
 
     const Point2& pointRotated() const;
     const PointLatLon& pointUnrotated() const;
-    Point3 point3D() const;
+    PointXYZ point3D() const;
 
     Iterator& next();
     virtual size_t index() const = 0;
