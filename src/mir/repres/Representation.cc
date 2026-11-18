@@ -323,8 +323,8 @@ const Representation* Representation::globalise(data::MIRField& field) const {
     for (const std::unique_ptr<Iterator> it(iterator()); it->next();) {
         const auto& p = it->pointRotated();
         ASSERT(it->index() < n);
-        latitudes[it->index()]  = p[0];
-        longitudes[it->index()] = p[1];
+        latitudes[it->index()]  = p.lat();
+        longitudes[it->index()] = p.lon();
     }
 
     const auto dom = geographicDomain();
@@ -332,9 +332,9 @@ const Representation* Representation::globalise(data::MIRField& field) const {
     RepresentationHandle octahedral(key::grid::Grid::lookup("O320").representation());
     for (const std::unique_ptr<Iterator> it(octahedral->iterator()); it->next();) {
         const auto& p = it->pointRotated();
-        if (!dom.contains(PointLatLon{p[0], p[1]})) {
-            latitudes.push_back(p[0]);
-            longitudes.push_back(p[1]);
+        if (!dom.contains(p)) {
+            latitudes.push_back(p.lat());
+            longitudes.push_back(p.lon());
         }
     }
 

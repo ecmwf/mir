@@ -91,7 +91,7 @@ void for_each(const data::MIRField& out, size_t which, FN fn) {
 
     for (std::unique_ptr<repres::Iterator> it(out.representation()->iterator()); it->next(); ++n) {
         const auto& p = it->pointRotated();
-        fn(values.at(it->index()), p[0], p[1]);
+        fn(values.at(it->index()), p.lat(), p.lon());
     }
 
     EXPECT_EQUAL(n, values.size());

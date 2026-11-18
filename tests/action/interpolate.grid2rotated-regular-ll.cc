@@ -53,8 +53,8 @@ CASE("interpolate.grid2rotated-regular-ll") {
             if (it->pointUnrotated().lat() == Latitude::SOUTH_POLE) {
                 const auto& p = *(*it);
 
-                EXPECT(same(p[0], -40., 1e-6));
-                EXPECT(same(p[1], 22., 1e-6));
+                EXPECT(same(p.lat(), -40., 1e-6));
+                EXPECT(same(p.lon(), 22., 1e-6));
                 EXPECT(std::abs(out.values(0)[it->index()] - -40.) < 0.2);
 
                 ++n;

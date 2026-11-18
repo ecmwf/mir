@@ -36,8 +36,6 @@ namespace {
 
 
 using eckit::geo::Figure;
-using eckit::geo::PointLonLat;
-using eckit::geo::PointXY;
 using CustomSpec = eckit::spec::Custom;
 
 
@@ -230,10 +228,6 @@ RegularXY::RegularXY(const param::MIRParametrisation& param, std::unique_ptr<Cus
     grid_.reset(eckit::geo::GridFactory::build(*spec));
     ASSERT(grid_);
 
-    // false easting/northing, as the grid
-    const auto f = grid_->false_xy();
-    false_       = {f.X(), f.Y()};
-
     bbox_ = bounding_box(*grid_);
 }
 
@@ -246,21 +240,19 @@ const eckit::geo::Grid& RegularXY::grid() const {
 }
 
 
-Point2 RegularXY::lonlat(double x, double y) const {
-    const auto p = std::get<PointLonLat>(grid_->projection().fwd(PointXY{x - false_[0], y - false_[1]}));
-    return {p.lon(), p.lat()};
+PointLonLat RegularXY::lonlat(const PointXY& p) const {
+    return std::get<PointLonLat>(grid_->projection().fwd(p - grid_->false_xy()));
 }
 
 
-Point2 RegularXY::firstPoint() const {
+PointLonLat RegularXY::firstPoint() const {
     if (firstPointBottomLeft_) {
         const auto& x = grid_->x();
         const auto& y = grid_->y();
-        return lonlat(std::min(x.a(), x.b()), std::min(y.a(), y.b()));
+        return lonlat({std::min(x.a(), x.b()), std::min(y.a(), y.b())});
     }
 
-    const auto p = std::get<PointLonLat>(grid_->first_point());
-    return {p.lon(), p.lat()};
+    return std::get<PointLonLat>(grid_->first_point());
 }
 
 
@@ -279,8 +271,9 @@ size_t RegularXY::numberOfPoints() const {
     if (::atlas::projection::ProjectionFactory::has("proj")) {
         const auto& gx = grid_->x();
         const auto& gy = grid_->y();
-        ::atlas::grid::LinearSpacing x(gx.a() - false_[0], gx.b() - false_[0], static_cast<long>(gx.size()));
-        ::atlas::grid::LinearSpacing y(gy.a() - false_[1], gy.b() - false_[1], static_cast<long>(gy.size()));
+        const auto f   = grid_->false_xy();
+        ::atlas::grid::LinearSpacing x(gx.a() - f.X(), gx.b() - f.X(), static_cast<long>(gx.size()));
+        ::atlas::grid::LinearSpacing y(gy.a() - f.Y(), gy.b() - f.Y(), static_cast<long>(gy.size()));
         ::atlas::Projection projection(
             ::atlas::Projection::Spec("type", "proj").set("proj", grid_->projection().proj_str()));
         return ::atlas::RegularGrid(x, y, projection);
@@ -354,8 +347,8 @@ void RegularXY::fillGrib(grib_info& info) const {
 
     const auto first = firstPoint();
 
-    info.grid.latitudeOfFirstGridPointInDegrees  = first[LLCOORDS::LAT];
-    info.grid.longitudeOfFirstGridPointInDegrees = longitude(first[LLCOORDS::LON]);
+    info.grid.latitudeOfFirstGridPointInDegrees  = first.lat();
+    info.grid.longitudeOfFirstGridPointInDegrees = longitude(first.lon());
 
     info.grid.Ni = static_cast<long>(grid_->nx());
     info.grid.Nj = static_cast<long>(grid_->ny());
@@ -504,10 +497,10 @@ public:
         // the sub-satellite point (the projection origin)
         const auto dx = grid().dx();
         const auto dy = grid().dy();
-        const auto a  = lonlat(-dx / 2., dy / 2.);
-        const auto b  = lonlat(dx / 2., -dy / 2.);
+        const auto a  = lonlat({-dx / 2., dy / 2.});
+        const auto b  = lonlat({dx / 2., -dy / 2.});
 
-        longestElementDiagonal_ = 20. * util::Earth::distance(PointLonLat{a[0], a[1]}, PointLonLat{b[0], b[1]});
+        longestElementDiagonal_ = 20. * util::Earth::distance(a, b);
         ASSERT(0. < longestElementDiagonal_);
     }
 

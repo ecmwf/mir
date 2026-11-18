@@ -251,8 +251,8 @@ CASE("GridSpec representation round trip (points, and spec describing the same g
             std::vector<double> repres_lats;
             std::vector<double> repres_lons;
             for (std::unique_ptr<Iterator> it(repres->iterator()); it->next();) {
-                repres_lats.push_back((*(*it))[0]);
-                repres_lons.push_back((*(*it))[1]);
+                repres_lats.push_back((**it).lat());
+                repres_lons.push_back((**it).lon());
             }
 
             EXPECT_EQUAL(repres->numberOfPoints(), grid->size());

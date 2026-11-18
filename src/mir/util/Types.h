@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "eckit/geo/PointLonLat.h"
+#include "eckit/geo/PointXY.h"
 #include "eckit/geo/PointXYZ.h"
 #include "eckit/geo/figure/Earth.h"
 #include "eckit/geometry/Point2.h"
@@ -24,12 +25,11 @@ namespace mir {
 using Longitude   = LongitudeFraction;
 using PointLatLon = util::PointLatLonT<Latitude, Longitude>;
 
-using eckit::geometry::Point2;
-
 using LLCOORDS  = eckit::geometry::LLCOORDS;
 using XYZCOORDS = eckit::geometry::XYZCOORDS;
 
 using eckit::geo::PointLonLat;
+using eckit::geo::PointXY;
 using eckit::geo::PointXYZ;
 
 using MIRValuesVector = std::vector<double>;

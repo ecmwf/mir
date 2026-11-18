@@ -17,63 +17,55 @@ namespace repres {
 
 Iterator::Iterator(const util::Rotation& rotation) :
     rotation_({rotation.south_pole_longitude().value(), rotation.south_pole_latitude().value()},
-              rotation.south_pole_rotation_angle()),
-    valid_(true) {}
+              rotation.south_pole_rotation_angle()) {}
 
 
 Iterator::~Iterator() = default;
 
 
-const Point2& Iterator::pointRotated() const {
+const PointLonLat& Iterator::pointRotated() const {
     ASSERT(valid_);
-    return point_;
+    return rotated_;
 }
 
 
 const PointLatLon& Iterator::pointUnrotated() const {
     ASSERT(valid_);
-    return *this;
+    return unrotated_;
 }
 
 
 Iterator& Iterator::next() {
     ASSERT(valid_);
-    valid_ = next(lat_, lon_);
+    PointLonLat p;
+    valid_ = next(p);
 
     if (valid_) {
-        auto p = rotation_.inv(eckit::geo::PointLonLat{lon_.value(), lat_.value()});
-
-        // notice the order
-        point_[0] = p.lat();
-        point_[1] = p.lon();
+        unrotated_ = PointLatLon{p};
+        rotated_   = rotation_.inv(unrotated_.lonlat());  // of the point as kept (see Longitude)
     }
 
     return *this;
 }
 
 
-PointXYZ Iterator::point_3D(const Point2& point) {
+PointXYZ Iterator::point_3D(const PointLonLat& point) {
     static const eckit::geo::projection::LonLatToXYZ to_xyz;
-
-    // notice the order
-    auto p = to_xyz.fwd(eckit::geo::PointLonLat{point[1], point[0]});
-
-    return {p.X(), p.Y(), p.Z()};
+    return to_xyz.fwd(point);
 }
 
 
 PointXYZ Iterator::point3D() const {
     ASSERT(valid_);
-    return point_3D(point_);
+    return point_3D(rotated_);
 }
 
 
 void Iterator::print(std::ostream& out) const {
     out << "Iterator["
            "valid?"
-        << valid_ << ",PointLatLon=";
-    PointLatLon::print(out);
-    out << ",point=" << point_ << ",rotated?" << rotation_.rotated() << ",rotation=" << rotation_.spec_str() << "]";
+        << valid_ << ",PointLatLon=" << unrotated_ << ",point={" << rotated_.lat() << ',' << rotated_.lon()
+        << "},rotated?" << rotation_.rotated() << ",rotation=" << rotation_.spec_str() << "]";
 }
 
 

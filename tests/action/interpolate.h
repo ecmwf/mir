@@ -30,7 +30,7 @@ inline void for_each_point(const data::MIRField& field, size_t which,
 
     for (std::unique_ptr<repres::Iterator> it(field.representation()->iterator()); it->next();) {
         const auto& p = *(*it);
-        f(p[0], p[1], values.at(it->index()));
+        f(p.lat(), p.lon(), values.at(it->index()));
     }
 }
 

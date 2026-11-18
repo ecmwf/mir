@@ -53,7 +53,8 @@ std::string MissingValues::execute(const data::MIRField& field1, const data::MIR
             bool miss2 = values2.at(i) == missingValue2;
 
             if (miss1 != miss2) {
-                reasons << "\n* " << i << '\t' << it->pointRotated() << '\t'
+                const auto& p = it->pointRotated();
+                reasons << "\n* " << i << "\t{" << p.lat() << ',' << p.lon() << "}\t"
                         << (miss1 ? "missing" : std::to_string(values1[i])) << '\t'
                         << (miss2 ? "missing" : std::to_string(values2[i]));
             }

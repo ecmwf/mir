@@ -45,15 +45,20 @@ CASE("Gaussian latitudes and quadrature weights") {
 
 
 CASE("Gaussian grids: number of points and first points, global and cropped") {
+    struct latlon_t {
+        double lat;
+        double lon;
+    };
+
     struct test_t {
         std::string grid;
         size_t numberOfPoints;
         size_t numberOfCroppedPoints;
         BoundingBox bbox;
-        Point2 globalP1;
-        Point2 globalP2;
-        Point2 localP1;
-        Point2 localP2;
+        latlon_t globalP1;
+        latlon_t globalP2;
+        latlon_t localP1;
+        latlon_t localP2;
     };
 
     const std::vector<test_t> tests{
@@ -221,17 +226,17 @@ CASE("Gaussian grids: number of points and first points, global and cropped") {
 
     const BoundingBox globe;
 
-    auto first_two_points = [](const Representation& repres, const BoundingBox& bbox, const Point2& p1,
-                               const Point2& p2) {
+    auto first_two_points = [](const Representation& repres, const BoundingBox& bbox, const latlon_t& p1,
+                               const latlon_t& p2) {
         std::unique_ptr<Iterator> it(repres.iterator());
 
         ASSERT(it->next());
         EXPECT(bbox.contains(*(*it)));
-        EXPECT(eckit::geometry::points_equal(*(*it), p1));
+        EXPECT(eckit::geo::points_equal(*(*it), PointLonLat{p1.lon, p1.lat}));
 
         ASSERT(it->next());
         EXPECT(bbox.contains(*(*it)));
-        EXPECT(eckit::geometry::points_equal(*(*it), p2));
+        EXPECT(eckit::geo::points_equal(*(*it), PointLonLat{p2.lon, p2.lat}));
     };
 
     for (const auto& test : tests) {

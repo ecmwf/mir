@@ -171,7 +171,7 @@ bool LatLon::getLongestElementDiagonal(double& d) const {
     auto weHalf = increments_.west_east().longitude().value() / TWO;
     ASSERT(!eckit::types::is_approximately_equal(weHalf, 0.));
 
-    d = TWO * util::Earth::distance({0., 0.}, {weHalf, snHalf});
+    d = TWO * util::Earth::distance(PointLonLat{0., 0.}, PointLonLat{weHalf, snHalf});
     return true;
 }
 
