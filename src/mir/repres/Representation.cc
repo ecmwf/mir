@@ -15,11 +15,10 @@
 #include "mir/key/grid/Grid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
-#include "mir/repres/other/UnstructuredGrid.h"
+#include "mir/repres/UnstructuredGrid.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
-#include "mir/util/Mutex.h"
 
 
 namespace mir::repres {
@@ -140,16 +139,24 @@ const Representation* Representation::truncate(size_t /*unused*/, const MIRValue
 }
 
 
-const Representation::Spec& Representation::spec() const {
-    if (!grid_) {
-        auto custom = std::make_unique<CustomSpec>();
-        fillSpec(*custom);
+const eckit::geo::Grid& Representation::grid() const {
+    // representations are shared (across threads), the grid is built on first use
+    util::lock_guard<util::recursive_mutex> lock(gridMutex_);
 
-        grid_.reset(eckit::geo::GridFactory::build(*custom));
+    if (!grid_) {
+        CustomSpec custom;
+        fillSpec(custom);
+
+        grid_.reset(eckit::geo::GridFactory::build(custom));
         ASSERT(grid_);
     }
 
-    return grid_->spec();
+    return *grid_;
+}
+
+
+const Representation::Spec& Representation::spec() const {
+    return grid().spec();
 }
 
 
@@ -357,7 +364,7 @@ const Representation* Representation::globalise(data::MIRField& field) const {
     field.hasMissing(true);
 
 
-    return new other::UnstructuredGrid(latitudes, longitudes);
+    return new UnstructuredGrid(latitudes, longitudes);
 }
 
 
@@ -388,6 +395,30 @@ RepresentationFactory::~RepresentationFactory() {
 
     m->erase(name_);
 }
+
+
+/// Representations not supported (by gridType): building throws
+class RepresentationUnsupportedBuilder final : public RepresentationFactory {
+    const std::string name_;
+
+    Representation* make(const param::MIRParametrisation& /*unused*/) override {
+        throw exception::FunctionalityNotSupported("Representation: gridType=" + name_ + " is currently unsupported");
+    }
+
+public:
+    explicit RepresentationUnsupportedBuilder(const std::string& name) : RepresentationFactory(name), name_(name) {}
+};
+
+
+static const RepresentationUnsupportedBuilder AZIMUTH_RANGE("azimuth_range");
+static const RepresentationUnsupportedBuilder EQUATORIAL_AZIMUTHAL_EQUIDISTANT("equatorial_azimuthal_equidistant");
+static const RepresentationUnsupportedBuilder ROTATED_SH("rotated_sh");
+static const RepresentationUnsupportedBuilder STRETCHED_GG("stretched_gg");
+static const RepresentationUnsupportedBuilder STRETCHED_LL("stretched_ll");
+static const RepresentationUnsupportedBuilder STRETCHED_ROTATED_GG("stretched_rotated_gg");
+static const RepresentationUnsupportedBuilder STRETCHED_ROTATED_LL("stretched_rotated_ll");
+static const RepresentationUnsupportedBuilder STRETCHED_ROTATED_SH("stretched_rotated_sh");
+static const RepresentationUnsupportedBuilder STRETCHED_SH("stretched_sh");
 
 
 const Representation* RepresentationFactory::build(const param::MIRParametrisation& params) {

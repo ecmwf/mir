@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
-#include "mir/repres/other/UnstructuredGrid.h"
+#include "mir/repres/UnstructuredGrid.h"
 
 #include <cctype>
 #include <limits>
@@ -21,11 +21,11 @@
 #include "mir/api/MIRJob.h"
 #include "mir/api/mir_config.h"
 #include "mir/input/GriddefInput.h"
+#include "mir/iterator/GridIterator.h"
 #include "mir/iterator/UnstructuredIterator.h"
 #include "mir/output/GriddefOutput.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
-#include "mir/repres/other/UnstructuredGrid.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/CheckDuplicatePoints.h"
@@ -127,7 +127,7 @@ protected:
 
     void fillMeshGen(util::MeshGeneratorParameters& params) const override {
         if (params.meshGenerator_.empty()) {
-            if (const auto uid = grid_ptr()->uid(); atlas::grid::SpecRegistry::has(uid)) {
+            if (const auto uid = grid_->uid(); atlas::grid::SpecRegistry::has(uid)) {
                 if (auto type = to_lower(atlas::grid::SpecRegistry::get(uid).getString("type", ""));
                     atlas::meshgenerator::MeshGeneratorFactory::has(type)) {
                     Log::debug() << "UnstructuredGrid: atlas::MeshGenerator(\"" << type << "\")" << std::endl;
@@ -140,20 +140,14 @@ protected:
         }
     }
 
-    void fillSpec(CustomSpec& spec) const override {
-        const auto& geoSpec = grid_->spec();
-        spec.set("grid", geoSpec.get_string(geoSpec.has("uid") ? "uid" : "grid"));
-    }
+    const eckit::geo::Grid& grid() const override { return *grid_; }
 
-    void print(std::ostream& out) const override { out << grid_->spec().str(); }
-    void json(eckit::JSON& j) const override { grid_->spec().json(j); }
+    void print(std::ostream& out) const override { out << spec().str(); }
+    void json(eckit::JSON& j) const override { spec().json(j); }
 
     size_t numberOfPoints() const override { return grid_->size(); }
 
-    Iterator* iterator() const override {
-        const auto& [lats, lons] = to_latlons();
-        return new iterator::UnstructuredIterator(lats, lons);
-    }
+    Iterator* iterator() const override { return new iterator::GridIterator(*grid_); }
 
     bool includesNorthPole() const override { return bbox_.north() == Latitude::NORTH_POLE; }
     bool includesSouthPole() const override { return bbox_.south() == Latitude::SOUTH_POLE; }
@@ -185,8 +179,6 @@ protected:
         return dom.isGlobal() ? grid : atlas::UnstructuredGrid(grid, dom);
     }
 
-    grid_type* grid_ptr() const { return grid_.get(); }
-
 private:
     std::unique_ptr<grid_type> grid_;
     mutable points_type points_;
@@ -201,7 +193,7 @@ public:
         info.grid.grid_type        = GRIB_UTIL_GRID_SPEC_UNSTRUCTURED;
         info.packing.editionNumber = 2;
 
-        const auto* ptr = dynamic_cast<const eckit::geo::grid::unstructured::FESOM*>(grid_ptr());
+        const auto* ptr = dynamic_cast<const eckit::geo::grid::unstructured::FESOM*>(&grid());
         ASSERT(ptr != nullptr);
 
         info.extra_set("unstructuredGridType", ptr->name().c_str());
@@ -225,7 +217,7 @@ public:
         info.grid.grid_type        = GRIB_UTIL_GRID_SPEC_UNSTRUCTURED;
         info.packing.editionNumber = 2;
 
-        const auto* ptr = dynamic_cast<const eckit::geo::grid::unstructured::ICON*>(grid_ptr());
+        const auto* ptr = dynamic_cast<const eckit::geo::grid::unstructured::ICON*>(&grid());
         ASSERT(ptr != nullptr);
 
         info.extra_set("uuidOfHGrid", ptr->uid().c_str());
@@ -256,7 +248,7 @@ public:
         info.grid.grid_type        = GRIB_UTIL_GRID_SPEC_UNSTRUCTURED;
         info.packing.editionNumber = 2;
 
-        const auto* ptr = dynamic_cast<const eckit::geo::grid::ORCA*>(grid_ptr());
+        const auto* ptr = dynamic_cast<const eckit::geo::grid::ORCA*>(&grid());
         ASSERT(ptr != nullptr);
 
         info.extra_set("unstructuredGridType", ptr->name().c_str());
@@ -445,10 +437,10 @@ const RepresentationBuilder<ORCA> REPRESENTATION_6("ORCA");
 
 
 template <>
-Representation* RepresentationBuilder<other::UnstructuredGrid>::make(const param::MIRParametrisation& param) {
+Representation* RepresentationBuilder<UnstructuredGrid>::make(const param::MIRParametrisation& param) {
     // NOTE: for grids defined by lat/lon auxiliary data
     if (param.has("latitudes/longitudes")) {
-        return new other::UnstructuredGrid(param);
+        return new UnstructuredGrid(param);
     }
 
     // specially-named grids
@@ -487,17 +479,14 @@ Representation* RepresentationBuilder<other::UnstructuredGrid>::make(const param
 #endif
 
     // other grids by specification (eckit::geo), by their points
-    if (std::string gridspec; param.get("gridspec", gridspec)) {
+    if (std::string gridspec; param.get("gridSpec", gridspec)) {
         std::unique_ptr<const eckit::geo::Grid> grid(eckit::geo::GridFactory::make_from_string(gridspec));
         const auto latlons = grid->to_latlons();
-        return new other::UnstructuredGrid(latlons.first, latlons.second);
+        return new UnstructuredGrid(latlons.first, latlons.second);
     }
 
-    return new other::UnstructuredGrid(param);
+    return new UnstructuredGrid(param);
 }
-
-
-namespace other {
 
 
 UnstructuredGrid::UnstructuredGrid(const param::MIRParametrisation& parametrisation) :
@@ -684,5 +673,4 @@ static const RepresentationBuilder<UnstructuredGrid> unstructured_grid("unstruct
 static const RepresentationBuilder<UnstructuredGrid> unstructured_ll("unstructured_ll");
 
 
-}  // namespace other
 }  // namespace mir::repres

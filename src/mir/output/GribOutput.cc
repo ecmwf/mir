@@ -249,7 +249,9 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
             info.grid.missingValue  = field.missingValue();
         }
 
-        // Ask representation to update info
+        // Ask representation to update info (as encoded in this edition)
+        pack->fillEdition(info);
+
         repres::RepresentationHandle repres(field.representation());
         repres->fillGrib(info);
 

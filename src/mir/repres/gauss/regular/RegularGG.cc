@@ -8,7 +8,7 @@
 #include <ostream>
 #include <utility>
 
-#include "mir/repres/gauss/GaussianIterator.h"
+#include "mir/iterator/GridIterator.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/GridBox.h"
@@ -38,8 +38,7 @@ bool RegularGG::sameAs(const Representation& other) const {
 
 
 Iterator* RegularGG::iterator() const {
-    std::vector<long> pl(N_ * 2, long(4 * N_));
-    return new gauss::GaussianIterator(latitudes(), std::move(pl), bbox_, N_, Nj_, k_);
+    return new iterator::GridIterator(grid(), true);
 }
 
 

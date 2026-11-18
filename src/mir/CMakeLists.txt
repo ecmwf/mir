@@ -266,6 +266,8 @@ list(APPEND mir_srcs
     input/RawInput.h
     input/VectorInput.cc
     input/VectorInput.h
+    iterator/GridIterator.cc
+    iterator/GridIterator.h
     iterator/UnstructuredIterator.cc
     iterator/UnstructuredIterator.h
     iterator/detail/RegularIterator.cc
@@ -494,16 +496,18 @@ list(APPEND mir_srcs
     repres/IrregularLatlon.h
     repres/Iterator.cc
     repres/Iterator.h
+    repres/None.cc
+    repres/None.h
     repres/RegularXY.cc
     repres/RegularXY.h
     repres/Representation.cc
     repres/Representation.h
     repres/Spectral.cc
     repres/Spectral.h
+    repres/UnstructuredGrid.cc
+    repres/UnstructuredGrid.h
     repres/gauss/Gaussian.cc
     repres/gauss/Gaussian.h
-    repres/gauss/GaussianIterator.cc
-    repres/gauss/GaussianIterator.h
     repres/gauss/reduced/Classic.cc
     repres/gauss/reduced/Classic.h
     repres/gauss/reduced/FromPL.cc
@@ -538,22 +542,6 @@ list(APPEND mir_srcs
     repres/latlon/RegularLL.h
     repres/latlon/RotatedLL.cc
     repres/latlon/RotatedLL.h
-    repres/other/None.cc
-    repres/other/None.h
-    repres/other/UnstructuredGrid.cc
-    repres/other/UnstructuredGrid.h
-    repres/regular/Lambert.cc
-    repres/regular/Lambert.h
-    repres/regular/LambertAzimuthalEqualArea.cc
-    repres/regular/LambertAzimuthalEqualArea.h
-    repres/regular/Mercator.cc
-    repres/regular/Mercator.h
-    repres/regular/PolarStereographic.cc
-    repres/regular/PolarStereographic.h
-    repres/regular/RegularGrid.cc
-    repres/regular/RegularGrid.h
-    repres/regular/SpaceView.cc
-    repres/regular/SpaceView.h
     repres/sh/SphericalHarmonics.cc
     repres/sh/SphericalHarmonics.h
     search/PointSearch.cc
@@ -685,8 +673,6 @@ list(APPEND mir_srcs
     util/Reorder.h
     util/Rotation.cc
     util/Rotation.h
-    util/Shape.cc
-    util/Shape.h
     util/SpectralOrder.cc
     util/SpectralOrder.h
     util/SpectralOrderT.cc
@@ -695,8 +681,6 @@ list(APPEND mir_srcs
     util/Trace.h
     util/Translator.h
     util/Types.h
-    util/UnsupportedFunctionality.cc
-    util/UnsupportedFunctionality.h
     util/ValueMap.cc
     util/ValueMap.h
     util/Wind.cc

@@ -7,7 +7,7 @@
 #include <ostream>
 
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/other/UnstructuredGrid.h"
+#include "mir/repres/UnstructuredGrid.h"
 #include "mir/util/Exceptions.h"
 
 
@@ -39,7 +39,7 @@ void Gridded2Points::print(std::ostream& out) const {
 
 
 const repres::Representation* Gridded2Points::outputRepresentation() const {
-    return new repres::other::UnstructuredGrid(latitudes_, longitudes_);
+    return new repres::UnstructuredGrid(latitudes_, longitudes_);
 }
 
 

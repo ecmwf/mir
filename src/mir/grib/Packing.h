@@ -58,6 +58,7 @@ public:
 
     bool sameAs(const Packing*) const;
     bool printParametrisation(std::ostream&) const;
+    void fillEdition(grib_info&) const;
     bool empty() const;
 
     // -- Overridden methods
@@ -82,6 +83,7 @@ protected:
     bool defineBitsPerValue_;
     bool defineBitsPerValueBeforePacking_;
     bool defineEdition_;
+    bool user_edition_ = false;
     bool definePacking_;
     bool definePrecision_;
 

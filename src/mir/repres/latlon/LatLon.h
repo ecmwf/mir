@@ -88,31 +88,7 @@ protected:
 
     // -- Class members
 
-    class LatLonIterator {
-        size_t ni_;
-        size_t nj_;
-        eckit::Fraction north_;
-        eckit::Fraction west_;
-        eckit::Fraction we_;
-        eckit::Fraction ns_;
-        size_t i_;
-        size_t j_;
-        Latitude latValue_;
-        Longitude lonValue_;
-        eckit::Fraction lat_;
-        eckit::Fraction lon_;
-
-    protected:
-        size_t count_;
-        bool first_;
-
-        ~LatLonIterator();
-        void print(std::ostream&) const;
-        bool next(Latitude&, Longitude&);
-
-    public:
-        LatLonIterator(size_t ni, size_t nj, Latitude north, Longitude west, const util::Increments& increments);
-    };
+    // None
 
     // -- Class methods
     // None
