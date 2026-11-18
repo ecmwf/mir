@@ -41,16 +41,20 @@ void Cressman::operator()(size_t ip, const Point3& point,
     double sum = 0.;
     for (size_t j = 0; j < nbPoints; ++j) {
         auto d2    = Point3::distance2(point, neighbours[j].point());
-        weights[j] = d2 < r2_ ? std::pow((d2 - r2_) / (d2 + r2_), power_) : 0.;
+        weights[j] = d2 < r2_ ? std::pow((r2_ - d2) / (r2_ + d2), power_) : 0.;
         sum += weights[j];
     }
 
+    // no neighbours within the radius: the nearest neighbour (the first), so every output point is interpolated
+    if (!eckit::types::is_strictly_greater(sum, 0.)) {
+        triplets.emplace_back(ip, neighbours.front().payload(), 1.);
+        return;
+    }
+
     // normalise all weights according to the total, and set sparse matrix triplets
-    if (eckit::types::is_strictly_greater(sum, 0.)) {
-        for (size_t j = 0; j < nbPoints; ++j) {
-            size_t jp = neighbours[j].payload();
-            triplets.emplace_back(ip, jp, weights[j] / sum);
-        }
+    for (size_t j = 0; j < nbPoints; ++j) {
+        size_t jp = neighbours[j].payload();
+        triplets.emplace_back(ip, jp, weights[j] / sum);
     }
 }
 

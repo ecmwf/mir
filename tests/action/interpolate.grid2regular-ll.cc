@@ -156,6 +156,7 @@ CASE("interpolate.grid2regular-ll, interpolation methods") {
         test_t{"k-nearest, nearest-method: nclosest, distance-weighting: cressman, distance: 1000000, "
                "cressman-model-extension-power: 2",
                3., true, true, true},
+        test_t{"k-nearest, nearest-method: nclosest, distance-weighting: cressman, distance: 1", 3.5, true, true, true},
         test_t{"k-nearest, nearest-method: nclosest, distance-weighting: climate-filter, distance: 1000000", 3., true,
                true, true, false},
         test_t{"k-nearest-statistics", 8., true, true, false},
