@@ -82,16 +82,14 @@ def git_sha1() -> str:
 
 
 def grid_box_areas(grid):
-    cdef string gridspec
+    cdef string spec
     cdef vector[double] areas
     cdef Py_ssize_t size
     import numpy as np
+    from mir._spec import grid_spec_str
 
-    if not hasattr(grid, "spec_str"):
-        raise TypeError("grid_box_areas: expected an object with spec_str")
-
-    gridspec = str(grid.spec_str).encode()
-    areas = mir.grid_box_areas(gridspec)
+    spec = grid_spec_str(grid).encode()
+    areas = mir.grid_box_areas(spec)
     size = areas.size()
     return np.array(<cnp.float64_t[:size]>areas.data(), dtype=np.float64)
 
@@ -129,8 +127,10 @@ cdef class GribMemoryInput(MIRInput):
 
 
 cdef class GridSpecInput(MIRInput):
-    def __cinit__(self, string gridspec):
-        self._input = new mir.GridSpecInput(gridspec)
+    def __cinit__(self, grid):
+        from mir._spec import grid_spec_str
+
+        self._input = new mir.GridSpecInput(grid_spec_str(grid).encode())
 
     def __dealloc__(self):
         del self._input
@@ -172,14 +172,10 @@ cdef class PyGribOutput(MIROutput):
 
 
 cdef class ArrayInput(MIRInput):
-    def __cinit__(self, values, gridspec):
-        if hasattr(gridspec, "spec_str"):  # e.g. mir.Grid
-            gridspec = gridspec.spec_str
-        elif isinstance(gridspec, dict):
-            from yaml import dump
-            gridspec = dump(gridspec, default_flow_style=True)
+    def __cinit__(self, values, grid):
+        from mir._spec import grid_spec_str
 
-        self._input = new mir.ArrayInput(values, gridspec)
+        self._input = new mir.ArrayInput(values, grid_spec_str(grid))
 
     def __dealloc__(self):
         del self._input

@@ -78,7 +78,7 @@ cdef extern from "mir/input/PyGribInput.h" namespace "mir::input":
 
 cdef extern from "mir/input/ArrayInput.h" namespace "mir::input":
     cdef cppclass ArrayInput(mir.MIRInput):
-        ArrayInput(values, gridspec) except +
+        ArrayInput(values, grid) except +
 
 
 cdef extern from "mir/output/MIROutput.h" namespace "mir::output":

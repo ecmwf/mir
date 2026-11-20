@@ -31,6 +31,22 @@ def mir_options(spec, keys: dict) -> dict:
     }
 
 
+def grid_spec_str(grid) -> str:
+    """For mir, from a mir.Grid, dict or YAML/JSON mapping (str)"""
+    from eckit.geo import Grid
+
+    if isinstance(grid, Grid):
+        return grid.spec_str
+    if isinstance(grid, dict):
+        # unstructured, by a grid: its points are not YAML-dumped
+        if grid and grid.keys() <= {"latitudes", "longitudes", "name"}:
+            return Grid(grid).spec_str
+        return to_yaml(grid)
+    if isinstance(grid, str):
+        return grid
+    raise TypeError(f"unsupported grid type: {type(grid)}")
+
+
 def from_json(spec: str):
     """Spec (dict), or a name alone (str), from mir"""
     return json.loads(spec) if spec.strip().startswith("{") else spec
