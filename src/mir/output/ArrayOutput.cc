@@ -45,8 +45,9 @@ size_t ArrayOutput::save(const param::MIRParametrisation&, context::Context& ctx
     values_ = field.values(0);
     repres->reorderFromCanonical(values_);
 
+    // without missing values, the missing value is a default which can be a valid value (e.g. 9999)
     if (auto mv = field.missingValue();
-        std::any_of(values_.begin(), values_.end(), [mv, mv_isnan = std::isnan(mv)](auto v) {
+        field.hasMissing() && std::any_of(values_.begin(), values_.end(), [mv, mv_isnan = std::isnan(mv)](auto v) {
             return mv_isnan ? std::isnan(v) : eckit::types::is_approximately_equal(v, mv);
         })) {
         missingValue_ = mv;

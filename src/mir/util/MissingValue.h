@@ -22,4 +22,9 @@ double missing_value(const param::MIRParametrisation&);
 double unique_missing_value(const MIRValuesVector& values, double missingValue, const param::MIRParametrisation&);
 
 
+/// Missing values are compared by equality, never true for NaN
+/// @return if any NaN was replaced
+bool nan_to_missing(MIRValuesVector& values, double missingValue);
+
+
 }  // namespace mir::util

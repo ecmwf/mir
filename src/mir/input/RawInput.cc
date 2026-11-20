@@ -4,11 +4,13 @@
 
 #include "mir/input/RawInput.h"
 
+#include <cmath>
 #include <ostream>
 
 #include "mir/data/MIRField.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/MissingValue.h"
 
 
 namespace mir::input {
@@ -55,9 +57,17 @@ data::MIRField RawInput::field() const {
     auto n = repres->numberOfValues();
     ASSERT_VALUES_SIZE_EQ_ITERATOR_COUNT("RawInput", count_, n);
 
+    // NaN values are missing values: missing values are compared by equality, never true for NaN
+    auto nanMissingValue = hasMissing && !std::isnan(missingValue) ? missingValue : util::missing_value(metadata_);
+
     const auto* here = values_;
     for (size_t which = 0; which < dimensions(); ++which, here += count_) {
         MIRValuesVector values(here, here + count_);
+        if (util::nan_to_missing(values, nanMissingValue)) {
+            field.missingValue(nanMissingValue);
+            field.hasMissing(true);
+        }
+
         repres->reorderToCanonical(values);
 
         field.update(values, which);

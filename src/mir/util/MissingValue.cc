@@ -39,4 +39,19 @@ double unique_missing_value(const MIRValuesVector& values, double missingValue,
 }
 
 
+bool nan_to_missing(MIRValuesVector& values, double missingValue) {
+    ASSERT(!std::isnan(missingValue));
+
+    bool replaced = false;
+    for (auto& v : values) {
+        if (std::isnan(v)) {
+            v        = missingValue;
+            replaced = true;
+        }
+    }
+
+    return replaced;
+}
+
+
 }  // namespace mir::util
