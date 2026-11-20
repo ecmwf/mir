@@ -226,6 +226,41 @@ class WeightMatrix:
         """Load from scipy .npz file."""
         return cls(_read_npz(Path(path).with_suffix(".npz")))
 
+    @classmethod
+    def from_scrip_weights(
+        cls,
+        path,
+        nr="dst_grid_size",
+        nc="src_grid_size",
+        nnz="num_links",
+        ia="dst_address",
+        ja="src_address",
+        a="remap_matrix",
+        base=1,
+    ) -> "WeightMatrix":
+        """From SCRIP weights (netCDF, requires netCDF4): dimensions nr, nc and nnz, variables ia, ja (index base) and a"""
+        try:
+            import netCDF4
+        except ImportError as e:
+            raise ImportError("from_scrip_weights requires the netCDF4 module (pip install mir-python[netcdf])") from e
+
+        with netCDF4.Dataset(path) as ds:
+            ds.set_auto_mask(False)
+            shape = (ds.dimensions[nr].size, ds.dimensions[nc].size)
+            size = ds.dimensions[nnz].size
+            rows = np.asarray(ds.variables[ia][:], dtype=np.int64) - base
+            cols = np.asarray(ds.variables[ja][:], dtype=np.int64) - base
+            weights = np.asarray(ds.variables[a][:], dtype=np.float64)
+
+        if weights.ndim == 2 and weights.shape[1] == 1:
+            weights = weights[:, 0]
+        if not (rows.shape == cols.shape == weights.shape == (size,)):
+            raise ValueError(f"from_scrip_weights: expected {size} row/column indices and weights (one per link)")
+        if rows.size and (rows.min() < 0 or rows.max() >= shape[0] or cols.min() < 0 or cols.max() >= shape[1]):
+            raise ValueError(f"from_scrip_weights: indices out of the shape {shape} (index base {base})")
+
+        return cls(csr_array((weights, (rows, cols)), shape=shape))
+
     # --- serialisation ---
 
     def to_csr(self) -> csr_array:
