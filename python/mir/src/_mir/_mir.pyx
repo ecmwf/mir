@@ -172,10 +172,27 @@ cdef class PyGribOutput(MIROutput):
 
 
 cdef class ArrayInput(MIRInput):
-    def __cinit__(self, values, grid):
+    cdef readonly object grid
+    cdef readonly object param
+
+    def __cinit__(self, values, grid, param=None):
         from mir._spec import grid_spec_str
 
+        self.grid = grid
+        self.param = param
         self._input = new mir.ArrayInput(values, grid_spec_str(grid))
+
+    @classmethod
+    def from_netcdf_file(cls, path, skip_name_list=None, dtype=None):
+        """ArrayInput of each netCDF 2D field (requires netCDF4)"""
+        import numpy as np
+        from mir.netcdf import SKIP_NAME_LIST
+        from mir.netcdf import fields
+
+        skip = SKIP_NAME_LIST if skip_name_list is None else skip_name_list
+        dtype = np.float64 if dtype is None else dtype
+        for f in fields(path, skip):
+            yield cls(f.values(dtype), f.grid, param=f.param)
 
     def __dealloc__(self):
         del self._input

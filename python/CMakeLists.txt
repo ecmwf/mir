@@ -80,7 +80,7 @@ foreach(_module _mir_interpolation _mir_action)
 endforeach()
 
 install(TARGETS _mir          DESTINATION ${PYTHONEXT_INSTALL_DIR}/mir COMPONENT python)
-install(DIRECTORY mir/src/mir/ DESTINATION ${PYTHONEXT_INSTALL_DIR}/mir COMPONENT python FILES_MATCHING PATTERN "*.py")
+install(DIRECTORY mir/src/mir/ DESTINATION ${PYTHONEXT_INSTALL_DIR}/mir COMPONENT python FILES_MATCHING PATTERN "*.py" PATTERN "*.yaml")
 
 file(GLOB _tools RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} mir/src/mir/tools/*.py)
 foreach(_tool IN LISTS _tools)

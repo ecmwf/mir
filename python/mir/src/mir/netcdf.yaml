@@ -1,0 +1,61 @@
+# SPDX-FileCopyrightText: 1996- European Centre for Medium-Range Weather Forecasts (ECMWF)
+# SPDX-License-Identifier: Apache-2.0
+
+# mir.netcdf configuration
+---
+# GRIB parameter keys of CF standard names
+param:
+  air_pressure_at_sea_level: {paramId: 151}
+  air_temperature: {paramId: 167}
+  atmosphere_relative_vorticity: {discipline: 0, parameterCategory: 2, parameterNumber: 12}
+  cloud_area_fraction_assuming_maximum_random_overlap: {paramId: 164}
+  dew_point_temperature: {paramId: 168}
+  divergence_of_wind: {discipline: 0, parameterCategory: 2, parameterNumber: 13}
+  eastward_wind: {discipline: 0, parameterCategory: 2, parameterNumber: 2}
+  geopotential: {discipline: 0, parameterCategory: 3, parameterNumber: 4}
+  geopotential_height: {discipline: 0, parameterCategory: 3, parameterNumber: 5}
+  kinetic_energy_dissipation_in_atmosphere_boundary_layer: {discipline: 0, parameterCategory: 2, parameterNumber: 20}
+  lagrangian_tendency_of_air_pressure: {discipline: 0, parameterCategory: 2, parameterNumber: 8}
+  land_binary_mask: {discipline: 2, parameterCategory: 0, parameterNumber: 0, typeOfFirstFixedSurface: 1}
+  lwe_thickness_of_surface_snow_amount: {paramId: 141}
+  moisture_content_of_soil_layer: {paramId: 42}
+  northward_wind: {discipline: 0, parameterCategory: 2, parameterNumber: 3}
+  open_sea_surface_temperature: {paramId: 34}
+  relative_humidity: {discipline: 0, parameterCategory: 1, parameterNumber: 1}
+  sea_floor_depth_below_geoid: {paramId: 140219}  # wmb
+  sea_ice_area_fraction: {paramId: 31}
+  sea_surface_primary_swell_wave_from_direction: {paramId: 140122}  # mwd1
+  sea_surface_primary_swell_wave_mean_period: {paramId: 140123}  # mwp1 (Tm-10, approximately Tm01)
+  sea_surface_primary_swell_wave_significant_height: {paramId: 140121}  # swh1
+  sea_surface_secondary_swell_wave_from_direction: {paramId: 140125}  # mwd2
+  sea_surface_secondary_swell_wave_mean_period: {paramId: 140126}  # mwp2 (Tm-10, approximately Tm01)
+  sea_surface_secondary_swell_wave_significant_height: {paramId: 140124}  # swh2
+  sea_surface_wave_from_direction: {paramId: 140230}  # mwd
+  sea_surface_wave_from_direction_at_variance_spectral_density_maximum: {paramId: 260233}  # dirpw (approximately)
+  sea_surface_wave_mean_period_from_variance_spectral_density_inverse_frequency_moment: {paramId: 140232}  # mwp
+  sea_surface_wave_mean_period_from_variance_spectral_density_second_frequency_moment: {paramId: 140221}  # mp2
+  sea_surface_wave_period_at_variance_spectral_density_maximum: {paramId: 140231}  # pp1d
+  sea_surface_wave_significant_height: {paramId: 140229}  # swh
+  sea_surface_wave_stokes_drift_x_velocity: {paramId: 140215}  # ust
+  sea_surface_wave_stokes_drift_y_velocity: {paramId: 140216}  # vst
+  sea_surface_wind_wave_from_direction: {paramId: 140235}  # mdww
+  sea_surface_wind_wave_mean_period: {paramId: 140236}  # mpww (Tm-10, approximately Tm01)
+  sea_surface_wind_wave_significant_height: {paramId: 140234}  # shww
+  snow_density: {paramId: 33}
+  soil_temperature: {paramId: 139}
+  specific_humidity: {discipline: 0, parameterCategory: 1, parameterNumber: 0}
+  surface_air_pressure: {discipline: 0, parameterCategory: 3, parameterNumber: 0, typeOfFirstFixedSurface: 1}
+  surface_albedo: {paramId: 243}
+  surface_downward_eastward_stress: {discipline: 0, parameterCategory: 2, parameterNumber: 38}
+  surface_downward_northward_stress: {discipline: 0, parameterCategory: 2, parameterNumber: 37}
+  surface_downwelling_shortwave_flux_in_air: {discipline: 0, parameterCategory: 4, parameterNumber: 7, typeOfFirstFixedSurface: 1, typeOfStatisticalProcessing: 1}
+  surface_net_downward_shortwave_flux: {discipline: 0, parameterCategory: 4, parameterNumber: 9, typeOfFirstFixedSurface: 1, typeOfStatisticalProcessing: 1}
+  surface_net_upward_longwave_flux: {discipline: 0, parameterCategory: 5, parameterNumber: 5, typeOfFirstFixedSurface: 1, typeOfStatisticalProcessing: 1}
+  surface_roughness_length: {discipline: 2, parameterCategory: 0, parameterNumber: 1}
+  surface_temperature: {paramId: 235}
+  surface_upward_latent_heat_flux: {discipline: 0, parameterCategory: 0, parameterNumber: 10, typeOfFirstFixedSurface: 1, typeOfStatisticalProcessing: 1}
+  surface_upward_sensible_heat_flux: {discipline: 0, parameterCategory: 0, parameterNumber: 11, typeOfFirstFixedSurface: 1, typeOfStatisticalProcessing: 1}
+  toa_outgoing_longwave_flux: {discipline: 0, parameterCategory: 5, parameterNumber: 5, typeOfFirstFixedSurface: 8, typeOfStatisticalProcessing: 1}
+  wind_speed: {paramId: 49}
+  x_wind: {paramId: 165}
+  y_wind: {paramId: 166}

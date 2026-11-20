@@ -38,9 +38,12 @@ ext_kwargs = {
 setup(
     version=version,
     package_data={
-        "": ["*.so"],
+        "": ["*.so", "*.yaml"],
     },
     has_ext_modules=lambda: True,
     install_requires=install_requires,
+    extras_require={
+        "netcdf": ["netCDF4"],
+    },
     **ext_kwargs[sys.platform],
 )
