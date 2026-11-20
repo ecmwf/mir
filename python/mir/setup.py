@@ -43,6 +43,7 @@ setup(
     has_ext_modules=lambda: True,
     install_requires=install_requires,
     extras_require={
+        "grib": ["eccodes"],
         "netcdf": ["netCDF4"],
     },
     **ext_kwargs[sys.platform],

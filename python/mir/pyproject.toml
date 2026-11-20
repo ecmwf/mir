@@ -31,6 +31,7 @@ dynamic = ["version", "dependencies"]
 
 
 [project.scripts]
+mir-gridspec-from-file    = "mir.tools.gridspec_from_file:main"
 mir-weight-matrix-convert = "mir.tools.weight_matrix_convert:main"
 mir-weight-matrix-create  = "mir.tools.weight_matrix_create:main"
 
