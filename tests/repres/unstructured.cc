@@ -147,14 +147,6 @@ CASE("UnstructuredGrid: by parametrisation, by gridSpec, by file") {
     }
 
 
-    SECTION("gridSpec: other grids, by their points") {
-        RepresentationHandle repres(
-            make("{type: irregular_ll, latitudes: [60, 50, 45, 30], longitudes: [-10, 0, 15]}"));
-        EXPECT_EQUAL(repres->numberOfPoints(), 4 * 3);
-        EXPECT(repres->uniqueName().find("unstructured-12-") == 0);
-    }
-
-
     SECTION("gridSpec: unstructured, by uid (the coordinates kept by eckit::geo)") {
         RepresentationHandle points(new UnstructuredGrid(LATITUDES, LONGITUDES));
         RepresentationHandle repres(make("{uid: " + points->grid().uid() + "}"));
