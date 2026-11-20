@@ -11,7 +11,11 @@
 #include "eckit/geo/Point.h"
 #include "eckit/testing/Test.h"
 
+#include "mir/api/MIRJob.h"
+#include "mir/input/GribMemoryInput.h"
 #include "mir/key/grid/Grid.h"
+#include "mir/output/ArrayOutput.h"
+#include "mir/output/GribMemoryOutput.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/MeshGeneratorParameters.h"
@@ -24,7 +28,22 @@ namespace mir::repres::tests {
 
 
 CASE("projected grids (GRIB) by their gridSpec: points as PROJ") {
-    // albers (template 3.31, GRS80)
+    // transverse_mercator (template 3.12, British National Grid), albers (template 3.31, GRS80)
+    const keys_t TMERC{{"Ni", 4},
+                       {"Nj", 3},
+                       {"shapeOfTheEarth", 7},
+                       {"scaleFactorOfEarthMajorAxis", 2},
+                       {"scaledValueOfEarthMajorAxis", 637756340},
+                       {"scaleFactorOfEarthMinorAxis", 2},
+                       {"scaledValueOfEarthMinorAxis", 635625691},
+                       {"latitudeOfReferencePoint", 49000000},
+                       {"longitudeOfReferencePoint", -2000000},
+                       {"scaleFactorAtReferencePoint", 0.9996012717},
+                       {"XR", 40000000},
+                       {"YR", -10000000},
+                       {"Di", 200000},
+                       {"Dj", 300000}};
+
     const keys_t AEA{{"Nx", 31},
                      {"Ny", 29},
                      {"shapeOfTheEarth", 4},
@@ -47,6 +66,22 @@ CASE("projected grids (GRIB) by their gridSpec: points as PROJ") {
     };
 
     const std::vector<test_t> tests{
+        {"transverse_mercator",
+         "transverse_mercator",
+         TMERC +
+             keys_t{{"X1", 50000000}, {"Y1", 20000000}, {"X2", 50600000}, {"Y2", 20600000}, {"jScansPositively", 1}},
+         4 * 3,
+         {{51.689376316, -0.553164312}, {51.689016444, -0.524237842}, {51.742209034, -0.464560974}}},
+        {"transverse_mercator (iScansNegatively, jScansPositively=0)",
+         "transverse_mercator",
+         TMERC + keys_t{{"X1", 50600000},
+                        {"Y1", 20600000},
+                        {"X2", 50000000},
+                        {"Y2", 20000000},
+                        {"iScansNegatively", 1},
+                        {"jScansPositively", 0}},
+         4 * 3,
+         {{51.742209034, -0.464560974}, {51.742583866, -0.493520620}, {51.689376316, -0.553164312}}},
         {"albers", "albers", AEA, 31 * 29, {{23., 264.}, {22.998841507, 264.478562795}, {34.484152764, 280.544471606}}},
     };
 
@@ -77,6 +112,43 @@ CASE("projected grids (GRIB) by their gridSpec: points as PROJ") {
         }
     }
 
+
+    SECTION("transverse_mercator: interpolation from, and GRIB re-encoding") {
+        const auto msg = message(tests.front().gridType, tests.front().keys, 4 * 3);
+
+        // interpolation, to a grid within
+        api::MIRJob job;
+        job.set("grid", std::vector<double>{0.01, 0.01});
+        job.set("area", std::vector<double>{51.74, -0.55, 51.69, -0.47});
+        job.set("interpolation", "nn");
+
+        output::ArrayOutput array;
+        input::GribMemoryInput input(msg.data(), msg.size());
+        job.execute(input, array);
+        EXPECT_EQUAL(array.size(), 6 * 9);
+
+        // re-encoding (packing), the grid as is
+        api::MIRJob reencode;
+        reencode.set("accuracy", 12L);
+
+        std::vector<char> buffer(1024 * 1024);
+        output::GribMemoryOutput grib(buffer.data(), buffer.size());
+        input::GribMemoryInput same_input(msg.data(), msg.size());
+        reencode.execute(same_input, grib);
+
+        std::unique_ptr<codes_handle, decltype(&codes_handle_delete)> h(
+            codes_handle_new_from_message(nullptr, buffer.data(), grib.length()), &codes_handle_delete);
+        ASSERT(h);
+
+        char gridType[64];
+        size_t len = sizeof(gridType);
+        GRIB_CALL(codes_get_string(h.get(), "gridType", gridType, &len));
+        EXPECT_EQUAL(std::string(gridType), "transverse_mercator");
+
+        long bits = 0;
+        GRIB_CALL(codes_get_long(h.get(), "bitsPerValue", &bits));
+        EXPECT_EQUAL(bits, 12);
+    }
 }
 
 
