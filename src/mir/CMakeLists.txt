@@ -656,6 +656,8 @@ list(APPEND mir_srcs
     util/MIRStatistics.h
     util/MeshGeneratorParameters.cc
     util/MeshGeneratorParameters.h
+    util/MissingValue.cc
+    util/MissingValue.h
     util/Mutex.h
     util/PlanParser.cc
     util/PlanParser.h

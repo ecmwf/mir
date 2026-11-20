@@ -4,7 +4,6 @@
 
 #include "mir/action/misc/ResetMissingValues.h"
 
-#include <limits>
 #include <ostream>
 
 #include "mir/action/context/Context.h"
@@ -12,6 +11,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/MissingValue.h"
 #include "mir/util/Trace.h"
 
 
@@ -28,7 +28,7 @@ void ResetMissingValues::execute(context::Context& ctx) const {
 
     repres::RepresentationHandle rep(field.representation());
 
-    auto missingValue = std::numeric_limits<double>::lowest();
+    auto missingValue = util::missing_value(parametrisation());
 
     size_t count = 0;
     size_t total = 0;

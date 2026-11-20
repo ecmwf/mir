@@ -6,7 +6,6 @@
 
 #include <algorithm>
 #include <fstream>
-#include <limits>
 #include <sstream>
 #include <string>
 
@@ -34,6 +33,7 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/MissingValue.h"
 #include "mir/util/Mutex.h"
 #include "mir/util/Reorder.h"
 #include "mir/util/Trace.h"
@@ -434,7 +434,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
     data::MIRField& field = ctx.field();
     const bool hasMissing = field.hasMissing();
     if (!hasMissing) {
-        field.missingValue(std::numeric_limits<double>::lowest());
+        field.missingValue(util::missing_value(parametrisation_));
     }
 
     const double missingValue = field.missingValue();
