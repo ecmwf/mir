@@ -257,7 +257,12 @@ def _grid(ds, h: _Horizontal) -> dict:
 
     axes = [lat_var.dimensions.index(d) for d in h.dimensions]
     lat, lon = np.transpose(lat, axes).ravel(), np.transpose(lon, axes).ravel()
-    return {"latitudes": lat.tolist(), "longitudes": lon.tolist()}
+    grid = {"latitudes": lat.tolist(), "longitudes": lon.tolist()}
+
+    # duplicate points (e.g. ORCA periodic columns and north fold), declared allowed
+    if np.unique(np.stack([lat, lon], axis=1), axis=0).shape[0] < lat.size:
+        grid["duplicates_allowed"] = True
+    return grid
 
 
 # ---- param: metadata of a 2D field (a variable at an index of its non-horizontal dimensions) ----

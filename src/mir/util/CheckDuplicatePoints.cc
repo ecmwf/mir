@@ -6,6 +6,7 @@
 
 #include <set>
 #include <sstream>
+#include <string>
 #include <utility>
 
 #include "eckit/config/Resource.h"
@@ -31,7 +32,10 @@ void check_duplicate_points(const std::string& title, const std::vector<double>&
     bool checkDuplicatePoints = check;
     parametrisation.get("checkDuplicatePoints", checkDuplicatePoints);
 
-    if (!checkDuplicatePoints) {
+    bool duplicates_allowed = false;  // declared by the grid
+    parametrisation.get("duplicates_allowed", duplicates_allowed);
+
+    if (!checkDuplicatePoints || duplicates_allowed) {
         return;
     }
 

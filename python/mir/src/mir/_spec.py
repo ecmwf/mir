@@ -39,7 +39,7 @@ def grid_spec_str(grid) -> str:
         return grid.spec_str
     if isinstance(grid, dict):
         # unstructured, by a grid: its points are not YAML-dumped
-        if grid and grid.keys() <= {"latitudes", "longitudes", "name"}:
+        if grid and grid.keys() <= {"latitudes", "longitudes", "name", "duplicates_allowed"}:
             return Grid(grid).spec_str
         return to_yaml(grid)
     if isinstance(grid, str):

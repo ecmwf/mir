@@ -188,13 +188,18 @@ def write_curvilinear(path: Path, lat, lon) -> Path:
     return path
 
 
-def test_unstructured(tmp_path):
-    lon, lat = np.meshgrid(np.array([0.0, 120.0, 240.0, 300.0]), np.array([-30.0, 0.0, 30.0]))
+@pytest.mark.parametrize("periodic", [False, True])
+def test_unstructured_duplicates(tmp_path, periodic):
+    # like ORCA: the last column repeats the first (periodic), so points are duplicated
+    lon, lat = np.meshgrid(np.array([0.0, 120.0, 240.0, 0.0 if periodic else 300.0]), np.array([-30.0, 0.0, 30.0]))
     path = write_curvilinear(tmp_path / "a.nc", lat, lon)
     ((field, values),) = read(path)
 
-    assert field.grid == {"latitudes": lat.ravel().tolist(), "longitudes": lon.ravel().tolist()}
+    assert field.grid["latitudes"] == lat.ravel().tolist()
+    assert field.grid["longitudes"] == lon.ravel().tolist()
+    assert field.grid.get("duplicates_allowed", False) == periodic
 
+    # without interpolation, the duplicate points are accepted
     out = mir.ArrayOutput()
     mir.Job().execute(mir.ArrayInput(values, field.grid), out)
     assert np.array_equal(out.values().ravel(), values)
