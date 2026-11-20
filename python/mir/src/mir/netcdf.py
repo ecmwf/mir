@@ -131,7 +131,7 @@ def _horizontal(ds, var) -> Optional[_Horizontal]:
     return _Horizontal(lat.name, lon.name, tuple(trailing))
 
 
-# ---- grid: regular_ll, or unstructured (in that order of preference) ----
+# ---- grid: regular_ll, irregular_ll, or unstructured (in that order of preference) ----
 
 # a coordinate matches a regular axis if within this fraction of the increment (coordinates are often float32)
 _TOLERANCE = 1e-3
@@ -222,6 +222,22 @@ def _regular_ll(lat: np.ndarray, lon: np.ndarray, lat_first: bool, precision: fl
     return grid if _validate(grid, lat, lon) else None
 
 
+def _irregular_ll(lat: np.ndarray, lon: np.ndarray, lat_first: bool) -> Optional[dict]:
+    def monotonic(v):
+        d = np.diff(v)
+        return np.all(d > 0) or np.all(d < 0)
+
+    if lat.size < 2 or lon.size < 2 or not monotonic(lat) or not monotonic(lon):
+        return None
+
+    return {
+        "type": "irregular_ll",
+        "latitudes": lat.tolist(),
+        "longitudes": lon.tolist(),
+        "order": _order(lat, lon, lat_first),
+    }
+
+
 def _grid(ds, h: _Horizontal) -> dict:
     """Points in the variable (stored) order"""
     lat_var, lon_var = ds.variables[h.latitude], ds.variables[h.longitude]
@@ -230,9 +246,9 @@ def _grid(ds, h: _Horizontal) -> dict:
     # rectilinear: 1-D latitude and longitude, on different dimensions
     if lat_var.ndim == 1 and lon_var.ndim == 1 and lat_var.dimensions != lon_var.dimensions:
         lat_first = h.dimensions.index(lat_var.dimensions[0]) < h.dimensions.index(lon_var.dimensions[0])
-        grid = _regular_ll(lat, lon, lat_first, _precision(lat_var, lon_var))
+        grid = _regular_ll(lat, lon, lat_first, _precision(lat_var, lon_var)) or _irregular_ll(lat, lon, lat_first)
         if grid is None:
-            raise ValueError(f"{h}: latitude/longitude are not regular")
+            raise ValueError(f"{h}: latitude/longitude are neither regular nor monotonic")
         return grid
 
     # curvilinear (2-D) or cells (1-D): latitude and longitude on the same dimensions, as the variable
