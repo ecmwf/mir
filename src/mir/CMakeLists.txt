@@ -746,10 +746,6 @@ list(APPEND mir_srcs
     stats/statistics/Integral.cc
     stats/statistics/Integral.h)
 
-if(mir_HAVE_PNG)
-    list(APPEND mir_srcs output/PNGOutput.cc output/PNGOutput.h)
-endif()
-
 if(mir_HAVE_NETCDF)
     list(APPEND mir_srcs
         input/NetcdfFileInput.cc
@@ -895,10 +891,6 @@ ecbuild_add_library(
 
 if(mir_HAVE_NETCDF)
     target_link_libraries(mir PRIVATE NetCDF::NetCDF_C)
-endif()
-
-if(mir_HAVE_PNG)
-    target_link_libraries(mir PRIVATE PNG::PNG)
 endif()
 
 if (HAS_SYS_STAT_ST_CTIMESPEC)

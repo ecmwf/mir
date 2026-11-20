@@ -17,7 +17,6 @@ set(TESTS
     output.gmsh
     output.grib
     output.multi-dimensional
-    output.png
     output.values
     output.vector
     parametrisation.cached
