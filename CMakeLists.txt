@@ -15,7 +15,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 ecbuild_add_option(FEATURE BUILD_TOOLS        DEFAULT ON  DESCRIPTION "build the command line tools (install)")
 ecbuild_add_option(FEATURE MIR_DOWNLOAD_MASKS DEFAULT ON  DESCRIPTION "download LSM files")
-ecbuild_add_option(FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support for netCDF" REQUIRED_PACKAGES "NetCDF COMPONENTS C CXX")
 ecbuild_add_option(FEATURE OMP                DEFAULT OFF DESCRIPTION "support for OpenMP shared memory parallelism" REQUIRED_PACKAGES "OpenMP COMPONENTS CXX")
 ecbuild_add_option(FEATURE PYTHON             DEFAULT OFF DESCRIPTION "Build Python bindings (Cython)" REQUIRED_PACKAGES "Python3 COMPONENTS Interpreter Development.Module NumPy")
 

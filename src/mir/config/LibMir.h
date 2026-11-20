@@ -55,7 +55,6 @@ public:
         GRID_TYPE,
         LIMITER,
         LSM,
-        NETCDF,
         PARAMETER_CLASS,
         PARAMETERS,
         STYLE,
