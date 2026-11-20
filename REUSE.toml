@@ -59,7 +59,7 @@ precedence = "closest"
 SPDX-FileCopyrightText = "1996- European Centre for Medium-Range Weather Forecasts (ECMWF)"
 SPDX-License-Identifier = "Apache-2.0"
 
-# Test fixtures and test data: GRIB and NetCDF messages, land-sea masks, grid
+# Test fixtures and test data: GRIB messages, land-sea masks, grid
 # definitions, weight matrices, the .test case files, and the geopoints files,
 # which are recognised by the four-byte magic "#GEO" that a header would
 # destroy. The CMakeLists.txt and sources under tests/ carry their own headers

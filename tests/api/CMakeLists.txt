@@ -30,10 +30,6 @@ set(TESTS
     parametrisation.spec
     raw_memory)
 
-if(mir_HAVE_NETCDF)
-    list(APPEND TESTS input.netcdf)
-endif()
-
 foreach(_t ${TESTS})
     string(REGEX REPLACE "[.-]" "_" _name ${_t})
     ecbuild_add_test(
