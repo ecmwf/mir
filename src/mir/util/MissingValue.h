@@ -18,4 +18,8 @@ namespace mir::util {
 double missing_value(const param::MIRParametrisation&);
 
 
+/// The given missing value, or else missing_value(), not in the values (so none is wrongly missing)
+double unique_missing_value(const MIRValuesVector& values, double missingValue, const param::MIRParametrisation&);
+
+
 }  // namespace mir::util

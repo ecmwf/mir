@@ -109,7 +109,4 @@ void grib_reorder_to_canonical(std::vector<double>& values, const std::string& o
 void grib_reorder_from_canonical(std::vector<double>& values, const std::string& order, size_t Ni, size_t Nj);
 
 
-void grib_get_unique_missing_value(const std::vector<double>& values, double& missingValue);
-
-
 bool grib_check_is_message_valid();

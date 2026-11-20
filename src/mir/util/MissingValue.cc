@@ -4,6 +4,7 @@
 
 #include "mir/util/MissingValue.h"
 
+#include <algorithm>
 #include <cmath>
 
 #include "mir/param/DefaultParametrisation.h"
@@ -21,6 +22,20 @@ double missing_value(const param::MIRParametrisation& param) {
 
     ASSERT(!std::isnan(missingValue));
     return missingValue;
+}
+
+
+double unique_missing_value(const MIRValuesVector& values, double missingValue,
+                            const param::MIRParametrisation& param) {
+    ASSERT(!values.empty());
+
+    for (auto mv : {missingValue, missing_value(param)}) {
+        if (std::find(values.begin(), values.end(), mv) == values.end()) {
+            return mv;
+        }
+    }
+
+    throw exception::SeriousBug("unique_missing_value: failed to get a unique missing value");
 }
 
 
