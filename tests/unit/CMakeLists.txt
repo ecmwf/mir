@@ -12,6 +12,7 @@ set(TESTS
     grib_basic_angle
     grib_encoding
     grib_gridspec
+    grib_input_gridspec
     grib_rotated_ll
     grib_scanning_mode
     increments

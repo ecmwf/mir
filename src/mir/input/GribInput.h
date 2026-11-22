@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include "mir/input/MIRInput.h"
 #include "mir/param/CachedParametrisation.h"
 #include "mir/param/FieldParametrisation.h"
@@ -33,6 +35,9 @@ private:
     mutable util::recursive_mutex mutex_;
 
     grib_handle* grib_;
+
+    // geometry, by the message gridSpec (instead of GRIB keys), if loading by it
+    std::unique_ptr<const param::MIRParametrisation> param_;
 
     // For unstructured grids
     std::vector<double> latitudes_;

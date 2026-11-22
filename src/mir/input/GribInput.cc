@@ -25,6 +25,7 @@
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/grib/Config.h"
+#include "mir/param/GridSpecParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/CheckDuplicatePoints.h"
 #include "mir/util/Exceptions.h"
@@ -177,6 +178,24 @@ public:
     ConditionNOT(const Condition* c) : c_(c) {}
 };
 */
+
+
+/// Geometry decoded by ecCodes into a gridSpec, instead of by GRIB keys; not cached, so it can be switched in-process
+bool is_load_with_gridspec() {
+    return eckit::Resource<bool>("$MIR_GRIDSPEC_GRIB_INPUT", false);
+}
+
+
+bool has_pl_zeros(grib_handle* h) {
+    size_t size = 0;
+    if (codes_get_size(h, "pl", &size) != CODES_SUCCESS || size == 0) {
+        return false;
+    }
+
+    std::vector<long> pl(size);
+    GRIB_CALL(codes_get_long_array(h, "pl", pl.data(), &size));
+    return std::find(pl.begin(), pl.end(), 0) != pl.end();
+}
 
 
 void wrongly_encoded_grib(const std::string& msg, bool alwaysAbort = false) {
@@ -831,6 +850,10 @@ grib_handle* GribInput::gribHandle(size_t which) const {
 bool GribInput::has(const std::string& name) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
+    if (param_ && param_->has(name)) {
+        return true;
+    }
+
     if (static const std::string LL{"latitudes/longitudes"}; name == LL) {
         ASSERT(latitudes_.size() == longitudes_.size());
         return !latitudes_.empty();
@@ -850,6 +873,10 @@ bool GribInput::has(const std::string& name) const {
 
 bool GribInput::get(const std::string& name, bool& value) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
+
+    if (param_ && param_->get(name, value)) {
+        return true;
+    }
 
     ASSERT(grib_ != nullptr);
     const auto* key = get_key(name, grib_);
@@ -890,6 +917,10 @@ bool GribInput::get(const std::string& name, int& value) const {
 bool GribInput::get(const std::string& name, long& value) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
+    if (param_ && param_->get(name, value)) {
+        return true;
+    }
+
     ASSERT(grib_ != nullptr);
     const std::string key = get_key(name, grib_);
     if (key.empty()) {
@@ -927,6 +958,10 @@ bool GribInput::get(const std::string& name, float& value) const {
 
 bool GribInput::get(const std::string& name, double& value) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
+
+    if (param_ && param_->get(name, value)) {
+        return true;
+    }
 
     ASSERT(name != "grid");
 
@@ -967,6 +1002,10 @@ bool GribInput::get(const std::string& /*name*/, std::vector<int>& /*value*/) co
 
 bool GribInput::get(const std::string& name, std::vector<long>& value) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
+
+    if (param_ && param_->get(name, value)) {
+        return true;
+    }
 
     ASSERT(grib_ != nullptr);
     const auto* key = get_key(name, grib_);
@@ -1033,6 +1072,11 @@ bool GribInput::get(const std::string& name, std::vector<float>& value) const {
 bool GribInput::get(const std::string& name, std::string& value) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
 
+    // the message classifies its grid (selecting the representation and grid type rules), the grid describes it
+    if (param_ && name != "gridType" && param_->get(name, value)) {
+        return true;
+    }
+
     ASSERT(grib_ != nullptr);
 
     // gridSpec (ecCodes, by eckit::geo), if the grid is supported
@@ -1091,6 +1135,10 @@ bool GribInput::get(const std::string& name, std::string& value) const {
 
 bool GribInput::get(const std::string& name, std::vector<double>& value) const {
     util::lock_guard<util::recursive_mutex> lock(mutex_);
+
+    if (param_ && param_->get(name, value)) {
+        return true;
+    }
 
     ASSERT(grib_ != nullptr);
     const auto* key = get_key(name, grib_);
@@ -1158,6 +1206,7 @@ bool GribInput::handle(grib_handle* h) {
 
     FieldParametrisation::reset();
     cache_.reset();
+    param_.reset();
 
     codes_handle_delete(grib_);
     grib_ = h;
@@ -1165,6 +1214,12 @@ bool GribInput::handle(grib_handle* h) {
     if (h != nullptr) {
         long value = 0;
         GRIB_CALL(codes_get_long(h, "7777", &value));
+
+        // geometry by gridSpec, if ecCodes describes the grid (otherwise, by GRIB keys) as decoded: rows of pl 0 are
+        // decoded with missing values (see field), a grid other than the message's
+        if (std::string spec; is_load_with_gridspec() && !has_pl_zeros(h) && get("gridSpec", spec)) {
+            param_ = std::make_unique<const param::GridSpecParametrisation>(spec);
+        }
 
         // apply user-defined fixes, if any
         static const grib::Config config(LibMir::configFile(LibMir::config_file::GRIB_INPUT), false);
