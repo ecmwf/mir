@@ -79,7 +79,28 @@ long set_edition(grib_info& info, long dfault) {
 }
 
 
+/// GRIB2 code table 3.2, the codes of a figure (the others encode its size)
+const std::vector<std::pair<long, std::shared_ptr<const Figure>>>& figure_codes() {
+    using namespace eckit::geo::figure;
+    static const std::vector<std::pair<long, std::shared_ptr<const Figure>>> CODES{
+        {0, std::make_shared<EarthGrib1>()}, {2, std::make_shared<EarthIau1965>()},
+        {4, std::make_shared<EarthGrs80>()}, {5, std::make_shared<EarthWgs84>()},
+        {6, std::make_shared<Earth>()},      {8, std::make_shared<EarthWgs84Sphere>()},
+    };
+    return CODES;
+}
+
+
 Figure* make_figure(const param::MIRParametrisation& param) {
+    // by the code of a figure, as the size encoded loses the precision telling some figures apart (e.g. GRS80, WGS84)
+    if (long shape = 0; param.get("shapeOfTheEarth", shape)) {
+        for (const auto& [code, f] : figure_codes()) {
+            if (code == shape) {
+                return eckit::geo::FigureFactory::build(*f);
+            }
+        }
+    }
+
     // as encoded [m] (GRIB, by either key), if encoded
     auto get = [&param](const std::string& key, double& value) {
         return param.get(key + "InMetres", value) || param.get(key, value);
@@ -98,22 +119,10 @@ Figure* make_figure(const param::MIRParametrisation& param) {
 
 
 long shape_of_the_earth(const Figure& figure) {
-    // GRIB2 code table 3.2, by the figure (as ecCodes)
-    using namespace eckit::geo::figure;
-    struct code_t {
-        long code;
-        std::shared_ptr<const Figure> figure;
-    };
-
-    static const std::vector<code_t> CODES{
-        {0, std::make_shared<EarthGrib1>()}, {2, std::make_shared<EarthIau1965>()},
-        {4, std::make_shared<EarthGrs80>()}, {5, std::make_shared<EarthWgs84>()},
-        {6, std::make_shared<Earth>()},      {8, std::make_shared<EarthWgs84Sphere>()},
-    };
-
-    for (const auto& c : CODES) {
-        if (figure == *c.figure) {
-            return c.code;
+    // as ecCodes
+    for (const auto& [code, f] : figure_codes()) {
+        if (figure == *f) {
+            return code;
         }
     }
 
