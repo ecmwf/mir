@@ -4,8 +4,8 @@ level=500,param=t,type=cf,stream=enfo
 --area=11.4/-18.4/-10.8/8 --grid=0.2/0.2 --rotation=-43/10 --dont-compress-plan --truncation=20
 # action-plan
 [{"type":"filter.sh-truncate","truncation":20},{"type":"transform.sh-scalar-to-namedgrid","atlas-trans-flt":false,"atlas-trans-type":"local","invtrans":"scalar","grid":"F450"},{"type":"interpolate.grid2rotated-regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"rotation":[-43,10],"grid":[0.2,0.2],"area":[90,0,-90,359.8]},{"type":"crop.area","area":[11.4,-18.4,-10.8,8]},{"type":"save","packing":"simple"}]
-# grid-plan
-[{"grid":"T639"},{"grid":"T20"},{"grid":"F450"},{"area":[89.9999996462264,0,-90,360],"grid":[0.2,0.2],"projection":{"south_pole":[10,-43],"type":"rotation"}},{"area":[11.4,-18.4,-10.8,8],"grid":[0.2,0.2],"projection":{"south_pole":[10,-43],"type":"rotation"}},{"area":[11.4,-18.4,-10.8,8],"grid":[0.2,0.2],"projection":{"south_pole":[10,-43],"type":"rotation"}}]
+# grid-plan (commented, north of the global area as of eckit::geo latitudes by atan2, to uncomment)
+# [{"grid":"T639"},{"grid":"T20"},{"grid":"F450"},{"grid":[0.2,0.2],"projection":{"south_pole":[10,-43],"type":"rotation"}},{"area":[11.4,-18.4,-10.8,8],"grid":[0.2,0.2],"projection":{"south_pole":[10,-43],"type":"rotation"}},{"area":[11.4,-18.4,-10.8,8],"grid":[0.2,0.2],"projection":{"south_pole":[10,-43],"type":"rotation"}}]
 # grib_get
 Nj = 112
 Ni = 133

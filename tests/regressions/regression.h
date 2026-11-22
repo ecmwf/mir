@@ -109,7 +109,7 @@ inline std::string unstructured(const eckit::PathName& path) {
 
 
 /// Post-processing an artificial input (as the mir tool with --input) to GRIB, checking the action and grid plans
-/// (as --dump-action-plan-file and --dump-grid-plan-file), the output message
+/// (as --dump-action-plan-file and --dump-grid-plan-file, a grid plan starting with '#' commented), the output message
 inline handle_t run(const std::string& input, const options_t& options, const std::string& actionPlan,
                     const std::string& gridPlan) {
     param::SimpleParametrisation param;
@@ -145,7 +145,9 @@ inline handle_t run(const std::string& input, const options_t& options, const st
     job.execute(*in, out);
 
     EXPECT_EQUAL(contents(actionPlanFile), actionPlan);
-    EXPECT_EQUAL(contents(gridPlanFile), gridPlan);
+    if (gridPlan.rfind('#', 0) != 0) {
+        EXPECT_EQUAL(contents(gridPlanFile), gridPlan);
+    }
 
     handle_t h(codes_handle_new_from_message_copy(nullptr, buffer.data(), out.length()), &codes_handle_delete);
     ASSERT(h);

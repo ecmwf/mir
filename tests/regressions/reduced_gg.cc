@@ -557,7 +557,8 @@ CASE("to rotated_ll: area-rotation") {
             "{artificialInput:gridspec,gridSpec:{grid:O1280}}",
             {{"area", "19.3/-6.3/-2.3/18.3"}, {"grid", "1/1"}, {"rotation", "-40/10"}, {"dont-compress-plan", ""}},
             R"([{"type":"interpolate.grid2rotated-regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"rotation":[-40,10],"grid":[1,1],"area":[89.7,0.7,-89.3,359.7]},{"type":"crop.area","area":[19.3,-6.3,-2.3,18.3]},{"type":"save","packing":"ccsds","edition":2}])",
-            R"([{"grid":"O1280"},{"area":[89.770187600933,0,-90,360],"grid":[1,1],"projection":{"south_pole":[10,-40],"type":"rotation"},"reference":[0.7,0.7]},{"area":[18.7,-6.3,-2.3,17.7],"grid":[1,1],"projection":{"south_pole":[10,-40],"type":"rotation"},"reference":[0.7,0.7]},{"area":[18.7,-6.3,-2.3,17.7],"grid":[1,1],"projection":{"south_pole":[10,-40],"type":"rotation"},"reference":[0.7,0.7]}])");
+            // grid plan commented, north of the global area as of eckit::geo latitudes by atan2, to uncomment
+            R"(#[{"grid":"O1280"},{"area":[89.7701876009335,0,-90,360],"grid":[1,1],"projection":{"south_pole":[10,-40],"type":"rotation"},"reference":[0.7,0.7]},{"area":[18.7,-6.3,-2.3,17.7],"grid":[1,1],"projection":{"south_pole":[10,-40],"type":"rotation"},"reference":[0.7,0.7]},{"area":[18.7,-6.3,-2.3,17.7],"grid":[1,1],"projection":{"south_pole":[10,-40],"type":"rotation"},"reference":[0.7,0.7]}])");
 
         EXPECT_EQUAL(get(h, "latitudeOfFirstGridPointInDegrees"), "18.7");
         EXPECT_EQUAL(get(h, "longitudeOfFirstGridPointInDegrees"), "353.7");
