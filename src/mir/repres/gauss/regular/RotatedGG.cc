@@ -62,8 +62,7 @@ void RotatedGG::makeName(std::ostream& out) const {
 
 void RotatedGG::fillGrib(grib_info& info) const {
     Regular::fillGrib(info);
-    rotation_.fillGrib(info);
-    info.grid.grid_type = CODES_UTIL_GRID_SPEC_ROTATED_GG;
+    rotation_.fillGrib(info, CODES_UTIL_GRID_SPEC_ROTATED_GG);
 }
 
 

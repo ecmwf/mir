@@ -51,8 +51,7 @@ Iterator* RotatedFromPL::iterator() const {
 
 void RotatedFromPL::fillGrib(grib_info& info) const {
     FromPL::fillGrib(info);
-    rotation_.fillGrib(info);
-    info.grid.grid_type = CODES_UTIL_GRID_SPEC_REDUCED_ROTATED_GG;
+    rotation_.fillGrib(info, CODES_UTIL_GRID_SPEC_REDUCED_ROTATED_GG);
 }
 
 
