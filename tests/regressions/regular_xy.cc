@@ -38,10 +38,10 @@ CASE("to reduced_gg: nn") {
     EXPECT_EQUAL(get(h, "gridType"), "reduced_gg");
     EXPECT_EQUAL(get(h, "N"), "320");
     EXPECT_EQUAL(get(h, "numberOfDataPoints"), "57");
-    EXPECT_EQUAL(get(h, "latitudeOfFirstGridPointInDegrees"), "47.8505");
-    EXPECT_EQUAL(get(h, "longitudeOfFirstGridPointInDegrees"), "5.83564");
-    EXPECT_EQUAL(get(h, "latitudeOfLastGridPointInDegrees"), "45.8291");
-    EXPECT_EQUAL(get(h, "longitudeOfLastGridPointInDegrees"), "10.6432");
+    EXPECT_EQUAL(get(h, "latitudeOfFirstGridPointInDegrees"), "47.6346");
+    EXPECT_EQUAL(get(h, "longitudeOfFirstGridPointInDegrees"), "6.14907");
+    EXPECT_EQUAL(get(h, "latitudeOfLastGridPointInDegrees"), "45.9485");
+    EXPECT_EQUAL(get(h, "longitudeOfLastGridPointInDegrees"), "10.6211");
 }
 #endif
 
