@@ -17,7 +17,7 @@ CASE("to reduced_gg: nn") {
         "rotation}}}",
         {{"grid", "{grid:o32}"}, {"interpolation", "nn"}, {"edition", "1"}},
         R"([{"type":"interpolate.grid2gridspec","interpolation":"nn","distance-weighting":"inverse-distance-weighting-squared","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":{"grid":"O32"}},{"type":"save","packing":"simple","edition":1}])",
-        R"([{"area":[69,-60,21,60],"grid":[3,3],"projection":{"south_pole":[30,30],"type":"rotation"}},{"area":[37.6730896290453,153.922363069537,-18.1389709902393,266.07762057547],"grid":"O32"},{"area":[37.6730896290453,153.922363069537,-18.1389709902393,266.07762057547],"grid":"O32"}])");
+        R"([{"area":[69,-60,21,60],"grid":[3,3],"projection":{"south_pole":[30,30],"type":"rotation"}},{"area":[37.6730896290453,-206.077636930463,-18.1389709902393,-93.9223794245295],"grid":"O32"},{"area":[37.6730896290453,-206.077636930463,-18.1389709902393,-93.9223794245295],"grid":"O32"}])");
 
     EXPECT_EQUAL(get(h, "gridType"), "reduced_gg");
     EXPECT_EQUAL(get(h, "N"), "32");
@@ -36,7 +36,7 @@ CASE("to regular_ll: nn") {
         "rotation}}}",
         {{"grid", "{grid:5/5}"}, {"interpolation", "nn"}, {"edition", "1"}},
         R"([{"type":"interpolate.grid2gridspec","interpolation":"nn","distance-weighting":"inverse-distance-weighting-squared","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":{"grid":[5,5]}},{"type":"save","packing":"simple","edition":1}])",
-        R"([{"area":[69,-60,21,60],"grid":[3,3],"projection":{"south_pole":[30,30],"type":"rotation"}},{"area":[35,155,-15,265],"grid":[5,5]},{"area":[35,155,-15,265],"grid":[5,5]}])");
+        R"([{"area":[69,-60,21,60],"grid":[3,3],"projection":{"south_pole":[30,30],"type":"rotation"}},{"area":[35,-205,-15,-95],"grid":[5,5]},{"area":[35,-205,-15,-95],"grid":[5,5]}])");
 
     EXPECT_EQUAL(get(h, "gridType"), "regular_ll");
     EXPECT_EQUAL(get(h, "Ni"), "23");

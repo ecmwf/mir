@@ -177,7 +177,7 @@ CASE("to reduced_gg: area") {
         auto h = run(
             "{artificialInput:gridspec,gridSpec:{grid:O1280}}", {{"area", "27.9/253/27.8/254"}, {"edition", "1"}},
             R"([{"type":"crop.area","area":[27.9,253,27.8,254]},{"type":"save","packing":"simple","edition":1}])",
-            R"([{"grid":"O1280"},{"area":[27.8734616366611,-106.925675675676,27.8031628686037,-106.013513513513],"grid":"O1280"},{"area":[27.8734616366611,-106.925675675676,27.8031628686037,-106.013513513513],"grid":"O1280"}])");
+            R"([{"grid":"O1280"},{"area":[27.8734616366611,253.074324324324,27.8031628686037,253.986486486486],"grid":"O1280"},{"area":[27.8734616366611,253.074324324324,27.8031628686037,253.986486486486],"grid":"O1280"}])");
 
         EXPECT_EQUAL(get(h, "gridName"), "O1280");
         EXPECT_EQUAL(get(h, "latitudeOfFirstGridPointInDegrees"), "27.874");
@@ -273,7 +273,7 @@ CASE("to regular_ll: area") {
             "{artificialInput:gridspec,gridSpec:{grid:O1280}}",
             {{"dont-compress-plan", ""}, {"grid", "1/1"}, {"area", "60/180/-56/-180"}, {"edition", "1"}},
             R"([{"type":"interpolate.grid2regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":[1,1],"area":[90,0,-90,359]},{"type":"crop.area","area":[60,180,-56,540]},{"type":"save","packing":"simple","edition":1}])",
-            R"([{"grid":"O1280"},{"grid":[1,1]},{"area":[60,-180,-56,180],"grid":[1,1]},{"area":[60,-180,-56,180],"grid":[1,1]}])");
+            R"([{"grid":"O1280"},{"grid":[1,1]},{"area":[60,180,-56,540],"grid":[1,1]},{"area":[60,180,-56,540],"grid":[1,1]}])");
 
         EXPECT_EQUAL(get(h, "Ni"), "360");
         EXPECT_EQUAL(get(h, "Nj"), "117");

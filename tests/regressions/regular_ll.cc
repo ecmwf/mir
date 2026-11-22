@@ -298,7 +298,7 @@ CASE("to regular_ll: area") {
             "{artificialInput:gridspec,gridSpec:{grid:[2,2]}}",
             {{"area", "90/-999/-90/-999"}, {"grid", "9/9"}, {"edition", "1"}},
             R"([{"type":"interpolate.grid2regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"cropping":[90,-999,-90,-999],"grid":[9,9],"area":[90,0,-90,351]},{"type":"save","packing":"simple","edition":1}])",
-            R"([{"grid":[2,2]},{"area":[90,81,-90,81],"grid":[0,9]},{"area":[90,81,-90,81],"grid":[0,9]}])");
+            R"([{"grid":[2,2]},{"area":[90,-999,-90,-999],"grid":[9,9]},{"area":[90,-999,-90,-999],"grid":[9,9]}])");
 
         EXPECT_EQUAL(get(h, "longitudeOfFirstGridPointInDegrees"), "-999");
         EXPECT_EQUAL(get(h, "longitudeOfLastGridPointInDegrees"), "-999");
@@ -444,7 +444,7 @@ CASE("to regular_ll: area") {
             "{artificialInput:gridspec,gridSpec:{grid:[2,2]}}",
             {{"area", "15/279.9/-19.95/318"}, {"grid", "0.15/0.15"}, {"edition", "1"}},
             R"([{"type":"interpolate.grid2regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"cropping":[15,279.9,-19.95,318],"grid":[0.15,0.15],"area":[90,0,-90,359.85]},{"type":"save","packing":"simple","edition":1}])",
-            R"([{"grid":[2,2]},{"area":[15,-80.1,-19.95,-42],"grid":[0.15,0.15]},{"area":[15,-80.1,-19.95,-42],"grid":[0.15,0.15]}])");
+            R"([{"grid":[2,2]},{"area":[15,279.9,-19.95,318],"grid":[0.15,0.15]},{"area":[15,279.9,-19.95,318],"grid":[0.15,0.15]}])");
 
         EXPECT_EQUAL(get(h, "Ni"), "255");
         EXPECT_EQUAL(get(h, "Nj"), "234");
@@ -461,7 +461,7 @@ CASE("to regular_ll: area") {
             "{artificialInput:gridspec,gridSpec:{grid:[2,2]}}",
             {{"area", "14.94/-209.97/-70.47/5.22"}, {"grid", "0.09/0.09"}, {"edition", "1"}},
             R"([{"type":"interpolate.grid2regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"cropping":[14.94,-209.97,-70.47,5.22],"grid":[0.09,0.09],"area":[90,0,-90,359.91]},{"type":"save","packing":"simple","edition":1}])",
-            R"([{"grid":[2,2]},{"area":[14.94,150.03,-70.47,365.22],"grid":[0.09,0.09]},{"area":[14.94,150.03,-70.47,365.22],"grid":[0.09,0.09]}])");
+            R"([{"grid":[2,2]},{"area":[14.94,-209.97,-70.47,5.22],"grid":[0.09,0.09]},{"area":[14.94,-209.97,-70.47,5.22],"grid":[0.09,0.09]}])");
 
         EXPECT_EQUAL(get(h, "Ni"), "2392");
         EXPECT_EQUAL(get(h, "Nj"), "950");
@@ -478,7 +478,7 @@ CASE("to regular_ll: area") {
             "{artificialInput:gridspec,gridSpec:{grid:[2,2]}}",
             {{"area", "33.075/241.85/5.95/284.025"}, {"grid", "0.175/0.175"}, {"edition", "1"}},
             R"([{"type":"interpolate.grid2regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"cropping":[33.075,241.85,5.95,284.025],"grid":[0.175,0.175],"area":[89.95,241.85,-89.95,601.825]},{"type":"save","packing":"simple","edition":1}])",
-            R"([{"grid":[2,2]},{"area":[33.075,-118.15,5.95,-75.975],"grid":[0.175,0.175],"reference":[0.15,0]},{"area":[33.075,-118.15,5.95,-75.975],"grid":[0.175,0.175],"reference":[0.15,0]}])");
+            R"([{"grid":[2,2]},{"area":[33.075,241.85,5.95,284.025],"grid":[0.175,0.175]},{"area":[33.075,241.85,5.95,284.025],"grid":[0.175,0.175]}])");
 
         EXPECT_EQUAL(get(h, "latitudeOfFirstGridPointInDegrees"), "33.075");
         EXPECT_EQUAL(get(h, "longitudeOfFirstGridPointInDegrees"), "241.85");

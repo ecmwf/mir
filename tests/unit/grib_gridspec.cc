@@ -57,9 +57,9 @@ CASE("gridSpec of GRIB messages (ecCodes, by eckit::geo)") {
         R"({"grid":"O80","projection":{"south_pole":[30,30],"type":"rotation"}})",
         R"({"grid":"F48"})",
         R"({"grid":"F80"})",
-        // GRIB1 without increments: mir has 360/Ni (a global grid), ecCodes the span of the corners (millidegrees)
-        R"({"grid":[0.234375244299674,0.156250217202433],"order":"i+j+","reference":[0.117,0.0781251086012163]})",
-        R"({"grid":[0.14062524423603,0.0937498697238145],"order":"i+j+","reference":[0.07,0.0468749348619072]})",
+        // GRIB1 without increments: periodic longitudes of 360/Ni, latitudes the span of the corners (millidegrees)
+        R"({"grid":[0.234375,0.156250217202433],"order":"i+j+","reference":[0.117,0.0781251086012163]})",
+        R"({"grid":[0.140625,0.0937498697238145],"order":"i+j+","reference":[0.07,0.0468749348619072]})",
         R"({"area":[47.1,-12.9,33,8.1],"grid":[0.15,0.15]})",
         R"({"area":[69,-60,21,60],"grid":[3,3]})",
         R"({"area":[75,-65,15,65],"grid":[1,1]})",

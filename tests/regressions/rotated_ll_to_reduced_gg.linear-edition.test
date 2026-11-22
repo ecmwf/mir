@@ -5,7 +5,7 @@ rotated_ll.3-3.grib1
 # action-plan
 [{"type":"interpolate.grid2gridspec","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":{"grid":"O32"}},{"type":"save","edition":2}]
 # grid-plan
-[{"area":[69,-60,21,60],"grid":[3,3],"projection":{"south_pole":[30,30],"type":"rotation"}},{"area":[37.6730896290453,153.922363069537,-18.1389709902393,266.07762057547],"grid":"O32"},{"area":[37.6730896290453,153.922363069537,-18.1389709902393,266.07762057547],"grid":"O32"}]
+[{"area":[69,-60,21,60],"grid":[3,3],"projection":{"south_pole":[30,30],"type":"rotation"}},{"area":[37.6730896290453,-206.077636930463,-18.1389709902393,-93.9223794245295],"grid":"O32"},{"area":[37.6730896290453,-206.077636930463,-18.1389709902393,-93.9223794245295],"grid":"O32"}]
 # grib_get
 edition = 2
 gridType = reduced_gg

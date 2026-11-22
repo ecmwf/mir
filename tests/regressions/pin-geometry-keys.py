@@ -10,6 +10,9 @@ Keys already asserted are kept as they are; keys not in a message aren't pinned.
 
 Usage (after the legacy tests ran, in the build tree):
     pin-geometry-keys.py --grib-get=<grib_get> --work-dir=<build>/mir/tests/regressions <test>...
+
+With --update, the grid plan and the values asserted are also replaced by the legacy outputs' (for an intended change
+of references, to review).
 """
 
 import argparse
@@ -101,6 +104,42 @@ def geometry_keys(tool, path, count):
     return keys
 
 
+def update(test, tool, work_dir):
+    lines = test.read_text().splitlines()
+    out = work_dir / f"data.out.{test.name}.legacy"
+    plan = work_dir / f"grid-plan.{test.name}.legacy"
+
+    section = message = None
+    plans = plan.read_text().splitlines() if plan.exists() else []
+    result = []
+    for line in lines:
+        m = HEADER.match(line)
+        if m:
+            section = m.group(1)
+            message = "count=1"
+            c = COUNT.match(m.group(3) or "")
+            if c:
+                message = c.group(1)
+            result.append(line)
+            if section == "grid-plan":
+                result.extend(plans)
+            continue
+        if section == "grid-plan" and not line.startswith("#"):
+            continue
+        if section == "grib_get" and line.strip() and not line.startswith("#") and out.exists():
+            key = line.split("=", 1)[0].strip()
+            if not key.startswith("values["):
+                value = grib_get(tool, out, message, key)
+                if value is not None and value != line.split("=", 1)[1].strip():
+                    line = f"{key}={value}"
+        result.append(line)
+
+    if result != lines:
+        test.write_text("\n".join(result) + "\n")
+        return True
+    return False
+
+
 def pin(test, tool, work_dir):
     out = work_dir / f"data.out.{test.name}.legacy"
     if not out.exists() or out.read_bytes()[:4] != b"GRIB":
@@ -152,10 +191,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--grib-get", required=True)
     parser.add_argument("--work-dir", required=True, type=Path)
+    parser.add_argument("--update", action="store_true")
     parser.add_argument("tests", nargs="+", type=Path)
     args = parser.parse_args()
 
     for test in args.tests:
+        if args.update and update(test, args.grib_get, args.work_dir):
+            print(f"updated: {test.name}")
         if pin(test, args.grib_get, args.work_dir):
             print(f"pinned: {test.name}")
     return 0
