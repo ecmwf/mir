@@ -52,6 +52,33 @@ static util::recursive_mutex local_mutex;
 }
 
 
+namespace {
+
+
+void check_message_is_valid(grib_handle* h) {
+    if (grib_check_is_message_valid()) {
+        long valid = 1;
+        ASSERT(codes_get_long(h, "isMessageValid", &valid) == CODES_SUCCESS);
+
+        if (valid != 1) {
+            throw exception::WriteError("GribOutput: invalid GRIB message");
+        }
+    }
+}
+
+
+void set_values(grib_handle* h, const data::MIRField& field, size_t which) {
+    const auto& values = field.values(which);
+
+    GRIB_CALL(codes_set_double(h, "missingValue", field.missingValue()));
+    GRIB_CALL(codes_set_long(h, "bitmapPresent", field.hasMissing() ? 1L : 0L));
+    GRIB_CALL(codes_set_double_array(h, "values", values.data(), values.size()));
+}
+
+
+}  // namespace
+
+
 GribOutput::GribOutput() : interpolated_(0), saved_(0) {}
 
 
@@ -78,14 +105,7 @@ size_t GribOutput::copy(const param::MIRParametrisation& /*unused*/, context::Co
         auto* h = input.gribHandle(i);  // Base class throws if input cannot provide handle
         ASSERT(h);
 
-        if (grib_check_is_message_valid()) {
-            long valid = 1;
-            ASSERT(codes_get_long(h, "isMessageValid", &valid) == CODES_SUCCESS);
-
-            if (valid != 1) {
-                throw exception::WriteError("GribOutput: invalid GRIB message");
-            }
-        }
+        check_message_is_valid(h);
 
         const void* message = nullptr;
         size_t size         = 0;
@@ -221,28 +241,8 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
                 throw exception::UserError("Using 'filter' requires preserving the number of points from input");
             }
 
-            GRIB_CALL(codes_set_double(h, "missingValue", field.missingValue()));
-            GRIB_CALL(codes_set_long(h, "bitmapPresent", field.hasMissing()));
-            GRIB_CALL(codes_set_double_array(h, "values", field.values(i).data(), field.values(i).size()));
-
-            if (grib_check_is_message_valid()) {
-                long valid = 1;
-                ASSERT(codes_get_long(h, "isMessageValid", &valid) == CODES_SUCCESS);
-
-                if (valid != 1) {
-                    throw exception::WriteError("GribOutput: invalid GRIB message");
-                }
-            }
-
-            const void* message = nullptr;
-            size_t size         = 0;
-            GRIB_CALL(codes_get_message(h, &message, &size));
-
-            GRIB_CALL(codes_check_message_header(message, size, PRODUCT_GRIB));
-            GRIB_CALL(codes_check_message_footer(message, size, PRODUCT_GRIB));
-
-            out(message, size, true);
-            total += size;
+            set_values(h, field, i);
+            total += write(h, saveTimer);
 
             continue;
         }
@@ -409,19 +409,7 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
 
         GRIB_CALL(err);
 
-        const void* message = nullptr;
-        size_t size         = 0;
-        GRIB_CALL(codes_get_message(result, &message, &size));
-
-        GRIB_CALL(codes_check_message_header(message, size, PRODUCT_GRIB));
-        GRIB_CALL(codes_check_message_footer(message, size, PRODUCT_GRIB));
-
-        {
-            util::MIRStatistics::AutoTiming timing(saveTimer);
-            out(message, size, true);
-        }
-
-        total += size;
+        total += write(result, saveTimer);
 
 
         static bool checkArea = eckit::Resource<bool>("$MIR_CHECK_AREA", false);
@@ -443,15 +431,6 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
                                 // << " grib=" << after
                                 << std::endl;
                 }
-            }
-        }
-
-        if (grib_check_is_message_valid()) {
-            long valid = 1;
-            ASSERT(codes_get_long(h, "isMessageValid", &valid) == CODES_SUCCESS);
-
-            if (valid != 1) {
-                throw exception::WriteError("GribOutput: invalid GRIB message");
             }
         }
     }
@@ -497,25 +476,8 @@ size_t GribOutput::set(const param::MIRParametrisation& param, context::Context&
         // Packing, accuracy, edition
         pack->set(repres, h);
 
-        // Values
-        GRIB_CALL(codes_set_double(h, "missingValue", field.missingValue()));
-        GRIB_CALL(codes_set_long(h, "bitmapPresent", field.hasMissing()));
-        GRIB_CALL(codes_set_double_array(h, "values", field.values(i).data(), field.values(i).size()));
-
-
-        const void* message = nullptr;
-        size_t size         = 0;
-        GRIB_CALL(codes_get_message(h, &message, &size));
-
-        GRIB_CALL(codes_check_message_header(message, size, PRODUCT_GRIB));
-        GRIB_CALL(codes_check_message_footer(message, size, PRODUCT_GRIB));
-
-        {
-            util::MIRStatistics::AutoTiming timing(saveTimer);
-            out(message, size, true);
-        }
-
-        total += size;
+        set_values(h, field, i);
+        total += write(h, saveTimer);
     }
 
     ctx.statistics().gribEncodingTiming() -= saveTimer;
@@ -525,6 +487,24 @@ size_t GribOutput::set(const param::MIRParametrisation& param, context::Context&
 
 
 void GribOutput::fill(grib_handle* /*unused*/, grib_info& /*unused*/) const {}
+
+
+size_t GribOutput::write(grib_handle* h, eckit::Timing& timer) {
+    ASSERT(h != nullptr);
+    check_message_is_valid(h);
+
+    const void* message = nullptr;
+    size_t size         = 0;
+    GRIB_CALL(codes_get_message(h, &message, &size));
+
+    GRIB_CALL(codes_check_message_header(message, size, PRODUCT_GRIB));
+    GRIB_CALL(codes_check_message_footer(message, size, PRODUCT_GRIB));
+
+    util::MIRStatistics::AutoTiming timing(timer);
+    out(message, size, true);
+
+    return size;
+}
 
 
 const grib::Config& GribOutput::config() {
