@@ -156,7 +156,14 @@ done
 if [[ $mode != legacy && $dryrun -eq 0 && "$(head -c 4 data.out.$t)" == GRIB ]]
 then
     env $env MIR_GRIDSPEC_GRIB_INPUT=0 MIR_GRIDSPEC_GRIB_OUTPUT=0 $mir $options $(pwd)/data.in.$t $(pwd)/data.out.$t.legacy
-    $grib_compare data.out.$t.legacy data.out.$t
+
+    # the only keys not compared: the reference value and binary scale factor where decoding doesn't read them, GRIB1
+    # IEEE packing or without values (legacy copies them from an ecCodes sample, gridSpec keeps the message's)
+    unused=
+    case "$($grib_get -w count=1 -p edition,packingType,numberOfValues data.out.$t)" in
+        "1 grid_ieee "*|*" 0") unused="-b referenceValue,binaryScaleFactor" ;;
+    esac
+    $grib_compare $unused data.out.$t.legacy data.out.$t
 fi
 
 if [[ $checks -ne 1 ]]

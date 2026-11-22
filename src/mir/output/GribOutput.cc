@@ -67,6 +67,23 @@ void check_message_is_valid(grib_handle* h) {
 }
 
 
+/// Geometry encoded by ecCodes from the gridSpec, instead of by GRIB keys; not cached, so it can be switched in-process
+bool is_save_with_gridspec(const param::MIRParametrisation& param) {
+    if (!eckit::Resource<bool>("$MIR_GRIDSPEC_GRIB_OUTPUT", false)) {
+        return false;
+    }
+
+    // requests only the GRIB keys of the legacy encoding can honour
+    std::string basicAngle = "decimal";
+    param.get("basic-angle", basicAngle);
+
+    bool deleteLocalDefinition = false;
+    param.get("delete-local-definition", deleteLocalDefinition);
+
+    return basicAngle == "decimal" && !deleteLocalDefinition && !param.userParametrisation().has("compatibility");
+}
+
+
 void set_missing_values(grib_handle* h, const data::MIRField& field) {
     GRIB_CALL(codes_set_double(h, "missingValue", field.missingValue()));
     GRIB_CALL(codes_set_long(h, "bitmapPresent", field.hasMissing() ? 1L : 0L));
@@ -240,6 +257,31 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
 
             set_missing_values(h, field);
             GRIB_CALL(codes_set_double_array(h, "values", field.values(i).data(), field.values(i).size()));
+
+            total += write(h, saveTimer);
+
+            continue;
+        }
+
+        if (is_save_with_gridspec(param)) {
+            auto* h = codes_handle_clone(input.gribHandle(field.handle(i)));
+            HandleDeleter hf(h);
+
+            repres::RepresentationHandle repres(field.representation());
+
+            // the geometry is encoded for the edition it finds, and the packing for the geometry it finds
+            pack->setEdition(h);
+
+            const auto spec = repres->spec().str();
+            auto length     = spec.length();
+            GRIB_CALL(codes_set_string(h, "gridSpec", spec.c_str(), &length));
+
+            for (const auto& [key, value] : field.metadata(i)) {
+                GRIB_CALL(codes_set_long(h, key.c_str(), value));
+            }
+
+            set_missing_values(h, field);
+            pack->set(repres, h, field.values(i));
 
             total += write(h, saveTimer);
 

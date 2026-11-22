@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <algorithm>
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <memory>
@@ -108,14 +110,82 @@ inline std::string unstructured(const eckit::PathName& path) {
 }
 
 
+/// Key value as a string (as grib_get -p)
+inline std::string get(const handle_t& h, const std::string& key) {
+    char value[1024];
+    size_t length = sizeof(value);
+    GRIB_CALL(codes_get_string(h.get(), key.c_str(), value, &length));
+    return value;
+}
+
+
+/// Keys of different values between two messages (arrays by value, other keys as strings), for a readable failure
+inline std::string different_keys(codes_handle* a, codes_handle* b) {
+    // but the reference value and binary scale factor where decoding doesn't read them (GRIB1 IEEE packing, or without
+    // values)
+    long edition      = 0;
+    long values       = 0;
+    char packing[64]  = {0};
+    size_t packingLen = sizeof(packing);
+    codes_get_long(a, "edition", &edition);
+    codes_get_long(a, "numberOfValues", &values);
+    codes_get_string(a, "packingType", packing, &packingLen);
+
+    const auto unused = values == 0 || (edition == 1 && std::string(packing) == "grid_ieee");
+
+    std::string diff;
+    auto append = [&diff](const std::string& difference) { diff += (diff.empty() ? "" : ", ") + difference; };
+
+    std::unique_ptr<codes_keys_iterator, decltype(&codes_keys_iterator_delete)> it(
+        codes_keys_iterator_new(a, CODES_KEYS_ITERATOR_SKIP_COMPUTED | CODES_KEYS_ITERATOR_SKIP_DUPLICATES, nullptr),
+        &codes_keys_iterator_delete);
+
+    while (codes_keys_iterator_next(it.get()) != 0) {
+        const std::string key = codes_keys_iterator_get_name(it.get());
+        if (unused && (key == "referenceValue" || key == "binaryScaleFactor")) {
+            continue;
+        }
+
+        if (size_t na = 0, nb = 0; codes_get_size(a, key.c_str(), &na) == CODES_SUCCESS && na > 1) {
+            std::vector<double> xa(na);
+            std::vector<double> xb;
+            if (codes_get_size(b, key.c_str(), &nb) == CODES_SUCCESS && nb == na) {
+                xb.resize(nb);
+                codes_get_double_array(a, key.c_str(), xa.data(), &na);
+                codes_get_double_array(b, key.c_str(), xb.data(), &nb);
+            }
+
+            if (xa != xb) {
+                append(key + "[" + std::to_string(na) + "/" + std::to_string(nb) + "]");
+            }
+            continue;
+        }
+
+        char va[1024];
+        char vb[1024];
+        size_t la = sizeof(va);
+        size_t lb = sizeof(vb);
+        if (codes_get_string(a, key.c_str(), va, &la) != CODES_SUCCESS) {
+            continue;
+        }
+
+        if (codes_get_string(b, key.c_str(), vb, &lb) != CODES_SUCCESS) {
+            append(key + "=" + va + "/?");
+        }
+        else if (std::string(va) != std::string(vb)) {
+            append(key + "=" + va + "/" + vb);
+        }
+    }
+
+    return diff;
+}
+
+
 /// Post-processing an artificial input (as the mir tool with --input) to GRIB, checking the action and grid plans
-/// (as --dump-action-plan-file and --dump-grid-plan-file, a grid plan starting with '#' commented), the output message
+/// (as --dump-action-plan-file and --dump-grid-plan-file, a grid plan starting with '#' commented), the output message,
+/// encoded identically by GRIB keys and by gridSpec (MIR_GRIDSPEC_GRIB_OUTPUT)
 inline handle_t run(const std::string& input, const options_t& options, const std::string& actionPlan,
                     const std::string& gridPlan) {
-    param::SimpleParametrisation param;
-    param.set("input", input);
-    std::unique_ptr<input::MIRInput> in(input::MIRInputFactory::build("/dev/null", param));
-
     // plan files in the temporary directory (not the working directory, the source tree), removed in any case
     struct Temporary {
         explicit Temporary(const std::string& name) :
@@ -126,41 +196,55 @@ inline handle_t run(const std::string& input, const options_t& options, const st
         const eckit::PathName path;
     };
 
-    const Temporary actionPlan_("mir-action-plan");
-    const Temporary gridPlan_("mir-grid-plan");
-    const auto& actionPlanFile = actionPlan_.path;
-    const auto& gridPlanFile   = gridPlan_.path;
+    auto encode = [&](bool gridspec) {
+        ::setenv("MIR_GRIDSPEC_GRIB_OUTPUT", gridspec ? "1" : "0", 1);
 
-    api::MIRJob job;
+        param::SimpleParametrisation param;
+        param.set("input", input);
+        std::unique_ptr<input::MIRInput> in(input::MIRInputFactory::build("/dev/null", param));
 
-    for (const auto& kv : options) {
-        set(job, kv.first, kv.second);
+        const Temporary actionPlan_("mir-action-plan");
+        const Temporary gridPlan_("mir-grid-plan");
+
+        api::MIRJob job;
+
+        for (const auto& kv : options) {
+            set(job, kv.first, kv.second);
+        }
+
+        job.set("dump-action-plan-file", actionPlan_.path.asString());
+        job.set("dump-grid-plan-file", gridPlan_.path.asString());
+
+        static std::vector<char> buffer(64 * 1024 * 1024);
+        output::GribMemoryOutput out(buffer.data(), buffer.size());
+        job.execute(*in, out);
+
+        EXPECT_EQUAL(contents(actionPlan_.path), actionPlan);
+        if (gridPlan.rfind('#', 0) != 0) {
+            EXPECT_EQUAL(contents(gridPlan_.path), gridPlan);
+        }
+
+        return std::string(buffer.data(), out.length());
+    };
+
+    const auto legacy   = encode(false);
+    const auto gridspec = encode(true);
+    ::unsetenv("MIR_GRIDSPEC_GRIB_OUTPUT");
+
+    handle_t h(codes_handle_new_from_message_copy(nullptr, legacy.data(), legacy.size()), &codes_handle_delete);
+    handle_t g(codes_handle_new_from_message_copy(nullptr, gridspec.data(), gridspec.size()), &codes_handle_delete);
+    ASSERT(h && g);
+
+    // the same message, or the same grid (random values do not repeat)
+    if (legacy != gridspec) {
+        auto random =
+            std::any_of(options.begin(), options.end(), [](const auto& kv) { return kv.first == "add-random"; });
+        const auto difference = random ? get(h, "md5GridSection") : different_keys(h.get(), g.get());
+        const auto expected   = random ? get(g, "md5GridSection") : std::string();
+        EXPECT_EQUAL(difference, expected);
     }
 
-    job.set("dump-action-plan-file", actionPlanFile.asString());
-    job.set("dump-grid-plan-file", gridPlanFile.asString());
-
-    static std::vector<char> buffer(64 * 1024 * 1024);
-    output::GribMemoryOutput out(buffer.data(), buffer.size());
-    job.execute(*in, out);
-
-    EXPECT_EQUAL(contents(actionPlanFile), actionPlan);
-    if (gridPlan.rfind('#', 0) != 0) {
-        EXPECT_EQUAL(contents(gridPlanFile), gridPlan);
-    }
-
-    handle_t h(codes_handle_new_from_message_copy(nullptr, buffer.data(), out.length()), &codes_handle_delete);
-    ASSERT(h);
     return h;
-}
-
-
-/// Key value as a string (as grib_get -p)
-inline std::string get(const handle_t& h, const std::string& key) {
-    char value[1024];
-    size_t length = sizeof(value);
-    GRIB_CALL(codes_get_string(h.get(), key.c_str(), value, &length));
-    return value;
 }
 
 
