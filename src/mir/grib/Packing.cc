@@ -29,6 +29,12 @@ void check(bool ok, const std::string& message) {
 };
 
 
+void set_packing_type(grib_handle* h, const std::string& type) {
+    auto len = type.length();
+    GRIB_CALL(codes_set_string(h, "packingType", type.c_str(), &len));
+}
+
+
 Packing::Packing(const std::string& name, const param::MIRParametrisation& param) :
     bitsPerValue_(0),
     precision_(0),
@@ -161,20 +167,38 @@ void Packing::fill(grib_info& info, long pack) const {
 }
 
 
-void Packing::set(grib_handle* h, const std::string& type) const {
-    // Note: order is important, it is not applicable to all packing's.
-
+void Packing::setEdition(grib_handle* h) const {
     if (defineEdition_) {
         GRIB_CALL(codes_set_long(h, "edition", edition_));
     }
+}
+
+
+void Packing::set(grib_handle* h, const std::string& type, const MIRValuesVector& values) const {
+    // Note: order is important, it is not applicable to all packing's.
+
+    // the packing type encoded, as requested or the message's
+    auto encoded = type;
+    if (!definePacking_) {
+        char buffer[64];
+        size_t len = sizeof(buffer);
+        encoded    = codes_get_string(h, "packingType", buffer, &len) == CODES_SUCCESS ? buffer : "";
+    }
+
+    // compressing packings encode the values as simply packed, so they are set before (as ecCodes needs)
+    const auto compressing = encoded == "grid_ccsds" || encoded == "grid_jpeg";
+
+    setEdition(h);
 
     if (defineBitsPerValueBeforePacking_) {
         GRIB_CALL(codes_set_long(h, "bitsPerValue", bitsPerValue_));
     }
 
-    if (definePacking_) {
-        auto len = type.length();
-        GRIB_CALL(codes_set_string(h, "packingType", type.c_str(), &len));
+    if (compressing) {
+        set_packing_type(h, "grid_simple");
+    }
+    else if (definePacking_) {
+        set_packing_type(h, type);
     }
 
     if (definePrecision_) {
@@ -182,6 +206,12 @@ void Packing::set(grib_handle* h, const std::string& type) const {
     }
     else if (defineBitsPerValue_) {
         GRIB_CALL(codes_set_long(h, "bitsPerValue", bitsPerValue_));
+    }
+
+    GRIB_CALL(codes_set_double_array(h, "values", values.data(), values.size()));
+
+    if (compressing) {
+        set_packing_type(h, encoded);
     }
 }
 
@@ -198,7 +228,9 @@ struct ArchivedValue : Packing {
         Packing::fill(info, CODES_UTIL_PACKING_SAME_AS_INPUT);
     }
 
-    void set(const repres::Representation*, grib_handle* handle) const override { Packing::set(handle, ""); }
+    void set(const repres::Representation*, grib_handle* handle, const MIRValuesVector& values) const override {
+        Packing::set(handle, "", values);
+    }
 };
 
 
@@ -213,7 +245,9 @@ struct CCSDS : Packing {
         Packing::fill(info, CODES_UTIL_PACKING_TYPE_CCSDS);
     }
 
-    void set(const repres::Representation*, grib_handle* handle) const override { Packing::set(handle, "grid_ccsds"); }
+    void set(const repres::Representation*, grib_handle* handle, const MIRValuesVector& values) const override {
+        Packing::set(handle, "grid_ccsds", values);
+    }
 };
 
 
@@ -224,8 +258,8 @@ struct Complex : Packing {
         Packing::fill(info, CODES_UTIL_PACKING_TYPE_SPECTRAL_COMPLEX);
     }
 
-    void set(const repres::Representation*, grib_handle* handle) const override {
-        Packing::set(handle, "spectral_complex");
+    void set(const repres::Representation*, grib_handle* handle, const MIRValuesVector& values) const override {
+        Packing::set(handle, "spectral_complex", values);
     }
 };
 
@@ -258,8 +292,8 @@ struct IEEE : Packing {
         Packing::fill(info, CODES_UTIL_PACKING_TYPE_IEEE);
     }
 
-    void set(const repres::Representation*, grib_handle* handle) const override {
-        Packing::set(handle, gridded() ? "grid_ieee" : "spectral_ieee");
+    void set(const repres::Representation*, grib_handle* handle, const MIRValuesVector& values) const override {
+        Packing::set(handle, gridded() ? "grid_ieee" : "spectral_ieee", values);
     }
 };
 
@@ -275,8 +309,8 @@ struct Simple : Packing {
         Packing::fill(info, gridded() ? CODES_UTIL_PACKING_TYPE_GRID_SIMPLE : CODES_UTIL_PACKING_TYPE_SPECTRAL_SIMPLE);
     }
 
-    void set(const repres::Representation*, grib_handle* handle) const override {
-        Packing::set(handle, gridded() ? "grid_simple" : "spectral_simple");
+    void set(const repres::Representation*, grib_handle* handle, const MIRValuesVector& values) const override {
+        Packing::set(handle, gridded() ? "grid_simple" : "spectral_simple", values);
     }
 };
 
@@ -308,13 +342,22 @@ struct SecondOrder : Packing {
         Packing::fill(info, CODES_UTIL_PACKING_TYPE_GRID_SECOND_ORDER);
     }
 
-    void set(const repres::Representation* repres, grib_handle* handle) const override {
+    void set(const repres::Representation* repres, grib_handle* handle, const MIRValuesVector& values) const override {
+        simple_.set(repres, handle, values);
         if (!check(repres)) {
-            simple_.set(repres, handle);
             return;
         }
 
-        Packing::set(handle, "grid_second_order");
+        // from simple packing, unless constant (as codes_grib_util_set_spec), GRIB2 packing the values anew
+        if (long constant = 0; codes_get_long(handle, "isConstant", &constant) == CODES_SUCCESS && constant != 0) {
+            return;
+        }
+
+        set_packing_type(handle, "grid_second_order");
+
+        if (long edition = 0; codes_get_long(handle, "edition", &edition) == CODES_SUCCESS && edition == 2) {
+            GRIB_CALL(codes_set_double_array(handle, "values", values.data(), values.size()));
+        }
     }
 };
 

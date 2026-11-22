@@ -67,12 +67,9 @@ void check_message_is_valid(grib_handle* h) {
 }
 
 
-void set_values(grib_handle* h, const data::MIRField& field, size_t which) {
-    const auto& values = field.values(which);
-
+void set_missing_values(grib_handle* h, const data::MIRField& field) {
     GRIB_CALL(codes_set_double(h, "missingValue", field.missingValue()));
     GRIB_CALL(codes_set_long(h, "bitmapPresent", field.hasMissing() ? 1L : 0L));
-    GRIB_CALL(codes_set_double_array(h, "values", values.data(), values.size()));
 }
 
 
@@ -241,7 +238,9 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
                 throw exception::UserError("Using 'filter' requires preserving the number of points from input");
             }
 
-            set_values(h, field, i);
+            set_missing_values(h, field);
+            GRIB_CALL(codes_set_double_array(h, "values", field.values(i).data(), field.values(i).size()));
+
             total += write(h, saveTimer);
 
             continue;
@@ -474,9 +473,9 @@ size_t GribOutput::set(const param::MIRParametrisation& param, context::Context&
         repres::RepresentationHandle repres(field.representation());
 
         // Packing, accuracy, edition
-        pack->set(repres, h);
+        set_missing_values(h, field);
+        pack->set(repres, h, field.values(i));
 
-        set_values(h, field, i);
         total += write(h, saveTimer);
     }
 
