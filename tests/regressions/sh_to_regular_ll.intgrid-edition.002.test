@@ -11,3 +11,16 @@ $MIR_CONFIG_GRIB_OUTPUT=~mir/etc/mir/grib-output-ii.yaml
 # grib_get
 packingType=grid_ccsds
 edition=2
+gridType=regular_ll
+numberOfDataPoints=65160
+Ni=360
+Nj=181
+latitudeOfFirstGridPointInDegrees=90
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=-90
+longitudeOfLastGridPointInDegrees=359
+iDirectionIncrementInDegrees=1
+jDirectionIncrementInDegrees=1
+iScansNegatively=0
+jScansPositively=0
+shapeOfTheEarth=6

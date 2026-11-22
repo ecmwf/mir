@@ -10,3 +10,7 @@ param=t,level=1000,resol=20
 gridType=unstructured_grid
 numberOfDataPoints=34
 shortName=t
+numberOfGridUsed=0
+numberOfGridInReference=0
+uuidOfHGrid=00000000000000000000000000000000
+shapeOfTheEarth=0

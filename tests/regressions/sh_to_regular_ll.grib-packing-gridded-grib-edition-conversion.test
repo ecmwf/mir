@@ -10,3 +10,16 @@ param=t,level=1000,resol=20
 # grib_get
 packingType=grid_ccsds
 edition=2
+gridType=regular_ll
+numberOfDataPoints=840
+Ni=40
+Nj=21
+latitudeOfFirstGridPointInDegrees=90
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=-90
+longitudeOfLastGridPointInDegrees=351
+iDirectionIncrementInDegrees=9
+jDirectionIncrementInDegrees=9
+iScansNegatively=0
+jScansPositively=0
+shapeOfTheEarth=6

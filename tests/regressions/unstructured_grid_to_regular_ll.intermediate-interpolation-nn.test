@@ -20,3 +20,13 @@ ORCA.grib2
 gridType=regular_ll
 Ni=36
 Nj=19
+numberOfDataPoints=684
+latitudeOfFirstGridPointInDegrees=90
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=-90
+longitudeOfLastGridPointInDegrees=350
+iDirectionIncrementInDegrees=10
+jDirectionIncrementInDegrees=10
+iScansNegatively=0
+jScansPositively=0
+shapeOfTheEarth=6

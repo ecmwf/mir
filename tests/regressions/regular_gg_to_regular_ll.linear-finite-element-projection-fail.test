@@ -8,3 +8,15 @@ MIR-583.grib1
 # grid-plan
 [{"area":[-89.8898295555062,0,-90,360],"grid":"F2250"},{"area":[-89.92,0,-90,360],"grid":[0.04,0.04]},{"area":[-89.92,0,-90,360],"grid":[0.04,0.04]}]
 # grib_get
+gridType=regular_ll
+numberOfDataPoints=27000
+Ni=9000
+Nj=3
+latitudeOfFirstGridPointInDegrees=-89.92
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=-90
+longitudeOfLastGridPointInDegrees=359.96
+iDirectionIncrementInDegrees=0.04
+jDirectionIncrementInDegrees=0.04
+iScansNegatively=0
+jScansPositively=0

@@ -8,3 +8,19 @@ param=vo_d,level=1000,resol=20
 # [{"grid":"T20"},{"grid":"F21"},{"area":[89.9233960717573,0,-90,360],"grid":[0.2,0.2],"projection":{"south_pole":[10,-40],"type":"rotation"},"reference":[0.1,0.1]},{"area":[89.9233960717573,0,-90,360],"grid":[0.2,0.2],"projection":{"south_pole":[10,-40],"type":"rotation"},"reference":[0.1,0.1]},{"area":[22.7,-13.7,-5.9,21.7],"grid":[0.2,0.2],"projection":{"south_pole":[10,-40],"type":"rotation"},"reference":[0.1,0.1]},{"area":[22.7,-13.7,-5.9,21.7],"grid":[0.2,0.2],"projection":{"south_pole":[10,-40],"type":"rotation"},"reference":[0.1,0.1]}]
 # grib_get
 paramId=131
+gridType=rotated_ll
+numberOfDataPoints=25632
+Ni=178
+Nj=144
+latitudeOfFirstGridPointInDegrees=22.7
+longitudeOfFirstGridPointInDegrees=-13.7
+latitudeOfLastGridPointInDegrees=-5.9
+longitudeOfLastGridPointInDegrees=21.7
+iDirectionIncrementInDegrees=0.2
+jDirectionIncrementInDegrees=0.2
+iScansNegatively=0
+jScansPositively=0
+latitudeOfSouthernPoleInDegrees=-40
+longitudeOfSouthernPoleInDegrees=10
+angleOfRotationInDegrees=0
+uvRelativeToGrid=1

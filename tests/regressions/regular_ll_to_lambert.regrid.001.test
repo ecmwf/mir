@@ -7,3 +7,20 @@ regular_ll.2-2.grib2
 [{"type":"interpolate.grid2gridspec","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":{"projection":{"lat_0":45.8,"lat_1":45.8,"lon_0":2,"reverse":true,"type":"lcc"},"x":[-922506.40123332,1574993.59876668,2500],"y":[-885004.889085306,-3257504.88908531,-2500]}},{"type":"save"}]
 # grid-plan
 [{"grid":[2,2]},{"projection":{"lat_0":45.8,"lat_1":45.8,"lon_0":2,"reverse":true,"type":"lcc"},"x":[-922506.40123332,1574993.59876668,2500],"y":[-885004.889085306,-3257504.88908531,-2500]},{"projection":{"lat_0":45.8,"lat_1":45.8,"lon_0":2,"reverse":true,"type":"lcc"},"x":[-922506.40123332,1574993.59876668,2500],"y":[-885004.889085306,-3257504.88908531,-2500]}]
+# grib_get
+gridType=lambert
+numberOfDataPoints=950000
+Nx=1000
+Ny=950
+latitudeOfFirstGridPointInDegrees=37.333
+longitudeOfFirstGridPointInDegrees=351.646
+DxInMetres=2500
+DyInMetres=2500
+iScansNegatively=0
+jScansPositively=0
+uvRelativeToGrid=0
+LaDInDegrees=45.8
+LoVInDegrees=2
+Latin1InDegrees=45.8
+Latin2InDegrees=45.8
+shapeOfTheEarth=6

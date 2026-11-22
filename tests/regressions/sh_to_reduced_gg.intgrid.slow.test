@@ -7,3 +7,15 @@ param=t,level=1000
 [{"type":"transform.sh-scalar-to-namedgrid","atlas-trans-flt":false,"atlas-trans-type":"local","invtrans":"scalar","grid":"F640"},{"type":"interpolate.grid2namedgrid","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":"O640"},{"type":"save","packing":"simple"}]
 # grid-plan
 [{"grid":"T1279"},{"grid":"F640"},{"grid":"O640"},{"grid":"O640"}]
+# grib_get
+gridType=reduced_gg
+numberOfDataPoints=1661440
+N=640
+Nj=1280
+isOctahedral=1
+latitudeOfFirstGridPointInDegrees=89.893
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=-89.893
+longitudeOfLastGridPointInDegrees=359.861
+iScansNegatively=0
+jScansPositively=0

@@ -11,6 +11,10 @@
 #   # grib_get count=N  of the N-th message (other text after the header is a comment)
 #
 # MIR_TESTS_DRYRUN (quick check, if set and not 0): by dry run, the action plan only (tests expected to fail aren't checked)
+#
+# MIR_TESTS_MODE, how GRIB geometry is exchanged with ecCodes: legacy (default, by GRIB keys), or by gridSpec on input
+# (gridspec-input), output (gridspec-output) or both (gridspec). The references are the same for every mode, and the
+# output of a mode other than legacy has to be identical to the legacy's (grib_compare), so switching is transparent
 
 set -eaux
 
@@ -18,17 +22,27 @@ echo "======> $1"
 
 test_file=$1
 
-# work files, by the (unique) test name
-t=$(basename $1)
+mode=${MIR_TESTS_MODE:-legacy}
+case $mode in
+    legacy)          mode_env="MIR_GRIDSPEC_GRIB_INPUT=0 MIR_GRIDSPEC_GRIB_OUTPUT=0" ;;
+    gridspec-input)  mode_env="MIR_GRIDSPEC_GRIB_INPUT=1 MIR_GRIDSPEC_GRIB_OUTPUT=0" ;;
+    gridspec-output) mode_env="MIR_GRIDSPEC_GRIB_INPUT=0 MIR_GRIDSPEC_GRIB_OUTPUT=1" ;;
+    gridspec)        mode_env="MIR_GRIDSPEC_GRIB_INPUT=1 MIR_GRIDSPEC_GRIB_OUTPUT=1" ;;
+    *)               echo "MIR_TESTS_MODE: unknown mode '$mode'"; exit 1 ;;
+esac
+
+# work files, by the (unique) test name and mode (so modes can run concurrently)
+t=$(basename $1).$mode
 
 mir="$<TARGET_FILE:mir-tool>"
 grib_get="$<TARGET_FILE:grib_get>"
+grib_compare="$<TARGET_FILE:grib_compare>"
 diff="@DIFF_TOOL@"
 
 tests_data_dir="@MIR_TESTS_DATA_DIR@"
 
 pwd
-rm -f {action-plan,grid-plan}.${t}{,.reference} data.{in,out}.$t
+rm -f {action-plan,grid-plan}.${t}{,.reference} data.{in,out}.$t data.out.$t.legacy
 
 section=
 message=
@@ -87,7 +101,7 @@ dumps=
 [[ $dryrun -eq 0 ]] || dumps="$dumps --dryrun"
 
 eval options=\"$options\"
-env $env $mir $dumps $options $(pwd)/data.in.$t $(pwd)/data.out.$t
+env $env $mode_env $mir $dumps $options $(pwd)/data.in.$t $(pwd)/data.out.$t
 # For some reason set -e does not trigger
 [[ $? -eq 0 ]] || exit 1
 
@@ -137,6 +151,13 @@ do
     fi
     checks=1
 done
+
+# transparency: the same GRIB output as by the legacy mode
+if [[ $mode != legacy && $dryrun -eq 0 && "$(head -c 4 data.out.$t)" == GRIB ]]
+then
+    env $env MIR_GRIDSPEC_GRIB_INPUT=0 MIR_GRIDSPEC_GRIB_OUTPUT=0 $mir $options $(pwd)/data.in.$t $(pwd)/data.out.$t.legacy
+    $grib_compare data.out.$t.legacy data.out.$t
+fi
 
 if [[ $checks -ne 1 ]]
 then

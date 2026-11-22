@@ -11,3 +11,16 @@ packingType=spectral_complex,param=vo_d.grib2
 packingType=grid_ieee
 edition=2
 precision=1
+gridType=regular_ll
+numberOfDataPoints=65160
+Ni=360
+Nj=181
+latitudeOfFirstGridPointInDegrees=90
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=-90
+longitudeOfLastGridPointInDegrees=359
+iDirectionIncrementInDegrees=1
+jDirectionIncrementInDegrees=1
+iScansNegatively=0
+jScansPositively=0
+shapeOfTheEarth=6

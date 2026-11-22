@@ -11,3 +11,14 @@ $MIR_HOME=/bad
 [{"grid":[2,2]},{"grid":[9,9]},{"grid":[9,9]}]
 # grib_get
 gridType=regular_ll
+numberOfDataPoints=840
+Ni=40
+Nj=21
+latitudeOfFirstGridPointInDegrees=90
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=-90
+longitudeOfLastGridPointInDegrees=351
+iDirectionIncrementInDegrees=9
+jDirectionIncrementInDegrees=9
+iScansNegatively=0
+jScansPositively=0

@@ -7,3 +7,20 @@ param=t,level=1000
 [{"type":"transform.sh-scalar-to-namedgrid","atlas-trans-flt":false,"atlas-trans-type":"local","cropping":[90,0,50.34,360],"invtrans":"scalar","grid":"F360"},{"type":"interpolate.grid2rotated-regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"cropping":[73.5,-27,33,45],"rotation":[-40,22],"grid":[0.25,0.25],"area":[90,0,-90,359.75]},{"type":"save","packing":"simple"}]
 # grid-plan
 [{"grid":"T1279"},{"area":[90,0,50.3400249963516,360],"grid":"F360"},{"area":[73.5,-27,33,45],"grid":[0.25,0.25],"projection":{"south_pole":[22,-40],"type":"rotation"}},{"area":[73.5,-27,33,45],"grid":[0.25,0.25],"projection":{"south_pole":[22,-40],"type":"rotation"}}]
+# grib_get
+gridType=rotated_ll
+numberOfDataPoints=47107
+Ni=289
+Nj=163
+latitudeOfFirstGridPointInDegrees=73.5
+longitudeOfFirstGridPointInDegrees=-27
+latitudeOfLastGridPointInDegrees=33
+longitudeOfLastGridPointInDegrees=45
+iDirectionIncrementInDegrees=0.25
+jDirectionIncrementInDegrees=0.25
+iScansNegatively=0
+jScansPositively=0
+latitudeOfSouthernPoleInDegrees=-40
+longitudeOfSouthernPoleInDegrees=22
+angleOfRotationInDegrees=0
+uvRelativeToGrid=0

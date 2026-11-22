@@ -5,3 +5,8 @@ gridType=sh,param=t,levtype=ml,level=1,packing=simple.grib2.ERROR
 --packing=simple
 # grib_get
 FAIL
+gridType=sh
+numberOfDataPoints=462
+J=20
+K=20
+M=20

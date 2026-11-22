@@ -7,3 +7,9 @@ param=vo_d,level=1000
 [{"type":"transform.sh-vod-to-UV","atlas-trans-type":"local"},{"type":"save"}]
 # grid-plan
 [{"grid":"T1279"},{"grid":"T1279"},{"grid":"T1279"}]
+# grib_get
+gridType=sh
+numberOfDataPoints=1639680
+J=1279
+K=1279
+M=1279

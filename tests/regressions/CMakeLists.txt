@@ -190,6 +190,9 @@ find_program(DIFF_TOOL NAMES "diff" "cmp" "false")
 get_filename_component(MIR_TESTS_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../data" ABSOLUTE)
 ecbuild_configure_file(mir-test.sh.in mir-test.sh @ONLY)
 
+# how GRIB geometry is exchanged with ecCodes (see mir-test.sh.in), every test by each (legacy keeping the test name)
+set(MODES legacy gridspec-input gridspec-output gridspec)
+
 foreach(_t ${TESTS})
     if((_t MATCHES "[.]lsm[.]" AND NOT HAVE_MIR_DOWNLOAD_MASKS) OR
        (_t MATCHES "[.]proj[.]" AND NOT eckit_HAVE_PROJ))
@@ -209,16 +212,23 @@ foreach(_t ${TESTS})
     endif()
 
     target_from_path("${CMAKE_CURRENT_SOURCE_DIR}/${_t}" target)
-    ecbuild_add_test(
-        TARGET      ${target}
-        COMMAND     mir-test.sh
-        ARGS        ${CMAKE_CURRENT_SOURCE_DIR}/${_t}
-        LABELS      ${_labels}
-        ENVIRONMENT ${_environment})
+    foreach(_mode ${MODES})
+        set(_target ${target})
+        if(NOT _mode STREQUAL "legacy")
+            string(MAKE_C_IDENTIFIER "${target}_${_mode}" _target)
+        endif()
 
-    if(_t MATCHES "[.]fail[.]")
-        set_tests_properties(${target} PROPERTIES WILL_FAIL TRUE)
-    endif()
+        ecbuild_add_test(
+            TARGET      ${_target}
+            COMMAND     mir-test.sh
+            ARGS        ${CMAKE_CURRENT_SOURCE_DIR}/${_t}
+            LABELS      ${_labels} ${_mode}
+            ENVIRONMENT ${_environment} MIR_TESTS_MODE=${_mode})
+
+        if(_t MATCHES "[.]fail[.]")
+            set_tests_properties(${_target} PROPERTIES WILL_FAIL TRUE)
+        endif()
+    endforeach()
 endforeach()
 
 # disabled meanwhile: of references pinned before the eckit::geo bounding boxes of the west as given and exact fractions, re-pinned with the GRIB geometry by gridSpec

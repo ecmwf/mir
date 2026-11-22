@@ -7,3 +7,16 @@ geopoints-format-xyv.gpt
 # grid-plan
 [{"type":"unstructured_ll","uid":"b001b0802298e807edf743226ba27447"},{"type":"unstructured_ll","uid":"b001b0802298e807edf743226ba27447"}]
 # grib_get (output is GEOPOINTS)
+gridType=regular_ll
+numberOfDataPoints=3
+Ni=360
+Nj=181
+latitudeOfFirstGridPointInDegrees=90
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=-90
+longitudeOfLastGridPointInDegrees=359
+iDirectionIncrementInDegrees=1
+jDirectionIncrementInDegrees=1
+iScansNegatively=0
+jScansPositively=0
+shapeOfTheEarth=0

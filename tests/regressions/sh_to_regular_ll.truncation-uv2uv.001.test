@@ -8,3 +8,16 @@ $MIR_CONFIG_STYLE=~mir/etc/mir/style-compatible.yaml
 [{"type":"filter.sh-truncate","truncation":19},{"type":"transform.sh-scalar-to-namedgrid","atlas-trans-flt":false,"atlas-trans-type":"local","invtrans":"scalar","grid":"F21"},{"type":"interpolate.grid2regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":1e-06,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":[3,3],"area":[90,0,-90,357]},{"type":"filter.adjust-winds-scale-cos-latitude"},"filter.uv-gradient",{"type":"save","packing":"simple"}]
 # grid-plan
 [{"grid":"T20"},{"grid":"T19"},{"grid":"F21"},{"grid":[3,3]},{"grid":[3,3]},{"grid":[3,3]},{"grid":[3,3]}]
+# grib_get
+gridType=regular_ll
+numberOfDataPoints=7320
+Ni=120
+Nj=61
+latitudeOfFirstGridPointInDegrees=90
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=-90
+longitudeOfLastGridPointInDegrees=357
+iDirectionIncrementInDegrees=3
+jDirectionIncrementInDegrees=3
+iScansNegatively=0
+jScansPositively=0

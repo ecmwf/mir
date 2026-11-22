@@ -10,3 +10,12 @@ stream=wave,param=mwd
 numberOfValues = 5144
 N = 32
 Nj = 64
+gridType=reduced_gg
+numberOfDataPoints=5248
+isOctahedral=1
+latitudeOfFirstGridPointInDegrees=87.864
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=-87.864
+longitudeOfLastGridPointInDegrees=357.5
+iScansNegatively=0
+jScansPositively=0

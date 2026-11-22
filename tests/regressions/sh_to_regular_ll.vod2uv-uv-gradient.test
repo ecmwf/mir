@@ -8,3 +8,15 @@ date=20200308,level=1000,truncation=20,param=vo_d
 # grid-plan
 [{"grid":"T20"},{"grid":"F21"},{"grid":[1,1]},{"grid":[1,1]},{"grid":[1,1]}]
 # grib_get
+gridType=regular_ll
+numberOfDataPoints=65160
+Ni=360
+Nj=181
+latitudeOfFirstGridPointInDegrees=90
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=-90
+longitudeOfLastGridPointInDegrees=359
+iDirectionIncrementInDegrees=1
+jDirectionIncrementInDegrees=1
+iScansNegatively=0
+jScansPositively=0

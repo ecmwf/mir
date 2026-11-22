@@ -8,3 +8,15 @@ param=28,levtype=sfc
 [{"grid":"O1280"},{"grid":[0.5,0.5]},{"grid":[0.5,0.5]}]
 # grib_get
 numberOfValues=259920
+gridType=regular_ll
+numberOfDataPoints=259920
+Ni=720
+Nj=361
+latitudeOfFirstGridPointInDegrees=90
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=-90
+longitudeOfLastGridPointInDegrees=359.5
+iDirectionIncrementInDegrees=0.5
+jDirectionIncrementInDegrees=0.5
+iScansNegatively=0
+jScansPositively=0
