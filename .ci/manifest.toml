@@ -61,25 +61,26 @@ options = "python"
 job-script = "./.ci/runner/python.sh.j2"
 python-version = "3.12"
 
-[matrix.build-hpc]
-execution = "hpc-atos"
-container-credentials = true
-triggers = ["upstream-change", "rebuild-request"]
+# HPC off along with the ARC runners (hpc-submit): lanes disabled until they are back.
+# [matrix.build-hpc]
+# execution = "hpc-atos"
+# container-credentials = true
+# triggers = ["upstream-change", "rebuild-request"]
 
-[matrix.build-hpc.defaults]
-job-script = "./.ci/hpc/build.sh.j2"
-cxx-compiler = "g++-8"
-build-type = "RelWithDebInfo"
-runs-on = "hpc-submit"
-container = "eccr.ecmwf.int/private-ci-images/ubuntu24.04-internal-tools"
-site = "hpc-batch"
-platform = "hpc-atos-gnu"
-# gcc/old, not a version number: as of now gives you 8.5.0
-# `module avail gcc` lists no 8.5.0 to pin directly.
-modules = ["load prgenv/gnu", "unload gcc", "load gcc/old", "load cmake", "load ninja"]
-c_compiler_binary = "gcc"
-cxx_compiler_binary = "g++"
-time = "01:00:00"
+# [matrix.build-hpc.defaults]
+# job-script = "./.ci/hpc/build.sh.j2"
+# cxx-compiler = "g++-8"
+# build-type = "RelWithDebInfo"
+# runs-on = "hpc-submit"
+# container = "eccr.ecmwf.int/private-ci-images/ubuntu24.04-internal-tools"
+# site = "hpc-batch"
+# platform = "hpc-atos-gnu"
+# # gcc/old, not a version number: as of now gives you 8.5.0
+# # `module avail gcc` lists no 8.5.0 to pin directly.
+# modules = ["load prgenv/gnu", "unload gcc", "load gcc/old", "load cmake", "load ninja"]
+# c_compiler_binary = "gcc"
+# cxx_compiler_binary = "g++"
+# time = "01:00:00"
 
-[[matrix.build-hpc.include]]
-options = ""
+# [[matrix.build-hpc.include]]
+# options = ""
