@@ -84,6 +84,38 @@ bool is_save_with_gridspec(const param::MIRParametrisation& param) {
 }
 
 
+// The packing type (if of the same kind, gridded or spectral, as encoded later) and bits per value of a message
+struct EncodedPacking {
+    explicit EncodedPacking(grib_handle* h) {
+        char buffer[64];
+        size_t len = sizeof(buffer);
+        GRIB_CALL(codes_get_string(h, "packingType", buffer, &len));
+        type_ = buffer;
+
+        GRIB_CALL(codes_get_long(h, "bitsPerValue", &bitsPerValue_));
+    }
+
+    void set(grib_handle* h) const {
+        auto kind = [](const std::string& type) { return type.substr(0, type.find('_')); };
+
+        char buffer[64];
+        size_t len = sizeof(buffer);
+        GRIB_CALL(codes_get_string(h, "packingType", buffer, &len));
+
+        if (const std::string type(buffer); type != type_ && kind(type) == kind(type_)) {
+            len = type_.length();
+            GRIB_CALL(codes_set_string(h, "packingType", type_.c_str(), &len));
+        }
+
+        GRIB_CALL(codes_set_long(h, "bitsPerValue", bitsPerValue_));
+    }
+
+private:
+    std::string type_;
+    long bitsPerValue_ = 0;
+};
+
+
 void set_missing_values(grib_handle* h, const data::MIRField& field) {
     GRIB_CALL(codes_set_double(h, "missingValue", field.missingValue()));
     GRIB_CALL(codes_set_long(h, "bitmapPresent", field.hasMissing() ? 1L : 0L));
@@ -272,9 +304,14 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
             // the geometry is encoded for the edition it finds, and the packing for the geometry it finds
             pack->setEdition(h);
 
+            // setting the geometry resets the values (a constant field) and so their packing, which is as encoded
+            const EncodedPacking encoded(h);
+
             const auto spec = repres->spec().str();
             auto length     = spec.length();
             GRIB_CALL(codes_set_string(h, "gridSpec", spec.c_str(), &length));
+
+            encoded.set(h);
 
             for (const auto& [key, value] : field.metadata(i)) {
                 GRIB_CALL(codes_set_long(h, key.c_str(), value));
