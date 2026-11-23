@@ -39,7 +39,9 @@ triggers = ["upstream-change", "rebuild-request"]
 [matrix.build.defaults]
 job-script = "./.ci/runner/build.sh.j2"
 build-type = "RelWithDebInfo"
-runs-on = "arc-runner-large"
+# ARC runners off: GitHub-hosted until they are back.
+# runs-on = "arc-runner-large"
+runs-on = "ubuntu-latest"
 cxx-compiler = "g++-13"
 c-compiler = "gcc-13"
 container = "eccr.ecmwf.int/public-ci-images/ubuntu24.04-gcc13-gfortran13"
