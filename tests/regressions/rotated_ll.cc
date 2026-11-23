@@ -53,8 +53,8 @@ CASE("to unstructured_grid: nn") {
     auto h = run(
         "{artificialInput:gridspec,gridSpec:{grid:1/1,area:[6,-12,-6,12],rotation:[-43,10]}}",
         {{"grid", "{grid:ICON-CH2}"}, {"interpolation", "nn"}},
-        R"([{"type":"interpolate.grid2gridspec","interpolation":"nn","distance-weighting":"inverse-distance-weighting-squared","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":{"area":[50.6,-0.9,41.9,17.8],"grid":"ICON-CH2_C","uid":"bbbd5a09855499243c7a4aa4c8762920"}},{"type":"save","packing":"ccsds","edition":2}])",
-        R"([{"area":[6,-12,-6,12],"grid":[1,1],"projection":{"south_pole":[10,-43],"type":"rotation"}},{"area":[50.6,-0.9,41.9,17.8],"grid":"ICON-CH2_C","uid":"bbbd5a09855499243c7a4aa4c8762920"},{"area":[50.6,-0.9,41.9,17.8],"grid":"ICON-CH2_C","uid":"bbbd5a09855499243c7a4aa4c8762920"}])");
+        R"([{"type":"interpolate.grid2gridspec","interpolation":"nn","distance-weighting":"inverse-distance-weighting-squared","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":{"area":[50.6,-0.9,41.9,17.8],"grid":"ICON-CH2"}},{"type":"save","packing":"ccsds","edition":2}])",
+        R"([{"area":[6,-12,-6,12],"grid":[1,1],"projection":{"south_pole":[10,-43],"type":"rotation"}},{"area":[50.6,-0.9,41.9,17.8],"grid":"ICON-CH2"},{"area":[50.6,-0.9,41.9,17.8],"grid":"ICON-CH2"}])");
 
     EXPECT_EQUAL(get(h, "gridType"), "unstructured_grid");
     EXPECT_EQUAL(get(h, "numberOfDataPoints"), "283876");
