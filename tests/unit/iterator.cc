@@ -85,6 +85,22 @@ CASE("MIR-390") {
 }
 
 
+CASE("MIR-351") {
+    using iterator::detail::RegularIterator;
+
+    // latitudes of 30/128 degree, half an increment off the equator (+-80.0390625), encoded to the microdegree
+    const Fraction inc(30, 128);
+    const Fraction s(-80.039062);
+    const Fraction n(80.039062);
+
+    // bounds within the precision of a grid point (truncated inwards) include it
+    EXPECT(RegularIterator(s, n, inc, s).n() == 684);
+
+    // ... and further from it don't
+    EXPECT(RegularIterator(s, Fraction(80.039), inc, s).n() == 683);
+}
+
+
 CASE("GaussianIterator") {
     auto old(log.precision(16));
 
