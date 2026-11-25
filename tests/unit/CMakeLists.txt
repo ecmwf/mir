@@ -7,6 +7,7 @@ set(TESTS
     area
     atlas
     bounding_box
+    compat
     formula
     in_memory_cache
     grib_basic_angle

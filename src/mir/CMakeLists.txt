@@ -189,8 +189,16 @@ list(APPEND mir_srcs
     compare/GribField.h
     compare/MultiFile.cc
     compare/MultiFile.h
+    compat/Grib1DeleteLocalDefinition.cc
+    compat/Grib1DeleteLocalDefinition.h
     compat/GribCompatibility.cc
     compat/GribCompatibility.h
+    compat/MillidegreeArea.cc
+    compat/MillidegreeArea.h
+    compat/ProduceLargeConstantFields.cc
+    compat/ProduceLargeConstantFields.h
+    compat/SpectralComplexPacking.cc
+    compat/SpectralComplexPacking.h
     config/LibMir.cc
     config/LibMir.h
     data/CartesianVector2DField.cc
