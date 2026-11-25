@@ -25,7 +25,7 @@ SPDX-License-Identifier = "Apache-2.0"
 # as a bare version string by setup.py and by ecbuild; mir.sublime-project and
 # CMakePresets.json are JSON.
 [[annotations]]
-path = ["VERSION", "mir.sublime-project", "CMakePresets.json"]
+path = ["VERSION", "mir.sublime-project", "CMakePresets.json", ".ci/packages/*/CMakePresets.json"]
 precedence = "closest"
 SPDX-FileCopyrightText = "1996- European Centre for Medium-Range Weather Forecasts (ECMWF)"
 SPDX-License-Identifier = "Apache-2.0"
