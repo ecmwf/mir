@@ -4,6 +4,8 @@
 
 #include "mir/iterator/detail/RegularIterator.h"
 
+#include <cmath>
+
 #include "mir/util/Exceptions.h"
 
 
@@ -60,7 +62,16 @@ RegularIterator::RegularIterator(const eckit::Fraction& a, const eckit::Fraction
 eckit::Fraction RegularIterator::adjust(const eckit::Fraction& target, const eckit::Fraction& inc, bool up) {
     ASSERT(inc > 0);
 
+    // a multiple within the angular precision is the target: bounds are encoded to the microdegree (e.g. truncated
+    // inwards), so one is off a multiple from the other by twice that at most
+    constexpr double PRECISION = 2e-6;
+
     auto r = target / inc;
+    if (const auto m = static_cast<eckit::Fraction::value_type>(std::llround(static_cast<double>(r)));
+        std::abs(static_cast<double>(target) - static_cast<double>(m) * static_cast<double>(inc)) <= PRECISION) {
+        return m * inc;
+    }
+
     auto n = r.integralPart();
 
     if (!r.integer() && (r > 0) == up) {
