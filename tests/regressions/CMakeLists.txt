@@ -49,6 +49,8 @@ set(TESTS
     reduced_gg_to_regular_ll.wrongly-encoded.004.fail.test
     reduced_gg_to_rotated_ll.area-nearest-lsm.lsm.test
     reduced_gg_to_rotated_ll.area-rotation.lsm.test
+    reduced_gg_to_rotated_ll.gridspec-rotation.001.test
+    reduced_gg_to_rotated_ll.gridspec-rotation.002.test
     reduced_ll_to_reduced_gg.regrid.test
     reduced_ll_to_regular_ll.accuracy.test
     reduced_ll_to_regular_ll.area-globalise.test

@@ -1,0 +1,21 @@
+# rotation in the gridspec ([lat, lon] of the south pole, asymmetric so lat/lon can't be swapped unnoticed), global
+# input
+gridType=reduced_gg,gridName=O8,shortName=q.grib2
+# post-process
+--grid={grid:[10,10],rotation:[-43,10]} --interpolation=nn
+# action-plan
+[{"type":"interpolate.grid2gridspec","interpolation":"nn","distance-weighting":"inverse-distance-weighting-squared","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":{"grid":[10,10],"projection":{"south_pole":[10,-43],"type":"rotation"}}},{"type":"save"}]
+# grid-plan
+[{"grid":"O8"},{"grid":[10,10],"projection":{"south_pole":[10,-43],"type":"rotation"}},{"grid":[10,10],"projection":{"south_pole":[10,-43],"type":"rotation"}}]
+# grib_get
+gridType=rotated_ll
+Ni=36
+Nj=19
+latitudeOfSouthernPoleInDegrees=-43
+longitudeOfSouthernPoleInDegrees=10
+angleOfRotationInDegrees=0
+latitudeOfFirstGridPointInDegrees=90
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=-90
+longitudeOfLastGridPointInDegrees=350
+numberOfMissing=0
