@@ -56,11 +56,6 @@ cxx-compiler = "clang++-18"
 c-compiler = "clang-18"
 container = "eccr.ecmwf.int/public-ci-images/ubuntu24.04-clang18"
 
-[[matrix.build.include]]
-options = "python"
-job-script = "./.ci/runner/python.sh.j2"
-python-version = "3.12"
-
 [packages.mir-python]
 compiler-inputs = ["cxx-compiler"]
 allow-stale-deps = true
