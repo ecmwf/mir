@@ -35,8 +35,10 @@ add_test( NAME mir-python_stage
 add_test( NAME mir-python_pytest
           COMMAND ${Python3_EXECUTABLE} -m pytest -vv -p no:cacheprovider --basetemp ${CMAKE_BINARY_DIR}/pytest-tmp "${_repo}/python/mir/tests" )
 set_tests_properties( mir-python_stage PROPERTIES FIXTURES_SETUP mir-python_staged )
+# Caches in the build tree, as the C++ tests do (tests/CMakeLists.txt).
+file( MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/cache/eckit-geo" "${CMAKE_BINARY_DIR}/cache/mir" )
 set_tests_properties( mir-python_pytest PROPERTIES FIXTURES_REQUIRED mir-python_staged
-                      ENVIRONMENT "PYTHONPATH=${_staging}/src" )
+                      ENVIRONMENT "PYTHONPATH=${_staging}/src;ECKIT_GEO_CACHE_PATH=${CMAKE_BINARY_DIR}/cache/eckit-geo;MIR_CACHE_PATH=${CMAKE_BINARY_DIR}/cache/mir" )
 
 install( CODE "
     execute_process(
