@@ -363,6 +363,9 @@ list(APPEND mir_srcs
     method/knn/distance/ClimateFilter.h
     method/knn/distance/Cressman.cc
     method/knn/distance/Cressman.h
+    method/knn/distance/DifferentialKernel.cc
+    method/knn/distance/DirectionalKernel.cc
+    method/knn/distance/DirectionalKernel.h
     method/knn/distance/DistanceWeighting.cc
     method/knn/distance/DistanceWeighting.h
     method/knn/distance/DistanceWeightingWithLSM.cc
@@ -373,6 +376,8 @@ list(APPEND mir_srcs
     method/knn/distance/InverseDistanceWeighting.h
     method/knn/distance/InverseDistanceWeightingSquared.cc
     method/knn/distance/InverseDistanceWeightingSquared.h
+    method/knn/distance/Kernel.cc
+    method/knn/distance/Kernel.h
     method/knn/distance/NearestLSM.cc
     method/knn/distance/NearestLSM.h
     method/knn/distance/NearestLSMWithLowestIndex.cc
@@ -383,6 +388,8 @@ list(APPEND mir_srcs
     method/knn/distance/NoDistanceWeighting.h
     method/knn/distance/PseudoLaplace.cc
     method/knn/distance/PseudoLaplace.h
+    method/knn/distance/RadialKernel.cc
+    method/knn/distance/RadialKernel.h
     method/knn/pick/Distance.cc
     method/knn/pick/Distance.h
     method/knn/pick/DistanceAndNClosest.cc
@@ -624,6 +631,7 @@ list(APPEND mir_srcs
     util/BoundingBox.h
     util/CheckDuplicatePoints.cc
     util/CheckDuplicatePoints.h
+    util/CompensatedSum.h
     util/DeprecatedFunctionality.cc
     util/DeprecatedFunctionality.h
     util/Domain.cc

@@ -1,0 +1,6 @@
+# input
+regular_ll.2-2.grib2
+# mir
+--filter --interpolation=k-nearest --nearest-method=distance --distance=500000. --distance-weighting=top-hat --kernel-radius=400000.
+# plan
+Gridded2GridSpec[gridspec={"grid":[2,2]},interpolation=k-nearest,method=KNearestNeighbours[nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,nearestMethod=Distance[500000],distanceWeighting=RadialKernel[profile=top-hat,radius=400000]]]|Save[output=...]

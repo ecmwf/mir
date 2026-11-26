@@ -4,26 +4,19 @@
 
 #pragma once
 
-#include "mir/method/knn/distance/DistanceWeighting.h"
+#include "mir/method/knn/distance/RadialKernel.h"
 
 
 namespace mir::method::knn::distance {
 
 
-struct GaussianDistanceWeighting : DistanceWeighting {
+struct GaussianDistanceWeighting : RadialKernel {
     explicit GaussianDistanceWeighting(const param::MIRParametrisation&);
-
-    void operator()(size_t ip, const Point3& point, const std::vector<search::PointSearch::PointValueType>& neighbours,
-                    std::vector<WeightMatrix::Triplet>& triplets) const override;
 
 private:
     bool sameAs(const DistanceWeighting&) const override;
     void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
-    void hash(eckit::MD5&) const override;
-
-    double stddev_;
-    double exponentFactor_;
 };
 
 

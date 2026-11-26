@@ -11,6 +11,7 @@
 #include "eckit/utils/MD5.h"
 
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/CompensatedSum.h"
 #include "mir/util/Exceptions.h"
 
 
@@ -45,7 +46,7 @@ void InverseDistanceWeighting::operator()(size_t ip, const Point3& point,
 
     // calculate neighbour points weights, and their total (for normalisation)
     std::vector<double> weights(nbPoints);
-    double sum = 0.;
+    util::CompensatedSum<double> total;  // the weights add up to one, even for many neighbours
     for (size_t j = 0; j < nbPoints; ++j) {
         const double d2 = Point3::distance2(point, neighbours[j].point());
         if (eckit::types::is_approximately_equal(d2, 0.)) {
@@ -55,9 +56,10 @@ void InverseDistanceWeighting::operator()(size_t ip, const Point3& point,
         }
 
         weights[j] = 1. / std::pow(d2, halfPower_);
-        sum += weights[j];
+        total += weights[j];
     }
 
+    const auto sum = total.value();
     ASSERT(sum > 0.);
 
     // normalise all weights according to the total, and set sparse matrix triplets

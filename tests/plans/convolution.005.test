@@ -1,0 +1,6 @@
+# input
+regular_ll.2-2.grib2
+# mir
+--grid=O32 --interpolation=k-nearest --nearest-method=distance --distance=1500000. --distance-weighting=difference-of-gaussians --kernel-radius=200000. --kernel-radius-outer=400000.
+# plan
+Gridded2NamedGrid[grid=O32,interpolation=k-nearest,method=KNearestNeighbours[nonLinear[MissingIfHeaviestMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,nearestMethod=Distance[1.5e+06],distanceWeighting=DifferenceOfGaussians[radius=200000,radiusOuter=400000]]]|Save[output=...]

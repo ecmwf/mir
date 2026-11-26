@@ -12,6 +12,7 @@
 #include "eckit/config/Resource.h"
 #include "eckit/types/FloatCompare.h"
 
+#include "mir/util/CompensatedSum.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Types.h"
@@ -110,7 +111,7 @@ void WeightMatrix::validate(const char* when, Check check) const {
 
     // check for weights out of bounds 0 <= W(i,j) <= 1, sum(W(i,:))=(0,1), and dulplicate column indices
     for (Size r = 0; r < rows(); r++) {
-        Scalar sum = 0.;
+        util::CompensatedSum<Scalar> total;  // naive sums of many weights drift beyond the tolerance
         std::unordered_set<Size> cols;
 
         auto check_bounds     = true;
@@ -119,11 +120,12 @@ void WeightMatrix::validate(const char* when, Check check) const {
             auto a = *it;
             check_bounds &= eckit::types::is_approximately_greater_or_equal(a, 0.) &&
                             eckit::types::is_approximately_greater_or_equal(1., a);
-            sum += a;
+            total += a;
 
             check_duplicates &= cols.insert(it.col()).second;
         }
 
+        const auto sum     = total.value();
         constexpr auto EPS = 1.e2 * std::numeric_limits<Scalar>::epsilon();
         auto check_sum =
             eckit::types::is_approximately_equal(sum, 0., EPS) || eckit::types::is_approximately_equal(sum, 1., EPS);

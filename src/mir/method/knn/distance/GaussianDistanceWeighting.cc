@@ -4,81 +4,31 @@
 
 #include "mir/method/knn/distance/GaussianDistanceWeighting.h"
 
-#include <cmath>
-#include <sstream>
+#include <ostream>
 
 #include "eckit/log/JSON.h"
-#include "eckit/types/FloatCompare.h"
-#include "eckit/utils/MD5.h"
-
-#include "mir/param/DefaultParametrisation.h"
-#include "mir/param/MIRParametrisation.h"
-#include "mir/util/Exceptions.h"
-#include "mir/util/Types.h"
 
 
 namespace mir::method::knn::distance {
 
 
 GaussianDistanceWeighting::GaussianDistanceWeighting(const param::MIRParametrisation& param) :
-    stddev_(param::DefaultParametrisation::instance().get_value<double>("distance", param)) {
-    param.get("distance-weighting-gaussian-stddev", stddev_);
-    ASSERT(stddev_ > 0.);
-
-    // exponent factor is used (instead of stddev) to speed weights calculations
-    exponentFactor_ = -1. / (2. * stddev_ * stddev_);
-    ASSERT(exponentFactor_ < 0.);
-}
-
-
-void GaussianDistanceWeighting::operator()(size_t ip, const Point3& point,
-                                           const std::vector<search::PointSearch::PointValueType>& neighbours,
-                                           std::vector<WeightMatrix::Triplet>& triplets) const {
-
-    ASSERT(!neighbours.empty());
-
-    triplets.clear();
-    triplets.reserve(neighbours.size());
-
-    // calculate neighbour points weights, and their total (for normalisation)
-    double sum = 0.;
-    for (const auto& n : neighbours) {
-        const double d2     = Point3::distance2(point, n.point());
-        const double weight = std::exp(d2 * exponentFactor_);
-
-        triplets.emplace_back(ip, n.payload(), weight);
-        sum += weight;
-    }
-
-    // normalise all weights according to the total weights sum
-    ASSERT(sum > 0.);
-    for (auto& t : triplets) {
-        t.value() /= sum;
-    }
-}
+    RadialKernel(param, "gaussian", kernel_radius(param, "distance-weighting-gaussian-stddev")) {}
 
 
 bool GaussianDistanceWeighting::sameAs(const DistanceWeighting& other) const {
-    const auto* o = dynamic_cast<const GaussianDistanceWeighting*>(&other);
-    return (o != nullptr) && eckit::types::is_approximately_equal(stddev_, o->stddev_);
+    return dynamic_cast<const GaussianDistanceWeighting*>(&other) != nullptr && RadialKernel::sameAs(other);
 }
 
 
 void GaussianDistanceWeighting::json(eckit::JSON& j) const {
     j << type() << "gaussian";
-    j << "distance-weighting-gaussian-stddev" << stddev_;
+    j << "distance-weighting-gaussian-stddev" << radius();
 }
 
 
 void GaussianDistanceWeighting::print(std::ostream& out) const {
-    out << "GaussianDistanceWeighting[stddev=" << stddev_ << "]";
-}
-
-
-void GaussianDistanceWeighting::hash(eckit::MD5& h) const {
-    std::ostringstream s;
-    s << *this;
-    h.add(s.str());
+    out << "GaussianDistanceWeighting[stddev=" << radius() << "]";
 }
 
 

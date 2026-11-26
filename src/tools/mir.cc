@@ -167,7 +167,7 @@ struct MIR : MIRTool {
                                                     "Distance weighting Shepard power parameter (default 2.)"));
         options_.push_back(new SimpleOption<double>("climate-filter-delta",
                                                     "Climate filter (topographic data smoothing operator) width of "
-                                                    "filter edge, must be greater than 'distance' (default 1000.)"));
+                                                    "filter edge, must be smaller than 'distance' (default 1000.)"));
         options_.push_back(
             new SimpleOption<double>("cressman-model-extension-power", "Cressman Model Extension power (default 1.)"));
 
@@ -216,6 +216,30 @@ struct MIR : MIRTool {
             new VectorOption<double>("mode-real-min", "Statistics mode bin ranges min <= value (default 0.5)", 0));
         options_.push_back(
             new VectorOption<double>("mode-real-values", "Statistics mode bin ranges value (default 0/1)", 0));
+
+        //==============================================
+        // distance weightings top-hat, hann, epanechnikov, directional, derivative, laplacian and
+        // difference-of-gaussians (with 'filter', the input grid is kept)
+        options_.push_back(new Separator("Convolution kernels"));
+        options_.push_back(new SimpleOption<std::string>(
+            "kernel",
+            "Kernel profile, used by distance weightings directional, derivative and laplacian: gaussian, top-hat, "
+            "hann or epanechnikov (default gaussian)"));
+        options_.push_back(new SimpleOption<double>(
+            "kernel-radius",
+            "Kernel radius [m] (gaussian: standard deviation; directional: along 'kernel-angle'; "
+            "difference-of-gaussians: inner gaussian), used by convolution kernels (default 'distance')"));
+        options_.push_back(new SimpleOption<double>("kernel-radius-across",
+                                                    "Kernel radius [m] across 'kernel-angle', used by distance "
+                                                    "weighting directional (default 'kernel-radius')"));
+        options_.push_back(new SimpleOption<double>(
+            "kernel-radius-outer",
+            "Outer gaussian radius [m], used by distance weighting difference-of-gaussians (default 1.6 "
+            "'kernel-radius')"));
+        options_.push_back(new SimpleOption<double>(
+            "kernel-angle",
+            "Kernel direction [degree], counter-clockwise from east (0: east-west, 90: north-south), used by distance "
+            "weightings directional and derivative (default 0)"));
 
         //==============================================
         options_.push_back(new Separator("Filtering"));

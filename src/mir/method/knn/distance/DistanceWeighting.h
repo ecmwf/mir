@@ -41,6 +41,8 @@ public:
 
     virtual WeightMatrix::Check validateMatrixWeights() const;
 
+    virtual bool pruneMatrixWeights() const { return true; }
+
     virtual void json(eckit::JSON&) const = 0;
 
 protected:
