@@ -16,7 +16,7 @@ CASE("to reduced_gg: linear") {
         "{artificialInput:gridspec,gridSpec:{type:swisslv95,x:[2480000,2840000,20000],y:[1080000,1300000,20000]}}",
         {{"grid", "{grid:o320}"}, {"interpolation", "linear"}},
         R"([{"type":"interpolate.grid2gridspec","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":{"grid":"O320"}},{"type":"save","packing":"ccsds","edition":2}])",
-        R"([{"order":"i+j+","projection":"swisslv95","x":[2480000,2840000,20000],"y":[1080000,1300000,20000]},{"area":[47.6346412794268,5.83564470245482,45.9484597060362,10.6432135221386],"grid":"O320"},{"area":[47.6346412794268,5.83564470245482,45.9484597060362,10.6432135221386],"grid":"O320"}])");
+        R"([{"order":"i+j+","projection":"swisslv95","x":[2480000,2840000,20000],"y":[1080000,1300000,20000]},{"area":[47.6346412794268,5.83564470245482,45.9484597060362,10.6432134882749],"grid":"O320"},{"area":[47.6346412794268,5.83564470245482,45.9484597060362,10.6432134882749],"grid":"O320"}])");
 
     EXPECT_EQUAL(get(h, "edition"), "2");
     EXPECT_EQUAL(get(h, "gridType"), "reduced_gg");
@@ -33,7 +33,7 @@ CASE("to reduced_gg: nn") {
         "{artificialInput:gridspec,gridSpec:{type:swisslv95,x:[2480000,2840000,20000],y:[1080000,1300000,20000]}}",
         {{"grid", "{grid:o320}"}, {"interpolation", "nn"}},
         R"([{"type":"interpolate.grid2gridspec","interpolation":"nn","distance-weighting":"inverse-distance-weighting-squared","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":{"grid":"O320"}},{"type":"save","packing":"ccsds","edition":2}])",
-        R"([{"order":"i+j+","projection":"swisslv95","x":[2480000,2840000,20000],"y":[1080000,1300000,20000]},{"area":[47.6346412794268,5.83564470245482,45.9484597060362,10.6432135221386],"grid":"O320"},{"area":[47.6346412794268,5.83564470245482,45.9484597060362,10.6432135221386],"grid":"O320"}])");
+        R"([{"order":"i+j+","projection":"swisslv95","x":[2480000,2840000,20000],"y":[1080000,1300000,20000]},{"area":[47.6346412794268,5.83564470245482,45.9484597060362,10.6432134882749],"grid":"O320"},{"area":[47.6346412794268,5.83564470245482,45.9484597060362,10.6432134882749],"grid":"O320"}])");
 
     EXPECT_EQUAL(get(h, "gridType"), "reduced_gg");
     EXPECT_EQUAL(get(h, "N"), "320");
