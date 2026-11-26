@@ -63,6 +63,13 @@ allow-stale-deps = true
 [[packages.mir-python.deps]]
 package = "mir"
 
+[[packages.mir-python.deps]]
+repo = "ecmwf/eckit"
+package = "eckit-python"
+ref = "develop"
+compiler-inputs = ["cxx-compiler"]
+python-version-input = "python-version"
+
 [matrix.python]
 packages = ["mir-python"]
 triggers = ["upstream-change", "rebuild-request"]
