@@ -1,0 +1,17 @@
+{# SPDX-FileCopyrightText: 1996- European Centre for Medium-Range Weather Forecasts (ECMWF)
+   SPDX-License-Identifier: Apache-2.0 #}
+{% extends "ci-infrastructure/cmake-runner.sh.j2" %}
+{% block set_environment %}
+{% import "ci-infrastructure/python.j2" as py %}
+{{ py.get_python_via_uv(python_version) }}
+# The eckit bindings come from eckit's CI wheel; PyPI's would bring a second eckit (eckitlib).
+dep_wheels=()
+IFS=';:' read -ra dep_prefixes <<<"${CMAKE_PREFIX_PATH:-}"
+for prefix in ${dep_prefixes[@]+"${dep_prefixes[@]}"}; do
+  for whl in "$prefix"/wheels/*.whl; do
+    if [ -e "$whl" ]; then dep_wheels+=("$whl"); fi
+  done
+done
+uv pip install build ${dep_wheels[@]+"${dep_wheels[@]}"} -r "$CI_SOURCE_DIR/python/mir/requirements.txt" -r "$CI_SOURCE_DIR/python/mir/setup.py"
+CI_SOURCE_DIR="$CI_SOURCE_DIR/.ci/packages/mir-python"
+{% endblock %}

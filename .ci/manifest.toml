@@ -56,10 +56,45 @@ cxx-compiler = "clang++-18"
 c-compiler = "clang-18"
 container = "eccr.ecmwf.int/public-ci-images/ubuntu24.04-clang18"
 
-[[matrix.build.include]]
-options = "python"
-job-script = "./.ci/runner/python.sh.j2"
+[packages.mir-python]
+compiler-inputs = ["cxx-compiler"]
+allow-stale-deps = true
+
+[[packages.mir-python.deps]]
+package = "mir"
+
+[[packages.mir-python.deps]]
+repo = "ecmwf/eckit"
+package = "eckit-python"
+ref = "develop"
+compiler-inputs = ["cxx-compiler"]
+python-version-input = "python-version"
+
+[matrix.python]
+packages = ["mir-python"]
+triggers = ["upstream-change", "rebuild-request"]
+
+[matrix.python.defaults]
+job-script = "./.ci/runner/mir-python.sh.j2"
+build-type = "RelWithDebInfo"
+# runs-on = "arc-runner-normal"
+runs-on = "ubuntu-latest"
+cxx-compiler = "g++-13"
+c-compiler = "gcc-13"
+container = "eccr.ecmwf.int/public-ci-images/ubuntu24.04-gcc13-gfortran13"
+platform = "ubuntu-24.04"
+
+[[matrix.python.include]]
+python-version = "3.11"
+
+[[matrix.python.include]]
 python-version = "3.12"
+
+[[matrix.python.include]]
+python-version = "3.13"
+
+[[matrix.python.include]]
+python-version = "3.14"
 
 # HPC off along with the ARC runners (hpc-submit): lanes disabled until they are back.
 # [matrix.build-hpc]

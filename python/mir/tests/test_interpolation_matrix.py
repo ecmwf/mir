@@ -12,6 +12,7 @@ from itertools import product
 
 import numpy as np
 import pytest
+from eckit.geo import projdb_is_available
 
 import mir
 
@@ -52,13 +53,6 @@ def _works(input_grid, output_grid, interpolation) -> bool:
     return True
 
 
-def _has_grid(spec) -> bool:
-    try:
-        return len(mir.Grid(spec)) > 0
-    except RuntimeError:
-        return False
-
-
 def _cases():
     for input_grid, output_grid, interpolation in product(INPUT, OUTPUT, INTERPOLATIONS):
         if reason := SHOULD_WORK.get((input_grid, output_grid, interpolation)):
@@ -79,7 +73,7 @@ def _interpolate(input_spec, output_spec, interpolation):
 
 @pytest.mark.parametrize("input_grid, output_grid, interpolation, works", list(_cases()))
 def test_interpolation_matrix(input_grid, output_grid, interpolation, works):
-    if "swisslv95" in (input_grid, output_grid) and not _has_grid(INPUT["swisslv95"]):
+    if "swisslv95" in (input_grid, output_grid) and not projdb_is_available():
         pytest.skip("swisslv95 requires PROJ")
 
     if not works and mir.Grid(INPUT[input_grid]) == mir.Grid(OUTPUT[output_grid]):
@@ -167,7 +161,7 @@ def _contains(a, b) -> bool:
 
 @pytest.mark.parametrize("input_grid, output_grid", REGIONAL_CASES)
 def test_interpolation_regional(input_grid, output_grid):
-    if "swisslv95" in (input_grid, output_grid) and not _has_grid(REGIONAL["swisslv95"]):
+    if "swisslv95" in (input_grid, output_grid) and not projdb_is_available():
         pytest.skip("swisslv95 requires PROJ")
 
     grid = mir.Grid(REGIONAL[output_grid])
@@ -183,7 +177,7 @@ def test_interpolation_regional(input_grid, output_grid):
 # projected output grids are kept as such (not described as unstructured_ll, by coordinates)
 @pytest.mark.parametrize("input_grid", ["swisslv95", "regular_ll"])
 def test_interpolation_projected_output(input_grid):
-    if not _has_grid(REGIONAL["swisslv95"]):
+    if not projdb_is_available():
         pytest.skip("swisslv95 requires PROJ")
 
     output = _interpolate(REGIONAL[input_grid], REGIONAL["swisslv95"], "nn")
@@ -195,7 +189,7 @@ def test_interpolation_projected_output(input_grid):
 # output points outside the projected input domain are missing (not projected onto its boundary)
 @pytest.mark.parametrize("output_spec, size, missing", [(dict(grid="O320"), 57, 1), (dict(grid=[0.1, 0.1]), 960, 12)])
 def test_interpolation_projected_outside(output_spec, size, missing):
-    if not _has_grid(INPUT["swisslv95"]):
+    if not projdb_is_available():
         pytest.skip("swisslv95 requires PROJ")
 
     output = _interpolate(INPUT["swisslv95"], output_spec, "linear")
@@ -213,6 +207,9 @@ def test_interpolation_projected_outside(output_spec, size, missing):
     ],
 )
 def test_interpolation_matrix_grib(input_grid, output_spec, interpolation, size, missing):
+    if input_grid == "swisslv95" and not projdb_is_available():
+        pytest.skip("swisslv95 requires PROJ")
+
     from yaml import dump
 
     # output with missing values introduced by the interpolation (input has none)
