@@ -14,6 +14,7 @@ set(TESTS
     area
     atlas
     bounding_box
+    convolution
     earthkit-geo
     formula
     gaussian_grid

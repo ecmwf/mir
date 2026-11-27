@@ -50,6 +50,7 @@ private:
     virtual const distance::DistanceWeighting& distanceWeighting() const = 0;
 
     WeightMatrix::Check validateMatrixWeights() const override;
+    bool pruneMatrixWeights() const override;
 };
 
 

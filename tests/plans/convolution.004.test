@@ -1,0 +1,6 @@
+# input
+regular_ll.2-2.grib2
+# mir
+--filter --interpolation=k-nearest --nearest-method=distance --distance=900000. --distance-weighting=laplacian --kernel=epanechnikov --kernel-radius=900000. --non-linear=missing-if-any-missing
+# plan
+Gridded2GridSpec[gridspec={"grid":[2,2]},interpolation=k-nearest,method=KNearestNeighbours[nonLinear[MissingIfAnyMissing[]],solver=Multiply[],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,poleDisplacement=0,nearestMethod=Distance[900000],distanceWeighting=DifferentialKernel[name=laplacian,profile=epanechnikov,radius=900000]]]|Save[output=...]

@@ -163,4 +163,9 @@ WeightMatrix::Check KNearestNeighbours::validateMatrixWeights() const {
 }
 
 
+bool KNearestNeighbours::pruneMatrixWeights() const {
+    return distanceWeighting().pruneMatrixWeights();
+}
+
+
 }  // namespace mir::method::knn

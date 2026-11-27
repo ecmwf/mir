@@ -13,6 +13,7 @@
 
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/CompensatedSum.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 
@@ -55,7 +56,7 @@ void ClimateFilter::operator()(size_t ip, const Point3& point,
 
     // calculate neighbour points weights, and their total (for normalisation)
     std::vector<double> weights(nbPoints);
-    double sum = 0.;
+    util::CompensatedSum<double> total;  // the weights add up to one, even for many neighbours
     for (size_t j = 0; j < nbPoints; ++j) {
         auto r = Point3::distance(point, neighbours[j].point());
         auto h = r < halfDelta_ - delta_   ? 1.
@@ -64,9 +65,10 @@ void ClimateFilter::operator()(size_t ip, const Point3& point,
         // h = std::max(0., std::min(0.99, h));
 
         weights[j] = h;
-        sum += h;
+        total += h;
     }
 
+    const auto sum = total.value();
     ASSERT(sum > 0.);
 
     // normalise all weights according to the total, and set sparse matrix triplets

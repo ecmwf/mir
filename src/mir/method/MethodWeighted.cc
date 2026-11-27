@@ -378,6 +378,11 @@ WeightMatrix::Check MethodWeighted::validateMatrixWeights() const {
 }
 
 
+bool MethodWeighted::pruneMatrixWeights() const {
+    return true;
+}
+
+
 void MethodWeighted::execute(context::Context& ctx, const repres::Representation& in,
                              const repres::Representation& out) const {
 
@@ -505,7 +510,9 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::R
     else {
         trace::Timer timer("Assemble matrix");
         assemble(ctx.statistics(), W, in, out);
-        W.cleanup(pruneEpsilon_);
+        if (pruneMatrixWeights()) {
+            W.cleanup(pruneEpsilon_);
+        }
 
         if (!reorderRows_.empty() || !reorderCols_.empty()) {
             using util::Reorder;

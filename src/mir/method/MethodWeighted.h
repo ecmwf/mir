@@ -120,6 +120,7 @@ private:
     virtual void applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const;
     virtual lsm::LandSeaMasks getMasks(const repres::Representation& in, const repres::Representation& out) const;
     virtual WeightMatrix::Check validateMatrixWeights() const;
+    virtual bool pruneMatrixWeights() const;
 
     void computeMatrixWeights(context::Context&, const repres::Representation& in, const repres::Representation& out,
                               WeightMatrix&) const;

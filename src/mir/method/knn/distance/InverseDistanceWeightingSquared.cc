@@ -9,6 +9,7 @@
 #include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
+#include "mir/util/CompensatedSum.h"
 #include "mir/util/Exceptions.h"
 
 
@@ -30,14 +31,15 @@ void InverseDistanceWeightingSquared::operator()(size_t ip, const Point3& point,
 
     // calculate neighbour points weights, and their total (for normalisation)
     std::vector<double> weights(nbPoints);
-    double sum = 0.;
+    util::CompensatedSum<double> total;  // the weights add up to one, even for many neighbours
     for (size_t j = 0; j < nbPoints; ++j) {
         const double d2 = Point3::distance2(point, neighbours[j].point());
 
         weights[j] = 1. / (1. + d2);
-        sum += weights[j];
+        total += weights[j];
     }
 
+    const auto sum = total.value();
     ASSERT(sum > 0.);
 
     // normalise all weights according to the total, and set sparse matrix triplets
