@@ -61,8 +61,6 @@ protected:
 
     // -- Methods
 
-    Iterator* unrotatedIterator() const;
-    Iterator* rotatedIterator(const util::Rotation&) const;
 
     const std::vector<long>& pls() const;
 

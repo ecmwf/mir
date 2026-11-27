@@ -73,7 +73,6 @@ private:
     void fillSpec(CustomSpec&) const override;
 
     atlas::Grid atlasGrid() const override;
-    Iterator* iterator() const override;
 
     std::string intersectionOnCrop() const override { return "input-contains-output-check"; }
     util::Domain geographicDomain() const override;

@@ -12,7 +12,6 @@
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/api/MIRJob.h"
-#include "mir/iterator/GridIterator.h"
 
 #include "eckit/spec/Custom.h"
 #include "mir/key/grid/GridPattern.h"
@@ -204,11 +203,6 @@ void HEALPix::print(std::ostream& out) const {
 
 void HEALPix::validate(const MIRValuesVector& values) const {
     ASSERT_VALUES_SIZE_EQ_ITERATOR_COUNT("HEALPix", values.size(), numberOfPoints());
-}
-
-
-Iterator* HEALPix::iterator() const {
-    return new iterator::GridIterator(*grid_);
 }
 
 

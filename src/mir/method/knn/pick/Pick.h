@@ -6,13 +6,19 @@
 
 #include <iosfwd>
 
-#include "mir/search/PointSearch.h"
+#include "eckit/geo/Search.h"
+
+#include "mir/util/Types.h"
 
 
 namespace eckit {
 class JSON;
 class MD5;
 }  // namespace eckit
+
+namespace mir::param {
+class MIRParametrisation;
+}
 
 namespace mir::repres {
 class Representation;
@@ -24,7 +30,7 @@ namespace mir::method::knn::pick {
 
 class Pick {
 public:
-    using neighbours_t = std::vector<search::PointSearch::PointValueType>;
+    using neighbours_t = eckit::geo::Search::Neighbours;
 
     Pick();
     virtual ~Pick();
@@ -35,10 +41,10 @@ public:
     Pick& operator=(const Pick&) = delete;
     Pick& operator=(Pick&&)      = delete;
 
-    virtual void pick(const search::PointSearch&, const PointXYZ&, neighbours_t&) const = 0;
-    virtual size_t n() const                                                            = 0;
-    virtual bool sameAs(const Pick&) const                                              = 0;
-    virtual void hash(eckit::MD5&) const                                                = 0;
+    virtual void pick(const eckit::geo::Search&, const PointXYZ&, neighbours_t&) const = 0;
+    virtual size_t n() const                                                           = 0;
+    virtual bool sameAs(const Pick&) const                                             = 0;
+    virtual void hash(eckit::MD5&) const                                               = 0;
 
     virtual void distance(const repres::Representation&) const;
 

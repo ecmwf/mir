@@ -40,11 +40,6 @@ bool RotatedOctahedral::sameAs(const Representation& /*unused*/) const {
 }
 
 
-Iterator* RotatedOctahedral::iterator() const {
-    return rotatedIterator(rotation_);
-}
-
-
 void RotatedOctahedral::fillGrib(grib_info& info) const {
     Octahedral::fillGrib(info);
     rotation_.fillGrib(info, CODES_UTIL_GRID_SPEC_REDUCED_ROTATED_GG);

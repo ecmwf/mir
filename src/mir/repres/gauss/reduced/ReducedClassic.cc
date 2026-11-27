@@ -19,11 +19,6 @@ void ReducedClassic::print(std::ostream& out) const {
 }
 
 
-Iterator* ReducedClassic::iterator() const {
-    return unrotatedIterator();
-}
-
-
 const Gridded* ReducedClassic::croppedRepresentation(const util::BoundingBox& bbox) const {
     return new ReducedClassic(N_, bbox, angularPrecision_);
 }

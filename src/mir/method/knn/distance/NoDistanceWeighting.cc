@@ -19,7 +19,7 @@ NoDistanceWeighting::NoDistanceWeighting(const param::MIRParametrisation& /*unus
 
 
 void NoDistanceWeighting::operator()(size_t ip, const PointXYZ& /*point*/,
-                                     const std::vector<search::PointSearch::PointValueType>& neighbours,
+                                     const eckit::geo::Search::Neighbours& neighbours,
                                      std::vector<WeightMatrix::Triplet>& triplets) const {
     ASSERT(!neighbours.empty());
 
@@ -29,7 +29,7 @@ void NoDistanceWeighting::operator()(size_t ip, const PointXYZ& /*point*/,
     // average neighbour points
     auto weight = 1. / static_cast<double>(neighbours.size());
     for (const auto& n : neighbours) {
-        triplets.emplace_back(ip, n.payload(), weight);
+        triplets.emplace_back(ip, n.index, weight);
     }
 }
 

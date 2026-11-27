@@ -36,7 +36,7 @@ InverseDistanceWeighting::InverseDistanceWeighting(const param::MIRParametrisati
 
 
 void InverseDistanceWeighting::operator()(size_t ip, const PointXYZ& point,
-                                          const std::vector<search::PointSearch::PointValueType>& neighbours,
+                                          const eckit::geo::Search::Neighbours& neighbours,
                                           std::vector<WeightMatrix::Triplet>& triplets) const {
     const size_t nbPoints = neighbours.size();
     ASSERT(nbPoints);
@@ -48,10 +48,10 @@ void InverseDistanceWeighting::operator()(size_t ip, const PointXYZ& point,
     std::vector<double> weights(nbPoints);
     double sum = 0.;
     for (size_t j = 0; j < nbPoints; ++j) {
-        const double d2 = PointXYZ::distance2(point, neighbours[j].point());
+        const double d2 = PointXYZ::distance2(point, neighbours[j].point);
         if (eckit::types::is_approximately_equal(d2, 0.)) {
             // exact match found, use this neighbour only (inverse distance tends to infinity)
-            triplets.assign(1, {ip, neighbours[j].payload(), 1.});
+            triplets.assign(1, {ip, neighbours[j].index, 1.});
             return;
         }
 
@@ -63,7 +63,7 @@ void InverseDistanceWeighting::operator()(size_t ip, const PointXYZ& point,
 
     // normalise all weights according to the total, and set sparse matrix triplets
     for (size_t j = 0; j < nbPoints; ++j) {
-        size_t jp = neighbours[j].payload();
+        size_t jp = neighbours[j].index;
         triplets.emplace_back(ip, jp, weights[j] / sum);
     }
 }

@@ -17,9 +17,7 @@
 
 #include "mir/api/MIRJob.h"
 #include "mir/api/mir_config.h"
-#include "mir/iterator/GridIterator.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/GridBox.h"
@@ -179,10 +177,6 @@ bool ReducedLL::includesSouthPole() const {
 
 void ReducedLL::validate(const MIRValuesVector& values) const {
     ASSERT_VALUES_SIZE_EQ_ITERATOR_COUNT("ReducedLL", values.size(), numberOfPoints());
-}
-
-Iterator* ReducedLL::iterator() const {
-    return new iterator::GridIterator(grid(), true);
 }
 
 std::vector<util::GridBox> ReducedLL::gridBoxes() const {

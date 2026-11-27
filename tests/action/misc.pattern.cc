@@ -50,12 +50,13 @@ CASE("misc.pattern") {
                 EXPECT_EQUAL(out.dimensions(), 2);
                 EXPECT(!out.hasMissing());
 
-                for (std::unique_ptr<repres::Iterator> it(out.representation()->iterator()); it->next();) {
-                    const auto& p = it->pointUnrotated();
-                    const auto v  = pattern(p.lat().value(), p.lon().value(), min, max, test.f1, test.f2);
+                const auto& points = out.representation()->canonicalGridUnrotated();
+                for (auto it = points.cbegin(); it; ++it) {
+                    const auto p = std::get<PointLonLat>(*it);
+                    const auto v = pattern(p.lat(), p.lon(), min, max, test.f1, test.f2);
 
-                    EXPECT(same(out.values(0)[it->index()], v));
-                    EXPECT(same(out.values(1)[it->index()], v));
+                    EXPECT(same(out.values(0)[it.index()], v));
+                    EXPECT(same(out.values(1)[it.index()], v));
                 }
             }
         }
@@ -71,12 +72,12 @@ CASE("misc.pattern, with missing values") {
         EXPECT(out.hasMissing());
         EXPECT_EQUAL(count_missing(out), count_missing(in));
 
-        for (std::unique_ptr<repres::Iterator> it(out.representation()->iterator()); it->next();) {
-            const auto& p = it->pointUnrotated();
-            const auto v  = out.values(0)[it->index()];
+        const auto& points = out.representation()->canonicalGridUnrotated();
+        for (auto it = points.cbegin(); it; ++it) {
+            const auto p = std::get<PointLonLat>(*it);
+            const auto v = out.values(0)[it.index()];
 
-            EXPECT(p.lat().value() > 50 ? v == 9999.
-                                        : same(v, pattern(p.lat().value(), p.lon().value(), -90., 50., 6., 3.)));
+            EXPECT(p.lat() > 50 ? v == 9999. : same(v, pattern(p.lat(), p.lon(), -90., 50., 6., 3.)));
         }
     }
 

@@ -200,7 +200,7 @@ std::string LibMir::cacheLoader(cache_loader l) {
     static const std::string loaders[]{
         {r("$MIR_LEGENDRE_LOADER;mirLegendreLoader", "mapped-memory")},
         {r("$MIR_MATRIX_LOADER;mirMatrixLoader", "file-io")},
-        {r("$MIR_POINT_SEARCH_LOADER;mirPointSearchLoader", "mapped-cache-file")},
+        {r("$MIR_POINT_SEARCH_LOADER;mirPointSearchLoader", "")},  // eckit::geo's, if empty
     };
 
     ASSERT(0 <= l && l < cache_loader::ALL_CACHE_LOADERS);

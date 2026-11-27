@@ -11,9 +11,7 @@
 #include "eckit/utils/MD5.h"
 
 #include "mir/api/mir_config.h"
-#include "mir/iterator/GridIterator.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -144,12 +142,6 @@ util::Domain IrregularLatlon::domain() const {
     const Longitude e = isPeriodicWestEast() ? west_ + Longitude::GLOBE.value() : east_;
 
     return util::Domain(n, w, s, e);
-}
-
-
-Iterator* IrregularLatlon::iterator() const {
-    // the points as stored, in the directions of the latitudes and longitudes
-    return new iterator::GridIterator(grid());
 }
 
 

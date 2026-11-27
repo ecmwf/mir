@@ -31,16 +31,16 @@ CASE("interpolate.grid2rotated-octahedral-gg") {
 
     EXPECT(out.representation()->uniqueName() != unrotated.representation()->uniqueName());
 
-    std::unique_ptr<repres::Iterator> it(out.representation()->iterator());
-    std::unique_ptr<repres::Iterator> jt(unrotated.representation()->iterator());
+    const auto& outPoints       = out.representation()->canonicalGridUnrotated();
+    const auto& unrotatedPoints = unrotated.representation()->canonicalGridUnrotated();
+    EXPECT_EQUAL(outPoints.size(), unrotatedPoints.size());
 
-    while (it->next()) {
-        EXPECT(jt->next());
-        EXPECT(same(it->pointUnrotated().lat().value(), jt->pointUnrotated().lat().value()));
-        EXPECT(same(it->pointUnrotated().lon().value(), jt->pointUnrotated().lon().value()));
+    for (auto it = outPoints.cbegin(), jt = unrotatedPoints.cbegin(); it; ++it, ++jt) {
+        const auto p = std::get<PointLonLat>(*it);
+        const PointLatLon q{std::get<PointLonLat>(*jt)};
+        EXPECT(same(p.lat(), q.lat().value()));
+        EXPECT(same(p.lon(), q.lon().value()));
     }
-
-    EXPECT(!jt->next());
 }
 
 

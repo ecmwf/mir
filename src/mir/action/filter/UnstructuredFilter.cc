@@ -8,10 +8,11 @@
 #include <ostream>
 #include <vector>
 
+#include "eckit/geo/Grid.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/UnstructuredGrid.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Types.h"
@@ -35,18 +36,9 @@ void UnstructuredFilter::execute(context::Context& ctx) const {
     auto& field = ctx.field();
     repres::RepresentationHandle repres(field.representation());
 
-    size_t N = repres->numberOfPoints();
-    ASSERT(N > 0);
+    ASSERT(repres->numberOfPoints() > 0);
 
-    std::vector<double> latitudes(N);
-    std::vector<double> longitudes(N);
-
-    for (const std::unique_ptr<repres::Iterator> it(repres->iterator()); it->next();) {
-        const auto& p              = **it;
-        latitudes.at(it->index())  = p.lat();
-        longitudes.at(it->index()) = p.lon();
-    }
-
+    const auto [latitudes, longitudes] = repres->canonicalGrid().to_latlons();
     field.representation(new repres::UnstructuredGrid(latitudes, longitudes));
 }
 

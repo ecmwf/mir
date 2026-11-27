@@ -17,7 +17,6 @@
 #include "mir/action/plan/Action.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/GridSpecParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/MIRStatistics.h"
@@ -86,9 +85,10 @@ inline data::MIRField field(
     // by point index, as iterators might not visit points in storage order (eg. HEALPix)
     MIRValuesVector values(repres->numberOfPoints(), 0.);
 
-    for (std::unique_ptr<repres::Iterator> it(repres->iterator()); it->next();) {
-        const auto& p          = it->pointUnrotated();
-        values.at(it->index()) = f ? f(p.lat().value(), p.lon().value()) : 0.;
+    const auto& points = repres->canonicalGridUnrotated();
+    for (auto it = points.cbegin(); it; ++it) {
+        const auto p          = std::get<PointLonLat>(*it);
+        values.at(it.index()) = f ? f(p.lat(), p.lon()) : 0.;
     }
 
     return field(repres, values, dimensions, missingValue);

@@ -136,12 +136,11 @@ CASE("Regular Gaussian grid: globalise (the points, then a global grid's points 
         ASSERT(global);
         EXPECT(n < global->numberOfPoints());
 
-        std::unique_ptr<Iterator> a(regional->iterator());
-        std::unique_ptr<Iterator> b(global->iterator());
+        // (metres, the unstructured grid approximately)
+        const auto a = regional->canonicalGrid().to_xyz();
+        const auto b = global->canonicalGrid().to_xyz();
         for (size_t k = 0; k < n; ++k) {
-            ASSERT(a->next() && b->next());
-            EXPECT(PointXYZ::distance(a->point3D(), b->point3D()) <
-                   1.);  // (metres, the unstructured grid approximately)
+            EXPECT(PointXYZ::distance({a[0][k], a[1][k], a[2][k]}, {b[0][k], b[1][k], b[2][k]}) < 1.);
         }
     }
 
@@ -169,11 +168,12 @@ CASE("Regular Gaussian grid: globalise (the points, then a global grid's points 
         EXPECT(std::all_of(v.begin() + static_cast<std::ptrdiff_t>(n), v.end(), [](double x) { return x == 9999.; }));
 
         // the points of the domain are the representation's
-        const auto dom = regional->domain();
-        size_t inside  = 0;
-        for (std::unique_ptr<Iterator> it(global->iterator()); it->next();) {
-            if (dom.contains(it->pointUnrotated())) {
-                EXPECT(it->index() < n);
+        const auto dom     = regional->domain();
+        size_t inside      = 0;
+        const auto& points = global->canonicalGridUnrotated();
+        for (auto it = points.cbegin(); it; ++it) {
+            if (dom.contains(PointLatLon{std::get<PointLonLat>(*it)})) {
+                EXPECT(it.index() < n);
                 ++inside;
             }
         }

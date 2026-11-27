@@ -19,11 +19,6 @@ void ReducedOctahedral::print(std::ostream& out) const {
 }
 
 
-Iterator* ReducedOctahedral::iterator() const {
-    return unrotatedIterator();
-}
-
-
 const Gridded* ReducedOctahedral::croppedRepresentation(const util::BoundingBox& bbox) const {
     return new ReducedOctahedral(N_, bbox, angularPrecision_);
 }

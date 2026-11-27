@@ -9,6 +9,8 @@
 #include <utility>
 #include <vector>
 
+#include "eckit/geo/Grid.h"
+#include "eckit/geo/Search.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
@@ -17,22 +19,21 @@
 #include "mir/input/MIRInput.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/param/SimpleParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/search/PointSearch.h"
 #include "mir/stats/detail/Counter.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
+#include "mir/util/Search.h"
 
 
 namespace mir::tools {
 
 
 using coord_t      = std::vector<double>;
-using neighbours_t = std::vector<search::PointSearch::PointValueType>;
+using neighbours_t = eckit::geo::Search::Neighbours;
 using prec_t       = decltype(Log::info().precision());
 
 
@@ -99,10 +100,11 @@ struct CoordinatesFromRepresentation : Coordinates {
         lats_.assign(N, std::numeric_limits<double>::signaling_NaN());
         lons_.assign(N, std::numeric_limits<double>::signaling_NaN());
 
-        for (const std::unique_ptr<repres::Iterator> it(rep.iterator()); it->next();) {
-            const auto& P(**it);
-            lats_.at(it->index()) = P.lat();
-            lons_.at(it->index()) = P.lon();
+        const auto& points = rep.canonicalGrid();
+        for (auto it = points.cbegin(); it; ++it) {
+            const auto& P(std::get<PointLonLat>(*it));
+            lats_.at(it.index()) = P.lat();
+            lons_.at(it.index()) = P.lon();
         }
     }
     const coord_t& latitudes() const override { return lats_; }
@@ -246,10 +248,10 @@ const neighbours_t& getNeighbours(const PointLonLat& p, size_t n, const repres::
 
     const auto pt = util::Earth::_convertSphericalToCartesian(p);
 
-    search::PointSearch sptree(param, rep);
+    const auto sptree = util::make_search(param, rep);
 
     neighbours_t closest;
-    sptree.closestNPoints(pt, n, closest);
+    closest = sptree->search_knn(pt, n);
     ASSERT(n == closest.size());
 
     return (cache[key] = std::move(closest));
@@ -318,15 +320,16 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
             if (dryrun) {
                 ASSERT(rep->numberOfPoints() == values.size());
-                for (const std::unique_ptr<repres::Iterator> it(rep->iterator()); it->next();) {
+                for (const auto& point : rep->canonicalGrid()) {
                 }
                 continue;
             }
 
             if (!atlas && !ecc && (nclosest == 0)) {
-                for (const std::unique_ptr<repres::Iterator> it(rep->iterator()); it->next();) {
-                    const auto& P(**it);
-                    log << "\t" << P.lat() << '\t' << P.lon() << '\t' << values.at(it->index()) << std::endl;
+                const auto& points = rep->canonicalGrid();
+                for (auto it = points.cbegin(); it; ++it) {
+                    const auto& P(std::get<PointLonLat>(*it));
+                    log << "\t" << P.lat() << '\t' << P.lon() << '\t' << values.at(it.index()) << std::endl;
                 }
 
                 log << std::endl;
@@ -338,7 +341,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
             if (nclosest > 0) {
                 size_t c = 1;
                 for (const auto& n : getNeighbours(p, nclosest, *rep, args_wrap)) {
-                    size_t i = n.payload();
+                    size_t i = n.index;
                     const PointLonLat q{crd->longitudes()[i], crd->latitudes()[i]};
                     ASSERT(i < values.size());
 

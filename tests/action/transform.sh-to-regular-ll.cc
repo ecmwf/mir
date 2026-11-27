@@ -125,8 +125,8 @@ CASE("transform.sh-*-to-regular-ll, cropping") {
             EXPECT(out.representation()->boundingBox() == bbox);
             EXPECT_EQUAL(out.representation()->numberOfPoints(), 7 * 11);
 
-            for (std::unique_ptr<repres::Iterator> it(out.representation()->iterator()); it->next();) {
-                EXPECT(bbox.contains(it->pointUnrotated()));
+            for (const auto& point : out.representation()->canonicalGridUnrotated()) {
+                EXPECT(bbox.contains(PointLatLon{std::get<PointLonLat>(point)}));
             }
         }
     }

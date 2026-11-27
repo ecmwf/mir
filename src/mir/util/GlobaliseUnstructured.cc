@@ -5,14 +5,17 @@
 #include "mir/util/GlobaliseUnstructured.h"
 
 #include <memory>
+#include <variant>
+
+#include "eckit/geo/Grid.h"
+#include "eckit/geo/Search.h"
 
 #include "mir/key/grid/Grid.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/UnstructuredGrid.h"
-#include "mir/search/PointSearch.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Search.h"
 
 
 namespace mir::util {
@@ -45,7 +48,7 @@ size_t GlobaliseUnstructured::appendGlobalPoints(std::vector<double>& latitudes,
 
     // setup k-d tree on temporary unstructured grid
     repres::UnstructuredGrid unstructuredGrid(latitudes, longitudes);
-    const search::PointSearch tree(parametrisation_, unstructuredGrid);
+    const auto tree = util::make_search(parametrisation_, unstructuredGrid);
 
 
     // setup global grid
@@ -54,13 +57,10 @@ size_t GlobaliseUnstructured::appendGlobalPoints(std::vector<double>& latitudes,
 
 
     // insert global grid points when distant enough from provided grid points
-    for (const std::unique_ptr<repres::Iterator> it(globe->iterator()); it->next();) {
-        const PointXYZ p(it->point3D());
-        if (PointXYZ::distance(p, tree.closestPoint(p).point()) > globaliseMissingRadius_) {
-
-            const auto& unrotated = it->pointUnrotated();
-            latitudes.push_back(unrotated.lat().value());
-            longitudes.push_back(unrotated.lon().value());
+    for (const auto& point : globe->canonicalGrid()) {
+        if (const auto p = std::get<PointLonLat>(point); tree->search_nn(p).distance > globaliseMissingRadius_) {
+            latitudes.push_back(p.lat());
+            longitudes.push_back(p.lon());
             ++nbExtraPoints;
         }
     }

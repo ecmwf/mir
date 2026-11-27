@@ -45,9 +45,10 @@ CASE("structured methods (Atlas)") {
             auto result = interpolate(*make(spec), field(in, f), *out);
 
             // (bicubic stencils near the poles span across the pole, where the function is not linear)
-            size_t i = 0;
-            for (std::unique_ptr<repres::Iterator> it(out->iterator()); it->next(); ++i) {
-                const auto lat = it->pointUnrotated().lat().value();
+            size_t i           = 0;
+            const auto& points = out->canonicalGridUnrotated();
+            for (auto it = points.cbegin(); it; ++it, ++i) {
+                const auto lat = PointLatLon{std::get<PointLonLat>(*it)}.lat().value();
                 if (spec == "structured-bilinear" || std::abs(lat) < 85.) {
                     EXPECT(same(result.values(0)[i], f(lat, 0.), 1e-9));
                 }

@@ -59,8 +59,8 @@ CASE("transform.sh-scalar-to-gridspec") {
 
             EXPECT(0 < out.values(0).size() && out.values(0).size() < 1600);
 
-            for (std::unique_ptr<repres::Iterator> it(out.representation()->iterator()); it->next();) {
-                EXPECT(bbox.contains(it->pointUnrotated()));
+            for (const auto& point : out.representation()->canonicalGridUnrotated()) {
+                EXPECT(bbox.contains(PointLatLon{std::get<PointLonLat>(point)}));
             }
 
             for_each(out, 0, [](double v, double lat, double) { EXPECT(same(v, P10(lat))); });

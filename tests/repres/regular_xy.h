@@ -101,8 +101,8 @@ inline RepresentationHandle representation(const std::string& msg) {
 
 inline points_t points(const Representation& repres) {
     points_t visited;
-    for (std::unique_ptr<Iterator> it(repres.iterator()); it->next();) {
-        const auto& p = it->pointUnrotated();
+    for (const auto& point : repres.canonicalGridUnrotated()) {
+        const PointLatLon p{std::get<PointLonLat>(point)};
         visited.push_back({p.lat().value(), p.lon().value()});
     }
     return visited;

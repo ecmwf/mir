@@ -7,14 +7,15 @@
 #include <limits>
 #include <memory>
 #include <sstream>
+#include <variant>
 
+#include "eckit/geo/Grid.h"
 #include "eckit/io/HandleBuf.h"
 #include "eckit/serialisation/HandleStream.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/RuntimeParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/CheckDuplicatePoints.h"
 #include "mir/util/Exceptions.h"
@@ -85,16 +86,17 @@ size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param, 
         latitudes.reserve(values.size());
         longitudes.reserve(values.size());
 
-        for (const std::unique_ptr<repres::Iterator> it(field.representation()->iterator()); it->next();) {
-            const auto& p = it->pointUnrotated();
-            auto v        = values.at(it->index());
+        const auto& points = field.representation()->canonicalGridUnrotated();
+        for (auto it = points.cbegin(); it; ++it) {
+            const auto p = std::get<PointLonLat>(*it);
+            auto v       = values.at(it.index());
 
             if (v != mv) {
-                out << "\n" << p.lon().value() << ' ' << p.lat().value() << ' ' << v;
+                out << "\n" << p.lon() << ' ' << p.lat() << ' ' << v;
             }
 
-            latitudes.push_back(p.lat().value());
-            longitudes.push_back(p.lon().value());
+            latitudes.push_back(p.lat());
+            longitudes.push_back(p.lon());
         }
 
         out << std::endl;
@@ -156,15 +158,16 @@ size_t GeoPointsFileOutputXYV::saveBinary(const param::MIRParametrisation& param
         latitudes.reserve(values.size());
         longitudes.reserve(values.size());
 
-        for (const std::unique_ptr<repres::Iterator> it(field.representation()->iterator()); it->next();) {
-            const auto& p = it->pointUnrotated();
-            auto v        = values.at(it->index());
+        const auto& points = field.representation()->canonicalGridUnrotated();
+        for (auto it = points.cbegin(); it; ++it) {
+            const auto p = std::get<PointLonLat>(*it);
+            auto v       = values.at(it.index());
 
             // NOTE: no check for missing value, consider changing
-            out << p.lon().value() << p.lat().value() << v;
+            out << p.lon() << p.lat() << v;
 
-            latitudes.push_back(p.lat().value());
-            longitudes.push_back(p.lon().value());
+            latitudes.push_back(p.lat());
+            longitudes.push_back(p.lon());
         }
     }
 

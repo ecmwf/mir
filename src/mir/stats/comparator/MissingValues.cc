@@ -7,9 +7,11 @@
 #include <memory>
 #include <ostream>
 #include <sstream>
+#include <variant>
+
+#include "eckit/geo/Grid.h"
 
 #include "mir/data/MIRField.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 
@@ -47,13 +49,14 @@ std::string MissingValues::execute(const data::MIRField& field1, const data::MIR
         const auto& values2 = field2.values(d);
         ASSERT(values1.size() == values2.size());
 
-        for (const std::unique_ptr<repres::Iterator> it(rep1->iterator()); it->next();) {
-            auto i     = it->index();
+        const auto& points = rep1->canonicalGrid();
+        for (auto it = points.cbegin(); it; ++it) {
+            auto i     = it.index();
             bool miss1 = values1.at(i) == missingValue1;
             bool miss2 = values2.at(i) == missingValue2;
 
             if (miss1 != miss2) {
-                const auto& p = it->pointRotated();
+                const auto p = std::get<PointLonLat>(*it);
                 reasons << "\n* " << i << "\t{" << p.lat() << ',' << p.lon() << "}\t"
                         << (miss1 ? "missing" : std::to_string(values1[i])) << '\t'
                         << (miss2 ? "missing" : std::to_string(values2[i]));

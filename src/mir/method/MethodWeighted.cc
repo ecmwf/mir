@@ -81,6 +81,11 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation& param) :
 MethodWeighted::~MethodWeighted() = default;
 
 
+double MethodWeighted::poleDisplacement(const repres::Representation& rep) const {
+    return poleDisplacement_ > 0. && (rep.includesNorthPole() || rep.includesSouthPole()) ? poleDisplacement_ : 0.;
+}
+
+
 void MethodWeighted::json(eckit::JSON& j) const {
     // NOTE: only output non-default (uncluttered) and configurable (hence, usable) options
     j << "type" << type();

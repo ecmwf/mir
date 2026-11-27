@@ -86,6 +86,9 @@ protected:
     void setReorderCols(const std::string& name) { reorderCols_ = name; }
     double poleDisplacement() const { return poleDisplacement_; }
 
+    /// The pole displacement of the points of a representation including a pole, otherwise none (see util::LonLatToXYZ)
+    double poleDisplacement(const repres::Representation&) const;
+
     // -- Overridden methods
 
     // From Method

@@ -12,7 +12,9 @@
 #include <numeric>
 #include <set>
 #include <utility>
+#include <variant>
 
+#include "eckit/geo/Grid.h"
 #include "eckit/geo/grid/Reduced.h"
 #include "eckit/geo/util.h"
 #include "eckit/log/JSON.h"
@@ -22,7 +24,6 @@
 
 #include "mir/api/MIRJob.h"
 #include "mir/data/MIRField.h"
-#include "mir/iterator/GridIterator.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/BoundingBox.h"
@@ -194,16 +195,6 @@ eckit::Fraction Reduced::getSmallestIncrement() const {
     ASSERT(maxpl >= 2);
 
     return Longitude::GLOBE.fraction() / maxpl;
-}
-
-
-Iterator* Reduced::unrotatedIterator() const {
-    return new iterator::GridIterator(grid(), true);
-}
-
-
-Iterator* Reduced::rotatedIterator(const util::Rotation& /*rotation (of the grid)*/) const {
-    return new iterator::GridIterator(grid(), true);
 }
 
 
@@ -414,10 +405,11 @@ size_t Reduced::frame(MIRValuesVector& values, size_t size, double missingValue)
     // and even be cached (md5 of iterators)
     // NOTE: assumes scanning mode
 
-    // Iterator is 'unrotated'
-    for (const std::unique_ptr<Iterator> it(iterator()); it->next();) {
-        auto lon = it->pointUnrotated().lon().value();
-        auto lat = it->pointUnrotated().lat().value();
+    // points of the grid frame (unrotated)
+    for (const auto& point : canonicalGridUnrotated()) {
+        const PointLatLon p{std::get<PointLonLat>(point)};
+        auto lon = p.lon().value();
+        auto lat = p.lat().value();
 
         if (!eckit::types::is_approximately_equal(lat, prev_lat)) {
             ASSERT(lat < prev_lat);
@@ -457,7 +449,7 @@ size_t Reduced::numberOfPoints() const {
     }
 
     size_t total = 0;
-    for (const std::unique_ptr<Iterator> it(iterator()); it->next();) {
+    for (const auto& point : canonicalGrid()) {
         total++;
     }
     return total;
@@ -583,11 +575,12 @@ const Representation* Reduced::globalise(data::MIRField& field) const {
     const auto n = numberOfPoints();
     std::vector<size_t> index(n);
 
-    for (const std::unique_ptr<Iterator> it(iterator()); it->next();) {
+    const auto& points = canonicalGridUnrotated();
+    for (auto it = points.cbegin(); it; ++it) {
         // (unrotated: in the grid coordinates)
-        const auto& p   = it->pointUnrotated();
-        const auto plat = p.lat().value();
-        const auto plon = p.lon().value();
+        const auto p    = std::get<PointLonLat>(*it);
+        const auto plat = p.lat();
+        const auto plon = p.lon();
 
         // the nearest latitude (in decreasing order)
         auto lat = std::lower_bound(lats.begin(), lats.end(), plat, std::greater<>());
@@ -599,8 +592,8 @@ const Representation* Reduced::globalise(data::MIRField& field) const {
         const auto Ni = pl[j];
         const auto i  = std::lround(LongitudeDouble(plon).normalise(0.).value() * static_cast<double>(Ni) / 360.) % Ni;
 
-        ASSERT(it->index() < n);
-        index[it->index()] = first[j] + static_cast<size_t>(i);
+        ASSERT(it.index() < n);
+        index[it.index()] = first[j] + static_cast<size_t>(i);
     }
 
     // the values in place, missing values elsewhere

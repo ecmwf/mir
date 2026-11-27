@@ -203,8 +203,9 @@ CASE("Reduced Gaussian grids: globalise (to the global grid, the values in place
 
             const auto n = regional->numberOfPoints();
             MIRValuesVector values(n);
-            for (std::unique_ptr<Iterator> it(regional->iterator()); it->next();) {
-                values.at(it->index()) = value(it->pointUnrotated());
+            const auto& points = regional->canonicalGridUnrotated();
+            for (auto it = points.cbegin(); it; ++it) {
+                values.at(it.index()) = value(PointLatLon{std::get<PointLonLat>(*it)});
             }
 
             data::MIRField field(regional, false, 9999.);
@@ -221,10 +222,11 @@ CASE("Reduced Gaussian grids: globalise (to the global grid, the values in place
             const auto& v = field.values(0);
             EXPECT_EQUAL(v.size(), expected->numberOfPoints());
 
-            size_t count = 0;
-            for (std::unique_ptr<Iterator> it(global->iterator()); it->next();) {
-                if (const auto x = v.at(it->index()); x != 9999.) {
-                    EXPECT(same(x, value(it->pointUnrotated()), 1e-6));
+            size_t count             = 0;
+            const auto& globalPoints = global->canonicalGridUnrotated();
+            for (auto it = globalPoints.cbegin(); it; ++it) {
+                if (const auto x = v.at(it.index()); x != 9999.) {
+                    EXPECT(same(x, value(PointLatLon{std::get<PointLonLat>(*it)}), 1e-6));
                     ++count;
                 }
             }

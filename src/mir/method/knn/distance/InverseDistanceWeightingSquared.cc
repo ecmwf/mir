@@ -19,7 +19,7 @@ InverseDistanceWeightingSquared::InverseDistanceWeightingSquared(const param::MI
 
 
 void InverseDistanceWeightingSquared::operator()(size_t ip, const PointXYZ& point,
-                                                 const std::vector<search::PointSearch::PointValueType>& neighbours,
+                                                 const eckit::geo::Search::Neighbours& neighbours,
                                                  std::vector<WeightMatrix::Triplet>& triplets) const {
 
     const size_t nbPoints = neighbours.size();
@@ -32,7 +32,7 @@ void InverseDistanceWeightingSquared::operator()(size_t ip, const PointXYZ& poin
     std::vector<double> weights(nbPoints);
     double sum = 0.;
     for (size_t j = 0; j < nbPoints; ++j) {
-        const double d2 = PointXYZ::distance2(point, neighbours[j].point());
+        const double d2 = PointXYZ::distance2(point, neighbours[j].point);
 
         weights[j] = 1. / (1. + d2);
         sum += weights[j];
@@ -42,7 +42,7 @@ void InverseDistanceWeightingSquared::operator()(size_t ip, const PointXYZ& poin
 
     // normalise all weights according to the total, and set sparse matrix triplets
     for (size_t i = 0; i < nbPoints; ++i) {
-        size_t jp = neighbours[i].payload();
+        size_t jp = neighbours[i].index;
         triplets.emplace_back(ip, jp, weights[i] / sum);
     }
 }

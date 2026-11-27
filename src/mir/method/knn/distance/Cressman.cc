@@ -27,8 +27,7 @@ Cressman::Cressman(const param::MIRParametrisation& param) :
 }
 
 
-void Cressman::operator()(size_t ip, const PointXYZ& point,
-                          const std::vector<search::PointSearch::PointValueType>& neighbours,
+void Cressman::operator()(size_t ip, const PointXYZ& point, const eckit::geo::Search::Neighbours& neighbours,
                           std::vector<WeightMatrix::Triplet>& triplets) const {
     const size_t nbPoints = neighbours.size();
     ASSERT(0 < nbPoints);
@@ -40,20 +39,20 @@ void Cressman::operator()(size_t ip, const PointXYZ& point,
     std::vector<double> weights(nbPoints);
     double sum = 0.;
     for (size_t j = 0; j < nbPoints; ++j) {
-        auto d2    = PointXYZ::distance2(point, neighbours[j].point());
+        auto d2    = PointXYZ::distance2(point, neighbours[j].point);
         weights[j] = d2 < r2_ ? std::pow((r2_ - d2) / (r2_ + d2), power_) : 0.;
         sum += weights[j];
     }
 
     // no neighbours within the radius: the nearest neighbour (the first), so every output point is interpolated
     if (!eckit::types::is_strictly_greater(sum, 0.)) {
-        triplets.emplace_back(ip, neighbours.front().payload(), 1.);
+        triplets.emplace_back(ip, neighbours.front().index, 1.);
         return;
     }
 
     // normalise all weights according to the total, and set sparse matrix triplets
     for (size_t j = 0; j < nbPoints; ++j) {
-        size_t jp = neighbours[j].payload();
+        size_t jp = neighbours[j].index;
         triplets.emplace_back(ip, jp, weights[j] / sum);
     }
 }

@@ -13,7 +13,7 @@ namespace mir::method::knn::pick {
 struct NearestNeighbourWithLowestIndex : Pick {
     explicit NearestNeighbourWithLowestIndex(const param::MIRParametrisation&);
 
-    void pick(const search::PointSearch&, const PointXYZ&, neighbours_t&) const override;
+    void pick(const eckit::geo::Search&, const PointXYZ&, neighbours_t&) const override;
     size_t n() const override;
     bool sameAs(const Pick&) const override;
 

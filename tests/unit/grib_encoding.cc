@@ -4,8 +4,10 @@
 
 #include <memory>
 #include <string>
+#include <variant>
 #include <vector>
 
+#include "eckit/geo/Grid.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/action/area/AreaCropper.h"
@@ -16,7 +18,6 @@
 #include "mir/input/GribMemoryInput.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/output/GribMemoryOutput.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/BoundingBox.h"
@@ -169,7 +170,8 @@ public:
     bool compareCoordinates(long edition, double toleranceLat, double toleranceLon) {
         util::lock_guard<util::recursive_mutex> lock(local_mutex);
 
-        std::unique_ptr<repres::Iterator> iter_m(representation_->iterator());
+        const auto& points = representation_->canonicalGrid();
+        auto iter_m        = points.cbegin();
 
         int err     = 0;
         auto iter_g = grib_iterator_new(gribHandle(edition), 0, &err);
@@ -178,12 +180,12 @@ public:
         }
 
         long n = 0;
-        for (double lat, lon, value; grib_iterator_next(iter_g, &lat, &lon, &value) != 0; ++n) {
-            ASSERT(iter_m->next());
+        for (double lat, lon, value; grib_iterator_next(iter_g, &lat, &lon, &value) != 0; ++n, ++iter_m) {
+            ASSERT(iter_m);
 
-            const auto& p = iter_m->pointRotated();
-            double dlat   = mir::Latitude(p.lat()).distance(lat).value();
-            double dlon   = mir::LongitudeDouble(p.lon()).distance(lon).value();
+            const auto p = std::get<PointLonLat>(*iter_m);
+            double dlat  = mir::Latitude(p.lat()).distance(lat).value();
+            double dlon  = mir::LongitudeDouble(p.lon()).distance(lon).value();
 
             if (dlat > toleranceLat || dlon > toleranceLon) {
                 return false;
@@ -192,7 +194,7 @@ public:
 
         grib_iterator_delete(iter_g);
 
-        ASSERT(!iter_m->next());
+        ASSERT(!iter_m);
         ASSERT(n > 0);
 
         return true;

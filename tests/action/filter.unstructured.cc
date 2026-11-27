@@ -36,16 +36,18 @@ CASE("filter.unstructured") {
             // geographic coordinates (if rotated, not the grid coordinates)
             std::vector<PointLonLat> points(N);
 
-            for (std::unique_ptr<repres::Iterator> it(in.representation()->iterator()); it->next();) {
-                points.at(it->index()) = **it;
+            const auto& inPoints = in.representation()->canonicalGrid();
+            for (auto it = inPoints.cbegin(); it; ++it) {
+                points.at(it.index()) = std::get<PointLonLat>(*it);
             }
 
-            for (std::unique_ptr<repres::Iterator> it(out.representation()->iterator()); it->next();) {
-                const auto& p = it->pointUnrotated();
-                const auto& q = points.at(it->index());
+            const auto& outPoints = out.representation()->canonicalGridUnrotated();
+            for (auto it = outPoints.cbegin(); it; ++it) {
+                const auto p  = std::get<PointLonLat>(*it);
+                const auto& q = points.at(it.index());
 
-                EXPECT(same(p.lat().value(), q.lat(), 1e-6));
-                EXPECT(same(std::remainder(p.lon().value() - q.lon(), 360.), 0., 1e-6));
+                EXPECT(same(p.lat(), q.lat(), 1e-6));
+                EXPECT(same(std::remainder(p.lon() - q.lon(), 360.), 0., 1e-6));
             }
         }
     }

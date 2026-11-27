@@ -66,7 +66,6 @@ private:
     void validate(const MIRValuesVector&) const override;
     size_t numberOfPoints() const override;
 
-    Iterator* iterator() const override;
 
     bool includesNorthPole() const override { return true; }
     bool includesSouthPole() const override { return true; }

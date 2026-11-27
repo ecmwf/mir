@@ -39,9 +39,6 @@ namespace param {
 class MIRParametrisation;
 }
 
-namespace repres {
-class Iterator;
-}
 
 namespace util {
 class BoundingBox;
@@ -96,12 +93,17 @@ public:
     /// The grid (eckit::geo), by default built from fillSpec
     virtual const eckit::geo::Grid& grid() const;
 
+    /// The grid of the values as held, in the default order if reordered to it (see reorderToCanonical)
+    const eckit::geo::Grid& canonicalGrid() const;
+
+    /// The canonical grid in its own frame, the points as before a rotation (if any)
+    const eckit::geo::Grid& canonicalGridUnrotated() const;
+
     const Spec& spec() const;
 
     virtual const std::string& uniqueName() const;
     virtual bool sameAs(const Representation&) const;
 
-    virtual Iterator* iterator() const;
     virtual void validate(const MIRValuesVector&) const;
 
     virtual void fillGrib(grib_info&) const;
@@ -170,6 +172,9 @@ protected:
     virtual void print(std::ostream&) const = 0;
     virtual void makeName(std::ostream&) const;
 
+    /// If the values are held in the default order (eckit::geo::order::Scan::order_default), whatever the grid's
+    virtual bool valuesInDefaultOrder() const;
+
     // -- Overridden methods
     // None
 
@@ -184,6 +189,10 @@ private:
     // -- Members
 
     mutable std::unique_ptr<const eckit::geo::Grid> grid_;
+    mutable std::unique_ptr<const eckit::geo::Grid> canonicalGridOwned_;
+    mutable std::unique_ptr<const eckit::geo::Grid> canonicalGridUnrotatedOwned_;
+    mutable const eckit::geo::Grid* canonicalGrid_          = nullptr;
+    mutable const eckit::geo::Grid* canonicalGridUnrotated_ = nullptr;
     mutable util::recursive_mutex gridMutex_;
 
     // -- Methods

@@ -38,16 +38,17 @@ CASE("misc.checkerboard, frequencies") {
     auto in  = field("{grid: [10, 10]}", [](double lat, double) { return lat; });
     auto out = perform(*make("{type: misc.checkerboard, frequencies: [2, 2], 0-1: true}"), in);
 
-    for (std::unique_ptr<repres::Iterator> it(out.representation()->iterator()); it->next();) {
-        const auto& p  = it->pointUnrotated();
-        const auto lat = p.lat().value();
-        const auto lon = p.lon().normalise(Longitude::GREENWICH).value();
+    const auto& points = out.representation()->canonicalGridUnrotated();
+    for (auto it = points.cbegin(); it; ++it) {
+        const auto p   = std::get<PointLonLat>(*it);
+        const auto lat = p.lat();
+        const auto lon = Longitude(p.lon()).normalise(Longitude::GREENWICH).value();
 
         if (lat > -90.) {
             const bool east  = lon >= 180.;
             const bool south = lat <= 0.;
 
-            EXPECT(out.values(0)[it->index()] == (east != south ? 1. : 0.));
+            EXPECT(out.values(0)[it.index()] == (east != south ? 1. : 0.));
         }
     }
 }
@@ -61,10 +62,11 @@ CASE("misc.checkerboard, with missing values") {
         EXPECT(out.hasMissing());
         EXPECT_EQUAL(count_missing(out), count_missing(in));
 
-        for (std::unique_ptr<repres::Iterator> it(out.representation()->iterator()); it->next();) {
-            const auto v = out.values(0)[it->index()];
+        const auto& points = out.representation()->canonicalGridUnrotated();
+        for (auto it = points.cbegin(); it; ++it) {
+            const auto v = out.values(0)[it.index()];
 
-            EXPECT(it->pointUnrotated().lat().value() > 50 ? v == 9999. : (v == 0. || v == 1.));
+            EXPECT(PointLatLon{std::get<PointLonLat>(*it)}.lat().value() > 50 ? v == 9999. : (v == 0. || v == 1.));
         }
     }
 

@@ -5,15 +5,22 @@
 #pragma once
 
 #include <iosfwd>
+#include <vector>
+
+#include "eckit/geo/Search.h"
 
 #include "mir/method/WeightMatrix.h"
-#include "mir/search/PointSearch.h"
+#include "mir/util/Types.h"
 
 
 namespace eckit {
 class JSON;
 class MD5;
 }  // namespace eckit
+
+namespace mir::param {
+class MIRParametrisation;
+}
 
 
 namespace mir::method::knn::distance {
@@ -31,8 +38,7 @@ public:
 
     virtual ~DistanceWeighting();
 
-    virtual void operator()(size_t ip, const PointXYZ& point,
-                            const std::vector<search::PointSearch::PointValueType>& neighbours,
+    virtual void operator()(size_t ip, const PointXYZ& point, const eckit::geo::Search::Neighbours& neighbours,
                             std::vector<WeightMatrix::Triplet>& triplets) const = 0;
 
     virtual bool sameAs(const DistanceWeighting&) const = 0;

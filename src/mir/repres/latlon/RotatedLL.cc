@@ -9,7 +9,6 @@
 #include "eckit/spec/Custom.h"
 
 #include "mir/api/mir_config.h"
-#include "mir/iterator/GridIterator.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
@@ -26,10 +25,6 @@ RotatedLL::RotatedLL(const util::Increments& increments, const util::Rotation& r
     LatLon(increments, bbox, reference), rotation_(rotation) {}
 
 RotatedLL::~RotatedLL() = default;
-
-Iterator* RotatedLL::iterator() const {
-    return new iterator::GridIterator(grid(), true);
-}
 
 void RotatedLL::print(std::ostream& out) const {
     out << "RotatedLL[";

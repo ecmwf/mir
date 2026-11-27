@@ -41,7 +41,6 @@
 #include "mir/method/nonlinear/NonLinear.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/ConfigurationWrapper.h"
-#include "mir/search/Tree.h"
 #include "mir/stats/Distribution.h"
 #include "mir/stats/Field.h"
 #include "mir/stats/Statistics.h"
@@ -174,7 +173,8 @@ struct MIR : MIRTool {
         options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebraDense>(
             "sparse-backend",
             "Linear algebra sparse backend (default '" + eckit::linalg::LinearAlgebraSparse::backend().name() + "')"));
-        options_.push_back(new FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
+        options_.push_back(new SimpleOption<std::string>(
+            "point-search-trees", "k-d tree storage (eckit::geo loader, e.g. memory or mapped-file)"));
 
         options_.push_back(new SimpleOption<std::string>("mesh-generator", "Mesh generator"));
         options_.push_back(new SimpleOption<bool>("mesh-cell-centres", "Calculate mesh cell centres"));

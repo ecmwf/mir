@@ -7,13 +7,14 @@
 #include <cmath>
 #include <memory>
 #include <ostream>
+#include <variant>
 
+#include "eckit/geo/Grid.h"
 #include "eckit/log/JSON.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Angles.h"
 #include "mir/util/Exceptions.h"
@@ -94,12 +95,13 @@ void ReferencePattern::execute(context::Context& ctx) const {
         double f1 = frequencies[0] / 2.0;
         double f2 = frequencies[1];
 
-        for (const std::unique_ptr<repres::Iterator> it(representation->iterator()); it->next();) {
-            auto& v = values[it->index()];
+        const auto& points = representation->canonicalGridUnrotated();
+        for (auto it = points.cbegin(); it; ++it) {
+            auto& v = values[it.index()];
             if (!hasMissing || v != missingValue) {
-                const auto& p = it->pointUnrotated();
-                v             = range * std::sin(f1 * util::degree_to_radian(p.lon().value())) *
-                        std::cos(f2 * util::degree_to_radian(p.lat().value())) * 0.5 +
+                const auto p = std::get<PointLonLat>(*it);
+                v            = range * std::sin(f1 * util::degree_to_radian(p.lon())) *
+                        std::cos(f2 * util::degree_to_radian(p.lat())) * 0.5 +
                     median;
             }
         }

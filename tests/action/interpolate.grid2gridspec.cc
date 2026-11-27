@@ -258,11 +258,9 @@ CASE("interpolate.grid2gridspec, unstructured grids") {
             EXPECT_EQUAL(out.representation()->numberOfPoints(), test.numberOfPoints);
             EXPECT(out.representation()->uniqueName().find("unstructured-" + std::to_string(test.numberOfPoints)) == 0);
 
-            std::unique_ptr<repres::Iterator> it(out.representation()->iterator());
-
-            EXPECT(it->next());
-            EXPECT(same(it->pointUnrotated().lat().value(), test.latitude));
-            EXPECT(same(it->pointUnrotated().lon().value(), test.longitude));
+            const auto p = std::get<PointLonLat>(out.representation()->canonicalGridUnrotated().first_point());
+            EXPECT(same(p.lat(), test.latitude));
+            EXPECT(same(PointLatLon{p}.lon().value(), test.longitude));
         }
     }
 }

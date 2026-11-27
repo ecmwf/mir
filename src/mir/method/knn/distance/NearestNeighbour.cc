@@ -19,11 +19,11 @@ NearestNeighbour::NearestNeighbour(const param::MIRParametrisation& /*unused*/) 
 
 
 void NearestNeighbour::operator()(size_t ip, const PointXYZ& /*point*/,
-                                  const std::vector<search::PointSearch::PointValueType>& neighbours,
+                                  const eckit::geo::Search::Neighbours& neighbours,
                                   std::vector<WeightMatrix::Triplet>& triplets) const {
 
     ASSERT(!neighbours.empty());
-    triplets.assign(1, {ip, neighbours.front().payload(), 1.});
+    triplets.assign(1, {ip, neighbours.front().index, 1.});
 }
 
 

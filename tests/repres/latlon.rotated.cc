@@ -53,14 +53,11 @@ CASE("RotatedLL") {
     }
 
     SECTION("points, in the geographic frame") {
-        std::unique_ptr<Iterator> it(repres->iterator());
-        ASSERT(it->next());
-
         // the first point of the grid frame (north-west), rotated
-        const auto& p = it->pointUnrotated();
+        const PointLatLon p{std::get<PointLonLat>(repres->canonicalGridUnrotated().first_point())};
         EXPECT(same(p.lat().value(), 10.));
         EXPECT(same(p.lon().value(), -10.));
-        EXPECT_NOT(same(it->pointRotated().lat(), 10.));
+        EXPECT_NOT(same(std::get<PointLonLat>(repres->canonicalGrid().first_point()).lat(), 10.));
     }
 
     SECTION("cropped, and its geographic domain") {

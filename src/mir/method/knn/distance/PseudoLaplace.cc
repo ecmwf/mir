@@ -7,7 +7,6 @@
 #include <sstream>
 
 #include "eckit/log/JSON.h"
-
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -20,8 +19,7 @@ namespace mir::method::knn::distance {
 PseudoLaplace::PseudoLaplace(const param::MIRParametrisation& /*unused*/) {}
 
 
-void PseudoLaplace::operator()(size_t ip, const PointXYZ& point,
-                               const std::vector<search::PointSearch::PointValueType>& neighbours,
+void PseudoLaplace::operator()(size_t ip, const PointXYZ& point, const eckit::geo::Search::Neighbours& neighbours,
                                std::vector<WeightMatrix::Triplet>& triplets) const {
     ASSERT(!neighbours.empty());
     auto npts = neighbours.size();
@@ -43,7 +41,7 @@ void PseudoLaplace::operator()(size_t ip, const PointXYZ& point,
     double Rz  = 0;
 
     for (size_t j = 0; j < npts; ++j) {
-        D[j] = neighbours[j].point() - point;
+        D[j] = neighbours[j].point - point;
 
         auto dx = D[j].X();
         auto dy = D[j].Y();
@@ -67,7 +65,7 @@ void PseudoLaplace::operator()(size_t ip, const PointXYZ& point,
     auto b = Ixz * Ixz * Iyy - 2. * Ixy * Ixz * Iyz + Ixx * Iyz * Iyz + Ixy * Ixy * Izz - Ixx * Iyy * Izz;
 
     if (eckit::types::is_approximately_equal(a, 0.) || eckit::types::is_approximately_equal(b, 0.)) {
-        triplets.emplace_back(ip, neighbours[0].payload(), 1.);
+        triplets.emplace_back(ip, neighbours[0].index, 1.);
         return;
     }
 
@@ -79,12 +77,12 @@ void PseudoLaplace::operator()(size_t ip, const PointXYZ& point,
     double sum = 0;
     for (size_t j = 0; j < npts; ++j) {
         auto weight = 1. + dot(L, D[j]);
-        triplets.emplace_back(ip, neighbours[j].payload(), weight);
+        triplets.emplace_back(ip, neighbours[j].index, weight);
         sum += weight;
     }
 
     if (eckit::types::is_approximately_equal(sum, 0.)) {
-        triplets = {{ip, neighbours[0].payload(), 1.}};
+        triplets = {{ip, neighbours[0].index, 1.}};
         return;
     }
 

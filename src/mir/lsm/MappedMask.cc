@@ -6,14 +6,14 @@
 
 #include <fcntl.h>
 #include <sys/mman.h>
-
 #include <memory>
+#include <variant>
 
+#include "eckit/geo/Grid.h"
 #include "eckit/memory/MMap.h"
 #include "eckit/os/Stat.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -110,8 +110,8 @@ MappedMask::MappedMask(const std::string& name, const eckit::PathName& path,
 
     const unsigned char* mask = reinterpret_cast<unsigned char*>(address);
 
-    for (const std::unique_ptr<repres::Iterator> it(representation.iterator()); it->next();) {
-        const auto& p = it->pointUnrotated();
+    for (const auto& point : representation.canonicalGridUnrotated()) {
+        const PointLatLon p{std::get<PointLonLat>(point)};
         Latitude lat  = p.lat();
         Longitude lon = p.lon().normalise(Longitude::GREENWICH);
 

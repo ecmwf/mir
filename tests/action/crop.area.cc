@@ -53,13 +53,14 @@ CASE("crop.area, without caching") {
         EXPECT(0 < out.values(0).size() && out.values(0).size() < in.values(0).size());
 
         // points from north to south
-        double north = 90.;
-        for (std::unique_ptr<repres::Iterator> it(out.representation()->iterator()); it->next();) {
-            const auto lat = it->pointUnrotated().lat().value();
+        double north       = 90.;
+        const auto& points = out.representation()->canonicalGridUnrotated();
+        for (auto it = points.cbegin(); it; ++it) {
+            const auto lat = PointLatLon{std::get<PointLonLat>(*it)}.lat().value();
 
             EXPECT(25. <= lat && lat <= 45.);
             EXPECT(lat <= north);
-            EXPECT(same(out.values(0)[it->index()], lat));
+            EXPECT(same(out.values(0)[it.index()], lat));
 
             north = lat;
         }
@@ -105,8 +106,8 @@ CASE("crop.area") {
             // cropped values are of points in the area
             const auto bbox = make("{type: crop.area, area: " + test.area + "}")->outputBoundingBox();
 
-            for (std::unique_ptr<repres::Iterator> it(out.representation()->iterator()); it->next();) {
-                EXPECT(bbox.contains(it->pointUnrotated()));
+            for (const auto& point : out.representation()->canonicalGridUnrotated()) {
+                EXPECT(bbox.contains(PointLatLon{std::get<PointLonLat>(point)}));
             }
         }
     }

@@ -8,6 +8,7 @@
 #include <memory>
 #include <numeric>
 #include <string>
+#include <variant>
 #include <vector>
 
 #include "eckit/exception/Exceptions.h"
@@ -24,7 +25,6 @@
 #include "mir/input/GridSpecInput.h"
 #include "mir/key/Area.h"
 #include "mir/param/ConfigurationWrapper.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Angles.h"
@@ -408,8 +408,9 @@ void MIRTile::execute(const eckit::option::CmdArgs& args) {
 
     // grid points (non-projected, as used for cropping)
     std::vector<PointLatLon> points(grid->size());
-    for (const std::unique_ptr<repres::Iterator> it(repres->iterator()); it->next();) {
-        points[it->index()] = it->pointUnrotated();
+    const auto& unrotated = repres->canonicalGridUnrotated();
+    for (auto it = unrotated.cbegin(); it; ++it) {
+        points[it.index()] = PointLatLon{std::get<PointLonLat>(*it)};
     }
 
     // each point belongs to one tile: on shared edges, the first tile (from North to South) not having it on its

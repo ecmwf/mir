@@ -32,11 +32,12 @@ CASE("interpolate.grid2points") {
     EXPECT(out.representation()->uniqueName().find("unstructured-5-") == 0);
 
     // the points, in order
-    for (std::unique_ptr<repres::Iterator> it(out.representation()->iterator()); it->next();) {
-        const auto i = it->index();
+    const auto& points = out.representation()->canonicalGridUnrotated();
+    for (auto it = points.cbegin(); it; ++it) {
+        const auto i = it.index();
 
-        EXPECT(same(it->pointUnrotated().lat().value(), lat.at(i)));
-        EXPECT(same(it->pointUnrotated().lon().value(), lon.at(i)));
+        EXPECT(same(PointLatLon{std::get<PointLonLat>(*it)}.lat().value(), lat.at(i)));
+        EXPECT(same(PointLatLon{std::get<PointLonLat>(*it)}.lon().value(), lon.at(i)));
         EXPECT(std::abs(out.values(0)[i] - lat.at(i)) < 0.2);
     }
 }

@@ -33,7 +33,7 @@ using method::knn::distance::DistanceWeightingWithLSM;
 using method::knn::distance::DistanceWeightingWithLSMFactory;
 
 using D         = std::unique_ptr<const DistanceWeighting>;
-using Neighbors = std::vector<search::PointSearch::PointValueType>;
+using Neighbors = eckit::geo::Search::Neighbours;
 using Triplets  = std::vector<WeightMatrix::Triplet>;
 
 
@@ -221,7 +221,7 @@ CASE("distance weighting methods") {
             const auto w = triplets[i].value();
             sum += w;
             for (size_t c = 0; c < 3; ++c) {
-                x[c] += w * cube[i].point()[c];
+                x[c] += w * cube[i].point[c];
             }
         }
 

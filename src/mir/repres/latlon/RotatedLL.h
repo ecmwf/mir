@@ -53,7 +53,6 @@ private:
     // None
 
     // -- Overridden methods
-    Iterator* iterator() const override;
     void print(std::ostream&) const override;
 
     atlas::Grid atlasGrid() const override;

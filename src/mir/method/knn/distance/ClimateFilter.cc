@@ -43,8 +43,7 @@ ClimateFilter::ClimateFilter(const param::MIRParametrisation& param) {
 }
 
 
-void ClimateFilter::operator()(size_t ip, const PointXYZ& point,
-                               const std::vector<search::PointSearch::PointValueType>& neighbours,
+void ClimateFilter::operator()(size_t ip, const PointXYZ& point, const eckit::geo::Search::Neighbours& neighbours,
                                std::vector<WeightMatrix::Triplet>& triplets) const {
 
     const size_t nbPoints = neighbours.size();
@@ -57,7 +56,7 @@ void ClimateFilter::operator()(size_t ip, const PointXYZ& point,
     std::vector<double> weights(nbPoints);
     double sum = 0.;
     for (size_t j = 0; j < nbPoints; ++j) {
-        auto r = PointXYZ::distance(point, neighbours[j].point());
+        auto r = PointXYZ::distance(point, neighbours[j].point);
         auto h = r < halfDelta_ - delta_   ? 1.
                  : halfDelta_ + delta_ < r ? 0.
                                            : 0.5 + 0.5 * std::cos(M_PI_2 * (r - halfDelta_ + delta_) / delta_);
@@ -71,7 +70,7 @@ void ClimateFilter::operator()(size_t ip, const PointXYZ& point,
 
     // normalise all weights according to the total, and set sparse matrix triplets
     for (size_t j = 0; j < nbPoints; ++j) {
-        size_t jp = neighbours[j].payload();
+        size_t jp = neighbours[j].index;
         triplets.emplace_back(ip, jp, weights[j] / sum);
     }
 }

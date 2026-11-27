@@ -269,10 +269,6 @@ list(APPEND mir_srcs
     input/RawInput.h
     input/VectorInput.cc
     input/VectorInput.h
-    iterator/GridIterator.cc
-    iterator/GridIterator.h
-    iterator/UnstructuredIterator.cc
-    iterator/UnstructuredIterator.h
     key/Area.cc
     key/Area.h
     key/grid/Grid.cc
@@ -493,8 +489,6 @@ list(APPEND mir_srcs
     repres/HEALPix.h
     repres/IrregularLatlon.cc
     repres/IrregularLatlon.h
-    repres/Iterator.cc
-    repres/Iterator.h
     repres/None.cc
     repres/None.h
     repres/RegularXY.cc
@@ -543,18 +537,6 @@ list(APPEND mir_srcs
     repres/latlon/RotatedLL.h
     repres/sh/SphericalHarmonics.cc
     repres/sh/SphericalHarmonics.h
-    search/PointSearch.cc
-    search/PointSearch.h
-    search/Tree.cc
-    search/Tree.h
-    search/tree/TreeMapped.cc
-    search/tree/TreeMapped.h
-    search/tree/TreeMappedAnonymousMemory.cc
-    search/tree/TreeMappedAnonymousMemory.h
-    search/tree/TreeMappedFile.cc
-    search/tree/TreeMappedFile.h
-    search/tree/TreeMemory.cc
-    search/tree/TreeMemory.h
     stats/Comparator.cc
     stats/Comparator.h
     stats/Distribution.cc
@@ -651,8 +633,8 @@ list(APPEND mir_srcs
     util/LatitudeIncrement.h
     util/Log.cc
     util/Log.h
-    util/LonLatToPoint3.cc
-    util/LonLatToPoint3.h
+    util/LonLatToXYZ.cc
+    util/LonLatToXYZ.h
     util/LongitudeDouble.cc
     util/LongitudeDouble.h
     util/LongitudeFraction.cc
@@ -674,6 +656,8 @@ list(APPEND mir_srcs
     util/Reorder.h
     util/Rotation.cc
     util/Rotation.h
+    util/Search.cc
+    util/Search.h
     util/SpectralOrder.cc
     util/SpectralOrder.h
     util/SpectralOrderT.cc

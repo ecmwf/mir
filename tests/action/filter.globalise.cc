@@ -28,9 +28,10 @@ CASE("filter.globalise") {
         for (size_t which = 0; which < 2; ++which) {
             EXPECT_EQUAL(count_missing(out, which), 9 * 36);
 
-            for (std::unique_ptr<repres::Iterator> it(out.representation()->iterator()); it->next();) {
-                const auto lat = it->pointUnrotated().lat().value();
-                const auto v   = out.values(which)[it->index()];
+            const auto& points = out.representation()->canonicalGridUnrotated();
+            for (auto it = points.cbegin(); it; ++it) {
+                const auto lat = PointLatLon{std::get<PointLonLat>(*it)}.lat().value();
+                const auto v   = out.values(which)[it.index()];
 
                 EXPECT(lat > 60 || lat < -30 ? v == 9999. : same(v, lat));
             }

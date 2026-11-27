@@ -20,7 +20,6 @@
 #include "mir/output/EmptyOutput.h"
 #include "mir/param/GridSpecParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 
 
@@ -250,9 +249,9 @@ CASE("GridSpec representation round trip (points, and spec describing the same g
 
             std::vector<double> repres_lats;
             std::vector<double> repres_lons;
-            for (std::unique_ptr<Iterator> it(repres->iterator()); it->next();) {
-                repres_lats.push_back((**it).lat());
-                repres_lons.push_back((**it).lon());
+            for (const auto& point : repres->canonicalGrid()) {
+                repres_lats.push_back((std::get<PointLonLat>(point)).lat());
+                repres_lons.push_back((std::get<PointLonLat>(point)).lon());
             }
 
             EXPECT_EQUAL(repres->numberOfPoints(), grid->size());
@@ -347,7 +346,7 @@ CASE("GridSpec different routings") {
 CASE("GridSpec of reduced Gaussian grids, the pl rows in the grid") {
     auto check = [](const Representation& repres, const std::string& grid, bool pl) {
         size_t count = 0;
-        for (std::unique_ptr<Iterator> it(repres.iterator()); it->next();) {
+        for (const auto& point : repres.canonicalGrid()) {
             ++count;
         }
 
@@ -422,12 +421,13 @@ CASE("GridSpec of irregular lat/lon grids (eckit::geo irregular_ll)") {
         EXPECT(order == !t.order.empty());
 
         // the points as stored, in the directions given
-        size_t n = 0;
-        for (std::unique_ptr<Iterator> it(repres->iterator()); it->next(); ++n) {
-            const auto& p = it->pointUnrotated();
-            EXPECT_EQUAL(it->index(), n);
-            EXPECT_EQUAL(p.lat().value(), t.latitudes[n / t.longitudes.size()]);
-            EXPECT_EQUAL(p.lon().value(), t.longitudes[n % t.longitudes.size()]);
+        size_t n           = 0;
+        const auto& points = repres->canonicalGridUnrotated();
+        for (auto it = points.cbegin(); it; ++it, ++n) {
+            const auto p = std::get<PointLonLat>(*it);
+            EXPECT_EQUAL(it.index(), n);
+            EXPECT_EQUAL(p.lat(), t.latitudes[n / t.longitudes.size()]);
+            EXPECT_EQUAL(p.lon(), t.longitudes[n % t.longitudes.size()]);
         }
         EXPECT_EQUAL(n, repres->numberOfPoints());
 

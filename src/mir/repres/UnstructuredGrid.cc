@@ -11,6 +11,7 @@
 #include <ostream>
 #include <string>
 #include <utility>
+#include <variant>
 
 #include "eckit/geo/Grid.h"
 #include "eckit/parser/YAMLParser.h"
@@ -19,10 +20,7 @@
 
 #include "mir/api/MIRJob.h"
 #include "mir/api/mir_config.h"
-#include "mir/iterator/GridIterator.h"
-#include "mir/iterator/UnstructuredIterator.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/CheckDuplicatePoints.h"
@@ -144,7 +142,6 @@ protected:
 
     size_t numberOfPoints() const override { return grid_->size(); }
 
-    Iterator* iterator() const override { return new iterator::GridIterator(*grid_); }
 
     bool includesNorthPole() const override { return bbox_.north() == Latitude::NORTH_POLE; }
     bool includesSouthPole() const override { return bbox_.south() == Latitude::SOUTH_POLE; }
@@ -608,9 +605,10 @@ const Gridded* UnstructuredGrid::croppedRepresentation(const util::BoundingBox& 
     size_t i = 0;
     size_t j = 0;
 
-    for (const std::unique_ptr<Iterator> iter(iterator()); iter->next(); ++i) {
-        if (bbox.contains(iter->pointUnrotated())) {
-            auto ip = iter->index();
+    const auto& points = canonicalGridUnrotated();
+    for (auto iter = points.cbegin(); iter; ++iter, ++i) {
+        if (bbox.contains(PointLatLon{std::get<PointLonLat>(*iter)})) {
+            auto ip = iter.index();
             lat.emplace_back(latitudes_.at(ip));
             lon.emplace_back(longitudes_.at(ip));
             ++j;
@@ -626,11 +624,6 @@ const Gridded* UnstructuredGrid::croppedRepresentation(const util::BoundingBox& 
 
     Log::debug() << "UnstructuredGrid::croppedRepresentation: no cropping" << std::endl;
     return this;
-}
-
-
-Iterator* UnstructuredGrid::iterator() const {
-    return new iterator::UnstructuredIterator(latitudes_, longitudes_);
 }
 
 

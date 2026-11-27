@@ -28,15 +28,16 @@ CASE("filter.bitmap") {
     for (size_t which = 0; which < 2; ++which) {
         EXPECT_EQUAL(count_missing(out, which), 5 * 21);
 
-        for (std::unique_ptr<repres::Iterator> it(out.representation()->iterator()); it->next();) {
-            const auto& p  = it->pointUnrotated();
-            const auto row = static_cast<size_t>(16. - p.lat().value()) + 1;
-            const auto col = static_cast<size_t>(p.lon().value()) + 1;
-            const auto v   = out.values(which)[it->index()];
+        const auto& points = out.representation()->canonicalGridUnrotated();
+        for (auto it = points.cbegin(); it; ++it) {
+            const auto p   = std::get<PointLonLat>(*it);
+            const auto row = static_cast<size_t>(16. - p.lat()) + 1;
+            const auto col = static_cast<size_t>(p.lon()) + 1;
+            const auto v   = out.values(which)[it.index()];
 
             const bool off = 8 <= row && row <= 12 && 12 <= col && col <= 32;
 
-            EXPECT(off ? v == 9999. : same(v, p.lat().value() + p.lon().value()));
+            EXPECT(off ? v == 9999. : same(v, p.lat() + p.lon()));
         }
     }
 }

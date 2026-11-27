@@ -1,8 +1,9 @@
 # SPDX-FileCopyrightText: 1996- European Centre for Medium-Range Weather Forecasts (ECMWF)
 # SPDX-License-Identifier: Apache-2.0
 
-# a test per family of representations, of iterators, of the grid keys and of gridSpec, on synthetic grids
+# a test per family of representations, of the points (canonical grids), of the grid keys and of gridSpec, on synthetic grids
 set(TESTS
+    canonical_grid
     gaussian
     gaussian.reduced
     gaussian.regular
@@ -10,7 +11,6 @@ set(TESTS
     gridspec
     healpix
     irregular_latlon
-    iterator
     latlon
     latlon.reduced
     latlon.regular

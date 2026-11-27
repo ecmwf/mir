@@ -26,8 +26,8 @@ Sample::Sample(const param::MIRParametrisation& param) :
 }
 
 
-void Sample::pick(const search::PointSearch& tree, const PointXYZ& p, Pick::neighbours_t& closest) const {
-    tree.closestWithinRadius(p, distance_, closest);
+void Sample::pick(const eckit::geo::Search& tree, const PointXYZ& p, Pick::neighbours_t& closest) const {
+    closest = tree.search_radius(p, distance_);
     if (closest.size() <= nClosest_) {
         return;
     }

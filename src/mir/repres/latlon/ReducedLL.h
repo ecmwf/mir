@@ -58,6 +58,7 @@ protected:
 
     void print(std::ostream&) const override;
     std::string factory() const override;
+    bool valuesInDefaultOrder() const override { return true; }
     void json(eckit::JSON&) const override;
 
     // -- Class members
@@ -82,7 +83,6 @@ private:
 
     void validate(const MIRValuesVector&) const override;
 
-    Iterator* iterator() const override;
 
     void makeName(std::ostream&) const override;
     bool sameAs(const Representation&) const override;

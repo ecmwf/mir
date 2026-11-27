@@ -44,11 +44,6 @@ bool RotatedFromPL::sameAs(const Representation& other) const {
 }
 
 
-Iterator* RotatedFromPL::iterator() const {
-    return rotatedIterator(rotation_);
-}
-
-
 void RotatedFromPL::fillGrib(grib_info& info) const {
     FromPL::fillGrib(info);
     rotation_.fillGrib(info, CODES_UTIL_GRID_SPEC_REDUCED_ROTATED_GG);

@@ -349,8 +349,9 @@ CASE("grid-box-statistics") {
         auto min           = *std::min_element(values.begin(), values.end());
         auto max           = *std::max_element(values.begin(), values.end());
 
-        size_t i = 0;
-        for (std::unique_ptr<repres::Iterator> it(out->iterator()); it->next(); ++i) {
+        size_t i           = 0;
+        const auto& points = out->canonicalGrid();
+        for (auto it = points.cbegin(); it; ++it, ++i) {
             EXPECT(min <= minimum.values(0)[i]);
             EXPECT(maximum.values(0)[i] <= max);
             EXPECT(minimum.values(0)[i] <= maximum.values(0)[i]);
@@ -367,9 +368,11 @@ CASE("grid-box-statistics") {
         auto poles  = field(in, [](double lat, double) { return std::abs(lat) == 90. ? 1. : 0.; });
         auto result = interpolate(*make("grid-box-statistics"), poles, *out);
 
-        size_t i = 0;
-        for (std::unique_ptr<repres::Iterator> it(out->iterator()); it->next(); ++i) {
-            EXPECT_EQUAL(result.values(0)[i], (std::abs(it->pointUnrotated().lat().value()) == 90. ? 1. : 0.));
+        size_t i           = 0;
+        const auto& points = out->canonicalGridUnrotated();
+        for (auto it = points.cbegin(); it; ++it, ++i) {
+            EXPECT_EQUAL(result.values(0)[i],
+                         (std::abs(PointLatLon{std::get<PointLonLat>(*it)}.lat().value()) == 90. ? 1. : 0.));
         }
     }
 

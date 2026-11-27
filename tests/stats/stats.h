@@ -11,7 +11,6 @@
 
 #include "mir/data/MIRField.h"
 #include "mir/param/GridSpecParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Types.h"
 
@@ -51,9 +50,10 @@ inline data::MIRField make_field(const std::string& gridspec, const std::functio
     repres::RepresentationHandle rep(representation(gridspec));
 
     MIRValuesVector values(rep->numberOfPoints(), 0.);
-    for (std::unique_ptr<repres::Iterator> it(rep->iterator()); it->next();) {
-        const auto& p          = it->pointUnrotated();
-        values.at(it->index()) = f(p.lat().value(), p.lon().value());
+    const auto& points = rep->canonicalGridUnrotated();
+    for (auto it = points.cbegin(); it; ++it) {
+        const auto p          = std::get<PointLonLat>(*it);
+        values.at(it.index()) = f(p.lat(), p.lon());
     }
 
     return make_field(rep, values);

@@ -24,8 +24,7 @@ NearestLSM::NearestLSM(const param::MIRParametrisation& parametrisation, const l
 }
 
 
-void NearestLSM::operator()(size_t ip, const PointXYZ& /*unused*/,
-                            const std::vector<search::PointSearch::PointValueType>& neighbours,
+void NearestLSM::operator()(size_t ip, const PointXYZ& /*unused*/, const eckit::geo::Search::Neighbours& neighbours,
                             std::vector<WeightMatrix::Triplet>& triplets) const {
 
     ASSERT(!neighbours.empty());
@@ -36,7 +35,7 @@ void NearestLSM::operator()(size_t ip, const PointXYZ& /*unused*/,
     bool foundSameType = false;
 
     for (const auto& p : neighbours) {
-        jp = p.payload();
+        jp = p.index;
         ASSERT(jp < imask_.size());
 
         if (omask_[ip] == imask_[jp]) {
@@ -46,7 +45,7 @@ void NearestLSM::operator()(size_t ip, const PointXYZ& /*unused*/,
     }
 
     if (!foundSameType) {
-        jp = neighbours.front().payload();
+        jp = neighbours.front().index;
     }
 
     triplets.assign(1, {ip, jp, 1.});

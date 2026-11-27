@@ -11,8 +11,6 @@
 #include "eckit/spec/Custom.h"
 
 #include "mir/api/mir_config.h"
-#include "mir/iterator/GridIterator.h"
-#include "mir/repres/Iterator.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
@@ -28,10 +26,6 @@ RegularLL::RegularLL(const util::Increments& increments, const util::BoundingBox
     LatLon(increments, bbox, reference) {}
 
 RegularLL::~RegularLL() = default;
-
-Iterator* RegularLL::iterator() const {
-    return new iterator::GridIterator(grid(), true);
-}
 
 void RegularLL::print(std::ostream& out) const {
     out << "RegularLL[";

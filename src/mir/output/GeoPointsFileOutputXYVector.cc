@@ -6,13 +6,14 @@
 
 #include <limits>
 #include <memory>
+#include <variant>
 
+#include "eckit/geo/Grid.h"
 #include "eckit/io/HandleBuf.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 
@@ -57,13 +58,14 @@ size_t GeoPointsFileOutputXYVector::save(const param::MIRParametrisation& param,
             extra += ' ' + v;
         }
 
-        for (const std::unique_ptr<repres::Iterator> it(field.representation()->iterator()); it->next();) {
-            const auto& p = it->pointUnrotated();
-            auto u        = values_u.at(it->index());
-            auto v        = values_v.at(it->index());
+        const auto& points = field.representation()->canonicalGridUnrotated();
+        for (auto it = points.cbegin(); it; ++it) {
+            const auto p = std::get<PointLonLat>(*it);
+            auto u       = values_u.at(it.index());
+            auto v       = values_v.at(it.index());
 
             if (u != mv && v != mv) {
-                out << "\n" << p.lat().value() << ' ' << p.lon().value() << extra << ' ' << u << ' ' << v;
+                out << "\n" << p.lat() << ' ' << p.lon() << extra << ' ' << u << ' ' << v;
             }
         }
 

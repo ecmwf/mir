@@ -32,18 +32,18 @@ NClosestOrNearest::NClosestOrNearest(const param::MIRParametrisation& param) :
                       param::DefaultParametrisation::instance().get_value<double>("distance-tolerance", param)) {}
 
 
-void NClosestOrNearest::pick(const search::PointSearch& tree, const PointXYZ& p, Pick::neighbours_t& closest) const {
-    auto n = nClosest_ == 1 ? 2 : nClosest_;
-    tree.closestNPoints(p, n, closest);
+void NClosestOrNearest::pick(const eckit::geo::Search& tree, const PointXYZ& p, Pick::neighbours_t& closest) const {
+    auto n  = nClosest_ == 1 ? 2 : nClosest_;
+    closest = tree.search_knn(p, n);
     ASSERT(closest.size() == n);
 
     // if closest and farthest nb. are at the same distance, other points can
     // also be (like near poles), so we return all points inside radius
-    auto nearest2  = PointXYZ::distance2(p, closest.front().point());
-    auto farthest2 = PointXYZ::distance2(p, closest.back().point());
+    auto nearest2  = PointXYZ::distance2(p, closest.front().point);
+    auto farthest2 = PointXYZ::distance2(p, closest.back().point);
     if (eckit::types::is_approximately_equal(nearest2, farthest2, distanceTolerance2_)) {
         auto radius = std::sqrt(farthest2) + distanceTolerance_;
-        tree.closestWithinRadius(p, radius, closest);
+        closest     = tree.search_radius(p, radius);
         return;
     }
 

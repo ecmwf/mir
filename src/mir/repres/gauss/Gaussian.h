@@ -76,6 +76,7 @@ protected:
     void validate(const MIRValuesVector&) const override;
 
     std::string intersectionOnCrop() const override { return "input-intersects-output"; }
+    bool valuesInDefaultOrder() const override { return true; }
 
     bool includesNorthPole() const override;
     bool includesSouthPole() const override;
