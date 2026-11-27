@@ -4,6 +4,10 @@
 
 #include "mir/repres/Gridded.h"
 
+#include <string>
+
+#include "eckit/geo/Grid.h"
+#include "eckit/geo/order/Scan.h"
 #include "eckit/geo/projection/Rotation.h"
 
 #include "mir/util/Domain.h"
@@ -30,13 +34,40 @@ void Gridded::fillSpec(CustomSpec& spec) const {
 }
 
 
-void Gridded::reorderToCanonical(MIRValuesVector& /*unused*/) const {
-    // assume iterators do the right thing
+namespace {
+
+
+void reorder(MIRValuesVector& values, const eckit::geo::Grid& grid, const std::string& from, const std::string& to) {
+    if (from == to) {
+        return;
+    }
+
+    const auto ren = grid.reorder(from, to);
+    ASSERT(values.size() == ren.size());
+
+    MIRValuesVector out(values.size());
+    for (size_t k = 0; k < ren.size(); ++k) {
+        out[ren[k]] = values[k];
+    }
+
+    values.swap(out);
 }
 
 
-void Gridded::reorderFromCanonical(MIRValuesVector& /*unused*/) const {
-    // assume iterators do the right thing
+}  // namespace
+
+
+void Gridded::reorderToCanonical(MIRValuesVector& values) const {
+    if (valuesInDefaultOrder()) {
+        reorder(values, grid(), grid().order(), eckit::geo::order::Scan::order_default());
+    }
+}
+
+
+void Gridded::reorderFromCanonical(MIRValuesVector& values) const {
+    if (valuesInDefaultOrder()) {
+        reorder(values, grid(), eckit::geo::order::Scan::order_default(), grid().order());
+    }
 }
 
 

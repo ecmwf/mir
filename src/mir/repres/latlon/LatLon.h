@@ -116,8 +116,6 @@ private:
     const std::string& order() const override { return order_; }
     bool valuesInDefaultOrder() const override { return true; }
 
-    void reorderToCanonical(MIRValuesVector& values) const override;
-    void reorderFromCanonical(MIRValuesVector& values) const override;
 
     void validate(const MIRValuesVector&) const override;
 

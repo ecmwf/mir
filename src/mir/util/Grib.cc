@@ -90,42 +90,6 @@ void grib_fill_scanning_mode(grib_info& info, const std::string& order) {
 }
 
 
-void grib_reorder_to_canonical(std::vector<double>& values, const std::string& order, size_t Ni, size_t Nj) {
-    if (order == grib_order_default()) {
-        return;
-    }
-
-    mir::Log::warning() << "grib_reorder: order '" << order << "' to canonical" << std::endl;
-
-    const auto ren = eckit::geo::order::RegularScan{order}.reorder(grib_order_default(), Ni, Nj);
-    ASSERT(values.size() == ren.size());
-
-    std::vector<double> out(values.size());
-    for (size_t k = 0; k < ren.size(); ++k) {
-        out[ren[k]] = values[k];
-    }
-
-    values.swap(out);
-}
-
-
-void grib_reorder_from_canonical(std::vector<double>& values, const std::string& order, size_t Ni, size_t Nj) {
-    if (order == grib_order_default()) {
-        return;
-    }
-
-    const auto ren = eckit::geo::order::RegularScan{order}.reorder(grib_order_default(), Ni, Nj);
-    ASSERT(values.size() == ren.size());
-
-    std::vector<double> out(values.size());
-    for (size_t k = 0; k < ren.size(); ++k) {
-        out[k] = values[ren[k]];
-    }
-
-    values.swap(out);
-}
-
-
 grib_info::grib_info() :
     grid{}, packing{}, extra_settings_size_(sizeof(packing.extra_settings) / sizeof(packing.extra_settings[0])) {
     // NOTE low-level initialisation only necessary for C interface

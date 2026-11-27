@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
+#include <numeric>
+#include <string>
 #include <variant>
 #include <vector>
 
@@ -64,6 +66,33 @@ CASE("canonicalGrid: the order of the values as held") {
     // the values of other grids are held as the grid
     RepresentationHandle healpix(make("{grid: H2, order: nested}"));
     EXPECT(&healpix->canonicalGrid() == &healpix->grid());
+}
+
+
+CASE("reorderToCanonical/reorderFromCanonical: the values of the points as held") {
+    // (of the representations keeping an order, regular lat/lon and Gaussian grids)
+    for (const std::string& gridspec :
+         {"{grid: [10, 10], area: [10, -10, -10, 10], order: i-j+}", "{grid: F2, order: i-j+}"}) {
+        RepresentationHandle repres(make(gridspec));
+        const auto& encoded = repres->grid();
+        const auto& held    = repres->canonicalGrid();
+        EXPECT(encoded.order() != held.order());
+
+        // values as encoded (the point index), as held: each value of its point
+        MIRValuesVector values(encoded.size());
+        std::iota(values.begin(), values.end(), 0.);
+
+        repres->reorderToCanonical(values);
+        for (size_t k = 0; k < values.size(); ++k) {
+            const auto i = static_cast<size_t>(values[k]);
+            EXPECT(eckit::geo::points_equal(held.point(k), encoded.point(i)));
+        }
+
+        repres->reorderFromCanonical(values);
+        for (size_t k = 0; k < values.size(); ++k) {
+            EXPECT_EQUAL(values[k], static_cast<double>(k));
+        }
+    }
 }
 
 
