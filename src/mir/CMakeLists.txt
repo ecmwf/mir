@@ -273,8 +273,6 @@ list(APPEND mir_srcs
     iterator/GridIterator.h
     iterator/UnstructuredIterator.cc
     iterator/UnstructuredIterator.h
-    iterator/detail/RegularIterator.cc
-    iterator/detail/RegularIterator.h
     key/Area.cc
     key/Area.h
     key/grid/Grid.cc

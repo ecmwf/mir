@@ -8,13 +8,13 @@
 #include <ostream>
 #include <sstream>
 
+#include "eckit/geo/range/Regular.h"
 #include "eckit/log/JSON.h"
 #include "eckit/spec/Custom.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
 
 #include "mir/data/MIRField.h"
-#include "mir/iterator/detail/RegularIterator.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
@@ -281,22 +281,18 @@ void LatLon::validate(const MIRValuesVector& values) const {
 
 
 void LatLon::globaliseBoundingBox(util::BoundingBox& bbox, const util::Increments& inc, const PointLatLon& reference) {
-    using eckit::Fraction;
-    using iterator::detail::RegularIterator;
+    using eckit::geo::range::Regular;
 
-    Fraction sn = inc.south_north().latitude().fraction();
-    Fraction we = inc.west_east().longitude().fraction();
+    const auto sn = inc.south_north().latitude().fraction();
+    const auto we = inc.west_east().longitude().fraction();
     ASSERT(sn > 0);
     ASSERT(we > 0);
 
-    Fraction shift_sn = (reference.lat().fraction() / sn).decimalPart() * sn;
-    Fraction shift_we = (reference.lon().fraction() / we).decimalPart() * we;
 
+    // Latitude limits (of the reference as encoded, see correctBoundingBox)
 
-    // Latitude limits
-
-    Latitude n = shift_sn + RegularIterator::adjust(Latitude::NORTH_POLE.fraction() - shift_sn, sn, false);
-    Latitude s = shift_sn + RegularIterator::adjust(Latitude::SOUTH_POLE.fraction() - shift_sn, sn, true);
+    Latitude n = Regular::adjust(Latitude::NORTH_POLE.fraction(), sn, reference.lat().fraction(), false, PRECISION);
+    Latitude s = Regular::adjust(Latitude::SOUTH_POLE.fraction(), sn, reference.lat().fraction(), true, PRECISION);
 
 
     // Longitude limits
@@ -305,10 +301,11 @@ void LatLon::globaliseBoundingBox(util::BoundingBox& bbox, const util::Increment
 
     Longitude w = bbox.west();
     if (inc.isPeriodic()) {
-        w = shift_we + RegularIterator::adjust(Longitude::GREENWICH.fraction() - shift_we, we, true);
+        w = Regular::adjust(Longitude::GREENWICH.fraction(), we, reference.lon().fraction(), true, PRECISION);
     }
 
-    Longitude e = shift_we + RegularIterator::adjust(w.fraction() + Longitude::GLOBE.fraction() - shift_we, we, false);
+    Longitude e =
+        Regular::adjust(w.fraction() + Longitude::GLOBE.fraction(), we, reference.lon().fraction(), false, PRECISION);
     if (e - w == Longitude::GLOBE) {
         e -= we;
     }
@@ -321,28 +318,37 @@ void LatLon::globaliseBoundingBox(util::BoundingBox& bbox, const util::Increment
 
 void LatLon::correctBoundingBox(util::BoundingBox& bbox, size_t& ni, size_t& nj, const util::Increments& inc,
                                 const PointLatLon& reference) {
-    using iterator::detail::RegularIterator;
+    using eckit::geo::range::Regular;
+
+    // bounds within the precision of a grid point include it, as encoded to the microdegree (MIR-351)
+    auto bound = [](const eckit::Fraction& value, const eckit::Fraction& inc, const eckit::Fraction& ref, bool up) {
+        return inc == 0 ? value : Regular::adjust(value, inc, ref, up, PRECISION);
+    };
 
     // Latitude/longitude ranges
-    RegularIterator lat{bbox.south().fraction(), bbox.north().fraction(), inc.south_north().latitude().fraction(),
-                        reference.lat().fraction()};
-    auto n = lat.b();
-    auto s = lat.a();
+    const auto sn = inc.south_north().latitude().fraction();
+    const eckit::geo::range::RegularLatitude lat(
+        sn, bound(bbox.south().fraction(), sn, reference.lat().fraction(), true),
+        bound(bbox.north().fraction(), sn, reference.lat().fraction(), false), reference.lat().fraction());
+    auto n = lat.bf();
+    auto s = lat.af();
 
-    nj = lat.n();
+    nj = lat.size();
     ASSERT(nj > 0);
 
-    RegularIterator lon{bbox.west().fraction(), bbox.east().fraction(), inc.west_east().longitude().fraction(),
-                        reference.lon().fraction(), Longitude::GLOBE.fraction()};
-    auto w = lon.a();
-    auto e = lon.b();
+    const auto we = inc.west_east().longitude().fraction();
+    const eckit::geo::range::RegularLongitude lon(
+        we, bound(bbox.west().fraction(), we, reference.lon().fraction(), true),
+        bound(bbox.east().fraction(), we, reference.lon().fraction(), false), reference.lon().fraction());
+    auto w = lon.af();
+    auto e = lon.bf();
 
-    ni = lon.n();
+    ni = lon.size();
     ASSERT(ni > 0);
 
     // checks
-    ASSERT(w + (ni - 1) * lon.inc() == e || ni * lon.inc() == Longitude::GLOBE.fraction());
-    ASSERT(s + (nj - 1) * lat.inc() == n);
+    ASSERT(w + (ni - 1) * lon.increment() == e || ni * lon.increment() == Longitude::GLOBE.fraction());
+    ASSERT(s + (nj - 1) * lat.increment() == n);
 
     bbox = {n, w, s, e};
 }

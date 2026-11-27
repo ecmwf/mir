@@ -54,6 +54,13 @@ public:
     // None
 
 protected:
+    // -- Class members
+
+    /// Of bounds of GRIB keys (legacy input, e.g. encoded to the microdegree truncated inwards, MIR-351), a value
+    /// within it of a grid point is of the point; gridSpec input bounds are recovered by ecCodes (to remove with legacy
+    /// input)
+    static constexpr double PRECISION = 2e-6;
+
     // -- Members
 
     const util::Increments increments_;

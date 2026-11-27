@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
-#include <cmath>
 #include <memory>
 #include <sstream>
 #include <string>
@@ -10,120 +9,14 @@
 
 #include "eckit/geo/Grid.h"
 #include "eckit/testing/Test.h"
-#include "eckit/types/Fraction.h"
 
 #include "mir/iterator/GridIterator.h"
 #include "mir/iterator/UnstructuredIterator.h"
-#include "mir/iterator/detail/RegularIterator.h"
-#include "mir/util/BoundingBox.h"
-#include "mir/util/Increments.h"
 
 #include "repres.h"
 
 
 namespace mir::repres::tests {
-
-
-using eckit::Fraction;
-using iterator::detail::RegularIterator;
-
-
-CASE("RegularIterator") {
-    SECTION("range of a bounding box (MIR-390)") {
-        // 89.9958333333, 0.004166666667, -89.9958333333, 359.995833333
-        const util::BoundingBox bbox{Fraction(21599, 240), Fraction(1, 240), Fraction(-21599, 240),
-                                     Fraction(86355, 240)};
-        const PointLatLon reference{bbox.south(), bbox.west()};
-
-        const size_t Ni = 43200;
-        const size_t Nj = 21600;
-
-        const util::Increments inc((bbox.east().fraction() - bbox.west().fraction()) / Ni,
-                                   (bbox.north().fraction() - bbox.south().fraction()) / Nj);
-
-        RegularIterator lat{bbox.south().fraction(), bbox.north().fraction(), inc.south_north().latitude().fraction(),
-                            reference.lat().fraction()};
-
-        EXPECT(lat.a() == bbox.south().fraction());
-        EXPECT(lat.b() == bbox.north().fraction());
-        EXPECT_EQUAL(lat.n(), Nj + 1);
-        EXPECT(lat.a() + (lat.n() - 1) * lat.inc() == lat.b());
-
-        RegularIterator lon{bbox.west().fraction(), bbox.east().fraction(), inc.west_east().longitude().fraction(),
-                            reference.lon().fraction(), Longitude::GLOBE.fraction()};
-
-        EXPECT(lon.a() == bbox.west().fraction());
-        EXPECT(lon.b() == bbox.east().fraction());
-        EXPECT_EQUAL(lon.n(), Ni + 1);
-        EXPECT(lon.a() + (lon.n() - 1) * lon.inc() == lon.b());
-
-        EXPECT(bbox == util::BoundingBox(lat.b(), lon.a(), lat.a(), lon.b()));
-    }
-
-
-    SECTION("shifted by the reference") {
-        RegularIterator it{Fraction(0), Fraction(10), Fraction(2), Fraction(1)};
-        EXPECT(it.a() == 1);
-        EXPECT(it.b() == 9);
-        EXPECT_EQUAL(it.n(), 5);
-    }
-
-
-    SECTION("zero increment, or a single value") {
-        RegularIterator zero{Fraction(1), Fraction(5), Fraction(0), Fraction(0)};
-        EXPECT(zero.a() == 1);
-        EXPECT(zero.b() == 1);
-        EXPECT_EQUAL(zero.n(), 1);
-
-        RegularIterator single{Fraction(2), Fraction(2), Fraction(1), Fraction(0)};
-        EXPECT(single.a() == 2);
-        EXPECT(single.b() == 2);
-        EXPECT_EQUAL(single.n(), 1);
-    }
-
-
-    SECTION("periodic (not repeating the first value)") {
-        RegularIterator periodic{Fraction(0), Fraction(360), Fraction(1), Fraction(0), Fraction(360)};
-        EXPECT(periodic.a() == 0);
-        EXPECT(periodic.b() == 359);
-        EXPECT_EQUAL(periodic.n(), 360);
-
-        RegularIterator not_periodic{Fraction(0), Fraction(359), Fraction(1), Fraction(0), Fraction(360)};
-        EXPECT(not_periodic.b() == 359);
-        EXPECT_EQUAL(not_periodic.n(), 360);
-    }
-
-
-    SECTION("adjust (up or down, to a multiple of the increment)") {
-        EXPECT(RegularIterator::adjust(Fraction(5, 2), Fraction(1), true) == 3);
-        EXPECT(RegularIterator::adjust(Fraction(5, 2), Fraction(1), false) == 2);
-        EXPECT(RegularIterator::adjust(Fraction(-5, 2), Fraction(1), true) == -2);
-        EXPECT(RegularIterator::adjust(Fraction(-5, 2), Fraction(1), false) == -3);
-        EXPECT(RegularIterator::adjust(Fraction(2), Fraction(1), true) == 2);
-        EXPECT(RegularIterator::adjust(Fraction(2), Fraction(1), false) == 2);
-    }
-
-
-    SECTION("MIR-351: bounds encoded to the microdegree") {
-        // latitudes of 30/128 degree, half an increment off the equator (+-80.0390625), encoded to the microdegree
-        const Fraction inc(30, 128);
-        const Fraction s(-80.039062);
-        const Fraction n(80.039062);
-
-        // bounds within the precision of a grid point (truncated inwards) include it
-        EXPECT(RegularIterator(s, n, inc, s).n() == 684);
-
-        // ... and further from it don't
-        EXPECT(RegularIterator(s, Fraction(80.039), inc, s).n() == 683);
-    }
-
-
-    SECTION("invalid") {
-        EXPECT_THROWS_AS(RegularIterator(Fraction(2), Fraction(1), Fraction(1), Fraction(0)), eckit::AssertionFailed);
-        EXPECT_THROWS_AS(RegularIterator(Fraction(0), Fraction(1), Fraction(-1), Fraction(0)), eckit::AssertionFailed);
-        EXPECT_THROWS_AS(RegularIterator::adjust(Fraction(1), Fraction(0), true), eckit::AssertionFailed);
-    }
-}
 
 
 CASE("Iterator: points (rotated, unrotated, 3D), index, end") {

@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "eckit/testing/Test.h"
+#include "eckit/types/Fraction.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/repres/latlon/RegularLL.h"
@@ -106,6 +107,45 @@ CASE("LatLon::globalise (towards the poles)") {
     data::MIRField again(global, true, 9999.);
     again.update(field.direct(0), 0);
     EXPECT(global->globalise(again) == nullptr);
+}
+
+
+CASE("LatLon::correctBoundingBox") {
+    using eckit::Fraction;
+
+    SECTION("MIR-390: of a bounding box 1/240 off the poles and Greenwich") {
+        BoundingBox bbox{Fraction(21599, 240), Fraction(1, 240), Fraction(-21599, 240), Fraction(86399, 240)};
+        const BoundingBox expected(bbox);
+        const Increments inc(Fraction(1, 120), Fraction(1, 120));
+
+        size_t ni = 0;
+        size_t nj = 0;
+        LatLon::correctBoundingBox(bbox, ni, nj, inc, {bbox.south(), bbox.west()});
+
+        EXPECT(bbox == expected);
+        EXPECT_EQUAL(ni, 43200);
+        EXPECT_EQUAL(nj, 21600);
+    }
+
+    SECTION("MIR-351: bounds encoded to the microdegree") {
+        // latitudes of 30/128 degree, half an increment off the equator (+-80.0390625), encoded to the microdegree
+        const Increments inc(Fraction(360, 1536), Fraction(30, 128));
+        const PointLatLon reference{Fraction(-80.039062), 0};
+
+        // bounds within the precision of a grid point (truncated inwards) include it
+        BoundingBox bbox{Fraction(80.039062), 0, Fraction(-80.039062), Fraction(359.765625)};
+        size_t ni = 0;
+        size_t nj = 0;
+        LatLon::correctBoundingBox(bbox, ni, nj, inc, reference);
+
+        EXPECT_EQUAL(ni, 1536);
+        EXPECT_EQUAL(nj, 684);
+
+        // ... and further from it don't
+        BoundingBox further{Fraction(80.039), 0, Fraction(-80.039062), Fraction(359.765625)};
+        LatLon::correctBoundingBox(further, ni, nj, inc, reference);
+        EXPECT_EQUAL(nj, 683);
+    }
 }
 
 
