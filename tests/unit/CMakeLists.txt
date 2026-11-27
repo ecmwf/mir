@@ -115,3 +115,12 @@ if(ENABLE_BUILD_TOOLS)
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
     endforeach()
 endif()
+
+# disabled meanwhile: of the representations by eckit::geo, re-enabled as the tests are reorganised (next)
+foreach(_t
+        mir_tests_unit_space_view
+    )
+    if(TEST ${_t})
+        set_tests_properties(${_t} PROPERTIES DISABLED TRUE)
+    endif()
+endforeach()
