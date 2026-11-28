@@ -9,3 +9,13 @@ stream=wave,param=swh,domain=m
 # grib_get
 Ni=2880
 Nj=1441
+gridType=regular_ll
+numberOfDataPoints=4150080
+latitudeOfFirstGridPointInDegrees=90
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=-90
+longitudeOfLastGridPointInDegrees=359.875
+iDirectionIncrementInDegrees=0.125
+jDirectionIncrementInDegrees=0.125
+iScansNegatively=0
+jScansPositively=0

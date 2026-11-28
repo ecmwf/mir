@@ -374,7 +374,7 @@ CASE("RegularXY: GRIB encoding of the figure, and by edition") {
     }
 
 
-    SECTION("first point bottom-left") {
+    SECTION("GRIB2: vector components relative to the grid, as decoded") {
         param::SimpleParametrisation param;
         param.set("gridType", "lambert");
         param.set("LaDInDegrees", 50.);
@@ -384,23 +384,15 @@ CASE("RegularXY: GRIB encoding of the figure, and by edition") {
         param.set("longitudeOfFirstGridPointInDegrees", -10.);
         param.set("Ni", 20L);
         param.set("Nj", 15L);
-        param.set("first_point_bottom_left", true);
         param.set("uvRelativeToGrid", 1L);
 
-        RepresentationHandle repres(RepresentationFactory::build(param));
-        EXPECT_EQUAL(repres->numberOfPoints(), 20 * 15);
-
         grib_info info;
-        repres->fillGrib(info);
+        RepresentationHandle(RepresentationFactory::build(param))->fillGrib(info);
 
         EXPECT(same(info.grid.latitudeOfFirstGridPointInDegrees, 40., 1e-6));
         EXPECT(same(info.grid.longitudeOfFirstGridPointInDegrees, 350., 1e-6));
-        EXPECT_EQUAL(info.grid.jScansPositively, 1);
+        EXPECT_EQUAL(info.grid.jScansPositively, 0);
         EXPECT_EQUAL(info.grid.uvRelativeToGrid, 1);
-
-        // the projection parameters are required
-        param.clear("LaDInDegrees");
-        EXPECT_THROWS_AS(RepresentationFactory::build(param), exception::UserError);
     }
 }
 

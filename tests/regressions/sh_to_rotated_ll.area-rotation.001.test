@@ -9,3 +9,17 @@ level=500,param=t,type=cf,stream=enfo
 # grib_get
 Nj = 112
 Ni = 133
+gridType=rotated_ll
+numberOfDataPoints=14896
+latitudeOfFirstGridPointInDegrees=11.4
+longitudeOfFirstGridPointInDegrees=-18.4
+latitudeOfLastGridPointInDegrees=-10.8
+longitudeOfLastGridPointInDegrees=8
+iDirectionIncrementInDegrees=0.2
+jDirectionIncrementInDegrees=0.2
+iScansNegatively=0
+jScansPositively=0
+latitudeOfSouthernPoleInDegrees=-43
+longitudeOfSouthernPoleInDegrees=10
+angleOfRotationInDegrees=0
+uvRelativeToGrid=0

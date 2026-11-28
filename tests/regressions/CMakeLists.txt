@@ -49,6 +49,8 @@ set(TESTS
     reduced_gg_to_regular_ll.wrongly-encoded.004.fail.test
     reduced_gg_to_rotated_ll.area-nearest-lsm.lsm.test
     reduced_gg_to_rotated_ll.area-rotation.lsm.test
+    reduced_gg_to_rotated_ll.gridspec-rotation.001.test
+    reduced_gg_to_rotated_ll.gridspec-rotation.002.test
     reduced_ll_to_reduced_gg.regrid.test
     reduced_ll_to_regular_ll.accuracy.test
     reduced_ll_to_regular_ll.area-globalise.test
@@ -190,6 +192,9 @@ find_program(DIFF_TOOL NAMES "diff" "cmp" "false")
 get_filename_component(MIR_TESTS_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../data" ABSOLUTE)
 ecbuild_configure_file(mir-test.sh.in mir-test.sh @ONLY)
 
+# how GRIB geometry is exchanged with ecCodes (see mir-test.sh.in), every test by each (legacy keeping the test name)
+set(MODES legacy gridspec-input gridspec-output gridspec)
+
 foreach(_t ${TESTS})
     if((_t MATCHES "[.]lsm[.]" AND NOT HAVE_MIR_DOWNLOAD_MASKS) OR
        (_t MATCHES "[.]proj[.]" AND NOT eckit_HAVE_PROJ))
@@ -209,30 +214,21 @@ foreach(_t ${TESTS})
     endif()
 
     target_from_path("${CMAKE_CURRENT_SOURCE_DIR}/${_t}" target)
-    ecbuild_add_test(
-        TARGET      ${target}
-        COMMAND     mir-test.sh
-        ARGS        ${CMAKE_CURRENT_SOURCE_DIR}/${_t}
-        LABELS      ${_labels}
-        ENVIRONMENT ${_environment})
+    foreach(_mode ${MODES})
+        set(_target ${target})
+        if(NOT _mode STREQUAL "legacy")
+            string(MAKE_C_IDENTIFIER "${target}_${_mode}" _target)
+        endif()
 
-    if(_t MATCHES "[.]fail[.]")
-        set_tests_properties(${target} PROPERTIES WILL_FAIL TRUE)
-    endif()
-endforeach()
+        ecbuild_add_test(
+            TARGET      ${_target}
+            COMMAND     mir-test.sh
+            ARGS        ${CMAKE_CURRENT_SOURCE_DIR}/${_t}
+            LABELS      ${_labels} ${_mode}
+            ENVIRONMENT ${_environment} MIR_TESTS_MODE=${_mode})
 
-# disabled meanwhile: of references pinned before the eckit::geo bounding boxes of the west as given and exact fractions, re-pinned with the GRIB geometry by gridSpec
-foreach(_t
-        mir_tests_regressions_reduced_gg
-        mir_tests_regressions_regular_ll
-        mir_tests_regressions_regular_xy
-        mir_tests_regressions_rotated_ll
-        mir_tests_regressions_unstructured_grid
-        mir_tests_regressions_reduced_gg_to_regular_ll_grid_box_average
-        mir_tests_regressions_regular_ll_to_regular_ll_area_so
-        mir_tests_regressions_rotated_ll_to_reduced_gg_linear_edition
-    )
-    if(TEST ${_t})
-        set_tests_properties(${_t} PROPERTIES DISABLED TRUE)
-    endif()
+        if(_t MATCHES "[.]fail[.]")
+            set_tests_properties(${_target} PROPERTIES WILL_FAIL TRUE)
+        endif()
+    endforeach()
 endforeach()

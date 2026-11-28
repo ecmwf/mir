@@ -16,7 +16,7 @@ CASE("to reduced_gg: linear") {
         "{artificialInput:gridspec,gridSpec:{type:swisslv95,x:[2480000,2840000,20000],y:[1080000,1300000,20000]}}",
         {{"grid", "{grid:o320}"}, {"interpolation", "linear"}},
         R"([{"type":"interpolate.grid2gridspec","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":{"grid":"O320"}},{"type":"save","packing":"ccsds","edition":2}])",
-        R"([{"order":"i+j+","projection":"swisslv95","x":[2480000,2840000,20000],"y":[1080000,1300000,20000]},{"area":[47.6346412794268,5.83564470245482,45.9484597060362,10.6432135221386],"grid":"O320"},{"area":[47.6346412794268,5.83564470245482,45.9484597060362,10.6432135221386],"grid":"O320"}])");
+        R"([{"order":"i+j+","projection":"swisslv95","x":[2480000,2840000,20000],"y":[1080000,1300000,20000]},{"area":[47.6346412794268,5.83564470245482,45.9484597060362,10.6432134882749],"grid":"O320"},{"area":[47.6346412794268,5.83564470245482,45.9484597060362,10.6432134882749],"grid":"O320"}])");
 
     EXPECT_EQUAL(get(h, "edition"), "2");
     EXPECT_EQUAL(get(h, "gridType"), "reduced_gg");
@@ -33,15 +33,15 @@ CASE("to reduced_gg: nn") {
         "{artificialInput:gridspec,gridSpec:{type:swisslv95,x:[2480000,2840000,20000],y:[1080000,1300000,20000]}}",
         {{"grid", "{grid:o320}"}, {"interpolation", "nn"}},
         R"([{"type":"interpolate.grid2gridspec","interpolation":"nn","distance-weighting":"inverse-distance-weighting-squared","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":{"grid":"O320"}},{"type":"save","packing":"ccsds","edition":2}])",
-        R"([{"order":"i+j+","projection":"swisslv95","x":[2480000,2840000,20000],"y":[1080000,1300000,20000]},{"area":[47.6346412794268,5.83564470245482,45.9484597060362,10.6432135221386],"grid":"O320"},{"area":[47.6346412794268,5.83564470245482,45.9484597060362,10.6432135221386],"grid":"O320"}])");
+        R"([{"order":"i+j+","projection":"swisslv95","x":[2480000,2840000,20000],"y":[1080000,1300000,20000]},{"area":[47.6346412794268,5.83564470245482,45.9484597060362,10.6432134882749],"grid":"O320"},{"area":[47.6346412794268,5.83564470245482,45.9484597060362,10.6432134882749],"grid":"O320"}])");
 
     EXPECT_EQUAL(get(h, "gridType"), "reduced_gg");
     EXPECT_EQUAL(get(h, "N"), "320");
     EXPECT_EQUAL(get(h, "numberOfDataPoints"), "57");
-    EXPECT_EQUAL(get(h, "latitudeOfFirstGridPointInDegrees"), "47.8505");
-    EXPECT_EQUAL(get(h, "longitudeOfFirstGridPointInDegrees"), "5.83564");
-    EXPECT_EQUAL(get(h, "latitudeOfLastGridPointInDegrees"), "45.8291");
-    EXPECT_EQUAL(get(h, "longitudeOfLastGridPointInDegrees"), "10.6432");
+    EXPECT_EQUAL(get(h, "latitudeOfFirstGridPointInDegrees"), "47.6346");
+    EXPECT_EQUAL(get(h, "longitudeOfFirstGridPointInDegrees"), "6.14907");
+    EXPECT_EQUAL(get(h, "latitudeOfLastGridPointInDegrees"), "45.9485");
+    EXPECT_EQUAL(get(h, "longitudeOfLastGridPointInDegrees"), "10.6211");
 }
 #endif
 
@@ -108,8 +108,8 @@ CASE("to unstructured_grid: nn") {
     auto h = run(
         "{artificialInput:gridspec,gridSpec:{type:swisslv95,x:[2480000,2840000,20000],y:[1080000,1300000,20000]}}",
         {{"grid", "{grid:ICON-CH2}"}, {"interpolation", "nn"}},
-        R"([{"type":"interpolate.grid2gridspec","interpolation":"nn","distance-weighting":"inverse-distance-weighting-squared","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":{"area":[50.6,-0.9,41.9,17.8],"grid":"ICON-CH2_C","uid":"bbbd5a09855499243c7a4aa4c8762920"}},{"type":"save","packing":"ccsds","edition":2}])",
-        R"([{"order":"i+j+","projection":"swisslv95","x":[2480000,2840000,20000],"y":[1080000,1300000,20000]},{"area":[50.6,-0.9,41.9,17.8],"grid":"ICON-CH2_C","uid":"bbbd5a09855499243c7a4aa4c8762920"},{"area":[50.6,-0.9,41.9,17.8],"grid":"ICON-CH2_C","uid":"bbbd5a09855499243c7a4aa4c8762920"}])");
+        R"([{"type":"interpolate.grid2gridspec","interpolation":"nn","distance-weighting":"inverse-distance-weighting-squared","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":{"area":[50.6,-0.9,41.9,17.8],"grid":"ICON-CH2"}},{"type":"save","packing":"ccsds","edition":2}])",
+        R"([{"order":"i+j+","projection":"swisslv95","x":[2480000,2840000,20000],"y":[1080000,1300000,20000]},{"area":[50.6,-0.9,41.9,17.8],"grid":"ICON-CH2"},{"area":[50.6,-0.9,41.9,17.8],"grid":"ICON-CH2"}])");
 
     EXPECT_EQUAL(get(h, "gridType"), "unstructured_grid");
     EXPECT_EQUAL(get(h, "numberOfDataPoints"), "283876");

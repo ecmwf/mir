@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: 1996- European Centre for Medium-Range Weather Forecasts (ECMWF)
+# SPDX-License-Identifier: Apache-2.0
+
+FIXME: GRIB input of multi-format.grib #12/#13, by gridSpec and by GRIB keys (legacy) differ
+
+Why
+  Both messages are regular_ll, GRIB1 (millidegree), first longitude of a grid point off the origin by a fraction of the
+  increment (0.1171875 = 15/128 and 0.0703125 = 9/128, encoded as 0.117 and 0.07). ecCodes' gridSpec (GribToSpec,
+  feature/eckit-geo-grids, not yet upstream) recovers the intended bounds (snapping to a fraction of the increment, within
+  the angular precision); mir's GRIB keys input takes them as encoded. The regridded messages are identical, only the
+  input grid (its reference) differs:
+    #12  by gridSpec {"grid":[0.234375,0.15625],"order":"i+j+","reference":[0.1171875,0.078125]}
+         by GRIB keys {"grid":[0.234375,0.156250217202433],"order":"i+j+","reference":[0.117,0.0781251086012163]}
+    #13  by gridSpec {"grid":[0.140625,0.0937498697238145],"order":"i+j+","reference":[0.0703125,0.0468749348619072]}
+         by GRIB keys {"grid":[0.140625,0.0937498697238145],"order":"i+j+","reference":[0.07,0.0468749348619072]}
+  The gridSpec results are the correct ones.
+
+What
+  Once ecCodes with the GribToSpec bounds recovery is upstream (and required by mir), and legacy input agrees (or is
+  retired in favour of gridSpec input), restore the checks below and delete this file.
+
+Files
+  tests/regressions/reduced_gg_to_regular_ll.regrid.001.test
+    "# grid-plan" section commented (lines #12/#13 already the correct result): uncomment, and restore the header
+  tests/unit/grib_input_gridspec.cc
+    "EXPECT(representations.empty())" commented: uncomment, and remove the check of the two known differences after it

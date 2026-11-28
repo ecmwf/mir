@@ -1,0 +1,22 @@
+# rotation in the gridspec ([lat, lon] of the south pole, asymmetric so lat/lon can't be swapped unnoticed), area in
+# the rotated frame (by the grid-plan, as the encoded longitudes can be normalised, e.g. by GRIB edition)
+# input
+gridType=reduced_gg,gridName=O8,shortName=q.grib2
+# post-process
+--grid={grid:[1,1],area:[10,-10,-10,10],rotation:[-43,10]} --interpolation=nn
+# action-plan
+[{"type":"interpolate.grid2gridspec","interpolation":"nn","distance-weighting":"inverse-distance-weighting-squared","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":{"area":[10,-10,-10,10],"grid":[1,1],"projection":{"south_pole":[10,-43],"type":"rotation"}}},{"type":"save"}]
+# grid-plan
+[{"grid":"O8"},{"area":[10,-10,-10,10],"grid":[1,1],"projection":{"south_pole":[10,-43],"type":"rotation"}},{"area":[10,-10,-10,10],"grid":[1,1],"projection":{"south_pole":[10,-43],"type":"rotation"}}]
+# grib_get
+gridType=rotated_ll
+Ni=21
+Nj=21
+latitudeOfSouthernPoleInDegrees=-43
+longitudeOfSouthernPoleInDegrees=10
+angleOfRotationInDegrees=0
+latitudeOfFirstGridPointInDegrees=10
+latitudeOfLastGridPointInDegrees=-10
+iDirectionIncrementInDegrees=1
+jDirectionIncrementInDegrees=1
+numberOfMissing=0

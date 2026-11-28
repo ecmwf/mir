@@ -77,7 +77,8 @@ public:
     Longitude south_pole_longitude() const { return rotation_.south_pole().lon(); }
     double south_pole_rotation_angle() const { return rotation_.angle(); }
 
-    void fillGrib(grib_info&) const;
+    /// The rotation and the rotated grid type, but of no rotation (identity) the grid type stays (unrotated)
+    void fillGrib(grib_info&, long rotatedGridType) const;
     void fillJob(api::MIRJob&) const;
     void fillSpec(eckit::spec::Custom&) const;
     void makeName(std::ostream&) const;

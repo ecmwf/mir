@@ -20,11 +20,6 @@ md5GridSection=45ec9d2d5e7a14306a0d0f89ffc59fc7, centre:i=98, gridName=N256, edi
   - north: 89.731149
   - south: -89.731149
 
-# Lambert conformal conic projection, non-standard interpretation (Toulouse, RSMC, centre=lfpw)
-md5GridSection=6ae0076681a2541abe053ab52fa60f30, centre:i=84/85, gridType=lambert, edition=1:
-  - area-mode: mask
-  - first_point_bottom_left: true
-
 # Arakawa C-grid UM N96, T/V (centre=egrr)
 md5GridSection=026edb6c52792bc15957072536dbe7c2/2e0f685a14d8ad3615dbc7252d5ebbb9, centre:i=74, gridType=regular_ll, edition=2:
   - east: 359.0625

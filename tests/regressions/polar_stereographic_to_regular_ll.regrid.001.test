@@ -9,3 +9,15 @@ gridType=polar_stereographic.grib2
 [{"false_xy":[3757838.788,4230050.142],"order":"i+j+","projection":{"lat_0":90,"lat_ts":90.000003,"lon_0":-30.000001,"reverse":true,"type":"stere"},"x":[0,7170000,2500],"y":[0,7170000,2500]},{"area":[90,0,43,360],"grid":[1,1]},{"area":[90,0,43,360],"grid":[1,1]}]
 # grib_get
 gridType=regular_ll
+numberOfDataPoints=17280
+Ni=360
+Nj=48
+latitudeOfFirstGridPointInDegrees=90
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=43
+longitudeOfLastGridPointInDegrees=359
+iDirectionIncrementInDegrees=1
+jDirectionIncrementInDegrees=1
+iScansNegatively=0
+jScansPositively=0
+shapeOfTheEarth=6

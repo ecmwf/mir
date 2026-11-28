@@ -7,6 +7,8 @@
 #include <iosfwd>
 #include <string>
 
+#include "mir/util/Types.h"
+
 
 struct grib_info;
 struct grib_handle;
@@ -57,12 +59,15 @@ public:
 
     // -- Methods
 
-    virtual void fill(const repres::Representation*, grib_info&) const  = 0;
-    virtual void set(const repres::Representation*, grib_handle*) const = 0;
+    virtual void fill(const repres::Representation*, grib_info&) const = 0;
+
+    /// Set the packing and the values, in the order ecCodes needs (as codes_grib_util_set_spec)
+    virtual void set(const repres::Representation*, grib_handle*, const MIRValuesVector&) const = 0;
 
     bool sameAs(const Packing*) const;
     bool printParametrisation(std::ostream&) const;
     void fillEdition(grib_info&) const;
+    void setEdition(grib_handle*) const;
     void json(eckit::JSON&) const;
     bool empty() const;
 
@@ -96,7 +101,7 @@ protected:
 
     bool gridded() const { return gridded_; }
     void fill(grib_info&, long) const;
-    void set(grib_handle*, const std::string&) const;
+    void set(grib_handle*, const std::string& type, const MIRValuesVector&) const;
 
     // -- Overridden methods
     // None

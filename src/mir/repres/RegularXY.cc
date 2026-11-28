@@ -79,7 +79,28 @@ long set_edition(grib_info& info, long dfault) {
 }
 
 
+/// GRIB2 code table 3.2, the codes of a figure (the others encode its size)
+const std::vector<std::pair<long, std::shared_ptr<const Figure>>>& figure_codes() {
+    using namespace eckit::geo::figure;
+    static const std::vector<std::pair<long, std::shared_ptr<const Figure>>> CODES{
+        {0, std::make_shared<EarthGrib1>()}, {2, std::make_shared<EarthIau1965>()},
+        {4, std::make_shared<EarthGrs80>()}, {5, std::make_shared<EarthWgs84>()},
+        {6, std::make_shared<Earth>()},      {8, std::make_shared<EarthWgs84Sphere>()},
+    };
+    return CODES;
+}
+
+
 Figure* make_figure(const param::MIRParametrisation& param) {
+    // by the code of a figure, as the size encoded loses the precision telling some figures apart (e.g. GRS80, WGS84)
+    if (long shape = 0; param.get("shapeOfTheEarth", shape)) {
+        for (const auto& [code, f] : figure_codes()) {
+            if (code == shape) {
+                return eckit::geo::FigureFactory::build(*f);
+            }
+        }
+    }
+
     // as encoded [m] (GRIB, by either key), if encoded
     auto get = [&param](const std::string& key, double& value) {
         return param.get(key + "InMetres", value) || param.get(key, value);
@@ -98,22 +119,10 @@ Figure* make_figure(const param::MIRParametrisation& param) {
 
 
 long shape_of_the_earth(const Figure& figure) {
-    // GRIB2 code table 3.2, by the figure (as ecCodes)
-    using namespace eckit::geo::figure;
-    struct code_t {
-        long code;
-        std::shared_ptr<const Figure> figure;
-    };
-
-    static const std::vector<code_t> CODES{
-        {0, std::make_shared<EarthGrib1>()}, {2, std::make_shared<EarthIau1965>()},
-        {4, std::make_shared<EarthGrs80>()}, {5, std::make_shared<EarthWgs84>()},
-        {6, std::make_shared<Earth>()},      {8, std::make_shared<EarthWgs84Sphere>()},
-    };
-
-    for (const auto& c : CODES) {
-        if (figure == *c.figure) {
-            return c.code;
+    // as ecCodes
+    for (const auto& [code, f] : figure_codes()) {
+        if (figure == *f) {
+            return code;
         }
     }
 
@@ -177,10 +186,8 @@ CustomSpec* make_spec(const param::MIRParametrisation& param, std::unique_ptr<Cu
     const auto first = std::get<PointXY>(p->fwd(PointLonLat{get_double(param, "longitudeOfFirstGridPointInDegrees"),
                                                             get_double(param, "latitudeOfFirstGridPointInDegrees")}));
 
-    bool bottomLeft = false;
-    bool xPlus      = true;   // iScansPositively != 0
-    bool yPlus      = false;  // jScansPositively == 0
-    param.get("first_point_bottom_left", bottomLeft);
+    bool xPlus = true;   // iScansPositively != 0
+    bool yPlus = false;  // jScansPositively == 0
     param.get("iScansPositively", xPlus);
     param.get("jScansPositively", yPlus);
 
@@ -192,8 +199,8 @@ CustomSpec* make_spec(const param::MIRParametrisation& param, std::unique_ptr<Cu
     proj->set("reverse", true);
 
     auto* spec = new CustomSpec;
-    spec->set("x", range(first.X(), grid[0], nx, bottomLeft || xPlus));
-    spec->set("y", range(first.Y(), grid[1], ny, bottomLeft || yPlus));
+    spec->set("x", range(first.X(), grid[0], nx, xPlus));
+    spec->set("y", range(first.Y(), grid[1], ny, yPlus));
     spec->set("projection", proj.release());
     return spec;
 }
@@ -219,8 +226,6 @@ RegularXY::RegularXY(const param::MIRParametrisation& param) : RegularXY(param, 
 
 RegularXY::RegularXY(const param::MIRParametrisation& param, std::unique_ptr<CustomSpec> projection) :
     edition_(get_edition(param)) {
-    param.get("first_point_bottom_left", firstPointBottomLeft_);
-
     long uv           = 0;
     uvRelativeToGrid_ = param.get("uvRelativeToGrid", uv) && uv != 0;
 
@@ -242,17 +247,6 @@ const eckit::geo::Grid& RegularXY::grid() const {
 
 PointLonLat RegularXY::lonlat(const PointXY& p) const {
     return std::get<PointLonLat>(grid_->projection().fwd(p - grid_->false_xy()));
-}
-
-
-PointLonLat RegularXY::firstPoint() const {
-    if (firstPointBottomLeft_) {
-        const auto& x = grid_->x();
-        const auto& y = grid_->y();
-        return lonlat({std::min(x.a(), x.b()), std::min(y.a(), y.b())});
-    }
-
-    return std::get<PointLonLat>(grid_->first_point());
 }
 
 
@@ -345,7 +339,7 @@ void RegularXY::fillGrib(grib_info& info) const {
         throw exception::FunctionalityNotSupported("RegularXY: GRIB encoding of " + spec().str());
     }
 
-    const auto first = firstPoint();
+    const auto first = std::get<PointLonLat>(grid_->first_point());
 
     info.grid.latitudeOfFirstGridPointInDegrees  = first.lat();
     info.grid.longitudeOfFirstGridPointInDegrees = longitude(first.lon());

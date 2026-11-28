@@ -8,3 +8,18 @@ regular_ll.2-2.grib2
 [{"grid":[2,2]},{"projection":{"lat_0":63,"lat_1":63,"lon_0":15,"reverse":true,"type":"lcc"},"x":[-922475.321661423,922524.678338577,2500],"y":[-1129362.39336627,-3499362.39336627,-2500]},{"projection":{"lat_0":63,"lat_1":63,"lon_0":15,"reverse":true,"type":"lcc"},"x":[-922475.321661423,922524.678338577,2500],"y":[-1129362.39336627,-3499362.39336627,-2500]}]
 # grib_get
 gridType=lambert
+numberOfDataPoints=701311
+Nx=739
+Ny=949
+latitudeOfFirstGridPointInDegrees=52.041
+longitudeOfFirstGridPointInDegrees=1.639
+DxInMetres=2500
+DyInMetres=2500
+iScansNegatively=0
+jScansPositively=0
+uvRelativeToGrid=0
+LaDInDegrees=63
+LoVInDegrees=15
+Latin1InDegrees=63
+Latin2InDegrees=63
+shapeOfTheEarth=6

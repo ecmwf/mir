@@ -11,6 +11,11 @@ struct grib_info;
 struct grib_handle;
 
 
+namespace eckit {
+struct Timing;
+}
+
+
 namespace mir::grib {
 class Config;
 }
@@ -53,6 +58,9 @@ private:
     // -- Methods
 
     virtual void out(const void* message, size_t length, bool interpolated) = 0;
+
+    /// Write an encoded (interpolated) message, checked, returning its size
+    size_t write(grib_handle*, eckit::Timing&);
 
     // -- Overridden methods
 

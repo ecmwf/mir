@@ -4,9 +4,21 @@ param=z,stream=oper,levtype=sfc.grid=O400.wrong.grib1
 # post-process
 $MIR_ABORT_IF_WRONGLY_ENCODED_GRIB=0
 --grid=9/9
+--packing=simple
 # action-plan
-[{"type":"interpolate.grid2regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":[9,9],"area":[90,0,-90,351]},{"type":"save"}]
+[{"type":"interpolate.grid2regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":[9,9],"area":[90,0,-90,351]},{"type":"save","packing":"simple"}]
 # grid-plan
 [{"grid":"O400"},{"grid":[9,9]},{"grid":[9,9]}]
 # grib_get
 gridType=regular_ll
+numberOfDataPoints=840
+Ni=40
+Nj=21
+latitudeOfFirstGridPointInDegrees=90
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=-90
+longitudeOfLastGridPointInDegrees=351
+iDirectionIncrementInDegrees=9
+jDirectionIncrementInDegrees=9
+iScansNegatively=0
+jScansPositively=0

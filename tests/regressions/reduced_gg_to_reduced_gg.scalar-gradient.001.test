@@ -10,3 +10,14 @@ date=20200308,level=1000,grid=O80,param=u_v
 [{"grid":"O80"},{"grid":"O80"},{"grid":"O80"}]
 [{"grid":"O80"},{"grid":"O80"},{"grid":"O80"}]
 # grib_get
+gridType=reduced_gg
+numberOfDataPoints=28480
+N=80
+Nj=160
+isOctahedral=1
+latitudeOfFirstGridPointInDegrees=89.142
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=-89.142
+longitudeOfLastGridPointInDegrees=358.929
+iScansNegatively=0
+jScansPositively=0

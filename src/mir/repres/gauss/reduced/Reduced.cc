@@ -13,6 +13,7 @@
 #include <set>
 #include <utility>
 
+#include "eckit/geo/grid/Reduced.h"
 #include "eckit/geo/util.h"
 #include "eckit/log/JSON.h"
 #include "eckit/spec/Custom.h"
@@ -271,7 +272,28 @@ void Reduced::fillGrib(grib_info& info) const {
         ASSERT(pl[i] > 0);
     }
 
-    bbox_.fillGrib(info);
+    // the first/last grid points (of the rows with points), not the bounding box: decoding takes the rows from the
+    // latitude of the first point, which a bounding box latitude between rows shifts
+    const auto& g    = dynamic_cast<const eckit::geo::grid::Reduced&>(grid());
+    const auto& lats = g.latitudes();
+
+    auto first   = true;
+    double north = 0;
+    double south = 0;
+    double west  = 0;
+    double east  = 0;
+    for (size_t j = 0; j < lats.size(); ++j) {
+        if (const auto& lons = g.longitudes(j); !lons.empty()) {
+            north = first ? lats[j] : std::max(north, lats[j]);
+            south = first ? lats[j] : std::min(south, lats[j]);
+            west  = first ? lons.front() : std::min(west, lons.front());
+            east  = first ? lons.back() : std::max(east, lons.back());
+            first = false;
+        }
+    }
+    ASSERT(!first);
+
+    util::BoundingBox(north, west, south, east).fillGrib(info);
 }
 
 

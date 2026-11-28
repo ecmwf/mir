@@ -9,3 +9,18 @@ param=t,level=1000,resol=20
 [{"grid":"T20"},{"area":[-19.0574542580027,12.8571428571429,-40.2319412854046,25.7142857142857],"grid":"F21"},{"area":[-70,-10,-90,10],"grid":[1,1],"projection":{"south_pole":[22,-40],"type":"rotation"}},{"area":[-70,-10,-90,10],"grid":[1,1],"projection":{"south_pole":[22,-40],"type":"rotation"}}]
 # grib_get
 gridType=rotated_ll
+numberOfDataPoints=441
+Ni=21
+Nj=21
+latitudeOfFirstGridPointInDegrees=-70
+longitudeOfFirstGridPointInDegrees=-10
+latitudeOfLastGridPointInDegrees=-90
+longitudeOfLastGridPointInDegrees=10
+iDirectionIncrementInDegrees=1
+jDirectionIncrementInDegrees=1
+iScansNegatively=0
+jScansPositively=0
+latitudeOfSouthernPoleInDegrees=-40
+longitudeOfSouthernPoleInDegrees=22
+angleOfRotationInDegrees=0
+uvRelativeToGrid=0

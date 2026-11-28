@@ -14,3 +14,5 @@ Nside=36
 numberOfDataPoints=15552
 accuracy=8
 longitudeOfFirstGridPointInDegrees=45
+orderingConvention=ring
+shapeOfTheEarth=6

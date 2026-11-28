@@ -12,3 +12,15 @@ tiny-2x2.grib
 # grib_get
 packingType=grid_ieee
 precision=1
+gridType=regular_ll
+numberOfDataPoints=4
+Ni=2
+Nj=2
+latitudeOfFirstGridPointInDegrees=1
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=0
+longitudeOfLastGridPointInDegrees=1
+iDirectionIncrementInDegrees=1
+jDirectionIncrementInDegrees=1
+iScansNegatively=0
+jScansPositively=0

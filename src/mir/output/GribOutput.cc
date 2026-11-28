@@ -52,6 +52,79 @@ static util::recursive_mutex local_mutex;
 }
 
 
+namespace {
+
+
+void check_message_is_valid(grib_handle* h) {
+    if (grib_check_is_message_valid()) {
+        long valid = 1;
+        ASSERT(codes_get_long(h, "isMessageValid", &valid) == CODES_SUCCESS);
+
+        if (valid != 1) {
+            throw exception::WriteError("GribOutput: invalid GRIB message");
+        }
+    }
+}
+
+
+/// Geometry encoded by ecCodes from the gridSpec, instead of by GRIB keys; not cached, so it can be switched in-process
+bool is_save_with_gridspec(const param::MIRParametrisation& param) {
+    if (!eckit::Resource<bool>("$MIR_GRIDSPEC_GRIB_OUTPUT", false)) {
+        return false;
+    }
+
+    // requests only the GRIB keys of the legacy encoding can honour
+    std::string basicAngle = "decimal";
+    param.get("basic-angle", basicAngle);
+
+    bool deleteLocalDefinition = false;
+    param.get("delete-local-definition", deleteLocalDefinition);
+
+    return basicAngle == "decimal" && !deleteLocalDefinition && !param.userParametrisation().has("compatibility");
+}
+
+
+// The packing type (if of the same kind, gridded or spectral, as encoded later) and bits per value of a message
+struct EncodedPacking {
+    explicit EncodedPacking(grib_handle* h) {
+        char buffer[64];
+        size_t len = sizeof(buffer);
+        GRIB_CALL(codes_get_string(h, "packingType", buffer, &len));
+        type_ = buffer;
+
+        GRIB_CALL(codes_get_long(h, "bitsPerValue", &bitsPerValue_));
+    }
+
+    void set(grib_handle* h) const {
+        auto kind = [](const std::string& type) { return type.substr(0, type.find('_')); };
+
+        char buffer[64];
+        size_t len = sizeof(buffer);
+        GRIB_CALL(codes_get_string(h, "packingType", buffer, &len));
+
+        if (const std::string type(buffer); type != type_ && kind(type) == kind(type_)) {
+            len = type_.length();
+            GRIB_CALL(codes_set_string(h, "packingType", type_.c_str(), &len));
+        }
+
+        GRIB_CALL(codes_set_long(h, "bitsPerValue", bitsPerValue_));
+    }
+
+private:
+    std::string type_;
+    long bitsPerValue_ = 0;
+};
+
+
+void set_missing_values(grib_handle* h, const data::MIRField& field) {
+    GRIB_CALL(codes_set_double(h, "missingValue", field.missingValue()));
+    GRIB_CALL(codes_set_long(h, "bitmapPresent", field.hasMissing() ? 1L : 0L));
+}
+
+
+}  // namespace
+
+
 GribOutput::GribOutput() : interpolated_(0), saved_(0) {}
 
 
@@ -78,14 +151,7 @@ size_t GribOutput::copy(const param::MIRParametrisation& /*unused*/, context::Co
         auto* h = input.gribHandle(i);  // Base class throws if input cannot provide handle
         ASSERT(h);
 
-        if (grib_check_is_message_valid()) {
-            long valid = 1;
-            ASSERT(codes_get_long(h, "isMessageValid", &valid) == CODES_SUCCESS);
-
-            if (valid != 1) {
-                throw exception::WriteError("GribOutput: invalid GRIB message");
-            }
-        }
+        check_message_is_valid(h);
 
         const void* message = nullptr;
         size_t size         = 0;
@@ -221,28 +287,40 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
                 throw exception::UserError("Using 'filter' requires preserving the number of points from input");
             }
 
-            GRIB_CALL(codes_set_double(h, "missingValue", field.missingValue()));
-            GRIB_CALL(codes_set_long(h, "bitmapPresent", field.hasMissing()));
+            set_missing_values(h, field);
             GRIB_CALL(codes_set_double_array(h, "values", field.values(i).data(), field.values(i).size()));
 
-            if (grib_check_is_message_valid()) {
-                long valid = 1;
-                ASSERT(codes_get_long(h, "isMessageValid", &valid) == CODES_SUCCESS);
+            total += write(h, saveTimer);
 
-                if (valid != 1) {
-                    throw exception::WriteError("GribOutput: invalid GRIB message");
-                }
+            continue;
+        }
+
+        if (is_save_with_gridspec(param)) {
+            auto* h = codes_handle_clone(input.gribHandle(field.handle(i)));
+            HandleDeleter hf(h);
+
+            repres::RepresentationHandle repres(field.representation());
+
+            // the geometry is encoded for the edition it finds, and the packing for the geometry it finds
+            pack->setEdition(h);
+
+            // setting the geometry resets the values (a constant field) and so their packing, which is as encoded
+            const EncodedPacking encoded(h);
+
+            const auto spec = repres->spec().str();
+            auto length     = spec.length();
+            GRIB_CALL(codes_set_string(h, "gridSpec", spec.c_str(), &length));
+
+            encoded.set(h);
+
+            for (const auto& [key, value] : field.metadata(i)) {
+                GRIB_CALL(codes_set_long(h, key.c_str(), value));
             }
 
-            const void* message = nullptr;
-            size_t size         = 0;
-            GRIB_CALL(codes_get_message(h, &message, &size));
+            set_missing_values(h, field);
+            pack->set(repres, h, field.values(i));
 
-            GRIB_CALL(codes_check_message_header(message, size, PRODUCT_GRIB));
-            GRIB_CALL(codes_check_message_footer(message, size, PRODUCT_GRIB));
-
-            out(message, size, true);
-            total += size;
+            total += write(h, saveTimer);
 
             continue;
         }
@@ -409,19 +487,7 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
 
         GRIB_CALL(err);
 
-        const void* message = nullptr;
-        size_t size         = 0;
-        GRIB_CALL(codes_get_message(result, &message, &size));
-
-        GRIB_CALL(codes_check_message_header(message, size, PRODUCT_GRIB));
-        GRIB_CALL(codes_check_message_footer(message, size, PRODUCT_GRIB));
-
-        {
-            util::MIRStatistics::AutoTiming timing(saveTimer);
-            out(message, size, true);
-        }
-
-        total += size;
+        total += write(result, saveTimer);
 
 
         static bool checkArea = eckit::Resource<bool>("$MIR_CHECK_AREA", false);
@@ -443,15 +509,6 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
                                 // << " grib=" << after
                                 << std::endl;
                 }
-            }
-        }
-
-        if (grib_check_is_message_valid()) {
-            long valid = 1;
-            ASSERT(codes_get_long(h, "isMessageValid", &valid) == CODES_SUCCESS);
-
-            if (valid != 1) {
-                throw exception::WriteError("GribOutput: invalid GRIB message");
             }
         }
     }
@@ -495,27 +552,10 @@ size_t GribOutput::set(const param::MIRParametrisation& param, context::Context&
         repres::RepresentationHandle repres(field.representation());
 
         // Packing, accuracy, edition
-        pack->set(repres, h);
+        set_missing_values(h, field);
+        pack->set(repres, h, field.values(i));
 
-        // Values
-        GRIB_CALL(codes_set_double(h, "missingValue", field.missingValue()));
-        GRIB_CALL(codes_set_long(h, "bitmapPresent", field.hasMissing()));
-        GRIB_CALL(codes_set_double_array(h, "values", field.values(i).data(), field.values(i).size()));
-
-
-        const void* message = nullptr;
-        size_t size         = 0;
-        GRIB_CALL(codes_get_message(h, &message, &size));
-
-        GRIB_CALL(codes_check_message_header(message, size, PRODUCT_GRIB));
-        GRIB_CALL(codes_check_message_footer(message, size, PRODUCT_GRIB));
-
-        {
-            util::MIRStatistics::AutoTiming timing(saveTimer);
-            out(message, size, true);
-        }
-
-        total += size;
+        total += write(h, saveTimer);
     }
 
     ctx.statistics().gribEncodingTiming() -= saveTimer;
@@ -525,6 +565,24 @@ size_t GribOutput::set(const param::MIRParametrisation& param, context::Context&
 
 
 void GribOutput::fill(grib_handle* /*unused*/, grib_info& /*unused*/) const {}
+
+
+size_t GribOutput::write(grib_handle* h, eckit::Timing& timer) {
+    ASSERT(h != nullptr);
+    check_message_is_valid(h);
+
+    const void* message = nullptr;
+    size_t size         = 0;
+    GRIB_CALL(codes_get_message(h, &message, &size));
+
+    GRIB_CALL(codes_check_message_header(message, size, PRODUCT_GRIB));
+    GRIB_CALL(codes_check_message_footer(message, size, PRODUCT_GRIB));
+
+    util::MIRStatistics::AutoTiming timing(timer);
+    out(message, size, true);
+
+    return size;
+}
 
 
 const grib::Config& GribOutput::config() {

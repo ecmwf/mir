@@ -15,7 +15,7 @@ CASE("to rotated_ll: nn") {
         "{artificialInput:gridspec,gridSpec:{grid:ICON-CH2}}",
         {{"grid", "{grid:0.5/0.5,area:[2,-4,-3,4],rotation:[-43,10]}"}, {"interpolation", "nn"}},
         R"([{"type":"interpolate.grid2gridspec","interpolation":"nn","distance-weighting":"inverse-distance-weighting-squared","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":{"area":[2,-4,-3,4],"grid":[0.5,0.5],"projection":{"south_pole":[10,-43],"type":"rotation"}}},{"type":"save","packing":"ccsds","edition":2}])",
-        R"([{"area":[50.6,-0.9,41.9,17.8],"grid":"ICON-CH2_C","uid":"bbbd5a09855499243c7a4aa4c8762920"},{"area":[2,-4,-3,4],"grid":[0.5,0.5],"projection":{"south_pole":[10,-43],"type":"rotation"}},{"area":[2,-4,-3,4],"grid":[0.5,0.5],"projection":{"south_pole":[10,-43],"type":"rotation"}}])");
+        R"([{"area":[50.6,-0.9,41.9,17.8],"grid":"ICON-CH2"},{"area":[2,-4,-3,4],"grid":[0.5,0.5],"projection":{"south_pole":[10,-43],"type":"rotation"}},{"area":[2,-4,-3,4],"grid":[0.5,0.5],"projection":{"south_pole":[10,-43],"type":"rotation"}}])");
 
     EXPECT_EQUAL(get(h, "gridType"), "rotated_ll");
     EXPECT_EQUAL(get(h, "Ni"), "17");

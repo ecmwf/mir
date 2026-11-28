@@ -8,3 +8,7 @@ param=z,level=1,levtype=ml,resol=20.grib2
 [{"grid":"T20"},{"grid":"T19"},{"grid":"T19"}]
 # grib_get
 J=19
+gridType=sh
+numberOfDataPoints=420
+K=19
+M=19

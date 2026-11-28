@@ -9,3 +9,7 @@ param=vo_d,level=1,levtype=ml,resol=20.grib2
 # grib_get
 gridType=sh
 shortName=u
+numberOfDataPoints=462
+J=20
+K=20
+M=20

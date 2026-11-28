@@ -6,4 +6,18 @@ MIR-553.grib2
 # action-plan
 [{"type":"mask.area","area":[55.5,5.5,47,15.5]},{"type":"save"}]
 # grid-plan
-[{"false_xy":[1818500.021,-2287499.955],"projection":{"figure":{"a":6378137,"b":6356752.314},"lat_0":52,"lon_0":10,"reverse":true,"type":"laea"},"x":[0,4995000,5000],"y":[0,-4745000,-5000]},{"false_xy":[1818500.021,-2287499.955],"projection":{"figure":{"a":6378137,"b":6356752.314},"lat_0":52,"lon_0":10,"reverse":true,"type":"laea"},"x":[0,4995000,5000],"y":[0,-4745000,-5000]},{"false_xy":[1818500.021,-2287499.955],"projection":{"figure":{"a":6378137,"b":6356752.314},"lat_0":52,"lon_0":10,"reverse":true,"type":"laea"},"x":[0,4995000,5000],"y":[0,-4745000,-5000]}]
+[{"false_xy":[1818500.021,-2287499.955],"projection":{"figure":"grs80","lat_0":52,"lon_0":10,"reverse":true,"type":"laea"},"x":[0,4995000,5000],"y":[0,-4745000,-5000]},{"false_xy":[1818500.021,-2287499.955],"projection":{"figure":"grs80","lat_0":52,"lon_0":10,"reverse":true,"type":"laea"},"x":[0,4995000,5000],"y":[0,-4745000,-5000]},{"false_xy":[1818500.021,-2287499.955],"projection":{"figure":"grs80","lat_0":52,"lon_0":10,"reverse":true,"type":"laea"},"x":[0,4995000,5000],"y":[0,-4745000,-5000]}]
+# grib_get
+gridType=lambert_azimuthal_equal_area
+numberOfDataPoints=950000
+Nx=1000
+Ny=950
+latitudeOfFirstGridPointInDegrees=66.9821
+longitudeOfFirstGridPointInDegrees=324.966
+DxInMetres=5000
+DyInMetres=5000
+iScansNegatively=0
+jScansPositively=0
+standardParallelInDegrees=52
+centralLongitudeInDegrees=10
+shapeOfTheEarth=4

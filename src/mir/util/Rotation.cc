@@ -52,10 +52,14 @@ void Rotation::print(std::ostream& out) const {
 }
 
 
-void Rotation::fillGrib(grib_info& info) const {
+void Rotation::fillGrib(grib_info& info, long rotatedGridType) const {
     // Warning: scanning mode not considered
 
-    info.grid.grid_type = CODES_UTIL_GRID_SPEC_ROTATED_LL;
+    if (!rotation_.rotated()) {
+        return;
+    }
+
+    info.grid.grid_type = rotatedGridType;
 
     info.grid.latitudeOfSouthernPoleInDegrees  = rotation_.south_pole().lat();
     info.grid.longitudeOfSouthernPoleInDegrees = rotation_.south_pole().lon();

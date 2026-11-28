@@ -65,13 +65,7 @@ private:
 
     std::unique_ptr<const eckit::geo::Grid> grid_;
     long edition_;
-    bool firstPointBottomLeft_ = false;
-    bool uvRelativeToGrid_     = false;  // of the decoded field (GRIB has it in the grid), to re-encode it as is
-
-    // -- Methods
-
-    /// First point (lon, lat) of the scanning, or bottom-left if specified
-    PointLonLat firstPoint() const;
+    bool uvRelativeToGrid_ = false;  // of the decoded field (GRIB has it in the grid), to re-encode it as is
 };
 
 

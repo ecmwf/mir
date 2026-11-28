@@ -6,7 +6,7 @@ MIR-587.grib2
 # action-plan
 [{"type":"interpolate.grid2regular-ll","interpolation":"grid-box-average","lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":[0.5,0.5],"area":[90,0,-90,359.5]},{"type":"save"}]
 # grid-plan
-[{"area":[30.9957021787546,-23,23.1237779083132,-11],"grid":"O640"},{"area":[30.5,-23,23.5,-11],"grid":[0.5,0.5]},{"area":[30.5,-23,23.5,-11],"grid":[0.5,0.5]}]
+[{"area":[30.9957021787546,337,23.1237779083132,349],"grid":"O640"},{"area":[30.5,337,23.5,349],"grid":[0.5,0.5]},{"area":[30.5,337,23.5,349],"grid":[0.5,0.5]}]
 # grib_get
 Ni=25
 Nj=15
@@ -14,3 +14,10 @@ latitudeOfFirstGridPointInDegrees=30.5
 longitudeOfFirstGridPointInDegrees=337
 latitudeOfLastGridPointInDegrees=23.5
 longitudeOfLastGridPointInDegrees=349
+gridType=regular_ll
+numberOfDataPoints=375
+iDirectionIncrementInDegrees=0.5
+jDirectionIncrementInDegrees=0.5
+iScansNegatively=0
+jScansPositively=0
+shapeOfTheEarth=6

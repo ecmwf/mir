@@ -55,8 +55,8 @@ atlas::Grid RotatedLL::atlasGrid() const {
 void RotatedLL::fillGrib(grib_info& info) const {
     LatLon::fillGrib(info);
 
-    info.grid.grid_type = CODES_UTIL_GRID_SPEC_ROTATED_LL;
-    rotation_.fillGrib(info);
+    info.grid.grid_type = CODES_UTIL_GRID_SPEC_REGULAR_LL;
+    rotation_.fillGrib(info, CODES_UTIL_GRID_SPEC_ROTATED_LL);
 }
 
 void RotatedLL::fillSpec(CustomSpec& spec) const {

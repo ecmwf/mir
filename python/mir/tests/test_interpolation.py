@@ -226,6 +226,49 @@ def test_interpolation_gridspec(gridspec, output_spec, output_shape):
     assert np.isin(output.values(), values).all()
 
 
+@pytest.mark.parametrize(
+    "gridspec, keywords, shape",
+    [
+        # rotation: [lat, lon] of the south pole (asymmetric, so a swap shows), area in the rotated frame
+        (dict(grid=[1, 1], area=[10, -10, -10, 10], rotation=[-43, 10]), dict(area=[10, -10, -10, 10]), (21, 21)),
+        (dict(grid=[10, 10], rotation=[-43, 10]), dict(), (19, 36)),
+    ],
+)
+def test_interpolation_gridspec_rotation(gridspec, keywords, shape):
+    import numpy as np
+
+    def regrid(**job):
+        buffer = bytearray(1 << 20)
+        output = mir.GribMemoryOutput(buffer)
+        mir.Job(interpolation="nn", **job).execute(mir.GribFileInput(str(TEST_DIR / "o96.grib2")), output)
+
+        result = mir.ArrayOutput()
+        mir.Job().execute(mir.GribMemoryInput(bytes(buffer[: len(output)])), result)
+        return result
+
+    # the points of the output grid, as decoded (its spec might be normalised on encoding, e.g. the area longitudes)
+    def same_points(result, expected):
+        expected = mir.Grid(expected)
+        assert result.shape == expected.shape
+        np.testing.assert_allclose(mir.Grid(result.spec).to_xyz(), expected.to_xyz(), atol=1e-9)
+
+    # rotation in the gridspec, or as keywords
+    a = regrid(grid=gridspec)
+    b = regrid(grid=gridspec["grid"], rotation=gridspec["rotation"], **keywords)
+
+    for r in (a, b):
+        assert r.shape == shape
+        same_points(r, gridspec)
+    np.testing.assert_array_equal(a.values(), b.values())
+
+    # the identity rotation is no rotation
+    unrotated = {k: v for k, v in gridspec.items() if k != "rotation"}
+    c = regrid(grid={**gridspec, "rotation": [-90, 0]})
+    d = regrid(grid=unrotated)
+    same_points(c, unrotated)
+    np.testing.assert_array_equal(c.values(), d.values())
+
+
 GRIDS = [
     "1/1",
     dict(grid=[2, 2]),
