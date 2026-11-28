@@ -40,7 +40,8 @@ public:
     // -- Constructors
 
     BoundingBox();
-    BoundingBox(const Latitude& north, const Longitude& west, const Latitude& south, const Longitude& east);
+    /// The east normalised to the west, the comparisons to PointLonLat::EPS
+    BoundingBox(double north, double west, double south, double east);
     BoundingBox(const param::MIRParametrisation&);
     BoundingBox(const BoundingBox&);
 
@@ -63,21 +64,19 @@ public:
 
     // DON'T IMPLEMENT SETTERS
 
-    const Latitude& north() const { return north_; }
+    double north() const { return north_; }
 
-    const Longitude& west() const { return west_; }
+    double west() const { return west_; }
 
-    const Latitude& south() const { return south_; }
+    double south() const { return south_; }
 
-    const Longitude& east() const { return east_; }
+    double east() const { return east_; }
 
     bool isPeriodicWestEast() const;
 
-    bool contains(const PointLatLon&) const;
-
     bool contains(const PointLonLat&) const;
 
-    bool contains(const Latitude&, const Longitude&) const;
+    bool contains(double lat, double lon) const;
 
     bool contains(const BoundingBox&) const;
 
@@ -127,10 +126,10 @@ protected:
 private:
     // -- Members
 
-    Latitude north_;
-    Longitude west_;
-    Latitude south_;
-    Longitude east_;
+    double north_;
+    double west_;
+    double south_;
+    double east_;
 
     // -- Methods
     // None

@@ -84,19 +84,19 @@ CASE("Climate files <= v020 (1km)") {
     // bounding box/increments normalised numerators
     const util::Increments inc(fraction_via_fraction(fractions[0]), fraction_via_fraction(fractions[1]));
 
-    const util::BoundingBox bbox(fraction_via_fraction(fractions[2]), fraction_via_fraction(fractions[3]),
-                                 fraction_via_fraction(fractions[4]), fraction_via_fraction(fractions[5]));
+    const util::BoundingBox bbox(
+        double(fraction_via_fraction(fractions[2])), double(fraction_via_fraction(fractions[3])),
+        double(fraction_via_fraction(fractions[4])), double(fraction_via_fraction(fractions[5])));
 
     struct test_t {
-        explicit test_t(const Longitude& lon, const long _num) : fraction(lon.fraction()), num(_num) {}
-        explicit test_t(const Latitude& lat, const long _num) : fraction(lat.fraction()), num(_num) {}
+        explicit test_t(double value, const long _num) : fraction(value), num(_num) {}
         const Fraction fraction;
         const long num;
     };
 
     for (const auto& test : {
-             test_t{inc.west_east().longitude(), 2},
-             test_t{inc.south_north().latitude(), 2},
+             test_t{inc.west_east(), 2},
+             test_t{inc.south_north(), 2},
              test_t{bbox.north(), 21599},
              test_t{bbox.west(), 1},
              test_t{bbox.south(), -21599},

@@ -8,6 +8,7 @@
 #include <ostream>
 
 #include "eckit/spec/Custom.h"
+#include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/api/mir_config.h"
@@ -136,10 +137,10 @@ void IrregularLatlon::fillMeshGen(util::MeshGeneratorParameters& params) const {
 
 
 util::Domain IrregularLatlon::domain() const {
-    const Latitude n  = includesNorthPole() ? Latitude::NORTH_POLE.value() : north_;
-    const Latitude s  = includesSouthPole() ? Latitude::SOUTH_POLE.value() : south_;
-    const Longitude w = west_;
-    const Longitude e = isPeriodicWestEast() ? west_ + Longitude::GLOBE.value() : east_;
+    const auto n = includesNorthPole() ? NORTH_POLE : north_;
+    const auto s = includesSouthPole() ? SOUTH_POLE : south_;
+    const auto w = west_;
+    const auto e = isPeriodicWestEast() ? west_ + LONGITUDE_GLOBE : east_;
 
     return util::Domain(n, w, s, e);
 }
@@ -153,17 +154,18 @@ void IrregularLatlon::fillSpec(CustomSpec& spec) const {
 
 
 bool IrregularLatlon::isPeriodicWestEast() const {
-    return (east_ - west_) + west_east_ >= Longitude::GLOBE.value();
+    return eckit::types::is_approximately_greater_or_equal((east_ - west_) + west_east_, LONGITUDE_GLOBE,
+                                                           PointLonLat::EPS);
 }
 
 
 bool IrregularLatlon::includesNorthPole() const {
-    return north_ + south_north_ >= Latitude::NORTH_POLE.value();
+    return eckit::types::is_approximately_greater_or_equal(north_ + south_north_, NORTH_POLE, PointLonLat::EPS);
 }
 
 
 bool IrregularLatlon::includesSouthPole() const {
-    return south_ - south_north_ <= Latitude::SOUTH_POLE.value();
+    return eckit::types::is_approximately_lesser_or_equal(south_ - south_north_, SOUTH_POLE, PointLonLat::EPS);
 }
 
 

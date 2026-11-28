@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "eckit/testing/Test.h"
+#include "eckit/types/FloatCompare.h"
 #include "eckit/utils/RLE.h"
 
 #include "mir/api/MIRJob.h"
@@ -18,6 +19,7 @@
 #include "mir/repres/gauss/Gaussian.h"
 #include "mir/repres/gauss/reduced/ReducedFromPL.h"
 #include "mir/repres/gauss/reduced/ReducedOctahedral.h"
+#include "mir/util/Angles.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Domain.h"
@@ -114,8 +116,8 @@ CASE("Reduced Gaussian grid") {
         EXPECT(extended == BoundingBox(lats[1], 0, lats[2], 60));
 
         const auto wide = global->extendBoundingBox({10, 1, -10, 350});
-        EXPECT(wide.west() == Longitude::GREENWICH);
-        EXPECT(wide.east() == Longitude::GLOBE);
+        EXPECT(eckit::types::is_approximately_equal(wide.west(), 0., PointLonLat::EPS));
+        EXPECT(eckit::types::is_approximately_equal(wide.east(), LONGITUDE_GLOBE, PointLonLat::EPS));
     }
 
 
@@ -151,8 +153,8 @@ CASE("Reduced octahedral Gaussian grid: cropped across the date line (PGEN-558)"
     RepresentationHandle cropped(repres->croppedRepresentation({73, 80, 70, 280}));
 
     const auto& crop = cropped->boundingBox();
-    EXPECT(crop.west() == Longitude{80});
-    EXPECT(crop.east() == Longitude{280});
+    EXPECT(eckit::types::is_approximately_equal(crop.west(), 80., PointLonLat::EPS));
+    EXPECT(eckit::types::is_approximately_equal(crop.east(), 280., PointLonLat::EPS));
 
     // interpolation to the same area, from a global or a regular Gaussian grid (validating the representation)
     api::MIRJob job;
@@ -197,15 +199,13 @@ CASE("Reduced Gaussian grids: globalise (to the global grid, the values in place
             EXPECT_NOT(regional->isGlobal());
 
             // values by point
-            auto value = [](const PointLatLon& p) {
-                return p.lat().value() * 1000. + p.lon().normalise(Longitude::GREENWICH).value();
-            };
+            auto value = [](const PointLonLat& p) { return p.lat() * 1000. + util::normalise_longitude(p.lon(), 0.); };
 
             const auto n = regional->numberOfPoints();
             MIRValuesVector values(n);
             const auto& points = regional->canonicalGridUnrotated();
             for (auto it = points.cbegin(); it; ++it) {
-                values.at(it.index()) = value(PointLatLon{std::get<PointLonLat>(*it)});
+                values.at(it.index()) = value(std::get<PointLonLat>(*it));
             }
 
             data::MIRField field(regional, false, 9999.);
@@ -226,7 +226,7 @@ CASE("Reduced Gaussian grids: globalise (to the global grid, the values in place
             const auto& globalPoints = global->canonicalGridUnrotated();
             for (auto it = globalPoints.cbegin(); it; ++it) {
                 if (const auto x = v.at(it.index()); x != 9999.) {
-                    EXPECT(same(x, value(PointLatLon{std::get<PointLonLat>(*it)}), 1e-6));
+                    EXPECT(same(x, value(std::get<PointLonLat>(*it)), 1e-6));
                     ++count;
                 }
             }

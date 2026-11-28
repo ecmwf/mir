@@ -106,25 +106,25 @@ void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
         bbox = util::BoundingBox(value[0], value[1], value[2], value[3]);
     }
 
-    Sorter<Latitude> n(bbox.north());
-    Sorter<Latitude> s(bbox.south());
+    Sorter<double> n(bbox.north());
+    Sorter<double> s(bbox.south());
 
-    Sorter<Longitude> w(bbox.west());
-    Sorter<Longitude> e(bbox.east());
+    Sorter<double> w(bbox.west());
+    Sorter<double> e(bbox.east());
 
     for (const auto& point : rep->canonicalGridUnrotated()) {
-        const PointLatLon p{std::get<PointLonLat>(point)};
+        const auto p = std::get<PointLonLat>(point);
 
         n.push(p.lat());
         s.push(p.lat());
 
         w.push(p.lon());
-        w.push(p.lon() + Longitude::GLOBE);
-        w.push(p.lon() - Longitude::GLOBE);
+        w.push(p.lon() + LONGITUDE_GLOBE);
+        w.push(p.lon() - LONGITUDE_GLOBE);
 
         e.push(p.lon());
-        e.push(p.lon() + Longitude::GLOBE);
-        e.push(p.lon() - Longitude::GLOBE);
+        e.push(p.lon() + LONGITUDE_GLOBE);
+        e.push(p.lon() - LONGITUDE_GLOBE);
     }
 
     log << "north " << n.above_ << ' ' << n.ref_ << ' ' << n.below_ << ' ' << n.dabove_ << ' ' << n.dbelow_

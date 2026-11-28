@@ -70,7 +70,7 @@ inline count_t count_missing_if(const data::MIRField& field, const std::function
 /// Field points (geographic) are all in the bounding box
 inline bool contained(const data::MIRField& field, const util::BoundingBox& bbox) {
     bool in = true;
-    for_each_point(field, 0, [&](double lat, double lon, double) { in = in && bbox.contains(PointLatLon(lat, lon)); });
+    for_each_point(field, 0, [&](double lat, double lon, double) { in = in && bbox.contains(lat, lon); });
     return in;
 }
 

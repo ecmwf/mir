@@ -72,10 +72,10 @@ void Gridded::reorderFromCanonical(MIRValuesVector& values) const {
 
 
 util::Domain Gridded::domain() const {
-    const Latitude& n  = includesNorthPole() ? Latitude::NORTH_POLE : bbox_.north();
-    const Latitude& s  = includesSouthPole() ? Latitude::SOUTH_POLE : bbox_.south();
-    const Longitude& w = bbox_.west();
-    const Longitude& e = isPeriodicWestEast() ? bbox_.west() + Longitude::GLOBE : bbox_.east();
+    const auto n = includesNorthPole() ? NORTH_POLE : bbox_.north();
+    const auto s = includesSouthPole() ? SOUTH_POLE : bbox_.south();
+    const auto w = bbox_.west();
+    const auto e = isPeriodicWestEast() ? w + LONGITUDE_GLOBE : bbox_.east();
 
     return util::Domain(n, w, s, e);
 }

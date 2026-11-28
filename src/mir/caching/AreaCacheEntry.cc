@@ -53,10 +53,10 @@ void AreaCacheEntry::load(const eckit::PathName& path) {
     eckit::FileStream f(path, "r");
     auto c = eckit::closer(f);
 
-    Latitude n;
-    Longitude w;
-    Latitude s;
-    Longitude e;
+    double n = 0.;
+    double w = 0.;
+    double s = 0.;
+    double e = 0.;
 
     f >> n;
     f >> w;

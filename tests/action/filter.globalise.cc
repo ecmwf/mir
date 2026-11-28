@@ -30,7 +30,7 @@ CASE("filter.globalise") {
 
             const auto& points = out.representation()->canonicalGridUnrotated();
             for (auto it = points.cbegin(); it; ++it) {
-                const auto lat = PointLatLon{std::get<PointLonLat>(*it)}.lat().value();
+                const auto lat = std::get<PointLonLat>(*it).lat();
                 const auto v   = out.values(which)[it.index()];
 
                 EXPECT(lat > 60 || lat < -30 ? v == 9999. : same(v, lat));

@@ -10,6 +10,7 @@
 #include "eckit/geo/Grid.h"
 #include "eckit/geo/Point.h"
 #include "eckit/testing/Test.h"
+#include "eckit/types/FloatCompare.h"
 
 #include "mir/api/MIRJob.h"
 #include "mir/input/GribMemoryInput.h"
@@ -101,7 +102,7 @@ CASE("projected grids (GRIB) by their gridSpec: points as PROJ") {
                 const auto& p = cases[i];
                 const auto& q = test.points[i];
 
-                // longitudes as fractions (see LongitudeFraction), with a relative precision of ~1e-7
+                // as the references are printed (to a precision of ~1e-7)
                 EXPECT(eckit::geo::points_equal(eckit::geo::PointLonLat{p.lon, p.lat},
                                                 eckit::geo::PointLonLat{q.lon, q.lat}, 1e-4));
             }
@@ -258,7 +259,7 @@ CASE(
         EXPECT(same(extra_double(s, "orientationOfTheGridInDegrees"), 270.));
         EXPECT(extra(info, "southPoleOnProjectionPlane") == nullptr);
         EXPECT_EQUAL(extra_long(s, "southPoleOnProjectionPlane"), 1);
-        EXPECT(south->boundingBox().north() < Latitude::EQUATOR);
+        EXPECT(eckit::types::is_strictly_greater(0., south->boundingBox().north(), PointLonLat::EPS));
     }
 
 

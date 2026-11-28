@@ -8,6 +8,8 @@
 #include <cmath>
 #include <map>
 
+#include "eckit/geo/Range.h"
+#include "eckit/geo/range/Regular.h"
 #include "eckit/geo/util.h"
 #include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
@@ -84,39 +86,33 @@ void Gaussian::validate(const MIRValuesVector& values) const {
 }
 
 
-bool Gaussian::angleApproximatelyEqual(const Latitude& A, const Latitude& B) const {
-    return angularPrecision_ > 0 ? eckit::types::is_approximately_equal(A.value(), B.value(), angularPrecision_)
-                                 : A == B;
+bool Gaussian::angleApproximatelyEqual(double A, double B) const {
+    return eckit::types::is_approximately_equal(A, B, angularPrecision_ > 0 ? angularPrecision_ : PointLonLat::EPS);
 }
 
 
-bool Gaussian::angleApproximatelyEqual(const Longitude& A, const Longitude& B) const {
-    return angularPrecision_ > 0 ? eckit::types::is_approximately_equal(A.value(), B.value(), angularPrecision_)
-                                 : A == B;
-}
-
-
-void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool in) const {
-    ASSERT(s <= n);
+void Gaussian::correctSouthNorth(double& s, double& n, bool in) const {
+    auto lt = [](double a, double b) { return eckit::types::is_strictly_greater(b, a, PointLonLat::EPS); };
+    ASSERT(!lt(n, s));
 
     const std::vector<double>& lats = latitudes();
     ASSERT(!lats.empty());
 
-    const bool same(s == n);
-    if (n < lats.back()) {
+    const bool same = eckit::types::is_approximately_equal(s, n, PointLonLat::EPS);
+    if (lt(n, lats.back())) {
         n = lats.back();
     }
     else if (in) {
-        auto best = std::lower_bound(lats.begin(), lats.end(), n, [this](Latitude l1, Latitude l2) {
+        auto best = std::lower_bound(lats.begin(), lats.end(), n, [this, &lt](double l1, double l2) {
             if (angleApproximatelyEqual(l1, l2)) {
                 return false;
             }
-            return !(l1 < l2);
+            return !lt(l1, l2);
         });
         ASSERT(best != lats.end());
         n = *best;
     }
-    else if (n > lats.front()) {
+    else if (lt(lats.front(), n)) {
         // extend 'outwards': don't change, it's already above the Gaussian latitudes
     }
     else {
@@ -127,28 +123,48 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool in) const {
     if (same && in) {
         s = n;
     }
-    else if (s > lats.front()) {
+    else if (lt(lats.front(), s)) {
         s = lats.front();
     }
     else if (in) {
-        auto best = std::lower_bound(lats.rbegin(), lats.rend(), s, [this](Latitude l1, Latitude l2) {
+        auto best = std::lower_bound(lats.rbegin(), lats.rend(), s, [this, &lt](double l1, double l2) {
             if (angleApproximatelyEqual(l1, l2)) {
                 return false;
             }
-            return !(l1 > l2);
+            return !lt(l2, l1);
         });
         ASSERT(best != lats.rend());
         s = *best;
     }
-    else if (s < lats.back()) {
+    else if (lt(s, lats.back())) {
         // extend 'outwards': don't change, it's already below the Gaussian latitudes
     }
     else {
-        auto best = std::lower_bound(lats.begin(), lats.end(), s, [](Latitude l1, Latitude l2) { return l1 > l2; });
+        auto best = std::lower_bound(lats.begin(), lats.end(), s, [](double l1, double l2) { return l1 > l2; });
         s         = *best;
     }
 
-    ASSERT(s <= n);
+    ASSERT(!lt(n, s));
+}
+
+
+Gaussian::Row Gaussian::row(long Ni, double west, double east, double precision) {
+    ASSERT(Ni > 0);
+    ASSERT(precision >= 0.);
+    const eckit::geo::range::RegularLongitude global(LONGITUDE_GLOBE / static_cast<double>(Ni), 0., LONGITUDE_GLOBE);
+    const std::unique_ptr<eckit::geo::Range> x(global.make_cropped_range(west - precision, east + precision));
+
+    // the first and last longitudes (from West), as k * 360 / Ni rounded once (as the grid's, fractions)
+    const auto inc  = LONGITUDE_GLOBE / static_cast<double>(Ni);
+    const auto size = x->size();
+    if (size == 0) {
+        return {west, west, inc, 0};
+    }
+
+    const auto k     = std::lround(util::normalise_longitude(x->a(), west - precision) / inc);
+    const auto first = static_cast<double>(k) * LONGITUDE_GLOBE / static_cast<double>(Ni);
+    const auto last  = static_cast<double>(k + static_cast<long>(size) - 1) * LONGITUDE_GLOBE / static_cast<double>(Ni);
+    return {first, last, inc, size};
 }
 
 
@@ -165,14 +181,14 @@ std::vector<double> Gaussian::calculateUnrotatedGridBoxLatitudeEdges() const {
     auto f = edges.begin();
     auto b = edges.rbegin();
 
-    *(f++) = Latitude::NORTH_POLE.value();
-    *(b++) = Latitude::SOUTH_POLE.value();
+    *(f++) = NORTH_POLE;
+    *(b++) = SOUTH_POLE;
 
     double wacc = -1.;
     for (size_t j = 0; j < N_; ++j, ++b, ++f) {
         wacc += 2. * w[j];
         double deg = util::radian_to_degree(std::asin(wacc));
-        ASSERT(Latitude::SOUTH_POLE.value() <= deg && deg <= Latitude::NORTH_POLE.value());
+        ASSERT(SOUTH_POLE <= deg && deg <= NORTH_POLE);
 
         *b = deg;
         *f = -(*b);
@@ -189,13 +205,17 @@ void Gaussian::fillMeshGen(util::MeshGeneratorParameters& params) const {
         params.meshGenerator_ = "structured";
     }
 
-    const Latitude& s = bbox_.south();
-    if (s <= latitudes().back() || s > Latitude::EQUATOR) {
+    constexpr auto EPS = PointLonLat::EPS;
+
+    const auto s = bbox_.south();
+    if (eckit::types::is_approximately_lesser_or_equal(s, latitudes().back(), EPS) ||
+        eckit::types::is_strictly_greater(s, 0., EPS)) {
         params.set("force_include_south_pole", true);
     }
 
-    const Latitude& n = bbox_.north();
-    if (n >= latitudes().front() || n < Latitude::EQUATOR) {
+    const auto n = bbox_.north();
+    if (eckit::types::is_approximately_greater_or_equal(n, latitudes().front(), EPS) ||
+        eckit::types::is_strictly_greater(0., n, EPS)) {
         params.set("force_include_north_pole", true);
     }
 }

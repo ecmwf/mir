@@ -22,11 +22,13 @@
 #include "mir/repres/Representation.h"
 #include "mir/stats/detail/Counter.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Angles.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
 #include "mir/util/Search.h"
+#include "mir/util/Types.h"
 
 
 namespace mir::tools {
@@ -204,8 +206,8 @@ size_t diff(Log::Channel& out, double toleranceLat, double toleranceLon, const C
 
     size_t Ndiff = 0;
     for (size_t n = 0; n < N; ++n) {
-        double dlat = Latitude(lat1[n]).distance(lat2[n]).value();
-        double dlon = LongitudeDouble(lon1[n]).distance(lon2[n]).value();
+        double dlat = std::abs(lat1[n] - lat2[n]);
+        double dlon = std::abs(util::normalise_longitude(lon2[n] - lon1[n], -LONGITUDE_GLOBE / 2.));
 
         statsLat.count(dlat);
         statsLon.count(dlon);

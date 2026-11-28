@@ -45,8 +45,6 @@ namespace mir::interpolation::tests {
 
 
 CASE("grid boxes: West-East periodicity, reduced Gaussian grids") {
-    using Longitude = LongitudeDouble;
-
 
     SECTION("periodic") {
         const std::vector<long> pl{20, 20};
@@ -60,8 +58,8 @@ CASE("grid boxes: West-East periodicity, reduced Gaussian grids") {
 
         const auto inc = 360. / static_cast<double>(pl[0]);
 
-        EXPECT_EQUAL(Longitude(boxes.front().west()), Longitude(-inc / 2.));
-        EXPECT_EQUAL(Longitude(boxes.back().east()), Longitude(-inc / 2. + 360.));
+        EXPECT_APPROX(boxes.front().west(), -inc / 2.);
+        EXPECT_APPROX(boxes.back().east(), -inc / 2. + 360.);
 
         EXPECT_BOX(boxes[0], 90., -9., 0., 9.);
         EXPECT_BOX(boxes[1], 90., 9., 0., 27.);
@@ -107,8 +105,8 @@ CASE("grid boxes: West-East periodicity, regular Gaussian grids") {
 
         const auto inc = 360. / 4.;  // assumes Ni == 4 * N
 
-        EXPECT_EQUAL(Longitude(boxes.front().west()), Longitude(-inc / 2.));
-        EXPECT_EQUAL(Longitude(boxes.back().east()), Longitude(-inc / 2. + 360.));
+        EXPECT_APPROX(boxes.front().west(), -inc / 2.);
+        EXPECT_APPROX(boxes.back().east(), -inc / 2. + 360.);
 
         EXPECT_BOX(boxes[0], 90., -45., 0., 45.);
         EXPECT_BOX(boxes[1], 90., 45., 0., 135.);
@@ -150,8 +148,8 @@ CASE("grid boxes: West-East periodicity, regular lat/lon grids") {
         EXPECT(boxes.size() == r->numberOfPoints());
         EXPECT(boxes.size() == 60);
 
-        EXPECT_EQUAL(Longitude(boxes.front().west()), Longitude(-inc / 2.));
-        EXPECT_EQUAL(Longitude(boxes.back().east()), Longitude(-inc / 2. + 360.));
+        EXPECT_APPROX(boxes.front().west(), -inc / 2.);
+        EXPECT_APPROX(boxes.back().east(), -inc / 2. + 360.);
 
         EXPECT_BOX(boxes[0], 90., -9., 45., 9.);
         EXPECT_BOX(boxes[1], 90., 9., 45., 27.);
@@ -206,8 +204,8 @@ CASE("grid boxes: West-East periodicity, reduced lat/lon grids") {
 
         const auto inc = 360. / static_cast<double>(pl[0]);
 
-        EXPECT_EQUAL(Longitude(boxes.front().west()), Longitude(-inc / 2.));
-        EXPECT_EQUAL(Longitude(boxes.back().east()), Longitude(-inc / 2. + 360.));
+        EXPECT_APPROX(boxes.front().west(), -inc / 2.);
+        EXPECT_APPROX(boxes.back().east(), -inc / 2. + 360.);
 
         EXPECT_BOX(boxes[0], 90., -9., 45., 9.);
         EXPECT_BOX(boxes[1], 90., 9., 45., 27.);
@@ -224,10 +222,10 @@ CASE("grid boxes: West-East periodicity, reduced lat/lon grids") {
         param::SimpleParametrisation param;
         param.set("pl", pl);
         param.set("Nj", pl.size());
-        param.set("north", bbox.north().value());
-        param.set("west", bbox.west().value());
-        param.set("south", bbox.south().value());
-        param.set("east", bbox.east().value());
+        param.set("north", bbox.north());
+        param.set("west", bbox.west());
+        param.set("south", bbox.south());
+        param.set("east", bbox.east());
 
         repres::RepresentationHandle r(new repres::latlon::ReducedLL(param));
         ASSERT(!r->domain().isPeriodicWestEast());
@@ -252,7 +250,7 @@ CASE("grid boxes: West-East periodicity, reduced lat/lon grids") {
 CASE("MIR-666") {
     // shifted grid, with finely-adjusted bounding box
     repres::RepresentationHandle r(new repres::latlon::RegularLL(
-        util::Increments{0.05, 0.05}, util::BoundingBox{0.025, 27.875, -0.025, 57.825}, {-0.025, 27.875}));
+        util::Increments{0.05, 0.05}, util::BoundingBox{0.025, 27.875, -0.025, 57.825}, {27.875, -0.025}));
     const auto boxes = r->gridBoxes();
     EXPECT(boxes.size() == r->numberOfPoints());
 }
@@ -371,8 +369,7 @@ CASE("grid-box-statistics") {
         size_t i           = 0;
         const auto& points = out->canonicalGridUnrotated();
         for (auto it = points.cbegin(); it; ++it, ++i) {
-            EXPECT_EQUAL(result.values(0)[i],
-                         (std::abs(PointLatLon{std::get<PointLonLat>(*it)}.lat().value()) == 90. ? 1. : 0.));
+            EXPECT_EQUAL(result.values(0)[i], (std::abs(std::get<PointLonLat>(*it).lat()) == 90. ? 1. : 0.));
         }
     }
 

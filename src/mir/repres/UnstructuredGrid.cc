@@ -143,11 +143,14 @@ protected:
     size_t numberOfPoints() const override { return grid_->size(); }
 
 
-    bool includesNorthPole() const override { return bbox_.north() == Latitude::NORTH_POLE; }
-    bool includesSouthPole() const override { return bbox_.south() == Latitude::SOUTH_POLE; }
+    bool includesNorthPole() const override {
+        return eckit::types::is_approximately_equal(bbox_.north(), NORTH_POLE, PointLonLat::EPS);
+    }
+    bool includesSouthPole() const override {
+        return eckit::types::is_approximately_equal(bbox_.south(), SOUTH_POLE, PointLonLat::EPS);
+    }
     bool isPeriodicWestEast() const override {
-        return eckit::types::is_approximately_greater_or_equal(bbox_.east().value() - bbox_.west().value(),
-                                                               Longitude::GLOBE.value());
+        return eckit::types::is_approximately_greater_or_equal(bbox_.east() - bbox_.west(), LONGITUDE_GLOBE);
     }
 
     ::atlas::Grid atlasGrid() const override {
@@ -607,7 +610,7 @@ const Gridded* UnstructuredGrid::croppedRepresentation(const util::BoundingBox& 
 
     const auto& points = canonicalGridUnrotated();
     for (auto iter = points.cbegin(); iter; ++iter, ++i) {
-        if (bbox.contains(PointLatLon{std::get<PointLonLat>(*iter)})) {
+        if (bbox.contains(std::get<PointLonLat>(*iter))) {
             auto ip = iter.index();
             lat.emplace_back(latitudes_.at(ip));
             lon.emplace_back(longitudes_.at(ip));
@@ -628,18 +631,17 @@ const Gridded* UnstructuredGrid::croppedRepresentation(const util::BoundingBox& 
 
 
 bool UnstructuredGrid::isPeriodicWestEast() const {
-    return eckit::types::is_approximately_greater_or_equal(bbox_.east().value() - bbox_.west().value(),
-                                                           Longitude::GLOBE.value());
+    return eckit::types::is_approximately_greater_or_equal(bbox_.east() - bbox_.west(), LONGITUDE_GLOBE);
 }
 
 
 bool UnstructuredGrid::includesNorthPole() const {
-    return bbox_.north() == Latitude::NORTH_POLE;
+    return eckit::types::is_approximately_equal(bbox_.north(), NORTH_POLE, PointLonLat::EPS);
 }
 
 
 bool UnstructuredGrid::includesSouthPole() const {
-    return bbox_.south() == Latitude::SOUTH_POLE;
+    return eckit::types::is_approximately_equal(bbox_.south(), SOUTH_POLE, PointLonLat::EPS);
 }
 
 

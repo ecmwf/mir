@@ -173,11 +173,12 @@ CASE("to reduced_gg: area") {
     SECTION("011") {
         // MIR-236
         // ECC-445
-        // input param=msl,levtype=sfc,grid=O1280, as its grid (GRIB1)
+        // input param=msl,levtype=sfc,grid=O1280, as its grid (GRIB1); the area of the cropped points' coordinates
+        // (as eckit::geo's, East 1e-14 relative off its fraction 253.98648648648648)
         auto h = run(
             "{artificialInput:gridspec,gridSpec:{grid:O1280}}", {{"area", "27.9/253/27.8/254"}, {"edition", "1"}},
             R"([{"type":"crop.area","area":[27.9,253,27.8,254]},{"type":"save","packing":"simple","edition":1}])",
-            R"([{"grid":"O1280"},{"area":[27.8734616366611,253.074324324324,27.8031628686037,253.986486486486],"grid":"O1280"},{"area":[27.8734616366611,253.074324324324,27.8031628686037,253.986486486486],"grid":"O1280"}])");
+            R"([{"grid":"O1280"},{"area":[27.8734616366611,253.074324324324,27.8031628686037,253.986486486487],"grid":"O1280"},{"area":[27.8734616366611,253.074324324324,27.8031628686037,253.986486486487],"grid":"O1280"}])");
 
         EXPECT_EQUAL(get(h, "gridName"), "O1280");
         EXPECT_EQUAL(get(h, "latitudeOfFirstGridPointInDegrees"), "27.874");

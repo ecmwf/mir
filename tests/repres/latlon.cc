@@ -55,15 +55,15 @@ CASE("LatLon::globaliseBoundingBox") {
 
     for (const auto& test : tests) {
         SECTION(test.name) {
-            PointLatLon reference(test.area.south(), test.area.west());
+            const PointLonLat reference{test.area.west(), test.area.south()};
 
             BoundingBox global(test.area);
             LatLon::globaliseBoundingBox(global, test.increments, reference);
 
-            EXPECT(same(global.north().value(), test.global.north().value(), 1e-6));
-            EXPECT(same(global.west().value(), test.global.west().value(), 1e-6));
-            EXPECT(same(global.south().value(), test.global.south().value(), 1e-6));
-            EXPECT(same(global.east().value(), test.global.east().value(), 1e-6));
+            EXPECT(same(global.north(), test.global.north(), 1e-6));
+            EXPECT(same(global.west(), test.global.west(), 1e-6));
+            EXPECT(same(global.south(), test.global.south(), 1e-6));
+            EXPECT(same(global.east(), test.global.east(), 1e-6));
 
             RepresentationHandle repres(new RegularLL(test.increments, global, reference));
             const auto& ll = dynamic_cast<const RegularLL&>(*repres);
@@ -111,16 +111,14 @@ CASE("LatLon::globalise (towards the poles)") {
 
 
 CASE("LatLon::correctBoundingBox") {
-    using eckit::Fraction;
-
     SECTION("MIR-390: of a bounding box 1/240 off the poles and Greenwich") {
-        BoundingBox bbox{Fraction(21599, 240), Fraction(1, 240), Fraction(-21599, 240), Fraction(86399, 240)};
+        BoundingBox bbox{21599. / 240., 1. / 240., -21599. / 240., 86399. / 240.};
         const BoundingBox expected(bbox);
-        const Increments inc(Fraction(1, 120), Fraction(1, 120));
+        const Increments inc(1. / 120., 1. / 120.);
 
         size_t ni = 0;
         size_t nj = 0;
-        LatLon::correctBoundingBox(bbox, ni, nj, inc, {bbox.south(), bbox.west()});
+        LatLon::correctBoundingBox(bbox, ni, nj, inc, {bbox.west(), bbox.south()});
 
         EXPECT(bbox == expected);
         EXPECT_EQUAL(ni, 43200);
@@ -129,11 +127,11 @@ CASE("LatLon::correctBoundingBox") {
 
     SECTION("MIR-351: bounds encoded to the microdegree") {
         // latitudes of 30/128 degree, half an increment off the equator (+-80.0390625), encoded to the microdegree
-        const Increments inc(Fraction(360, 1536), Fraction(30, 128));
-        const PointLatLon reference{Fraction(-80.039062), 0};
+        const Increments inc(360. / 1536., 30. / 128.);
+        const PointLonLat reference{0., -80.039062};
 
         // bounds within the precision of a grid point (truncated inwards) include it
-        BoundingBox bbox{Fraction(80.039062), 0, Fraction(-80.039062), Fraction(359.765625)};
+        BoundingBox bbox{80.039062, 0., -80.039062, 359.765625};
         size_t ni = 0;
         size_t nj = 0;
         LatLon::correctBoundingBox(bbox, ni, nj, inc, reference);
@@ -142,7 +140,7 @@ CASE("LatLon::correctBoundingBox") {
         EXPECT_EQUAL(nj, 684);
 
         // ... and further from it don't
-        BoundingBox further{Fraction(80.039), 0, Fraction(-80.039062), Fraction(359.765625)};
+        BoundingBox further{80.039, 0., -80.039062, 359.765625};
         LatLon::correctBoundingBox(further, ni, nj, inc, reference);
         EXPECT_EQUAL(nj, 683);
     }

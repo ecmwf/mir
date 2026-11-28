@@ -6,8 +6,9 @@
 
 #include <iosfwd>
 
-#include "mir/util/LatitudeIncrement.h"
-#include "mir/util/LongitudeIncrement.h"
+#include "eckit/geo/grid/regular/RegularLL.h"
+
+#include "mir/util/Types.h"
 
 
 namespace eckit {
@@ -45,7 +46,6 @@ public:
     Increments(const param::MIRParametrisation&);
     Increments(const Increments&);
     explicit Increments(double westEastIncrement, double southNorthIncrement);
-    explicit Increments(const LongitudeIncrement&, const LatitudeIncrement&);
 
     // -- Destructor
 
@@ -70,13 +70,14 @@ public:
     bool isLatitudeShifted(const BoundingBox&) const;
     bool isLongitudeShifted(const BoundingBox&) const;
 
-    bool isShifted(const PointLatLon&) const;
-    bool isLatitudeShifted(const PointLatLon&) const;
-    bool isLongitudeShifted(const PointLatLon&) const;
+    bool isShifted(const PointLonLat&) const;
+    bool isLatitudeShifted(const PointLonLat&) const;
+    bool isLongitudeShifted(const PointLonLat&) const;
 
-    const LongitudeIncrement& west_east() const { return west_east_; }
 
-    const LatitudeIncrement& south_north() const { return south_north_; }
+    double west_east() const { return inc_.dlon(); }
+
+    double south_north() const { return inc_.dlat(); }
 
     void fillGrib(grib_info&) const;
 
@@ -115,8 +116,7 @@ protected:
 private:
     // -- Members
 
-    LongitudeIncrement west_east_;
-    LatitudeIncrement south_north_;
+    eckit::geo::grid::regular::RegularLL::Increments inc_;
 
     // -- Methods
     // None

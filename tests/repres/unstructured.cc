@@ -42,8 +42,8 @@ CASE("UnstructuredGrid") {
         const auto& points = repres->canonicalGridUnrotated();
         for (auto it = points.cbegin(); it; ++it, ++i) {
             EXPECT_EQUAL(it.index(), i);
-            EXPECT_EQUAL(PointLatLon{std::get<PointLonLat>(*it)}.lat().value(), LATITUDES[i]);
-            EXPECT_EQUAL(PointLatLon{std::get<PointLonLat>(*it)}.lon().value(), LONGITUDES[i]);
+            EXPECT_EQUAL(std::get<PointLonLat>(*it).lat(), LATITUDES[i]);
+            EXPECT_EQUAL(std::get<PointLonLat>(*it).lon(), LONGITUDES[i]);
         }
         EXPECT_EQUAL(i, n);
 

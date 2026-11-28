@@ -68,8 +68,7 @@ void Restructure::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, con
             }
         }
         bool is_assigned;
-    } np(*tree, Latitude::NORTH_POLE.value(), !out.includesNorthPole()),
-        sp(*tree, Latitude::SOUTH_POLE.value(), !out.includesSouthPole());
+    } np(*tree, NORTH_POLE, !out.includesNorthPole()), sp(*tree, SOUTH_POLE, !out.includesSouthPole());
 
     // output point (row) to input point (column), unassigned rows are set to missing value
     std::vector<WeightMatrix::Triplet> triplets;

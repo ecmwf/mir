@@ -152,15 +152,15 @@ CASE("MIR-374") {
             Handle repr = Grid::lookup(name).representation();
             Handle crop = repr->croppedRepresentation(domain);
 
-            const PointLatLon p{std::get<PointLonLat>(crop->canonicalGridUnrotated().first_point())};
+            const auto p = std::get<PointLonLat>(crop->canonicalGridUnrotated().first_point());
             log << p << std::endl;
 
             auto grid            = crop->atlasGrid();
             atlas::PointLonLat q = *(grid.lonlat().begin());
 
             log << "Compare p=" << p << " with q=" << q << std::endl;
-            EXPECT(eckit::types::is_approximately_equal(p.lat().value(), q.lat(), eps));
-            EXPECT(eckit::types::is_approximately_equal(p.lon().value(), q.lon(), eps));
+            EXPECT(eckit::types::is_approximately_equal(p.lat(), q.lat(), eps));
+            EXPECT(eckit::types::is_approximately_equal(p.lon(), q.lon(), eps));
         }
     }
 

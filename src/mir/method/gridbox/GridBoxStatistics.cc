@@ -89,7 +89,7 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
     const auto [inLatitudes, inLongitudes] = in.canonicalGrid().to_latlons();
 
     size_t nbFailures = 0;
-    std::forward_list<std::pair<size_t, PointLatLon>> failures;
+    std::forward_list<std::pair<size_t, PointLonLat>> failures;
 
 
     // set input k-d tree for grid boxes indices
@@ -137,7 +137,7 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
             }
             else {
                 ++nbFailures;
-                failures.emplace_front(i, PointLatLon{box.centre()});
+                failures.emplace_front(i, box.centre());
             }
         }
         log << "Contained " << Log::Pretty(weights_triplets.size(), points) << " in "

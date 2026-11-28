@@ -36,8 +36,8 @@ CASE("interpolate.grid2points") {
     for (auto it = points.cbegin(); it; ++it) {
         const auto i = it.index();
 
-        EXPECT(same(PointLatLon{std::get<PointLonLat>(*it)}.lat().value(), lat.at(i)));
-        EXPECT(same(PointLatLon{std::get<PointLonLat>(*it)}.lon().value(), lon.at(i)));
+        EXPECT(same(std::get<PointLonLat>(*it).lat(), lat.at(i)));
+        EXPECT(same(std::get<PointLonLat>(*it).lon(), lon.at(i)));
         EXPECT(std::abs(out.values(0)[i] - lat.at(i)) < 0.2);
     }
 }

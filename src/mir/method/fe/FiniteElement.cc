@@ -70,7 +70,7 @@ constexpr size_t nbMaxFailures = 10;
 
 
 using element_tree_t      = atlas::interpolation::method::ElemIndex3;
-using failed_projection_t = std::pair<size_t, PointLatLon>;
+using failed_projection_t = std::pair<size_t, PointLonLat>;
 
 
 struct element_t : std::vector<size_t> {
@@ -407,7 +407,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
                     ++nbProjections;
                 }
                 else if (projectionFail_ != ProjectionFail::missingValue) {
-                    failures.emplace_front(ip, PointLatLon{q});
+                    failures.emplace_front(ip, q);
                     ++nbFailures;
                 }
             }

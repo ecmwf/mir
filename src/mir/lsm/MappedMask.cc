@@ -12,12 +12,14 @@
 #include "eckit/geo/Grid.h"
 #include "eckit/memory/MMap.h"
 #include "eckit/os/Stat.h"
+#include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Trace.h"
+#include "mir/util/Types.h"
 
 
 using eckit::MMap;
@@ -111,28 +113,26 @@ MappedMask::MappedMask(const std::string& name, const eckit::PathName& path,
     const unsigned char* mask = reinterpret_cast<unsigned char*>(address);
 
     for (const auto& point : representation.canonicalGridUnrotated()) {
-        const PointLatLon p{std::get<PointLonLat>(point)};
-        Latitude lat  = p.lat();
-        Longitude lon = p.lon().normalise(Longitude::GREENWICH);
+        const auto p   = std::get<PointLonLat>(point);
+        const auto lat = p.lat();
+        const auto lon = PointLonLat::normalise_angle_to_minimum(p.lon(), 0.);
 
-        if (lat < Latitude::SOUTH_POLE) {
-            auto msg = "GRID  returns a latitude of " + std::to_string(lat.value()) +
-                       " (lat+90)=" + std::to_string((lat + Latitude::NORTH_POLE).value());
+        if (!eckit::types::is_approximately_greater_or_equal(lat, SOUTH_POLE, PointLonLat::EPS)) {
+            auto msg =
+                "GRID  returns a latitude of " + std::to_string(lat) + " (lat+90)=" + std::to_string(lat - SOUTH_POLE);
             throw exception::SeriousBug(msg);
         }
-        ASSERT(lat >= Latitude::SOUTH_POLE);
 
-        if (lat > Latitude::NORTH_POLE) {
-            auto msg = "GRID  returns a latitude of " + std::to_string(lat.value()) +
-                       " (lat-90)=" + std::to_string((lat + Latitude::SOUTH_POLE).value());
+        if (!eckit::types::is_approximately_lesser_or_equal(lat, NORTH_POLE, PointLonLat::EPS)) {
+            auto msg =
+                "GRID  returns a latitude of " + std::to_string(lat) + " (lat-90)=" + std::to_string(lat - NORTH_POLE);
             throw exception::SeriousBug(msg);
         }
-        ASSERT(lat <= Latitude::NORTH_POLE);
 
-        int row = int((90.0 - lat.value()) * double(ROWS - 1) / Latitude::GLOBE.value());
+        int row = int((NORTH_POLE - lat) * double(ROWS - 1) / LATITUDE_GLOBE);
         ASSERT(row >= 0 && row < int(ROWS));
 
-        int col = int(lon.value() * double(COLS) / Longitude::GLOBE.value());
+        int col = int(lon * double(COLS) / LONGITUDE_GLOBE);
         ASSERT(col >= 0 && col < int(COLS));
 
         size_t pos  = COLS * size_t(row) + size_t(col);

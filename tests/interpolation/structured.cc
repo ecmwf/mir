@@ -48,7 +48,7 @@ CASE("structured methods (Atlas)") {
             size_t i           = 0;
             const auto& points = out->canonicalGridUnrotated();
             for (auto it = points.cbegin(); it; ++it, ++i) {
-                const auto lat = PointLatLon{std::get<PointLonLat>(*it)}.lat().value();
+                const auto lat = std::get<PointLonLat>(*it).lat();
                 if (spec == "structured-bilinear" || std::abs(lat) < 85.) {
                     EXPECT(same(result.values(0)[i], f(lat, 0.), 1e-9));
                 }

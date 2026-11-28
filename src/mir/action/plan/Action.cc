@@ -93,17 +93,17 @@ void Action::json(eckit::JSON&) const {}
 
 
 std::vector<double> Action::spec_value(const util::BoundingBox& bbox) {
-    return {bbox.north().value(), bbox.west().value(), bbox.south().value(), bbox.east().value()};
+    return {bbox.north(), bbox.west(), bbox.south(), bbox.east()};
 }
 
 
 std::vector<double> Action::spec_value(const util::Increments& increments) {
-    return {increments.west_east().longitude().value(), increments.south_north().latitude().value()};
+    return {increments.west_east(), increments.south_north()};
 }
 
 
 std::vector<double> Action::spec_value(const util::Rotation& rotation) {
-    return {rotation.south_pole_latitude().value(), rotation.south_pole_longitude().value()};
+    return {rotation.south_pole_latitude(), rotation.south_pole_longitude()};
 }
 
 

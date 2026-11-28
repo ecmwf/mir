@@ -40,7 +40,7 @@ CASE("mask.area") {
 
             const auto& points = out.representation()->canonicalGridUnrotated();
             for (auto it = points.cbegin(); it; ++it) {
-                const auto lat = PointLatLon{std::get<PointLonLat>(*it)}.lat().value();
+                const auto lat = std::get<PointLonLat>(*it).lat();
                 const auto v   = out.values(1)[it.index()];
 
                 EXPECT(v == 9999. || (30. - 1e-9 <= lat && lat <= 60. + 1e-9 && same(v, lat)));
