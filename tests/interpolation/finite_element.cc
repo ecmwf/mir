@@ -146,11 +146,12 @@ CASE("finite element methods") {
             auto result = interpolate(*m, input, *out);
             EXPECT(!result.hasMissing());
             EXPECT(bounded(input, result));
-        }
 
-        auto m = make("{type: linear, finite-element-projection-fail: increase-epsilon}");
-        EXPECT(m->json_str().find(R"("finite-element-projection-fail":"increase-epsilon")") != std::string::npos);
-        EXPECT(*make(m->json_str()) == *m);
+            // the spec, rebuilt
+            EXPECT(m->json_str(false).find(R"("finite-element-projection-fail":")" + option + "\"") !=
+                   std::string::npos);
+            EXPECT(*make(m->json_str()) == *m);
+        }
     }
 
 
@@ -158,10 +159,10 @@ CASE("finite element methods") {
         auto healpix = representation("{grid: H4}");
         auto input   = field(in, smooth);
 
-        // (prune-epsilon differs, so the matrices are cached differently)
+        // (the matrices are cached differently)
         auto a = interpolate(*make("linear"), input, *healpix);
-        auto b = interpolate(*make("{type: linear, prune-epsilon: 1e-11, finite-element-matrix-reorder-rows: "
-                                   "healpix-ring-to-nested, finite-element-matrix-reorder-cols: identity}"),
+        auto b = interpolate(*make("{type: linear, finite-element-matrix-reorder-rows: healpix-ring-to-nested, "
+                                   "finite-element-matrix-reorder-cols: identity}"),
                              input, *healpix);
 
         std::unique_ptr<util::Reorder> reorder(

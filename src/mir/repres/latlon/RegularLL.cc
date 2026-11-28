@@ -105,14 +105,15 @@ util::BoundingBox RegularLL::extendBoundingBox(const util::BoundingBox& bbox) co
     Longitude e = shift_we + RegularIterator::adjust(bbox.east().fraction() - shift_we, we, true);
 
 
-    // adjust South/North to include bbox's South/North ('outwards')
+    // adjust South/North to include bbox's South/North ('outwards'), to the latitudes by the reference (South/West)
+    // point, not beyond the poles: without a latitude between bbox's South/North and the pole, keep bbox's
     auto s = shift_sn + RegularIterator::adjust(bbox.south().fraction() - shift_sn, sn, false);
     if (s < Latitude::SOUTH_POLE.fraction()) {
-        s = shift_sn + RegularIterator::adjust(Latitude::SOUTH_POLE.fraction() - shift_sn, sn, true);
+        s = bbox.south().fraction();
     }
     auto n = shift_sn + RegularIterator::adjust(bbox.north().fraction() - shift_sn, sn, true);
     if (n > Latitude::NORTH_POLE.fraction()) {
-        n = shift_sn + RegularIterator::adjust(Latitude::NORTH_POLE.fraction() - shift_sn, sn, false);
+        n = bbox.north().fraction();
     }
 
     // set bounding box

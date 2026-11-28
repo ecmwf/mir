@@ -52,7 +52,7 @@ size_t Sample::n() const {
 
 bool Sample::sameAs(const Pick& other) const {
     const auto* o = dynamic_cast<const Sample*>(&other);
-    return (o != nullptr) && eckit::types::is_approximately_equal(distance_, o->distance_);
+    return (o != nullptr) && nClosest_ == o->nClosest_ && eckit::types::is_approximately_equal(distance_, o->distance_);
 }
 
 

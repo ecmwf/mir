@@ -70,8 +70,7 @@ bool DistanceWeightingWithLSM::sameAs(const DistanceWeighting& other) const {
 
 
 void DistanceWeightingWithLSM::json(eckit::JSON& j) const {
-    j << type() << "distance-weighting-with-lsm";
-    j << "distance-weighting-with-lsm" << method_;
+    j << type() << method_;
 }
 
 

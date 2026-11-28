@@ -158,6 +158,11 @@ CASE("io.*, properties") {
     EXPECT(save == io::Save(param, file1));
     EXPECT(save != io::Save(param, file2));
     EXPECT(save != *make("noop"));
+
+    // different end actions
+    EXPECT(save != set);
+    EXPECT(save != copy);
+    EXPECT(set != copy);
 }
 
 

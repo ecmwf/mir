@@ -37,9 +37,8 @@ SimplePackingEntropy::SimplePackingEntropy(const param::MIRParametrisation& para
 
 
 void SimplePackingEntropy::reset() {
-    entropy_     = std::numeric_limits<double>::quiet_NaN();
-    scale_       = std::numeric_limits<double>::quiet_NaN();
-    bucketCount_ = 0;
+    entropy_ = std::numeric_limits<double>::quiet_NaN();
+    scale_   = std::numeric_limits<double>::quiet_NaN();
 }
 
 

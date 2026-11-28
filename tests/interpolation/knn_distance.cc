@@ -159,16 +159,20 @@ CASE("distance weighting methods") {
 
 
     SECTION("cressman") {
-        // (power 2, the default power 1 is covered in the bugs report)
         param.set("distance", 3.);
+
+        auto c = [](double d2, double power) { return std::pow((9. - d2) / (9. + d2), power); };
+        EXPECT(same_weights(weights("cressman", origin), ip, normalise({{1, c(1., 1.)}, {2, c(4., 1.)}, {3, 0.}})));
+
         param.set("cressman-model-extension-power", 2.);
+        EXPECT(same_weights(weights("cressman", origin), ip, normalise({{1, c(1., 2.)}, {2, c(4., 2.)}, {3, 0.}})));
 
-        auto c = [](double d2) { return std::pow((d2 - 9.) / (d2 + 9.), 2); };
-        EXPECT(same_weights(weights("cressman", origin), ip, normalise({{1, c(1.)}, {2, c(4.)}, {3, 0.}})));
+        param.set("cressman-model-extension-power", 1.5);
+        EXPECT(same_weights(weights("cressman", origin), ip, normalise({{1, c(1., 1.5)}, {2, c(4., 1.5)}, {3, 0.}})));
 
-        // no neighbours within distance
+        // no neighbours within distance: the nearest neighbour
         param.set("distance", 0.5);
-        EXPECT(weights("cressman", origin).empty());
+        EXPECT(same_weights(weights("cressman", origin), ip, {{1, 1.}}));
 
         param.set("cressman-model-extension-power", 0.5);
         EXPECT_THROWS(weights("cressman", origin));
@@ -182,6 +186,9 @@ CASE("distance weighting methods") {
 
         auto h = [](double r) { return 0.5 + 0.5 * std::cos(M_PI_2 * (r - 1.) / 2.); };
         EXPECT(same_weights(weights("climate-filter", origin), ip, normalise({{1, h(1.)}, {2, h(2.)}, {3, h(3.)}})));
+
+        EXPECT_EQUAL(json(*D(DistanceWeightingFactory::build("climate-filter", param))),
+                     R"({"distance-weighting":"climate-filter","distance":6,"climate-filter-delta":2})");
 
         param.set("distance", 1.);
         EXPECT_THROWS_AS(weights("climate-filter", origin), exception::UserError);
@@ -299,6 +306,27 @@ CASE("distance weighting methods") {
     }
 
 
+    SECTION("inverse distance weightings, json (by name, and the shepard power)") {
+        param.set("distance-weighting-shepard-power", 3.);
+
+        EXPECT_EQUAL(json(*D(DistanceWeightingFactory::build("inverse-distance-weighting", param))),
+                     R"({"distance-weighting":"inverse-distance-weighting"})");
+        EXPECT_EQUAL(json(*D(DistanceWeightingFactory::build("reciprocal", param))),
+                     R"({"distance-weighting":"reciprocal"})");
+        EXPECT_EQUAL(json(*D(DistanceWeightingFactory::build("shepard", param))),
+                     R"({"distance-weighting":"shepard","distance-weighting-shepard-power":3})");
+
+        // the method spec, rebuilt
+        for (const auto& spec : std::vector<std::string>{
+                 "{type: k-nearest, distance-weighting: reciprocal}",
+                 "{type: k-nearest, distance-weighting: shepard, distance-weighting-shepard-power: 3}",
+             }) {
+            auto m = make(spec);
+            EXPECT(*make(m->json_str()) == *m);
+        }
+    }
+
+
     SECTION("unknown") {
         EXPECT_THROWS_AS(weights("unknown", origin), exception::SeriousBug);
     }
@@ -313,13 +341,12 @@ CASE("distance weighting methods, as method options") {
 
     for (const auto& test : std::vector<test_t>{
              {"distance-weighting: climate-filter, distance: 2, climate-filter-delta: 1",
-              R"("distance-weighting":"climate-filter","climate-filter-delta":1)"},
+              R"("distance-weighting":"climate-filter","distance":2,"climate-filter-delta":1)"},
              {"distance-weighting: cressman, distance: 2, cressman-model-extension-power: 2",
               R"("distance-weighting":"cressman","distance":2,"cressman-model-extension-power":2)"},
              {"distance-weighting: gaussian, distance-weighting-gaussian-stddev: 2",
               R"("distance-weighting":"gaussian","distance-weighting-gaussian-stddev":2)"},
-             {"distance-weighting: inverse-distance-weighting",
-              R"("distance-weighting":"inverse-distance-weighting","inverse-distance-weighting-power":1)"},
+             {"distance-weighting: inverse-distance-weighting", R"("distance-weighting":"inverse-distance-weighting")"},
              {"distance-weighting: inverse-distance-weighting-squared",
               R"("distance-weighting":"inverse-distance-weighting-squared")"},
              {"distance-weighting: nearest-neighbour", R"("distance-weighting":"nearest-neighbour")"},
@@ -463,7 +490,7 @@ CASE("distance weighting methods, with land-sea masks") {
         eckit::MD5 h;
         x.hash(h);
 
-        EXPECT(json(x).find(R"("nearest-lsm-with-lowest-index")") != std::string::npos);
+        EXPECT_EQUAL(json(x), R"({"distance-weighting-with-lsm":"nearest-lsm-with-lowest-index"})");
 
         // the (land-sea mask dependent) weighting it builds
         D d(a.distanceWeighting(param, masks));

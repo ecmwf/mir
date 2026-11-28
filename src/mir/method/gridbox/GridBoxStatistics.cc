@@ -142,6 +142,8 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
             }
             else {
                 ++nbFailures;
+                const auto c = box.centre();
+                failures.emplace_front(i, PointLatLon{c[0], c[1]});
             }
         }
         log << "Contained " << Log::Pretty(weights_triplets.size(), points) << " in "
@@ -150,10 +152,10 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
 
     if (nbFailures > 0) {
         auto& warning = Log::warning();
-        warning << "Failed to contain " << Log::Pretty(nbFailures, points);
+        warning << "Failed to contain " << Log::Pretty(nbFailures, boxes);
         size_t count = 0;
         for (const auto& f : failures) {
-            warning << "\n\tpoint " << f.first << " " << f.second;
+            warning << "\n\tgrid box " << f.first << " " << f.second;
             if (++count > 10) {
                 warning << "\n\t...";
                 break;

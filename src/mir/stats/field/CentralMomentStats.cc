@@ -56,7 +56,7 @@ struct StandardDeviation final : CentralMomentStatsT<detail::CentralMomentsT<dou
 
 struct Sum final : CentralMomentStatsT<detail::CentralMomentsT<double>> {
     using CentralMomentStatsT::CentralMomentStatsT;
-    double value() const override { return mean() * static_cast<double>(Counter::count()); }
+    double value() const override { return mean() * static_cast<double>(Counter::count() - Counter::missing()); }
     void json(eckit::JSON& j) const override { json_tv(j, "sum", value()); }
     void print(std::ostream& out) const override { out << "Sum[]"; }
 };

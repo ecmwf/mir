@@ -46,6 +46,7 @@ CASE("CentralMomentsT") {
         EXPECT(approx(stats.skewness(), 42. / 64.));
         EXPECT(approx(stats.kurtosis(), 356. * 8. / (32. * 32.) - 3.));
 
+        EXPECT_EQUAL(stats.centralMoment1(), 0.);
         EXPECT(approx(stats.centralMoment2(), 4.));
         EXPECT(approx(stats.centralMoment3(), 42. / 8.));
         EXPECT(approx(stats.centralMoment4(), 356. / 8.));
@@ -113,6 +114,23 @@ CASE("CentralMomentsT") {
         stats({1., 2.});
         stats({3., -2.});
         EXPECT(stats.mean() == std::complex<double>(2., 0.));
+    }
+
+
+    SECTION("complex, single precision") {
+        CentralMomentsT<std::complex<float>> stats;
+        for (const auto& v : DATA) {
+            stats({static_cast<float>(v), -static_cast<float>(v)});
+        }
+
+        CentralMomentsT<std::complex<float>> half;
+        half(std::complex<float>(1.f, 0.f));
+        half(std::complex<float>(3.f, 0.f));
+        stats += half;
+
+        EXPECT(std::abs(half.mean() - std::complex<float>(2.f, 0.f)) < 1e-6f);
+        EXPECT(std::abs(half.variance() - std::complex<float>(2.f, 0.f)) < 1e-6f);
+        EXPECT(std::isfinite(stats.kurtosis().real()) && std::isfinite(stats.skewness().real()));
     }
 }
 

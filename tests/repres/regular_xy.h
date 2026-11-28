@@ -11,10 +11,10 @@
 
 #include "eckit/geo/Point.h"
 #include "eckit/testing/Test.h"
+#include "eckit/utils/StringTools.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/input/GribMemoryInput.h"
-#include "mir/key/grid/Grid.h"
 #include "mir/param/SimpleParametrisation.h"
 
 #include "repres.h"
@@ -109,14 +109,15 @@ inline points_t points(const Representation& repres) {
 }
 
 
-/// Representation of a typed grid (gridType=...;key=value;...)
-inline RepresentationHandle typed(const std::string& grid) {
-    const auto& g = key::grid::Grid::lookup(grid);
-
+/// Representation by the keys of a GRIB grid type (gridType=...;key=value;...), as GRIB without a gridSpec
+inline RepresentationHandle by_keys(const std::string& keys) {
     param::SimpleParametrisation param;
-    g.parametrisation(grid, param);
-
-    return g.representation(param);
+    for (const auto& kv : eckit::StringTools::split(";", keys)) {
+        const auto i = kv.find('=');
+        ASSERT(i != std::string::npos);
+        param.set(kv.substr(0, i), kv.substr(i + 1));
+    }
+    return RepresentationFactory::build(param);
 }
 
 

@@ -322,15 +322,14 @@ std::string DistributionT<std::extreme_value_distribution<double>>::to_string(
 template <>
 std::string DistributionT<std::fisher_f_distribution<double>>::to_string(
     typename std::fisher_f_distribution<double>::param_type& param) const {
-    return "fisher-f-distribution{m:" + std::to_string(param.m()) + "," + ",n:" + std::to_string(param.n()) + "}";
+    return "fisher-f-distribution{m:" + std::to_string(param.m()) + ",n:" + std::to_string(param.n()) + "}";
 }
 
 
 template <>
 std::string DistributionT<std::gamma_distribution<double>>::to_string(
     typename std::gamma_distribution<double>::param_type& param) const {
-    return "gamma-distribution{alpha:" + std::to_string(param.alpha()) + "," + ",beta:" + std::to_string(param.beta()) +
-           "}";
+    return "gamma-distribution{alpha:" + std::to_string(param.alpha()) + ",beta:" + std::to_string(param.beta()) + "}";
 }
 
 
@@ -344,30 +343,29 @@ std::string DistributionT<std::geometric_distribution<int>>::to_string(
 template <>
 std::string DistributionT<std::lognormal_distribution<double>>::to_string(
     typename std::lognormal_distribution<double>::param_type& param) const {
-    return "lognormal-distribution{m:" + std::to_string(param.m()) + "," + ",s:" + std::to_string(param.s()) + "}";
+    return "lognormal-distribution{m:" + std::to_string(param.m()) + ",s:" + std::to_string(param.s()) + "}";
 }
 
 
 template <>
 std::string DistributionT<std::negative_binomial_distribution<int>>::to_string(
     typename std::negative_binomial_distribution<int>::param_type& param) const {
-    return "negative-binomial-distribution{k:" + std::to_string(param.k()) + "," + ",p:" + std::to_string(param.p()) +
-           "}";
+    return "negative-binomial-distribution{k:" + std::to_string(param.k()) + ",p:" + std::to_string(param.p()) + "}";
 }
 
 
 template <>
 std::string DistributionT<std::normal_distribution<double>>::to_string(
     typename std::normal_distribution<double>::param_type& param) const {
-    return "normal-distribution{mean:" + std::to_string(param.mean()) + "," +
-           ",stddev:" + std::to_string(param.stddev()) + "}";
+    return "normal-distribution{mean:" + std::to_string(param.mean()) + ",stddev:" + std::to_string(param.stddev()) +
+           "}";
 }
 
 
 template <>
 std::string DistributionT<std::piecewise_constant_distribution<double>>::to_string(
     typename std::piecewise_constant_distribution<double>::param_type& param) const {
-    return "piecewise-constant-distribution{densities:" + put_vector(param.densities()) + "," +
+    return "piecewise-constant-distribution{densities:" + put_vector(param.densities()) +
            ",intervals:" + put_vector(param.intervals()) + "}";
 }
 
@@ -375,7 +373,7 @@ std::string DistributionT<std::piecewise_constant_distribution<double>>::to_stri
 template <>
 std::string DistributionT<std::piecewise_linear_distribution<double>>::to_string(
     typename std::piecewise_linear_distribution<double>::param_type& param) const {
-    return "piecewise-linear-distribution{densities:" + put_vector(param.densities()) + "," +
+    return "piecewise-linear-distribution{densities:" + put_vector(param.densities()) +
            ",intervals:" + put_vector(param.intervals()) + "}";
 }
 

@@ -150,6 +150,10 @@ CASE("GridBoxIntegral") {
     auto expected = 2. * 2. * M_PI * R * R * (1. + std::sin(5. * M_PI / 180.));
     EXPECT(eckit::types::is_approximately_equal(integral.integral() / expected, 1., 1e-9));
 
+    // the same, missing values north of the edge
+    stats.execute(make_field("{grid: [10, 10]}", [](double lat, double) { return lat > 0. ? MISSING : 2.; }));
+    EXPECT(eckit::types::is_approximately_equal(integral.integral() / expected, 1., 1e-9));
+
     integral.reset();
     EXPECT(std::isnan(integral.integral()));
 }
@@ -176,12 +180,32 @@ CASE("SimplePackingEntropy") {
         EXPECT(contains(to_string(static_cast<const Statistics&>(entropy)),
                         ",entropy=nan,scale=nan,bucketCount=" + std::to_string(test.bucketCount) + "]"));
     }
+
+
+    SECTION("execute") {
+        param::SimpleParametrisation param;
+        param.set("entropy-buckets", 4L);
+        statistics::SimplePackingEntropy entropy(param);
+        Statistics& stats = entropy;
+
+        // four values equally frequent, one per bucket: 2 bits
+        stats.execute(make_field("{grid: [90, 90]}", MIRValuesVector{0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3}));
+
+        EXPECT_EQUAL(entropy.bucketCount(), 4);
+        EXPECT(eckit::types::is_approximately_equal(entropy.scale(), 1., 1e-12));
+        EXPECT(eckit::types::is_approximately_equal(entropy.entropy(), 2., 1e-12));
+
+        // mostly one value: below 1 bit, and the bucket count is kept
+        stats.execute(make_field("{grid: [90, 90]}", MIRValuesVector{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}));
+        EXPECT_EQUAL(entropy.bucketCount(), 4);
+        EXPECT(entropy.entropy() < 1.);
+    }
 }
 
 
 CASE("Spectral") {
-    // T2 coefficients (complex, m-major), the last zonal (m = 0, n = 2) one being zero
-    const MIRValuesVector values{2., 0., 3., 0., 0., 0., 1., 1., 0.5, 0., 2., 0.};
+    // T2 coefficients (complex, m-major)
+    const MIRValuesVector values{2., 0., 3., 0., 1., 0., 1., 1., 0.5, 0., 2., 0.};
 
     param::SimpleParametrisation param;
     statistics::Spectral spectral(param);
@@ -191,14 +215,14 @@ CASE("Spectral") {
 
     // variance: zonal (m = 0, n > 0) real parts squared, and others twice the modulus squared
     EXPECT_EQUAL(spectral.mean(), 2.);
-    EXPECT_EQUAL(spectral.variance(), 9. + 4. + 0.5 + 8.);
-    EXPECT_EQUAL(spectral.standardDeviation(), std::sqrt(21.5));
-    EXPECT_EQUAL(spectral.enorm(), std::sqrt(4. + 21.5));
+    EXPECT_EQUAL(spectral.variance(), 9. + 1. + 4. + 0.5 + 8.);
+    EXPECT_EQUAL(spectral.standardDeviation(), std::sqrt(22.5));
+    EXPECT_EQUAL(spectral.enorm(), std::sqrt(4. + 22.5));
     EXPECT_EQUAL(to_string(static_cast<const Statistics&>(spectral)),
-                 "Spectral[mean=2,variance=21.5,stddev=4.63681,enorm=5.04975]");
+                 "Spectral[mean=2,variance=22.5,stddev=4.74342,enorm=5.14782]");
 
     EXPECT_EQUAL(execute("spectral", make_field("{grid: T2}", values)),
-                 "Spectral[mean=2,variance=21.5,stddev=4.63681,enorm=5.04975]");
+                 "Spectral[mean=2,variance=22.5,stddev=4.74342,enorm=5.14782]");
 
     spectral.reset();
     EXPECT(std::isnan(spectral.enorm()));

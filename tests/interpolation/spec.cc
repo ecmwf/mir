@@ -372,6 +372,20 @@ CASE("Method comparison, hash and print") {
         // different non-linear treatments
         EXPECT(!make("linear")->sameAs(*make("{type: linear, non-linear: missing-if-all-missing}")));
 
+        // different options common to matrix-based methods, also for the k-nearest neighbours methods
+        for (const auto& spec : std::vector<std::string>{"nn", "k-nearest"}) {
+            auto a = make(spec);
+            EXPECT(a->sameAs(*make(spec)));
+            EXPECT(!a->sameAs(*make("{type: " + spec + ", prune-epsilon: 0.1}")));
+            EXPECT(!a->sameAs(*make("{type: " + spec + ", lsm-weight-adjustment: 0.5}")));
+            EXPECT(!a->sameAs(*make("{type: " + spec + ", non-linear: missing-if-all-missing}")));
+        }
+
+        // different matrix reordering
+        auto reordered = make("{type: linear, finite-element-matrix-reorder-rows: healpix-ring-to-nested}");
+        EXPECT(!make("linear")->sameAs(*reordered));
+        EXPECT(md5(*make("linear")) != md5(*reordered));
+
         // different types
         EXPECT(!make("linear")->sameAs(*make("bilinear")));
         EXPECT(!make("nn")->sameAs(*make("k-nearest")));
@@ -381,8 +395,8 @@ CASE("Method comparison, hash and print") {
 
 
     SECTION("statistics-based methods are data-dependent") {
-        for (const auto& spec :
-             std::vector<std::string>{"grid-box-statistics", "voronoi-statistics", "healpix-statistics"}) {
+        for (const auto& spec : std::vector<std::string>{"grid-box-statistics", "voronoi-statistics",
+                                                         "healpix-statistics", "k-nearest-statistics"}) {
             auto a = make(spec);
             EXPECT(!a->sameAs(*a));
             EXPECT(*a == *make(spec));
@@ -413,7 +427,7 @@ CASE("Method cropping") {
 
 
     SECTION("matrix-based and matrix-free methods") {
-        for (const auto& spec : std::vector<std::string>{"linear", "grid-box-average", "structured-bilinear"}) {
+        for (const auto& spec : std::vector<std::string>{"linear", "grid-box-average", "nn", "structured-bilinear"}) {
             auto a = make(spec);
             auto b = make(spec);
 

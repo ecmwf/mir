@@ -223,6 +223,13 @@ CASE("ModeBoolean") {
     EXPECT_EQUAL(byParam.mode(), 0.);
     byParam(11.);
     EXPECT_EQUAL(byParam.mode(), 1.);
+
+    // defaults: threshold 0.5, ties as 1
+    detail::ModeBoolean byDefault(param::SimpleParametrisation{});
+    byDefault(0.4);
+    EXPECT_EQUAL(byDefault.mode(), 0.);
+    byDefault(0.6);
+    EXPECT_EQUAL(byDefault.mode(), 1.);
 }
 
 

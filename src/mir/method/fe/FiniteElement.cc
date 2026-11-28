@@ -246,7 +246,7 @@ void FiniteElement::print(std::ostream& out) const {
     out << "FiniteElement[type=" << type() << ",";
     MethodWeighted::print(out);
     out << ",validateMesh=" << validateMesh_ << ",projectionFail="
-        << (projectionFail_ == ProjectionFail::failure           ? "fail"
+        << (projectionFail_ == ProjectionFail::failure           ? "failure"
             : projectionFail_ == ProjectionFail::increaseEpsilon ? "increase-epsilon"
             : projectionFail_ == ProjectionFail::missingValue    ? "missing-value"
                                                                  : NOTIMP)
@@ -270,7 +270,7 @@ void FiniteElement::json(eckit::JSON& j) const {
     MethodWeighted::json(j);
     j << "finite-element-validate-mesh" << validateMesh_;
     j << "finite-element-projection-fail"
-      << (projectionFail_ == ProjectionFail::failure           ? "fail"
+      << (projectionFail_ == ProjectionFail::failure           ? "failure"
           : projectionFail_ == ProjectionFail::increaseEpsilon ? "increase-epsilon"
           : projectionFail_ == ProjectionFail::missingValue    ? "missing-value"
                                                                : NOTIMP);

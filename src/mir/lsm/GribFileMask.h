@@ -43,7 +43,10 @@ public:
     // None
 
     // -- Class methods
-    // None
+
+    // Cache key takes the interpolation method and the threshold into account
+    static void hashCacheKey(eckit::MD5&, const eckit::PathName&, const param::MIRParametrisation&,
+                             const repres::Representation&, const std::string& which);
 
 protected:
     // -- Members

@@ -24,6 +24,15 @@
 namespace mir::lsm {
 
 
+static double value_threshold(const param::MIRParametrisation& parametrisation, const std::string& which) {
+    double threshold = 0.5;
+    if (!parametrisation.get("lsm-value-threshold-" + which, threshold)) {
+        ASSERT(parametrisation.get("lsm-value-threshold", threshold));
+    }
+    return threshold;
+}
+
+
 GribFileMask::GribFileMask(const eckit::PathName& path, const param::MIRParametrisation& parametrisation,
                            const repres::Representation& representation, const std::string& which) :
     path_(path) {
@@ -45,10 +54,7 @@ GribFileMask::GribFileMask(const eckit::PathName& path, const param::MIRParametr
     ASSERT(input->next());
     auto field = input->field();
 
-    double threshold = 0.5;
-    if (!parametrisation.get("lsm-value-threshold-" + which, threshold)) {
-        ASSERT(parametrisation.get("lsm-value-threshold", threshold));
-    }
+    const auto threshold = value_threshold(parametrisation, which);
 
     const repres::RepresentationHandle in(field.representation());
     if (in->sameAs(representation)) {
@@ -94,6 +100,14 @@ void GribFileMask::hash(eckit::MD5& md5) const {
 
 void GribFileMask::print(std::ostream& out) const {
     out << "GribFileMask[path=" << path_ << "]";
+}
+
+
+void GribFileMask::hashCacheKey(eckit::MD5& md5, const eckit::PathName& path,
+                                const param::MIRParametrisation& parametrisation,
+                                const repres::Representation& representation, const std::string& which) {
+    Mask::hashCacheKey(md5, path, parametrisation, representation, which);
+    md5 << value_threshold(parametrisation, which);
 }
 
 

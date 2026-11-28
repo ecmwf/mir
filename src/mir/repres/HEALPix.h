@@ -59,6 +59,7 @@ private:
     void fillMeshGen(util::MeshGeneratorParameters&) const override;
     const eckit::geo::Grid& grid() const override;
 
+    std::string factory() const override;
     void json(eckit::JSON&) const override;
     void print(std::ostream&) const override;
 

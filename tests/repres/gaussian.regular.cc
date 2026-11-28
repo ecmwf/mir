@@ -123,6 +123,64 @@ CASE("Regular Gaussian grid") {
 }
 
 
+CASE("Regular Gaussian grid: globalise (the points, then a global grid's points outside the domain)") {
+    SECTION("rotated: the points, geographic") {
+        RepresentationHandle regional(make("{grid: F8, area: [20, -20, -20, 20], rotation: [-40, 22]}"));
+        const auto n = regional->numberOfPoints();
+
+        MIRValuesVector values(n, 1.);
+        data::MIRField field(regional, false, 9999.);
+        field.update(values, 0);
+
+        RepresentationHandle global(regional->globalise(field));
+        ASSERT(global);
+        EXPECT(n < global->numberOfPoints());
+
+        std::unique_ptr<Iterator> a(regional->iterator());
+        std::unique_ptr<Iterator> b(global->iterator());
+        for (size_t k = 0; k < n; ++k) {
+            ASSERT(a->next() && b->next());
+            EXPECT(Point3::distance(a->point3D(), b->point3D()) < 1.);  // (metres, the unstructured grid approximately)
+        }
+    }
+
+    SECTION("the values, then missing values") {
+        RepresentationHandle regional(make("{grid: F8, area: [60, -10, 30, 40]}"));
+        const auto n = regional->numberOfPoints();
+
+        MIRValuesVector values(n);
+        std::iota(values.begin(), values.end(), 0.);
+
+        data::MIRField field(regional, false, 9999.);
+        field.update(values, 0);
+
+        RepresentationHandle global(regional->globalise(field));
+        ASSERT(global);
+
+        const auto size = global->numberOfPoints();
+        EXPECT(n < size);
+        EXPECT(field.hasMissing());
+
+        // the values, then missing values
+        const auto& v = field.values(0);
+        EXPECT_EQUAL(v.size(), size);
+        EXPECT(std::equal(values.begin(), values.end(), v.begin()));
+        EXPECT(std::all_of(v.begin() + static_cast<std::ptrdiff_t>(n), v.end(), [](double x) { return x == 9999.; }));
+
+        // the points of the domain are the representation's
+        const auto dom = regional->domain();
+        size_t inside  = 0;
+        for (std::unique_ptr<Iterator> it(global->iterator()); it->next();) {
+            if (dom.contains(it->pointUnrotated())) {
+                EXPECT(it->index() < n);
+                ++inside;
+            }
+        }
+        EXPECT_EQUAL(inside, n);
+    }
+}
+
+
 }  // namespace mir::repres::tests
 
 

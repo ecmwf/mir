@@ -6,6 +6,8 @@
 #include <memory>
 #include <sstream>
 #include <string>
+#include <utility>
+#include <vector>
 
 #include "eckit/filesystem/TmpFile.h"
 #include "eckit/log/JSON.h"
@@ -106,6 +108,30 @@ CASE("ActionGraph") {
         Log::debug() << graph << std::endl;
         EXPECT(graph.size() == 1);
         EXPECT(graph[0]->action().sameAs(*reference2));
+    }
+
+
+    SECTION("ActionGraph with two similar data-dependent actions") {
+        // linear interpolation is merged, statistics-based interpolation is not (not the same, see Method::sameAs)
+        for (const auto& test :
+             std::vector<std::pair<std::string, size_t>>{{"grid-box-average", 1}, {"grid-box-statistics", 2}}) {
+            const auto size = test.second;
+
+            param::RuntimeParametrisation param(empty);
+            param.set("grid", std::vector<double>{1., 1.});
+            param.set("interpolation", test.first);
+
+            action::ActionPlan plan(param);
+            plan.add("interpolate.grid2regular-ll");
+
+            action::ActionGraph graph;
+            graph.add(plan, watcher.get());
+            graph.add(plan, watcher.get());
+
+            Log::debug() << graph << std::endl;
+            EXPECT_EQUAL(graph.size(), size);
+            EXPECT_EQUAL(graph[0]->action().json_str(), graph[size - 1]->action().json_str());
+        }
     }
 }
 

@@ -6,7 +6,6 @@
 
 #include <iosfwd>
 #include <memory>
-#include <vector>
 
 #include "mir/repres/Gridded.h"
 #include "mir/util/Types.h"
@@ -20,32 +19,26 @@ class Grid;
 namespace mir::repres {
 
 
-/// Regular grid in projected coordinates (eckit::geo regular_xy): by its gridSpec (eg. of GRIB), or by the keys of a
-/// typed grid; the Earth's figure is as encoded (GRIB) or given, otherwise as the gridSpec (typed grids: the default)
+/// Regular grid in projected coordinates (eckit::geo regular_xy), by gridSpec or by GRIB gridType keys
 class RegularXY : public Gridded {
 public:
     // -- Constructors
 
-    /// By the gridSpec, or by the keys of a typed grid and its projection spec (eckit::geo, without the figure)
-    explicit RegularXY(const param::MIRParametrisation&, std::unique_ptr<CustomSpec> projection = nullptr);
+    explicit RegularXY(const param::MIRParametrisation&);
 
     // -- Destructor
 
     ~RegularXY() override;
 
 protected:
-    // -- Methods
+    // -- Constructors
 
-    bool firstPointBottomLeft() const { return firstPointBottomLeft_; }
+    RegularXY(const param::MIRParametrisation&, std::unique_ptr<CustomSpec> projection);
+
+    // -- Methods
 
     /// Geographic coordinates (lon, lat) of grid coordinates (x, y)
     Point2 lonlat(double x, double y) const;
-
-    /// First point (lon, lat) of the scanning, or bottom-left if specified
-    Point2 firstPoint() const;
-
-    /// The encoding edition, as specified or (if not) set to the representation's
-    long gribEdition(grib_info&) const;
 
     // -- Overridden methods
 
@@ -74,6 +67,12 @@ private:
     Point2 false_;
     long edition_;
     bool firstPointBottomLeft_ = false;
+    bool uvRelativeToGrid_     = false;  // of the decoded field (GRIB has it in the grid), to re-encode it as is
+
+    // -- Methods
+
+    /// First point (lon, lat) of the scanning, or bottom-left if specified
+    Point2 firstPoint() const;
 };
 
 

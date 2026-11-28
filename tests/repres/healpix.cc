@@ -44,6 +44,7 @@ CASE("HEALPix representation") {
     EXPECT_EQUAL(ring->uniqueName(), "H4");
     EXPECT_EQUAL(nested->uniqueName(), "HN4");
     EXPECT_EQUAL(to_string(*nested), "HEALPix[name=HN4]");
+    EXPECT_EQUAL(ring->factory(), "healpix");
 
     EXPECT_NOT(ring->sameAs(*nested));
     EXPECT(ring->sameAs(*make("{grid: H4}")));

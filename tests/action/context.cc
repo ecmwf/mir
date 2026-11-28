@@ -6,6 +6,8 @@
 #include <sstream>
 #include <string>
 
+#include "eckit/exception/Exceptions.h"
+
 #include "mir/input/MIRInput.h"
 #include "mir/param/SimpleParametrisation.h"
 
@@ -51,7 +53,13 @@ CASE("Context, of a field") {
     EXPECT(to_str(ctx).rfind("Context[content=FieldContent[field=", 0) == 0);
 
     // no scalar, no extension
-    EXPECT_THROWS(ctx.scalar());
+    try {
+        ctx.scalar();
+        EXPECT(false);
+    }
+    catch (const eckit::Exception& e) {
+        EXPECT(std::string(e.what()).find("Cannot get scalar from ") != std::string::npos);
+    }
     EXPECT_THROWS(ctx.extension());
 
     SECTION("select") {

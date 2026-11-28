@@ -8,7 +8,7 @@
 #include <ostream>
 #include <string>
 #include <utility>
-#include <variant>
+#include <vector>
 
 #include "eckit/geo/Figure.h"
 #include "eckit/geo/Grid.h"
@@ -82,7 +82,7 @@ long set_edition(grib_info& info, long dfault) {
 
 
 Figure* make_figure(const param::MIRParametrisation& param) {
-    // as encoded [m] (GRIB), or as given (typed grids), if given
+    // as encoded [m] (GRIB, by either key), if encoded
     auto get = [&param](const std::string& key, double& value) {
         return param.get(key + "InMetres", value) || param.get(key, value);
     };
@@ -145,7 +145,7 @@ CustomSpec* make_spec(const param::MIRParametrisation& param, std::unique_ptr<Cu
         return spec.release();
     }
 
-    // by the keys of a typed grid: the projection (PROJ, or by type) and the first point
+    // by the keys of a GRIB grid type: the projection (PROJ, or by type) and the first point
     auto proj = std::make_unique<CustomSpec>();
     if (std::string str; param.get("proj", str) && !str.empty()) {
         proj->set("type", "proj");
@@ -216,9 +216,15 @@ util::BoundingBox bounding_box(const eckit::geo::Grid& grid) {
 }  // namespace
 
 
+RegularXY::RegularXY(const param::MIRParametrisation& param) : RegularXY(param, nullptr) {}
+
+
 RegularXY::RegularXY(const param::MIRParametrisation& param, std::unique_ptr<CustomSpec> projection) :
     edition_(get_edition(param)) {
     param.get("first_point_bottom_left", firstPointBottomLeft_);
+
+    long uv           = 0;
+    uvRelativeToGrid_ = param.get("uvRelativeToGrid", uv) && uv != 0;
 
     std::unique_ptr<const CustomSpec> spec(make_spec(param, std::move(projection)));
     grid_.reset(eckit::geo::GridFactory::build(*spec));
@@ -258,11 +264,6 @@ Point2 RegularXY::firstPoint() const {
 }
 
 
-long RegularXY::gribEdition(grib_info& info) const {
-    return set_edition(info, edition_);
-}
-
-
 void RegularXY::print(std::ostream& out) const {
     out << "RegularXY[" << spec().str() << "]";
 }
@@ -298,9 +299,75 @@ size_t RegularXY::numberOfPoints() const {
 
 
 void RegularXY::fillGrib(grib_info& info) const {
+    // GRIB has projected grids by grid type, so only the projections of a GRIB grid type encode
+    const auto& projection = grid_->projection().spec();
+    const auto type        = projection.get_string("type", "");
+
+    if (type == "laea") {
+        info.packing.editionNumber = 2;  // GRIB2 only
+    }
+
+    // GRIB1 cannot write LaD, GRIB2 cannot write negative longitudes
+    const auto edition = set_edition(info, edition_);
+    auto longitude     = [edition](double lon) { return edition == 2 ? util::normalise_longitude(lon, 0) : lon; };
+
+    if (type == "lcc") {
+        const auto lat_1 = projection.get_double("lat_1");
+
+        info.grid.grid_type = CODES_UTIL_GRID_SPEC_LAMBERT_CONFORMAL;
+
+        // the projection is not rotated
+        info.grid.latitudeOfSouthernPoleInDegrees  = Latitude::SOUTH_POLE.value();
+        info.grid.longitudeOfSouthernPoleInDegrees = 0.;
+
+        info.extra_set("Latin1InDegrees", lat_1);
+        info.extra_set("Latin2InDegrees", projection.get_double("lat_2", lat_1));
+        info.extra_set("LoVInDegrees", longitude(projection.get_double("lon_0", 0.)));
+
+        if (edition == 2) {
+            info.extra_set("LaDInDegrees", projection.get_double("lat_0", 0.));
+        }
+    }
+    else if (type == "laea") {
+        info.grid.grid_type = CODES_UTIL_GRID_SPEC_LAMBERT_AZIMUTHAL_EQUAL_AREA;
+
+        info.extra_set("standardParallelInDegrees", projection.get_double("lat_0", 0.));
+        info.extra_set("centralLongitudeInDegrees", longitude(projection.get_double("lon_0", 0.)));
+    }
+    else if (type == "stere") {
+        const auto lat_0 = projection.get_double("lat_0");
+
+        info.grid.grid_type = CODES_UTIL_GRID_SPEC_POLAR_STEREOGRAPHIC;
+
+        info.extra_set("orientationOfTheGridInDegrees", longitude(projection.get_double("lon_0", 0.)));
+        if (lat_0 < 0.) {
+            info.extra_set("southPoleOnProjectionPlane", 1L);
+        }
+
+        if (edition == 2) {
+            info.extra_set("LaDInDegrees", projection.get_double("lat_ts", lat_0));
+        }
+    }
+    else {
+        throw exception::FunctionalityNotSupported("RegularXY: GRIB encoding of " + spec().str());
+    }
+
+    const auto first = firstPoint();
+
+    info.grid.latitudeOfFirstGridPointInDegrees  = first[LLCOORDS::LAT];
+    info.grid.longitudeOfFirstGridPointInDegrees = longitude(first[LLCOORDS::LON]);
+
+    info.grid.Ni = static_cast<long>(grid_->nx());
+    info.grid.Nj = static_cast<long>(grid_->ny());
+
+    info.grid.uvRelativeToGrid = uvRelativeToGrid_ ? 1 : 0;
+
+    info.extra_set("DxInMetres", std::abs(grid_->dx()));
+    info.extra_set("DyInMetres", std::abs(grid_->dy()));
+
     // the figure (GRIB2 code table 3.2, GRIB1 resolution and component flags, without a custom figure provision)
     const auto& figure = grid_->projection().figure();
-    if (gribEdition(info) == 1) {
+    if (edition == 1) {
         const auto oblate = figure == eckit::geo::figure::EarthIau1965{};
         if (!oblate && figure != eckit::geo::figure::EarthGrib1{}) {
             throw exception::FunctionalityNotSupported("RegularXY: GRIB1 encoding of the figure " + figure.spec_str());
@@ -380,85 +447,19 @@ void RegularXY::fillMeshGen(util::MeshGeneratorParameters& params) const {
 namespace {
 
 
-/// Settings of the GRIB encoding, as the edition allows: GRIB1 cannot write LaD, GRIB2 cannot write negative longitudes
-struct Encoding {
-    explicit Encoding(const param::MIRParametrisation& param) {
-        param.get("writeLaDInDegrees", writeLaDInDegrees = true);
-        param.get("writeLonPositive", writeLonPositive = false);
-
-        long uv          = 0;
-        uvRelativeToGrid = param.get("uvRelativeToGrid", uv) && uv != 0;
-    }
-
-    double longitude(double lon, long edition) const {
-        return writeLonPositive || edition == 2 ? util::normalise_longitude(lon, 0) : lon;
-    }
-
-    bool LaD(long edition) const { return writeLaDInDegrees && edition == 2; }
-
-    bool writeLaDInDegrees = true;
-    bool writeLonPositive  = false;
-    bool uvRelativeToGrid  = false;
-};
-
-
 class Lambert final : public RegularXY {
 public:
-    explicit Lambert(const param::MIRParametrisation& param) :
-        RegularXY(param, projection(param)),
-        encoding_(param),
-        LaD_(get_double(param, "LaDInDegrees")),
-        LoV_(get_double(param, "LoVInDegrees")),
-        Latin1_(get_double(param, "Latin1InDegrees", LaD_)),
-        Latin2_(get_double(param, "Latin2InDegrees", LaD_)),
-        southPoleLat_(get_double(param, "latitudeOfSouthernPoleInDegrees", -90.)),
-        southPoleLon_(get_double(param, "longitudeOfSouthernPoleInDegrees", 0.)) {}
+    explicit Lambert(const param::MIRParametrisation& param) : RegularXY(param, make_projection(param)) {}
 
 private:
-    const Encoding encoding_;
-    const double LaD_;
-    const double LoV_;
-    const double Latin1_;
-    const double Latin2_;
-    const double southPoleLat_;
-    const double southPoleLon_;
-
-    static std::unique_ptr<CustomSpec> projection(const param::MIRParametrisation& param) {
+    static std::unique_ptr<CustomSpec> make_projection(const param::MIRParametrisation& param) {
         const auto LaD = get_double(param, "LaDInDegrees");
-        return std::unique_ptr<CustomSpec>(new CustomSpec{{"type", "lcc"},
-                                                          {"lat_0", LaD},
-                                                          {"lat_1", get_double(param, "Latin1InDegrees", LaD)},
-                                                          {"lat_2", get_double(param, "Latin2InDegrees", LaD)},
-                                                          {"lon_0", get_double(param, "LoVInDegrees")}});
-    }
-
-    void fillGrib(grib_info& info) const override {
-        info.grid.grid_type = CODES_UTIL_GRID_SPEC_LAMBERT_CONFORMAL;
-
-        const auto edition = gribEdition(info);
-        const auto first   = firstPoint();
-
-        info.grid.latitudeOfFirstGridPointInDegrees  = first[LLCOORDS::LAT];
-        info.grid.longitudeOfFirstGridPointInDegrees = encoding_.longitude(first[LLCOORDS::LON], edition);
-
-        info.grid.Ni = static_cast<long>(grid().nx());
-        info.grid.Nj = static_cast<long>(grid().ny());
-
-        info.grid.latitudeOfSouthernPoleInDegrees  = southPoleLat_;
-        info.grid.longitudeOfSouthernPoleInDegrees = southPoleLon_;
-        info.grid.uvRelativeToGrid                 = encoding_.uvRelativeToGrid ? 1 : 0;
-
-        info.extra_set("DxInMetres", std::abs(grid().dx()));
-        info.extra_set("DyInMetres", std::abs(grid().dy()));
-        info.extra_set("Latin1InDegrees", Latin1_);
-        info.extra_set("Latin2InDegrees", Latin2_);
-        info.extra_set("LoVInDegrees", encoding_.longitude(LoV_, edition));
-
-        if (encoding_.LaD(edition)) {
-            info.extra_set("LaDInDegrees", LaD_);
-        }
-
-        RegularXY::fillGrib(info);
+        return std::make_unique<CustomSpec>(
+            CustomSpec::container_type{{"type", "lcc"},
+                                       {"lat_0", LaD},
+                                       {"lat_1", get_double(param, "Latin1InDegrees", LaD)},
+                                       {"lat_2", get_double(param, "Latin2InDegrees", LaD)},
+                                       {"lon_0", get_double(param, "LoVInDegrees")}});
     }
 };
 
@@ -466,110 +467,39 @@ private:
 class LambertAzimuthalEqualArea final : public RegularXY {
 public:
     explicit LambertAzimuthalEqualArea(const param::MIRParametrisation& param) :
-        RegularXY(param, projection(param)),
-        standardParallel_(get_double(param, "standardParallelInDegrees")),
-        centralLongitude_(get_double(param, "centralLongitudeInDegrees")) {}
+        RegularXY(param, make_projection(param)) {}
 
 private:
-    const double standardParallel_;
-    const double centralLongitude_;
-
-    static std::unique_ptr<CustomSpec> projection(const param::MIRParametrisation& param) {
-        return std::unique_ptr<CustomSpec>(new CustomSpec{{"type", "laea"},
-                                                          {"lat_0", get_double(param, "standardParallelInDegrees")},
-                                                          {"lon_0", get_double(param, "centralLongitudeInDegrees")}});
-    }
-
-    void fillGrib(grib_info& info) const override {
-        info.grid.grid_type        = CODES_UTIL_GRID_SPEC_LAMBERT_AZIMUTHAL_EQUAL_AREA;
-        info.packing.editionNumber = 2;
-
-        const auto first = firstPoint();
-
-        info.grid.Ni = static_cast<long>(grid().nx());
-        info.grid.Nj = static_cast<long>(grid().ny());
-
-        info.grid.latitudeOfFirstGridPointInDegrees  = first[LLCOORDS::LAT];
-        info.grid.longitudeOfFirstGridPointInDegrees = first[LLCOORDS::LON];
-
-        info.extra_set("DxInMetres", std::abs(grid().dx()));
-        info.extra_set("DyInMetres", std::abs(grid().dy()));
-        info.extra_set("standardParallelInDegrees", standardParallel_);
-        info.extra_set("centralLongitudeInDegrees", centralLongitude_);
-
-        RegularXY::fillGrib(info);
+    static std::unique_ptr<CustomSpec> make_projection(const param::MIRParametrisation& param) {
+        return std::make_unique<CustomSpec>(
+            CustomSpec::container_type{{"type", "laea"},
+                                       {"lat_0", get_double(param, "standardParallelInDegrees")},
+                                       {"lon_0", get_double(param, "centralLongitudeInDegrees")}});
     }
 };
 
 
 class PolarStereographic final : public RegularXY {
 public:
-    explicit PolarStereographic(const param::MIRParametrisation& param) :
-        RegularXY(param, projection(param)),
-        encoding_(param),
-        LaD_(get_double(param, "LaDInDegrees", 60.)),
-        orientation_(get_double(param, "orientationOfTheGridInDegrees", 0.)) {}
+    explicit PolarStereographic(const param::MIRParametrisation& param) : RegularXY(param, make_projection(param)) {}
 
 private:
-    const Encoding encoding_;
-    const double LaD_;
-    const double orientation_;
-
-    static bool south_pole(const param::MIRParametrisation& param) {
+    static std::unique_ptr<CustomSpec> make_projection(const param::MIRParametrisation& param) {
         long south = 0;
-        return param.get("southPoleOnProjectionPlane", south) && south != 0;
-    }
+        param.get("southPoleOnProjectionPlane", south);
 
-    static std::unique_ptr<CustomSpec> projection(const param::MIRParametrisation& param) {
-        return std::unique_ptr<CustomSpec>(
-            new CustomSpec{{"type", "stere"},
-                           {"lat_0", south_pole(param) ? -90. : 90.},
-                           {"lat_ts", get_double(param, "LaDInDegrees", 60.)},
-                           {"lon_0", get_double(param, "orientationOfTheGridInDegrees", 0.)}});
-    }
-
-    void fillGrib(grib_info& info) const override {
-        info.grid.grid_type = CODES_UTIL_GRID_SPEC_POLAR_STEREOGRAPHIC;
-
-        const auto edition = gribEdition(info);
-        const auto first   = firstPoint();
-
-        info.grid.latitudeOfFirstGridPointInDegrees  = first[LLCOORDS::LAT];
-        info.grid.longitudeOfFirstGridPointInDegrees = encoding_.longitude(first[LLCOORDS::LON], edition);
-
-        info.grid.Ni = static_cast<long>(grid().nx());
-        info.grid.Nj = static_cast<long>(grid().ny());
-
-        info.grid.uvRelativeToGrid = encoding_.uvRelativeToGrid ? 1 : 0;
-
-        info.extra_set("DxInMetres", std::abs(grid().dx()));
-        info.extra_set("DyInMetres", std::abs(grid().dy()));
-        info.extra_set("orientationOfTheGridInDegrees", util::normalise_longitude(orientation_, 0));
-
-        if (encoding_.LaD(edition)) {
-            info.extra_set("LaDInDegrees", LaD_);
-        }
-
-        RegularXY::fillGrib(info);
+        return std::make_unique<CustomSpec>(
+            CustomSpec::container_type{{"type", "stere"},
+                                       {"lat_0", south != 0 ? -90. : 90.},
+                                       {"lat_ts", get_double(param, "LaDInDegrees", 60.)},
+                                       {"lon_0", get_double(param, "orientationOfTheGridInDegrees", 0.)}});
     }
 };
 
 
-/// Grids by gridSpec only (eg. GRIB), without GRIB encoding
-class RegularXYDecodedOnly : public RegularXY {
+class SpaceView final : public RegularXY {
 public:
-    using RegularXY::RegularXY;
-
-private:
-    void fillGrib(grib_info& /*unused*/) const override {
-        throw exception::FunctionalityNotSupported("RegularXY: GRIB encoding of " + spec().str());
-    }
-};
-
-
-class SpaceView final : public RegularXYDecodedOnly {
-public:
-    explicit SpaceView(const param::MIRParametrisation& param) : RegularXYDecodedOnly(param) {
+    explicit SpaceView(const param::MIRParametrisation& param) : RegularXY(param) {
         // longest element diagonal, a multiple of a reference central element diagonal (avoiding distortion), about
         // the sub-satellite point (the projection origin)
         const auto dx = grid().dx();
@@ -595,11 +525,11 @@ private:
 const RepresentationBuilder<Lambert> LAMBERT("lambert");
 const RepresentationBuilder<LambertAzimuthalEqualArea> LAMBERT_AZIMUTHAL_EQUAL_AREA("lambert_azimuthal_equal_area");
 const RepresentationBuilder<PolarStereographic> POLAR_STEREOGRAPHIC("polar_stereographic");
-const RepresentationBuilder<RegularXYDecodedOnly> ALBERS("albers");
-const RepresentationBuilder<RegularXYDecodedOnly> MERCATOR("mercator");
-const RepresentationBuilder<RegularXYDecodedOnly> TRANSVERSE_MERCATOR("transverse_mercator");
+const RepresentationBuilder<RegularXY> ALBERS("albers");
+const RepresentationBuilder<RegularXY> MERCATOR("mercator");
+const RepresentationBuilder<RegularXY> TRANSVERSE_MERCATOR("transverse_mercator");
+const RepresentationBuilder<RegularXY> REGULAR_XY("regular_xy");
 const RepresentationBuilder<SpaceView> SPACE_VIEW("space_view");
-const RepresentationBuilder<RegularXYDecodedOnly> REGULAR_XY("regular_xy");
 
 
 }  // namespace

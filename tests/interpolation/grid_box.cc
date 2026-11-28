@@ -4,7 +4,9 @@
 
 #include <algorithm>
 #include <cmath>
+#include <iostream>
 #include <memory>
+#include <sstream>
 #include <vector>
 
 #include "eckit/testing/Test.h"
@@ -352,15 +354,22 @@ CASE("grid-box-statistics") {
             EXPECT(min <= minimum.values(0)[i]);
             EXPECT(maximum.values(0)[i] <= max);
             EXPECT(minimum.values(0)[i] <= maximum.values(0)[i]);
-
-            // (input points at the poles are contained in one output grid box only)
-            if (std::abs(it->pointUnrotated().lat().value()) < 90.) {
-                EXPECT(minimum.values(0)[i] <= average.values(0)[i] + 1e-9);
-                EXPECT(average.values(0)[i] <= maximum.values(0)[i] + 1e-9);
-            }
+            EXPECT(minimum.values(0)[i] <= average.values(0)[i] + 1e-9);
+            EXPECT(average.values(0)[i] <= maximum.values(0)[i] + 1e-9);
 
             // statistics are input values
             EXPECT(std::find(values.begin(), values.end(), maximum.values(0)[i]) != values.end());
+        }
+    }
+
+
+    SECTION("input points at the poles, in every output grid box at the poles") {
+        auto poles  = field(in, [](double lat, double) { return std::abs(lat) == 90. ? 1. : 0.; });
+        auto result = interpolate(*make("grid-box-statistics"), poles, *out);
+
+        size_t i = 0;
+        for (std::unique_ptr<repres::Iterator> it(out->iterator()); it->next(); ++i) {
+            EXPECT_EQUAL(result.values(0)[i], (std::abs(it->pointUnrotated().lat().value()) == 90. ? 1. : 0.));
         }
     }
 
@@ -369,11 +378,25 @@ CASE("grid-box-statistics") {
         auto coarse = representation("{grid: [10, 10]}");
         auto fine   = representation("{grid: [2, 2]}");
 
-        auto result = interpolate(*make("grid-box-statistics"),
-                                  field(coarse, MIRValuesVector(coarse->numberOfPoints(), 1.)), *fine);
+        struct capture_t {
+            explicit capture_t(std::ostream& log) { eckit::Log::warning().setStream(log); }
+            ~capture_t() { eckit::Log::warning().setStream(std::cout); }
+        };
+
+        std::ostringstream log;
+        auto result = [&]() {
+            const capture_t capture(log);
+            return interpolate(*make("grid-box-statistics"),
+                               field(coarse, MIRValuesVector(coarse->numberOfPoints(), 1.)), *fine);
+        }();
 
         EXPECT(result.hasMissing());
-        EXPECT(count_missing(result) + coarse->numberOfPoints() >= fine->numberOfPoints());
+        // (input points at the poles are in every output grid box at the poles, 180 per pole)
+        EXPECT(count_missing(result) + coarse->numberOfPoints() + 2 * 180 >= fine->numberOfPoints());
+
+        // the grid boxes, reported
+        EXPECT(log.str().find("Failed to contain ") != std::string::npos);
+        EXPECT(log.str().find("\n\tgrid box ") != std::string::npos);
     }
 
 

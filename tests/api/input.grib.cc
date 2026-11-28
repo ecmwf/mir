@@ -714,6 +714,9 @@ CASE("GribAllFileInput") {
     EXPECT(in.sameAs(input::GribAllFileInput("tiny-2x2.grib")));
     EXPECT_NOT(in.sameAs(input::GribFileInput("tiny-2x2.grib")));
     EXPECT_EQUAL(to_string(in), "GribAllFileInput[tiny-2x2.grib,size=2]");
+
+    // all messages at once, a single time
+    EXPECT_NOT(in.next());
 }
 
 

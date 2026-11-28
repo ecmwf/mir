@@ -154,7 +154,7 @@ private:
         return s;
     }
 
-    /// The same action, as sameAs (all actions, a spec being optional)
+    /// The same action, as sameAs (all actions, a spec being optional), never for data-dependent actions
     friend bool operator==(const Action& a, const Action& b) { return a.sameAs(b) && b.sameAs(a); }
     friend bool operator!=(const Action& a, const Action& b) { return !(a == b); }
 

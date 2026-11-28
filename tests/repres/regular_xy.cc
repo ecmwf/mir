@@ -152,7 +152,9 @@ CASE("projected grids (GRIB) by their gridSpec: points as PROJ") {
 }
 
 
-CASE("typed grids (lambert, lambert_azimuthal_equal_area, polar_stereographic)") {
+CASE(
+    "projected grids by the keys of their GRIB grid type (lambert, lambert_azimuthal_equal_area, "
+    "polar_stereographic)") {
     struct test_t {
         std::string grid;
         size_t Ni;
@@ -164,20 +166,20 @@ CASE("typed grids (lambert, lambert_azimuthal_equal_area, polar_stereographic)")
 
     const std::vector<test_t> tests{
         {LAMBERT, 20, 15, CODES_UTIL_GRID_SPEC_LAMBERT_CONFORMAL, 40., 350.},
-        {LAEA, 40, 38, CODES_UTIL_GRID_SPEC_LAMBERT_AZIMUTHAL_EQUAL_AREA, 66.982143, -35.034024},
+        {LAEA, 40, 38, CODES_UTIL_GRID_SPEC_LAMBERT_AZIMUTHAL_EQUAL_AREA, 66.982143, 324.965976},
         {POLAR_STEREOGRAPHIC, 20, 20, CODES_UTIL_GRID_SPEC_POLAR_STEREOGRAPHIC, 60., 315.},
     };
 
     for (const auto& test : tests) {
         SECTION(test.grid) {
-            RepresentationHandle repres(typed(test.grid));
+            RepresentationHandle repres(by_keys(test.grid));
 
             const auto n = test.Ni * test.Nj;
             EXPECT_EQUAL(repres->numberOfPoints(), n);
             EXPECT_EQUAL(count(*repres), n);
             EXPECT_EQUAL(static_cast<size_t>(repres->atlasGrid().size()), n);
 
-            EXPECT(repres->sameAs(*typed(test.grid)));
+            EXPECT(repres->sameAs(*by_keys(test.grid)));
             EXPECT(repres->uniqueName().find("RegularXY-") == 0);
             EXPECT(to_string(*repres).find("RegularXY[") == 0);
 
@@ -218,7 +220,7 @@ CASE("typed grids (lambert, lambert_azimuthal_equal_area, polar_stereographic)")
 
     SECTION("lambert: GRIB keys") {
         grib_info info;
-        typed(LAMBERT)->fillGrib(info);
+        by_keys(LAMBERT)->fillGrib(info);
 
         EXPECT(same(extra_double(info, "Latin1InDegrees"), 50.));
         EXPECT(same(extra_double(info, "Latin2InDegrees"), 50.));
@@ -232,7 +234,7 @@ CASE("typed grids (lambert, lambert_azimuthal_equal_area, polar_stereographic)")
 
     SECTION("lambert_azimuthal_equal_area: GRIB keys") {
         grib_info info;
-        typed(LAEA)->fillGrib(info);
+        by_keys(LAEA)->fillGrib(info);
 
         EXPECT(same(extra_double(info, "standardParallelInDegrees"), 52.));
         EXPECT(same(extra_double(info, "centralLongitudeInDegrees"), 10.));
@@ -241,37 +243,71 @@ CASE("typed grids (lambert, lambert_azimuthal_equal_area, polar_stereographic)")
 
     SECTION("polar_stereographic: GRIB keys, and the south pole on the projection plane") {
         grib_info info;
-        typed(POLAR_STEREOGRAPHIC)->fillGrib(info);
+        by_keys(POLAR_STEREOGRAPHIC)->fillGrib(info);
 
         EXPECT(same(extra_double(info, "orientationOfTheGridInDegrees"), 0.));
         EXPECT(same(extra_double(info, "LaDInDegrees"), 60.));
 
         RepresentationHandle south(
-            typed("gridType=polar_stereographic;LaDInDegrees=-60;orientationOfTheGridInDegrees=-90;"
-                  "southPoleOnProjectionPlane=1;grid=100000/100000;latitudeOfFirstGridPointInDegrees=-60;"
-                  "longitudeOfFirstGridPointInDegrees=-45;Ni=20;Nj=20"));
+            by_keys("gridType=polar_stereographic;LaDInDegrees=-60;orientationOfTheGridInDegrees=-90;"
+                    "southPoleOnProjectionPlane=1;grid=100000/100000;latitudeOfFirstGridPointInDegrees=-60;"
+                    "longitudeOfFirstGridPointInDegrees=-45;Ni=20;Nj=20"));
 
         grib_info s;
         south->fillGrib(s);
         EXPECT(same(s.grid.latitudeOfFirstGridPointInDegrees, -60., 1e-6));
         EXPECT(same(extra_double(s, "orientationOfTheGridInDegrees"), 270.));
+        EXPECT(extra(info, "southPoleOnProjectionPlane") == nullptr);
+        EXPECT_EQUAL(extra_long(s, "southPoleOnProjectionPlane"), 1);
         EXPECT(south->boundingBox().north() < Latitude::EQUATOR);
     }
 
 
-    SECTION("typed grids: errors") {
-        // a key not of the type
-        EXPECT_THROWS_AS(typed(LAMBERT + ";unknown=1"), exception::UserError);
+    SECTION("a projection key missing") {
+        EXPECT_THROWS_AS(by_keys("gridType=lambert;LoVInDegrees=10;grid=100000/100000;Ni=20;Nj=15;"
+                                 "latitudeOfFirstGridPointInDegrees=40;longitudeOfFirstGridPointInDegrees=-10"),
+                         exception::UserError);
+    }
+}
 
-        // not a key=value pair
-        EXPECT_THROWS_AS(typed(LAMBERT + ";Ni"), exception::UserError);
 
-        // a required key missing
-        const auto& g = key::grid::Grid::lookup(LAMBERT);
-        param::SimpleParametrisation param;
-        g.parametrisation(LAMBERT, param);
-        param.clear("LaDInDegrees");
-        EXPECT_THROWS_AS(g.representation(param), exception::UserError);
+CASE("projected grids by GRIB keys, and by their gridspec: same grid, same GRIB encoding") {
+    for (const auto& keys : {LAMBERT, LAEA, POLAR_STEREOGRAPHIC}) {
+        SECTION(keys) {
+            RepresentationHandle a(by_keys(keys));
+            RepresentationHandle b(make(a->spec().str()));
+
+            // the same points (the gridspec as JSON is of limited precision, longitudes are fractions to ~1e-5 degrees)
+            const auto p = points(*a);
+            const auto q = points(*b);
+            ASSERT(p.size() == q.size());
+            for (size_t i = 0; i < p.size(); ++i) {
+                EXPECT(std::abs(p[i].lat - q[i].lat) < 1e-6);
+                EXPECT(std::abs(std::remainder(p[i].lon - q[i].lon, 360.)) < 1e-5);
+            }
+
+            grib_info i;
+            grib_info j;
+            a->fillGrib(i);
+            b->fillGrib(j);
+
+            EXPECT_EQUAL(i.grid.grid_type, j.grid.grid_type);
+            EXPECT_EQUAL(i.grid.Ni, j.grid.Ni);
+            EXPECT_EQUAL(i.grid.Nj, j.grid.Nj);
+            EXPECT(same(i.grid.latitudeOfFirstGridPointInDegrees, j.grid.latitudeOfFirstGridPointInDegrees));
+            EXPECT(same(i.grid.longitudeOfFirstGridPointInDegrees, j.grid.longitudeOfFirstGridPointInDegrees));
+            EXPECT_EQUAL(i.grid.iScansNegatively, j.grid.iScansNegatively);
+            EXPECT_EQUAL(i.grid.jScansPositively, j.grid.jScansPositively);
+
+            ASSERT(i.packing.extra_settings_count == j.packing.extra_settings_count);
+            for (long k = 0; k < i.packing.extra_settings_count; ++k) {
+                const auto& x = i.packing.extra_settings[k];
+                const auto* y = extra(j, x.name);
+                ASSERT(y != nullptr && x.type == y->type);
+                EXPECT(x.type == CODES_TYPE_DOUBLE ? same(x.double_value, y->double_value, 1e-6)
+                                                   : x.long_value == y->long_value);
+            }
+        }
     }
 }
 
@@ -281,7 +317,7 @@ CASE("RegularXY: GRIB encoding of the figure, and by edition") {
 
 
     SECTION("GRIB1: only the GRIB1 figure (spherical)") {
-        RepresentationHandle grib1(typed(LAMBERT + R_GRIB1));
+        RepresentationHandle grib1(by_keys(LAMBERT + R_GRIB1));
 
         grib_info info;
         info.packing.editionNumber = 1;
@@ -299,22 +335,11 @@ CASE("RegularXY: GRIB encoding of the figure, and by edition") {
         EXPECT_EQUAL(extra_long(option, "earthIsOblate"), 0);
 
         // other figures
-        RepresentationHandle other(typed(LAMBERT));
+        RepresentationHandle other(by_keys(LAMBERT));
 
         grib_info error;
         error.packing.editionNumber = 1;
         EXPECT_THROWS_AS(other->fillGrib(error), exception::FunctionalityNotSupported);
-    }
-
-
-    SECTION("GRIB1: positive longitudes (writeLonPositive)") {
-        RepresentationHandle repres(typed(LAMBERT + R_GRIB1 + ";writeLonPositive=1;writeLaDInDegrees=0"));
-
-        grib_info info;
-        info.packing.editionNumber = 1;
-        repres->fillGrib(info);
-
-        EXPECT(same(info.grid.longitudeOfFirstGridPointInDegrees, 350., 1e-6));
     }
 
 
@@ -333,7 +358,7 @@ CASE("RegularXY: GRIB encoding of the figure, and by edition") {
 
         for (const auto& test : tests) {
             grib_info info;
-            typed(LAMBERT + test.figure)->fillGrib(info);
+            by_keys(LAMBERT + test.figure)->fillGrib(info);
 
             EXPECT_EQUAL(extra_long(info, "shapeOfTheEarth"), test.shapeOfTheEarth);
 
@@ -411,22 +436,44 @@ CASE("RegularXY: by PROJ string, or by gridSpec only") {
 }
 
 
-CASE("RegularXY: named grids (grids.yaml)") {
-    // NOTE: the "-proj" named grids (by PROJ string) cannot be built, lacking the projection keys (see report)
-    const auto& grid = key::grid::Grid::lookup("LAEA-EFAS-5km");
-    EXPECT_EQUAL(grid.gaussianNumber(), 1280);
-    EXPECT_EQUAL(grid.gridname(), "LAEA-EFAS-5km");
+CASE("RegularXY: named grids (eckit::geo)") {
+    struct test_t {
+        std::string name;
+        long nx;
+        long ny;
+        point_t first;
+        long shapeOfTheEarth;
+    };
 
-    RepresentationHandle repres(grid.representation());
-    EXPECT_EQUAL(repres->numberOfPoints(), 1000 * 950);
+    for (const auto& test : std::vector<test_t>{
+             {"LAEA-EFAS-5km", 1000, 950, {66.982143, 324.965976}, 4},
+             {"SMUFF-OPERA-2km", 1900, 2200, {67.035186732680, 320.464614436386}, 5},
+         }) {
+        SECTION(test.name) {
+            const auto& grid = key::grid::Grid::lookup(test.name);
+            EXPECT_EQUAL(grid.type(), "gridspec");
+            EXPECT_NOT(grid.isGaussian());
 
-    grib_info info;
-    repres->fillGrib(info);
-    EXPECT_EQUAL(info.grid.grid_type, CODES_UTIL_GRID_SPEC_LAMBERT_AZIMUTHAL_EQUAL_AREA);
-    EXPECT_EQUAL(info.grid.Ni, 1000);
-    EXPECT_EQUAL(info.grid.Nj, 950);
-    EXPECT(same(info.grid.latitudeOfFirstGridPointInDegrees, 66.982143, 1e-6));
-    EXPECT_EQUAL(extra_long(info, "shapeOfTheEarth"), 6);
+            param::SimpleParametrisation param;
+            param.set("grid", test.name);
+
+            std::string canonical;
+            EXPECT(key::grid::Grid::get("grid", canonical, param));
+            EXPECT_EQUAL(canonical, test.name);
+
+            RepresentationHandle repres(make(test.name));
+            EXPECT_EQUAL(repres->numberOfPoints(), test.nx * test.ny);
+
+            grib_info info;
+            repres->fillGrib(info);
+            EXPECT_EQUAL(info.grid.grid_type, CODES_UTIL_GRID_SPEC_LAMBERT_AZIMUTHAL_EQUAL_AREA);
+            EXPECT_EQUAL(info.grid.Ni, test.nx);
+            EXPECT_EQUAL(info.grid.Nj, test.ny);
+            EXPECT(same(info.grid.latitudeOfFirstGridPointInDegrees, test.first.lat, 1e-6));
+            EXPECT(same(info.grid.longitudeOfFirstGridPointInDegrees, test.first.lon, 1e-6));
+            EXPECT_EQUAL(extra_long(info, "shapeOfTheEarth"), test.shapeOfTheEarth);
+        }
+    }
 }
 
 

@@ -187,6 +187,11 @@ const eckit::geo::Grid& HEALPix::grid() const {
 }
 
 
+std::string HEALPix::factory() const {
+    return "healpix";
+}
+
+
 void HEALPix::json(eckit::JSON& j) const {
     spec().json(j);
 }
