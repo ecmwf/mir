@@ -321,10 +321,10 @@ CASE("IFS climate files") {
     util::BoundingBox bbox(in->parametrisation());
 
     for (const auto& test : {
-             std::make_pair(bbox.north().fraction(), eckit::Fraction(21599, 240)),
-             std::make_pair(bbox.west().fraction(), eckit::Fraction(1, 240)),
-             std::make_pair(bbox.south().fraction(), eckit::Fraction(-21599, 240)),
-             std::make_pair(bbox.east().fraction(), eckit::Fraction(86399, 240)),
+             std::make_pair(eckit::Fraction(bbox.north()), eckit::Fraction(21599, 240)),
+             std::make_pair(eckit::Fraction(bbox.west()), eckit::Fraction(1, 240)),
+             std::make_pair(eckit::Fraction(bbox.south()), eckit::Fraction(-21599, 240)),
+             std::make_pair(eckit::Fraction(bbox.east()), eckit::Fraction(86399, 240)),
          }) {
         Log::info() << test.first << " == " << test.second << std::endl;
         EXPECT_EQUAL(test.first, test.second);

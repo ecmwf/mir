@@ -47,10 +47,9 @@ atlas::Grid RegularLL::atlasGrid() const {
     const auto dom = domain();
 
     atlas::StructuredGrid::XSpace xspace(
-        atlas::grid::LinearSpacing(dom.west().value(), dom.east().value(), long(ni_), !dom.isPeriodicWestEast()));
+        atlas::grid::LinearSpacing(dom.west(), dom.east(), long(ni_), !dom.isPeriodicWestEast()));
 
-    atlas::StructuredGrid::YSpace yspace(
-        atlas::grid::LinearSpacing(bbox_.north().value(), bbox_.south().value(), long(nj_)));
+    atlas::StructuredGrid::YSpace yspace(atlas::grid::LinearSpacing(bbox_.north(), bbox_.south(), long(nj_)));
 
     return atlas::StructuredGrid(xspace, yspace, {}, dom);
 }
@@ -91,20 +90,20 @@ util::BoundingBox RegularLL::extendBoundingBox(const util::BoundingBox& bbox) co
     // adjust West/East to include bbox's West/East ('outwards')
     Longitude w = bbox.west();
     if (increments_.isPeriodic()) {
-        w = Regular::adjust(bbox.west().fraction(), we, reference_.lon().fraction(), false, PRECISION);
+        w = Regular::adjust(eckit::Fraction(bbox.west()), we, reference_.lon().fraction(), false, PRECISION);
     }
-    Longitude e = Regular::adjust(bbox.east().fraction(), we, reference_.lon().fraction(), true, PRECISION);
+    Longitude e = Regular::adjust(eckit::Fraction(bbox.east()), we, reference_.lon().fraction(), true, PRECISION);
 
 
     // adjust South/North to include bbox's South/North ('outwards'), to the latitudes by the reference (South/West)
     // point, not beyond the poles: without a latitude between bbox's South/North and the pole, keep bbox's
-    auto s = Regular::adjust(bbox.south().fraction(), sn, reference_.lat().fraction(), false, PRECISION);
+    auto s = Regular::adjust(eckit::Fraction(bbox.south()), sn, reference_.lat().fraction(), false, PRECISION);
     if (s < Latitude::SOUTH_POLE.fraction()) {
-        s = bbox.south().fraction();
+        s = eckit::Fraction(bbox.south());
     }
-    auto n = Regular::adjust(bbox.north().fraction(), sn, reference_.lat().fraction(), true, PRECISION);
+    auto n = Regular::adjust(eckit::Fraction(bbox.north()), sn, reference_.lat().fraction(), true, PRECISION);
     if (n > Latitude::NORTH_POLE.fraction()) {
-        n = bbox.north().fraction();
+        n = eckit::Fraction(bbox.north());
     }
 
     // set bounding box
@@ -116,15 +115,15 @@ util::BoundingBox RegularLL::extendBoundingBox(const util::BoundingBox& bbox) co
 
 std::vector<util::GridBox> RegularLL::gridBoxes() const {
     const auto dom   = domain();
-    const auto north = dom.north();
-    const auto west  = dom.west();
-    const auto south = dom.south();
-    const auto east  = dom.east();
+    const Latitude north = dom.north();
+    const Longitude west  = dom.west();
+    const Latitude south = dom.south();
+    const Longitude east  = dom.east();
 
     const auto periodic = isPeriodicWestEast();
 
-    auto lat0 = bbox_.north();
-    auto lon0 = bbox_.west();
+    Latitude lat0 = bbox_.north();
+    Longitude lon0 = bbox_.west();
     auto sn   = increments_.south_north().latitude();
     auto we   = increments_.west_east().longitude().fraction();
 

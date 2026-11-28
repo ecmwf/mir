@@ -6,22 +6,24 @@
 
 #include <ostream>
 
+#include "eckit/types/FloatCompare.h"
+
 
 namespace mir::util {
 
 
 bool Domain::includesPoleNorth() const {
-    return north() == Latitude::NORTH_POLE;
+    return eckit::types::is_approximately_equal(north(), NORTH_POLE, PointLonLat::EPS);
 }
 
 
 bool Domain::includesPoleSouth() const {
-    return south() == Latitude::SOUTH_POLE;
+    return eckit::types::is_approximately_equal(south(), SOUTH_POLE, PointLonLat::EPS);
 }
 
 
 Domain::operator atlas::RectangularDomain() const {
-    return atlas::RectangularDomain({west().value(), east().value()}, {south().value(), north().value()});
+    return atlas::RectangularDomain({west(), east()}, {south(), north()});
 }
 
 

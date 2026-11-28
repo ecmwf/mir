@@ -92,7 +92,7 @@ bool ReducedLL::getLongestElementDiagonal(double& d) const {
     ASSERT(pl_.size() >= 2);
     const size_t Dj(pl_.size() - 1);
     ASSERT(Dj > 0);
-    const eckit::Fraction sn(((dom.north() - dom.south()).fraction()) / Dj);
+    const eckit::Fraction sn((eckit::Fraction(dom.north() - dom.south())) / Dj);
 
     d = 0.;
     Latitude lat1(dom.north());
@@ -102,7 +102,7 @@ bool ReducedLL::getLongestElementDiagonal(double& d) const {
 
         const long Di(std::min(pl_[j - 1], pl_[j]) - (periodic ? 0 : 1));
         ASSERT(Di > 0);
-        const eckit::Fraction we((dom.east() - dom.west()).fraction() / Di);
+        const eckit::Fraction we(eckit::Fraction(dom.east() - dom.west()) / Di);
 
         auto& latAwayFromEquator(std::abs(lat1.value()) > std::abs(lat2.value()) ? lat1 : lat2);
         auto& latCloserToEquator(std::abs(lat1.value()) > std::abs(lat2.value()) ? lat2 : lat1);
@@ -138,8 +138,8 @@ atlas::Grid ReducedLL::atlasGrid() const {
     const util::Domain dom = domain();
     auto N                 = long(pl_.size());
 
-    atlas::StructuredGrid::XSpace xspace({{dom.west().value(), dom.east().value()}}, pl_, !dom.isPeriodicWestEast());
-    atlas::StructuredGrid::YSpace yspace(atlas::grid::LinearSpacing({{dom.north().value(), dom.south().value()}}, N));
+    atlas::StructuredGrid::XSpace xspace({{dom.west(), dom.east()}}, pl_, !dom.isPeriodicWestEast());
+    atlas::StructuredGrid::YSpace yspace(atlas::grid::LinearSpacing({{dom.north(), dom.south()}}, N));
 
     return atlas::StructuredGrid(xspace, yspace);
 }
@@ -148,10 +148,10 @@ void ReducedLL::fillMeshGen(util::MeshGeneratorParameters& params) const {
     if (params.meshGenerator_.empty()) {
         params.meshGenerator_ = "structured";
     }
-    if (boundingBox().south() > Latitude::EQUATOR) {
+    if (eckit::types::is_strictly_greater(boundingBox().south(), 0., PointLonLat::EPS)) {
         params.set("force_include_south_pole", true);
     }
-    if (boundingBox().north() < Latitude::EQUATOR) {
+    if (eckit::types::is_strictly_greater(0., boundingBox().north(), PointLonLat::EPS)) {
         params.set("force_include_north_pole", true);
     }
 }
@@ -164,15 +164,15 @@ bool ReducedLL::isPeriodicWestEast() const {
 
     // if range West-East is within one increment (or greater than) 360 degree
     const eckit::Fraction inc(360, maxpl);
-    return bbox_.east() - bbox_.west() + inc >= Longitude::GLOBE;
+    return eckit::Fraction(bbox_.east()) - eckit::Fraction(bbox_.west()) + inc >= Longitude::GLOBE.fraction();
 }
 
 bool ReducedLL::includesNorthPole() const {
-    return bbox_.north() == Latitude::NORTH_POLE;
+    return eckit::types::is_approximately_equal(bbox_.north(), NORTH_POLE, PointLonLat::EPS);
 }
 
 bool ReducedLL::includesSouthPole() const {
-    return bbox_.south() == Latitude::SOUTH_POLE;
+    return eckit::types::is_approximately_equal(bbox_.south(), SOUTH_POLE, PointLonLat::EPS);
 }
 
 void ReducedLL::validate(const MIRValuesVector& values) const {
@@ -180,11 +180,11 @@ void ReducedLL::validate(const MIRValuesVector& values) const {
 }
 
 std::vector<util::GridBox> ReducedLL::gridBoxes() const {
-    const auto dom   = domain();
-    const auto north = dom.north();
-    const auto west  = dom.west();
-    const auto south = dom.south();
-    const auto east  = dom.east();
+    const auto dom       = domain();
+    const Latitude north = dom.north();
+    const Longitude west = dom.west();
+    const Latitude south = dom.south();
+    const Longitude east = dom.east();
 
     const auto periodic = isPeriodicWestEast();
 
@@ -201,8 +201,8 @@ std::vector<util::GridBox> ReducedLL::gridBoxes() const {
     // latitude edges
     std::vector<double> latEdges(Nj + 1);
 
-    auto lat0   = bbox_.north();
-    latEdges[0] = (lat0 + sn / 2).value();
+    Latitude lat0 = bbox_.north();
+    latEdges[0]   = (lat0 + sn / 2).value();
     for (size_t j = 0; j < Nj; ++j) {
         latEdges[j + 1] = (lat0 - (j + half) * sn).value();
     }

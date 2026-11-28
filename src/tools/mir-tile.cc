@@ -106,10 +106,10 @@ std::vector<Tile> tiles_regular(const Crop& crop, const util::BoundingBox& area,
         throw exception::UserError("mir-tile: --tile=regular requires positive 'ni' and 'nj'");
     }
 
-    const auto n = area.north().value();
-    const auto w = area.west().value();
-    const auto s = area.south().value();
-    const auto e = area.east().value();
+    const auto n = area.north();
+    const auto w = area.west();
+    const auto s = area.south();
+    const auto e = area.east();
 
     auto lat = [=](size_t j) { return j == nj ? s : n - (n - s) * static_cast<double>(j) / static_cast<double>(nj); };
     auto lon = [=](size_t i) { return i == ni ? e : w + (e - w) * static_cast<double>(i) / static_cast<double>(ni); };
@@ -380,8 +380,7 @@ void MIRTile::execute(const eckit::option::CmdArgs& args) {
         args.get("ni", ni);
         args.get("nj", nj);
 
-        j << "area"
-          << std::vector<double>{area.north().value(), area.west().value(), area.south().value(), area.east().value()};
+        j << "area" << std::vector<double>{area.north(), area.west(), area.south(), area.east()};
         j << "ni" << ni;
         j << "nj" << nj;
 
@@ -475,8 +474,7 @@ void MIRTile::execute(const eckit::option::CmdArgs& args) {
         const auto& b    = tile.bbox;
         j.startObject();
         j << "index" << t;
-        j << "bounding-box"
-          << std::vector<double>{b.north().value(), b.west().value(), b.south().value(), b.east().value()};
+        j << "bounding-box" << std::vector<double>{b.north(), b.west(), b.south(), b.east()};
         j << "size" << tile.indices.size();
         j << "indices";
         indices(j, tile.indices);

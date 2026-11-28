@@ -60,10 +60,10 @@ CASE("LatLon::globaliseBoundingBox") {
             BoundingBox global(test.area);
             LatLon::globaliseBoundingBox(global, test.increments, reference);
 
-            EXPECT(same(global.north().value(), test.global.north().value(), 1e-6));
-            EXPECT(same(global.west().value(), test.global.west().value(), 1e-6));
-            EXPECT(same(global.south().value(), test.global.south().value(), 1e-6));
-            EXPECT(same(global.east().value(), test.global.east().value(), 1e-6));
+            EXPECT(same(global.north(), test.global.north(), 1e-6));
+            EXPECT(same(global.west(), test.global.west(), 1e-6));
+            EXPECT(same(global.south(), test.global.south(), 1e-6));
+            EXPECT(same(global.east(), test.global.east(), 1e-6));
 
             RepresentationHandle repres(new RegularLL(test.increments, global, reference));
             const auto& ll = dynamic_cast<const RegularLL&>(*repres);
@@ -114,7 +114,8 @@ CASE("LatLon::correctBoundingBox") {
     using eckit::Fraction;
 
     SECTION("MIR-390: of a bounding box 1/240 off the poles and Greenwich") {
-        BoundingBox bbox{Fraction(21599, 240), Fraction(1, 240), Fraction(-21599, 240), Fraction(86399, 240)};
+        BoundingBox bbox{double(Fraction(21599, 240)), double(Fraction(1, 240)), double(Fraction(-21599, 240)),
+                         double(Fraction(86399, 240))};
         const BoundingBox expected(bbox);
         const Increments inc(Fraction(1, 120), Fraction(1, 120));
 

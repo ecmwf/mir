@@ -146,14 +146,14 @@ private:
         return s;
     }
 
-    friend bool operator==(double, const Latitude&);
-    friend bool operator!=(double, const Latitude&);
+    friend bool operator==(double value, const Latitude& x) { return x == value; }
+    friend bool operator!=(double value, const Latitude& x) { return x != value; }
 
-    friend bool operator>(double, const Latitude&);
+    friend bool operator>(double value, const Latitude& x) { return x < value; }
     friend bool operator<(double value, const Latitude& x) { return value < x.value(); }
 
-    friend bool operator>=(double, const Latitude&);
-    friend bool operator<=(double, const Latitude&);
+    friend bool operator>=(double value, const Latitude& x) { return x <= value; }
+    friend bool operator<=(double value, const Latitude& x) { return x >= value; }
 
     friend Latitude operator+(double value, const Latitude& x) { return {value + x.value_}; }
 

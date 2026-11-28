@@ -24,7 +24,8 @@ const char* AreaMaskerCacheTraits::name() {
 
 
 int AreaMaskerCacheTraits::version() {
-    return 3;
+    // 4: bounding box of doubles (was a longitude fraction)
+    return 4;
 }
 
 

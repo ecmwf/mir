@@ -55,10 +55,10 @@ std::vector<util::GridBox> RegularGG::gridBoxes() const {
     std::vector<double> latEdges = calculateUnrotatedGridBoxLatitudeEdges();
 
     const auto dom   = domain();
-    const auto north = dom.north().value();
-    const auto west  = dom.west();
-    const auto south = dom.south().value();
-    const auto east  = dom.east();
+    const auto north = dom.north();
+    const Longitude west  = dom.west();
+    const auto south = dom.south();
+    const Longitude east  = dom.east();
 
     const auto periodic = isPeriodicWestEast();
 

@@ -10,6 +10,7 @@
 #include "eckit/geo/Grid.h"
 #include "eckit/geo/Point.h"
 #include "eckit/testing/Test.h"
+#include "eckit/types/FloatCompare.h"
 
 #include "mir/api/MIRJob.h"
 #include "mir/input/GribMemoryInput.h"
@@ -258,7 +259,7 @@ CASE(
         EXPECT(same(extra_double(s, "orientationOfTheGridInDegrees"), 270.));
         EXPECT(extra(info, "southPoleOnProjectionPlane") == nullptr);
         EXPECT_EQUAL(extra_long(s, "southPoleOnProjectionPlane"), 1);
-        EXPECT(south->boundingBox().north() < Latitude::EQUATOR);
+        EXPECT(eckit::types::is_strictly_greater(0., south->boundingBox().north(), PointLonLat::EPS));
     }
 
 

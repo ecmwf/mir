@@ -296,10 +296,10 @@ std::vector<util::GridBox> Reduced::gridBoxes() const {
     std::vector<double> latEdges = calculateUnrotatedGridBoxLatitudeEdges();
 
     const auto dom   = domain();
-    const auto north = dom.north().value();
-    const auto west  = dom.west();
-    const auto south = dom.south().value();
-    const auto east  = dom.east();
+    const auto north = dom.north();
+    const Longitude west  = dom.west();
+    const auto south = dom.south();
+    const Longitude east  = dom.east();
 
     const auto periodic = isPeriodicWestEast();
 
@@ -490,8 +490,8 @@ util::BoundingBox Reduced::extendBoundingBox(const util::BoundingBox& bbox) cons
     Longitude w = bbox.west();
     Longitude e = bbox.east();
     {
-        const auto west = bbox.west().fraction();
-        const auto east = bbox.east().fraction();
+        const auto west = eckit::Fraction(bbox.west());
+        const auto east = eckit::Fraction(bbox.east());
 
         bool first = true;
         std::set<long> NiTried;
@@ -550,7 +550,7 @@ util::BoundingBox Reduced::extendBoundingBox(const util::BoundingBox& bbox) cons
 
 bool Reduced::isPeriodicWestEast() const {
     eckit::Fraction inc = getSmallestIncrement();
-    return bbox_.east() - bbox_.west() + inc >= Longitude::GLOBE;
+    return eckit::Fraction(bbox_.east()) - eckit::Fraction(bbox_.west()) + inc >= Longitude::GLOBE.fraction();
 }
 
 

@@ -93,7 +93,7 @@ void Action::json(eckit::JSON&) const {}
 
 
 std::vector<double> Action::spec_value(const util::BoundingBox& bbox) {
-    return {bbox.north().value(), bbox.west().value(), bbox.south().value(), bbox.east().value()};
+    return {bbox.north(), bbox.west(), bbox.south(), bbox.east()};
 }
 
 

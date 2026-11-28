@@ -224,10 +224,10 @@ CASE("grid boxes: West-East periodicity, reduced lat/lon grids") {
         param::SimpleParametrisation param;
         param.set("pl", pl);
         param.set("Nj", pl.size());
-        param.set("north", bbox.north().value());
-        param.set("west", bbox.west().value());
-        param.set("south", bbox.south().value());
-        param.set("east", bbox.east().value());
+        param.set("north", bbox.north());
+        param.set("west", bbox.west());
+        param.set("south", bbox.south());
+        param.set("east", bbox.east());
 
         repres::RepresentationHandle r(new repres::latlon::ReducedLL(param));
         ASSERT(!r->domain().isPeriodicWestEast());

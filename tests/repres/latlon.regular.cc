@@ -73,8 +73,8 @@ CASE("RegularLL: (Ni, Nj) by increments and area, preserving the reference point
 
             // the corrected area is within, from the reference point
             EXPECT(test.area.contains(bbox));
-            EXPECT(bbox.south() == reference.lat());
-            EXPECT(bbox.west() == reference.lon());
+            EXPECT(eckit::types::is_approximately_equal(bbox.south(), reference.lat().value(), PointLonLat::EPS));
+            EXPECT(eckit::types::is_approximately_equal(bbox.west(), reference.lon().value(), PointLonLat::EPS));
         }
     }
 }
@@ -98,7 +98,7 @@ CASE("RegularLL: by parametrisation (as decoded), periodic within an increment (
     RepresentationHandle repres(RepresentationFactory::build(param));
 
     EXPECT_EQUAL(repres->numberOfPoints(), 1024 * 257);
-    EXPECT(eckit::types::is_approximately_equal(repres->boundingBox().west().value(), 0.175781));
+    EXPECT(eckit::types::is_approximately_equal(repres->boundingBox().west(), 0.175781));
 
     const auto domain = repres->domain();
     EXPECT_NOT(domain.isGlobal());
@@ -192,8 +192,8 @@ CASE("RegularLL: crop, extend, frame") {
 
         // not beyond the poles
         const auto polar = global->extendBoundingBox({89.5, 0, -89.5, 10});
-        EXPECT(polar.north() == Latitude::NORTH_POLE);
-        EXPECT(polar.south() == Latitude::SOUTH_POLE);
+        EXPECT(eckit::types::is_approximately_equal(polar.north(), NORTH_POLE, PointLonLat::EPS));
+        EXPECT(eckit::types::is_approximately_equal(polar.south(), SOUTH_POLE, PointLonLat::EPS));
 
         // shifted grid, by the reference (South/West) point
         RepresentationHandle shifted(new RegularLL(Increments{1, 1}, {89.5, 0.5, -89.5, 359.5}, {-89.5, 0.5}));

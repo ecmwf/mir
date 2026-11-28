@@ -67,11 +67,11 @@ void Count::reset() {
 void Count::count(const PointLatLon& point) {
     countTotal_++;
 
-    nn_.insert(DistanceLat(bbox_.north().distance(point.lat()), point.lat()));
-    ss_.insert(DistanceLat(bbox_.south().distance(point.lat()), point.lat()));
+    nn_.insert(DistanceLat(Latitude(bbox_.north()).distance(point.lat()), point.lat()));
+    ss_.insert(DistanceLat(Latitude(bbox_.south()).distance(point.lat()), point.lat()));
 
-    ee_.insert(DistanceLon(bbox_.east().distance(point.lon()), point.lon()));
-    ww_.insert(DistanceLon(bbox_.west().distance(point.lon()), point.lon()));
+    ee_.insert(DistanceLon(Longitude(bbox_.east()).distance(point.lon()), point.lon()));
+    ww_.insert(DistanceLon(Longitude(bbox_.west()).distance(point.lon()), point.lon()));
 
     // Log::info() << point.lat << " " << point.lon << " => " << bbox.contains(point.lat, point.lon) << std::endl;
 
@@ -144,10 +144,10 @@ void Count::json(eckit::JSON& j, bool enclose) const {
 
     j << "bbox";
     j.startObject();
-    j << "n" << bbox_.north().value();
-    j << "w" << bbox_.west().value();
-    j << "s" << bbox_.south().value();
-    j << "e" << bbox_.east().value();
+    j << "n" << bbox_.north();
+    j << "w" << bbox_.west();
+    j << "s" << bbox_.south();
+    j << "e" << bbox_.east();
     j.endObject();
 
     j << "distance_to_bbox";

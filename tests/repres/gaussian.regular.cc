@@ -7,6 +7,7 @@
 #include <numeric>
 
 #include "eckit/testing/Test.h"
+#include "eckit/types/FloatCompare.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/repres/gauss/Gaussian.h"
@@ -70,11 +71,11 @@ CASE("Regular Gaussian grid") {
 
         RepresentationHandle north(new RegularGG(4, {88, 0, 85, 90}));
         EXPECT_EQUAL(north->numberOfPoints(), 5);
-        EXPECT(north->boundingBox().north() == Latitude(lats.front()));
+        EXPECT(eckit::types::is_approximately_equal(north->boundingBox().north(), lats.front(), PointLonLat::EPS));
 
         RepresentationHandle south(new RegularGG(4, {-85, 0, -88, 90}));
         EXPECT_EQUAL(south->numberOfPoints(), 5);
-        EXPECT(south->boundingBox().south() == Latitude(lats.back()));
+        EXPECT(eckit::types::is_approximately_equal(south->boundingBox().south(), lats.back(), PointLonLat::EPS));
     }
 
 
@@ -87,13 +88,13 @@ CASE("Regular Gaussian grid") {
 
         // beyond the Gaussian latitudes (unchanged)
         const auto polar = global->extendBoundingBox({89, 30, -89, 50});
-        EXPECT(polar.north() == Latitude(89));
-        EXPECT(polar.south() == Latitude(-89));
+        EXPECT(eckit::types::is_approximately_equal(polar.north(), 89., PointLonLat::EPS));
+        EXPECT(eckit::types::is_approximately_equal(polar.south(), -89., PointLonLat::EPS));
 
         // almost the globe West-East
         const auto wide = global->extendBoundingBox({10, 1, -10, 350});
-        EXPECT(wide.west() == Longitude::GREENWICH);
-        EXPECT(wide.east() == Longitude::GLOBE);
+        EXPECT(eckit::types::is_approximately_equal(wide.west(), 0., PointLonLat::EPS));
+        EXPECT(eckit::types::is_approximately_equal(wide.east(), LONGITUDE_GLOBE, PointLonLat::EPS));
     }
 
 

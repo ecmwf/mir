@@ -212,7 +212,7 @@ util::BoundingBox Regular::extendBoundingBox(const util::BoundingBox& bbox) cons
 
 bool Regular::isPeriodicWestEast() const {
     eckit::Fraction inc = getSmallestIncrement();
-    return bbox_.east() - bbox_.west() + inc >= Longitude::GLOBE;
+    return eckit::Fraction(bbox_.east()) - eckit::Fraction(bbox_.west()) + inc >= Longitude::GLOBE.fraction();
 }
 
 

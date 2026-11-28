@@ -86,9 +86,8 @@ bool Rotation::operator==(const Rotation& other) const {
 
 BoundingBox Rotation::boundingBox(const BoundingBox& bbox) const {
     using eckit::geo::PointLonLat;
-    auto after = eckit::geo::area::BoundingBox::make_from_projection(
-        PointLonLat{bbox.west().value(), bbox.south().value()}, PointLonLat{bbox.east().value(), bbox.north().value()},
-        rotation_);
+    auto after = eckit::geo::area::BoundingBox::make_from_projection(PointLonLat{bbox.west(), bbox.south()},
+                                                                     PointLonLat{bbox.east(), bbox.north()}, rotation_);
     ASSERT(after);
 
     return {after->north(), after->west(), after->south(), after->east()};

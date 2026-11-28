@@ -18,6 +18,7 @@
 #include "eckit/geo/figure/Earth.h"
 #include "eckit/parser/YAMLParser.h"
 #include "eckit/spec/Custom.h"
+#include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/param/MIRParametrisation.h"
@@ -380,18 +381,19 @@ void RegularXY::fillGrib(grib_info& info) const {
 
 
 bool RegularXY::includesNorthPole() const {
-    return bbox_.north() == Latitude::NORTH_POLE;
+    return eckit::types::is_approximately_equal(bbox_.north(), NORTH_POLE, PointLonLat::EPS);
 }
 
 
 bool RegularXY::includesSouthPole() const {
-    return bbox_.south() == Latitude::SOUTH_POLE;
+    return eckit::types::is_approximately_equal(bbox_.south(), SOUTH_POLE, PointLonLat::EPS);
 }
 
 
 bool RegularXY::isPeriodicWestEast() const {
     return includesNorthPole() || includesSouthPole() ||
-           (bbox_.east().value() - bbox_.west().value() >= Longitude::GLOBE.value());
+           eckit::types::is_approximately_greater_or_equal(bbox_.east() - bbox_.west(), LONGITUDE_GLOBE,
+                                                           PointLonLat::EPS);
 }
 
 

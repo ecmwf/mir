@@ -98,7 +98,7 @@ CASE("MIR-351") {
         // West remains the same value, but East can be corrected
         auto bbox(repres->boundingBox());
         log << "\t" << bbox << std::endl;
-        EXPECTV(is_approximately_equal(west, bbox.west().value()));
+        EXPECTV(is_approximately_equal(west, bbox.west()));
 
         auto domain(repres->domain());
         log << "\t" << domain << std::endl;

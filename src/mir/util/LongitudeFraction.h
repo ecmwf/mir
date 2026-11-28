@@ -162,17 +162,19 @@ private:
         return s;
     }
 
-    friend bool operator==(double, const LongitudeFraction&);
-    friend bool operator!=(double, const LongitudeFraction&);
+    friend bool operator==(double value, const LongitudeFraction& x) { return x == value; }
+    friend bool operator!=(double value, const LongitudeFraction& x) { return x != value; }
 
-    friend bool operator>(double, const LongitudeFraction&);
-    friend bool operator<(double, const LongitudeFraction&);
+    friend bool operator>(double value, const LongitudeFraction& x) { return x < value; }
+    friend bool operator<(double value, const LongitudeFraction& x) { return x > value; }
 
-    friend bool operator>=(double, const LongitudeFraction&);
+    friend bool operator>=(double value, const LongitudeFraction& x) { return x <= value; }
 
     friend bool operator<=(double value, const LongitudeFraction& x) { return value <= x.value(); }
 
-    friend LongitudeFraction operator+(double, const LongitudeFraction&);
+    friend LongitudeFraction operator+(double value, const LongitudeFraction& x) {
+        return LongitudeFraction(value) + x;
+    }
 
     friend LongitudeFraction operator-(double value, const LongitudeFraction& x) { return {value - x.value_}; }
 };

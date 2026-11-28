@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "eckit/testing/Test.h"
+#include "eckit/types/FloatCompare.h"
 #include "eckit/utils/RLE.h"
 
 #include "mir/api/MIRJob.h"
@@ -114,8 +115,8 @@ CASE("Reduced Gaussian grid") {
         EXPECT(extended == BoundingBox(lats[1], 0, lats[2], 60));
 
         const auto wide = global->extendBoundingBox({10, 1, -10, 350});
-        EXPECT(wide.west() == Longitude::GREENWICH);
-        EXPECT(wide.east() == Longitude::GLOBE);
+        EXPECT(eckit::types::is_approximately_equal(wide.west(), 0., PointLonLat::EPS));
+        EXPECT(eckit::types::is_approximately_equal(wide.east(), LONGITUDE_GLOBE, PointLonLat::EPS));
     }
 
 
@@ -151,8 +152,8 @@ CASE("Reduced octahedral Gaussian grid: cropped across the date line (PGEN-558)"
     RepresentationHandle cropped(repres->croppedRepresentation({73, 80, 70, 280}));
 
     const auto& crop = cropped->boundingBox();
-    EXPECT(crop.west() == Longitude{80});
-    EXPECT(crop.east() == Longitude{280});
+    EXPECT(eckit::types::is_approximately_equal(crop.west(), 80., PointLonLat::EPS));
+    EXPECT(eckit::types::is_approximately_equal(crop.east(), 280., PointLonLat::EPS));
 
     // interpolation to the same area, from a global or a regular Gaussian grid (validating the representation)
     api::MIRJob job;
