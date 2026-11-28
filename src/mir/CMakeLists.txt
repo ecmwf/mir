@@ -341,6 +341,8 @@ list(APPEND mir_srcs
     method/Method.h
     method/MethodWeighted.cc
     method/MethodWeighted.h
+    method/Restructure.cc
+    method/Restructure.h
     method/WeightMatrix.cc
     method/WeightMatrix.h
     method/gridbox/GridBoxAverage.cc

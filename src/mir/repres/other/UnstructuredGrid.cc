@@ -13,6 +13,7 @@
 #include <utility>
 
 #include "eckit/filesystem/PathName.h"
+#include "eckit/geo/Grid.h"
 #include "eckit/parser/YAMLParser.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
@@ -484,6 +485,13 @@ Representation* RepresentationBuilder<other::UnstructuredGrid>::make(const param
         }
     }
 #endif
+
+    // other grids by specification (eckit::geo), by their points
+    if (std::string gridspec; param.get("gridspec", gridspec)) {
+        std::unique_ptr<const eckit::geo::Grid> grid(eckit::geo::GridFactory::make_from_string(gridspec));
+        const auto [lats, lons] = grid->to_latlons();
+        return new other::UnstructuredGrid(lats, lons);
+    }
 
     return new other::UnstructuredGrid(param);
 }

@@ -28,6 +28,7 @@ foreach(tool IN ITEMS
     mir-points
     mir-load-legendre
     mir-spectral-transform-points
+    mir-tile
     mir-triangulate
     mir-statistics
     mir-version

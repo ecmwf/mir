@@ -9,6 +9,11 @@
 #include "mir/caching/InMemoryCacheUsage.h"
 
 
+namespace eckit {
+class JSON;
+}
+
+
 namespace mir::caching {
 
 
@@ -26,6 +31,12 @@ public:  // methods
     void operator=(InMemoryCacheBase&&)      = delete;
 
     static InMemoryCacheUsage totalFootprint();
+
+    /// The caches footprint and capacity, by name (of the same name, summed)
+    static void json(eckit::JSON&);
+
+    /// Release the caches not in use
+    static void purgeAll();
 
     virtual const std::string& name() const = 0;
 

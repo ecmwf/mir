@@ -1,0 +1,20 @@
+# input (values 0, 2, 4, ..., 82)
+gridType=unstructured_grid.grib2
+# mir
+--input={griddef:$tests_assertions_dir/gridType=unstructured_grid.pts} --grid={grid:30/30} --interpolation=restructure
+# grib_get
+edition=2
+numberOfDataPoints=84
+numberOfValues=54
+numberOfMissing=30
+missingValuesPresent=1
+values[0]=0
+values[11]=0
+values[12]=12
+values[13]=9999
+values[14]=14
+values[69]=9999
+values[70]=70
+values[71]=9999
+values[72]=72
+values[83]=72

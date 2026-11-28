@@ -22,6 +22,15 @@ cdef extern from "mir/config/LibMir.h" namespace "mir":
         string cacheDir()
 
         @staticmethod
+        string cacheInfo() except +
+
+        @staticmethod
+        void purgeCache() except +
+
+        @staticmethod
+        void removeCacheDir() except +
+
+        @staticmethod
         string homeDir()
 
         @staticmethod
