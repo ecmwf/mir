@@ -4,26 +4,25 @@
 
 #pragma once
 
-#include "mir/repres/regular/RegularGrid.h"
+#include "mir/repres/Representation.h"
 
 
-namespace mir::repres::regular {
+namespace mir::repres {
 
 
-class LambertAzimuthalEqualArea final : public RegularGrid {
+class None : public Representation {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    explicit LambertAzimuthalEqualArea(const param::MIRParametrisation&);
-
-    LambertAzimuthalEqualArea(const Projection&, const util::BoundingBox&, const LinearSpacing& x,
-                              const LinearSpacing& y, const util::Shape&);
+    None();
+    None(const param::MIRParametrisation&);
 
     // -- Destructor
-    // None
+
+    ~None() override;
 
     // -- Convertors
     // None
@@ -43,18 +42,33 @@ public:
     // -- Class methods
     // None
 
+protected:
+    // -- Members
+    // None
+
+    // -- Methods
+    // None
+
+    // -- Overridden methods
+
+    // from Representation
+    void print(std::ostream&) const override;
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
 private:
     // -- Members
     // None
 
     // -- Methods
-
-    static Projection make_projection(const param::MIRParametrisation&);
+    // None
 
     // -- Overridden methods
-
-    void fillGrib(grib_info&) const override;
-    void fillSpec(CustomSpec&) const override;
+    // None
 
     // -- Class members
     // None
@@ -67,4 +81,4 @@ private:
 };
 
 
-}  // namespace mir::repres::regular
+}  // namespace mir::repres

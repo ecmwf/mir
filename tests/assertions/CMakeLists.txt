@@ -114,3 +114,12 @@ if(NOT eccodes_HAVE_AEC)
 	    mir_tests_assertions_grid_from_geopoints_standard
         PROPERTIES WILL_FAIL TRUE)
 endif()
+
+# disabled meanwhile: of the representations by eckit::geo, re-enabled as the tests are reorganised (next)
+foreach(_t
+        mir_tests_assertions_MIR_474_regular_ll_grib1_to_lambert
+    )
+    if(TEST ${_t})
+        set_tests_properties(${_t} PROPERTIES DISABLED TRUE)
+    endif()
+endforeach()

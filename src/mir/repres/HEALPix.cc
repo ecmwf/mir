@@ -12,7 +12,7 @@
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/api/MIRJob.h"
-#include "mir/iterator/UnstructuredIterator.h"
+#include "mir/iterator/GridIterator.h"
 
 #include "eckit/spec/Custom.h"
 #include "mir/key/grid/GridPattern.h"
@@ -182,13 +182,13 @@ void HEALPix::fillMeshGen(util::MeshGeneratorParameters& params) const {
 }
 
 
-void HEALPix::fillSpec(CustomSpec& spec) const {
-    spec.set("grid", name());
+const eckit::geo::Grid& HEALPix::grid() const {
+    return *grid_;
 }
 
 
 void HEALPix::json(eckit::JSON& j) const {
-    static_cast<eckit::geo::Grid&>(*grid_).spec().json(j);
+    spec().json(j);
 }
 
 
@@ -203,8 +203,7 @@ void HEALPix::validate(const MIRValuesVector& values) const {
 
 
 Iterator* HEALPix::iterator() const {
-    const auto& [lats, lons] = to_latlons();
-    return new iterator::UnstructuredIterator(lats, lons);
+    return new iterator::GridIterator(*grid_);
 }
 
 

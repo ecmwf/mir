@@ -25,7 +25,7 @@ GridSpecInput::GridSpecInput() : size_(0) {}
 
 GridSpecInput::GridSpecInput(const std::string& gridspec, bool gridded) : size_(0) {
     util::ValueMap map;
-    map["gridspec"]                       = gridspec;
+    map["gridSpec"]                       = gridspec;
     map[gridded ? "gridded" : "spectral"] = true;
 
     setAuxiliaryInformation(map);
@@ -35,8 +35,12 @@ GridSpecInput::GridSpecInput(const std::string& gridspec, bool gridded) : size_(
 void GridSpecInput::setAuxiliaryInformation(const util::ValueMap& map) {
     ArtificialInput::setAuxiliaryInformation(map);
 
+    // gridSpec (as ecCodes), or gridspec (as before), as given by the user
     std::string gridspec;
-    ASSERT(parametrisation().get("gridspec", gridspec));
+    if (!parametrisation().get("gridSpec", gridspec) && !parametrisation().get("gridspec", gridspec)) {
+        throw exception::UserError("GridSpecInput: gridSpec required");
+    }
+    parametrisation().set("gridSpec", gridspec);
 
     ASSERT(!parametrisation().has("spectral") || !parametrisation().has("gridded"));
     parametrisation().set(parametrisation().has("spectral") ? "spectral" : "gridded", true);

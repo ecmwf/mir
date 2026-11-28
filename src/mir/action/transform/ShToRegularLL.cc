@@ -6,6 +6,8 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
 #include "mir/key/Area.h"
@@ -32,7 +34,16 @@ ShToRegularLL<Invtrans>::ShToRegularLL(const param::MIRParametrisation& param) :
 template <class Invtrans>
 bool ShToRegularLL<Invtrans>::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const ShToRegularLL*>(&other);
-    return (o != nullptr) && (increments_ == o->increments_);
+    return (o != nullptr) && (increments_ == o->increments_) && (bbox_ == o->bbox_) && ShToGridded::sameAs(other);
+}
+
+
+template <class Invtrans>
+void ShToRegularLL<Invtrans>::json(eckit::JSON& j) const {
+    ShToGridded::json(j);
+    Invtrans::json(j);
+    j << "grid" << spec_value(increments_);
+    j << "area" << spec_value(bbox_);
 }
 
 

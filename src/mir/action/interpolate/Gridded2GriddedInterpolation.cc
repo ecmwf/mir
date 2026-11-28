@@ -5,11 +5,17 @@
 #include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
 
 #include <sstream>
+#include <vector>
+
+#include "eckit/log/JSON.h"
+#include "eckit/parser/YAMLParser.h"
+#include "eckit/value/Value.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/method/Cropping.h"
 #include "mir/method/Method.h"
+#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
@@ -29,6 +35,12 @@ Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParam
 
     param.get("interpolation-global-input", inputGlobal_ = false);
     param.get("interpolation-global-output", outputGlobal_ = false);
+
+    // as by plan compression (see mergeWithNext)
+    if (std::vector<double> crop; param.get("cropping", crop)) {
+        ASSERT(crop.size() == 4);
+        method_->setCropping({crop[0], crop[1], crop[2], crop[3]});
+    }
 }
 
 
@@ -106,6 +118,37 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
 bool Gridded2GriddedInterpolation::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const Gridded2GriddedInterpolation*>(&other);
     return (o != nullptr) && (interpolation_ == o->interpolation_) && method_->sameAs(*o->method_);
+}
+
+
+void Gridded2GriddedInterpolation::json(eckit::JSON& j) const {
+    // the method spec (complete), flattened (as interpolation options)
+    j << "interpolation" << interpolation_;
+
+    const auto str = [this]() {
+        param::DefaultParametrisation::JSONComplete complete;
+        return method_->json_str(false);
+    }();
+
+    if (const auto spec = eckit::YAMLParser::decodeString(str); spec.isMap()) {
+        for (const auto& kv : eckit::ValueMap(spec)) {
+            if (const auto k = kv.first.as<std::string>(); k != "type") {
+                j << k << kv.second;
+            }
+        }
+    }
+
+    if (method_->hasCropping()) {
+        j << "cropping" << spec_value(method_->getCropping());
+    }
+
+    if (inputGlobal_) {
+        j << "interpolation-global-input" << inputGlobal_;
+    }
+
+    if (outputGlobal_) {
+        j << "interpolation-global-output" << outputGlobal_;
+    }
 }
 
 

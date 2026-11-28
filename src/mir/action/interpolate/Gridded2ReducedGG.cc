@@ -6,6 +6,8 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/gauss/reduced/ReducedClassic.h"
 #include "mir/util/Exceptions.h"
@@ -22,6 +24,12 @@ Gridded2ReducedGG::Gridded2ReducedGG(const param::MIRParametrisation& param) : G
 bool Gridded2ReducedGG::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const Gridded2ReducedGG*>(&other);
     return (o != nullptr) && (N_ == o->N_) && Gridded2GriddedInterpolation::sameAs(other);
+}
+
+
+void Gridded2ReducedGG::json(eckit::JSON& j) const {
+    Gridded2GriddedInterpolation::json(j);
+    j << "reduced" << N_;
 }
 
 

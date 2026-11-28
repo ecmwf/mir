@@ -19,8 +19,8 @@
 #include "eckit/types/Fraction.h"
 
 #include "mir/api/MIRJob.h"
+#include "mir/iterator/GridIterator.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/gauss/GaussianIterator.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Domain.h"
@@ -194,14 +194,12 @@ eckit::Fraction Reduced::getSmallestIncrement() const {
 
 
 Iterator* Reduced::unrotatedIterator() const {
-    auto pl = pls();
-    return new GaussianIterator(latitudes(), std::move(pl), bbox_, N_, Nj_, k_);
+    return new iterator::GridIterator(grid(), true);
 }
 
 
-Iterator* Reduced::rotatedIterator(const util::Rotation& rotation) const {
-    auto pl = pls();
-    return new GaussianIterator(latitudes(), std::move(pl), bbox_, N_, Nj_, k_, rotation);
+Iterator* Reduced::rotatedIterator(const util::Rotation& /*rotation (of the grid)*/) const {
+    return new iterator::GridIterator(grid(), true);
 }
 
 
@@ -351,15 +349,20 @@ std::vector<util::GridBox> Reduced::gridBoxes() const {
 void Reduced::fillSpec(CustomSpec& spec) const {
     Gaussian::fillSpec(spec);
 
+    // only the rows of the grid compare (a regional pl, eg. from GRIB, is zero elsewhere)
     const auto& pl = pls();
-    if (pl == eckit::geo::util::reduced_octahedral_pl(N_)) {
+    auto rows      = [this, &pl](const auto& other) {
+        return std::equal(pl.begin() + k_, pl.begin() + k_ + Nj_, other.begin() + k_);
+    };
+
+    if (rows(eckit::geo::util::reduced_octahedral_pl(N_))) {
         spec.set("grid", "O" + std::to_string(N_));
+        return;
     }
-    else {
-        spec.set("grid", "N" + std::to_string(N_));
-        if (!eckit::geo::util::reduced_classical_pl_known(N_)) {
-            spec.set("pl", pl);
-        }
+
+    spec.set("grid", "N" + std::to_string(N_));
+    if (!eckit::geo::util::reduced_classical_pl_known(N_) || !rows(eckit::geo::util::reduced_classical_pl(N_))) {
+        spec.set("pl", pl);
     }
 }
 

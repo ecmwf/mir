@@ -10,7 +10,10 @@
 
 #include "atlas/trans/VorDivToUV.h"
 
+#include "eckit/log/JSON.h"
+
 #include "mir/action/context/Context.h"
+#include "mir/action/transform/ShToGridded.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
@@ -43,6 +46,11 @@ ShVodToUV::ShVodToUV(const param::MIRParametrisation& param) : Action(param) {
 bool ShVodToUV::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const ShVodToUV*>(&other);
     return (o != nullptr);
+}
+
+
+void ShVodToUV::json(eckit::JSON& j) const {
+    ShToGridded::json_options(j, options_);
 }
 
 

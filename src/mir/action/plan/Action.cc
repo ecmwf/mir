@@ -14,8 +14,10 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Increments.h"
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
+#include "mir/util/Rotation.h"
 #include "mir/util/Trace.h"
 
 
@@ -79,8 +81,29 @@ util::BoundingBox Action::outputBoundingBox() const {
 }
 
 
-void Action::json(eckit::JSON&) const {
-    throw exception::UserError(std::string("Action: spec not supported by ") + name());
+std::string Action::type() const {
+    if (type_.empty()) {
+        throw exception::UserError(std::string("Action: spec not supported by ") + name());
+    }
+    return type_;
+}
+
+
+void Action::json(eckit::JSON&) const {}
+
+
+std::vector<double> Action::spec_value(const util::BoundingBox& bbox) {
+    return {bbox.north().value(), bbox.west().value(), bbox.south().value(), bbox.east().value()};
+}
+
+
+std::vector<double> Action::spec_value(const util::Increments& increments) {
+    return {increments.west_east().longitude().value(), increments.south_north().latitude().value()};
+}
+
+
+std::vector<double> Action::spec_value(const util::Rotation& rotation) {
+    return {rotation.south_pole_latitude().value(), rotation.south_pole_longitude().value()};
 }
 
 
@@ -106,6 +129,7 @@ void Action::json(eckit::JSON& j, bool lookupKnownActions) const {
     }
 
     j.startObject();
+    j << "type" << type();
     json(j);
     j.endObject();
 }
@@ -197,7 +221,9 @@ Action* ActionFactory::build(const std::string& name, const param::MIRParametris
         }
     }
 
-    return j->second->make(params);
+    auto* action  = j->second->make(params);
+    action->type_ = j->first;
+    return action;
 }
 
 

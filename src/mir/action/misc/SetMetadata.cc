@@ -6,6 +6,7 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/types/Types.h"
 #include "eckit/utils/Tokenizer.h"
 
@@ -20,8 +21,8 @@ namespace mir::action {
 
 
 SetMetadata::SetMetadata(const param::MIRParametrisation& param) : Action(param) {
-    std::string metadata;
-    ASSERT(parametrisation().get("metadata", metadata));
+    ASSERT(parametrisation().get("metadata", metadataStr_));
+    const auto& metadata = metadataStr_;
 
     // TODO: create a parser
     eckit::Tokenizer parse1(",");
@@ -43,6 +44,11 @@ SetMetadata::SetMetadata(const param::MIRParametrisation& param) : Action(param)
 bool SetMetadata::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const SetMetadata*>(&other);
     return (o != nullptr) && (metadata_ == o->metadata_);
+}
+
+
+void SetMetadata::json(eckit::JSON& j) const {
+    j << "metadata" << metadataStr_;
 }
 
 

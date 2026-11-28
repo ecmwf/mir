@@ -10,8 +10,8 @@
 #include "mir/api/mir_config.h"
 #include "mir/iterator/detail/RegularIterator.h"
 #include "mir/key/grid/Grid.h"
+#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/repres/gauss/GaussianIterator.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Increments.h"
@@ -101,7 +101,7 @@ CASE("MIR-351") {
 }
 
 
-CASE("GaussianIterator") {
+CASE("Gaussian grid iterators") {
     auto old(log.precision(16));
 
     struct test_t {
@@ -118,7 +118,7 @@ CASE("GaussianIterator") {
     BoundingBox globe;
 
 
-    SECTION("GaussianIterator") {
+    SECTION("global and cropped") {
         std::vector<test_t> tests{
             {"F128",
              131072,

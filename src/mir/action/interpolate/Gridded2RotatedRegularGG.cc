@@ -6,6 +6,8 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/gauss/regular/RotatedGG.h"
 #include "mir/util/Exceptions.h"
@@ -24,6 +26,12 @@ Gridded2RotatedRegularGG::Gridded2RotatedRegularGG(const param::MIRParametrisati
 bool Gridded2RotatedRegularGG::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const Gridded2RotatedRegularGG*>(&other);
     return (o != nullptr) && (N_ == o->N_) && Gridded2RotatedGrid::sameAs(other);
+}
+
+
+void Gridded2RotatedRegularGG::json(eckit::JSON& j) const {
+    Gridded2RotatedGrid::json(j);
+    j << "regular" << N_;
 }
 
 

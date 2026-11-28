@@ -7,6 +7,7 @@
 #include <iosfwd>
 #include <memory>
 #include <string>
+#include <vector>
 
 
 namespace eckit {
@@ -22,7 +23,9 @@ class MIRParametrisation;
 }
 namespace util {
 class BoundingBox;
-}
+class Increments;
+class Rotation;
+}  // namespace util
 namespace repres {
 class Representation;
 }
@@ -76,6 +79,9 @@ public:
 
     virtual util::BoundingBox outputBoundingBox() const;
 
+    /// Spec type, as registered (see ActionFactory)
+    virtual std::string type() const;
+
     /// Spec (see ActionFactory::make_from_string), as a known action name if built from it alone
     void json(eckit::JSON&, bool lookupKnownActions) const;
     std::string json_str(bool lookupKnownActions = true) const;
@@ -98,8 +104,15 @@ protected:
     virtual void print(std::ostream&) const = 0;
     const param::MIRParametrisation& parametrisation() const { return parametrisation_; }
 
-    /// Spec {type: name, ...}, as ActionFactory::make_from_string (not supported by default)
+    /// Spec options, following its type (none by default)
     virtual void json(eckit::JSON&) const;
+
+    // -- Class methods
+
+    /// Spec values: area [north, west, south, east], grid [west-east, south-north], rotation [south pole lat, lon]
+    static std::vector<double> spec_value(const util::BoundingBox&);
+    static std::vector<double> spec_value(const util::Increments&);
+    static std::vector<double> spec_value(const util::Rotation&);
 
     // -- Overridden methods
     // None
@@ -107,13 +120,13 @@ protected:
     // -- Class members
     // None
 
-    // -- Class methods
-    // None
-
 private:
     // -- Members
 
     const param::MIRParametrisation& parametrisation_;
+
+    /// Type, if built by ActionFactory
+    std::string type_;
 
     /// Parametrisation, if built from a spec (see ActionFactory::make_from_string)
     std::unique_ptr<const param::MIRParametrisation> spec_;

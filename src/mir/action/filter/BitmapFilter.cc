@@ -7,6 +7,8 @@
 #include <ostream>
 #include <sstream>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/data/MIRField.h"
@@ -33,6 +35,11 @@ BitmapFilter::BitmapFilter(const param::MIRParametrisation& param) : Action(para
 bool BitmapFilter::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const BitmapFilter*>(&other);
     return (o != nullptr) && (path_ == o->path_);
+}
+
+
+void BitmapFilter::json(eckit::JSON& j) const {
+    j << "bitmap" << path_;
 }
 
 

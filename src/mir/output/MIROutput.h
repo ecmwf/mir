@@ -10,6 +10,10 @@
 #include <vector>
 
 
+namespace eckit {
+class JSON;
+}
+
 namespace mir {
 namespace action {
 class ActionPlan;
@@ -55,6 +59,10 @@ public:
     virtual bool sameAs(const MIROutput&) const                                                                = 0;
     virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const = 0;
     virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const                   = 0;
+
+    /// Write the options of printParametrisation, as spec
+    virtual void jsonParametrisation(eckit::JSON&, const param::MIRParametrisation&) const {}
+
     virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, MIROutput&);
 
     // -- Overridden methods

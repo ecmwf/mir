@@ -6,6 +6,8 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
 #include "mir/key/Area.h"
@@ -38,6 +40,16 @@ bool ShToRotatedRegularLL<Invtrans>::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const ShToRotatedRegularLL*>(&other);
     return (o != nullptr) && (increments_ == o->increments_) && (rotation_ == o->rotation_) &&
            ShToGridded::sameAs(other);
+}
+
+
+template <class Invtrans>
+void ShToRotatedRegularLL<Invtrans>::json(eckit::JSON& j) const {
+    ShToGridded::json(j);
+    Invtrans::json(j);
+    j << "grid" << spec_value(increments_);
+    j << "area" << spec_value(bbox_);
+    j << "rotation" << spec_value(rotation_);
 }
 
 

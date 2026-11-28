@@ -6,11 +6,11 @@
 
 #include <algorithm>
 #include <cmath>
-#include <memory>
 #include <numeric>
 #include <ostream>
 
 #include "eckit/geo/Grid.h"
+#include "eckit/spec/Spec.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/action/context/Context.h"
@@ -34,15 +34,14 @@ size_t ArrayOutput::save(const param::MIRParametrisation&, context::Context& ctx
 
     // save metadata
     repres::RepresentationHandle repres(field.representation());
-    std::unique_ptr<const eckit::geo::Grid> grid(eckit::geo::GridFactory::build(repres->spec()));
-    ASSERT(grid);
+    const auto& grid = repres->grid();
 
-    shape_    = grid->shape();
-    gridspec_ = grid->spec_str();
+    shape_    = grid.shape();
+    gridspec_ = repres->spec().str();
 
     // save data
     ASSERT(field.dimensions() == 1);
-    ASSERT(field.values(0).size() == grid->size());
+    ASSERT(field.values(0).size() == grid.size());
     values_ = field.values(0);
     repres->reorderFromCanonical(values_);
 

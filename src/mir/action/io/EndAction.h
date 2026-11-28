@@ -75,9 +75,11 @@ private:
 
     bool sameAs(const Action&) const override;
     bool isEndAction() const override;
+    std::string type() const override;
 
     void print(std::ostream&) const override;
     void custom(std::ostream&) const override;
+    void json(eckit::JSON&) const override;
 
     // -- Class members
     // None

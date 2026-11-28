@@ -6,8 +6,15 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+#include "eckit/spec/Spec.h"
+
+#include "mir/action/context/Context.h"
 #include "mir/action/plan/Action.h"
 #include "mir/action/plan/Executor.h"
+#include "mir/data/MIRField.h"
+#include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 
 
@@ -30,6 +37,9 @@ void ActionNode::execute(context::Context& ctx, const Executor& executor) const 
     bool ok = false;
     try {
         action_.perform(ctx);
+        if (recordGrid_) {
+            representation_ = std::make_unique<repres::RepresentationHandle>(ctx.field().representation());
+        }
         ok = true;
     }
     catch (std::exception& e) {
@@ -62,6 +72,30 @@ void ActionNode::dump(std::ostream& out, size_t depth) const {
     }
     out << action_ << std::endl;
     graph_.dump(out, depth + 1);
+}
+
+
+void ActionNode::json(eckit::JSON& j) const {
+    j.startList();
+    action_.json(j, true);
+    graph_.json(j);
+    j.endList();
+}
+
+
+void ActionNode::recordGrids() {
+    recordGrid_ = true;
+    graph_.recordGrids();
+}
+
+
+void ActionNode::json_grids(eckit::JSON& j) const {
+    ASSERT(representation_);
+
+    j.startList();
+    (*representation_)->spec().json(j);
+    graph_.json_grids(j);
+    j.endList();
 }
 
 

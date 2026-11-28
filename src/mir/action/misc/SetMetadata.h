@@ -45,6 +45,7 @@ public:
 private:
     // -- Members
 
+    std::string metadataStr_;
     std::map<std::string, long> metadata_;
 
     // -- Methods
@@ -56,6 +57,7 @@ private:
 
     void execute(context::Context&) const override;
     bool sameAs(const Action&) const override;
+    void json(eckit::JSON&) const override;
     const char* name() const override;
 
     // -- Class members

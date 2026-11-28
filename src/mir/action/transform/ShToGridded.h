@@ -57,7 +57,9 @@ public:
     // None
 
     // -- Class methods
-    // None
+
+    /// Write the atlas/trans options as spec (keys prefixed by atlas-trans-)
+    static void json_options(eckit::JSON&, const atlas_config_t&);
 
 protected:
     // -- Members
@@ -71,6 +73,7 @@ protected:
 
     void print(std::ostream&) const override  = 0;
     bool sameAs(const Action&) const override = 0;
+    void json(eckit::JSON&) const override;
 
     // -- Class members
     // None

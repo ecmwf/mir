@@ -16,6 +16,7 @@
 
 #include "mir/api/MIRJob.h"
 #include "mir/api/mir_config.h"
+#include "mir/iterator/GridIterator.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Domain.h"
@@ -117,8 +118,8 @@ void ReducedLL::fillGrib(grib_info& /*unused*/) const {
 void ReducedLL::fillSpec(CustomSpec& spec) const {
     Gridded::fillSpec(spec);
 
+    spec.set("type", "reduced_ll");
     spec.set("pl", pl_);
-    spec.set("Nj", pl_.size());
 }
 
 atlas::Grid ReducedLL::atlasGrid() const {
@@ -166,99 +167,8 @@ void ReducedLL::validate(const MIRValuesVector& values) const {
     ASSERT_VALUES_SIZE_EQ_ITERATOR_COUNT("ReducedLL", values.size(), numberOfPoints());
 }
 
-class ReducedLLIterator : public Iterator {
-
-    const std::vector<long>& pl_;
-    const size_t nj_;
-    size_t ni_;
-
-    const util::Domain domain_;
-    const eckit::Fraction west_;
-    const eckit::Fraction ew_;
-    eckit::Fraction inc_west_east_;
-    const eckit::Fraction inc_north_south_;
-
-    eckit::Fraction latitude_;
-    eckit::Fraction longitude_;
-
-    size_t i_;
-    size_t j_;
-    size_t p_;
-
-    size_t count_;
-    bool first_;
-    bool periodic_;
-
-    void print(std::ostream& out) const override {
-        out << "ReducedLLIterator[";
-        Iterator::print(out);
-        out << ",domain=" << domain_ << ",ni=" << ni_ << ",nj=" << nj_ << ",i=" << i_ << ",j=" << j_ << ",p=" << p_
-            << ",count=" << count_ << "]";
-    }
-
-    bool next(Latitude& lat, Longitude& lon) override {
-        while (j_ < nj_ && i_ < ni_) {
-            lat = latitude_;
-            lon = longitude_;
-
-            bool contains = domain_.contains(lat, lon);
-            if (contains && !first_) {
-                count_++;
-            }
-
-            longitude_ += inc_west_east_;
-
-            if (++i_ == ni_) {
-                ++j_;
-                i_ = 0;
-                latitude_ -= inc_north_south_;
-                longitude_ = west_;
-
-                if (j_ < nj_) {
-                    ASSERT(p_ < pl_.size());
-                    ni_ = size_t(pl_[p_++]);
-                    ASSERT(ni_ > 1);
-                    inc_west_east_ = ew_ / (ni_ - (periodic_ ? 0 : 1));
-                }
-            }
-
-            if (contains) {
-                first_ = false;
-                return true;
-            }
-        }
-        return false;
-    }
-
-    size_t index() const override { return count_; }
-
-public:
-    ReducedLLIterator(const std::vector<long>& pl, const util::Domain& dom) :
-        pl_(pl),
-        nj_(pl.size()),
-        domain_(dom),
-        west_(domain_.west().fraction()),
-        ew_((domain_.east() - domain_.west()).fraction()),
-        inc_north_south_((domain_.north() - domain_.south()).fraction() / eckit::Fraction(nj_ - 1)),
-        latitude_(domain_.north().fraction()),
-        longitude_(west_),
-        i_(0),
-        j_(0),
-        p_(0),
-        count_(0),
-        first_(true),
-        periodic_(dom.isPeriodicWestEast()) {
-
-        ASSERT(nj_ > 1);
-
-        ni_ = size_t(pl_[p_++]);
-        ASSERT(ni_ > 1);
-        inc_west_east_ = ew_ / (ni_ - (periodic_ ? 0 : 1));
-    }
-};
-
 Iterator* ReducedLL::iterator() const {
-    return new ReducedLLIterator(pl_, domain());
+    return new iterator::GridIterator(grid(), true);
 }
 
 std::vector<util::GridBox> ReducedLL::gridBoxes() const {

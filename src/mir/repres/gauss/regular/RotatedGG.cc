@@ -9,7 +9,7 @@
 
 #include "eckit/spec/Custom.h"
 
-#include "mir/repres/gauss/GaussianIterator.h"
+#include "mir/iterator/GridIterator.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
@@ -40,8 +40,7 @@ bool RotatedGG::sameAs(const Representation& other) const {
 
 
 Iterator* RotatedGG::iterator() const {
-    std::vector<long> pl(N_ * 2, long(4 * N_));
-    return new gauss::GaussianIterator(latitudes(), std::move(pl), bbox_, N_, Nj_, k_, rotation_);
+    return new iterator::GridIterator(grid(), true);
 }
 
 

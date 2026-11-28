@@ -7,6 +7,8 @@
 #include <ostream>
 #include <vector>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/data/MIRField.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
 #include "mir/util/Exceptions.h"
@@ -17,6 +19,11 @@
 
 
 namespace mir::action::transform {
+
+
+void InvtransVodTouv::json(eckit::JSON& j) const {
+    j << "invtrans" << "vod2uv";
+}
 
 
 void InvtransVodTouv::print(std::ostream& out) const {

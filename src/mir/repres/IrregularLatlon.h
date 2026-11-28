@@ -90,6 +90,7 @@ private:
     atlas::Grid atlasGrid() const override;
     util::Domain domain() const override;
     Iterator* iterator() const override;
+    void fillSpec(CustomSpec&) const override;
     bool isPeriodicWestEast() const override;
     bool includesNorthPole() const override;
     bool includesSouthPole() const override;

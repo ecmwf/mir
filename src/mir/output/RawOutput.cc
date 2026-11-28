@@ -5,10 +5,9 @@
 #include "mir/output/RawOutput.h"
 
 #include <cstring>
-#include <memory>
 #include <ostream>
 
-#include "eckit/geo/Grid.h"
+#include "eckit/spec/Spec.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
@@ -30,8 +29,7 @@ size_t RawOutput::save(const param::MIRParametrisation& /*param*/, context::Cont
 
     // save metadata
     repres::RepresentationHandle repres(field.representation());
-    std::unique_ptr<const eckit::geo::Grid> grid(eckit::geo::GridFactory::build(repres->spec()));
-    metadata_.set("grid", grid->spec_str());
+    metadata_.set("grid", repres->spec().str());
     if (field.hasMissing()) {
         metadata_.set("missing_value", field.missingValue());
     }

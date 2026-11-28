@@ -7,6 +7,7 @@
 #include <ostream>
 #include <sstream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/types/Types.h"
 #include "eckit/utils/Tokenizer.h"
 
@@ -24,12 +25,10 @@ namespace mir::action {
 
 
 FormulaAction::FormulaAction(const param::MIRParametrisation& param) : Action(param) {
-
-    std::string formula;
-    ASSERT(parametrisation().get("formula", formula));
-
-    std::string metadata;
-    ASSERT(parametrisation().get("formula.metadata", metadata));
+    ASSERT(parametrisation().get("formula", formulaStr_));
+    ASSERT(parametrisation().get("formula.metadata", metadataStr_));
+    const auto& formula  = formulaStr_;
+    const auto& metadata = metadataStr_;
 
     // TODO: create a parser
     eckit::Tokenizer parse1(",");
@@ -55,6 +54,12 @@ FormulaAction::FormulaAction(const param::MIRParametrisation& param) : Action(pa
 bool FormulaAction::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const FormulaAction*>(&other);
     return (o != nullptr) && (formula_->sameAs(*o->formula_)) && (metadata_ == o->metadata_);
+}
+
+
+void FormulaAction::json(eckit::JSON& j) const {
+    j << "formula" << formulaStr_;
+    j << "formula.metadata" << metadataStr_;
 }
 
 

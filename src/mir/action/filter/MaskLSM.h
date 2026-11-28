@@ -28,8 +28,10 @@ private:
     virtual const std::vector<bool>& mask(const repres::Representation&) const = 0;
 
     void print(std::ostream&) const final;
+    void json(eckit::JSON&) const final;
     void execute(context::Context&) const final;
 
+    const std::string key_;
     const bool value_;
 };
 

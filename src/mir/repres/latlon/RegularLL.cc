@@ -10,6 +10,7 @@
 #include "eckit/spec/Custom.h"
 
 #include "mir/api/mir_config.h"
+#include "mir/iterator/GridIterator.h"
 #include "mir/iterator/detail/RegularIterator.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Atlas.h"
@@ -29,25 +30,7 @@ RegularLL::RegularLL(const util::Increments& increments, const util::BoundingBox
 RegularLL::~RegularLL() = default;
 
 Iterator* RegularLL::iterator() const {
-
-    class RegularLLIterator : protected LatLonIterator, public Iterator {
-        void print(std::ostream& out) const override {
-            out << "RegularLLIterator[";
-            Iterator::print(out);
-            out << ",";
-            LatLonIterator::print(out);
-            out << "]";
-        }
-        bool next(Latitude& lat, Longitude& lon) override { return LatLonIterator::next(lat, lon); }
-
-        size_t index() const override { return count_; }
-
-    public:
-        RegularLLIterator(size_t ni, size_t nj, Latitude north, Longitude west, const util::Increments& increments) :
-            LatLonIterator(ni, nj, north, west, increments) {}
-    };
-
-    return new RegularLLIterator(ni_, nj_, bbox_.north(), bbox_.west(), increments_);
+    return new iterator::GridIterator(grid(), true);
 }
 
 void RegularLL::print(std::ostream& out) const {

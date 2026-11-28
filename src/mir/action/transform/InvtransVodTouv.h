@@ -46,6 +46,7 @@ protected:
     // -- Methods
 
     void print(std::ostream&) const;
+    void json(eckit::JSON&) const;
     void sh2grid(data::MIRField&, const ShToGridded::atlas_trans_t&, const param::MIRParametrisation&) const;
 
     // -- Overridden methods

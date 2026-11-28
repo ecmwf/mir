@@ -6,6 +6,8 @@
 
 #include <ostream>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -63,6 +65,23 @@ bool EmptyOutput::printParametrisation(std::ostream& out, const param::MIRParame
     }
 
     return ok;
+}
+
+
+void EmptyOutput::jsonParametrisation(eckit::JSON& j, const param::MIRParametrisation& param) const {
+    const auto& user = param.userParametrisation();
+
+    if (long bits = 0; user.get("accuracy", bits)) {
+        j << "accuracy" << bits;
+    }
+
+    if (std::string packing; user.get("packing", packing)) {
+        j << "packing" << packing;
+    }
+
+    if (long edition = 0; user.get("edition", edition)) {
+        j << "edition" << edition;
+    }
 }
 
 

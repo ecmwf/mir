@@ -6,6 +6,7 @@
 
 #include <sstream>
 
+#include "eckit/log/JSON.h"
 #include "eckit/utils/StringTools.h"
 
 #include "mir/action/context/Context.h"
@@ -22,10 +23,10 @@ StatisticsFilter::StatisticsFilter(const param::MIRParametrisation& param) : Act
     std::string which;
     param.get("which-statistics", which);
 
-    std::string statistics = "scalar";
-    ASSERT(param.get(which + "-statistics", statistics) || param.get("statistics", statistics));
+    names_ = "scalar";
+    ASSERT(param.get(which + "-statistics", names_) || param.get("statistics", names_));
 
-    auto stats(eckit::StringTools::split("/", statistics));
+    auto stats(eckit::StringTools::split("/", names_));
     statistics_.reserve(stats.size());
 
     for (auto& s : stats) {
@@ -59,6 +60,12 @@ bool StatisticsFilter::sameAs(const Action& other) const {
     }
 
     return true;
+}
+
+
+void StatisticsFilter::json(eckit::JSON& j) const {
+    j << "statistics" << names_;
+    j << "precision" << precision_;
 }
 
 

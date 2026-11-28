@@ -6,10 +6,14 @@
 
 #include <ostream>
 #include <sstream>
+#include <vector>
 
+#include "eckit/log/JSON.h"
+#include "eckit/parser/YAMLParser.h"
 #include "eckit/system/MemoryInfo.h"
 #include "eckit/system/SystemInfo.h"
 #include "eckit/utils/MD5.h"
+#include "eckit/value/Value.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/action/transform/TransCache.h"
@@ -239,10 +243,33 @@ ShToGridded::ShToGridded(const param::MIRParametrisation& param) : Action(param)
     bool flt = false;
     parametrisation().userParametrisation().get("atlas-trans-flt", flt);
     options_.set("flt", flt);
+
+    // as by plan compression (see mergeWithNext)
+    if (std::vector<double> c; parametrisation().get("cropping", c)) {
+        ASSERT(c.size() == 4);
+        crop({c[0], c[1], c[2], c[3]});
+    }
 }
 
 
 ShToGridded::~ShToGridded() = default;
+
+
+void ShToGridded::json_options(eckit::JSON& j, const atlas_config_t& options) {
+    // all, as digested in print and compared in sameAs
+    for (const auto& kv : eckit::ValueMap(eckit::YAMLParser::decodeString(options.json()))) {
+        j << "atlas-trans-" + kv.first.as<std::string>() << kv.second;
+    }
+}
+
+
+void ShToGridded::json(eckit::JSON& j) const {
+    json_options(j, options_);
+
+    if (cropping_) {
+        j << "cropping" << spec_value(cropping_.boundingBox());
+    }
+}
 
 
 void ShToGridded::print(std::ostream& out) const {
@@ -312,7 +339,8 @@ bool ShToGridded::mergeWithNext(const Action& next) {
 
 bool ShToGridded::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const ShToGridded*>(&other);
-    return (o != nullptr) && atlasOptionsDigest(options_) == atlasOptionsDigest(o->options_);
+    return (o != nullptr) && atlasOptionsDigest(options_) == atlasOptionsDigest(o->options_) &&
+           cropping_.sameAs(o->cropping_);
 }
 
 

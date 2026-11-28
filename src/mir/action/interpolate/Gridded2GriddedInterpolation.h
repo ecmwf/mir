@@ -67,6 +67,7 @@ protected:
 
     bool sameAs(const Action&) const override = 0;
     void print(std::ostream&) const override  = 0;
+    void json(eckit::JSON&) const override;
 
     // -- Class members
     // None

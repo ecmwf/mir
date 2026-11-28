@@ -7,6 +7,8 @@
 #include <ostream>
 #include <vector>
 
+#include "eckit/log/JSON.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/gauss/reduced/RotatedFromPL.h"
 #include "mir/util/Exceptions.h"
@@ -25,6 +27,12 @@ Gridded2RotatedReducedGGPLGiven::Gridded2RotatedReducedGGPLGiven(const param::MI
 bool Gridded2RotatedReducedGGPLGiven::sameAs(const Action& other) const {
     const auto* o = dynamic_cast<const Gridded2RotatedReducedGGPLGiven*>(&other);
     return (o != nullptr) && (pl_ == o->pl_) && Gridded2RotatedGrid::sameAs(other);
+}
+
+
+void Gridded2RotatedReducedGGPLGiven::json(eckit::JSON& j) const {
+    Gridded2RotatedGrid::json(j);
+    j << "pl" << pl_;
 }
 
 
