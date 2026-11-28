@@ -15,6 +15,7 @@
 #include "mir/util/Angles.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Rotation.h"
+#include "mir/util/Types.h"
 
 
 namespace mir::data {
@@ -74,9 +75,9 @@ void CartesianVector2DField::rotate(const util::Rotation& rotation, MIRValuesVec
             continue;
         }
 
-        const LongitudeDouble lonRotated = rotation.south_pole_longitude().value() - std::get<PointLonLat>(*it).lon();
-        const double lon_rotated         = lonRotated.normalise(LongitudeDouble::MINUS_DATE_LINE).value();
-        const double lon_unrotated       = std::get<PointLonLat>(*jt).lon();
+        const double lon_rotated = util::normalise_longitude(
+            rotation.south_pole_longitude().value() - std::get<PointLonLat>(*it).lon(), -LONGITUDE_GLOBE / 2.);
+        const double lon_unrotated = std::get<PointLonLat>(*jt).lon();
 
         const double a = util::degree_to_radian(lon_rotated);
         const double b = util::degree_to_radian(lon_unrotated);

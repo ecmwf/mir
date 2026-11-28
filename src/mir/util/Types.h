@@ -28,6 +28,11 @@ using eckit::geo::PointLonLat;
 using eckit::geo::PointXY;
 using eckit::geo::PointXYZ;
 
+inline constexpr double NORTH_POLE      = PointLonLat::RIGHT_ANGLE;
+inline constexpr double SOUTH_POLE      = -PointLonLat::RIGHT_ANGLE;
+inline constexpr double LATITUDE_GLOBE  = PointLonLat::FLAT_ANGLE;  // from pole to pole
+inline constexpr double LONGITUDE_GLOBE = PointLonLat::FULL_ANGLE;  // around
+
 using MIRValuesVector = std::vector<double>;
 
 

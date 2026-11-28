@@ -17,6 +17,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Types.h"
 
 
 namespace mir::action {
@@ -82,8 +83,8 @@ void CheckerBoard::execute(context::Context& ctx) const {
             }
         }
 
-        auto we = Longitude::GLOBE.value() / double(frequencies[0]);
-        auto ns = Latitude::GLOBE.value() / double(frequencies[1]);
+        auto we = LONGITUDE_GLOBE / double(frequencies[0]);
+        auto ns = LATITUDE_GLOBE / double(frequencies[1]);
 
         if (normalize) {
             maxvalue = 1;
@@ -113,11 +114,11 @@ void CheckerBoard::execute(context::Context& ctx) const {
             if (!hasMissing || v != missingValue) {
                 const auto p = std::get<PointLonLat>(*it);
 
-                Latitude lat  = Latitude::NORTH_POLE - p.lat();
-                Longitude lon = Longitude(p.lon()).normalise(Longitude::GREENWICH);
+                const auto lat = NORTH_POLE - p.lat();
+                const auto lon = PointLonLat::normalise_angle_to_minimum(p.lon(), 0.);
 
-                auto c = size_t(lat.value() / ns);
-                auto r = size_t(lon.value() / we);
+                auto c = size_t(lat / ns);
+                auto r = size_t(lon / we);
 
                 v = double(boxes[std::make_pair(r, c)]);
             }

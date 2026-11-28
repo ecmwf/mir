@@ -17,6 +17,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Angles.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Types.h"
 
 
 namespace mir::action {
@@ -49,10 +50,8 @@ void AdjustWindsScaleCosLatitude::execute(context::Context& ctx) const {
     std::vector<double> scale(N);
     const auto& points = representation->canonicalGridUnrotated();
     for (auto it = points.cbegin(); it; ++it) {
-        const Latitude lat = std::get<PointLonLat>(*it).lat();
-        scale[it.index()]  = (lat == Latitude::SOUTH_POLE || lat == Latitude::NORTH_POLE)
-                                 ? 0.
-                                 : 1. / std::cos(util::degree_to_radian(lat.value()));
+        const auto p      = std::get<PointLonLat>(*it);
+        scale[it.index()] = p.pole() ? 0. : 1. / std::cos(util::degree_to_radian(p.lat()));
     }
 
     // apply scaling to each field component directly

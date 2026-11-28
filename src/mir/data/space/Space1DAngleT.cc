@@ -11,6 +11,7 @@
 
 #include "mir/util/Angles.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Types.h"
 
 
 namespace mir::data::space {
@@ -70,11 +71,9 @@ complex_t convert_to_complex(double /*unused*/) {
 // Specialised types
 
 template <>
-NormaliseAngle<DEGREE, ASYMMETRIC>::NormaliseAngle() :
-    GLOBE(LongitudeDouble::GLOBE.value()), MIN(LongitudeDouble::GREENWICH.value()) {}
+NormaliseAngle<DEGREE, ASYMMETRIC>::NormaliseAngle() : GLOBE(LONGITUDE_GLOBE), MIN(0.) {}
 template <>
-NormaliseAngle<DEGREE, SYMMETRIC>::NormaliseAngle() :
-    GLOBE(LongitudeDouble::GLOBE.value()), MIN(LongitudeDouble::MINUS_DATE_LINE.value()) {}
+NormaliseAngle<DEGREE, SYMMETRIC>::NormaliseAngle() : GLOBE(LONGITUDE_GLOBE), MIN(-LONGITUDE_GLOBE / 2.) {}
 template <>
 NormaliseAngle<RADIAN, ASYMMETRIC>::NormaliseAngle() : GLOBE(M_PI * 2.), MIN(0.) {}
 template <>
@@ -157,7 +156,7 @@ void Space1DAngleT<SCALE, SYMMETRY>::unlinearise(const Space::Matrix& matrixIn, 
             xy           = complex_t(matrixIn(i, 0), matrixIn(i, 1));
             th           = convert_to_angle<SCALE>(xy);
             matrixOut[i] = norm.normalise(th);
-            if (matrixOut[i] > LongitudeDouble::GLOBE.value()) {
+            if (matrixOut[i] > LONGITUDE_GLOBE) {
                 th = 2.;
             }
         }

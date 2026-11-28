@@ -10,6 +10,7 @@
 
 #include "eckit/geo/Grid.h"
 #include "eckit/io/StdFile.h"
+#include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/repres/Representation.h"
@@ -17,6 +18,7 @@
 #include "mir/util/Log.h"
 #include "mir/util/Mutex.h"
 #include "mir/util/Trace.h"
+#include "mir/util/Types.h"
 
 
 namespace mir::lsm {
@@ -75,17 +77,17 @@ TenMinutesMask::TenMinutesMask(const std::string& name, const eckit::PathName& p
     // mask_.reserve(grid.size());
 
     for (const auto& point : representation.canonicalGridUnrotated()) {
-        const PointLatLon p{std::get<PointLonLat>(point)};
-        Latitude lat  = p.lat();
-        Longitude lon = p.lon().normalise(Longitude::GREENWICH);
+        const auto p   = std::get<PointLonLat>(point);
+        const auto lat = p.lat();
+        const auto lon = PointLonLat::normalise_angle_to_minimum(p.lon(), 0.);
 
-        ASSERT(lat >= Latitude::SOUTH_POLE);
-        ASSERT(lat <= Latitude::NORTH_POLE);
+        ASSERT(eckit::types::is_approximately_greater_or_equal(lat, SOUTH_POLE, PointLonLat::EPS));
+        ASSERT(eckit::types::is_approximately_lesser_or_equal(lat, NORTH_POLE, PointLonLat::EPS));
 
-        auto row = int((Latitude::NORTH_POLE - lat).value() * (ROWS - 1) / Latitude::GLOBE.value());
+        auto row = int((NORTH_POLE - lat) * (ROWS - 1) / LATITUDE_GLOBE);
         ASSERT(0 <= row && row < int(ROWS));
 
-        auto col = int(lon.value() * COLS / Longitude::GLOBE.value());
+        auto col = int(lon * COLS / LONGITUDE_GLOBE);
         ASSERT(0 <= col && col < int(COLS));
 
         mask_.push_back(ten_minutes_[size_t(row)][size_t(col)]);

@@ -12,7 +12,6 @@
 
 #include "eckit/geo/Grid.h"
 #include "eckit/log/JSON.h"
-#include "eckit/types/FloatCompare.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/caching/InMemoryMeshCache.h"
@@ -243,9 +242,7 @@ void NablaFilterFVMT<T>::execute(context::Context& ctx) const {
 
             const auto& points = field.representation()->canonicalGridUnrotated();
             for (auto it = points.cbegin(); it; ++it) {
-                auto lat = std::get<PointLonLat>(*it).lat();
-                if (eckit::types::is_approximately_equal(lat, Latitude::NORTH_POLE.value()) ||
-                    eckit::types::is_approximately_equal(lat, Latitude::SOUTH_POLE.value())) {
+                if (std::get<PointLonLat>(*it).pole()) {
                     values.at(it.index()) = missingValue;
                 }
             }

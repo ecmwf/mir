@@ -39,7 +39,8 @@ const char* WeightCacheTraits::name() {
 
 
 int WeightCacheTraits::version() {
-    return 20;
+    // 21: coordinates compared to PointLonLat::EPS (longitudes were fractions), as of eckit::geo
+    return 21;
 }
 
 
