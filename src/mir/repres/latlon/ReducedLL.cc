@@ -12,7 +12,6 @@
 #include "eckit/log/JSON.h"
 #include "eckit/spec/Custom.h"
 #include "eckit/types/FloatCompare.h"
-#include "eckit/types/Fraction.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/api/MIRJob.h"
@@ -92,23 +91,23 @@ bool ReducedLL::getLongestElementDiagonal(double& d) const {
     ASSERT(pl_.size() >= 2);
     const size_t Dj(pl_.size() - 1);
     ASSERT(Dj > 0);
-    const eckit::Fraction sn((eckit::Fraction(dom.north() - dom.south())) / Dj);
+    const auto sn = (dom.north() - dom.south()) / static_cast<double>(Dj);
 
-    d = 0.;
-    Latitude lat1(dom.north());
-    Latitude lat2(dom.north() - sn);
+    d         = 0.;
+    auto lat1 = dom.north();
+    auto lat2 = dom.north() - sn;
 
     for (size_t j = 1; j < pl_.size(); ++j) {
 
         const long Di(std::min(pl_[j - 1], pl_[j]) - (periodic ? 0 : 1));
         ASSERT(Di > 0);
-        const eckit::Fraction we(eckit::Fraction(dom.east() - dom.west()) / Di);
+        const auto we = (dom.east() - dom.west()) / static_cast<double>(Di);
 
-        auto& latAwayFromEquator(std::abs(lat1.value()) > std::abs(lat2.value()) ? lat1 : lat2);
-        auto& latCloserToEquator(std::abs(lat1.value()) > std::abs(lat2.value()) ? lat2 : lat1);
+        const auto latAwayFromEquator = std::abs(lat1) > std::abs(lat2) ? lat1 : lat2;
+        const auto latCloserToEquator = std::abs(lat1) > std::abs(lat2) ? lat2 : lat1;
 
-        d = std::max(d, util::Earth::distance(PointLonLat{0., latCloserToEquator.value()},
-                                              PointLonLat{static_cast<double>(we), latAwayFromEquator.value()}));
+        d = std::max(d,
+                     util::Earth::distance(PointLonLat{0., latCloserToEquator}, PointLonLat{we, latAwayFromEquator}));
 
         lat1 = lat2;
         lat2 -= sn;
@@ -163,8 +162,9 @@ bool ReducedLL::isPeriodicWestEast() const {
     ASSERT(maxpl >= 2);
 
     // if range West-East is within one increment (or greater than) 360 degree
-    const eckit::Fraction inc(360, maxpl);
-    return eckit::Fraction(bbox_.east()) - eckit::Fraction(bbox_.west()) + inc >= Longitude::GLOBE.fraction();
+    const auto inc = LONGITUDE_GLOBE / static_cast<double>(maxpl);
+    return eckit::types::is_approximately_greater_or_equal(bbox_.east() - bbox_.west() + inc, LONGITUDE_GLOBE,
+                                                           PointLonLat::EPS);
 }
 
 bool ReducedLL::includesNorthPole() const {
@@ -180,17 +180,16 @@ void ReducedLL::validate(const MIRValuesVector& values) const {
 }
 
 std::vector<util::GridBox> ReducedLL::gridBoxes() const {
-    const auto dom       = domain();
-    const Latitude north = dom.north();
-    const Longitude west = dom.west();
-    const Latitude south = dom.south();
-    const Longitude east = dom.east();
+    const auto dom   = domain();
+    const auto north = dom.north();
+    const auto west  = dom.west();
+    const auto south = dom.south();
+    const auto east  = dom.east();
 
     const auto periodic = isPeriodicWestEast();
 
-    auto Nj                  = pl_.size();
-    const eckit::Fraction sn = (north - south).fraction() / eckit::Fraction(Nj - 1);
-    eckit::Fraction half(1, 2);
+    auto Nj       = pl_.size();
+    const auto sn = (north - south) / static_cast<double>(Nj - 1);
 
 
     // grid boxes
@@ -201,20 +200,20 @@ std::vector<util::GridBox> ReducedLL::gridBoxes() const {
     // latitude edges
     std::vector<double> latEdges(Nj + 1);
 
-    Latitude lat0 = bbox_.north();
-    latEdges[0]   = (lat0 + sn / 2).value();
+    const auto lat0 = bbox_.north();
+    latEdges[0]     = lat0 + sn / 2.;
     for (size_t j = 0; j < Nj; ++j) {
-        latEdges[j + 1] = (lat0 - (j + half) * sn).value();
+        latEdges[j + 1] = lat0 - (static_cast<double>(j) + 0.5) * sn;
     }
 
-    latEdges.front() = std::min(north.value(), std::max(south.value(), latEdges.front()));
+    latEdges.front() = std::min(north, std::max(south, latEdges.front()));
     if (dom.includesPoleNorth()) {
-        latEdges.front() = Latitude::NORTH_POLE.value();
+        latEdges.front() = NORTH_POLE;
     }
 
-    latEdges.back() = std::min(north.value(), std::max(south.value(), latEdges.back()));
+    latEdges.back() = std::min(north, std::max(south, latEdges.back()));
     if (dom.includesPoleSouth()) {
-        latEdges.back() = Latitude::SOUTH_POLE.value();
+        latEdges.back() = SOUTH_POLE;
     }
 
 
@@ -223,29 +222,17 @@ std::vector<util::GridBox> ReducedLL::gridBoxes() const {
         // longitude edges
         auto Ni = pl_[j];
         ASSERT(Ni > 1);
-        const eckit::Fraction we = (east - west).fraction() / (periodic ? Ni : Ni - 1);
+        const auto we   = (east - west) / static_cast<double>(periodic ? Ni : Ni - 1);
+        const auto lon0 = west - we / 2.;
 
-        auto lon0 = west - we / 2;
-        auto lon1 = lon0;
-
-        if (periodic) {
-            for (long i = 0; i < Ni; ++i) {
-                auto w = lon1.value();
-                lon1 += we;
-                r.emplace_back(latEdges[j], w, latEdges[j + 1], lon1.value());
+        for (long i = 0; i < Ni; ++i) {
+            auto w = lon0 + static_cast<double>(i) * we;
+            auto e = lon0 + static_cast<double>(i + 1) * we;
+            if (!periodic) {
+                w = std::max(west, w);
+                e = std::min(east, e);
             }
-
-            ASSERT(lon0 == lon1.normalise(lon0));
-        }
-        else {
-            for (long i = 0; i < Ni; ++i) {
-                auto w = std::max(west.value(), lon1.value());
-                lon1 += we;
-                auto e = std::min(east.value(), lon1.value());
-                r.emplace_back(latEdges[j], w, latEdges[j + 1], e);
-            }
-
-            ASSERT(lon0 <= lon1.normalise(lon0));
+            r.emplace_back(latEdges[j], w, latEdges[j + 1], e);
         }
     }
 

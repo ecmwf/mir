@@ -16,15 +16,16 @@
 
 #include "eckit/geo/Grid.h"
 #include "eckit/geo/grid/Reduced.h"
+#include "eckit/geo/range/Regular.h"
 #include "eckit/geo/util.h"
 #include "eckit/log/JSON.h"
 #include "eckit/spec/Custom.h"
 #include "eckit/types/FloatCompare.h"
-#include "eckit/types/Fraction.h"
 
 #include "mir/api/MIRJob.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Angles.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Domain.h"
@@ -53,11 +54,37 @@ std::vector<long> pl_convert(const std::vector<long>& nx) {
 }
 
 
+namespace {
+
+
+constexpr auto EPS = PointLonLat::EPS;
+
+
+bool lt(double a, double b) {
+    return eckit::types::is_strictly_greater(b, a, EPS);
+}
+
+
+bool le(double a, double b) {
+    return eckit::types::is_approximately_lesser_or_equal(a, b, EPS);
+}
+
+
+/// The row increment (of Ni longitudes around)
+double row_increment(long Ni) {
+    ASSERT(Ni > 0);
+    return LONGITUDE_GLOBE / static_cast<double>(Ni);
+}
+
+
+}  // namespace
+
+
 Reduced::Reduced(const param::MIRParametrisation& parametrisation) : Gaussian(parametrisation), k_(0), Nj_(N_ * 2) {
 
     // adjust latitudes, longitudes and re-set bounding box
-    Latitude n = bbox_.north();
-    Latitude s = bbox_.south();
+    auto n = bbox_.north();
+    auto s = bbox_.south();
     correctSouthNorth(s, n);
 
     std::vector<long> pl;
@@ -65,14 +92,14 @@ Reduced::Reduced(const param::MIRParametrisation& parametrisation) : Gaussian(pa
 
     // if pl isn't global (from file!) insert leading/trailing 0's
     const auto& lats = latitudes();
-    if (pl.size() != N_ * 2 && (n < lats.front() || s > lats.back())) {
+    if (pl.size() != N_ * 2 && (lt(n, lats.front()) || lt(lats.back(), s))) {
         size_t k  = 0;
         size_t nj = 0;
-        for (Latitude lat : lats) {
-            if (n < lat) {
+        for (const auto lat : lats) {
+            if (lt(n, lat)) {
                 ++k;
             }
-            else if (s <= lat) {
+            else if (le(s, lat)) {
                 ASSERT(pl[nj] >= 2);
                 ++nj;
             }
@@ -91,8 +118,8 @@ Reduced::Reduced(const param::MIRParametrisation& parametrisation) : Gaussian(pa
 
     setNj(pl, s, n);
 
-    Longitude w = bbox_.west();
-    Longitude e = bbox_.east();
+    auto w = bbox_.west();
+    auto e = bbox_.east();
     correctWestEast(w, e);
 
     bbox_ = util::BoundingBox(n, w, s, e);
@@ -114,25 +141,25 @@ Reduced::Reduced(size_t N, const util::BoundingBox& bbox, double angularPrecisio
 Reduced::~Reduced() = default;
 
 
-void Reduced::correctWestEast(Longitude& w, Longitude& e) const {
-    ASSERT(w <= e);
+void Reduced::correctWestEast(double& w, double& e) const {
+    ASSERT(le(w, e));
 
-    const eckit::Fraction smallestIncrement = getSmallestIncrement();
+    const auto smallestIncrement = getSmallestIncrement();
     ASSERT(smallestIncrement > 0);
 
-    if (angleApproximatelyEqual(Longitude::GREENWICH, w) &&
-        (angleApproximatelyEqual(Longitude::GLOBE - smallestIncrement, e - w) ||
-         Longitude::GLOBE - smallestIncrement < e - w || (e != w && e.normalise(w) == w))) {
+    if (angleApproximatelyEqual(0., w) &&
+        (angleApproximatelyEqual(LONGITUDE_GLOBE - smallestIncrement, e - w) ||
+         LONGITUDE_GLOBE - smallestIncrement < e - w ||
+         (!eckit::types::is_approximately_equal(e, w, EPS) &&
+          eckit::types::is_approximately_equal(util::normalise_longitude(e, w), w, EPS)))) {
 
-        w = Longitude::GREENWICH;
-        e = Longitude::GLOBE - smallestIncrement;
+        w = 0.;
+        e = LONGITUDE_GLOBE - smallestIncrement;
     }
     else {
-
-        const auto west = w.fraction();
-        const auto east = e.fraction();
-        auto W          = west;
-        auto E          = east;
+        // to the longitudes of the rows within the bounds ('inwards'), the widest of all rows
+        auto W = w;
+        auto E = e;
 
         bool first = true;
         std::set<long> NiTried;
@@ -144,27 +171,17 @@ void Reduced::correctWestEast(Longitude& w, Longitude& e) const {
             const long Ni(pl[j]);
             ASSERT(Ni >= 2);
             if (NiTried.insert(Ni).second) {
-                auto inc = Longitude::GLOBE.fraction() / Ni;
+                const auto x = row(Ni, w, e);
 
-                auto Nw = (west / inc).integralPart();
-                if (Nw * inc < west) {
-                    Nw += 1;
-                }
+                if (x.size > 0) {
+                    const auto w1 = x.first;
+                    const auto e1 = x.last;
 
-                auto Ne = (east / inc).integralPart();
-                if (Ne * inc > east) {
-                    Ne -= 1;
-                }
-
-                if (Nw <= Ne) {
-                    ASSERT(w <= Longitude(Nw * inc));
-                    ASSERT(Longitude(Ne * inc) <= e);
-
-                    if (W > static_cast<double>(Nw * inc) || first) {
-                        W = Nw * inc;
+                    if (W > w1 || first) {
+                        W = w1;
                     }
-                    if (E < static_cast<double>(Ne * inc) || first) {
-                        E = Ne * inc;
+                    if (E < e1 || first) {
+                        E = e1;
                     }
                     first = false;
                 }
@@ -172,7 +189,7 @@ void Reduced::correctWestEast(Longitude& w, Longitude& e) const {
         }
 
         ASSERT(!first);
-        ASSERT(W <= E);
+        ASSERT(le(W, E));
         w = W;
         e = E;
     }
@@ -185,7 +202,7 @@ bool Reduced::sameAs(const Representation& other) const {
 }
 
 
-eckit::Fraction Reduced::getSmallestIncrement() const {
+double Reduced::getSmallestIncrement() const {
     ASSERT(N_);
     using distance_t = std::make_signed<size_t>::type;
 
@@ -194,7 +211,7 @@ eckit::Fraction Reduced::getSmallestIncrement() const {
         *std::max_element(pl.begin() + static_cast<distance_t>(k_), pl.begin() + static_cast<distance_t>(k_ + Nj_));
     ASSERT(maxpl >= 2);
 
-    return Longitude::GLOBE.fraction() / maxpl;
+    return row_increment(maxpl);
 }
 
 
@@ -214,7 +231,7 @@ std::vector<long> Reduced::pls(const std::string& name) {
 }
 
 
-void Reduced::setNj(std::vector<long> pl, const Latitude& s, const Latitude& n) {
+void Reduced::setNj(std::vector<long> pl, double s, double n) {
     ASSERT(0 < N_ && N_ * 2 == pl.size());
 
     // position to first latitude and first/last longitude
@@ -225,14 +242,13 @@ void Reduced::setNj(std::vector<long> pl, const Latitude& s, const Latitude& n) 
     Nj_ = N_ * 2;
 
     const auto& lats = latitudes();
-    if (n < lats.front() || s > lats.back()) {
+    if (lt(n, lats.front()) || lt(lats.back(), s)) {
         Nj_ = 0;
-        for (const auto& lat : lats) {
-            Latitude ll(lat);
-            if (n < ll && !angleApproximatelyEqual(n, ll)) {
+        for (const auto ll : lats) {
+            if (lt(n, ll) && !angleApproximatelyEqual(n, ll)) {
                 ++k_;
             }
-            else if (s < ll || angleApproximatelyEqual(s, ll)) {
+            else if (lt(s, ll) || angleApproximatelyEqual(s, ll)) {
                 ASSERT(pl[k_ + Nj_] >= 2);
                 ++Nj_;
             }
@@ -297,9 +313,9 @@ std::vector<util::GridBox> Reduced::gridBoxes() const {
 
     const auto dom   = domain();
     const auto north = dom.north();
-    const Longitude west  = dom.west();
+    const auto west  = dom.west();
     const auto south = dom.south();
-    const Longitude east  = dom.east();
+    const auto east  = dom.east();
 
     const auto periodic = isPeriodicWestEast();
 
@@ -312,48 +328,26 @@ std::vector<util::GridBox> Reduced::gridBoxes() const {
 
     for (size_t j = k_; j < k_ + Nj_; ++j) {
         ASSERT(pl[j] > 0);
-        const auto inc = eckit::Fraction(360, pl[j]);
+        const auto inc = row_increment(pl[j]);
 
         // latitude edges
         const auto n = includesNorthPole() ? latEdges[j] : std::min(north, latEdges[j]);
         const auto s = includesSouthPole() ? latEdges[j + 1] : std::max(south, latEdges[j + 1]);
         ASSERT(n >= s);
 
-        // longitude edges
-        const auto w = west.fraction();
-        auto Nw      = (w / inc).integralPart();
-        if (Nw * inc < w) {
-            Nw += 1;
-        }
+        // longitude edges, of the row's longitudes within West/East
+        const auto x = row(pl[j], west, east);
+        const auto N = std::min(static_cast<size_t>(pl[j]), x.size);
 
-        const auto e = east.fraction();
-        auto Ne      = (e / inc).integralPart();
-        if (Ne * inc > e) {
-            Ne -= 1;
-        }
-
-        const auto N = std::min(static_cast<size_t>(pl[j]), static_cast<size_t>(Ne - Nw + 1));
-
-        Longitude lon0 = (Nw * inc) - (inc / 2);
-        Longitude lon1 = lon0;
-
-        if (periodic) {
-            for (size_t i = 0; i < N; ++i) {
-                auto w1 = lon1.value();
-                lon1 += inc;
-                r.emplace_back(n, w1, s, lon1.value());
+        const auto lon0 = x.first - inc / 2.;
+        for (size_t i = 0; i < N; ++i) {
+            auto w1 = lon0 + static_cast<double>(i) * inc;
+            auto e1 = lon0 + static_cast<double>(i + 1) * inc;
+            if (!periodic) {
+                w1 = std::max(west, w1);
+                e1 = std::min(east, e1);
             }
-
-            ASSERT(lon0 == lon1.normalise(lon0));
-        }
-        else {
-            for (size_t i = 0; i < N; ++i) {
-                auto w1 = std::max(west.value(), lon1.value());
-                lon1 += inc;
-                r.emplace_back(n, w1, s, std::min(east.value(), lon1.value()));
-            }
-
-            ASSERT(lon0 <= lon1.normalise(lon0));
+            r.emplace_back(n, w1, s, e1);
         }
     }
 
@@ -407,9 +401,9 @@ size_t Reduced::frame(MIRValuesVector& values, size_t size, double missingValue)
 
     // points of the grid frame (unrotated)
     for (const auto& point : canonicalGridUnrotated()) {
-        const PointLatLon p{std::get<PointLonLat>(point)};
-        auto lon = p.lon().value();
-        auto lat = p.lat().value();
+        const auto p   = std::get<PointLonLat>(point);
+        const auto lon = p.lon();
+        const auto lat = p.lat();
 
         if (!eckit::types::is_approximately_equal(lat, prev_lat)) {
             ASSERT(lat < prev_lat);
@@ -468,15 +462,15 @@ bool Reduced::getLongestElementDiagonal(double& d) const {
     d = 0.;
     for (size_t j = k_ + 1; j < k_ + Nj_; ++j) {
 
-        Latitude l1(lats[j - 1]);
-        Latitude l2(lats[j]);
+        const auto l1 = lats[j - 1];
+        const auto l2 = lats[j];
 
-        const eckit::Fraction we = Longitude::GLOBE.fraction() / (std::min(pl[j - 1], pl[j]));
-        auto& latAwayFromEquator(std::abs(l1.value()) > std::abs(l2.value()) ? l1 : l2);
-        auto& latCloserToEquator(std::abs(l1.value()) > std::abs(l2.value()) ? l2 : l1);
+        const auto we                 = row_increment(std::min(pl[j - 1], pl[j]));
+        const auto latAwayFromEquator = std::abs(l1) > std::abs(l2) ? l1 : l2;
+        const auto latCloserToEquator = std::abs(l1) > std::abs(l2) ? l2 : l1;
 
-        d = std::max(d, util::Earth::distance(PointLonLat{0., latCloserToEquator.value()},
-                                              PointLonLat{static_cast<double>(we), latAwayFromEquator.value()}));
+        d = std::max(d,
+                     util::Earth::distance(PointLonLat{0., latCloserToEquator}, PointLonLat{we, latAwayFromEquator}));
     }
 
     ASSERT(d > 0.);
@@ -486,13 +480,12 @@ bool Reduced::getLongestElementDiagonal(double& d) const {
 
 util::BoundingBox Reduced::extendBoundingBox(const util::BoundingBox& bbox) const {
 
-    // adjust West/East to include bbox's West/East
-    Longitude w = bbox.west();
-    Longitude e = bbox.east();
-    {
-        const auto west = eckit::Fraction(bbox.west());
-        const auto east = eckit::Fraction(bbox.east());
+    // adjust West/East to include bbox's West/East (one more longitude of the rows each way, if not around)
+    using eckit::geo::range::Regular;
 
+    auto w = bbox.west();
+    auto e = bbox.east();
+    {
         bool first = true;
         std::set<long> NiTried;
 
@@ -504,16 +497,17 @@ util::BoundingBox Reduced::extendBoundingBox(const util::BoundingBox& bbox) cons
             if (NiTried.insert(Ni).second) {
 
                 ASSERT(Ni >= 2);
-                auto inc = Longitude::GLOBE.fraction() / Ni;
+                const auto inc = row_increment(Ni);
 
-                auto Nw = (west / inc).integralPart() - 1;
-                auto Ne = (east / inc).integralPart() + 1;
+                // from the longitudes truncated towards zero
+                const auto w1 = Regular::adjust(bbox.west(), inc, 0., bbox.west() < 0., EPS) - inc;
+                const auto e1 = Regular::adjust(bbox.east(), inc, 0., bbox.east() < 0., EPS) + inc;
 
-                if (w > Longitude(Nw * inc) || first) {
-                    w = Nw * inc;
+                if (w > w1 || first) {
+                    w = w1;
                 }
-                if (e < Longitude(Ne * inc) || first) {
-                    e = Ne * inc;
+                if (e < e1 || first) {
+                    e = e1;
                 }
                 first = false;
             }
@@ -523,20 +517,19 @@ util::BoundingBox Reduced::extendBoundingBox(const util::BoundingBox& bbox) cons
 
         long NiMax = *std::max_element(NiTried.begin(), NiTried.end());
         ASSERT(NiMax > 0);
-        auto inc = Longitude::GLOBE.fraction() / NiMax;
 
-        if (e - w + inc >= Longitude::GLOBE) {
-            w = 0;
-            e = Longitude::GLOBE;
+        if (le(LONGITUDE_GLOBE, e - w + row_increment(NiMax))) {
+            w = 0.;
+            e = LONGITUDE_GLOBE;
         }
 
-        ASSERT(w < e);
+        ASSERT(lt(w, e));
     }
 
 
     // adjust South/North to include bbox's South/North ('outwards')
-    Latitude s = bbox.south();
-    Latitude n = bbox.north();
+    auto s = bbox.south();
+    auto n = bbox.north();
     correctSouthNorth(s, n, false);
 
 
@@ -549,8 +542,7 @@ util::BoundingBox Reduced::extendBoundingBox(const util::BoundingBox& bbox) cons
 
 
 bool Reduced::isPeriodicWestEast() const {
-    eckit::Fraction inc = getSmallestIncrement();
-    return eckit::Fraction(bbox_.east()) - eckit::Fraction(bbox_.west()) + inc >= Longitude::GLOBE.fraction();
+    return le(LONGITUDE_GLOBE, bbox_.east() - bbox_.west() + getSmallestIncrement());
 }
 
 
@@ -590,7 +582,8 @@ const Representation* Reduced::globalise(data::MIRField& field) const {
         const auto j = static_cast<size_t>(lat - lats.begin());
 
         const auto Ni = pl[j];
-        const auto i  = std::lround(LongitudeDouble(plon).normalise(0.).value() * static_cast<double>(Ni) / 360.) % Ni;
+        const auto i =
+            std::lround(util::normalise_longitude(plon, 0.) * static_cast<double>(Ni) / LONGITUDE_GLOBE) % Ni;
 
         ASSERT(it.index() < n);
         index[it.index()] = first[j] + static_cast<size_t>(i);

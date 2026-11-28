@@ -12,6 +12,7 @@
 #include "mir/input/GribFileInput.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Angles.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -311,6 +312,25 @@ CASE("Representation::extendBoundingBox") {
     }
 
     log.precision(old);
+}
+
+
+CASE("BoundingBox: longitudes just short of a turn from the West, on the West (to PointLonLat::EPS)") {
+    // e.g. 299.99999999999994, a grid point at -60 of the next turn (as a crop to West -60 meets it)
+    const auto lon = std::nextafter(300., 0.);
+    EXPECT(util::normalise_longitude(lon, -60.) == -60.);
+
+    const util::BoundingBox bbox{90, -60, 25, 60};
+    EXPECT(bbox.contains(30., lon));
+    EXPECT_NOT(bbox.contains(30., 300. - 1e-6));
+
+    // as an East bound, a turn from the West
+    const util::BoundingBox around{90, 0, -90, std::nextafter(360., 0.)};
+    EXPECT(around.isPeriodicWestEast());
+    EXPECT(around.east() == 360.);
+
+    const util::BoundingBox shy{90, 0, -90, 360. - 1e-6};
+    EXPECT_NOT(shy.isPeriodicWestEast());
 }
 
 

@@ -69,8 +69,8 @@ public:
 private:
     // -- Types
 
-    using DistanceLat = std::pair<Latitude, Latitude>;
-    using DistanceLon = std::pair<Longitude, Longitude>;
+    using DistanceLat = std::pair<double, double>;
+    using DistanceLon = std::pair<double, double>;
 
     // -- Members
 
@@ -80,10 +80,10 @@ private:
     size_t count_;
     size_t countTotal_;
 
-    Latitude n_;
-    Latitude s_;
-    Longitude e_;
-    Longitude w_;
+    double n_;
+    double s_;
+    double e_;
+    double w_;
 
     std::set<DistanceLat> nn_;
     std::set<DistanceLat> ss_;
@@ -92,7 +92,7 @@ private:
 
     // -- Methods
 
-    void count(const PointLatLon&);
+    void count(const PointLonLat&);
 
     // -- Overridden methods
     // None

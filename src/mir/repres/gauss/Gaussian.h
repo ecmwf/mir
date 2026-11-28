@@ -62,10 +62,21 @@ protected:
     ///@return global Gaussian quadrature weigths
     const std::vector<double>& weights() const;
 
-    bool angleApproximatelyEqual(const Latitude&, const Latitude&) const;
-    bool angleApproximatelyEqual(const Longitude&, const Longitude&) const;
+    /// Angles equal to the angular precision (as encoded), otherwise to PointLonLat::EPS
+    bool angleApproximatelyEqual(double, double) const;
 
-    void correctSouthNorth(Latitude& s, Latitude& n, bool in = true) const;
+    void correctSouthNorth(double& s, double& n, bool in = true) const;
+
+    struct Row {
+        double first;
+        double last;
+        double increment;
+        size_t size;
+    };
+
+    /// The longitudes of a row of Ni points around within West/East (the first from West), as of the grid's rows
+    /// (eckit::geo), a bound within precision of a longitude including it
+    static Row row(long Ni, double west, double east, double precision = 0.);
 
     std::vector<double> calculateUnrotatedGridBoxLatitudeEdges() const;
 

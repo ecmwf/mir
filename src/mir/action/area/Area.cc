@@ -17,6 +17,7 @@
 #include "mir/key/Area.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Angles.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/IndexMapping.h"
 
@@ -27,7 +28,7 @@ namespace mir::action {
 struct LL {
     double lat_;
     double lon_;
-    LL(Latitude lat, Longitude lon) : lat_(lat.value()), lon_(lon.value()) {}
+    LL(double lat, double lon) : lat_(lat), lon_(lon) {}
     bool operator<(const LL& other) const {
         // Order must be like natural scanning mode
         if (lat_ == other.lat_) {
@@ -49,21 +50,21 @@ void Area::apply(const repres::Representation& repres, util::BoundingBox& bbox, 
                  bool projection) {
     std::map<LL, size_t> m;
 
-    Latitude n  = 0;
-    Latitude s  = 0;
-    Longitude e = 0;
-    Longitude w = 0;
+    double n = 0.;
+    double s = 0.;
+    double e = 0.;
+    double w = 0.;
 
     bool first = true;
 
     // points either projected (rotated) or of the grid frame (unrotated)
     const auto& points = projection ? repres.canonicalGrid() : repres.canonicalGridUnrotated();
     for (auto it = points.cbegin(); it; ++it) {
-        const PointLatLon point{std::get<PointLonLat>(*it)};
+        const auto point = std::get<PointLonLat>(*it);
 
         if (bbox.contains(point)) {
-            const Latitude& lat = point.lat();
-            const Longitude lon = point.lon().normalise(bbox.west());
+            const auto lat = point.lat();
+            const auto lon = util::normalise_longitude(point.lon(), bbox.west());
 
             if (first) {
                 n = s = lat;

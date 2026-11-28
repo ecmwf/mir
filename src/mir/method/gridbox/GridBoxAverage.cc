@@ -88,7 +88,7 @@ void GridBoxAverage::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, 
     const util::LonLatToXYZ point3(in.canonicalGrid().figure(), poleDisplacement(in));
 
     size_t nbFailures = 0;
-    std::forward_list<std::pair<size_t, PointLatLon>> failures;
+    std::forward_list<std::pair<size_t, PointLonLat>> failures;
 
 
     // set input k-d tree for grid boxes indices
@@ -150,7 +150,7 @@ void GridBoxAverage::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, 
             }
             else {
                 ++nbFailures;
-                failures.emplace_front(i, PointLatLon{p});
+                failures.emplace_front(i, p);
             }
         }
     }

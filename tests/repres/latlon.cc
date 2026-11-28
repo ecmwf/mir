@@ -58,14 +58,14 @@ CASE("LatLon::globaliseBoundingBox") {
             PointLatLon reference(test.area.south(), test.area.west());
 
             BoundingBox global(test.area);
-            LatLon::globaliseBoundingBox(global, test.increments, reference);
+            LatLon::globaliseBoundingBox(global, test.increments, reference.lonlat());
 
             EXPECT(same(global.north(), test.global.north(), 1e-6));
             EXPECT(same(global.west(), test.global.west(), 1e-6));
             EXPECT(same(global.south(), test.global.south(), 1e-6));
             EXPECT(same(global.east(), test.global.east(), 1e-6));
 
-            RepresentationHandle repres(new RegularLL(test.increments, global, reference));
+            RepresentationHandle repres(new RegularLL(test.increments, global, reference.lonlat()));
             const auto& ll = dynamic_cast<const RegularLL&>(*repres);
 
             EXPECT_EQUAL(ll.Ni(), test.Ni);
@@ -137,14 +137,14 @@ CASE("LatLon::correctBoundingBox") {
         BoundingBox bbox{Fraction(80.039062), 0, Fraction(-80.039062), Fraction(359.765625)};
         size_t ni = 0;
         size_t nj = 0;
-        LatLon::correctBoundingBox(bbox, ni, nj, inc, reference);
+        LatLon::correctBoundingBox(bbox, ni, nj, inc, reference.lonlat());
 
         EXPECT_EQUAL(ni, 1536);
         EXPECT_EQUAL(nj, 684);
 
         // ... and further from it don't
         BoundingBox further{Fraction(80.039), 0, Fraction(-80.039062), Fraction(359.765625)};
-        LatLon::correctBoundingBox(further, ni, nj, inc, reference);
+        LatLon::correctBoundingBox(further, ni, nj, inc, reference.lonlat());
         EXPECT_EQUAL(nj, 683);
     }
 }

@@ -19,7 +19,7 @@ public:
     // -- Constructors
 
     explicit LatLon(const param::MIRParametrisation&);
-    LatLon(const util::Increments&, const util::BoundingBox& = {}, const PointLatLon& reference = {0, 0},
+    LatLon(const util::Increments&, const util::BoundingBox& = {}, const PointLonLat& reference = {0, 0},
            const std::string& order = {});
 
     // -- Destructor
@@ -39,10 +39,10 @@ public:
     size_t Nj() const { return nj_; }
 
     static void globaliseBoundingBox(util::BoundingBox&, const util::Increments&,
-                                     const PointLatLon& reference = {0, 0});
+                                     const PointLonLat& reference = {0, 0});
 
     static void correctBoundingBox(util::BoundingBox&, size_t& ni, size_t& nj, const util::Increments&,
-                                   const PointLatLon& reference = {0, 0});
+                                   const PointLonLat& reference = {0, 0});
 
     // -- Overridden methods
     // None
@@ -64,7 +64,7 @@ protected:
     // -- Members
 
     const util::Increments increments_;
-    const PointLatLon reference_;
+    const PointLonLat reference_;
     size_t ni_;
     size_t nj_;
     std::string order_;

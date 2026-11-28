@@ -3,6 +3,7 @@
 
 
 #include "mir/util/BoundingBox.h"
+#include "mir/util/Angles.h"
 
 #include <algorithm>
 #include <ostream>
@@ -46,13 +47,6 @@ bool lt(double a, double b) {
 }
 
 
-/// The longitude in [minimum, minimum + 360[, those within EPS short of minimum + 360 as minimum
-double normalise(double lon, double minimum) {
-    const auto l = PointLonLat::normalise_angle_to_minimum(lon, minimum);
-    return eq(l, minimum + LONGITUDE_GLOBE) ? minimum : l;
-}
-
-
 double get(const param::MIRParametrisation& param, const char* key, double dfault) {
     double value = dfault;
     param.get(key, value);
@@ -69,7 +63,7 @@ BoundingBox::BoundingBox() : north_(NORTH_POLE), west_(0.), south_(SOUTH_POLE), 
 BoundingBox::BoundingBox(double north, double west, double south, double east) :
     north_(north), west_(west), south_(south), east_(east) {
     if (!eq(west_, east_)) {
-        auto eastNormalised = normalise(east_, west_);
+        auto eastNormalised = normalise_longitude(east_, west_);
         if (eq(eastNormalised, west_)) {
             eastNormalised += LONGITUDE_GLOBE;
         }
@@ -147,7 +141,7 @@ bool BoundingBox::contains(const PointLonLat& p) const {
 
 
 bool BoundingBox::contains(double lat, double lon) const {
-    return le(lat, north_) && le(south_, lat) && le(normalise(lon, west_), east_);
+    return le(lat, north_) && le(south_, lat) && le(normalise_longitude(lon, west_), east_);
 }
 
 
@@ -157,7 +151,7 @@ bool BoundingBox::contains(const BoundingBox& other) const {
     }
 
     // check for West/East range (if non-periodic), then other's corners
-    if (lt(east_ - west_, other.east() - other.west()) || lt(east_, normalise(other.east(), west_))) {
+    if (lt(east_ - west_, other.east() - other.west()) || lt(east_, normalise_longitude(other.east(), west_))) {
         return false;
     }
 
@@ -191,9 +185,9 @@ bool BoundingBox::intersects(BoundingBox& other) const {
             return true;
         }
 
-        auto ref = normalise(b.west_, a.west_);
+        auto ref = normalise_longitude(b.west_, a.west_);
         auto w_  = std::max(a.west_, ref);
-        auto e_  = std::min(a.east_, normalise(b.east_, ref));
+        auto e_  = std::min(a.east_, normalise_longitude(b.east_, ref));
 
         if (le(w_, e_)) {
             w = w_;

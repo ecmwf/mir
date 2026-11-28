@@ -21,7 +21,7 @@ RotatedLL::RotatedLL(const param::MIRParametrisation& parametrisation) :
     LatLon(parametrisation), rotation_(parametrisation) {}
 
 RotatedLL::RotatedLL(const util::Increments& increments, const util::Rotation& rotation, const util::BoundingBox& bbox,
-                     const PointLatLon& reference) :
+                     const PointLonLat& reference) :
     LatLon(increments, bbox, reference), rotation_(rotation) {}
 
 RotatedLL::~RotatedLL() = default;

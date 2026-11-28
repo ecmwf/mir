@@ -19,6 +19,7 @@
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/SimpleOption.h"
+#include "eckit/types/FloatCompare.h"
 
 #include "mir/action/area/AreaCropper.h"
 #include "mir/data/MIRField.h"
@@ -406,17 +407,19 @@ void MIRTile::execute(const eckit::option::CmdArgs& args) {
     }
 
     // grid points (non-projected, as used for cropping)
-    std::vector<PointLatLon> points(grid->size());
+    std::vector<PointLonLat> points(grid->size());
     const auto& unrotated = repres->canonicalGridUnrotated();
     for (auto it = unrotated.cbegin(); it; ++it) {
-        points[it.index()] = PointLatLon{std::get<PointLonLat>(*it)};
+        points[it.index()] = std::get<PointLonLat>(*it);
     }
 
     // each point belongs to one tile: on shared edges, the first tile (from North to South) not having it on its
-    // western edge, consistently across the 0/360 meridian (exact longitude comparison, as in cropping)
+    // western edge, consistently across the 0/360 meridian (longitude comparison as in cropping)
     auto west_edge = [&points, &tiles](size_t t, size_t i) {
         const auto& b = tiles[t].bbox;
-        return !b.isPeriodicWestEast() && points[i].lon().normalise(b.west()) == b.west();
+        return !b.isPeriodicWestEast() &&
+               eckit::types::is_approximately_equal(util::normalise_longitude(points[i].lon(), b.west()), b.west(),
+                                                    PointLonLat::EPS);
     };
 
     const auto none = tiles.size();
@@ -486,8 +489,8 @@ void MIRTile::execute(const eckit::option::CmdArgs& args) {
         std::vector<double> lats(points.size());
         std::vector<double> lons(points.size());
 
-        std::transform(points.begin(), points.end(), lats.begin(), [](const auto& p) { return p.lat().value(); });
-        std::transform(points.begin(), points.end(), lons.begin(), [](const auto& p) { return p.lon().value(); });
+        std::transform(points.begin(), points.end(), lats.begin(), [](const auto& p) { return p.lat(); });
+        std::transform(points.begin(), points.end(), lons.begin(), [](const auto& p) { return p.lon(); });
 
         j << "latitudes" << lats;
         j << "longitudes" << lons;

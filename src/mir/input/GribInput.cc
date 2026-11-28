@@ -20,18 +20,17 @@
 #include "eckit/io/StdFile.h"
 #include "eckit/serialisation/HandleStream.h"
 #include "eckit/types/FloatCompare.h"
-#include "eckit/types/Fraction.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/grib/Config.h"
 #include "mir/param/GridSpecParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Angles.h"
 #include "mir/util/CheckDuplicatePoints.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
-#include "mir/util/LongitudeDouble.h"
 #include "mir/util/MissingValue.h"
 #include "mir/util/Mutex.h"
 #include "mir/util/ValueMap.h"
@@ -490,7 +489,8 @@ static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_red
                     std::unique_ptr<ProcessingT<double>> precision_in_degrees(angular_precision());
                     ASSERT(precision_in_degrees->eval(h, eps));
 
-                    eckit::Fraction Lon2_expected(360L * (plMax - 1L), plMax);
+                    const auto Lon2_expected =
+                        LONGITUDE_GLOBE * static_cast<double>(plMax - 1) / static_cast<double>(plMax);
 
                     if (!eckit::types::is_approximately_equal<double>(Lon2, Lon2_expected, eps)) {
 
@@ -534,7 +534,7 @@ static ProcessingT<double>* iDirectionIncrementInDegrees_fix_for_periodic_regula
         GRIB_CALL(codes_get_long(h, "Ni", &Ni));
         ASSERT(Ni > 0);
 
-        Lon2 = LongitudeDouble(Lon2).normalise(Lon1).value();
+        Lon2 = util::normalise_longitude(Lon2, Lon1);
         ASSERT(Lon2 >= Lon1);
 
         // angles are within +-1/2 precision, so (Lon2 - Lon1 + we) uses factor 3*1/2
@@ -543,8 +543,8 @@ static ProcessingT<double>* iDirectionIncrementInDegrees_fix_for_periodic_regula
         ASSERT(precision_in_degrees->eval(h, eps));
         eps *= 1.5;
 
-        auto Nid     = static_cast<double>(Ni);
-        double globe = LongitudeDouble::GLOBE.value();
+        auto Nid         = static_cast<double>(Ni);
+        const auto globe = LONGITUDE_GLOBE;
         if (eckit::types::is_approximately_equal(Lon2 - Lon1 + we, globe, eps)) {
             we = globe / Nid;
         }

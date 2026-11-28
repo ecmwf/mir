@@ -610,7 +610,7 @@ const Gridded* UnstructuredGrid::croppedRepresentation(const util::BoundingBox& 
 
     const auto& points = canonicalGridUnrotated();
     for (auto iter = points.cbegin(); iter; ++iter, ++i) {
-        if (bbox.contains(PointLatLon{std::get<PointLonLat>(*iter)})) {
+        if (bbox.contains(std::get<PointLonLat>(*iter))) {
             auto ip = iter.index();
             lat.emplace_back(latitudes_.at(ip));
             lon.emplace_back(longitudes_.at(ip));

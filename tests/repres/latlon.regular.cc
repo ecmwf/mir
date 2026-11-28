@@ -62,7 +62,7 @@ CASE("RegularLL: (Ni, Nj) by increments and area, preserving the reference point
     for (const auto& test : tests) {
         SECTION(test.name) {
             PointLatLon reference(test.area.south(), test.area.west());
-            RepresentationHandle repres(new RegularLL(test.increments, test.area, reference));
+            RepresentationHandle repres(new RegularLL(test.increments, test.area, reference.lonlat()));
 
             const auto& ll   = dynamic_cast<const RegularLL&>(*repres);
             const auto& bbox = repres->boundingBox();
@@ -196,7 +196,7 @@ CASE("RegularLL: crop, extend, frame") {
         EXPECT(eckit::types::is_approximately_equal(polar.south(), SOUTH_POLE, PointLonLat::EPS));
 
         // shifted grid, by the reference (South/West) point
-        RepresentationHandle shifted(new RegularLL(Increments{1, 1}, {89.5, 0.5, -89.5, 359.5}, {-89.5, 0.5}));
+        RepresentationHandle shifted(new RegularLL(Increments{1, 1}, {89.5, 0.5, -89.5, 359.5}, {0.5, -89.5}));
         const auto e = shifted->extendBoundingBox(bbox);
         EXPECT(e.contains(bbox));
         EXPECT(e == BoundingBox(10.5, 20.5, -10.5, 30.5));

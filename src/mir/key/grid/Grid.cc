@@ -16,7 +16,6 @@
 #include "eckit/geo/grid/reduced/ReducedGaussian.h"
 #include "eckit/geo/grid/regular/RegularGaussian.h"
 #include "eckit/geo/order/Scan.h"
-#include "eckit/types/Fraction.h"
 #include "eckit/utils/StringTools.h"
 
 #include "mir/key/grid/GridPattern.h"
@@ -37,6 +36,7 @@
 #include "mir/util/Regex.h"
 #include "mir/util/SpectralOrder.h"
 #include "mir/util/Translator.h"
+#include "mir/util/Types.h"
 
 
 namespace mir::key::grid {
@@ -123,11 +123,10 @@ private:
     void print(std::ostream& out) const override { out << "RegularLL[key=" << key_ << "]"; }
 
     size_t gaussianNumber() const override {
-        auto r = Latitude::GLOBE.fraction() / eckit::Fraction(increments().south_north());
-        auto N = r.integralPart() / 2;
-
-        ASSERT(N >= 0);
-        return static_cast<size_t>(N);
+        // the latitudes from pole to pole of the increment, as many as of the Gaussian grid (twice its number)
+        const auto r = LATITUDE_GLOBE / increments().south_north();
+        ASSERT(r >= 0.);
+        return static_cast<size_t>(std::floor(r + PointLonLat::EPS)) / 2;
     }
 
     const repres::Representation* representation() const override {

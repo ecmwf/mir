@@ -7,6 +7,7 @@
 #include <cmath>
 
 #include "eckit/geo/PointLonLat.h"
+#include "eckit/types/FloatCompare.h"
 
 
 namespace mir::util {
@@ -24,9 +25,12 @@ inline double radian_to_degree(const double& a) {
 }
 
 
-/// @return longitude in degree within range [minimum, minimum + 360[
+/// @return longitude in degree within range [minimum, minimum + 360[, those within PointLonLat::EPS short of
+/// minimum + 360 as minimum (as the comparisons of coordinates)
 inline double normalise_longitude(const double& lon, const double& minimum) {
-    return eckit::geo::PointLonLat::normalise_angle_to_minimum(lon, minimum);
+    using eckit::geo::PointLonLat;
+    const auto l = PointLonLat::normalise_angle_to_minimum(lon, minimum);
+    return eckit::types::is_approximately_equal(l, minimum + PointLonLat::FULL_ANGLE, PointLonLat::EPS) ? minimum : l;
 }
 
 

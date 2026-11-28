@@ -74,16 +74,16 @@ static bool same_points(const param::MIRParametrisation& user, const param::MIRP
         size_t ni = 0;
         size_t nj = 0;
 
-        repres::latlon::LatLon::correctBoundingBox(bboxUser, ni, nj, inc, {bboxUser.south(), bboxUser.west()});
+        repres::latlon::LatLon::correctBoundingBox(bboxUser, ni, nj, inc, {bboxUser.west(), bboxUser.south()});
 
         util::BoundingBox bboxField(field);
-        repres::latlon::LatLon::correctBoundingBox(bboxField, ni, nj, inc, {bboxField.south(), bboxField.west()});
+        repres::latlon::LatLon::correctBoundingBox(bboxField, ni, nj, inc, {bboxField.west(), bboxField.south()});
 
-        PointLatLon ref{bboxField.south(), bboxField.west()};
+        const PointLonLat ref{bboxField.west(), bboxField.south()};
 
-        for (const auto& lat : {bboxUser.south(), bboxUser.north()}) {
-            for (const auto& lon : {bboxUser.east(), bboxUser.west()}) {
-                if (inc.isShifted({ref.lat() - lat, ref.lon() - lon})) {
+        for (const auto lat : {bboxUser.south(), bboxUser.north()}) {
+            for (const auto lon : {bboxUser.east(), bboxUser.west()}) {
+                if (inc.isShifted(PointLonLat{ref.lon() - lon, ref.lat() - lat})) {
                     return false;
                 }
             }

@@ -9,6 +9,7 @@
 #include "eckit/geo/range/Regular.h"
 #include "eckit/log/JSON.h"
 #include "eckit/spec/Custom.h"
+#include "eckit/types/FloatCompare.h"
 
 #include "mir/api/mir_config.h"
 #include "mir/util/Atlas.h"
@@ -22,7 +23,7 @@ namespace mir::repres::latlon {
 
 RegularLL::RegularLL(const param::MIRParametrisation& parametrisation) : LatLon(parametrisation) {}
 
-RegularLL::RegularLL(const util::Increments& increments, const util::BoundingBox& bbox, const PointLatLon& reference) :
+RegularLL::RegularLL(const util::Increments& increments, const util::BoundingBox& bbox, const PointLonLat& reference) :
     LatLon(increments, bbox, reference) {}
 
 RegularLL::~RegularLL() = default;
@@ -82,28 +83,28 @@ const RegularLL* RegularLL::croppedRepresentation(const util::BoundingBox& bbox)
 util::BoundingBox RegularLL::extendBoundingBox(const util::BoundingBox& bbox) const {
     using eckit::geo::range::Regular;
 
-    const auto sn = eckit::Fraction(increments_.south_north());
-    const auto we = eckit::Fraction(increments_.west_east());
+    const auto sn = increments_.south_north();
+    const auto we = increments_.west_east();
     ASSERT(sn > 0);
     ASSERT(we > 0);
 
     // adjust West/East to include bbox's West/East ('outwards')
-    Longitude w = bbox.west();
+    auto w = bbox.west();
     if (increments_.isPeriodic()) {
-        w = Regular::adjust(eckit::Fraction(bbox.west()), we, reference_.lon().fraction(), false, PRECISION);
+        w = Regular::adjust(bbox.west(), we, reference_.lon(), false, PRECISION);
     }
-    Longitude e = Regular::adjust(eckit::Fraction(bbox.east()), we, reference_.lon().fraction(), true, PRECISION);
+    const auto e = Regular::adjust(bbox.east(), we, reference_.lon(), true, PRECISION);
 
 
     // adjust South/North to include bbox's South/North ('outwards'), to the latitudes by the reference (South/West)
     // point, not beyond the poles: without a latitude between bbox's South/North and the pole, keep bbox's
-    auto s = Regular::adjust(eckit::Fraction(bbox.south()), sn, reference_.lat().fraction(), false, PRECISION);
-    if (s < Latitude::SOUTH_POLE.fraction()) {
-        s = eckit::Fraction(bbox.south());
+    auto s = Regular::adjust(bbox.south(), sn, reference_.lat(), false, PRECISION);
+    if (eckit::types::is_strictly_greater(SOUTH_POLE, s, PointLonLat::EPS)) {
+        s = bbox.south();
     }
-    auto n = Regular::adjust(eckit::Fraction(bbox.north()), sn, reference_.lat().fraction(), true, PRECISION);
-    if (n > Latitude::NORTH_POLE.fraction()) {
-        n = eckit::Fraction(bbox.north());
+    auto n = Regular::adjust(bbox.north(), sn, reference_.lat(), true, PRECISION);
+    if (eckit::types::is_strictly_greater(n, NORTH_POLE, PointLonLat::EPS)) {
+        n = bbox.north();
     }
 
     // set bounding box
@@ -114,52 +115,49 @@ util::BoundingBox RegularLL::extendBoundingBox(const util::BoundingBox& bbox) co
 }
 
 std::vector<util::GridBox> RegularLL::gridBoxes() const {
-    const auto dom       = domain();
-    const Latitude north = dom.north();
-    const Longitude west = dom.west();
-    const Latitude south = dom.south();
-    const Longitude east = dom.east();
+    const auto dom   = domain();
+    const auto north = dom.north();
+    const auto west  = dom.west();
+    const auto south = dom.south();
+    const auto east  = dom.east();
 
     const auto periodic = isPeriodicWestEast();
 
-    Latitude lat0  = bbox_.north();
-    Longitude lon0 = bbox_.west();
-    auto sn        = Latitude(increments_.south_north());
-    auto we        = eckit::Fraction(increments_.west_east());
-
-    eckit::Fraction half(1, 2);
+    const auto lat0 = bbox_.north();
+    const auto lon0 = bbox_.west();
+    const auto sn   = increments_.south_north();
+    const auto we   = increments_.west_east();
 
 
     // latitude edges
     std::vector<double> latEdges(nj_ + 1);
 
-    latEdges[0] = (lat0 + sn / 2).value();
+    latEdges[0] = lat0 + sn / 2.;
     for (size_t j = 0; j < nj_; ++j) {
-        latEdges[j + 1] = (lat0 - (j + half) * sn.fraction()).value();
+        latEdges[j + 1] = lat0 - (static_cast<double>(j) + 0.5) * sn;
     }
 
-    latEdges.front() = std::min(north.value(), std::max(south.value(), latEdges.front()));
+    latEdges.front() = std::min(north, std::max(south, latEdges.front()));
     if (dom.includesPoleNorth()) {
-        latEdges.front() = Latitude::NORTH_POLE.value();
+        latEdges.front() = NORTH_POLE;
     }
 
-    latEdges.back() = std::min(north.value(), std::max(south.value(), latEdges.back()));
-    latEdges.back() = std::min(north.value(), std::max(south.value(), latEdges.back()));
+    latEdges.back() = std::min(north, std::max(south, latEdges.back()));
     if (dom.includesPoleSouth()) {
-        latEdges.back() = Latitude::SOUTH_POLE.value();
+        latEdges.back() = SOUTH_POLE;
     }
 
 
     // longitude edges
     std::vector<double> lonEdges(ni_ + 1);
-    lonEdges[0] = (lon0 - we / 2).value();
+    lonEdges[0] = lon0 - we / 2.;
     for (size_t i = 0; i < ni_; ++i) {
-        lonEdges[i + 1] = (lon0 + (i + half) * we).value();
+        lonEdges[i + 1] = lon0 + (static_cast<double>(i) + 0.5) * we;
     }
 
     if (!periodic) {
-        lonEdges.front() = std::max(west.value(), lonEdges.front());
-        lonEdges.back()  = std::min(east.value(), lonEdges.back());
+        lonEdges.front() = std::max(west, lonEdges.front());
+        lonEdges.back()  = std::min(east, lonEdges.back());
     }
 
 
@@ -168,15 +166,9 @@ std::vector<util::GridBox> RegularLL::gridBoxes() const {
     r.reserve(ni_ * nj_);
 
     for (size_t j = 0; j < nj_; ++j) {
-        Longitude lon1 = lon0;
-
         for (size_t i = 0; i < ni_; ++i) {
-            auto l = lon1;
-            lon1   = l + we * (i + half);
             r.emplace_back(latEdges[j], lonEdges[i], latEdges[j + 1], lonEdges[i + 1]);
         }
-
-        ASSERT(periodic ? lon0 == lon1.normalise(lon0) : lon0 <= lon1.normalise(lon0));
     }
 
     ASSERT(r.size() == numberOfPoints());

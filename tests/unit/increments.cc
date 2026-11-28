@@ -123,7 +123,7 @@ CASE("Increments::correctBoundingBox") {
             BoundingBox box;
             PointLatLon ref{shiftLat ? 0.5 : 0., shiftLon ? 0.5 : 0.};
 
-            repres::RepresentationHandle repres(new repres::latlon::RegularLL(inc, box, ref));
+            repres::RepresentationHandle repres(new repres::latlon::RegularLL(inc, box, ref.lonlat()));
             const auto& ll = dynamic_cast<const repres::latlon::RegularLL&>(*repres);
 
             static size_t c = 1;
@@ -179,7 +179,7 @@ CASE("Increments::correctBoundingBox") {
                 auto corrected(box);
                 size_t ni;
                 size_t nj;
-                repres::latlon::LatLon::correctBoundingBox(corrected, ni, nj, inc, reference);
+                repres::latlon::LatLon::correctBoundingBox(corrected, ni, nj, inc, reference.lonlat());
 
                 static size_t c = 1;
                 log << "Test " << c++ << ":"
@@ -236,7 +236,7 @@ CASE("Increments::correctBoundingBox") {
                 auto corrected = equator;
                 size_t ni;
                 size_t nj;
-                repres::latlon::LatLon::correctBoundingBox(corrected, ni, nj, inc, reference);
+                repres::latlon::LatLon::correctBoundingBox(corrected, ni, nj, inc, reference.lonlat());
 
                 static size_t c = 1;
                 log << "Test " << c++ << ":"
@@ -336,7 +336,7 @@ struct UserAndGlobalisedCase {
 
         // check if Ni/Nj and shifts are well calculated, for the user-provided area
         PointLatLon ref(user_.boundingBox_.south(), user_.boundingBox_.west());
-        repres::RepresentationHandle user = new RegularLL(increments_, user_.boundingBox_, ref);
+        repres::RepresentationHandle user = new RegularLL(increments_, user_.boundingBox_, ref.lonlat());
         const auto& user_ll               = dynamic_cast<const RegularLL&>(*user);
 
         if (!user_.compare(Case("calculated", user_.boundingBox_, user_ll.Ni(), user_ll.Nj()))) {
@@ -345,9 +345,9 @@ struct UserAndGlobalisedCase {
 
         // 'globalise' user-provided area, check if allowed shifts are respected
         BoundingBox global(user_.boundingBox_);
-        repres::latlon::LatLon::globaliseBoundingBox(global, increments_, ref);
+        repres::latlon::LatLon::globaliseBoundingBox(global, increments_, ref.lonlat());
 
-        repres::RepresentationHandle globalised = new RegularLL(increments_, global, ref);
+        repres::RepresentationHandle globalised = new RegularLL(increments_, global, ref.lonlat());
         const auto& globalised_ll               = dynamic_cast<const RegularLL&>(*globalised);
 
         // check if Ni/Nj and shifts are well calculated, for the 'globalised' area
@@ -377,7 +377,7 @@ struct UserAndGlobalisedCase {
 
             BoundingBox maybe_box(n, w, s, e);
 
-            repres::RepresentationHandle maybe = new RegularLL(increments_, maybe_box, ref);
+            repres::RepresentationHandle maybe = new RegularLL(increments_, maybe_box, ref.lonlat());
             const auto& maybe_ll               = dynamic_cast<const repres::latlon::RegularLL&>(*maybe);
 
             log << "globaliseBoundingBox should maybe result in (CONFIRM FIRST!):"
@@ -620,7 +620,7 @@ CASE("MIR-309") {
 
             PointLatLon ref(t.allowLatitudeShift ? t.bbox.south() : 0, t.allowLongitudeShift ? t.bbox.west() : 0);
 
-            repres::RepresentationHandle rep(new repres::latlon::RegularLL(t.increments, t.bbox, ref));
+            repres::RepresentationHandle rep(new repres::latlon::RegularLL(t.increments, t.bbox, ref.lonlat()));
             const BoundingBox& corrected = rep->boundingBox();
 
             static size_t c = 1;

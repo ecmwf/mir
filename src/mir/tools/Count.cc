@@ -13,6 +13,7 @@
 #include "mir/key/grid/Grid.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
+#include "mir/util/Angles.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Increments.h"
 #include "mir/util/Log.h"
@@ -64,21 +65,26 @@ void Count::reset() {
 }
 
 
-void Count::count(const PointLatLon& point) {
+void Count::count(const PointLonLat& point) {
     countTotal_++;
 
-    nn_.insert(DistanceLat(Latitude(bbox_.north()).distance(point.lat()), point.lat()));
-    ss_.insert(DistanceLat(Latitude(bbox_.south()).distance(point.lat()), point.lat()));
+    auto lat_distance = [](double a, double b) { return std::abs(a - b); };
+    auto lon_distance = [](double a, double b) {
+        return std::abs(util::normalise_longitude(b - a, -LONGITUDE_GLOBE / 2.));
+    };
 
-    ee_.insert(DistanceLon(Longitude(bbox_.east()).distance(point.lon()), point.lon()));
-    ww_.insert(DistanceLon(Longitude(bbox_.west()).distance(point.lon()), point.lon()));
+    nn_.insert(DistanceLat(lat_distance(bbox_.north(), point.lat()), point.lat()));
+    ss_.insert(DistanceLat(lat_distance(bbox_.south(), point.lat()), point.lat()));
+
+    ee_.insert(DistanceLon(lon_distance(bbox_.east(), point.lon()), point.lon()));
+    ww_.insert(DistanceLon(lon_distance(bbox_.west(), point.lon()), point.lon()));
 
     // Log::info() << point.lat << " " << point.lon << " => " << bbox.contains(point.lat, point.lon) << std::endl;
 
     if (bbox_.contains(point)) {
 
-        const Latitude& lat = point.lat();
-        const Longitude lon = point.lon().normalise(bbox_.west());
+        const auto lat = point.lat();
+        const auto lon = util::normalise_longitude(point.lon(), bbox_.west());
 
         if (first_) {
             n_ = s_ = lat;
@@ -136,10 +142,10 @@ void Count::json(eckit::JSON& j, bool enclose) const {
 
     j << "point";
     j.startObject();
-    j << "n" << n_.value();
-    j << "w" << w_.value();
-    j << "s" << s_.value();
-    j << "e" << e_.value();
+    j << "n" << n_;
+    j << "w" << w_;
+    j << "s" << s_;
+    j << "e" << e_;
     j.endObject();
 
     j << "bbox";
@@ -152,19 +158,19 @@ void Count::json(eckit::JSON& j, bool enclose) const {
 
     j << "distance_to_bbox";
     j.startObject();
-    j << "n" << (bbox_.north() - n_).value();
-    j << "w" << (w_ - bbox_.west()).value();
-    j << "s" << (s_ - bbox_.south()).value();
-    j << "e" << (bbox_.east() - e_).value();
+    j << "n" << (bbox_.north() - n_);
+    j << "w" << (w_ - bbox_.west());
+    j << "s" << (s_ - bbox_.south());
+    j << "e" << (bbox_.east() - e_);
     j.endObject();
 
     if (!nn_.empty() && !ww_.empty() && !ss_.empty() && !ee_.empty()) {
         j << "distance_to_closest";
         j.startObject();
-        j << "n" << (nn_.begin()->first).value();
-        j << "w" << (ww_.begin()->first).value();
-        j << "s" << (ss_.begin()->first).value();
-        j << "e" << (ee_.begin()->first).value();
+        j << "n" << nn_.begin()->first;
+        j << "w" << ww_.begin()->first;
+        j << "s" << ss_.begin()->first;
+        j << "e" << ee_.begin()->first;
         j.endObject();
     }
 
@@ -196,7 +202,7 @@ void Count::countOnGridIncrements(const std::vector<double>& grid) {
 void Count::countOnRepresentation(const repres::Representation& rep) {
     reset();
     for (const auto& point : rep.canonicalGridUnrotated()) {
-        count(PointLatLon{std::get<PointLonLat>(point)});
+        count(std::get<PointLonLat>(point));
     }
 }
 

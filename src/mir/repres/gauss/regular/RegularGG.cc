@@ -56,27 +56,26 @@ std::vector<util::GridBox> RegularGG::gridBoxes() const {
 
     const auto dom   = domain();
     const auto north = dom.north();
-    const Longitude west  = dom.west();
+    const auto west  = dom.west();
     const auto south = dom.south();
-    const Longitude east  = dom.east();
+    const auto east  = dom.east();
 
     const auto periodic = isPeriodicWestEast();
 
 
     // longitude edges
-    auto lon0 = west;
-    auto we   = (east - west).fraction() / (periodic ? Ni_ : Ni_ - 1);
-    eckit::Fraction half(1, 2);
+    const auto lon0 = west;
+    const auto we   = (east - west) / static_cast<double>(periodic ? Ni_ : Ni_ - 1);
 
     std::vector<double> lonEdges(Ni_ + 1);
-    lonEdges[0] = (lon0 - we / 2).value();
+    lonEdges[0] = lon0 - we / 2.;
     for (size_t i = 0; i < Ni_; ++i) {
-        lonEdges[i + 1] = (lon0 + (i + half) * we).value();
+        lonEdges[i + 1] = lon0 + (static_cast<double>(i) + 0.5) * we;
     }
 
     if (!periodic) {
-        lonEdges.front() = std::max(west.value(), lonEdges.front());
-        lonEdges.back()  = std::min(east.value(), lonEdges.back());
+        lonEdges.front() = std::max(west, lonEdges.front());
+        lonEdges.back()  = std::min(east, lonEdges.back());
     }
 
 
@@ -85,16 +84,10 @@ std::vector<util::GridBox> RegularGG::gridBoxes() const {
     r.reserve(Ni_ * Nj_);
 
     for (size_t j = k_; j < k_ + Nj_; ++j) {
-        Longitude lon1 = lon0;
-
         for (size_t i = 0; i < Ni_; ++i) {
-            auto l = lon1;
-            lon1   = l + Longitude(we * (i + half));
             r.emplace_back(std::min(north, latEdges[j]), lonEdges[i], std::max(south, latEdges[j + 1]),
                            lonEdges[i + 1]);
         }
-
-        ASSERT(periodic ? lon0 == lon1.normalise(lon0) : lon0 <= lon1.normalise(lon0));
     }
 
     ASSERT(r.size() == Ni_ * Nj_);
