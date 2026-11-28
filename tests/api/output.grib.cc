@@ -251,7 +251,7 @@ CASE("GribOutput: save action comparison (by packing parameters)") {
     SECTION("compatibility changes") {
         Param a;
         Param b;
-        b.set("compatibility", "something");
+        b.set("compatibility", "no-local-extension");
 
         const MIROutput& o = *out;
         EXPECT(o.sameParametrisation(a, a));

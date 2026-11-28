@@ -39,6 +39,7 @@ Packing::Packing(const std::string& name, const param::MIRParametrisation& param
     bitsPerValue_(0),
     precision_(0),
     definePrecision_(false),
+    compatibility_(param),
     gridded_(param.userParametrisation().has("grid") || param.fieldParametrisation().has("gridded")) {
     const auto& user  = param.userParametrisation();
     const auto& field = param.fieldParametrisation();
@@ -149,7 +150,7 @@ void Packing::fill(grib_info& info, long pack) const {
 
     if (definePacking_) {
         info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
-        info.packing.packing_type = pack;
+        info.packing.packing_type = compatibility_.packing_type(pack);
     }
 
     if (defineBitsPerValue_ && !definePrecision_) {
@@ -198,7 +199,7 @@ void Packing::set(grib_handle* h, const std::string& type, const MIRValuesVector
         set_packing_type(h, "grid_simple");
     }
     else if (definePacking_) {
-        set_packing_type(h, type);
+        set_packing_type(h, compatibility_.packing_type(type));
     }
 
     if (definePrecision_) {

@@ -29,6 +29,8 @@ class MIROutput;
 namespace mir::compat {
 
 
+/// Deprecated, unused by mir: GRIB output compatibilities are grib::Compatibility (kept for the implementations
+/// registered by other projects, until they are removed)
 class GribCompatibility {
 public:
     GribCompatibility(const GribCompatibility&) = delete;

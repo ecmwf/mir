@@ -24,6 +24,7 @@
 #include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/data/Space.h"
 #include "mir/grib/BasicAngle.h"
+#include "mir/grib/Compatibility.h"
 #include "mir/grib/Packing.h"
 #include "mir/input/MIRInput.h"
 #include "mir/key/Area.h"
@@ -305,6 +306,8 @@ struct MIR : MIRTool {
             new SimpleOption<bool>("grib-edition-conversion", "GRIB edition conversion on packing changes"));
 
         options_.push_back(new SimpleOption<bool>("delete-local-definition", "Remove GRIB local extension"));
+        options_.push_back(new FactoryOption<grib::Compatibility>(
+            "compatibility", "GRIB output compatibilities of production, '/'-separated"));
 
         options_.push_back(new FactoryOption<grib::BasicAngle>(
             "basic-angle", "GRIB basic angle and subdivisions (bounding box and grid increments, default 'decimal')"));

@@ -189,16 +189,8 @@ list(APPEND mir_srcs
     compare/GribField.h
     compare/MultiFile.cc
     compare/MultiFile.h
-    compat/Grib1DeleteLocalDefinition.cc
-    compat/Grib1DeleteLocalDefinition.h
     compat/GribCompatibility.cc
     compat/GribCompatibility.h
-    compat/MillidegreeArea.cc
-    compat/MillidegreeArea.h
-    compat/ProduceLargeConstantFields.cc
-    compat/ProduceLargeConstantFields.h
-    compat/SpectralComplexPacking.cc
-    compat/SpectralComplexPacking.h
     config/LibMir.cc
     config/LibMir.h
     data/CartesianVector2DField.cc
@@ -227,8 +219,12 @@ list(APPEND mir_srcs
     data/space/SpaceLogarithmic.h
     grib/BasicAngle.cc
     grib/BasicAngle.h
+    grib/Compatibility.cc
+    grib/Compatibility.h
     grib/Config.cc
     grib/Config.h
+    grib/OutputKeys.cc
+    grib/OutputKeys.h
     grib/Packing.cc
     grib/Packing.h
     input/ArtificialInput.cc

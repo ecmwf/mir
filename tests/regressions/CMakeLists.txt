@@ -41,6 +41,9 @@ set(TESTS
     reduced_gg_to_regular_gg.area-nearest-lsm.lsm.test
     reduced_gg_to_regular_ll.area-nearest-lsm.lsm.test
     reduced_gg_to_regular_ll.area.001.test
+    reduced_gg_to_regular_ll.compatibility.001.test
+    reduced_gg_to_regular_ll.compatibility.002.test
+    reduced_gg_to_regular_ll.delete-local-definition.test
     reduced_gg_to_regular_ll.grid-box-average.test
     reduced_gg_to_regular_ll.regrid.001.test
     reduced_gg_to_regular_ll.wrongly-encoded.001.test
@@ -158,6 +161,8 @@ set(TESTS
     sh_to_rotated_ll.vod2uv-area.test
     sh_to_sh.bandpass.test
     sh_to_sh.cesaro-cesaro-k.test
+    sh_to_sh.compatibility.001.test
+    sh_to_sh.compatibility.002.test
     sh_to_sh.ieee.test
     sh_to_sh.simple.001.fail.test
     sh_to_sh.simple.002.fail.test

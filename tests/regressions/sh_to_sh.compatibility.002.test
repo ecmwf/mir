@@ -1,0 +1,20 @@
+# compatibility=no-local-extension/adjust-spectral-packing (production): GRIB1 without local definition, spectral simple
+# packing as complex
+# input
+gridType=sh,param=t,levtype=pl,level=1000.grib1
+# post-process
+--packing=simple
+--compatibility=no-local-extension/adjust-spectral-packing
+# action-plan
+[{"type":"save","packing":"simple","compatibility":"no-local-extension/adjust-spectral-packing"}]
+# grid-plan
+[{"grid":"T20"},{"grid":"T20"}]
+# grib_get
+gridType=sh
+packingType=spectral_complex
+edition=1
+localUsePresent=0
+numberOfDataPoints=462
+J=20
+K=20
+M=20
