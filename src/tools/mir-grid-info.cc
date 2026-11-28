@@ -3,7 +3,9 @@
 
 
 #include <memory>
+#include <variant>
 
+#include "eckit/geo/Grid.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
@@ -12,7 +14,6 @@
 #include "mir/input/MIRInput.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/param/ConfigurationWrapper.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Exceptions.h"
@@ -111,8 +112,8 @@ void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
     Sorter<Longitude> w(bbox.west());
     Sorter<Longitude> e(bbox.east());
 
-    for (const std::unique_ptr<repres::Iterator> it(rep->iterator()); it->next();) {
-        const auto& p = it->pointUnrotated();
+    for (const auto& point : rep->canonicalGridUnrotated()) {
+        const PointLatLon p{std::get<PointLonLat>(point)};
 
         n.push(p.lat());
         s.push(p.lat());

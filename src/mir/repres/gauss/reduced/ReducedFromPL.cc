@@ -23,11 +23,6 @@ void ReducedFromPL::print(std::ostream& out) const {
 }
 
 
-Iterator* ReducedFromPL::iterator() const {
-    return unrotatedIterator();
-}
-
-
 const Gridded* ReducedFromPL::croppedRepresentation(const util::BoundingBox& bbox) const {
     return new ReducedFromPL(N_, pls(), bbox, angularPrecision_);
 }

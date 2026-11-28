@@ -7,14 +7,15 @@
 #include <map>
 #include <memory>
 #include <sstream>
+#include <variant>
 #include <vector>
 
+#include "eckit/geo/Grid.h"
 #include "eckit/log/JSON.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/key/Area.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/IndexMapping.h"
@@ -55,11 +56,10 @@ void Area::apply(const repres::Representation& repres, util::BoundingBox& bbox, 
 
     bool first = true;
 
-    // Point can be     interpreted "projected" or "non-projected"/"unrotated"
-    for (const std::unique_ptr<repres::Iterator> it(repres.iterator()); it->next();) {
-        const auto point(projection ? PointLatLon{it->pointRotated()} : it->pointUnrotated());
-
-        // Log::debug() << point << " ====> " << bbox.contains(point) << std::endl;
+    // points either projected (rotated) or of the grid frame (unrotated)
+    const auto& points = projection ? repres.canonicalGrid() : repres.canonicalGridUnrotated();
+    for (auto it = points.cbegin(); it; ++it) {
+        const PointLatLon point{std::get<PointLonLat>(*it)};
 
         if (bbox.contains(point)) {
             const Latitude& lat = point.lat();

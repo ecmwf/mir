@@ -49,13 +49,16 @@ CASE("interpolate.grid2rotated-regular-ll") {
 
         size_t n = 0;
 
-        for (std::unique_ptr<repres::Iterator> it(out.representation()->iterator()); it->next();) {
-            if (it->pointUnrotated().lat() == Latitude::SOUTH_POLE) {
-                const auto& p = *(*it);
+        const auto& rotated   = out.representation()->canonicalGrid();
+        const auto& unrotated = out.representation()->canonicalGridUnrotated();
+
+        for (auto it = rotated.cbegin(), jt = unrotated.cbegin(); it; ++it, ++jt) {
+            if (Latitude{std::get<PointLonLat>(*jt).lat()} == Latitude::SOUTH_POLE) {
+                const auto p = std::get<PointLonLat>(*it);
 
                 EXPECT(same(p.lat(), -40., 1e-6));
                 EXPECT(same(p.lon(), 22., 1e-6));
-                EXPECT(std::abs(out.values(0)[it->index()] - -40.) < 0.2);
+                EXPECT(std::abs(out.values(0)[it.index()] - -40.) < 0.2);
 
                 ++n;
             }

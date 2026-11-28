@@ -7,8 +7,10 @@
 #include <cmath>
 #include <memory>
 #include <ostream>
+#include <variant>
 
-#include "mir/repres/Iterator.h"
+#include "eckit/geo/Grid.h"
+
 #include "mir/repres/Representation.h"
 #include "mir/util/Angles.h"
 #include "mir/util/Exceptions.h"
@@ -57,18 +59,24 @@ void CartesianVector2DField::rotate(const util::Rotation& rotation, MIRValuesVec
     const double cos_C = std::cos(C);
     const double sin_C = std::sin(C);
 
-    for (const std::unique_ptr<repres::Iterator> it(representation_->iterator()); it->next();) {
-        auto& vx = valuesX.at(it->index());
-        auto& vy = valuesY.at(it->index());
+    // the same points, rotated and of the grid frame (unrotated)
+    const auto& rotated   = representation_->canonicalGrid();
+    const auto& unrotated = representation_->canonicalGridUnrotated();
+    ASSERT(rotated.size() == unrotated.size());
+
+    auto it = rotated.cbegin();
+    for (auto jt = unrotated.cbegin(); it; ++it, ++jt) {
+        auto& vx = valuesX.at(it.index());
+        auto& vy = valuesY.at(it.index());
 
         if (vx == missingValue_ || vy == missingValue_) {
             vx = vy = missingValue_;
             continue;
         }
 
-        const LongitudeDouble lonRotated = rotation.south_pole_longitude().value() - it->pointRotated().lon();
+        const LongitudeDouble lonRotated = rotation.south_pole_longitude().value() - std::get<PointLonLat>(*it).lon();
         const double lon_rotated         = lonRotated.normalise(LongitudeDouble::MINUS_DATE_LINE).value();
-        const double lon_unrotated       = it->pointUnrotated().lon().value();
+        const double lon_unrotated       = std::get<PointLonLat>(*jt).lon();
 
         const double a = util::degree_to_radian(lon_rotated);
         const double b = util::degree_to_radian(lon_unrotated);

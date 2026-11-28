@@ -50,13 +50,14 @@ inline double cosd(double x) {
 inline void expect_near(const data::MIRField& field, size_t which, const F& expected, double tolerance) {
     size_t n = 0;
 
-    for (std::unique_ptr<repres::Iterator> it(field.representation()->iterator()); it->next();) {
-        const auto& p  = it->pointUnrotated();
-        const auto lat = p.lat().value();
+    const auto& points = field.representation()->canonicalGridUnrotated();
+    for (auto it = points.cbegin(); it; ++it) {
+        const auto p   = std::get<PointLonLat>(*it);
+        const auto lat = p.lat();
 
         if (std::abs(lat) < 80.) {
-            const auto v = field.values(which)[it->index()];
-            const auto e = expected(lat, p.lon().value());
+            const auto v = field.values(which)[it.index()];
+            const auto e = expected(lat, p.lon());
 
             if (!same(v, e, tolerance) && n++ < 5) {
                 Log::info() << "lat=" << lat << ": " << v << " (expected " << e << ")" << std::endl;

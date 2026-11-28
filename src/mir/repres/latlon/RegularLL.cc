@@ -6,13 +6,11 @@
 
 #include <ostream>
 
+#include "eckit/geo/range/Regular.h"
 #include "eckit/log/JSON.h"
 #include "eckit/spec/Custom.h"
 
 #include "mir/api/mir_config.h"
-#include "mir/iterator/GridIterator.h"
-#include "mir/iterator/detail/RegularIterator.h"
-#include "mir/repres/Iterator.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
@@ -28,10 +26,6 @@ RegularLL::RegularLL(const util::Increments& increments, const util::BoundingBox
     LatLon(increments, bbox, reference) {}
 
 RegularLL::~RegularLL() = default;
-
-Iterator* RegularLL::iterator() const {
-    return new iterator::GridIterator(grid(), true);
-}
 
 void RegularLL::print(std::ostream& out) const {
     out << "RegularLL[";
@@ -87,31 +81,28 @@ const RegularLL* RegularLL::croppedRepresentation(const util::BoundingBox& bbox)
 }
 
 util::BoundingBox RegularLL::extendBoundingBox(const util::BoundingBox& bbox) const {
-    using iterator::detail::RegularIterator;
+    using eckit::geo::range::Regular;
 
-    auto sn = increments_.south_north().latitude().fraction();
-    auto we = increments_.west_east().longitude().fraction();
+    const auto sn = increments_.south_north().latitude().fraction();
+    const auto we = increments_.west_east().longitude().fraction();
     ASSERT(sn > 0);
     ASSERT(we > 0);
-
-    auto shift_sn = (reference_.lat().fraction() / sn).decimalPart() * sn;
-    auto shift_we = (reference_.lon().fraction() / we).decimalPart() * we;
 
     // adjust West/East to include bbox's West/East ('outwards')
     Longitude w = bbox.west();
     if (increments_.isPeriodic()) {
-        w = shift_we + RegularIterator::adjust(bbox.west().fraction() - shift_we, we, false);
+        w = Regular::adjust(bbox.west().fraction(), we, reference_.lon().fraction(), false, PRECISION);
     }
-    Longitude e = shift_we + RegularIterator::adjust(bbox.east().fraction() - shift_we, we, true);
+    Longitude e = Regular::adjust(bbox.east().fraction(), we, reference_.lon().fraction(), true, PRECISION);
 
 
     // adjust South/North to include bbox's South/North ('outwards'), to the latitudes by the reference (South/West)
     // point, not beyond the poles: without a latitude between bbox's South/North and the pole, keep bbox's
-    auto s = shift_sn + RegularIterator::adjust(bbox.south().fraction() - shift_sn, sn, false);
+    auto s = Regular::adjust(bbox.south().fraction(), sn, reference_.lat().fraction(), false, PRECISION);
     if (s < Latitude::SOUTH_POLE.fraction()) {
         s = bbox.south().fraction();
     }
-    auto n = shift_sn + RegularIterator::adjust(bbox.north().fraction() - shift_sn, sn, true);
+    auto n = Regular::adjust(bbox.north().fraction(), sn, reference_.lat().fraction(), true, PRECISION);
     if (n > Latitude::NORTH_POLE.fraction()) {
         n = bbox.north().fraction();
     }

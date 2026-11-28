@@ -25,10 +25,11 @@ CASE("filter.adjust-winds-scale-cos-latitude") {
 
             // scaled by 1/cos(latitude), zero at the poles
             for (size_t which = 0; which < 2; ++which) {
-                for (std::unique_ptr<repres::Iterator> it(out.representation()->iterator()); it->next();) {
-                    const auto lat = it->pointUnrotated().lat().value();
-                    const auto in_ = in.values(which)[it->index()];
-                    const auto v   = out.values(which)[it->index()];
+                const auto& points = out.representation()->canonicalGridUnrotated();
+                for (auto it = points.cbegin(); it; ++it) {
+                    const auto lat = PointLatLon{std::get<PointLonLat>(*it)}.lat().value();
+                    const auto in_ = in.values(which)[it.index()];
+                    const auto v   = out.values(which)[it.index()];
 
                     EXPECT(std::abs(lat) == 90. ? v == 0.
                                                 : same(v, in_ / std::cos(util::degree_to_radian(lat)), 1e-9 * v));

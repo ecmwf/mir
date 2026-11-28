@@ -66,7 +66,6 @@ private:
 
     // -- Overridden methods
 
-    Iterator* iterator() const override;
 
     const Gridded* croppedRepresentation(const util::BoundingBox&) const override;
 

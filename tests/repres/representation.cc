@@ -73,7 +73,6 @@ CASE("Representation: defaults of the base class") {
     EXPECT_THROWS_AS(r.factory(), SeriousBug);
     EXPECT_THROWS_AS(r.reorderToCanonical(values), SeriousBug);
     EXPECT_THROWS_AS(r.reorderFromCanonical(values), SeriousBug);
-    EXPECT_THROWS_AS(r.iterator(), SeriousBug);
     EXPECT_THROWS_AS(to_json(r), SeriousBug);
 
     // the domain is the base of other methods

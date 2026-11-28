@@ -10,19 +10,21 @@
 #include <sstream>
 #include <utility>
 
+#include "eckit/geo/Grid.h"
+#include "eckit/geo/Search.h"
 #include "eckit/log/JSON.h"
 
 #include "mir/method/gridbox/GridBoxMethod.h"
 #include "mir/method/solver/Statistics.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
-#include "mir/search/PointSearch.h"
 #include "mir/stats/Field.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/GridBox.h"
 #include "mir/util/Log.h"
-#include "mir/util/LonLatToPoint3.h"
+#include "mir/util/LonLatToXYZ.h"
+#include "mir/util/Search.h"
 #include "mir/util/Trace.h"
 
 
@@ -62,7 +64,7 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
     // init structure used to fill in sparse matrix
     // TODO: triplets, really? why not writing to the matrix directly?
     std::vector<WeightMatrix::Triplet> weights_triplets;
-    std::vector<search::PointSearch::PointValueType> closest;
+    eckit::geo::Search::Neighbours closest;
 
 
     // set input and output grid boxes
@@ -83,17 +85,18 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
 
     const GridBoxes outBoxes(out);
 
-    util::LonLatToPoint3 point3(in, poleDisplacement());
+    const util::LonLatToXYZ point3(in.canonicalGrid().figure(), poleDisplacement(in));
+    const auto [inLatitudes, inLongitudes] = in.canonicalGrid().to_latlons();
 
     size_t nbFailures = 0;
     std::forward_list<std::pair<size_t, PointLatLon>> failures;
 
 
     // set input k-d tree for grid boxes indices
-    std::unique_ptr<search::PointSearch> tree;
+    std::unique_ptr<const eckit::geo::Search> tree;
     {
         trace::ResourceUsage usage("GridBoxStatistics::assemble create k-d tree");
-        tree = std::make_unique<search::PointSearch>(parametrisation_, in);
+        tree = util::make_search(parametrisation_, in);
     }
 
     {
@@ -109,17 +112,17 @@ void GridBoxStatistics::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& 
 
             // lookup
             const auto& box = outBoxes[i];
-            tree->closestWithinRadius(point3(box.centre()), R, closest);
+            closest         = tree->search_radius(point3(box.centre()), R);
             if (closest.empty()) {
                 continue;
             }
 
 
-            // calculate grid box contains
+            // calculate grid box contains (of the input points, not of their 3D representation, as on any figure)
             std::vector<size_t> js;
             for (auto& c : closest) {
-                if (box.contains(util::Earth::_convertCartesianToSpherical(c.point()))) {
-                    js.emplace_back(c.payload());
+                if (box.contains(PointLonLat{inLongitudes[c.index], inLatitudes[c.index]})) {
+                    js.emplace_back(c.index);
                 }
             }
 

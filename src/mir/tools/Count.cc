@@ -5,11 +5,12 @@
 #include "mir/tools/Count.h"
 
 #include <memory>
+#include <variant>
 
+#include "eckit/geo/Grid.h"
 #include "eckit/log/JSON.h"
 
 #include "mir/key/grid/Grid.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/Exceptions.h"
@@ -194,8 +195,8 @@ void Count::countOnGridIncrements(const std::vector<double>& grid) {
 
 void Count::countOnRepresentation(const repres::Representation& rep) {
     reset();
-    for (const std::unique_ptr<repres::Iterator> iter(rep.iterator()); iter->next();) {
-        count(iter->pointUnrotated());
+    for (const auto& point : rep.canonicalGridUnrotated()) {
+        count(PointLatLon{std::get<PointLonLat>(point)});
     }
 }
 

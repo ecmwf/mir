@@ -8,7 +8,6 @@
 #include <ostream>
 #include <utility>
 
-#include "mir/iterator/GridIterator.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/GridBox.h"
@@ -34,11 +33,6 @@ void RegularGG::print(std::ostream& out) const {
 bool RegularGG::sameAs(const Representation& other) const {
     const auto* o = dynamic_cast<const RegularGG*>(&other);
     return (o != nullptr) && Regular::sameAs(other);
-}
-
-
-Iterator* RegularGG::iterator() const {
-    return new iterator::GridIterator(grid(), true);
 }
 
 

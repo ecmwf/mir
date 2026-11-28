@@ -7,16 +7,19 @@
 #include <algorithm>
 #include <memory>
 #include <sstream>
+#include <variant>
 #include <vector>
 
 #include "eckit/geo/Grid.h"
+#include "eckit/geo/order/Scan.h"
+#include "eckit/geo/projection/Rotation.h"
 #include "eckit/spec/Custom.h"
+#include "eckit/spec/Layered.h"
 
 #include "mir/api/MIRJob.h"
 #include "mir/data/MIRField.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/UnstructuredGrid.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
@@ -154,6 +157,56 @@ const eckit::geo::Grid& Representation::grid() const {
     }
 
     return *grid_;
+}
+
+
+const eckit::geo::Grid& Representation::canonicalGrid() const {
+    util::lock_guard<util::recursive_mutex> lock(gridMutex_);
+
+    if (canonicalGrid_ == nullptr) {
+        const auto& g     = grid();
+        const auto& order = eckit::geo::order::Scan::order_default();
+
+        if (valuesInDefaultOrder() && g.order() != order) {
+            eckit::spec::Layered spec(g.spec());
+            spec.push_front(new eckit::spec::Custom{{"order", order}});
+
+            canonicalGridOwned_.reset(eckit::geo::GridFactory::build(spec));
+            ASSERT(canonicalGridOwned_);
+        }
+
+        canonicalGrid_ = canonicalGridOwned_ ? canonicalGridOwned_.get() : &g;
+    }
+
+    return *canonicalGrid_;
+}
+
+
+const eckit::geo::Grid& Representation::canonicalGridUnrotated() const {
+    util::lock_guard<util::recursive_mutex> lock(gridMutex_);
+
+    if (canonicalGridUnrotated_ == nullptr) {
+        const auto& g = canonicalGrid();
+
+        if (const auto* r = dynamic_cast<const eckit::geo::projection::Rotation*>(&g.projection());
+            r != nullptr && r->rotated()) {
+            eckit::spec::Layered spec(g.spec());
+            spec.hide("projection");
+            spec.hide("rotation");
+
+            canonicalGridUnrotatedOwned_.reset(eckit::geo::GridFactory::build(spec));
+            ASSERT(canonicalGridUnrotatedOwned_);
+        }
+
+        canonicalGridUnrotated_ = canonicalGridUnrotatedOwned_ ? canonicalGridUnrotatedOwned_.get() : &g;
+    }
+
+    return *canonicalGridUnrotated_;
+}
+
+
+bool Representation::valuesInDefaultOrder() const {
+    return false;
 }
 
 
@@ -302,13 +355,6 @@ void Representation::reorderFromCanonical(MIRValuesVector& /*unused*/) const {
 }
 
 
-Iterator* Representation::iterator() const {
-    std::ostringstream os;
-    os << "Representation::iterator() not implemented for " << *this;
-    throw exception::SeriousBug(os.str());
-}
-
-
 const Representation* Representation::globalise(data::MIRField& field) const {
     if (domain().isGlobal()) {
         return nullptr;
@@ -320,19 +366,19 @@ const Representation* Representation::globalise(data::MIRField& field) const {
 
     std::vector<double> latitudes(n);
     std::vector<double> longitudes(n);
-    for (const std::unique_ptr<Iterator> it(iterator()); it->next();) {
-        const auto& p = it->pointRotated();
-        ASSERT(it->index() < n);
-        latitudes[it->index()]  = p.lat();
-        longitudes[it->index()] = p.lon();
+    const auto& points = canonicalGrid();
+    for (auto it = points.cbegin(); it; ++it) {
+        const auto p = std::get<PointLonLat>(*it);
+        ASSERT(it.index() < n);
+        latitudes[it.index()]  = p.lat();
+        longitudes[it.index()] = p.lon();
     }
 
     const auto dom = geographicDomain();
 
     RepresentationHandle octahedral(key::grid::Grid::lookup("O320").representation());
-    for (const std::unique_ptr<Iterator> it(octahedral->iterator()); it->next();) {
-        const auto& p = it->pointRotated();
-        if (!dom.contains(p)) {
+    for (const auto& point : octahedral->canonicalGrid()) {
+        if (const auto p = std::get<PointLonLat>(point); !dom.contains(p)) {
             latitudes.push_back(p.lat());
             longitudes.push_back(p.lon());
         }

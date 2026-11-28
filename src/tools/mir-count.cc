@@ -15,7 +15,6 @@
 #include "mir/key/grid/Grid.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/param/ConfigurationWrapper.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/tools/Count.h"

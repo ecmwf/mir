@@ -22,8 +22,8 @@ Distance::Distance(const param::MIRParametrisation& param) :
 }
 
 
-void Distance::pick(const search::PointSearch& tree, const PointXYZ& p, Pick::neighbours_t& closest) const {
-    tree.closestWithinRadius(p, distance_, closest);
+void Distance::pick(const eckit::geo::Search& tree, const PointXYZ& p, Pick::neighbours_t& closest) const {
+    closest = tree.search_radius(p, distance_);
 }
 
 

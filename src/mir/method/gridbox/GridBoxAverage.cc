@@ -9,18 +9,20 @@
 #include <iterator>
 #include <sstream>
 #include <utility>
+#include <variant>
 
+#include "eckit/geo/Grid.h"
+#include "eckit/geo/Search.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/search/PointSearch.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/GridBox.h"
 #include "mir/util/Log.h"
-#include "mir/util/LonLatToPoint3.h"
+#include "mir/util/LonLatToXYZ.h"
+#include "mir/util/Search.h"
 #include "mir/util/Trace.h"
 
 
@@ -60,7 +62,7 @@ void GridBoxAverage::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, 
     // TODO: triplets, really? why not writing to the matrix directly?
     std::vector<WeightMatrix::Triplet> weights_triplets;
     std::vector<WeightMatrix::Triplet> triplets;
-    std::vector<search::PointSearch::PointValueType> closest;
+    eckit::geo::Search::Neighbours closest;
 
 
     // set input and output grid boxes
@@ -83,30 +85,32 @@ void GridBoxAverage::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, 
     const GridBoxes outBoxes(out);
     const auto R = inBoxes.getLongestGridBoxDiagonal() + outBoxes.getLongestGridBoxDiagonal();
 
-    util::LonLatToPoint3 point3(in, poleDisplacement());
+    const util::LonLatToXYZ point3(in.canonicalGrid().figure(), poleDisplacement(in));
 
     size_t nbFailures = 0;
     std::forward_list<std::pair<size_t, PointLatLon>> failures;
 
 
     // set input k-d tree for grid boxes indices
-    std::unique_ptr<search::PointSearch> tree;
+    std::unique_ptr<const eckit::geo::Search> tree;
     {
         trace::ResourceUsage usage("GridBoxMethod::assemble create k-d tree");
-        tree = std::make_unique<search::PointSearch>(parametrisation_, in);
+        tree = util::make_search(parametrisation_, in);
     }
 
     {
         trace::ProgressTimer progress("Intersecting", outBoxes.size(), gridBoxes);
 
-        for (const std::unique_ptr<repres::Iterator> it(out.iterator()); it->next();) {
+        const auto& points = out.canonicalGrid();
+        for (auto it = points.cbegin(); it; ++it) {
             if (++progress) {
                 log << *tree << std::endl;
             }
 
+            const auto p = std::get<PointLonLat>(*it);
 
             // lookup
-            tree->closestWithinRadius(point3(*(*it)), R, closest);
+            closest = tree->search_radius(point3(p), R);
             ASSERT(!closest.empty());
 
 
@@ -114,7 +118,7 @@ void GridBoxAverage::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, 
             triplets.clear();
             triplets.reserve(closest.size());
 
-            auto i          = it->index();
+            auto i          = it.index();
             const auto& box = outBoxes.at(i);
             double area     = box.area();
             ASSERT(area > 0.);
@@ -122,7 +126,7 @@ void GridBoxAverage::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, 
             double sumSmallAreas = 0.;
             bool areaMatch       = false;
             for (auto& c : closest) {
-                auto j        = c.payload();
+                auto j        = c.index;
                 auto smallBox = inBoxes.at(j);
 
                 if (box.intersects(smallBox)) {
@@ -146,7 +150,7 @@ void GridBoxAverage::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, 
             }
             else {
                 ++nbFailures;
-                failures.emplace_front(i, it->pointUnrotated());
+                failures.emplace_front(i, PointLatLon{p});
             }
         }
     }

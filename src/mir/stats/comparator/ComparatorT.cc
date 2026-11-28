@@ -6,9 +6,11 @@
 
 #include <cmath>
 #include <ostream>
+#include <variant>
+
+#include "eckit/geo/Grid.h"
 
 #include "mir/data/MIRField.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/stats/detail/AngleT.h"
 #include "mir/stats/detail/CentralMomentsT.h"
@@ -42,10 +44,11 @@ std::string ComparatorT<STATS>::execute(const data::MIRField& field1, const data
         }
         ASSERT(rep1->numberOfPoints() == values1.size());
 
-        for (const std::unique_ptr<repres::Iterator> it(rep1->iterator()); it->next();) {
-            const auto& p = it->pointUnrotated();
-            auto v1       = values1.at(it->index());
-            auto v2       = values2.at(it->index());
+        const auto& points = rep1->canonicalGridUnrotated();
+        for (auto it = points.cbegin(); it; ++it) {
+            const auto p = std::get<PointLonLat>(*it);
+            auto v1      = values1.at(it.index());
+            auto v2      = values2.at(it.index());
 
             bool bad  = ignoreAboveLatitude_ < p.lat() || p.lat() < ignoreBelowLatitude_;
             auto diff = bad ? 0. : STATS::difference(v1, v2);

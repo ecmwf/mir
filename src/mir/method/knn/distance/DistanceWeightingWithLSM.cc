@@ -42,8 +42,7 @@ DistanceWeightingWithLSM::DistanceWeightingWithLSM(const param::MIRParametrisati
 }
 
 
-void DistanceWeightingWithLSM::operator()(size_t, const PointXYZ&,
-                                          const std::vector<search::PointSearch::PointValueType>&,
+void DistanceWeightingWithLSM::operator()(size_t, const PointXYZ&, const eckit::geo::Search::Neighbours&,
                                           std::vector<WeightMatrix::Triplet>&) const {
     throw exception::SeriousBug("DistanceWeightingWithLSM: not to be used directly");
 }

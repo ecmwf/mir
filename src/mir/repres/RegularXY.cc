@@ -8,6 +8,7 @@
 #include <ostream>
 #include <string>
 #include <utility>
+#include <variant>
 #include <vector>
 
 #include "eckit/geo/Figure.h"
@@ -19,9 +20,7 @@
 #include "eckit/spec/Custom.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/iterator/GridIterator.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/util/Angles.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
@@ -398,11 +397,6 @@ bool RegularXY::isPeriodicWestEast() const {
 
 void RegularXY::validate(const MIRValuesVector& values) const {
     ASSERT_VALUES_SIZE_EQ_ITERATOR_COUNT("RegularXY", values.size(), numberOfPoints());
-}
-
-
-Iterator* RegularXY::iterator() const {
-    return new iterator::GridIterator(*grid_);
 }
 
 

@@ -38,9 +38,10 @@ CASE("mask.area") {
             EXPECT_EQUAL(out.values(0).size(), in.values(0).size());
             EXPECT(out.hasMissing());
 
-            for (std::unique_ptr<repres::Iterator> it(out.representation()->iterator()); it->next();) {
-                const auto lat = it->pointUnrotated().lat().value();
-                const auto v   = out.values(1)[it->index()];
+            const auto& points = out.representation()->canonicalGridUnrotated();
+            for (auto it = points.cbegin(); it; ++it) {
+                const auto lat = PointLatLon{std::get<PointLonLat>(*it)}.lat().value();
+                const auto v   = out.values(1)[it.index()];
 
                 EXPECT(v == 9999. || (30. - 1e-9 <= lat && lat <= 60. + 1e-9 && same(v, lat)));
             }

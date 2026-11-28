@@ -28,9 +28,10 @@ inline void for_each_point(const data::MIRField& field, size_t which,
                            const std::function<void(double lat, double lon, double value)>& f) {
     const auto& values = field.values(which);
 
-    for (std::unique_ptr<repres::Iterator> it(field.representation()->iterator()); it->next();) {
-        const auto& p = *(*it);
-        f(p.lat(), p.lon(), values.at(it->index()));
+    const auto& points = field.representation()->canonicalGrid();
+    for (auto it = points.cbegin(); it; ++it) {
+        const auto p = std::get<PointLonLat>(*it);
+        f(p.lat(), p.lon(), values.at(it.index()));
     }
 }
 

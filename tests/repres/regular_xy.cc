@@ -195,9 +195,8 @@ CASE(
             EXPECT_EQUAL(mesh.meshGenerator_, "structured");
 
             // the first point (top left), and the scanning
-            std::unique_ptr<Iterator> it(repres->iterator());
-            ASSERT(it->next());
-            EXPECT(same(it->pointUnrotated().lat().value(), test.latitudeOfFirstGridPoint, 1e-6));
+            const auto first = std::get<PointLonLat>(repres->canonicalGridUnrotated().first_point());
+            EXPECT(same(first.lat(), test.latitudeOfFirstGridPoint, 1e-6));
 
             grib_info info;
             repres->fillGrib(info);

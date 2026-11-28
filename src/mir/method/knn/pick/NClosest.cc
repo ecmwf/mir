@@ -21,8 +21,8 @@ NClosest::NClosest(const param::MIRParametrisation& param) :
 }
 
 
-void NClosest::pick(const search::PointSearch& tree, const PointXYZ& p, Pick::neighbours_t& closest) const {
-    tree.closestNPoints(p, nClosest_, closest);
+void NClosest::pick(const eckit::geo::Search& tree, const PointXYZ& p, Pick::neighbours_t& closest) const {
+    closest = tree.search_knn(p, nClosest_);
     ASSERT(closest.size() == nClosest_);
 }
 

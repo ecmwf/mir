@@ -12,23 +12,25 @@
 #include <ostream>
 #include <sstream>
 #include <utility>
+#include <variant>
 #include <vector>
 
-#include "atlas/util/CoordinateEnums.h"
-
+#include "eckit/geo/Grid.h"
 #include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
+#include "atlas/util/CoordinateEnums.h"
+
 #include "mir/caching/InMemoryMeshCache.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
-#include "mir/util/LonLatToPoint3.h"
+#include "mir/util/LonLatToXYZ.h"
 #include "mir/util/Reorder.h"
 #include "mir/util/Trace.h"
+#include "mir/util/Types.h"
 
 
 namespace mir::method::fe {
@@ -323,7 +325,8 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
     const auto nbRealPts =
         inNodes.metadata().has("NbRealPts") ? inNodes.metadata().get<size_t>("NbRealPts") : nbInputPoints;
 
-    util::LonLatToPoint3 point3(out, poleDisplacement());
+    // output points on the figure of the input mesh nodes, atlas' (spherical) Earth whichever the grid's figure
+    const util::LonLatToXYZ point3(util::Earth(), poleDisplacement(out));
 
     // some statistics
     size_t nbMaxElementsSearched   = 0;
@@ -341,15 +344,16 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
         trace::ProgressTimer progress("Projecting", nbOutputPoints, {"point"});
 
         // iterate over output points
-        for (const std::unique_ptr<repres::Iterator> it(out.iterator()); it->next(); ++progress) {
-            if (inDomain.contains(it->pointRotated())) {
+        const auto& points = out.canonicalGrid();
+        for (auto it = points.cbegin(); it; ++it, ++progress) {
+            if (const auto q = std::get<PointLonLat>(*it); inDomain.contains(q)) {
                 size_t nbProjectionAttempts = 0;
 
-                auto ip = it->index();
+                auto ip = it.index();
                 ASSERT(ip < nbOutputPoints);
 
                 // 3D projection, trying elements closest to p
-                const auto p = point3(*(*it));
+                const auto p = point3(q);
                 auto closest = eTree->findInSphere(element_tree_t::Point{p.X(), p.Y(), p.Z()}, R);
 
                 atlas::interpolation::method::Ray ray(p.data());
@@ -403,7 +407,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
                     ++nbProjections;
                 }
                 else if (projectionFail_ != ProjectionFail::missingValue) {
-                    failures.emplace_front(ip, it->pointUnrotated());
+                    failures.emplace_front(ip, PointLatLon{q});
                     ++nbFailures;
                 }
             }

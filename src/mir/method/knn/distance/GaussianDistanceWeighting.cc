@@ -32,7 +32,7 @@ GaussianDistanceWeighting::GaussianDistanceWeighting(const param::MIRParametrisa
 
 
 void GaussianDistanceWeighting::operator()(size_t ip, const PointXYZ& point,
-                                           const std::vector<search::PointSearch::PointValueType>& neighbours,
+                                           const eckit::geo::Search::Neighbours& neighbours,
                                            std::vector<WeightMatrix::Triplet>& triplets) const {
 
     ASSERT(!neighbours.empty());
@@ -43,10 +43,10 @@ void GaussianDistanceWeighting::operator()(size_t ip, const PointXYZ& point,
     // calculate neighbour points weights, and their total (for normalisation)
     double sum = 0.;
     for (const auto& n : neighbours) {
-        const double d2     = PointXYZ::distance2(point, n.point());
+        const double d2     = PointXYZ::distance2(point, n.point);
         const double weight = std::exp(d2 * exponentFactor_);
 
-        triplets.emplace_back(ip, n.payload(), weight);
+        triplets.emplace_back(ip, n.index, weight);
         sum += weight;
     }
 

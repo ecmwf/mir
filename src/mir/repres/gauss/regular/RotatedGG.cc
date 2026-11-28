@@ -9,7 +9,6 @@
 
 #include "eckit/spec/Custom.h"
 
-#include "mir/iterator/GridIterator.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
@@ -36,11 +35,6 @@ void RotatedGG::print(std::ostream& out) const {
 bool RotatedGG::sameAs(const Representation& other) const {
     const auto* o = dynamic_cast<const RotatedGG*>(&other);
     return (o != nullptr) && (rotation_ == o->rotation_) && Regular::sameAs(other);
-}
-
-
-Iterator* RotatedGG::iterator() const {
-    return new iterator::GridIterator(grid(), true);
 }
 
 

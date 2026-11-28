@@ -89,9 +89,10 @@ void for_each(const data::MIRField& out, size_t which, FN fn) {
     const auto& values = out.values(which);
     size_t n           = 0;
 
-    for (std::unique_ptr<repres::Iterator> it(out.representation()->iterator()); it->next(); ++n) {
-        const auto& p = it->pointRotated();
-        fn(values.at(it->index()), p.lat(), p.lon());
+    const auto& points = out.representation()->canonicalGrid();
+    for (auto it = points.cbegin(); it; ++it, ++n) {
+        const auto p = std::get<PointLonLat>(*it);
+        fn(values.at(it.index()), p.lat(), p.lon());
     }
 
     EXPECT_EQUAL(n, values.size());

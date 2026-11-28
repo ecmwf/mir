@@ -89,10 +89,11 @@ CASE("finite element methods") {
         for (const auto& spec : FINITE_ELEMENT) {
             auto result = interpolate(*make(spec), input, *subset);
 
-            size_t i = 0;
-            for (std::unique_ptr<repres::Iterator> it(subset->iterator()); it->next(); ++i) {
-                const auto& p = it->pointUnrotated();
-                EXPECT(same(result.values(0)[i], smooth(p.lat().value(), p.lon().value()), 1e-6));
+            size_t i           = 0;
+            const auto& points = subset->canonicalGridUnrotated();
+            for (auto it = points.cbegin(); it; ++it, ++i) {
+                const auto p = std::get<PointLonLat>(*it);
+                EXPECT(same(result.values(0)[i], smooth(p.lat(), p.lon()), 1e-6));
             }
         }
     }

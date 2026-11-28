@@ -7,13 +7,14 @@
 #include <algorithm>
 #include <memory>
 #include <ostream>
+#include <variant>
 
+#include "eckit/geo/Grid.h"
 #include "eckit/log/JSON.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 
@@ -106,13 +107,14 @@ void CheckerBoard::execute(context::Context& ctx) const {
             b %= v.size();
         }
 
-        for (const std::unique_ptr<repres::Iterator> it(representation->iterator()); it->next();) {
-            auto& v = values.at(it->index());
+        const auto& points = representation->canonicalGridUnrotated();
+        for (auto it = points.cbegin(); it; ++it) {
+            auto& v = values.at(it.index());
             if (!hasMissing || v != missingValue) {
-                const auto& p = it->pointUnrotated();
+                const auto p = std::get<PointLonLat>(*it);
 
                 Latitude lat  = Latitude::NORTH_POLE - p.lat();
-                Longitude lon = p.lon().normalise(Longitude::GREENWICH);
+                Longitude lon = Longitude(p.lon()).normalise(Longitude::GREENWICH);
 
                 auto c = size_t(lat.value() / ns);
                 auto r = size_t(lon.value() / we);

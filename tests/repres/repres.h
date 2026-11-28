@@ -5,15 +5,16 @@
 #pragma once
 
 #include <cmath>
+#include <iterator>
 #include <memory>
 #include <sstream>
 #include <string>
 
+#include "eckit/geo/Grid.h"
 #include "eckit/log/JSON.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/param/GridSpecParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
@@ -29,13 +30,10 @@ inline RepresentationHandle make(const std::string& gridspec) {
 }
 
 
-/// Number of points the representation iterator visits
+/// Number of points of the values as held, by iterating
 inline size_t count(const Representation& repres) {
-    size_t n = 0;
-    for (std::unique_ptr<Iterator> it(repres.iterator()); it->next();) {
-        ++n;
-    }
-    return n;
+    const auto& grid = repres.canonicalGrid();
+    return static_cast<size_t>(std::distance(grid.cbegin(), grid.cend()));
 }
 
 

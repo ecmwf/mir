@@ -83,11 +83,12 @@ CASE("HEALPix representation") {
             const auto boxes = repres->gridBoxes();
             ASSERT(boxes.size() == repres->numberOfPoints());
 
-            for (std::unique_ptr<Iterator> it(repres->iterator()); it->next();) {
-                const auto& box = boxes.at(it->index());
-                const auto& p   = it->pointUnrotated();
+            const auto& points = repres->canonicalGridUnrotated();
+            for (auto it = points.cbegin(); it; ++it) {
+                const auto& box = boxes.at(it.index());
+                const auto p    = std::get<PointLonLat>(*it);
 
-                EXPECT(box.south() <= p.lat().value() && p.lat().value() <= box.north());
+                EXPECT(box.south() <= p.lat() && p.lat() <= box.north());
             }
         }
     }

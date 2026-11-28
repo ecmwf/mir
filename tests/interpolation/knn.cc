@@ -9,12 +9,15 @@
 #include <string>
 #include <vector>
 
+#include "eckit/geo/Search.h"
+#include "eckit/geo/figure/Earth.h"
 #include "eckit/testing/Test.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/method/knn/pick/Pick.h"
 #include "mir/param/SimpleParametrisation.h"
-#include "mir/search/PointSearch.h"
+#include "mir/util/LonLatToXYZ.h"
+#include "mir/util/Search.h"
 
 #include "interpolation.h"
 
@@ -26,7 +29,7 @@ using method::knn::pick::Pick;
 using method::knn::pick::PickFactory;
 
 using P         = std::unique_ptr<const Pick>;
-using Neighbors = std::vector<search::PointSearch::PointValueType>;
+using Neighbors = eckit::geo::Search::Neighbours;
 using Indices   = std::set<size_t>;
 
 
@@ -47,14 +50,15 @@ constexpr double RADIUS_NEIGHBOURS = 1.2e6;
 
 
 PointXYZ point3(double lat, double lon) {
-    return repres::Iterator::point_3D(PointLonLat{lon, lat});
+    static const util::LonLatToXYZ to_xyz(eckit::geo::figure::EARTH);
+    return to_xyz(PointLonLat{lon, lat});
 }
 
 
 Indices payloads(const Neighbors& closest) {
     Indices idx;
     for (const auto& c : closest) {
-        idx.insert(c.payload());
+        idx.insert(c.index);
     }
     return idx;
 }
@@ -63,7 +67,7 @@ Indices payloads(const Neighbors& closest) {
 struct Picker {
     explicit Picker(const std::string& gridspec = GRID_3X3) : repres(representation(gridspec)) {
         param.set("point-search-trees", "memory");
-        tree = std::make_unique<search::PointSearch>(param, *repres);
+        tree = util::make_search(param, *repres);
     }
 
     Neighbors pick(const std::string& name, double lat, double lon) {
@@ -77,7 +81,7 @@ struct Picker {
 
     param::SimpleParametrisation param;
     repres::RepresentationHandle repres;
-    std::unique_ptr<search::PointSearch> tree;
+    std::unique_ptr<const eckit::geo::Search> tree;
 };
 
 
@@ -88,7 +92,7 @@ CASE("neighbour picking methods") {
 
         auto closest = picker.pick("nclosest", 1., 1.);
         EXPECT(payloads(closest) == Indices({0, 3, 4, 6}));
-        EXPECT_EQUAL(closest.front().payload(), 3);
+        EXPECT_EQUAL(closest.front().index, 3);
     }
 
 
@@ -131,7 +135,7 @@ CASE("neighbour picking methods") {
         picker.param.set("distance", RADIUS_NEIGHBOURS);
         auto closest = picker.pick("distance-and-nclosest", 0., 0.);
         EXPECT_EQUAL(closest.size(), 2);
-        EXPECT_EQUAL(closest.front().payload(), 3);
+        EXPECT_EQUAL(closest.front().index, 3);
 
         picker.param.set("distance", 1e5);
         EXPECT(payloads(picker.pick("distance-and-nclosest", 0., 0.)) == Indices({3}));
@@ -148,7 +152,7 @@ CASE("neighbour picking methods") {
         picker.param.set("distance", 1e5);
         auto closest = picker.pick("distance-or-nclosest", 0., 0.);
         EXPECT_EQUAL(closest.size(), 2);
-        EXPECT_EQUAL(closest.front().payload(), 3);
+        EXPECT_EQUAL(closest.front().index, 3);
     }
 
 
@@ -173,7 +177,7 @@ CASE("neighbour picking methods") {
         auto sorted = picker.pick("sorted-sample", 1., 1.);
         auto p      = point3(1., 1.);
         EXPECT(std::is_sorted(sorted.begin(), sorted.end(), [&p](const auto& a, const auto& b) {
-            return PointXYZ::distance2(a.point(), p) < PointXYZ::distance2(b.point(), p);
+            return PointXYZ::distance2(a.point, p) < PointXYZ::distance2(b.point, p);
         }));
 
         // comparison, by nclosest and distance

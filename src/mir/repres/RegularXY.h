@@ -57,7 +57,6 @@ protected:
     void print(std::ostream&) const override;
 
     ::atlas::Grid atlasGrid() const override;
-    Iterator* iterator() const override;
     size_t numberOfPoints() const override;
 
 private:

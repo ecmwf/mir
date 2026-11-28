@@ -38,11 +38,12 @@ CASE("UnstructuredGrid") {
 
 
     SECTION("points, as given") {
-        size_t i = 0;
-        for (std::unique_ptr<Iterator> it(repres->iterator()); it->next(); ++i) {
-            EXPECT_EQUAL(it->index(), i);
-            EXPECT_EQUAL(it->pointUnrotated().lat().value(), LATITUDES[i]);
-            EXPECT_EQUAL(it->pointUnrotated().lon().value(), LONGITUDES[i]);
+        size_t i           = 0;
+        const auto& points = repres->canonicalGridUnrotated();
+        for (auto it = points.cbegin(); it; ++it, ++i) {
+            EXPECT_EQUAL(it.index(), i);
+            EXPECT_EQUAL(PointLatLon{std::get<PointLonLat>(*it)}.lat().value(), LATITUDES[i]);
+            EXPECT_EQUAL(PointLatLon{std::get<PointLonLat>(*it)}.lon().value(), LONGITUDES[i]);
         }
         EXPECT_EQUAL(i, n);
 
@@ -92,9 +93,7 @@ CASE("UnstructuredGrid") {
         RepresentationHandle cropped(repres->croppedRepresentation({55, -15, 25, 15}));
         EXPECT_EQUAL(cropped->numberOfPoints(), 2);
 
-        std::unique_ptr<Iterator> it(cropped->iterator());
-        ASSERT(it->next());
-        EXPECT_EQUAL(it->pointUnrotated().lat().value(), 50.);
+        EXPECT_EQUAL(std::get<PointLonLat>(cropped->canonicalGrid().first_point()).lat(), 50.);
 
         // nothing to crop: the same representation
         RepresentationHandle same_repres(repres->croppedRepresentation(util::BoundingBox{}));
@@ -134,9 +133,7 @@ CASE("UnstructuredGrid: by parametrisation, by gridSpec, by file") {
         RepresentationHandle repres(RepresentationFactory::build(param));
         EXPECT_EQUAL(repres->numberOfPoints(), 4);
 
-        std::unique_ptr<Iterator> it(repres->iterator());
-        ASSERT(it->next());
-        EXPECT(std::isnan(it->pointUnrotated().lat().value()));
+        EXPECT(std::isnan(std::get<PointLonLat>(repres->canonicalGrid().first_point()).lat()));
     }
 
 

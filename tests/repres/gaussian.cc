@@ -228,15 +228,16 @@ CASE("Gaussian grids: number of points and first points, global and cropped") {
 
     auto first_two_points = [](const Representation& repres, const BoundingBox& bbox, const latlon_t& p1,
                                const latlon_t& p2) {
-        std::unique_ptr<Iterator> it(repres.iterator());
+        const auto& grid = repres.canonicalGrid();
+        ASSERT(grid.size() >= 2);
 
-        ASSERT(it->next());
-        EXPECT(bbox.contains(*(*it)));
-        EXPECT(eckit::geo::points_equal(*(*it), PointLonLat{p1.lon, p1.lat}));
+        const auto q1 = std::get<PointLonLat>(grid.point(0));
+        EXPECT(bbox.contains(q1));
+        EXPECT(eckit::geo::points_equal(q1, PointLonLat{p1.lon, p1.lat}));
 
-        ASSERT(it->next());
-        EXPECT(bbox.contains(*(*it)));
-        EXPECT(eckit::geo::points_equal(*(*it), PointLonLat{p2.lon, p2.lat}));
+        const auto q2 = std::get<PointLonLat>(grid.point(1));
+        EXPECT(bbox.contains(q2));
+        EXPECT(eckit::geo::points_equal(q2, PointLonLat{p2.lon, p2.lat}));
     };
 
     for (const auto& test : tests) {

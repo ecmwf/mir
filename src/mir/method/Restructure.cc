@@ -10,21 +10,23 @@
 #include <ostream>
 #include <set>
 #include <string>
+#include <variant>
 #include <vector>
 
+#include "eckit/geo/Grid.h"
 #include "eckit/geo/PointXYZ.h"
+#include "eckit/geo/Search.h"
 #include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/method/knn/pick/Pick.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/search/PointSearch.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
-#include "mir/util/LonLatToPoint3.h"
+#include "mir/util/LonLatToXYZ.h"
+#include "mir/util/Search.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
@@ -52,25 +54,22 @@ void Restructure::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, con
     const auto Nr = out.numberOfPoints();
 
     // search the output (target) points, for every input point
-    const util::LonLatToPoint3 point3(out, poleDisplacement());
-    const search::PointSearch tree(parametrisation_, out);
+    const util::LonLatToXYZ point3(out.canonicalGrid().figure(), poleDisplacement(out));
+    const auto tree       = util::make_search(parametrisation_, out);
     const auto& outDomain = out.geographicDomain();
 
     // pole points (first input point picking a pole sets all its coincident output points)
     struct PolePoints : std::set<size_t> {
-        PolePoints(const search::PointSearch& kdtree, double lat, bool skip) : is_assigned(skip) {
+        PolePoints(const eckit::geo::Search& kdtree, double lat, bool skip) : is_assigned(skip) {
             if (!skip) {
-                std::vector<search::PointSearch::PointValueType> closest;
-                kdtree.closestWithinRadius(repres::Iterator::point_3D(PointLonLat{0., lat}), eckit::geo::PointXYZ::EPS,
-                                           closest);
-                for (const auto& c : closest) {
-                    insert(c.payload());
+                for (const auto& c : kdtree.search_radius(PointLonLat{0., lat}, eckit::geo::PointXYZ::EPS)) {
+                    insert(c.index);
                 }
             }
         }
         bool is_assigned;
-    } np(tree, Latitude::NORTH_POLE.value(), !out.includesNorthPole()),
-        sp(tree, Latitude::SOUTH_POLE.value(), !out.includesSouthPole());
+    } np(*tree, Latitude::NORTH_POLE.value(), !out.includesNorthPole()),
+        sp(*tree, Latitude::SOUTH_POLE.value(), !out.includesSouthPole());
 
     // output point (row) to input point (column), unassigned rows are set to missing value
     std::vector<WeightMatrix::Triplet> triplets;
@@ -79,23 +78,25 @@ void Restructure::assemble(util::MIRStatistics& /*unused*/, WeightMatrix& W, con
     {
         trace::ProgressTimer progress("Locating", Nc, {"point"});
 
-        std::vector<search::PointSearch::PointValueType> closest;
-        for (const std::unique_ptr<repres::Iterator> it(in.iterator()); it->next();) {
+        eckit::geo::Search::Neighbours closest;
+        const auto& points = in.canonicalGrid();
+        for (auto it = points.cbegin(); it; ++it) {
             ++progress;
 
-            if (!outDomain.contains(it->pointRotated())) {
+            const auto p = std::get<PointLonLat>(*it);
+            if (!outDomain.contains(p)) {
                 continue;
             }
 
-            pick_.pick(tree, point3(*(*it)), closest);
+            pick_.pick(*tree, point3(p), closest);
             if (closest.empty()) {
                 continue;
             }
 
-            const auto c = it->index();
+            const auto c = it.index();
             ASSERT(c < Nc);
 
-            const auto r = closest.front().payload();
+            const auto r = closest.front().index;
             ASSERT(r < Nr);
 
             if (!np.is_assigned) {

@@ -81,7 +81,6 @@ private:
     void validate(const MIRValuesVector&) const override;
 
     util::Domain domain() const override;
-    Iterator* iterator() const override;
     void makeName(std::ostream&) const override;
     bool sameAs(const Representation&) const override;
 

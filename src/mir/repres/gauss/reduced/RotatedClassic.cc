@@ -40,11 +40,6 @@ bool RotatedClassic::sameAs(const Representation& /*unused*/) const {
 }
 
 
-Iterator* RotatedClassic::iterator() const {
-    return rotatedIterator(rotation_);
-}
-
-
 void RotatedClassic::fillGrib(grib_info& info) const {
     Classic::fillGrib(info);
     rotation_.fillGrib(info, CODES_UTIL_GRID_SPEC_REDUCED_ROTATED_GG);

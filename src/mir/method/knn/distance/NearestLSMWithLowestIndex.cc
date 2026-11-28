@@ -48,7 +48,7 @@ NearestLSMWithLowestIndex::NearestLSMWithLowestIndex(const param::MIRParametrisa
 
 
 void NearestLSMWithLowestIndex::operator()(size_t ip, const PointXYZ& point,
-                                           const std::vector<search::PointSearch::PointValueType>& neighbours,
+                                           const eckit::geo::Search::Neighbours& neighbours,
                                            std::vector<WeightMatrix::Triplet>& triplets) const {
 
     ASSERT(!neighbours.empty());
@@ -57,8 +57,8 @@ void NearestLSMWithLowestIndex::operator()(size_t ip, const PointXYZ& point,
     // choose closest neighbour point with the same output mask value, shortest distance and lowest index
     Choice choice(false, std::numeric_limits<double>::infinity(), std::numeric_limits<size_t>::max());
     for (const auto& n : neighbours) {
-        ASSERT(n.payload() < imask_.size());
-        Choice candidate(omask_[ip] == imask_[n.payload()], PointXYZ::distance2(point, n.point()), n.payload());
+        ASSERT(n.index < imask_.size());
+        Choice candidate(omask_[ip] == imask_[n.index], PointXYZ::distance2(point, n.point), n.index);
         if (candidate < choice) {
             choice = candidate;
         }

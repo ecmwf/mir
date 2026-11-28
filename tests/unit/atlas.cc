@@ -4,12 +4,13 @@
 
 #include <memory>
 #include <ostream>
+#include <variant>
 
+#include "eckit/geo/Grid.h"
 #include "eckit/testing/Test.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/key/grid/Grid.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Domain.h"
@@ -151,9 +152,7 @@ CASE("MIR-374") {
             Handle repr = Grid::lookup(name).representation();
             Handle crop = repr->croppedRepresentation(domain);
 
-            std::unique_ptr<repres::Iterator> it(crop->iterator());
-            ASSERT(it->next());
-            PointLatLon p = it->pointUnrotated();
+            const PointLatLon p{std::get<PointLonLat>(crop->canonicalGridUnrotated().first_point())};
             log << p << std::endl;
 
             auto grid            = crop->atlasGrid();

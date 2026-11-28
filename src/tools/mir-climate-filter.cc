@@ -6,6 +6,7 @@
 #include <limits>
 #include <memory>
 
+#include "eckit/geo/Search.h"
 #include "eckit/linalg/LinearAlgebraDense.h"
 #include "eckit/linalg/Matrix.h"
 #include "eckit/linalg/Vector.h"
@@ -23,13 +24,13 @@
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
-#include "mir/search/PointSearch.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Search.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
@@ -56,7 +57,8 @@ struct MIRClimateFilter : MIRTool {
             new SimpleOption<bool>("no-backend", "No linear algebra dense backend (minimum memory requirements)"));
         options_.push_back(new FactoryOption<LinearAlgebraDense>(
             "dense-backend", "Linear algebra dense backend (default '" + LinearAlgebraDense::backend().name() + "')"));
-        options_.push_back(new FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
+        options_.push_back(new SimpleOption<std::string>(
+            "point-search-trees", "k-d tree storage (eckit::geo loader, e.g. memory or mapped-file)"));
     }
 
     int numberOfPositionalArguments() const override { return 2; }
@@ -153,8 +155,8 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
 
 
         // k-d tree
-        t = timer.elapsed();
-        search::PointSearch tree(*param, *rep);
+        t               = timer.elapsed();
+        const auto tree = util::make_search(*param, *rep);
         log << "k-d tree: " << timer.elapsedSeconds(t) << std::endl;
 
 
@@ -210,10 +212,10 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
 
                 const auto P = util::Earth::_convertSphericalToCartesian(PointLonLat{lon[0], lat[j]});
 
-                std::vector<search::PointSearch::PointValueType> closest;
-                tree.closestWithinRadius(P, distance, closest);
+                eckit::geo::Search::Neighbours closest;
+                closest = tree->search_radius(P, distance);
                 if (closest.size() < k[0]) {
-                    tree.closestNPoints(P, k[1], closest);
+                    closest = tree->search_knn(P, k[1]);
                 }
                 tClosest += timer.elapsed(t);
 
@@ -229,7 +231,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
 
                     double sum = 0.;
                     for (size_t w = 0; w < Nw; ++w) {
-                        auto r = PointXYZ::distance(P, closest[w].point());
+                        auto r = PointXYZ::distance(P, closest[w].point);
                         auto h = r < halfDelta - delta ? 1.
                                  : halfDelta + delta < r
                                      ? 0.
@@ -260,7 +262,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
 
                     for (size_t w = 0; w < Nw; ++w) {
                         auto a = weights[w];
-                        auto n = closest[w].payload();
+                        auto n = closest[w].index;
                         auto r = n / Ni;
                         auto c = n % Ni;
 
@@ -284,7 +286,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
                 t = timer.elapsed();
                 eckit::linalg::Matrix A(Ni, Nw);
                 for (size_t w = 0; w < Nw; ++w) {
-                    auto n = closest[w].payload();
+                    auto n = closest[w].index;
                     auto r = n / Ni;
                     auto c = n % Ni;
                     for (size_t i = 0, c0 = r * Ni; i < Ni; ++i) {

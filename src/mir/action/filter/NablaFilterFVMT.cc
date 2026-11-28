@@ -8,14 +8,15 @@
 #include <memory>
 #include <ostream>
 #include <string>
+#include <variant>
 
+#include "eckit/geo/Grid.h"
 #include "eckit/log/JSON.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/caching/InMemoryMeshCache.h"
 #include "mir/data/MIRField.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
@@ -240,11 +241,12 @@ void NablaFilterFVMT<T>::execute(context::Context& ctx) const {
             auto& values = field.direct(i);
             ASSERT(values.size() == N);
 
-            for (const std::unique_ptr<repres::Iterator> it(field.representation()->iterator()); it->next();) {
-                auto lat = it->pointUnrotated().lat().value();
+            const auto& points = field.representation()->canonicalGridUnrotated();
+            for (auto it = points.cbegin(); it; ++it) {
+                auto lat = std::get<PointLonLat>(*it).lat();
                 if (eckit::types::is_approximately_equal(lat, Latitude::NORTH_POLE.value()) ||
                     eckit::types::is_approximately_equal(lat, Latitude::SOUTH_POLE.value())) {
-                    values.at(it->index()) = missingValue;
+                    values.at(it.index()) = missingValue;
                 }
             }
         }

@@ -6,19 +6,22 @@
 
 #include <algorithm>
 #include <memory>
+#include <variant>
 
+#include "eckit/geo/Grid.h"
+#include "eckit/geo/Search.h"
 #include "eckit/log/JSON.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/method/knn/distance/DistanceWeighting.h"
 #include "mir/method/knn/pick/Pick.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
-#include "mir/util/LonLatToPoint3.h"
+#include "mir/util/LonLatToXYZ.h"
+#include "mir/util/Search.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
@@ -63,17 +66,17 @@ void KNearestNeighbours::assemble(util::MIRStatistics& /*unused*/, WeightMatrix&
 
     const size_t nbOutputPoints = out.numberOfPoints();
 
-    const search::PointSearch sptree(parametrisation_, in);
+    const auto sptree    = util::make_search(parametrisation_, in);
     const auto& inDomain = in.geographicDomain();
     pick.distance(in);
 
-    util::LonLatToPoint3 point3(in, poleDisplacement());
+    const util::LonLatToXYZ point3(in.canonicalGrid().figure(), poleDisplacement(in));
 
     // init structure used to fill in sparse matrix
     std::vector<WeightMatrix::Triplet> weights_triplets;
     weights_triplets.reserve(nbOutputPoints * pick.n());
 
-    std::vector<search::PointSearch::PointValueType> closest;
+    eckit::geo::Search::Neighbours closest;
     std::vector<WeightMatrix::Triplet> triplets;
 
     {
@@ -81,7 +84,8 @@ void KNearestNeighbours::assemble(util::MIRStatistics& /*unused*/, WeightMatrix&
         double search = 0;
         double insert = 0;
 
-        for (const std::unique_ptr<repres::Iterator> it(out.iterator()); it->next();) {
+        const auto& points = out.canonicalGrid();
+        for (auto it = points.cbegin(); it; ++it) {
             if (++progress) {
                 log << "KNearestNeighbours: k-d tree"
                        "\n"
@@ -93,19 +97,19 @@ void KNearestNeighbours::assemble(util::MIRStatistics& /*unused*/, WeightMatrix&
                     << insert
                     << "s"
                        "\n"
-                    << sptree << std::endl;
+                    << *sptree << std::endl;
                 search = insert = 0;
             }
 
-            if (inDomain.contains(it->pointRotated())) {
+            if (const auto q = std::get<PointLonLat>(*it); inDomain.contains(q)) {
 
                 // 3D point to lookup
-                const auto p = point3(*(*it));
+                const auto p = point3(q);
 
                 // search
                 {
                     double t = timer.elapsed();
-                    pick.pick(sptree, p, closest);
+                    pick.pick(*sptree, p, closest);
                     search += timer.elapsed(t);
                     if (closest.empty()) {
                         continue;
@@ -113,7 +117,7 @@ void KNearestNeighbours::assemble(util::MIRStatistics& /*unused*/, WeightMatrix&
                 }
 
                 // calculate weights
-                auto ip = it->index();
+                auto ip = it.index();
                 ASSERT(ip < nbOutputPoints);
 
                 distanceWeighting(ip, p, closest, triplets);

@@ -180,15 +180,16 @@ CASE("restructure") {
         EXPECT(result.hasMissing());
         EXPECT_EQUAL(out->numberOfPoints() - count_missing(result), 17 * 36 + 2 * 72);
 
-        size_t i = 0;
-        for (std::unique_ptr<repres::Iterator> it(out->iterator()); it->next(); ++i) {
+        size_t i           = 0;
+        const auto& points = out->canonicalGridUnrotated();
+        for (auto it = points.cbegin(); it; ++it, ++i) {
             const auto v = result.values(0)[i];
             if (v != result.missingValue()) {
-                const auto& p = it->pointUnrotated();
-                auto lat      = p.lat().value();
+                const auto p = std::get<PointLonLat>(*it);
+                auto lat     = p.lat();
 
                 // (at the poles, the value of the first input point)
-                EXPECT(same(v, smooth(lat, std::abs(lat) == 90. ? 0. : p.lon().value()), 1e-9));
+                EXPECT(same(v, smooth(lat, std::abs(lat) == 90. ? 0. : p.lon()), 1e-9));
             }
         }
     }

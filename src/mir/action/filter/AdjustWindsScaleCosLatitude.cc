@@ -8,10 +8,12 @@
 #include <cmath>
 #include <memory>
 #include <ostream>
+#include <variant>
+
+#include "eckit/geo/Grid.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Angles.h"
 #include "mir/util/Exceptions.h"
@@ -45,9 +47,10 @@ void AdjustWindsScaleCosLatitude::execute(context::Context& ctx) const {
     ASSERT(representation);
 
     std::vector<double> scale(N);
-    for (const std::unique_ptr<repres::Iterator> it(representation->iterator()); it->next();) {
-        const auto lat     = it->pointUnrotated().lat();
-        scale[it->index()] = (lat == Latitude::SOUTH_POLE || lat == Latitude::NORTH_POLE)
+    const auto& points = representation->canonicalGridUnrotated();
+    for (auto it = points.cbegin(); it; ++it) {
+        const Latitude lat = std::get<PointLonLat>(*it).lat();
+        scale[it.index()]  = (lat == Latitude::SOUTH_POLE || lat == Latitude::NORTH_POLE)
                                  ? 0.
                                  : 1. / std::cos(util::degree_to_radian(lat.value()));
     }

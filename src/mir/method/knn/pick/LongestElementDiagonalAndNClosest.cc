@@ -26,24 +26,24 @@ LongestElementDiagonalAndNClosest::LongestElementDiagonalAndNClosest(const param
 }
 
 
-void LongestElementDiagonalAndNClosest::pick(const search::PointSearch& tree, const PointXYZ& p,
+void LongestElementDiagonalAndNClosest::pick(const eckit::geo::Search& tree, const PointXYZ& p,
                                              Pick::neighbours_t& closest) const {
     // This method switches between k- and distance-based searches for performance
     ASSERT(0. < distance_);
 
     if (nClosestFirst_) {
-        tree.closestNPoints(p, nClosest_, closest);
+        closest = tree.search_knn(p, nClosest_);
 
-        auto r2 = PointXYZ::distance2(p, closest.back().point());
+        auto r2 = PointXYZ::distance2(p, closest.back().point);
         if (r2 > distance2_) {
-            tree.closestWithinRadius(p, distance_, closest);
+            closest = tree.search_radius(p, distance_);
             ASSERT(closest.size() <= nClosest_);
 
             nClosestFirst_ = false;
         }
     }
     else {
-        tree.closestWithinRadius(p, distance_, closest);
+        closest = tree.search_radius(p, distance_);
 
         if (closest.size() > nClosest_) {
             closest.erase(closest.begin() + long(nClosest_), closest.end());
