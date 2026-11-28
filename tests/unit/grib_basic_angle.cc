@@ -96,8 +96,8 @@ CASE("Climate files <= v020 (1km)") {
     };
 
     for (const auto& test : {
-             test_t{inc.west_east().longitude(), 2},
-             test_t{inc.south_north().latitude(), 2},
+             test_t{Longitude(inc.west_east()), 2},
+             test_t{Latitude(inc.south_north()), 2},
              test_t{Latitude(bbox.north()), 21599},
              test_t{Longitude(bbox.west()), 1},
              test_t{Latitude(bbox.south()), -21599},

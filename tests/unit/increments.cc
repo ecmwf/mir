@@ -171,8 +171,8 @@ CASE("Increments::correctBoundingBox") {
                      {1, 1},
                  }) {
 
-                auto sn                   = inc.south_north().latitude();
-                auto we                   = inc.west_east().longitude();
+                auto sn                   = Latitude(inc.south_north());
+                auto we                   = Longitude(inc.west_east());
                 bool expectLatitudeShift  = !(reference.lat().fraction() / sn.fraction()).integer();
                 bool expectLongitudeShift = !(reference.lon().fraction() / we.fraction()).integer();
 
@@ -230,8 +230,8 @@ CASE("Increments::correctBoundingBox") {
                      {1, 1},
                  }) {
 
-                auto sn = inc.south_north().latitude();
-                auto we = inc.west_east().longitude();
+                auto sn = Latitude(inc.south_north());
+                auto we = Longitude(inc.west_east());
 
                 auto corrected = equator;
                 size_t ni;
@@ -355,7 +355,7 @@ struct UserAndGlobalisedCase {
 
             Latitude s = user_.boundingBox_.south();
             Latitude n = s;
-            const Latitude sn(increments_.south_north().latitude());
+            const Latitude sn(Latitude(increments_.south_north()));
 
             while (n + sn <= Latitude::NORTH_POLE) {
                 n += sn;
@@ -366,7 +366,7 @@ struct UserAndGlobalisedCase {
 
             Longitude w = user_.boundingBox_.west();
             Longitude e = w;
-            const Longitude we(increments_.west_east().longitude());
+            const Longitude we(Longitude(increments_.west_east()));
 
             while (e - w >= Longitude::GLOBE) {
                 e -= we;

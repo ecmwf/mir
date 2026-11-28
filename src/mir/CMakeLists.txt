@@ -626,7 +626,6 @@ list(APPEND mir_srcs
     util/Intersect.h
     util/Latitude.cc
     util/Latitude.h
-    util/LatitudeIncrement.h
     util/Log.cc
     util/Log.h
     util/LonLatToXYZ.cc
@@ -635,7 +634,6 @@ list(APPEND mir_srcs
     util/LongitudeDouble.h
     util/LongitudeFraction.cc
     util/LongitudeFraction.h
-    util/LongitudeIncrement.h
     util/MIRStatistics.cc
     util/MIRStatistics.h
     util/MeshGeneratorParameters.cc

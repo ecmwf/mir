@@ -82,8 +82,8 @@ const RegularLL* RegularLL::croppedRepresentation(const util::BoundingBox& bbox)
 util::BoundingBox RegularLL::extendBoundingBox(const util::BoundingBox& bbox) const {
     using eckit::geo::range::Regular;
 
-    const auto sn = increments_.south_north().latitude().fraction();
-    const auto we = increments_.west_east().longitude().fraction();
+    const auto sn = eckit::Fraction(increments_.south_north());
+    const auto we = eckit::Fraction(increments_.west_east());
     ASSERT(sn > 0);
     ASSERT(we > 0);
 
@@ -114,18 +114,18 @@ util::BoundingBox RegularLL::extendBoundingBox(const util::BoundingBox& bbox) co
 }
 
 std::vector<util::GridBox> RegularLL::gridBoxes() const {
-    const auto dom   = domain();
+    const auto dom       = domain();
     const Latitude north = dom.north();
-    const Longitude west  = dom.west();
+    const Longitude west = dom.west();
     const Latitude south = dom.south();
-    const Longitude east  = dom.east();
+    const Longitude east = dom.east();
 
     const auto periodic = isPeriodicWestEast();
 
-    Latitude lat0 = bbox_.north();
+    Latitude lat0  = bbox_.north();
     Longitude lon0 = bbox_.west();
-    auto sn   = increments_.south_north().latitude();
-    auto we   = increments_.west_east().longitude().fraction();
+    auto sn        = Latitude(increments_.south_north());
+    auto we        = eckit::Fraction(increments_.west_east());
 
     eckit::Fraction half(1, 2);
 

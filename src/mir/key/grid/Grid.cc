@@ -123,7 +123,7 @@ private:
     void print(std::ostream& out) const override { out << "RegularLL[key=" << key_ << "]"; }
 
     size_t gaussianNumber() const override {
-        auto r = Latitude::GLOBE.fraction() / increments().south_north().latitude().fraction();
+        auto r = Latitude::GLOBE.fraction() / eckit::Fraction(increments().south_north());
         auto N = r.integralPart() / 2;
 
         ASSERT(N >= 0);

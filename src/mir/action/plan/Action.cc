@@ -98,7 +98,7 @@ std::vector<double> Action::spec_value(const util::BoundingBox& bbox) {
 
 
 std::vector<double> Action::spec_value(const util::Increments& increments) {
-    return {increments.west_east().longitude().value(), increments.south_north().latitude().value()};
+    return {increments.west_east(), increments.south_north()};
 }
 
 

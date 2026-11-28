@@ -124,7 +124,7 @@ bool LatLon::sameAs(const Representation& other) const {
 bool LatLon::isPeriodicWestEast() const {
 
     // if range West-East is within one increment (or greater than) 360 degree
-    const auto inc = increments_.west_east().longitude().fraction();
+    const auto inc = eckit::Fraction(increments_.west_east());
     return eckit::Fraction(bbox_.east()) - eckit::Fraction(bbox_.west()) + inc >= Longitude::GLOBE.fraction();
 }
 
@@ -132,7 +132,7 @@ bool LatLon::isPeriodicWestEast() const {
 bool LatLon::includesNorthPole() const {
 
     // if North latitude is within one increment from North Pole
-    const Latitude& inc = increments_.south_north().latitude();
+    const Latitude& inc = Latitude(increments_.south_north());
     return bbox_.north() + inc > Latitude::NORTH_POLE;
 }
 
@@ -140,7 +140,7 @@ bool LatLon::includesNorthPole() const {
 bool LatLon::includesSouthPole() const {
 
     // if South latitude is within one increment from South Pole
-    const Latitude& inc = increments_.south_north().latitude();
+    const Latitude& inc = Latitude(increments_.south_north());
     return bbox_.south() - inc < Latitude::SOUTH_POLE;
 }
 
@@ -155,10 +155,10 @@ size_t LatLon::numberOfPoints() const {
 bool LatLon::getLongestElementDiagonal(double& d) const {
     constexpr double TWO = 2.;
 
-    auto snHalf = increments_.south_north().latitude().value() / TWO;
+    auto snHalf = increments_.south_north() / TWO;
     ASSERT(!eckit::types::is_approximately_equal(snHalf, 0.));
 
-    auto weHalf = increments_.west_east().longitude().value() / TWO;
+    auto weHalf = increments_.west_east() / TWO;
     ASSERT(!eckit::types::is_approximately_equal(weHalf, 0.));
 
     d = TWO * util::Earth::distance(PointLonLat{0., 0.}, PointLonLat{weHalf, snHalf});
@@ -191,7 +191,7 @@ Representation* LatLon::globalise(data::MIRField& field) const {
     Longitude lon  = newbbox.west();
     size_t nBefore = 0;
     while (!bbox_.contains(lat, lon)) {
-        lat -= increments_.south_north().latitude();
+        lat -= Latitude(increments_.south_north());
         nBefore += ni_;
         ASSERT(n + nBefore <= newn);
     }
@@ -273,8 +273,8 @@ void LatLon::validate(const MIRValuesVector& values) const {
 void LatLon::globaliseBoundingBox(util::BoundingBox& bbox, const util::Increments& inc, const PointLatLon& reference) {
     using eckit::geo::range::Regular;
 
-    const auto sn = inc.south_north().latitude().fraction();
-    const auto we = inc.west_east().longitude().fraction();
+    const auto sn = eckit::Fraction(inc.south_north());
+    const auto we = eckit::Fraction(inc.west_east());
     ASSERT(sn > 0);
     ASSERT(we > 0);
 
@@ -316,7 +316,7 @@ void LatLon::correctBoundingBox(util::BoundingBox& bbox, size_t& ni, size_t& nj,
     };
 
     // Latitude/longitude ranges
-    const auto sn = inc.south_north().latitude().fraction();
+    const auto sn = eckit::Fraction(inc.south_north());
     const eckit::geo::range::RegularLatitude lat(
         sn, bound(eckit::Fraction(bbox.south()), sn, reference.lat().fraction(), true),
         bound(eckit::Fraction(bbox.north()), sn, reference.lat().fraction(), false), reference.lat().fraction());
@@ -326,7 +326,7 @@ void LatLon::correctBoundingBox(util::BoundingBox& bbox, size_t& ni, size_t& nj,
     nj = lat.size();
     ASSERT(nj > 0);
 
-    const auto we = inc.west_east().longitude().fraction();
+    const auto we = eckit::Fraction(inc.west_east());
     const eckit::geo::range::RegularLongitude lon(
         we, bound(eckit::Fraction(bbox.west()), we, reference.lon().fraction(), true),
         bound(eckit::Fraction(bbox.east()), we, reference.lon().fraction(), false), reference.lon().fraction());
