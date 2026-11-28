@@ -139,11 +139,11 @@ CASE("Iterator: points (rotated, unrotated, 3D), index, end") {
         const auto& p = it->pointUnrotated();
         const auto& q = it->pointRotated();
         EXPECT(-10. <= p.lat().value() && p.lat().value() <= 10.);
-        EXPECT_NOT(same(q[0], p.lat().value(), 1e-3) && same(q[1], p.lon().value(), 1e-3));
+        EXPECT_NOT(same(q.lat(), p.lat().value(), 1e-3) && same(q.lon(), p.lon().value(), 1e-3));
 
         const auto r = it->point3D();
         const auto s = Iterator::point_3D(q);
-        EXPECT(same(r[0], s[0]) && same(r[1], s[1]) && same(r[2], s[2]));
+        EXPECT(eckit::geo::points_equal(r, s));
     }
 
     EXPECT_EQUAL(n, 9);
@@ -156,8 +156,8 @@ CASE("Iterator: points (rotated, unrotated, 3D), index, end") {
     EXPECT_THROWS_AS(it->next(), eckit::AssertionFailed);
 
     // the north pole, on the axis
-    const auto pole = Iterator::point_3D({90., 0.});
-    EXPECT(same(pole[0], 0., 1e-6) && same(pole[1], 0., 1e-6) && pole[2] > 0.);
+    const auto pole = Iterator::point_3D(PointLonLat{0., 90.});
+    EXPECT(same(pole.X(), 0., 1e-6) && same(pole.Y(), 0., 1e-6) && pole.Z() > 0.);
 }
 
 

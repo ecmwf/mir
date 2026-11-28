@@ -26,7 +26,6 @@ CalculateCellLongestDiagonal::CalculateCellLongestDiagonal(std::string name, boo
 
 double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh, bool include_virtual_points) const {
     using atlas::idx_t;
-    using atlas::PointXYZ;
 
     bool recompute = force_recompute_ || !mesh.metadata().has(name_);
 
@@ -66,7 +65,7 @@ double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh, bool include_
             // (combinations of ni in [0, nb_cols[ and nj in [ni+1, nb_cols[)
             for (idx_t ni = 0; ni < nb_cols; ++ni) {
                 auto i = connectivity(e, ni);
-                P[ni].assign(coords(i, 0), coords(i, 1), coords(i, 2));
+                P[ni]  = {coords(i, 0), coords(i, 1), coords(i, 2)};
             }
 
             for (idx_t ni = 0; ni < nb_cols - 1; ++ni) {

@@ -34,7 +34,7 @@ CASE("filter.unstructured") {
             EXPECT(out.values(1) == in.values(1));
 
             // geographic coordinates (if rotated, not the grid coordinates)
-            std::vector<Point2> points(N);
+            std::vector<PointLonLat> points(N);
 
             for (std::unique_ptr<repres::Iterator> it(in.representation()->iterator()); it->next();) {
                 points.at(it->index()) = **it;
@@ -44,8 +44,8 @@ CASE("filter.unstructured") {
                 const auto& p = it->pointUnrotated();
                 const auto& q = points.at(it->index());
 
-                EXPECT(same(p.lat().value(), q[0], 1e-6));
-                EXPECT(same(std::remainder(p.lon().value() - q[1], 360.), 0., 1e-6));
+                EXPECT(same(p.lat().value(), q.lat(), 1e-6));
+                EXPECT(same(std::remainder(p.lon().value() - q.lon(), 360.), 0., 1e-6));
             }
         }
     }

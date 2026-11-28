@@ -76,8 +76,8 @@ CASE("distance weighting methods") {
     const size_t ip = 7;
 
     // three neighbours, at squared distances 1, 4 and 9 (from the origin), and 0, 5 and 10 (from point2)
-    const Point3 origin{0., 0., 0.};
-    const Point3 point2{1., 0., 0.};
+    const PointXYZ origin{0., 0., 0.};
+    const PointXYZ point2{1., 0., 0.};
     const Neighbors neighbours{
         {{1., 0., 0.}, 1},
         {{0., 2., 0.}, 2},
@@ -86,7 +86,7 @@ CASE("distance weighting methods") {
 
     param::SimpleParametrisation param;
 
-    auto weights = [&](const std::string& name, const Point3& p) {
+    auto weights = [&](const std::string& name, const PointXYZ& p) {
         D d(DistanceWeightingFactory::build(name, param));
         Triplets triplets;
         (*d)(ip, p, neighbours, triplets);
@@ -209,7 +209,7 @@ CASE("distance weighting methods") {
         const Neighbors cube{
             {{0., 0., 0.}, 0}, {{1., 0., 0.}, 1}, {{0., 1., 0.}, 2}, {{0., 0., 1.}, 3}, {{1., 1., 1.}, 4},
         };
-        const Point3 p{0.2, 0.3, 0.1};
+        const PointXYZ p{0.2, 0.3, 0.1};
 
         triplets.clear();
         (*d)(ip, p, cube, triplets);
@@ -403,7 +403,7 @@ CASE("distance weighting methods, with land-sea masks") {
     EXPECT_EQUAL(masks.cacheName(), "test+test");
 
     // neighbours sorted by distance (from the origin), the farthest with the lowest index
-    const Point3 origin{0., 0., 0.};
+    const PointXYZ origin{0., 0., 0.};
     const Neighbors neighbours{
         {{1., 0., 0.}, 3},
         {{0., 2., 0.}, 1},

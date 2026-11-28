@@ -5,6 +5,7 @@
 #include "mir/util/ValueMap.h"
 
 #include <algorithm>
+#include <limits>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -25,6 +26,7 @@ namespace {
 std::string to_json_string(const eckit::ValueMap& map) {
     std::ostringstream ss;
     eckit::JSON j(ss);
+    j.precision(std::numeric_limits<double>::max_digits10);  // parsed again: values as they are
     j << map;
 
     return ss.str();

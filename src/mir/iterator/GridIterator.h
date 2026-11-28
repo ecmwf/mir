@@ -32,7 +32,7 @@ private:
     // -- Overridden methods
 
     void print(std::ostream&) const override;
-    bool next(Latitude&, Longitude&) override;
+    bool next(PointLonLat&) override;
     size_t index() const override { return it_.index(); }
 };
 

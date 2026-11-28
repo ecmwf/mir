@@ -518,21 +518,6 @@ CASE("GribInput: parametrisation") {
 
 
 CASE("GribInput: auxiliary information") {
-    SECTION("griddef") {
-        auto in = build("gridType=unstructured_grid.grib2", "{griddef: gridType=unstructured_grid.pts}");
-        ASSERT(in->next());
-
-        EXPECT(in->parametrisation().has("latitudes/longitudes"));
-
-        auto latitudes = get<std::vector<double>>(*in, "latitudes");
-        EXPECT_EQUAL(latitudes.size(), 42);
-        EXPECT_EQUAL(latitudes.front(), 90.);
-
-        auto field = in->field();
-        EXPECT_EQUAL(field.values(0).size(), 42);
-    }
-
-
     SECTION("latitudes/longitudes") {
         auto in = build("ICON.shortName=lsm.grib2",
                         "{latitudes: ICON.shortName=CLAT.grib2, longitudes: ICON.shortName=CLON.grib2}");
@@ -546,10 +531,6 @@ CASE("GribInput: auxiliary information") {
 
     SECTION("errors") {
         EXPECT_THROWS_AS(build("ICON.shortName=lsm.grib2", "{latitudes: ICON.shortName=CLAT.grib2}"),
-                         exception::UserError);
-        EXPECT_THROWS_AS(build("ICON.shortName=lsm.grib2",
-                               "{latitudes: ICON.shortName=CLAT.grib2, longitudes: ICON.shortName=CLON.grib2, "
-                               "griddef: tour.pts}"),
                          exception::UserError);
     }
 }

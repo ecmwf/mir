@@ -161,7 +161,7 @@ bool Regular::getLongestElementDiagonal(double& d) const {
     auto weHalf = double(getSmallestIncrement()) / TWO;
     ASSERT(!eckit::types::is_approximately_equal(weHalf, 0.));
 
-    d = TWO * util::Earth::distance({0., 0.}, {weHalf, snHalf});
+    d = TWO * util::Earth::distance(PointLonLat{0., 0.}, PointLonLat{weHalf, snHalf});
     return true;
 }
 

@@ -12,7 +12,6 @@
 
 #include "mir/output/EmptyOutput.h"
 #include "mir/output/GmshOutput.h"
-#include "mir/output/GriddefOutput.h"
 #include "mir/output/PNGOutput.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
@@ -46,8 +45,6 @@ CASE("MIROutputFactory") {
                  {"a", "geopoints", "GeoPointsFileOutput[path="},
                  {"a", "geopoints-xyv", "GeoPointsFileOutput[path="},
                  {"a", "geopoints-xy-vector", "GeoPointsFileOutput[path="},
-                 {"a", "griddef", "GriddefOutput[path="},
-                 {"a", "griddef-text", "GriddefOutput[path="},
                  {"a", "gmsh", "GmshOutput[path="},
                  {"a", "png", "PNGOutput[path="},
                  {"a.gpt", "extension", "GeoPointsFileOutput[path="},
@@ -86,8 +83,8 @@ CASE("MIROutputFactory") {
     }
 
 
-    SECTION("geopoints (if griddef, latitudes or longitudes)") {
-        for (const auto& key : std::vector<std::string>{"griddef", "latitudes", "longitudes"}) {
+    SECTION("geopoints (if latitudes or longitudes)") {
+        for (const auto& key : std::vector<std::string>{"latitudes", "longitudes"}) {
             param::SimpleParametrisation user;
             user.set(key, "x");
 

@@ -181,8 +181,9 @@ public:
         for (double lat, lon, value; grib_iterator_next(iter_g, &lat, &lon, &value) != 0; ++n) {
             ASSERT(iter_m->next());
 
-            double dlat = mir::Latitude(iter_m->pointRotated()[0]).distance(lat).value();
-            double dlon = mir::LongitudeDouble(iter_m->pointRotated()[1]).distance(lon).value();
+            const auto& p = iter_m->pointRotated();
+            double dlat   = mir::Latitude(p.lat()).distance(lat).value();
+            double dlon   = mir::LongitudeDouble(p.lon()).distance(lon).value();
 
             if (dlat > toleranceLat || dlon > toleranceLon) {
                 return false;

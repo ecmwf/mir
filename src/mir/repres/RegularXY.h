@@ -37,8 +37,8 @@ protected:
 
     // -- Methods
 
-    /// Geographic coordinates (lon, lat) of grid coordinates (x, y)
-    Point2 lonlat(double x, double y) const;
+    /// Geographic coordinates of grid coordinates
+    PointLonLat lonlat(const PointXY&) const;
 
     // -- Overridden methods
 
@@ -64,7 +64,6 @@ private:
     // -- Members
 
     std::unique_ptr<const eckit::geo::Grid> grid_;
-    Point2 false_;
     long edition_;
     bool firstPointBottomLeft_ = false;
     bool uvRelativeToGrid_     = false;  // of the decoded field (GRIB has it in the grid), to re-encode it as is
@@ -72,7 +71,7 @@ private:
     // -- Methods
 
     /// First point (lon, lat) of the scanning, or bottom-left if specified
-    Point2 firstPoint() const;
+    PointLonLat firstPoint() const;
 };
 
 

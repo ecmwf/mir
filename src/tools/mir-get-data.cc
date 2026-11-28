@@ -100,9 +100,9 @@ struct CoordinatesFromRepresentation : Coordinates {
         lons_.assign(N, std::numeric_limits<double>::signaling_NaN());
 
         for (const std::unique_ptr<repres::Iterator> it(rep.iterator()); it->next();) {
-            const Point2& P(**it);
-            lats_.at(it->index()) = P[0];
-            lons_.at(it->index()) = P[1];
+            const auto& P(**it);
+            lats_.at(it->index()) = P.lat();
+            lons_.at(it->index()) = P.lon();
         }
     }
     const coord_t& latitudes() const override { return lats_; }
@@ -190,7 +190,8 @@ size_t diff(Log::Channel& out, double toleranceLat, double toleranceLon, const C
     stats::detail::Counter statsLon(empty);
 
     auto showPointAt = [&](std::ostream& out, size_t n) -> std::ostream& {
-        return out << "\n\t@[0]=" << n << '\t' << Point2(lat1[n], lon1[n]) << '\t' << Point2(lat2[n], lon2[n]);
+        return out << "\n\t@[0]=" << n << "\t{" << lat1[n] << ',' << lon1[n] << "}\t{" << lat2[n] << ',' << lon2[n]
+                   << '}';
     };
 
     auto showCoordMinMax = [&](std::ostream& out, const std::string& name, const coord_t& c) -> std::ostream& {
@@ -233,7 +234,7 @@ size_t diff(Log::Channel& out, double toleranceLat, double toleranceLon, const C
 }
 
 
-const neighbours_t& getNeighbours(Point2 p, size_t n, const repres::Representation& rep,
+const neighbours_t& getNeighbours(const PointLonLat& p, size_t n, const repres::Representation& rep,
                                   const param::MIRParametrisation& param) {
     static std::map<std::string, neighbours_t> cache;
 
@@ -243,8 +244,7 @@ const neighbours_t& getNeighbours(Point2 p, size_t n, const repres::Representati
         return cached->second;
     }
 
-    search::PointSearch::PointType pt;
-    util::Earth::convertSphericalToCartesian(p, pt);
+    const auto pt = util::Earth::_convertSphericalToCartesian(p);
 
     search::PointSearch sptree(param, rep);
 
@@ -290,11 +290,12 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
     args.get("nclosest", nclosest);
 
 
-    Point2 p;
+    PointLonLat p;
     std::vector<double> closest;
     if (args.get("closest", closest)) {
         ASSERT(closest.size() == 2);
-        p = Point2(closest[1], closest[0]);
+        p = PointLonLat{closest[1], closest[0]};  // option is latitude/longitude
+        PointLonLat::assert_latitude_range(p);
     }
     else {
         nclosest = 0;
@@ -324,8 +325,8 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
             if (!atlas && !ecc && (nclosest == 0)) {
                 for (const std::unique_ptr<repres::Iterator> it(rep->iterator()); it->next();) {
-                    const Point2& P(**it);
-                    log << "\t" << P[0] << '\t' << P[1] << '\t' << values.at(it->index()) << std::endl;
+                    const auto& P(**it);
+                    log << "\t" << P.lat() << '\t' << P.lon() << '\t' << values.at(it->index()) << std::endl;
                 }
 
                 log << std::endl;
@@ -338,12 +339,12 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                 size_t c = 1;
                 for (const auto& n : getNeighbours(p, nclosest, *rep, args_wrap)) {
                     size_t i = n.payload();
-                    Point2 q(crd->longitudes()[i], crd->latitudes()[i]);
+                    const PointLonLat q{crd->longitudes()[i], crd->latitudes()[i]};
                     ASSERT(i < values.size());
 
                     constexpr double THOUSAND = 1000;
                     log << "- " << c++ << " -"
-                        << " index=" << i << " latitude=" << q[1] << " longitude=" << q[0]
+                        << " index=" << i << " latitude=" << q.lat() << " longitude=" << q.lon()
                         << " distance=" << util::Earth::distance(p, q) / THOUSAND << " (km)"
                         << " value=" << values[i] << std::endl;
                 }

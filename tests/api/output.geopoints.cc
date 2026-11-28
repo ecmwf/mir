@@ -73,8 +73,8 @@ CASE("GeoPointsFileOutputXYV") {
         // the file reads back (missing values included)
         input::GeoPointsFileInput geo(path);
         EXPECT_EQUAL(geo.values().size(), 6);
-        EXPECT_EQUAL(geo.latitudes().front(), 10.);
-        EXPECT_EQUAL(geo.longitudes().back(), 20.);
+        EXPECT(geo.latitudes() == std::vector<double>({10., 10., 10., 0., 0., 0.}));
+        EXPECT(geo.longitudes() == std::vector<double>({0., 10., 20., 0., 10., 20.}));
         EXPECT_EQUAL(geo.values().back(), 5.);
 
         input::MIRInput& base = geo;

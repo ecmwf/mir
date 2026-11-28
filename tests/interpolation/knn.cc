@@ -46,8 +46,8 @@ const std::string GRID_3X3 = "{grid: [10, 10], area: [10, 0, -10, 20]}";
 constexpr double RADIUS_NEIGHBOURS = 1.2e6;
 
 
-Point3 point3(double lat, double lon) {
-    return repres::Iterator::point_3D({lat, lon});
+PointXYZ point3(double lat, double lon) {
+    return repres::Iterator::point_3D(PointLonLat{lon, lat});
 }
 
 
@@ -173,7 +173,7 @@ CASE("neighbour picking methods") {
         auto sorted = picker.pick("sorted-sample", 1., 1.);
         auto p      = point3(1., 1.);
         EXPECT(std::is_sorted(sorted.begin(), sorted.end(), [&p](const auto& a, const auto& b) {
-            return Point3::distance2(a.point(), p) < Point3::distance2(b.point(), p);
+            return PointXYZ::distance2(a.point(), p) < PointXYZ::distance2(b.point(), p);
         }));
 
         // comparison, by nclosest and distance

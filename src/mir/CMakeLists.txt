@@ -70,8 +70,6 @@ list(APPEND mir_srcs
     action/filter/StatisticsFilter.h
     action/filter/UnstructuredFilter.cc
     action/filter/UnstructuredFilter.h
-    action/interpolate/Gridded2GridDef.cc
-    action/interpolate/Gridded2GridDef.h
     action/interpolate/Gridded2GridSpec.cc
     action/interpolate/Gridded2GridSpec.h
     action/interpolate/Gridded2GriddedInterpolation.cc
@@ -251,8 +249,6 @@ list(APPEND mir_srcs
     input/GribStreamInput.h
     input/GridSpecInput.cc
     input/GridSpecInput.h
-    input/GriddefInput.cc
-    input/GriddefInput.h
     input/MIRInput.cc
     input/MIRInput.h
     input/MultiDimensionalGribFileInput.cc
@@ -449,8 +445,6 @@ list(APPEND mir_srcs
     output/GribOutput.h
     output/GribStreamOutput.cc
     output/GribStreamOutput.h
-    output/GriddefOutput.cc
-    output/GriddefOutput.h
     output/MIROutput.cc
     output/MIROutput.h
     output/MultiDimensionalOutput.cc
@@ -651,6 +645,8 @@ list(APPEND mir_srcs
     util/LatitudeIncrement.h
     util/Log.cc
     util/Log.h
+    util/LonLatToPoint3.cc
+    util/LonLatToPoint3.h
     util/LongitudeDouble.cc
     util/LongitudeDouble.h
     util/LongitudeFraction.cc
@@ -663,8 +659,6 @@ list(APPEND mir_srcs
     util/Mutex.h
     util/PlanParser.cc
     util/PlanParser.h
-    util/Point2ToPoint3.cc
-    util/Point2ToPoint3.h
     util/PointLatLonT.h
     util/Regex.cc
     util/Regex.h
@@ -691,8 +685,6 @@ list(APPEND mir_srcs
     action/transform/InvtransScalar.h
     action/transform/InvtransVodTouv.cc
     action/transform/InvtransVodTouv.h
-    action/transform/ShToGridDef.cc
-    action/transform/ShToGridDef.h
     action/transform/ShToGridSpec.cc
     action/transform/ShToGridSpec.h
     action/transform/ShToGridded.cc
@@ -895,7 +887,7 @@ ecbuild_add_library(
     INSTALL_HEADERS    LISTED
     HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/mir
     TEMPLATES          caching/InMemoryCache.cc
-    PUBLIC_LIBS        atlas eckit_linalg eckit_geometry eckit_option eckit eckit_geo eccodes
+    PUBLIC_LIBS        atlas eckit_linalg eckit_option eckit eckit_geo eccodes
     PUBLIC_INCLUDES    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/src>
     SOURCES            ${mir_srcs})
 

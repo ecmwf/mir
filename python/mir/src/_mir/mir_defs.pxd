@@ -71,11 +71,6 @@ cdef extern from "mir/input/GridSpecInput.h" namespace "mir::input":
         GridSpecInput(string) except +
 
 
-cdef extern from "mir/input/GriddefInput.h" namespace "mir::input":
-    cdef cppclass GriddefInput(MIRInput):
-        GriddefInput(eckit.PathName)
-
-
 cdef extern from "mir/input/PyGribInput.h" namespace "mir::input":
     cdef cppclass PyGribInput(mir.MIRInput):
         PyGribInput(object)

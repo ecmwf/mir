@@ -306,10 +306,6 @@ Target::Target(const param::MIRParametrisation& param) {
         type     = "reduced-gg-pl-given";
         gaussian = true;
     }
-    else if (user.has("griddef")) {
-        type = "griddef";
-        N    = static_cast<long>(Grid::default_gaussian_number());
-    }
     else if (user.has("latitudes") || user.has("longitudes")) {
         type = "points";
         N    = static_cast<long>(Grid::default_gaussian_number());

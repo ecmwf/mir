@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <initializer_list>
 #include <iosfwd>
 
 #include "mir/util/Types.h"
@@ -35,9 +36,12 @@ public:
 
     double area() const;
     double diagonal() const;
-    Point2 centre() const;
+    PointLonLat centre() const;
 
-    bool contains(const Point2&) const;
+    bool contains(const PointLonLat&) const;
+
+    /// A braced list doesn't name its order (latitude/longitude or longitude/latitude), so the point is explicit
+    bool contains(std::initializer_list<double>) const = delete;
     bool intersects(GridBox&) const;
 
     double north() const { return north_; }

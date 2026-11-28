@@ -18,7 +18,7 @@
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
-#include "mir/util/Point2ToPoint3.h"
+#include "mir/util/LonLatToPoint3.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
@@ -67,7 +67,7 @@ void KNearestNeighbours::assemble(util::MIRStatistics& /*unused*/, WeightMatrix&
     const auto& inDomain = in.geographicDomain();
     pick.distance(in);
 
-    util::Point2ToPoint3 point3(in, poleDisplacement());
+    util::LonLatToPoint3 point3(in, poleDisplacement());
 
     // init structure used to fill in sparse matrix
     std::vector<WeightMatrix::Triplet> weights_triplets;

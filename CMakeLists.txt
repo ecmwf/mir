@@ -46,7 +46,7 @@ endif()
 #endif()
 
 # shortcut upstream features into mir features (avoid additional optional behaviour)
-set(mir_HAVE_ECKIT_CODEC eckit_HAVE_ECKIT_CODEC)
+set(mir_HAVE_ECKIT_CODEC ${eckit_HAVE_ECKIT_CODEC})
 
 set(MIR_LIBRARIES mir)
 

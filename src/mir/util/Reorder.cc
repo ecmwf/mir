@@ -6,9 +6,11 @@
 
 #include <cmath>
 #include <map>
+#include <memory>
 #include <numeric>
 #include <ostream>
 
+#include "eckit/geo/Grid.h"
 #include "eckit/geo/order/HEALPix.h"
 #include "eckit/log/JSON.h"
 
@@ -45,7 +47,7 @@ public:
         ASSERT(12 * Nside * Nside == size);
 
         using H = eckit::geo::order::HEALPix;
-        return H(H::RING).reorder(H::NESTED, Nside);
+        return reorder_healpix(Nside, H::RING, H::NESTED);
     }
 };
 
@@ -61,7 +63,7 @@ public:
         ASSERT(12 * Nside * Nside == size);
 
         using H = eckit::geo::order::HEALPix;
-        return H(H::NESTED).reorder(H::RING, Nside);
+        return reorder_healpix(Nside, H::NESTED, H::RING);
     }
 };
 
@@ -110,6 +112,14 @@ void Reorder::list(std::ostream& s) {
 
 void Reorder::json(eckit::JSON& j) const {
     j << name;
+}
+
+
+std::vector<size_t> reorder_healpix(size_t Nside, const std::string& from, const std::string& to) {
+    // the grid's renumbering (its own order to another) is common to eckit::geo versions
+    std::unique_ptr<const eckit::geo::Grid> grid(
+        eckit::geo::GridFactory::make_from_string("{grid: H" + std::to_string(Nside) + ", order: " + from + "}"));
+    return grid->reorder(to);
 }
 
 

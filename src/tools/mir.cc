@@ -290,8 +290,6 @@ struct MIR : MIRTool {
 
         //==============================================
         options_.push_back(new Separator("Unstructured grids"));
-        options_.push_back(
-            new SimpleOption<eckit::PathName>("griddef", "GRIB file with latitude/longitude pairs (output)"));
         options_.push_back(new SimpleOption<eckit::PathName>("latitudes", "GRIB file with latitudes (output)"));
         options_.push_back(new SimpleOption<eckit::PathName>("longitudes", "GRIB file with longitudes (output)"));
 
