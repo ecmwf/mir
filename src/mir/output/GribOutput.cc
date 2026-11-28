@@ -198,6 +198,11 @@ bool GribOutput::printParametrisation(std::ostream& out, const param::MIRParamet
         ok = true;
     }
 
+    if (delete_local_definition(param)) {
+        out << (ok ? "," : "") << "delete-local-definition=1";
+        ok = true;
+    }
+
     return ok;
 }
 
@@ -209,6 +214,10 @@ void GribOutput::jsonParametrisation(eckit::JSON& j, const param::MIRParametrisa
 
     if (std::string compatibility; param.userParametrisation().get("compatibility", compatibility)) {
         j << "compatibility" << compatibility;
+    }
+
+    if (delete_local_definition(param)) {
+        j << "delete-local-definition" << true;
     }
 }
 
@@ -230,10 +239,12 @@ void GribOutput::prepare(const param::MIRParametrisation& param, action::ActionP
         return pack->empty();
     };
 
-    plan.add(!plan.empty()            ? new action::io::Save(param, output)
-             : !compatibility_empty() ? new action::io::Save(param, output)
-             : !packing_empty()       ? new action::io::Set(param, output)
-                                      : static_cast<action::Action*>(new action::io::Copy(param, output)));
+    // encoding anew, unless only setting the packing or copying as is
+    const auto save = !plan.empty() || !compatibility_empty() || delete_local_definition(param);
+
+    plan.add(save               ? new action::io::Save(param, output)
+             : !packing_empty() ? static_cast<action::Action*>(new action::io::Set(param, output))
+                                : new action::io::Copy(param, output));
 }
 
 
@@ -252,7 +263,7 @@ bool GribOutput::sameParametrisation(const param::MIRParametrisation& param1,
     param1.userParametrisation().get("compatibility", compatibility1);
     param2.userParametrisation().get("compatibility", compatibility2);
 
-    return compatibility1 == compatibility2;
+    return compatibility1 == compatibility2 && delete_local_definition(param1) == delete_local_definition(param2);
 }
 
 

@@ -259,6 +259,20 @@ CASE("GribOutput: save action comparison (by packing parameters)") {
     }
 
 
+    SECTION("delete-local-definition changes") {
+        Param a;
+        Param b;
+        Param c;
+        b.set("delete-local-definition", true);
+        c.set("delete-local-definition", false);
+
+        const MIROutput& o = *out;
+        EXPECT(o.sameParametrisation(b, b));
+        EXPECT(o.sameParametrisation(a, c));
+        EXPECT_NOT(o.sameParametrisation(a, b));
+    }
+
+
     SECTION("control grib-edition-conversion") {
         std::unique_ptr<grib::Packing> ptr;
 

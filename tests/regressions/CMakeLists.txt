@@ -35,6 +35,7 @@ set(TESTS
     reduced_gg_to_healpix.grid-box-average-accuracy.test
     reduced_gg_to_lambert.regrid.test
     reduced_gg_to_lambert_azimuthal_equal_area.regrid.test
+    reduced_gg_to_reduced_gg.delete-local-definition.test
     reduced_gg_to_reduced_gg.scalar-gradient.001.test
     reduced_gg_to_reduced_gg.scalar-gradient.002.test
     reduced_gg_to_reduced_gg.uv2uv-uv-gradient.test
