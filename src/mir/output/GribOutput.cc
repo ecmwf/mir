@@ -16,11 +16,12 @@
 #include "mir/action/io/Save.h"
 #include "mir/action/io/Set.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/compat/GribCompatibility.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/grib/BasicAngle.h"
+#include "mir/grib/Compatibility.h"
 #include "mir/grib/Config.h"
+#include "mir/grib/OutputKeys.h"
 #include "mir/grib/Packing.h"
 #include "mir/input/MIRInput.h"
 #include "mir/key/Area.h"
@@ -77,10 +78,29 @@ bool is_save_with_gridspec(const param::MIRParametrisation& param) {
     std::string basicAngle = "decimal";
     param.get("basic-angle", basicAngle);
 
-    bool deleteLocalDefinition = false;
-    param.get("delete-local-definition", deleteLocalDefinition);
+    return basicAngle == "decimal";
+}
 
-    return basicAngle == "decimal" && !deleteLocalDefinition && !param.userParametrisation().has("compatibility");
+
+bool delete_local_definition(const param::MIRParametrisation& param) {
+    bool remove = false;
+    return param.userParametrisation().get("delete-local-definition", remove) && remove;
+}
+
+
+/// The keys other than geometry and values, of both encodings (the edition dependent ones aren't known yet)
+grib::OutputKeys output_keys(const param::MIRParametrisation& param, const data::MIRField& field, size_t i) {
+    grib::OutputKeys keys;
+
+    for (const auto& [key, value] : field.metadata(i)) {
+        keys.add_after(key, value);
+    }
+
+    if (delete_local_definition(param)) {
+        keys.add_after("deleteLocalDefinition", 1L);
+    }
+
+    return keys;
 }
 
 
@@ -176,9 +196,11 @@ bool GribOutput::printParametrisation(std::ostream& out, const param::MIRParamet
     if (param.userParametrisation().get("compatibility", compatibility)) {
         out << (ok ? "," : "") << "compatibility=" << compatibility;
         ok = true;
+    }
 
-        const auto& c = compat::GribCompatibility::lookup(compatibility);
-        c.printParametrisation(out, param);
+    if (delete_local_definition(param)) {
+        out << (ok ? "," : "") << "delete-local-definition=1";
+        ok = true;
     }
 
     return ok;
@@ -192,6 +214,10 @@ void GribOutput::jsonParametrisation(eckit::JSON& j, const param::MIRParametrisa
 
     if (std::string compatibility; param.userParametrisation().get("compatibility", compatibility)) {
         j << "compatibility" << compatibility;
+    }
+
+    if (delete_local_definition(param)) {
+        j << "delete-local-definition" << true;
     }
 }
 
@@ -213,10 +239,12 @@ void GribOutput::prepare(const param::MIRParametrisation& param, action::ActionP
         return pack->empty();
     };
 
-    plan.add(!plan.empty()            ? new action::io::Save(param, output)
-             : !compatibility_empty() ? new action::io::Save(param, output)
-             : !packing_empty()       ? new action::io::Set(param, output)
-                                      : static_cast<action::Action*>(new action::io::Copy(param, output)));
+    // encoding anew, unless only setting the packing or copying as is
+    const auto save = !plan.empty() || !compatibility_empty() || delete_local_definition(param);
+
+    plan.add(save               ? new action::io::Save(param, output)
+             : !packing_empty() ? static_cast<action::Action*>(new action::io::Set(param, output))
+                                : new action::io::Copy(param, output));
 }
 
 
@@ -235,18 +263,7 @@ bool GribOutput::sameParametrisation(const param::MIRParametrisation& param1,
     param1.userParametrisation().get("compatibility", compatibility1);
     param2.userParametrisation().get("compatibility", compatibility2);
 
-    if (compatibility1 != compatibility2) {
-        return false;
-    }
-
-    if (!compatibility1.empty()) {
-        const auto& c = compat::GribCompatibility::lookup(compatibility1);
-        if (!c.sameParametrisation(param1, param2)) {
-            return false;
-        }
-    }
-
-    return true;
+    return compatibility1 == compatibility2 && delete_local_definition(param1) == delete_local_definition(param2);
 }
 
 
@@ -307,15 +324,21 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
             // setting the geometry resets the values (a constant field) and so their packing, which is as encoded
             const EncodedPacking encoded(h);
 
+            auto keys = output_keys(param, field, i);
+            keys.set_before(h);
+
             const auto spec = repres->spec().str();
             auto length     = spec.length();
             GRIB_CALL(codes_set_string(h, "gridSpec", spec.c_str(), &length));
 
             encoded.set(h);
 
-            for (const auto& [key, value] : field.metadata(i)) {
-                GRIB_CALL(codes_set_long(h, key.c_str(), value));
-            }
+            // the edition as encoded (the geometry can need a higher)
+            long edition = 0;
+            GRIB_CALL(codes_get_long(h, "edition", &edition));
+            grib::Compatibility(param).keys(edition, keys);
+
+            keys.set_after(h);
 
             set_missing_values(h, field);
             pack->set(repres, h, field.values(i));
@@ -369,24 +392,19 @@ size_t GribOutput::save(const param::MIRParametrisation& param, context::Context
             ASSERT(basicAngle == "decimal");
         }
 
-        // Extra settings (paramId comes from here)
-        for (const auto& k : field.metadata(i)) {
-            info.extra_set(k.first.c_str(), k.second);
+        // Extra settings (paramId comes from here), the edition as requested, otherwise the input's
+        auto keys = output_keys(param, field, i);
+
+        long edition = info.packing.editionNumber;
+        if (edition == 0) {
+            param.get("edition", edition);
         }
+        grib::Compatibility(param).keys(edition, keys);
 
-
-        bool remove = false;
-        param.get("delete-local-definition", remove);
-        info.packing.deleteLocalDefinition = remove ? 1 : 0;
+        keys.fill(info);
 
         // Give a chance to a sub-class to modify info
         fill(h, info);
-
-        std::string compatibility;
-        if (param.userParametrisation().get("compatibility", compatibility)) {
-            const auto& c = compat::GribCompatibility::lookup(compatibility);
-            c.execute(*this, param, h, info);
-        }
 
         if (Log::debug_active()) {
             auto p(Log::debug().precision(12));

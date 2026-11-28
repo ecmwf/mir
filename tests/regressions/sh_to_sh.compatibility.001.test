@@ -1,0 +1,19 @@
+# compatibility=adjust-spectral-packing (production): spectral simple packing as complex (cf. sh_to_sh.simple.*.fail)
+# input
+gridType=sh,param=t,levtype=ml,level=1.grib2
+# post-process
+--packing=simple
+--compatibility=adjust-spectral-packing
+# action-plan
+[{"type":"save","packing":"simple","compatibility":"adjust-spectral-packing"}]
+# grid-plan
+[{"grid":"T20"},{"grid":"T20"}]
+# grib_get
+gridType=sh
+packingType=spectral_complex
+edition=2
+localUsePresent=1
+numberOfDataPoints=462
+J=20
+K=20
+M=20

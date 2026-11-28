@@ -251,10 +251,24 @@ CASE("GribOutput: save action comparison (by packing parameters)") {
     SECTION("compatibility changes") {
         Param a;
         Param b;
-        b.set("compatibility", "something");
+        b.set("compatibility", "no-local-extension");
 
         const MIROutput& o = *out;
         EXPECT(o.sameParametrisation(a, a));
+        EXPECT_NOT(o.sameParametrisation(a, b));
+    }
+
+
+    SECTION("delete-local-definition changes") {
+        Param a;
+        Param b;
+        Param c;
+        b.set("delete-local-definition", true);
+        c.set("delete-local-definition", false);
+
+        const MIROutput& o = *out;
+        EXPECT(o.sameParametrisation(b, b));
+        EXPECT(o.sameParametrisation(a, c));
         EXPECT_NOT(o.sameParametrisation(a, b));
     }
 

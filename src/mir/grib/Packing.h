@@ -7,6 +7,7 @@
 #include <iosfwd>
 #include <string>
 
+#include "mir/grib/Compatibility.h"
 #include "mir/util/Types.h"
 
 
@@ -96,6 +97,8 @@ protected:
     bool user_edition_ = false;
     bool definePacking_;
     bool definePrecision_;
+
+    const Compatibility compatibility_;
 
     // -- Methods
 

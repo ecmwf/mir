@@ -1,0 +1,26 @@
+# compatibility=no-local-extension (production): GRIB2 keeps the local definition
+# input
+gridType=reduced_gg,gridName=O8,shortName=q.grib2
+# post-process
+--grid=1/1
+--compatibility=no-local-extension
+# action-plan
+[{"type":"interpolate.grid2regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":[1,1],"area":[90,0,-90,359]},{"type":"save","compatibility":"no-local-extension"}]
+# grid-plan
+[{"grid":"O8"},{"grid":[1,1]},{"grid":[1,1]}]
+# grib_get
+gridType=regular_ll
+edition=2
+localUsePresent=1
+numberOfDataPoints=65160
+Ni=360
+Nj=181
+latitudeOfFirstGridPointInDegrees=90
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=-90
+longitudeOfLastGridPointInDegrees=359
+iDirectionIncrementInDegrees=1
+jDirectionIncrementInDegrees=1
+iScansNegatively=0
+jScansPositively=0
+shapeOfTheEarth=6

@@ -1,0 +1,24 @@
+# delete-local-definition, without other post-processing: GRIB2 without local definition (not copied as is)
+# input
+gridType=reduced_gg,gridName=O8,shortName=q.grib2
+# post-process
+--delete-local-definition
+# action-plan
+[{"type":"save","delete-local-definition":true}]
+# grid-plan
+[{"grid":"O8"},{"grid":"O8"}]
+# grib_get
+gridType=reduced_gg
+edition=2
+localUsePresent=0
+numberOfDataPoints=544
+N=8
+Nj=16
+isOctahedral=1
+latitudeOfFirstGridPointInDegrees=81.6506
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=-81.6506
+longitudeOfLastGridPointInDegrees=352.5
+iScansNegatively=0
+jScansPositively=0
+shapeOfTheEarth=6
