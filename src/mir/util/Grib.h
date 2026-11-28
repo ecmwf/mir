@@ -105,8 +105,4 @@ long grib_order_to_scanning_mode(const std::string& order);
 void grib_fill_scanning_mode(grib_info&, const std::string& order);
 
 
-void grib_reorder_to_canonical(std::vector<double>& values, const std::string& order, size_t Ni, size_t Nj);
-void grib_reorder_from_canonical(std::vector<double>& values, const std::string& order, size_t Ni, size_t Nj);
-
-
 bool grib_check_is_message_valid();

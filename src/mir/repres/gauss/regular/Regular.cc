@@ -300,14 +300,4 @@ size_t Regular::frame(MIRValuesVector& values, size_t size, double missingValue)
 }
 
 
-void Regular::reorderToCanonical(MIRValuesVector& values) const {
-    grib_reorder_to_canonical(values, order(), Ni_, Nj_);
-}
-
-
-void Regular::reorderFromCanonical(MIRValuesVector& values) const {
-    grib_reorder_from_canonical(values, order(), Ni_, Nj_);
-}
-
-
 }  // namespace mir::repres::gauss::regular

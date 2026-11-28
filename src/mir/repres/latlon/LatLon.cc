@@ -74,16 +74,6 @@ LatLon::LatLon(const util::Increments& increments, const util::BoundingBox& bbox
 LatLon::~LatLon() = default;
 
 
-void LatLon::reorderToCanonical(MIRValuesVector& values) const {
-    grib_reorder_to_canonical(values, order(), ni_, nj_);
-}
-
-
-void LatLon::reorderFromCanonical(MIRValuesVector& values) const {
-    grib_reorder_from_canonical(values, order(), ni_, nj_);
-}
-
-
 void LatLon::print(std::ostream& out) const {
     out << "LatLon["
         << "bbox=" << bbox_ << ",increments=" << increments_ << ",ni=" << ni_ << ",nj=" << nj_ << "]";
