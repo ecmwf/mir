@@ -1,6 +1,0 @@
-# input
-packingType=grid_simple.grib2
-# mir
---accuracy=32
-# plan
-Set[accuracy=32,output=...]

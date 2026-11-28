@@ -1,6 +1,0 @@
-# input
-gridType=healpix,Nside=2,orderingConvention=ring.grib2
-# mir
---grid=H2 --interpolation=nn
-# plan
-Copy[]

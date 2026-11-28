@@ -1,0 +1,9 @@
+# MIR-349
+# input
+regular_ll.2-2.grib1
+# post-process
+$MIR_ABORT_IF_CONFIGURATION_NOT_FOUND=true
+$MIR_HOME=/bad
+--grid=9/9
+# grib_get
+gridType=regular_ll

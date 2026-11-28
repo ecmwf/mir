@@ -1,8 +1,0 @@
-# input
-param=2t,levtype=sfc,grid=N640
-# mir
---area=90/-180/-90/179.99
-# grib_get
-numberOfValues=2140702
-longitudeOfFirstGridPointInDegrees=-180
-longitudeOfLastGridPointInDegrees=179.918

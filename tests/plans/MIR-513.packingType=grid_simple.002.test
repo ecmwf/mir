@@ -1,6 +1,0 @@
-# input
-packingType=grid_simple.grib2
-# mir
---packing=so
-# plan
-Set[packing=second-order,output=...]

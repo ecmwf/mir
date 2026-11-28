@@ -1,0 +1,11 @@
+# MIR-332
+# input
+regular_ll.2-2.grib2
+# post-process
+--packing=so
+# action-plan
+[{"type":"set","packing":"second-order"}]
+# grid-plan
+[{"grid":[2,2]},{"grid":[2,2]}]
+# grib_get
+packingType=grid_second_order

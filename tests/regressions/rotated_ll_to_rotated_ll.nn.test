@@ -1,0 +1,16 @@
+# input
+rotated_ll.3-3.grib1
+# post-process
+--grid={grid:2/2,area:[60,-50,30,50],rotation:[30,30]} --interpolation=nn
+# action-plan
+[{"type":"interpolate.grid2gridspec","interpolation":"nn","distance-weighting":"inverse-distance-weighting-squared","lsm-weight-adjustment":0.2,"nclosest":4,"nearest-method":"nearest-neighbour-with-lowest-index","non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":{"area":[60,-50,30,50],"grid":[2,2],"projection":{"south_pole":[30,30],"type":"rotation"}}},{"type":"save"}]
+# grid-plan
+[{"area":[69,-60,21,60],"grid":[3,3],"projection":{"south_pole":[30,30],"type":"rotation"}},{"area":[60,-50,30,50],"grid":[2,2],"projection":{"south_pole":[30,30],"type":"rotation"}},{"area":[60,-50,30,50],"grid":[2,2],"projection":{"south_pole":[30,30],"type":"rotation"}}]
+# grib_get
+gridType = rotated_ll
+Ni = 51
+Nj = 16
+numberOfDataPoints = 816
+latitudeOfSouthernPoleInDegrees = 30
+longitudeOfSouthernPoleInDegrees = 30
+numberOfMissing = 0

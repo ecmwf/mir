@@ -1,0 +1,7 @@
+# MIR-513
+# input
+packingType=spectral_complex,param=vo_d.grib1
+# post-process
+--vod2uv --packing=simple
+# grib_get
+FAIL

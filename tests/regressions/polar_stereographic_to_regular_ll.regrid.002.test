@@ -1,0 +1,11 @@
+# MIR-673
+# input
+gridType=polar_stereographic.grib1
+# post-process
+--grid=1/1
+# action-plan
+[{"type":"interpolate.grid2regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":[1,1],"area":[90,0,-90,359]},{"type":"save"}]
+# grid-plan
+[{"false_xy":[1901416.78,7613145.491],"order":"i+j+","projection":{"lat_0":90,"lat_ts":60,"lon_0":-105,"reverse":true,"type":"stere"},"x":[0,5334560,4763],"y":[0,4191440,4763]},{"area":[57,-134,20,-60],"grid":[1,1]},{"area":[57,-134,20,-60],"grid":[1,1]}]
+# grib_get
+gridType=regular_ll

@@ -1,7 +1,0 @@
-# input
-ukmo-tigge.grib
-# mir
---area=80/-10/10/100 --grid=1/1
-# grib_get
-Ni=111
-Nj=71

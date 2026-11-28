@@ -1,6 +1,0 @@
-# input (plenty of awkward formats)
-multi-format.grib
-# mir
---grid=3/3
-# grib_get
-numberOfPoints=7320

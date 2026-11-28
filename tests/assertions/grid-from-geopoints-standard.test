@@ -1,5 +1,0 @@
-# input (Geopoints Standard 6-column geopoints)
-geopoints-standard.gpt
-# mir
---output=geopoints-xyv
-# grib_get (output is GEOPOINTS)

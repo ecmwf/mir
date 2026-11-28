@@ -1,0 +1,11 @@
+# MIR-632
+# input
+ORCA.grib2
+# post-process
+--grid=H2
+# grib_get
+gridType=healpix
+gridName=H2
+Nside=2
+numberOfDataPoints=48
+longitudeOfFirstGridPointInDegrees=45

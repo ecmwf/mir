@@ -1,0 +1,8 @@
+# MIR-487
+# input
+param=t,level=1000,resol=20
+# post-process (dry run, as execution fails: Serious bug: codes_set_long(h, "precision", precision_): Key/value not found)
+--packing=ieee
+--dryrun
+# action-plan
+[{"type":"set","packing":"ieee","precision":1}]

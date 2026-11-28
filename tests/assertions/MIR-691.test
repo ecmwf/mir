@@ -1,6 +1,0 @@
-# input
-param=2t,levtype=sfc,grid=N256
-# mir
---frame=5
-# grib_get
-gridName=N256

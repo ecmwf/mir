@@ -1,0 +1,10 @@
+# input
+regular_ll.2-2.grib2
+# post-process
+--grid=gridType=lambert;latitudeOfFirstGridPointInDegrees=52.041;longitudeOfFirstGridPointInDegrees=1.639;grid=2500./2500.;Ni=739;Nj=949;LaDInDegrees=63.;LoVInDegrees=15.
+# action-plan
+[{"type":"interpolate.grid2typedgrid","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":"gridType=lambert;latitudeOfFirstGridPointInDegrees=52.041;longitudeOfFirstGridPointInDegrees=1.639;grid=2500./2500.;Ni=739;Nj=949;LaDInDegrees=63.;LoVInDegrees=15."},{"type":"save"}]
+# grid-plan
+[{"grid":[2,2]},{"projection":{"lat_0":63,"lat_1":63,"lon_0":15,"reverse":true,"type":"lcc"},"x":[-922475.321661423,922524.678338577,2500],"y":[-1129362.39336627,-3499362.39336627,-2500]},{"projection":{"lat_0":63,"lat_1":63,"lon_0":15,"reverse":true,"type":"lcc"},"x":[-922475.321661423,922524.678338577,2500],"y":[-1129362.39336627,-3499362.39336627,-2500]}]
+# grib_get
+gridType=lambert

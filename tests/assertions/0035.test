@@ -1,7 +1,0 @@
-# input (1d.logarithmic)
-levtype=ml,levelist=1,param=lnsp,grid=O32
-# mir
---grid=O16
-# grib_get
-Nj = 32
-N = 16

@@ -1,0 +1,10 @@
+# MIR-459
+# input
+date=20200308,level=1000,truncation=20,param=z
+# post-process
+--grid=1/1 --nabla=scalar-gradient
+# action-plan
+[{"type":"transform.sh-scalar-to-namedgrid","atlas-trans-flt":false,"atlas-trans-type":"local","invtrans":"scalar","grid":"F21"},{"type":"interpolate.grid2regular-ll","interpolation":"linear","finite-element-projection-fail":"missing-value","finite-element-validate-mesh":false,"lsm-weight-adjustment":0.2,"non-linear":["missing-if-heaviest-missing"],"pole-displacement-in-degree":0,"prune-epsilon":1e-10,"solver":{"type":"multiply"},"grid":[1,1],"area":[90,0,-90,359]},"filter.scalar-gradient",{"type":"save","packing":"simple"}]
+# grid-plan
+[{"grid":"T20"},{"grid":"F21"},{"grid":[1,1]},{"grid":[1,1]},{"grid":[1,1]}]
+# grib_get

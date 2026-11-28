@@ -1,0 +1,8 @@
+# MIR-442
+# input (wrongly-encoded longitudeOfLastGridPointInDegrees)
+MIR-442.001.wrong.grib1
+# post-process
+$MIR_ABORT_IF_WRONGLY_ENCODED_GRIB=1
+--grid=9/9
+# grib_get
+gridType=regular_ll

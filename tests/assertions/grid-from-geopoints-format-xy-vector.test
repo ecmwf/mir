@@ -1,5 +1,0 @@
-# input (Geopoints XY_VECTOR)
-geopoints-format-xy-vector.gpt
-# mir
---output=geopoints-xyv
-# grib_get (output is GEOPOINTS)
