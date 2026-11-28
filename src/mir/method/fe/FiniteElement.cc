@@ -30,6 +30,7 @@
 #include "mir/util/LonLatToXYZ.h"
 #include "mir/util/Reorder.h"
 #include "mir/util/Trace.h"
+#include "mir/util/Types.h"
 
 
 namespace mir::method::fe {
@@ -324,8 +325,8 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
     const auto nbRealPts =
         inNodes.metadata().has("NbRealPts") ? inNodes.metadata().get<size_t>("NbRealPts") : nbInputPoints;
 
-    // output points on the figure of the input mesh
-    const util::LonLatToXYZ point3(in.canonicalGrid().figure(), poleDisplacement(out));
+    // output points on the figure of the input mesh nodes, atlas' (spherical) Earth whichever the grid's figure
+    const util::LonLatToXYZ point3(util::Earth(), poleDisplacement(out));
 
     // some statistics
     size_t nbMaxElementsSearched   = 0;

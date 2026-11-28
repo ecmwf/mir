@@ -208,6 +208,9 @@ inline handle_t run(const std::string& input, const options_t& options, const st
 
         api::MIRJob job;
 
+        // computing anew (weights cached by a former version could hide a difference)
+        job.set("caching", false);
+
         for (const auto& kv : options) {
             set(job, kv.first, kv.second);
         }
