@@ -283,8 +283,8 @@ util::BoundingBox healpix_nested_pixel_bbox(size_t Nside, size_t pixel) {
         lon -= 360. * std::round((lon - lons.front()) / 360.);
     }
 
-    const auto [w, e] = std::minmax_element(lons.begin(), lons.end());
-    return {n, *w, s, *e};
+    const auto we = std::minmax_element(lons.begin(), lons.end());
+    return {n, *we.first, s, *we.second};
 }
 
 

@@ -9,8 +9,8 @@
 #include <map>
 #include <ostream>
 
+#include "eckit/cache/Download.h"
 #include "eckit/filesystem/PathName.h"
-#include "eckit/geo/cache/Download.h"
 #include "eckit/parser/YAMLParser.h"
 #include "eckit/utils/MD5.h"
 #include "eckit/utils/StringTools.h"
@@ -91,10 +91,8 @@ eckit::PathName NamedMaskFactory::resolve_path(const param::MIRParametrisation& 
             Log::warning() << "NamedMaskFactory: caching disabled, cannot resolve '" << path << "'" << std::endl;
         }
         else if (const auto lib = LibMir::instance().name(); eckit::StringTools::beginsWith(path, "~" + lib + "/")) {
-            using eckit::geo::cache::Download;
-
-            static Download download(eckit::PathName{LibMir::cacheDir()} / lib / "masks");
-            return download.to_cached_path(LibMir::homeUrl() + path.substr(lib.length() + 1));
+            static eckit::cache::Download download(eckit::PathName{LibMir::cacheDir()} / lib / "masks");
+            return download.toCachedPath(LibMir::homeUrl() + path.substr(lib.length() + 1));
         }
     }
 

@@ -89,7 +89,20 @@ private:
 };
 
 
+/// The default scanning order (GRIB scanningMode=0): rows north to south, each west to east
+const std::string& grib_order_default();
+
+
+/// A scanning order, the default if empty (an unknown order is an error)
+std::string grib_order(const std::string& order);
+
+
+/// GRIB scanningMode of a scanning order (an unknown order is an error)
 long grib_order_to_scanning_mode(const std::string& order);
+
+
+/// GRIB scanning flags and mode of an order, and the first and last grid points (as of the default order) as scanned
+void grib_fill_scanning_mode(grib_info&, const std::string& order);
 
 
 void grib_reorder_to_canonical(std::vector<double>& values, const std::string& order, size_t Ni, size_t Nj);
