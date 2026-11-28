@@ -103,7 +103,7 @@ std::vector<double> Action::spec_value(const util::Increments& increments) {
 
 
 std::vector<double> Action::spec_value(const util::Rotation& rotation) {
-    return {rotation.south_pole_latitude().value(), rotation.south_pole_longitude().value()};
+    return {rotation.south_pole_latitude(), rotation.south_pole_longitude()};
 }
 
 

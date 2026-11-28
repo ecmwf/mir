@@ -260,7 +260,7 @@ CASE("interpolate.grid2gridspec, unstructured grids") {
 
             const auto p = std::get<PointLonLat>(out.representation()->canonicalGridUnrotated().first_point());
             EXPECT(same(p.lat(), test.latitude));
-            EXPECT(same(PointLatLon{p}.lon().value(), test.longitude));
+            EXPECT(same(p.lon(), test.longitude));
         }
     }
 }

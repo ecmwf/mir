@@ -11,18 +11,9 @@
 #include "eckit/geo/PointXYZ.h"
 #include "eckit/geo/figure/Earth.h"
 
-#include "mir/util/Latitude.h"
-#include "mir/util/LongitudeDouble.h"
-#include "mir/util/LongitudeFraction.h"
-#include "mir/util/PointLatLonT.h"
-
 
 namespace mir {
 
-
-// using Longitude = LongitudeDouble;
-using Longitude   = LongitudeFraction;
-using PointLatLon = util::PointLatLonT<Latitude, Longitude>;
 
 using eckit::geo::PointLonLat;
 using eckit::geo::PointXY;

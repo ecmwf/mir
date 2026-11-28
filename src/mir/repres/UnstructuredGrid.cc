@@ -150,7 +150,7 @@ protected:
         return eckit::types::is_approximately_equal(bbox_.south(), SOUTH_POLE, PointLonLat::EPS);
     }
     bool isPeriodicWestEast() const override {
-        return eckit::types::is_approximately_greater_or_equal(bbox_.east() - bbox_.west(), Longitude::GLOBE.value());
+        return eckit::types::is_approximately_greater_or_equal(bbox_.east() - bbox_.west(), LONGITUDE_GLOBE);
     }
 
     ::atlas::Grid atlasGrid() const override {
@@ -631,7 +631,7 @@ const Gridded* UnstructuredGrid::croppedRepresentation(const util::BoundingBox& 
 
 
 bool UnstructuredGrid::isPeriodicWestEast() const {
-    return eckit::types::is_approximately_greater_or_equal(bbox_.east() - bbox_.west(), Longitude::GLOBE.value());
+    return eckit::types::is_approximately_greater_or_equal(bbox_.east() - bbox_.west(), LONGITUDE_GLOBE);
 }
 
 

@@ -20,6 +20,7 @@
 #include "mir/output/GribMemoryOutput.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
+#include "mir/util/Angles.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
@@ -184,8 +185,8 @@ public:
             ASSERT(iter_m);
 
             const auto p = std::get<PointLonLat>(*iter_m);
-            double dlat  = mir::Latitude(p.lat()).distance(lat).value();
-            double dlon  = mir::LongitudeDouble(p.lon()).distance(lon).value();
+            double dlat  = std::abs(p.lat() - lat);
+            double dlon  = std::abs(util::normalise_longitude(lon - p.lon(), -LONGITUDE_GLOBE / 2.));
 
             if (dlat > toleranceLat || dlon > toleranceLon) {
                 return false;

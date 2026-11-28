@@ -37,9 +37,8 @@ double get_double(const param::MIRParametrisation& param, const std::string& key
 }  // namespace
 
 
-Rotation::Rotation(const Latitude& south_pole_latitude, const Longitude& south_pole_longitude,
-                   double south_pole_rotation_angle) :
-    rotation_({south_pole_longitude.value(), south_pole_latitude.value()}, south_pole_rotation_angle) {}
+Rotation::Rotation(double south_pole_latitude, double south_pole_longitude, double south_pole_rotation_angle) :
+    rotation_({south_pole_longitude, south_pole_latitude}, south_pole_rotation_angle) {}
 
 
 Rotation::Rotation(const param::MIRParametrisation& parametrisation) :

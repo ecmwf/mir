@@ -89,19 +89,18 @@ CASE("Climate files <= v020 (1km)") {
         double(fraction_via_fraction(fractions[4])), double(fraction_via_fraction(fractions[5])));
 
     struct test_t {
-        explicit test_t(const Longitude& lon, const long _num) : fraction(lon.fraction()), num(_num) {}
-        explicit test_t(const Latitude& lat, const long _num) : fraction(lat.fraction()), num(_num) {}
+        explicit test_t(double value, const long _num) : fraction(value), num(_num) {}
         const Fraction fraction;
         const long num;
     };
 
     for (const auto& test : {
-             test_t{Longitude(inc.west_east()), 2},
-             test_t{Latitude(inc.south_north()), 2},
-             test_t{Latitude(bbox.north()), 21599},
-             test_t{Longitude(bbox.west()), 1},
-             test_t{Latitude(bbox.south()), -21599},
-             test_t{Longitude(bbox.east()), 86399},
+             test_t{inc.west_east(), 2},
+             test_t{inc.south_north(), 2},
+             test_t{bbox.north(), 21599},
+             test_t{bbox.west(), 1},
+             test_t{bbox.south(), -21599},
+             test_t{bbox.east(), 86399},
          }) {
         EXPECT_EQUAL(basic.numerator(test.fraction), test.num);
     }

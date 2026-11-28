@@ -27,7 +27,7 @@ CASE("filter.adjust-winds-scale-cos-latitude") {
             for (size_t which = 0; which < 2; ++which) {
                 const auto& points = out.representation()->canonicalGridUnrotated();
                 for (auto it = points.cbegin(); it; ++it) {
-                    const auto lat = PointLatLon{std::get<PointLonLat>(*it)}.lat().value();
+                    const auto lat = std::get<PointLonLat>(*it).lat();
                     const auto in_ = in.values(which)[it.index()];
                     const auto v   = out.values(which)[it.index()];
 

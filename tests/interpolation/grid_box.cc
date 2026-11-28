@@ -45,8 +45,6 @@ namespace mir::interpolation::tests {
 
 
 CASE("grid boxes: West-East periodicity, reduced Gaussian grids") {
-    using Longitude = LongitudeDouble;
-
 
     SECTION("periodic") {
         const std::vector<long> pl{20, 20};
@@ -60,8 +58,8 @@ CASE("grid boxes: West-East periodicity, reduced Gaussian grids") {
 
         const auto inc = 360. / static_cast<double>(pl[0]);
 
-        EXPECT_EQUAL(Longitude(boxes.front().west()), Longitude(-inc / 2.));
-        EXPECT_EQUAL(Longitude(boxes.back().east()), Longitude(-inc / 2. + 360.));
+        EXPECT_APPROX(boxes.front().west(), -inc / 2.);
+        EXPECT_APPROX(boxes.back().east(), -inc / 2. + 360.);
 
         EXPECT_BOX(boxes[0], 90., -9., 0., 9.);
         EXPECT_BOX(boxes[1], 90., 9., 0., 27.);
@@ -107,8 +105,8 @@ CASE("grid boxes: West-East periodicity, regular Gaussian grids") {
 
         const auto inc = 360. / 4.;  // assumes Ni == 4 * N
 
-        EXPECT_EQUAL(Longitude(boxes.front().west()), Longitude(-inc / 2.));
-        EXPECT_EQUAL(Longitude(boxes.back().east()), Longitude(-inc / 2. + 360.));
+        EXPECT_APPROX(boxes.front().west(), -inc / 2.);
+        EXPECT_APPROX(boxes.back().east(), -inc / 2. + 360.);
 
         EXPECT_BOX(boxes[0], 90., -45., 0., 45.);
         EXPECT_BOX(boxes[1], 90., 45., 0., 135.);
@@ -150,8 +148,8 @@ CASE("grid boxes: West-East periodicity, regular lat/lon grids") {
         EXPECT(boxes.size() == r->numberOfPoints());
         EXPECT(boxes.size() == 60);
 
-        EXPECT_EQUAL(Longitude(boxes.front().west()), Longitude(-inc / 2.));
-        EXPECT_EQUAL(Longitude(boxes.back().east()), Longitude(-inc / 2. + 360.));
+        EXPECT_APPROX(boxes.front().west(), -inc / 2.);
+        EXPECT_APPROX(boxes.back().east(), -inc / 2. + 360.);
 
         EXPECT_BOX(boxes[0], 90., -9., 45., 9.);
         EXPECT_BOX(boxes[1], 90., 9., 45., 27.);
@@ -206,8 +204,8 @@ CASE("grid boxes: West-East periodicity, reduced lat/lon grids") {
 
         const auto inc = 360. / static_cast<double>(pl[0]);
 
-        EXPECT_EQUAL(Longitude(boxes.front().west()), Longitude(-inc / 2.));
-        EXPECT_EQUAL(Longitude(boxes.back().east()), Longitude(-inc / 2. + 360.));
+        EXPECT_APPROX(boxes.front().west(), -inc / 2.);
+        EXPECT_APPROX(boxes.back().east(), -inc / 2. + 360.);
 
         EXPECT_BOX(boxes[0], 90., -9., 45., 9.);
         EXPECT_BOX(boxes[1], 90., 9., 45., 27.);
@@ -371,8 +369,7 @@ CASE("grid-box-statistics") {
         size_t i           = 0;
         const auto& points = out->canonicalGridUnrotated();
         for (auto it = points.cbegin(); it; ++it, ++i) {
-            EXPECT_EQUAL(result.values(0)[i],
-                         (std::abs(PointLatLon{std::get<PointLonLat>(*it)}.lat().value()) == 90. ? 1. : 0.));
+            EXPECT_EQUAL(result.values(0)[i], (std::abs(std::get<PointLonLat>(*it).lat()) == 90. ? 1. : 0.));
         }
     }
 

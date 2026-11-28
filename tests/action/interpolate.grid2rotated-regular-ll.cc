@@ -53,7 +53,7 @@ CASE("interpolate.grid2rotated-regular-ll") {
         const auto& unrotated = out.representation()->canonicalGridUnrotated();
 
         for (auto it = rotated.cbegin(), jt = unrotated.cbegin(); it; ++it, ++jt) {
-            if (Latitude{std::get<PointLonLat>(*jt).lat()} == Latitude::SOUTH_POLE) {
+            if (std::get<PointLonLat>(*jt).south_pole()) {
                 const auto p = std::get<PointLonLat>(*it);
 
                 EXPECT(same(p.lat(), -40., 1e-6));

@@ -61,8 +61,8 @@ CASE("RegularLL: (Ni, Nj) by increments and area, preserving the reference point
 
     for (const auto& test : tests) {
         SECTION(test.name) {
-            PointLatLon reference(test.area.south(), test.area.west());
-            RepresentationHandle repres(new RegularLL(test.increments, test.area, reference.lonlat()));
+            const PointLonLat reference{test.area.west(), test.area.south()};
+            RepresentationHandle repres(new RegularLL(test.increments, test.area, reference));
 
             const auto& ll   = dynamic_cast<const RegularLL&>(*repres);
             const auto& bbox = repres->boundingBox();
@@ -73,8 +73,8 @@ CASE("RegularLL: (Ni, Nj) by increments and area, preserving the reference point
 
             // the corrected area is within, from the reference point
             EXPECT(test.area.contains(bbox));
-            EXPECT(eckit::types::is_approximately_equal(bbox.south(), reference.lat().value(), PointLonLat::EPS));
-            EXPECT(eckit::types::is_approximately_equal(bbox.west(), reference.lon().value(), PointLonLat::EPS));
+            EXPECT(eckit::types::is_approximately_equal(bbox.south(), reference.lat(), PointLonLat::EPS));
+            EXPECT(eckit::types::is_approximately_equal(bbox.west(), reference.lon(), PointLonLat::EPS));
         }
     }
 }

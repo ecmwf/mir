@@ -74,10 +74,6 @@ public:
     bool isLatitudeShifted(const PointLonLat&) const;
     bool isLongitudeShifted(const PointLonLat&) const;
 
-    // transitional, while mir's Latitude/Longitude are in use
-    bool isShifted(const PointLatLon& p) const { return isShifted(p.lonlat()); }
-    bool isLatitudeShifted(const PointLatLon& p) const { return isLatitudeShifted(p.lonlat()); }
-    bool isLongitudeShifted(const PointLatLon& p) const { return isLongitudeShifted(p.lonlat()); }
 
     double west_east() const { return inc_.dlon(); }
 

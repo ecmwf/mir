@@ -8,6 +8,8 @@
 
 #include "action.h"
 
+#include "mir/util/Angles.h"
+
 
 namespace mir::action::tests {
 
@@ -42,7 +44,7 @@ CASE("misc.checkerboard, frequencies") {
     for (auto it = points.cbegin(); it; ++it) {
         const auto p   = std::get<PointLonLat>(*it);
         const auto lat = p.lat();
-        const auto lon = Longitude(p.lon()).normalise(Longitude::GREENWICH).value();
+        const auto lon = util::normalise_longitude(p.lon(), 0.);
 
         if (lat > -90.) {
             const bool east  = lon >= 180.;
@@ -66,7 +68,7 @@ CASE("misc.checkerboard, with missing values") {
         for (auto it = points.cbegin(); it; ++it) {
             const auto v = out.values(0)[it.index()];
 
-            EXPECT(PointLatLon{std::get<PointLonLat>(*it)}.lat().value() > 50 ? v == 9999. : (v == 0. || v == 1.));
+            EXPECT(std::get<PointLonLat>(*it).lat() > 50 ? v == 9999. : (v == 0. || v == 1.));
         }
     }
 

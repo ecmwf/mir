@@ -126,7 +126,7 @@ CASE("transform.sh-*-to-regular-ll, cropping") {
             EXPECT_EQUAL(out.representation()->numberOfPoints(), 7 * 11);
 
             for (const auto& point : out.representation()->canonicalGridUnrotated()) {
-                EXPECT(bbox.contains(PointLatLon{std::get<PointLonLat>(point)}));
+                EXPECT(bbox.contains(std::get<PointLonLat>(point)));
             }
         }
     }

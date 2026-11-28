@@ -56,7 +56,7 @@ CASE("crop.area, without caching") {
         double north       = 90.;
         const auto& points = out.representation()->canonicalGridUnrotated();
         for (auto it = points.cbegin(); it; ++it) {
-            const auto lat = PointLatLon{std::get<PointLonLat>(*it)}.lat().value();
+            const auto lat = std::get<PointLonLat>(*it).lat();
 
             EXPECT(25. <= lat && lat <= 45.);
             EXPECT(lat <= north);
@@ -107,7 +107,7 @@ CASE("crop.area") {
             const auto bbox = make("{type: crop.area, area: " + test.area + "}")->outputBoundingBox();
 
             for (const auto& point : out.representation()->canonicalGridUnrotated()) {
-                EXPECT(bbox.contains(PointLatLon{std::get<PointLonLat>(point)}));
+                EXPECT(bbox.contains(std::get<PointLonLat>(point)));
             }
         }
     }

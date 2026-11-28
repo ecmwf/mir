@@ -212,9 +212,10 @@ util::BoundingBox bounding_box(const eckit::geo::Grid& grid) {
     const auto w    = bbox.west();
 
     // MIR-661 Grid projection handling covering the poles: account for "excessive" bounds
-    Longitude west(w);
-    return {bbox.north(), west, bbox.south(),
-            e - w >= Longitude::GLOBE.value() ? west + Longitude::GLOBE : Longitude(e)};
+    return {bbox.north(), w, bbox.south(),
+            eckit::types::is_approximately_greater_or_equal(e - w, LONGITUDE_GLOBE, PointLonLat::EPS)
+                ? w + LONGITUDE_GLOBE
+                : e};
 }
 
 
@@ -304,7 +305,7 @@ void RegularXY::fillGrib(grib_info& info) const {
         info.grid.grid_type = CODES_UTIL_GRID_SPEC_LAMBERT_CONFORMAL;
 
         // the projection is not rotated
-        info.grid.latitudeOfSouthernPoleInDegrees  = Latitude::SOUTH_POLE.value();
+        info.grid.latitudeOfSouthernPoleInDegrees  = SOUTH_POLE;
         info.grid.longitudeOfSouthernPoleInDegrees = 0.;
 
         info.extra_set("Latin1InDegrees", lat_1);

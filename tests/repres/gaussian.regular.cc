@@ -173,7 +173,7 @@ CASE("Regular Gaussian grid: globalise (the points, then a global grid's points 
         size_t inside      = 0;
         const auto& points = global->canonicalGridUnrotated();
         for (auto it = points.cbegin(); it; ++it) {
-            if (dom.contains(PointLatLon{std::get<PointLonLat>(*it)})) {
+            if (dom.contains(std::get<PointLonLat>(*it))) {
                 EXPECT(it.index() < n);
                 ++inside;
             }

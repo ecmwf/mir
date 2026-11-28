@@ -19,6 +19,7 @@
 #include "mir/repres/gauss/Gaussian.h"
 #include "mir/repres/gauss/reduced/ReducedFromPL.h"
 #include "mir/repres/gauss/reduced/ReducedOctahedral.h"
+#include "mir/util/Angles.h"
 #include "mir/util/Atlas.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Domain.h"
@@ -198,15 +199,13 @@ CASE("Reduced Gaussian grids: globalise (to the global grid, the values in place
             EXPECT_NOT(regional->isGlobal());
 
             // values by point
-            auto value = [](const PointLatLon& p) {
-                return p.lat().value() * 1000. + p.lon().normalise(Longitude::GREENWICH).value();
-            };
+            auto value = [](const PointLonLat& p) { return p.lat() * 1000. + util::normalise_longitude(p.lon(), 0.); };
 
             const auto n = regional->numberOfPoints();
             MIRValuesVector values(n);
             const auto& points = regional->canonicalGridUnrotated();
             for (auto it = points.cbegin(); it; ++it) {
-                values.at(it.index()) = value(PointLatLon{std::get<PointLonLat>(*it)});
+                values.at(it.index()) = value(std::get<PointLonLat>(*it));
             }
 
             data::MIRField field(regional, false, 9999.);
@@ -227,7 +226,7 @@ CASE("Reduced Gaussian grids: globalise (to the global grid, the values in place
             const auto& globalPoints = global->canonicalGridUnrotated();
             for (auto it = globalPoints.cbegin(); it; ++it) {
                 if (const auto x = v.at(it.index()); x != 9999.) {
-                    EXPECT(same(x, value(PointLatLon{std::get<PointLonLat>(*it)}), 1e-6));
+                    EXPECT(same(x, value(std::get<PointLonLat>(*it)), 1e-6));
                     ++count;
                 }
             }

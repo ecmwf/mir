@@ -298,7 +298,7 @@ CASE("interpolate.grid2regular-ll, cropping") {
         EXPECT(out.representation()->boundingBox() == util::BoundingBox(90, -180, -90, 178));
 
         const auto p = std::get<PointLonLat>(out.representation()->canonicalGridUnrotated().first_point());
-        EXPECT(same(PointLatLon{p}.lon().value(), -180.));
+        EXPECT(same(p.lon(), -180.));
     }
 
     SECTION("regional input") {

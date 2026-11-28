@@ -32,7 +32,6 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/GridBox.h"
-#include "mir/util/LongitudeDouble.h"
 
 
 namespace mir::repres::gauss::reduced {

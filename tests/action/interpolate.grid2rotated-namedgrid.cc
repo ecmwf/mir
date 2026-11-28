@@ -38,9 +38,9 @@ CASE("interpolate.grid2rotated-namedgrid") {
 
     for (auto it = outPoints.cbegin(), jt = unrotatedPoints.cbegin(); it; ++it, ++jt) {
         const auto p = std::get<PointLonLat>(*it);
-        const PointLatLon q{std::get<PointLonLat>(*jt)};
-        EXPECT(same(p.lat(), q.lat().value()));
-        EXPECT(same(p.lon(), q.lon().value()));
+        const auto q = std::get<PointLonLat>(*jt);
+        EXPECT(same(p.lat(), q.lat()));
+        EXPECT(same(p.lon(), q.lon()));
     }
 
     // the same as by type
@@ -75,7 +75,7 @@ CASE("interpolate.grid2rotated-namedgrid, cropping") {
     EXPECT(a->mergeWithNext(*make("{type: crop.area, area: [20, -20, -20, 20]}")));
     EXPECT(a->canCrop());
     EXPECT(!(a->outputBoundingBox() == util::BoundingBox(90, 0, -90, 360)));
-    EXPECT(a->outputBoundingBox().contains(PointLatLon(50, 22)));
+    EXPECT(a->outputBoundingBox().contains(50., 22.));
 
     auto out = perform(*a, field("{grid: O16}", LATITUDE));
 

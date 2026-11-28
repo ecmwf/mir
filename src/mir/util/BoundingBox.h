@@ -42,10 +42,6 @@ public:
     BoundingBox();
     /// The east normalised to the west, the comparisons to PointLonLat::EPS
     BoundingBox(double north, double west, double south, double east);
-
-    // transitional, while mir's Latitude/Longitude are in use
-    BoundingBox(const Latitude& north, const Longitude& west, const Latitude& south, const Longitude& east) :
-        BoundingBox(north.value(), west.value(), south.value(), east.value()) {}
     BoundingBox(const param::MIRParametrisation&);
     BoundingBox(const BoundingBox&);
 
@@ -81,10 +77,6 @@ public:
     bool contains(const PointLonLat&) const;
 
     bool contains(double lat, double lon) const;
-
-    // transitional, while mir's Latitude/Longitude are in use
-    bool contains(const PointLatLon& p) const { return contains(p.lat().value(), p.lon().value()); }
-    bool contains(const Latitude& lat, const Longitude& lon) const { return contains(lat.value(), lon.value()); }
 
     bool contains(const BoundingBox&) const;
 

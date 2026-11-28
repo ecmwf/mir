@@ -54,9 +54,9 @@ CASE("RotatedLL") {
 
     SECTION("points, in the geographic frame") {
         // the first point of the grid frame (north-west), rotated
-        const PointLatLon p{std::get<PointLonLat>(repres->canonicalGridUnrotated().first_point())};
-        EXPECT(same(p.lat().value(), 10.));
-        EXPECT(same(p.lon().value(), -10.));
+        const auto p = std::get<PointLonLat>(repres->canonicalGridUnrotated().first_point());
+        EXPECT(same(p.lat(), 10.));
+        EXPECT(same(p.lon(), -10.));
         EXPECT_NOT(same(std::get<PointLonLat>(repres->canonicalGrid().first_point()).lat(), 10.));
     }
 
