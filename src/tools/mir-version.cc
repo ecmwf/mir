@@ -83,9 +83,7 @@ struct MIRVersion : MIRTool {
 
             out << "features";
             out.startObject();
-            out << "HAVE_NETCDF" << MIR_HAVE_NETCDF;
             out << "HAVE_OMP" << MIR_HAVE_OMP;
-            out << "HAVE_PNG" << MIR_HAVE_PNG;
             out << "HAVE_PROJ" << MIR_HAVE_PROJ;
             out.endObject();
 
@@ -122,10 +120,8 @@ struct MIRVersion : MIRTool {
         out << '\n';
 
         out << "\nFeatures:";
-        out << "\n  HAVE_NETCDF      : " << on_off(MIR_HAVE_NETCDF);
-        out << "\n  HAVE_OMP         : " << on_off(MIR_HAVE_OMP);
-        out << "\n  HAVE_PNG         : " << on_off(MIR_HAVE_PNG);
-        out << "\n  HAVE_PROJ        : " << on_off(MIR_HAVE_PROJ);
+        out << "\n  HAVE_OMP     : " << on_off(MIR_HAVE_OMP);
+        out << "\n  HAVE_PROJ    : " << on_off(MIR_HAVE_PROJ);
         out << '\n';
 
         out << "\nLibraries:";

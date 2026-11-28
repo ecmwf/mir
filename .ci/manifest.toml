@@ -15,12 +15,6 @@ compiler-inputs = ["cxx-compiler"]
 allow-stale-deps = true
 
 [[deps]]
-repo = "ecmwf/stack-dependencies"
-package = "netcdf_cxx4"
-ref = "master"
-compiler-inputs = ["cxx-compiler"]
-
-[[deps]]
 repo = "ecmwf/eccodes"
 package = "eccodes"
 ref = "develop"

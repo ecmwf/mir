@@ -31,6 +31,7 @@
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
 #include "mir/util/LongitudeDouble.h"
+#include "mir/util/MissingValue.h"
 #include "mir/util/Mutex.h"
 #include "mir/util/ValueMap.h"
 #include "mir/util/Wind.h"
@@ -736,7 +737,7 @@ data::MIRField GribInput::field() const {
     long numberOfMissingValues = 0;
     GRIB_GET(codes_get_long(grib_, "numberOfMissingValues", &numberOfMissingValues));
     if (numberOfMissingValues == 0) {
-        grib_get_unique_missing_value(values, missingValue);
+        missingValue = util::unique_missing_value(values, missingValue, *this);
     }
 
     // If grib has a 0-containing pl array, add missing values in their place
@@ -767,7 +768,7 @@ data::MIRField GribInput::field() const {
             if (missingValuesPresent == 0) {
                 Log::debug() << "GribInput: introducing missing values (setting bitmap)" << std::endl;
                 missingValuesPresent = 1;
-                grib_get_unique_missing_value(values, missingValue);
+                missingValue         = util::unique_missing_value(values, missingValue, *this);
             }
 
             // pl array: insert entries in place of zeros

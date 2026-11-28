@@ -53,10 +53,6 @@
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
-#if mir_HAVE_PNG
-#include "mir/output/PNGOutput.h"
-#endif
-
 
 namespace mir {
 namespace tools {
@@ -374,11 +370,6 @@ struct MIR : MIRTool {
             options_.push_back(new FactoryOption<output::MIROutputFactory>("format", "Output format"));
             options_.push_back(
                 new SimpleOption<bool>("reset-missing-values", "Use first encoded value to set missing value"));
-#if mir_HAVE_PNG
-            options_.push_back(
-                new FactoryOption<output::PNGEncoderFactory>("png-output-encoder", "PNG output encoder"));
-            options_.push_back(new VectorOption<double>("png-output-minmax", "PNG output minimum/maximum", 2));
-#endif
         }
     }
 

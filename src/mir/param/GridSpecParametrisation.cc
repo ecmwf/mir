@@ -134,6 +134,12 @@ bool GridSpecParametrisation::cached(const std::string& name) const {
         return type == "regular_ll" && set(true);
     }
 
+    // unstructured grids can declare duplicate points allowed ("duplicates_allowed: true")
+    if (name == "duplicates_allowed") {
+        bool duplicates_allowed = false;
+        return grid.spec().get("duplicates_allowed", duplicates_allowed) && set(duplicates_allowed);
+    }
+
     // grid name
     if (name == "grid" && type == "regular_ll") {
         return set(std::vector<double>{std::abs(grid.dx()), std::abs(grid.dy())});

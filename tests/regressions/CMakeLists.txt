@@ -231,8 +231,6 @@ foreach(_t
         mir_tests_regressions_reduced_gg_to_regular_ll_grid_box_average
         mir_tests_regressions_regular_ll_to_regular_ll_area_so
         mir_tests_regressions_rotated_ll_to_reduced_gg_linear_edition
-        mir_tests_regressions_sh_to_rotated_ll_area_rotation_001
-        mir_tests_regressions_sh_to_rotated_ll_vod2uv_area
     )
     if(TEST ${_t})
         set_tests_properties(${_t} PROPERTIES DISABLED TRUE)

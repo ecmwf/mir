@@ -12,7 +12,6 @@
 
 #include "mir/output/EmptyOutput.h"
 #include "mir/output/GmshOutput.h"
-#include "mir/output/PNGOutput.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Exceptions.h"
@@ -46,7 +45,6 @@ CASE("MIROutputFactory") {
                  {"a", "geopoints-xyv", "GeoPointsFileOutput[path="},
                  {"a", "geopoints-xy-vector", "GeoPointsFileOutput[path="},
                  {"a", "gmsh", "GmshOutput[path="},
-                 {"a", "png", "PNGOutput[path="},
                  {"a.gpt", "extension", "GeoPointsFileOutput[path="},
              }) {
             param::SimpleParametrisation user;
@@ -75,7 +73,6 @@ CASE("MIROutputFactory") {
                  {"a.gpt", "", "GeoPointsFileOutput[path="},
                  {"a.geo", "", "GeoPointsFileOutput[path="},
                  {"a.msh", "", "GmshOutput[path="},
-                 {"a.png", "", "PNGOutput[path="},
              }) {
             auto out = build(test.name, param::SimpleParametrisation());
             EXPECT(to_string(*out).find(test.print) == 0);

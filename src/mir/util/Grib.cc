@@ -4,7 +4,6 @@
 
 #include "mir/util/Grib.h"
 
-#include <algorithm>
 #include <cstring>
 #include <ios>
 #include <sstream>
@@ -124,30 +123,6 @@ void grib_reorder_from_canonical(std::vector<double>& values, const std::string&
     }
 
     values.swap(out);
-}
-
-
-void grib_get_unique_missing_value(const std::vector<double>& values, double& missingValue) {
-    ASSERT(!values.empty());
-
-    // check if it's unique, otherwise a high then a low value
-    if (std::find(values.begin(), values.end(), missingValue) == values.end()) {
-        return;
-    }
-
-    auto mm = std::minmax_element(values.begin(), values.end());
-
-    missingValue = *(mm.second) + 1.;
-    if (missingValue == missingValue) {
-        return;
-    }
-
-    missingValue = *(mm.first) - 1.;
-    if (missingValue == missingValue) {
-        return;
-    }
-
-    throw mir::exception::SeriousBug("grib_get_unique_missing_value: failed to get a unique missing value.");
 }
 
 

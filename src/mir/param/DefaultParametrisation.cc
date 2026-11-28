@@ -4,6 +4,8 @@
 
 #include "mir/param/DefaultParametrisation.h"
 
+#include <limits>
+
 #include "mir/config/LibMir.h"
 
 
@@ -18,6 +20,9 @@ DefaultParametrisation::DefaultParametrisation() {
     set("vector-space", "1d-linear");
 
     set("caching", LibMir::caching());
+
+    // a value not expected in fields
+    set("missing-value", std::numeric_limits<double>::lowest());
 
     set("prune-epsilon", 1e-10);
     set("nclosest", 4L);

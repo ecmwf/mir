@@ -16,10 +16,6 @@ set(TESTS
     structured
     weight_matrix)
 
-if(mir_HAVE_NETCDF)
-    list(APPEND TESTS interpolation_netcdf)
-endif()
-
 foreach(_t ${TESTS})
     string(REGEX REPLACE "[.-]" "_" _name ${_t})
     ecbuild_add_test(

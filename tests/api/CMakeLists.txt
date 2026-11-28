@@ -17,7 +17,6 @@ set(TESTS
     output.gmsh
     output.grib
     output.multi-dimensional
-    output.png
     output.values
     output.vector
     parametrisation.cached
@@ -30,10 +29,6 @@ set(TESTS
     parametrisation.simple
     parametrisation.spec
     raw_memory)
-
-if(mir_HAVE_NETCDF)
-    list(APPEND TESTS input.netcdf)
-endif()
 
 foreach(_t ${TESTS})
     string(REGEX REPLACE "[.-]" "_" _name ${_t})

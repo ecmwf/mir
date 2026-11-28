@@ -10,6 +10,7 @@ from eckit.geo import Grid
 from mir._mir import *
 from mir._mir_action import Action
 from mir._mir_interpolation import Interpolation
+from mir.gridspec import gridspec_from_file
 
 from mir import action  # isort: skip
 from mir import interpolation  # isort: skip

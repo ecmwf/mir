@@ -82,16 +82,14 @@ def git_sha1() -> str:
 
 
 def grid_box_areas(grid):
-    cdef string gridspec
+    cdef string spec
     cdef vector[double] areas
     cdef Py_ssize_t size
     import numpy as np
+    from mir._spec import grid_spec_str
 
-    if not hasattr(grid, "spec_str"):
-        raise TypeError("grid_box_areas: expected an object with spec_str")
-
-    gridspec = str(grid.spec_str).encode()
-    areas = mir.grid_box_areas(gridspec)
+    spec = grid_spec_str(grid).encode()
+    areas = mir.grid_box_areas(spec)
     size = areas.size()
     return np.array(<cnp.float64_t[:size]>areas.data(), dtype=np.float64)
 
@@ -129,8 +127,10 @@ cdef class GribMemoryInput(MIRInput):
 
 
 cdef class GridSpecInput(MIRInput):
-    def __cinit__(self, string gridspec):
-        self._input = new mir.GridSpecInput(gridspec)
+    def __cinit__(self, grid):
+        from mir._spec import grid_spec_str
+
+        self._input = new mir.GridSpecInput(grid_spec_str(grid).encode())
 
     def __dealloc__(self):
         del self._input
@@ -172,14 +172,27 @@ cdef class PyGribOutput(MIROutput):
 
 
 cdef class ArrayInput(MIRInput):
-    def __cinit__(self, values, gridspec):
-        if hasattr(gridspec, "spec_str"):  # e.g. mir.Grid
-            gridspec = gridspec.spec_str
-        elif isinstance(gridspec, dict):
-            from yaml import dump
-            gridspec = dump(gridspec, default_flow_style=True)
+    cdef readonly object grid
+    cdef readonly object param
 
-        self._input = new mir.ArrayInput(values, gridspec)
+    def __cinit__(self, values, grid, param=None):
+        from mir._spec import grid_spec_str
+
+        self.grid = grid
+        self.param = param
+        self._input = new mir.ArrayInput(values, grid_spec_str(grid))
+
+    @classmethod
+    def from_netcdf_file(cls, path, skip_name_list=None, dtype=None):
+        """ArrayInput of each netCDF 2D field (requires netCDF4)"""
+        import numpy as np
+        from mir.netcdf import SKIP_NAME_LIST
+        from mir.netcdf import fields
+
+        skip = SKIP_NAME_LIST if skip_name_list is None else skip_name_list
+        dtype = np.float64 if dtype is None else dtype
+        for f in fields(path, skip):
+            yield cls(f.values(dtype), f.grid, param=f.param)
 
     def __dealloc__(self):
         del self._input

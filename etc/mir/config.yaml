@@ -28,6 +28,5 @@ mir-config-grib-input: ~mir/etc/mir/grib-input.yaml
 mir-config-grib-output: ~mir/etc/mir/grib-output.yaml
 mir-config-grid-type: ~mir/etc/mir/grid-type.yaml
 mir-config-grids: ~mir/etc/mir/grids.yaml
-mir-config-netcdf: ~mir/etc/mir/netcdf.yaml
 mir-config-parameter-class: ~mir/etc/mir/parameter-class.yaml
 mir-config-parameters: ~mir/etc/mir/parameters.yaml

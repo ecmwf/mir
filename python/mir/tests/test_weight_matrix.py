@@ -234,3 +234,34 @@ def test_make_matrix_with_spec_str(tmp_path, in_grid, out_grid):
 
     assert output_file.exists()
     assert isinstance(result, WeightMatrix)
+
+
+def write_scrip(path, rows, cols, weights, shape, base=1):
+    """SCRIP weights (netCDF): links (unsorted, of the index base) and weights"""
+    netCDF4 = pytest.importorskip("netCDF4")
+
+    with netCDF4.Dataset(path, "w") as ds:
+        ds.createDimension("dst_grid_size", shape[0])
+        ds.createDimension("src_grid_size", shape[1])
+        ds.createDimension("num_links", len(weights))
+        ds.createDimension("num_wgts", 1)
+        ds.createVariable("dst_address", "i4", ("num_links",))[:] = np.asarray(rows) + base
+        ds.createVariable("src_address", "i4", ("num_links",))[:] = np.asarray(cols) + base
+        ds.createVariable("remap_matrix", "f8", ("num_links", "num_wgts"))[:] = np.asarray(weights)[:, None]
+    return path
+
+
+@pytest.mark.parametrize("base", [0, 1])
+def test_from_scrip_weights(tmp_path, simple, base):
+    coo = simple.tocoo()
+    order = [3, 1, 0, 2]  # unsorted links
+    path = write_scrip(tmp_path / "w.nc", coo.row[order], coo.col[order], coo.data[order], simple.shape, base)
+
+    wm = WeightMatrix.from_scrip_weights(path, base=base)
+    np.testing.assert_array_equal(wm.to_csr().toarray(), simple.toarray())
+
+
+def test_from_scrip_weights_out_of_shape(tmp_path):
+    path = write_scrip(tmp_path / "w.nc", [0, 3], [0, 0], [0.5, 0.5], (3, 4))
+    with pytest.raises(ValueError, match="out of the shape"):
+        WeightMatrix.from_scrip_weights(path)

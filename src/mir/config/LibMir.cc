@@ -165,7 +165,6 @@ eckit::PathName LibMir::configFile(config_file c) {
         {r("mir-config-grid-type;$MIR_CONFIG_GRID_TYPE", "~mir/etc/mir/grid-type.yaml")},
         {r("mir-config-limiter;$MIR_CONFIG_LIMITER", "~mir/etc/mir/limiter.yaml")},
         {r("mir-config-lsm;$MIR_CONFIG_LSM", "~mir/etc/mir/lsm.yaml")},
-        {r("mir-config-netcdf;$MIR_CONFIG_NETCDF", "~mir/etc/mir/netcdf.yaml")},
         {r("mir-config-parameter-class;$MIR_CONFIG_PARAMETER_CLASS", "~mir/etc/mir/parameter-class.yaml")},
         {r("mir-config-parameters;$MIR_CONFIG_PARAMETERS", "~mir/etc/mir/parameters.yaml")},
         {r("mir-config-style;$MIR_CONFIG_STYLE", "~mir/etc/mir/style.yaml")},
